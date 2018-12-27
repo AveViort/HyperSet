@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Check if a port of a server is active, measure response time</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ping_port {pingr}"><tr><td>ping_port {pingr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Check if a port of a server is active, measure response time</h2>
+
+<h3>Description</h3>
+
+<p>Check if a port of a server is active, measure response time
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ping_port(destination, port = 80L, continuous = FALSE,
+  verbose = continuous, count = 3L, timeout = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>destination</code></td>
+<td>
+<p>Host name or IP address.</p>
+</td></tr>
+<tr valign="top"><td><code>port</code></td>
+<td>
+<p>Port.</p>
+</td></tr>
+<tr valign="top"><td><code>continuous</code></td>
+<td>
+<p>Logical, whether to keep pinging until
+the user interrupts.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>Whether to print progress on the screen while
+pinging.</p>
+</td></tr>
+<tr valign="top"><td><code>count</code></td>
+<td>
+<p>Number of pings to perform.</p>
+</td></tr>
+<tr valign="top"><td><code>timeout</code></td>
+<td>
+<p>Timeout, in seconds. How long to wait for a
+ping to succeed.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Vector of response times. <code>NA</code> means no response
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>pingr</em> version 1.1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

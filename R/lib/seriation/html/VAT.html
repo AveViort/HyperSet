@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Visual Analysis for Cluster Tendency Assessment (VAT/iVAT)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VAT {seriation}"><tr><td>VAT {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Visual Analysis for Cluster Tendency Assessment (VAT/iVAT)</h2>
+
+<h3>Description</h3>
+
+<p>Implements Visual Analysis
+for Cluster Tendency Assessment (VAT; Bezdek and Hathaway, 2002) and Improved
+Visual Analysis for Cluster Tendency Assessment (iVAT; Wang et al, 2010).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+VAT(x, ...)
+iVAT(x, ...)
+path_dist(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a <code>dist</code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments are passed on to <code>pimage</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>path_dist</code> redefines the distance between two objects as the minimum over
+the largest distances in all possible paths between the objects as used for 
+iVAT.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Bezdek, J.C. and Hathaway, R.J. (2002): VAT: a tool for visual assessment of (cluster) tendency. <em>Proceedings of the 2002 International Joint 
+Conference on Neural Networks (IJCNN '02)</em>, Volume: 3, 2225&ndash;2230. 
+</p>
+<p>Havens, T.C. and Bezdek, J.C. (2012):
+An Efficient Formulation of the Improved Visual Assessment of Cluster Tendency (iVAT) Algorithm, <em>IEEE Transactions on Knowledge and Data Engineering,</em>   <b>24</b>(5), 813&ndash;822. 
+</p>
+<p>Wang L., U.T.V. Nguyen, J.C. Bezdek,
+C.A. Leckie and K. Ramamohanarao (2010):
+iVAT and aVAT: Enhanced Visual Analysis
+for Cluster Tendency Assessment,
+<em>Proceedings of the PAKDD 2010, Part I, LNAI 6118,</em> 16&ndash;27.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="seriate.html">seriate</a></code>,
+<code><a href="pimage.html">pimage</a></code>,
+<code><a href="data.html">create_lines_data</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## lines data set from Havens and Bezdek (2011) 
+x &lt;- create_lines_data(250)
+plot(x, xlim=c(-5,5), ylim=c(-3,3), cex=.2)  
+d &lt;- dist(x)
+
+## create regular VAT
+VAT(d, colorkey = TRUE, main = "VAT")
+## same as: pimage(d, seriate(d, "VAT"))  
+
+## create iVAT which shows visually the three lines
+iVAT(d, main = "iVAT")
+## same as:
+## d_path &lt;- path_dist(d)
+## pimage(d_path, seriate(d_path, "VAT"))  
+
+## compare with dissplot (shows banded structures and relationship between 
+## center line and the two outer lines)
+dissplot(d, method="OLO_single", main = "Dissplot", col = bluered(100, bias = .5))
+
+## compare with optimally reordered heatmap
+hmap(d, method="OLO_single", main = "Heat map (opt. leaf ordering)", 
+col = bluered(100, bias = .5))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

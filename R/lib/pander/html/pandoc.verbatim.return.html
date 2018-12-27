@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add verbatim</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pandoc.verbatim.return {pander}"><tr><td>pandoc.verbatim.return {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add verbatim</h2>
+
+<h3>Description</h3>
+
+<p>Pandoc's markdown verbatim format (e.g. <code>`FOO`</code>) is added to character string.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pandoc.verbatim.return(x, style = c("inline", "indent", "delim"),
+  attrs = "")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>character vector</p>
+</td></tr>
+<tr valign="top"><td><code>style</code></td>
+<td>
+<p>show code <code>inline</code> or in a separate (<code>indent</code>ed or <code>delim</code>ited) block</p>
+</td></tr>
+<tr valign="top"><td><code>attrs</code></td>
+<td>
+<p>(optionally) pass ID, classes and any attribute to the <code>delimited</code> block</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>By default this function outputs (see: <code>cat</code>) the result. If you would want to catch the result instead, then call the function ending in <code>.return</code>.
+</p>
+
+
+<h3>References</h3>
+
+<p>John MacFarlane (2012): _Pandoc User's Guide_. <a href="http://johnmacfarlane.net/pandoc/README.html">http://johnmacfarlane.net/pandoc/README.html</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="pandoc.emphasis.return.html">pandoc.emphasis</a></code> <code><a href="pandoc.strikeout.return.html">pandoc.strikeout</a></code> <code><a href="pandoc.strong.return.html">pandoc.strong</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# different styles/formats
+pandoc.verbatim('FOO')
+
+src &lt;- c('FOO', 'indent', 'BAR' )
+pandoc.verbatim(src)
+pandoc.verbatim.return(src)
+pandoc.verbatim(c('FOOO\nBAR  ', ' I do R'), 'indent')
+pandoc.verbatim(c('FOOO\nBAR  ', ' I do R'), 'delim')
+
+# add highlighting and HTML/LaTeX ID and classes (even custom attribute)
+pandoc.verbatim(c('cat("FOO")', 'mean(bar)'), 'delim', '.R #MyCode custom_var="10"')
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Evinet Help</title>
+<LINK href="help.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<p class="headr1">How to use stand-alone R software for NEA</p>
+The same procedures that run at the web site can be more systematically implemented using the package 
+<span class="hlight">NEArender</span>. It contains basic functions for network and gene set enrichment analyses, creating, re-formatting, and saving gene set lists, as well as benchmarking the networks.
+<br></br>
+<hr>
+<span id="heading1" class="headr2">Installation of NEArender package  </span>
+<br></br>
+<span class="hlight">NEArender</span> can be installed from <a href="https://cran.r-project.org/web/packages/NEArender/index.html">R CRAN </a> directly within R environment. The only recommendation is to install first the required package <span class="hlight">ROCR</span> (it might be sensitive to some other dependencies).
+<br>
+<img src="../pics/help_pics/p35.png" />
+<hr>
+<span id="heading2" class="headr2"> Create Altered Gene Sets (AGS) input file </span>
+<br></br>
+We first could create a set of AGS that distinguish each cell line sample in the collection from 
+the others. 
+<br></br>
+<img src="../pics/help_pics/p36.png" />
+<hr>
+<span id="heading3" class="headr2">Importing Functional Gene Sets (FGS) and Networks</span>
+<br></br>
+Plotting  the gene frequency distribution demonstrates that the most of the genes are quite 
+unique (below). Next, we run the network enrichment analysis, analyzing enrichment of each 
+of these cell-line specific AGSs against each of the 330 pathways in the FGS collection
+<br></br>
+<img src="../pics/help_pics/p37.png"/>
+<br>
+<a href="?">top</a>
+<hr>
+<span id="heading4" class="headr2">Run NEA</span>
+<br></br>
+ We now are in the position to identify pathway -level correlates  of drug sensitivity, such as these two pathways  associated with resistance to  <span class="hlight"> lapatinib </span>. Furthermore, this correlation can be traced between two independent drug screens  <span class="hlight"> (Barretina et al., 2012 and Garnett et al., 2012) </span>. While using original gene expression values, such correlation would be much weaker
+  <br></br>
+ <img src="../pics/help_pics/p38.png"/>
+ <br></br>
+<img src="../pics/help_pics/p39.png"/>
+<br>
+<img src="../pics/help_pics/p40.png"/>
+<br>
+The two pathways seems to have discovered a global trend: correlation coefficients  from the two drug screens correlate with each other, too
+<img src="../pics/help_pics/p41.png"/>
+<br>
+<a href="?">top</a>
+<hr>
+</body>
+</html>

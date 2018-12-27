@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Resize an image</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for resize {webshot}"><tr><td>resize {webshot}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Resize an image</h2>
+
+<h3>Description</h3>
+
+<p>This does not change size of the image in pixels, nor does it affect
+appearance &ndash; it is lossless compression. This requires GraphicsMagick
+(recommended) or ImageMagick to be installed.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+resize(filename, geometry)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>Character vector containing the path of images to resize.</p>
+</td></tr>
+<tr valign="top"><td><code>geometry</code></td>
+<td>
+<p>Scaling specification. Can be a percent, as in <code>"50%"</code>,
+or pixel dimensions like <code>"120x120"</code>, <code>"120x"</code>, or <code>"x120"</code>.
+Any valid ImageMagick geometry specifation can be used. If <code>filename</code>
+contains multiple images, this can be a vector to specify distinct sizes
+for each image.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+if (interactive()) {
+  # Can be chained with webshot() or appshot()
+  webshot("https://www.r-project.org/", "r-small-1.png") %&gt;%
+    resize("75%")
+
+  # Generate image that is 400 pixels wide
+  webshot("https://www.r-project.org/", "r-small-2.png") %&gt;%
+    resize("400x")
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>webshot</em> version 0.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

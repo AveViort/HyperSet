@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Congruence among distance matrices</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for CADM.global {ape}"><tr><td>CADM.global {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Congruence among distance matrices </h2>
+
+<h3>Description</h3>
+
+<p>Function <code><a href="CADM.global.html">CADM.global</a></code> compute and test the coefficient of concordance among several distance matrices through a permutation test.
+</p>
+<p>Function <code><a href="CADM.global.html">CADM.post</a></code> carries out a posteriori permutation tests of the contributions of individual distance matrices to the overall concordance of the group.
+</p>
+<p>Use in phylogenetic analysis: to identify congruence among distance matrices (D) representing different genes or different types of data. Congruent D matrices correspond to data tables that can be used together in a combined phylogenetic or other type of multivariate analysis.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+CADM.global(Dmat, nmat, n, nperm=99, make.sym=TRUE, weights=NULL,
+            silent=FALSE)
+CADM.post  (Dmat, nmat, n, nperm=99, make.sym=TRUE, weights=NULL,
+             mult="holm", mantel=FALSE, silent=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>Dmat</code></td>
+<td>
+<p> A text file listing the distance matrices one after the other, with or without blank lines in-between. Each matrix is in the form of a square distance matrix with 0's on the diagonal. </p>
+</td></tr>
+<tr valign="top"><td><code>nmat</code></td>
+<td>
+<p> Number of distance matrices in file Dmat. </p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p> Number of objects in each distance matrix. All matrices must have the same number of objects. </p>
+</td></tr>
+<tr valign="top"><td><code>nperm</code></td>
+<td>
+<p> Number of permutations for the tests of significance. </p>
+</td></tr>
+<tr valign="top"><td><code>make.sym</code></td>
+<td>
+<p> TRUE: turn asymmetric matrices into symmetric matrices by averaging the two triangular portions. FALSE: analyse asymmetric matrices as they are. </p>
+</td></tr>
+<tr valign="top"><td><code>weights</code></td>
+<td>
+<p> A vector of positive weights for the distance matrices. Example: weights = c(1,2,3). NULL (default): all matrices have same weight in the calculation of W. </p>
+</td></tr>
+<tr valign="top"><td><code>mult</code></td>
+<td>
+<p> Method for correcting P-values in multiple testing. The methods are &quot;holm&quot; (default), &quot;sidak&quot;, and &quot;bonferroni&quot;. The Bonferroni correction is overly conservative; it is not recommended. It is included to allow comparisons with the other methods. </p>
+</td></tr>
+<tr valign="top"><td><code>mantel</code></td>
+<td>
+<p> TRUE: Mantel statistics will be computed from ranked distances, as well as permutational P-values. FALSE (default): Mantel statistics and tests will not be computed. </p>
+</td></tr>
+<tr valign="top"><td><code>silent</code></td>
+<td>
+<p> TRUE: informative messages will not be printed, but stopping messages will. Option useful for simulation work. FALSE: informative messages will be printed. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>Dmat</code> must contain two or more distance matrices, listed one after the other, all of the same size, and corresponding to the same objects in the same order. Raw data tables can be transformed into distance matrices before comparison with other such distance matrices, or with data that have been obtained as distance matrices, e.g. serological or DNA hybridization data. The distances will be transformed to ranks before computation of the coefficient of concordance and other statistics.
+</p>
+<p><code>CADM.global</code> tests the global null hypothesis that all matrices are incongruent. If the global null is rejected, function <code>CADM.post</code> can be used to identify the concordant (H0 rejected) and discordant matrices (H0 not rejected) in the group. If a distance matrix has a negative value for the <code>Mantel.mean</code> statistic, that matrix clearly does not belong to the group. Remove that matrix (if there are more than one, remove first the matrix that has the most strongly negative value for <code>Mantel.mean</code>) and run the analysis again.
+</p>
+<p>The corrections used for multiple testing are applied to the list of P-values (P) produced in the a posteriori tests; they take into account the number of tests (k) carried out simulatenously (number of matrices, parameter <code>nmat</code>).
+</p>
+<p>The Holm correction is computed after ordering the P-values in a list with the smallest value to the left. Compute adjusted P-values as:
+</p>
+<p style="text-align: center;"><i>P_corr = (k-i+1)*P</i></p>
+
+<p>where i is the position in the ordered list. Final step: from left to right, if an adjusted <i>P_corr</i> in the ordered list is smaller than the one occurring at its left, make the smallest one equal to the largest one.
+</p>
+<p>The Sidak correction is:
+</p>
+<p style="text-align: center;"><i>P_corr = 1 - (1 - P)^k</i></p>
+
+<p>The Bonferonni correction is:
+</p>
+<p style="text-align: center;"><i>P_corr = k*P</i></p>
+
+
+
+<h3>Value</h3>
+
+<p><code>CADM.global</code> produces a small table containing the W, Chi2, and Prob.perm statistics described in the following list.
+<code>CADM.post</code> produces a table stored in element <code>A_posteriori_tests</code>, containing Mantel.mean, Prob, and Corrected.prob statistics in rows; the columns correspond to the k distance matrices under study, labeled Dmat.1 to Dmat.k.
+If parameter <code>mantel</code> is TRUE, tables of Mantel statistics and P-values are computed among the matrices.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>W </code></td>
+<td>
+<p>Kendall's coefficient of concordance, W (Kendall and Babington Smith 1939; see also Legendre 2010). </p>
+</td></tr>
+<tr valign="top"><td><code>Chi2 </code></td>
+<td>
+<p>Friedman's chi-square statistic (Friedman 1937) used in the permutation test of W. </p>
+</td></tr>
+<tr valign="top"><td><code>Prob.perm </code></td>
+<td>
+<p>Permutational probability. </p>
+</td></tr>
+<tr valign="top"><td><code>Mantel.mean </code></td>
+<td>
+<p>Mean of the Mantel correlations, computed on rank-transformed distances, between the distance matrix under test and all the other matrices in the study. </p>
+</td></tr>
+<tr valign="top"><td><code>Prob </code></td>
+<td>
+<p>Permutational probabilities, uncorrected. </p>
+</td></tr>
+<tr valign="top"><td><code>Corrected prob </code></td>
+<td>
+<p>Permutational probabilities corrected using the method selected in parameter <code>mult</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>Mantel.cor </code></td>
+<td>
+<p>Matrix of Mantel correlations, computed on rank-transformed distances, among the distance matrices. </p>
+</td></tr>
+<tr valign="top"><td><code>Mantel.prob </code></td>
+<td>
+<p>One-tailed P-values associated with the Mantel correlations of the previous table. The probabilities are computed in the right-hand tail. H0 is tested against the alternative one-tailed hypothesis that the Mantel correlation under test is positive. No correction is made for multiple testing. </p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Pierre Legendre, Universite de Montreal</p>
+
+
+<h3>References</h3>
+
+<p>Campbell, V., Legendre, P. and Lapointe, F.-J. (2009) Assessing congruence among ultrametric distance matrices. <em>Journal of Classification</em>, <b>26</b>, 103&ndash;117.
+</p>
+<p>Campbell, V., Legendre, P. and Lapointe, F.-J. (2011) The performance of the Congruence Among Distance Matrices (CADM) test in phylogenetic analysis. <em>BMC Evolutionary Biology</em>, <b>11</b>, 64. <a href="http://www.biomedcentral.com/1471-2148/11/64">http://www.biomedcentral.com/1471-2148/11/64</a>.
+</p>
+<p>Friedman, M. (1937) The use of ranks to avoid the assumption of normality implicit in the analysis of variance. <em>Journal of the American Statistical Association</em>, <b>32</b>, 675&ndash;701.
+</p>
+<p>Kendall, M. G. and Babington Smith, B. (1939) The problem of m rankings. <em>Annals of Mathematical Statistics</em>, <b>10</b>, 275&ndash;287.
+</p>
+<p>Lapointe, F.-J., Kirsch, J. A. W. and Hutcheon, J. M. (1999) Total evidence, consensus, and bat phylogeny: a distance-based approach. <em>Molecular Phylogenetics and Evolution</em>, <b>11</b>, 55&ndash;66.
+</p>
+<p>Legendre, P. (2010) Coefficient of concordance. Pp. 164-169 in: Encyclopedia of Research Design, Vol. 1. N. J. Salkind, ed. SAGE Publications, Inc., Los Angeles.
+</p>
+<p>Legendre, P. and Lapointe, F.-J. (2004) Assessing congruence among distance matrices: single malt Scotch whiskies
+revisited. <em>Australian and New Zealand Journal of Statistics</em>, <b>46</b>, 615&ndash;629.
+</p>
+<p>Legendre, P. and Lapointe, F.-J. (2005) Congruence entre matrices de distance. P. 178-181 in: Makarenkov, V., G. Cucumel et F.-J. Lapointe [eds] Comptes rendus des 12emes Rencontres de la Societe Francophone de Classification, Montreal, 30 mai - 1er juin 2005.
+</p>
+<p>Siegel, S. and Castellan, N. J., Jr. (1988) <em>Nonparametric statistics for the behavioral sciences. 2nd edition</em>. New York: McGraw-Hill.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Examples 1 and 2: 5 genetic distance matrices computed from simulated DNA
+# sequences representing 50 taxa having evolved along additive trees with
+# identical evolutionary parameters (GTR+ Gamma + I). Distance matrices were
+# computed from the DNA sequence matrices using a p distance corrected with the
+# same parameters as those used to simulate the DNA sequences. See Campbell et
+# al. (2009) for details.
+
+# Example 1: five independent additive trees. Data provided by V. Campbell.
+
+data(mat5Mrand)
+res.global &lt;- CADM.global(mat5Mrand, 5, 50)
+
+# Example 2: three partly similar trees, two independent trees.
+# Data provided by V. Campbell.
+
+data(mat5M3ID)
+res.global &lt;- CADM.global(mat5M3ID, 5, 50)
+res.post   &lt;- CADM.post(mat5M3ID, 5, 50, mantel=TRUE)
+
+# Example 3: three matrices respectively representing Serological
+# (asymmetric), DNA hybridization (asymmetric) and Anatomical (symmetric)
+# distances among 9 families. Data from Lapointe et al. (1999).
+
+data(mat3)
+res.global &lt;- CADM.global(mat3, 3, 9, nperm=999)
+res.post   &lt;- CADM.post(mat3, 3, 9, nperm=999, mantel=TRUE)
+
+# Example 4, showing how to bind two D matrices (cophenetic matrices
+# in this example) into a file using rbind(), then run the global test.
+
+a &lt;- rtree(5)
+b &lt;- rtree(5)
+A &lt;- cophenetic(a)
+B &lt;- cophenetic(b)
+x &lt;- rownames(A)
+B &lt;- B[x, x]
+M &lt;- rbind(A, B)
+CADM.global(M, 2, 5)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

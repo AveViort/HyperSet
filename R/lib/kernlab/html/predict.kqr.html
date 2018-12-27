@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Predict method for kernel Quantile Regression object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for predict.kqr {kernlab}"><tr><td>predict.kqr {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Predict method for kernel Quantile Regression object</h2>
+
+<h3>Description</h3>
+
+<p>Prediction of test data for kernel quantile regression</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'kqr'
+predict(object, newdata)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>an S4 object of class <code>kqr</code> created by the
+<code>kqr</code> function</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>a data frame, matrix, or kernelMatrix containing new data</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The value of the quantile given by the computed <code>kqr</code>
+model in a vector of length equal to the the rows of <code>newdata</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# create data
+x &lt;- sort(runif(300))
+y &lt;- sin(pi*x) + rnorm(300,0,sd=exp(sin(2*pi*x)))
+
+# first calculate the median
+qrm &lt;- kqr(x, y, tau = 0.5, C=0.15)
+
+# predict and plot
+plot(x, y)
+ytest &lt;- predict(qrm, x)
+lines(x, ytest, col="blue")
+
+# calculate 0.9 quantile
+qrm &lt;- kqr(x, y, tau = 0.9, kernel = "rbfdot",
+           kpar= list(sigma=10), C=0.15)
+ytest &lt;- predict(qrm, x)
+lines(x, ytest, col="red")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

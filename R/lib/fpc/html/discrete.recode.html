@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Recodes mixed variables dataset</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for discrete.recode {fpc}"><tr><td>discrete.recode {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Recodes mixed variables dataset</h2>
+
+<h3>Description</h3>
+
+<p>Recodes a dataset with mixed continuous and categorical variables so
+that the continuous variables come first and the categorical variables
+have standard coding 1, 2, 3,... (in lexicographical ordering of
+values coerced to strings).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  discrete.recode(x,xvarsorted=TRUE,continuous=0,discrete)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>data matrix or data frame. The data need to be organised
+case-wise, i.e., if there are categorical variables only, and 15
+cases with values c(1,1,2) on the 3 variables, the data matrix needs
+15 rows with values 1 1 2. (Categorical variables could take numbers
+or strings or anything that can be coerced to factor levels as values.)</p>
+</td></tr>
+<tr valign="top"><td><code>xvarsorted</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the continuous variables
+are assumed to be the first ones, and the categorical variables to
+be behind them.</p>
+</td></tr>
+<tr valign="top"><td><code>continuous</code></td>
+<td>
+<p>vector of integers giving positions of the
+continuous variables. If <code>xvarsorted=TRUE</code>, a single integer,
+number of continuous variables.</p>
+</td></tr>
+<tr valign="top"><td><code>discrete</code></td>
+<td>
+<p>vector of integers giving positions of the
+categorical variables (the variables need to be coded in such a way that
+<code><a href="../../base/html/data.matrix.html">data.matrix</a></code> converts them to something numeric). If
+<code>xvarsorted=TRUE</code>, a single integer, number of categorical variables.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>data matrix with continuous variables first and
+categorical variables in standard coding behind them.</p>
+</td></tr>
+<tr valign="top"><td><code>ppdim</code></td>
+<td>
+<p>vector of categorical variable-wise numbers of
+categories.</p>
+</td></tr>
+<tr valign="top"><td><code>discretelevels</code></td>
+<td>
+<p>list of levels of the categorical variables
+belonging to what is treated by <code>flexmixedruns</code> as category
+1, 2, 3 etc.</p>
+</td></tr> 
+<tr valign="top"><td><code>continuous</code></td>
+<td>
+<p>number of continuous variables.</p>
+</td></tr>
+<tr valign="top"><td><code>discrete</code></td>
+<td>
+<p>number of categorical variables.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="lcmixed.html">lcmixed</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  set.seed(776655)
+  v1 &lt;- rnorm(20)
+  v2 &lt;- rnorm(20)
+  d1 &lt;- sample(c(2,4,6,8),20,replace=TRUE)
+  d2 &lt;- sample(1:4,20,replace=TRUE)
+  ldata &lt;- cbind(v1,d1,v2,d2)
+  lc &lt;-
+  discrete.recode(ldata,xvarsorted=FALSE,continuous=c(1,3),discrete=c(2,4))
+  require(MASS)
+  data(Cars93)
+  Cars934 &lt;- Cars93[,c(3,5,8,10)]
+  cc &lt;- discrete.recode(Cars934,xvarsorted=FALSE,continuous=c(2,3),discrete=c(1,4))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

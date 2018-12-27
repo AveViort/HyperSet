@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Return path to user data directories.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for user_data_dir {rappdirs}"><tr><td>user_data_dir {rappdirs}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Return path to user data directories.</h2>
+
+<h3>Description</h3>
+
+<p><code>user_data_dir</code> returns full path to the user-specific data dir for this application.
+<code>user_config_dir</code> returns full path to the user-specific configuration directory for this application 
+which returns the same path as user data directory in Windows and Mac but a different one for Unix.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+user_data_dir(appname = NULL, appauthor = appname, version = NULL,
+  roaming = FALSE, expand = TRUE, os = get_os())
+
+user_config_dir(appname = NULL, appauthor = appname, version = NULL,
+  roaming = TRUE, expand = TRUE, os = get_os())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>appname</code></td>
+<td>
+<p>is the name of application. If NULL, just the system
+directory is returned.</p>
+</td></tr>
+<tr valign="top"><td><code>appauthor</code></td>
+<td>
+<p>(only required and used on Windows) is the name of the
+appauthor or distributing body for this application. Typically
+it is the owning company name. This falls back to appname.</p>
+</td></tr>
+<tr valign="top"><td><code>version</code></td>
+<td>
+<p>is an optional version path element to append to the
+path. You might want to use this if you want multiple versions
+of your app to be able to run independently. If used, this
+would typically be &quot;&lt;major&gt;.&lt;minor&gt;&quot;. Only applied when appname
+is not NULL.</p>
+</td></tr>
+<tr valign="top"><td><code>roaming</code></td>
+<td>
+<p>(logical, default <code>FALSE</code>) can be set <code>TRUE</code> to
+use the Windows roaming appdata directory. That means that for users on
+a Windows network setup for roaming profiles, this user data will be
+sync'd on login. See
+<a href="http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx">http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx</a>
+for a discussion of issues.</p>
+</td></tr>
+<tr valign="top"><td><code>expand</code></td>
+<td>
+<p>If TRUE (the default) will expand the <code>R_LIBS</code> specifiers with their equivalents.
+See <code><a href="../../base/html/libPaths.html">R_LIBS</a></code> for list of all possibly specifiers.</p>
+</td></tr>
+<tr valign="top"><td><code>os</code></td>
+<td>
+<p>Operating system whose conventions are used to construct the
+requested directory. Possible values are &quot;win&quot;, &quot;mac&quot;, &quot;unix&quot;. If NULL
+(the default) then the convention of the current operating system
+(as determined by rappdirs:::get_os) will be used. This argument is
+unlikely to find much use outside package testing (see details section of
+<code><a href="user_data_dir.html">user_data_dir</a></code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Typical user data directories are:
+</p>
+
+<ul>
+<li><p> Mac OS X:  &lsquo;<span class="file">~/Library/Application Support/&lt;AppName&gt;</span>&rsquo;
+</p>
+</li>
+<li><p> Unix: &lsquo;<span class="file">~/.local/share/&lt;AppName&gt;</span>&rsquo;, in <span class="env">$XDG_DATA_HOME</span> if defined
+</p>
+</li>
+<li><p> Win XP (not roaming):  &lsquo;<span class="file">C:\Documents and Settings\&lt;username&gt;\Data\&lt;AppAuthor&gt;\&lt;AppName&gt;</span>&rsquo;
+</p>
+</li>
+<li><p> Win XP (roaming): &lsquo;<span class="file">C:\Documents and Settings\&lt;username&gt;\Local Settings\Data\&lt;AppAuthor&gt;\&lt;AppName&gt;</span>&rsquo;
+</p>
+</li>
+<li><p> Win 7  (not roaming): 
+&lsquo;<span class="file">C:\Users\&lt;username&gt;\AppData\Local\&lt;AppAuthor&gt;\&lt;AppName&gt;</span>&rsquo;
+</p>
+</li>
+<li><p> Win 7 (roaming):      
+&lsquo;<span class="file">C:\Users\&lt;username&gt;\AppData\Roaming\&lt;AppAuthor&gt;\&lt;AppName&gt;</span>&rsquo;
+</p>
+</li></ul>
+
+<p>Unix also specifies a separate location for user configuration data in
+</p>
+ 
+<ul>
+<li><p> Unix: &lsquo;<span class="file">~/.config/&lt;AppName&gt;</span>&rsquo;, in <span class="env">$XDG_CONFIG_HOME</span> if defined
+</p>
+</li></ul>
+
+<p>See for example <a href="http://ploum.net/184-cleaning-user-preferences-keeping-user-data/">http://ploum.net/184-cleaning-user-preferences-keeping-user-data/</a> 
+or <a href="http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html">http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html</a> for more information.
+Arguably plugins such as R packages should go into the user configuration directory and deleting
+this directory should return the application to a default settings.
+</p>
+<p>The <code>os</code> parameter allows the calculation of directories based on a
+convention other than the current operating system. This feature is designed
+with package testing in mind and is <em>not</em> recommended for end users. One
+possible exception is that some users on &quot;mac&quot; might wish to use the &quot;unix&quot; 
+XDG convention.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+user_data_dir("rappdirs")
+user_config_dir("rappdirs", version="%p-platform/%v")
+user_config_dir("rappdirs", roaming=TRUE, os="win")
+user_config_dir("rappdirs", roaming=FALSE, os="win")
+user_config_dir("rappdirs", os="unix")
+user_config_dir("rappdirs", os="mac")
+## Not run: 
+# you could try to use functions to store R libraries in a standard user directory
+# by using the following in your .Rprofile file
+# but unfortunately if rappsdir package was stored in standard user directory then
+# it won't be on R's search path any longer, so would need to be installed system-wide...
+require("utils")
+.libPaths(new=rappdirs::user_config_dir("R", version="%p-platform/%v"))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rappdirs</em> version 0.3.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

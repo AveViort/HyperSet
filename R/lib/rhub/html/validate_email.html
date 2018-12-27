@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Validate an email address on r-hub</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for validate_email {rhub}"><tr><td>validate_email {rhub}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Validate an email address on r-hub</h2>
+
+<h3>Description</h3>
+
+<p>To build and check R packages on r-hub, you need to validate your
+email address. This is because r-hub sends out emails about build
+results.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+validate_email(email = NULL, token = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>email</code></td>
+<td>
+<p>The email address to validate.</p>
+</td></tr>
+<tr valign="top"><td><code>token</code></td>
+<td>
+<p>Token obtained from <code>rhub</code>, to validate the email address.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>rhub</code> package stores validated email addresses in a user
+configuration file, at a platform-dependent location.
+On your current platform the file is at
+/home/ashwini.jeggari/.local/share/rhub/validated_emails.csv.
+</p>
+<p>To validate a new email address, call this function from an interactive
+R session, without any arguments.
+</p>
+<p>To add an email address that was validated before (probably on another
+machine), to the configuration file, call this function with the <code>email</code>
+and <code>token</code> arguments.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other email validation: <code><a href="list_validated_emails.html">list_validated_emails</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>rhub</em> version 1.0.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

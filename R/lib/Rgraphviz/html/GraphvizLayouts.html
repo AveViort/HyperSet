@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Graphviz Layout Methods</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for GraphvizLayouts {Rgraphviz}"><tr><td>GraphvizLayouts {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Graphviz Layout Methods</h2>
+
+<h3>Description</h3>
+
+<p>The following describes the different layout methods that can be used
+within Rgraphviz.  Each layout method has its own particular
+advantages and disadvantages and can have its own quirks.  Currently
+Rgraphviz supports three different layout methods: <code>dot</code>,
+<code>twopi</code> and <code>neato</code>.
+</p>
+
+
+<h3>Details</h3>
+
+<p>Portions of the layout descriptions were taken from documents provided
+at <a href="http://www.research.att.com/sw/graphviz">http://www.research.att.com/sw/graphviz</a>.  The specific
+documents are listed in the <code>references</code> section of this page.
+</p>
+
+
+<h3>The dot layout</h3>
+
+<p>The <code>dot</code> algorithm produces a ranked layout of a graph
+honoring edge directions. It is particularly appropriate for displaying
+hierarchies or directed acyclic graphs. The basic layout scheme is
+attributed to Sugiyama et al. The specific algorithm used by
+dot follows the steps described by Gansner et al.
+</p>
+<p><code>dot</code> draws a graph in four main phases. Knowing this helps you to
+understand what kind of layouts dot makes and how you can control
+them.  The layout procedure used by dot relies on the graph being
+acyclic. Thus, the first step is to break any cycles which occur in
+the input graph by reversing the internal direction of certain
+cyclic edges. The next step assigns nodes to discrete ranks or
+levels. In a top-to-bottom drawing, ranks determine Y
+coordinates. Edges that span more than one rank are broken into
+chains of <code>virtual</code> nodes and unit-length edges. The third step
+orders nodes within ranks to avoid crossings. The fourth step sets X
+coordnates of nodes to keep edges short, and the final step routes
+edge splines.
+</p>
+<p>In <code>dot</code>, higher edge weights have the effect of causing edges
+to be shorter and straighter.
+</p>
+<p>Fine-tuning should be approached cautiously. <code>dot</code> works best when it can
+makes a layout without much <code>help</code> or interference in its
+placement of individual nodes and edges. Layouts can be adjusted
+somewhat by increasing the weight of certain edges, and sometimes
+even by rearranging the order of nodes and edges in the file. But
+this can backfire because the layouts are not necessarily stable
+with respect to changes in the input graph. One last adjustment can
+invalidate all previous changes and make a very bad drawing.
+</p>
+
+
+<h3>The neato layout</h3>
+
+<p><code>neato</code> is a program that makes layouts of undirected graphs
+following the filter model of <code>dot</code>. Its layout heuristic
+creates virtual physical models and runs an iterative solver to find
+low energy configurations.  An ideal spring is placed between every
+pair of nodes such that its length is set to the shortest path distance
+between the endpoints. The springs push the nodes so their geometric
+distance in the layout approximates their path distance in the
+graph.
+</p>
+<p>In <code>neato</code>, the edge weight is the strength of the
+corresponding spring.
+</p>
+<p>As with <code>dot</code>, fine-tuning should be approached cautiously, as
+often small changes can have a drastic effect and create a poor
+looking layout.
+</p>
+
+
+<h3>The twopi layout</h3>
+
+<p>The radial layout algorithm represented by <code>twopi</code> is conceptually the
+simplest. It takes a node specified as the center of the
+layout and the root of the generated spanning tree. The remaining
+nodes are placed on a series of concentric circles about the center,
+the circle used corresponding to the graph-theoretic distance from
+the node to the center. Thus, for example, all of the neighbors of
+the center node are placed on the first circle around the
+center. The algorithm allocates angular slices to each branch of the
+induced spanning tree to guarantee enough space for the tree on each
+ring.  It should be obvious from the description that the basic
+version of the twopi algorithm relies on the graph being
+connected.
+</p>
+<p>Of great importance to the quality of the layout is the selection of
+an appropriate center node.  By default, the <code>twopi</code> will
+randomly pick one of the nodes that are furthest from a leaf node,
+where a leaf node is a node of degree <code>1</code>.  The <code>root</code> attribute
+can be used to manually select a central node for the layout, and
+users are encouraged to use this attribute to select a node which
+provides a good quality layout.  It often might not be obvious what
+that node will be, as it will vary from graph to graph, so some
+experimentation might be required.
+</p>
+<p>As with <code>dot</code> and <code>neato</code>, fine-tuning should be approached
+cautiously, as often small changes can have a drastic effect and create a poor
+looking layout.  The <code>root</code> node of the layout, as mentioned
+before, can have a profound effect on the outcome of the layout and
+care should be taken to select an appropriate one.
+</p>
+
+
+<h3>The circo layout</h3>
+
+<p>The <code>circo</code> layout method draws graphs using a circular layout
+(see Six and Tollis, GD '99 and ALENEX '99, and Kaufmann and Wiese,
+GD '02.)  The tool identifies biconnected components and draws the
+nodes of the component on a circle.  The block-cutpoint tree is then
+laid out using a recursive radial algorithm.  Edge crossings within a
+circle are minimized by placing as many edges on the circle's
+perimeter as possible.  In particular, if the component is
+outerplanar, the component will have a planar layout.
+</p>
+<p>If a node belongs to multiple non-trivial biconnected components, the
+layout puts the node in one of them.  By default, this is the first
+non-trivial component found in the search from the root component.
+</p>
+
+
+<h3>The fdp layout</h3>
+
+<p>The <code>fdp</code> layout draws undirected graphs using a spring model
+similar to <code>neato</code>.  It relies on a force-directed approach in
+the spirit of Fruchterman and Reingold.  The <code>fdp</code> model uses
+springs only between nodes connected with an edge, and an electrical
+repulsive force between all pairs of nodes.  Also, it achieves a
+layout by minimizing the forces rather than the energy of the system.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.research.att.com/sw/tools/graphviz/dotguide.pdf">http://www.research.att.com/sw/tools/graphviz/dotguide.pdf</a>,
+<a href="http://www.research.att.com/sw/tools/graphviz/neatoguide.pdf">http://www.research.att.com/sw/tools/graphviz/neatoguide.pdf</a>,
+<a href="http://www.research.att.com/sw/tools/graphviz/libguide.pdf">http://www.research.att.com/sw/tools/graphviz/libguide.pdf</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="GraphvizAttributes.html">GraphvizAttributes</a></code>, <code><a href="plot-methods.html">plot.graph</a></code>,
+<code><a href="agopen.html">agopen</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(123)
+V &lt;- letters[1:10]
+M &lt;- 1:4
+g1 &lt;- randomGraph(V, M, .2)
+if (interactive()) {
+  op &lt;- par()
+  on.exit(par=op)
+  par(ask=TRUE)
+  plot(g1, "dot")
+  plot(g1, "neato")
+  plot(g1, "twopi")
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

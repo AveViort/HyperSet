@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Register Seriation Methods from Package DendSer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for register_DendSer {seriation}"><tr><td>register_DendSer {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Register Seriation Methods from Package DendSer</h2>
+
+<h3>Description</h3>
+
+<p>Register the DendSer dendrogram seriation method and
+the ARc criterion (Earle and Hurley, 2015).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+register_DendSer()
+</pre>
+
+
+<h3>Details</h3>
+
+<p>Registers the method <code>"DendSer"</code> for <code>seriate</code>.
+DendSer is a fast heuristic for reordering dendrograms developed by
+Earle and Hurley (2015) able to use different criteria.
+<code>control</code> for <code>seriate</code> with
+method <code>"DendSer"</code> accepts the following parameters:
+</p>
+
+<dl>
+<dt><code>"h"</code> or <code>"method"</code></dt><dd><p>A dendrogram or a method for
+hierarchical clustering (see <code>hclust</code>). Default: complete-link.</p>
+</dd>
+<dt><code>"criterion"</code></dt><dd><p>A seriation
+criterion to optimize (see <code>list_criterion_methods("dist")</code>).
+Default: <code>"BAR"</code> (Banded anti-Robinson from with 20% band width).</p>
+</dd>
+<dt><code>"verbose"</code></dt><dd><p>print progress information.</p>
+</dd>
+<dt><code>"DendSer_args"</code></dt><dd><p>additional arguments for <code>DendSer</code>.</p>
+</dd>
+</dl>
+
+<p>For convenience the following methods (for differnt cost functions)
+are also provided:
+<code>"DendSer_ARc"</code> (anti-robinson form),
+<code>"DendSer_BAR"</code> (banded anti-Robinson form),
+<code>"DendSer_LS"</code> (leaf seriation),
+<code>"DendSer_PL"</code> (path length).
+</p>
+<p>Note: Package <span class="pkg">DendSer</span> needs to be installed.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler based on code by Catherine B. Hurley and Denise Earle
+</p>
+
+
+<h3>References</h3>
+
+<p>D. Earle, C. B. Hurley (2015): Advances in dendrogram seriation for application
+to visualization. <em>Journal of Computational and Graphical Statistics,</em>
+<b>24</b>(1), 1&ndash;25.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="seriate.html">seriate</a></code>,
+<code><a href="../../DendSer/html/DendSer.html">DendSer</a></code> in <span class="pkg">DendSer</span>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+register_DendSer()
+list_seriation_methods("dist")
+
+d &lt;- dist(random.robinson(20, pre=TRUE))
+
+## use Banded AR form with default clustering (complete-link)
+o &lt;- seriate(d, "DendSer_BAR")
+pimage(d, o)
+
+## use different hclust method (Ward) and AR as the cost function for
+## dendrogram reordering
+o &lt;- seriate(d, "DendSer", control = list(method = "ward.D2", criterion = "AR"))
+pimage(d, o)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

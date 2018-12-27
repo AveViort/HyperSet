@@ -1,0 +1,407 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tanglegram plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tanglegram {dendextend}"><tr><td>tanglegram {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Tanglegram plot</h2>
+
+<h3>Description</h3>
+
+<p>Plots a tanglegram plot of a side by side trees.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tanglegram(dend1, ...)
+
+## Default S3 method:
+tanglegram(dend1, ...)
+
+## S3 method for class 'hclust'
+tanglegram(dend1, ...)
+
+## S3 method for class 'phylo'
+tanglegram(dend1, ...)
+
+## S3 method for class 'dendlist'
+tanglegram(dend1, which = c(1L, 2L), main_left, main_right,
+  just_one = TRUE, ...)
+
+## S3 method for class 'dendrogram'
+tanglegram(dend1, dend2, sort = FALSE, color_lines,
+  lwd = 3.5, edge.lwd = NULL, columns_width = c(5, 3, 5),
+  margin_top = 3, margin_bottom = 2.5, margin_inner = 3,
+  margin_outer = 0.5, left_dendo_mar = c(margin_bottom, margin_outer,
+  margin_top, margin_inner), right_dendo_mar = c(margin_bottom, margin_inner,
+  margin_top, margin_outer), intersecting = TRUE, dLeaf = NULL,
+  dLeaf_left = dLeaf, dLeaf_right = dLeaf, axes = TRUE, type = "r",
+  lab.cex = NULL, remove_nodePar = FALSE, main = "", main_left = "",
+  main_right = "", sub = "", k_labels = NULL, k_branches = NULL,
+  rank_branches = FALSE, hang = FALSE, match_order_by_labels = TRUE,
+  cex_main = 2, cex_main_left = cex_main, cex_main_right = cex_main,
+  cex_sub = cex_main, highlight_distinct_edges = TRUE,
+  common_subtrees_color_lines = TRUE,
+  common_subtrees_color_branches = FALSE, highlight_branches_col = FALSE,
+  highlight_branches_lwd = TRUE, faster = FALSE, just_one = TRUE, ...)
+
+dendbackback(dend1, dend2, sort = FALSE, color_lines, lwd = 3.5,
+  edge.lwd = NULL, columns_width = c(5, 3, 5), margin_top = 3,
+  margin_bottom = 2.5, margin_inner = 3, margin_outer = 0.5,
+  left_dendo_mar = c(margin_bottom, margin_outer, margin_top, margin_inner),
+  right_dendo_mar = c(margin_bottom, margin_inner, margin_top, margin_outer),
+  intersecting = TRUE, dLeaf = NULL, dLeaf_left = dLeaf,
+  dLeaf_right = dLeaf, axes = TRUE, type = "r", lab.cex = NULL,
+  remove_nodePar = FALSE, main = "", main_left = "", main_right = "",
+  sub = "", k_labels = NULL, k_branches = NULL, rank_branches = FALSE,
+  hang = FALSE, match_order_by_labels = TRUE, cex_main = 2,
+  cex_main_left = cex_main, cex_main_right = cex_main, cex_sub = cex_main,
+  highlight_distinct_edges = TRUE, common_subtrees_color_lines = TRUE,
+  common_subtrees_color_branches = FALSE, highlight_branches_col = FALSE,
+  highlight_branches_lwd = TRUE, faster = FALSE, just_one = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend1</code></td>
+<td>
+<p>tree object (dendrogram/dendlist/hclust/phylo), plotted on the left</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>an integer vector of length 2, indicating
+which of the trees in the dendlist object should be plotted</p>
+</td></tr>
+<tr valign="top"><td><code>main_left</code></td>
+<td>
+<p>Character. Title of the left dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>main_right</code></td>
+<td>
+<p>Character. Title of the right dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>just_one</code></td>
+<td>
+<p>logical (TRUE). If FALSE, it means at least two tanglegrams
+will be plotted on the same page and so <a href="../../graphics/html/layout.html">layout</a> is not passed.
+See: <a href="http://stackoverflow.com/q/39784746/4137985">http://stackoverflow.com/q/39784746/4137985</a></p>
+</td></tr>
+<tr valign="top"><td><code>dend2</code></td>
+<td>
+<p>tree object (dendrogram/hclust/phylo), plotted on the right</p>
+</td></tr>
+<tr valign="top"><td><code>sort</code></td>
+<td>
+<p>logical (FALSE). Should the dendrogram's labels be &quot;sorted&quot;?
+(might give a better tree in some cases).</p>
+</td></tr>
+<tr valign="top"><td><code>color_lines</code></td>
+<td>
+<p>a vector of colors for the lines connected the labels.
+If the colors are shorter than the number of labels, they are recycled 
+(and a warning is issued).
+The colors in the vector are applied on the lines from the bottom up.</p>
+</td></tr>
+<tr valign="top"><td><code>lwd</code></td>
+<td>
+<p>width of the lines connecting the labels. (default is 3.5)</p>
+</td></tr>
+<tr valign="top"><td><code>edge.lwd</code></td>
+<td>
+<p>width of the dendrograms lines. Default is NULL.
+If set, then it switches 'highlight_branches_lwd' to FALSE. If you want thicker
+lines which reflect the height, please use <a href="highlight_branches.html">highlight_branches_lwd</a> on the 
+dendrograms/dendlist.</p>
+</td></tr>
+<tr valign="top"><td><code>columns_width</code></td>
+<td>
+<p>a vector with three elements, giving the relative
+sizes of the the three plots (left dendrogram, connecting lines, 
+right dendrogram). This is passed to <a href="../../graphics/html/layout.html">layout</a> if parameter just_one is TRUE. 
+The default is: c(5,3,5)</p>
+</td></tr>
+<tr valign="top"><td><code>margin_top</code></td>
+<td>
+<p>the number of lines of margin to be specified on the top
+of the plots.</p>
+</td></tr>
+<tr valign="top"><td><code>margin_bottom</code></td>
+<td>
+<p>the number of lines of margin to be specified on the 
+bottom of the plots.</p>
+</td></tr>
+<tr valign="top"><td><code>margin_inner</code></td>
+<td>
+<p>margin_bottom the number of lines of margin 
+to be specified on the inner distence between the dendrograms
+and the connecting lines.</p>
+</td></tr>
+<tr valign="top"><td><code>margin_outer</code></td>
+<td>
+<p>margin_bottom the number of lines of margin 
+to be specified on the outer distence between the dendrograms
+and the connecting lines.</p>
+</td></tr>
+<tr valign="top"><td><code>left_dendo_mar</code></td>
+<td>
+<p>mar parameters of the left dendrgoram.</p>
+</td></tr>
+<tr valign="top"><td><code>right_dendo_mar</code></td>
+<td>
+<p>mar parameters of the right dendrgoram.</p>
+</td></tr>
+<tr valign="top"><td><code>intersecting</code></td>
+<td>
+<p>logical (TRUE). Should the leaves of the two dendrograms
+be pruned so that the two trees will have the same labels?</p>
+</td></tr>
+<tr valign="top"><td><code>dLeaf</code></td>
+<td>
+<p>a number specifying the distance in user coordinates between 
+the tip of a leaf and its label. If NULL, as per default, 
+3/4 of a letter width or height is used.
+</p>
+<p>Notice that if we are comparing two dendrograms with different
+heights, manually changing dLeaf will affect both trees differently.
+In such a case, it is recommanded to manually change dLeaf_left
+and dLeaf_right.
+This can be especially important when changing the lab.cex of the 
+dendrogram's labels.
+Alternatively, one could manually set the xlim parameter for both
+trees, which will force the proportion of distances of the 
+labels from the trees to remain the same.</p>
+</td></tr>
+<tr valign="top"><td><code>dLeaf_left</code></td>
+<td>
+<p>dLeaf of the left dendrogram, by default it is equal to dLeaf (often negative).</p>
+</td></tr>
+<tr valign="top"><td><code>dLeaf_right</code></td>
+<td>
+<p>dLeaf of the right dendrogram, by default it is equal to minus dLeaf (often positive).</p>
+</td></tr>
+<tr valign="top"><td><code>axes</code></td>
+<td>
+<p>logical (TRUE). Should plot axes be plotted?</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>type of plot (&quot;t&quot;/&quot;r&quot; = triangle or rectangle)</p>
+</td></tr>
+<tr valign="top"><td><code>lab.cex</code></td>
+<td>
+<p>numeric scalar, influanicing the cex size of the labels.</p>
+</td></tr>
+<tr valign="top"><td><code>remove_nodePar</code></td>
+<td>
+<p>logical (FALSE). Should the nodePar of the leaves be 
+removed? (useful when the trees' leaves has too many parameters on them)</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>Character. Title above the connecting lines.</p>
+</td></tr>
+<tr valign="top"><td><code>sub</code></td>
+<td>
+<p>Character. Title below the connecting lines.</p>
+</td></tr>
+<tr valign="top"><td><code>k_labels</code></td>
+<td>
+<p>integer. Number of groups by which to color the leaves.</p>
+</td></tr>
+<tr valign="top"><td><code>k_branches</code></td>
+<td>
+<p>integer. Number of groups by which to color the branches.</p>
+</td></tr>
+<tr valign="top"><td><code>rank_branches</code></td>
+<td>
+<p>logical (FALSE). Should the branches heights be adjusted?
+(setting this to TRUE - can make it easier for 
+comparing topological differences)</p>
+</td></tr>
+<tr valign="top"><td><code>hang</code></td>
+<td>
+<p>logical (FALSE). Should we hang the leaves of the trees?</p>
+</td></tr>
+<tr valign="top"><td><code>match_order_by_labels</code></td>
+<td>
+<p>logical (TRUE). Should the leaves value order
+be matched between the two trees based on labels? This is a MUST in order
+to have the lines connect the correct labels. Set this to FALSE if you 
+want to make the plotting a bit faster, and only after you are sure
+the labels and orders are correctly aligned.</p>
+</td></tr>
+<tr valign="top"><td><code>cex_main</code></td>
+<td>
+<p>A numerical value giving the amount by which plotting title 
+should be magnified relative to the default.</p>
+</td></tr>
+<tr valign="top"><td><code>cex_main_left</code></td>
+<td>
+<p>see cex_main.</p>
+</td></tr>
+<tr valign="top"><td><code>cex_main_right</code></td>
+<td>
+<p>see cex_main.</p>
+</td></tr>
+<tr valign="top"><td><code>cex_sub</code></td>
+<td>
+<p>see cex_main.</p>
+</td></tr>
+<tr valign="top"><td><code>highlight_distinct_edges</code></td>
+<td>
+<p>logical (default is TRUE). If to highlight distinct edges in each tree (by changing their line types to 2).
+(notice that this can be slow on large trees)
+</p>
+<p>This parameter will automatically be turned off if the tree already comes with a &quot;lty&quot; edgePar 
+(this is checked using <a href="has_component_in_attribute.html">has_edgePar</a>). A &quot;lty&quot; can be removed by using set(&quot;clear_branches&quot;), by
+removing all of the edgePar parameters of the dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>common_subtrees_color_lines</code></td>
+<td>
+<p>logical (default is TRUE). color the connecting line based on the common subtrees of both dends.
+This only works if 
+(notice that this can be slow on large trees)</p>
+</td></tr>
+<tr valign="top"><td><code>common_subtrees_color_branches</code></td>
+<td>
+<p>logical (default is FALSE). 
+Color the branches of both dends based on the common subtrees.
+(notice that this can be slow on large trees)
+This is FALSE by default since it will override the colors of the existing tree.</p>
+</td></tr>
+<tr valign="top"><td><code>highlight_branches_col</code></td>
+<td>
+<p>logical (default is FALSE). Should <a href="highlight_branches.html">highlight_branches_col</a> be used on the dendrograms.
+</p>
+<p>This parameter will automatically be turned off if the tree already comes with a &quot;col&quot; edgePar 
+(this is checked using <a href="has_component_in_attribute.html">has_edgePar</a>). A &quot;lty&quot; can be removed by using set(&quot;clear_branches&quot;), by
+removing all of the edgePar parameters of the dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>highlight_branches_lwd</code></td>
+<td>
+<p>logical (default is TRUE). Should <a href="highlight_branches.html">highlight_branches_lwd</a> be used on the dendrograms.
+</p>
+<p>This parameter will automatically be turned off if the tree already comes with a &quot;lwd&quot; edgePar 
+(this is checked using <a href="has_component_in_attribute.html">has_edgePar</a>). A &quot;lty&quot; can be removed by using set(&quot;clear_branches&quot;), by
+removing all of the edgePar parameters of the dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>faster</code></td>
+<td>
+<p>logical (FALSE). If TRUE, it overrides some other parameters to 
+have them turned off so that the plotting will go a tiny bit faster.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Notice that tanglegram does not &quot;resize&quot; well. In case you are resizing your
+window you would need to re-run the function.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An invisible <a href="dendlist.html">dendlist</a>, with two trees after being
+modified during the creation of the tanglegram.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tal Galili, Johan Renaudie
+</p>
+
+
+<h3>Source</h3>
+
+<p>The function is based on code from Johan Renaudie (plannapus), after major revisions. See:
+<a href="http://stackoverflow.com/questions/12456768/duelling-dendrograms-in-r-placing-dendrograms-back-to-back-in-r">http://stackoverflow.com/questions/12456768/duelling-dendrograms-in-r-placing-dendrograms-back-to-back-in-r</a>
+</p>
+<p>As far as I could tell, this code was originally inspired by Dylan Beaudette
+function <code>dueling.dendrograms</code> from the sharpshootR package:
+<a href="http://cran.at.r-project.org/web/packages/sharpshootR/">http://cran.at.r-project.org/web/packages/sharpshootR/</a>
+tanglegram
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="remove_leaves_nodePar.html">remove_leaves_nodePar</a>, <a href="plot_horiz.dendrogram.html">plot_horiz.dendrogram</a>, <a href="rank_branches.html">rank_branches</a>,
+<a href="hang.dendrogram.html">hang.dendrogram</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+set.seed(23235)
+ss &lt;- sample(1:150, 10 )
+dend1 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("com") %&gt;% as.dendrogram
+dend2 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("sin") %&gt;% as.dendrogram
+dend12 &lt;- dendlist(dend1, dend2)
+
+dend12 %&gt;% tanglegram
+
+tanglegram(dend1 , dend2)
+tanglegram(dend1 , dend2, sort = TRUE)
+tanglegram(dend1 , dend2, remove_nodePar = TRUE)
+tanglegram(dend1 , dend2, k_labels = 6, k_branches = 4)
+
+tanglegram(dend1 , dend2, lab.cex = 2, edge.lwd = 3,
+margin_inner= 5, type = "t", center = TRUE)
+
+
+## works nicely:
+tanglegram(dend1 , dend2, lab.cex = 2, edge.lwd = 3,  
+margin_inner= 3.5, type = "t", center = TRUE,
+dLeaf = -0.1, xlim = c(7,0),
+k_branches=3)
+
+
+# using rank_branches can make the comparison even easier
+tanglegram(rank_branches(dend1) , rank_branches(dend2), lab.cex = 2, edge.lwd = 3,  
+ margin_inner= 3.5, type = "t", center = TRUE,
+  dLeaf = -0.1, xlim = c(5.1,0), columns_width= c(5,1,5),
+   k_branches=3)
+
+
+
+########
+## Nice example of some colored trees
+
+# see the coloring of common sub trees:
+set.seed(23235)
+ss &lt;- sample(1:150, 10 )
+dend1 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("com") %&gt;% as.dendrogram
+dend2 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("sin") %&gt;% as.dendrogram
+dend12 &lt;- dendlist(dend1, dend2)
+# dend12 %&gt;% untangle %&gt;% tanglegram
+dend12 %&gt;% tanglegram(common_subtrees_color_branches = TRUE)
+
+
+set.seed(22133513)
+ss &lt;- sample(1:150, 10 )
+dend1 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("com") %&gt;% as.dendrogram
+dend2 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("sin") %&gt;% as.dendrogram
+dend12 &lt;- dendlist(dend1, dend2)
+# dend12 %&gt;% untangle %&gt;% tanglegram
+dend12 %&gt;% tanglegram(common_subtrees_color_branches = TRUE)
+dend12 %&gt;% tanglegram
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

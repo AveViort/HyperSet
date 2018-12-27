@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a page with a top level navigation bar</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for navbarPage {shiny}"><tr><td>navbarPage {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a page with a top level navigation bar</h2>
+
+<h3>Description</h3>
+
+<p>Create a page that contains a top level navigation bar that can be used to
+toggle a set of <code><a href="tabPanel.html">tabPanel</a></code> elements.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+navbarPage(title, ..., id = NULL, selected = NULL,
+  position = c("static-top", "fixed-top", "fixed-bottom"),
+  header = NULL, footer = NULL, inverse = FALSE,
+  collapsible = FALSE, collapsable, fluid = TRUE, responsive = NULL,
+  theme = NULL, windowTitle = title)
+
+navbarMenu(title, ..., menuName = title, icon = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>title</code></td>
+<td>
+<p>The title to display in the navbar</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p><code><a href="tabPanel.html">tabPanel</a></code> elements to include in the page. The
+<code>navbarMenu</code> function also accepts strings, which will be used as menu
+section headers. If the string is a set of dashes like <code>"----"</code> a
+horizontal separator will be displayed in the menu.</p>
+</td></tr>
+<tr valign="top"><td><code>id</code></td>
+<td>
+<p>If provided, you can use <code>input$</code><em><code>id</code></em> in your
+server logic to determine which of the current tabs is active. The value
+will correspond to the <code>value</code> argument that is passed to
+<code><a href="tabPanel.html">tabPanel</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>selected</code></td>
+<td>
+<p>The <code>value</code> (or, if none was supplied, the <code>title</code>)
+of the tab that should be selected by default. If <code>NULL</code>, the first
+tab will be selected.</p>
+</td></tr>
+<tr valign="top"><td><code>position</code></td>
+<td>
+<p>Determines whether the navbar should be displayed at the top
+of the page with normal scrolling behavior (<code>"static-top"</code>), pinned at
+the top (<code>"fixed-top"</code>), or pinned at the bottom
+(<code>"fixed-bottom"</code>). Note that using <code>"fixed-top"</code> or
+<code>"fixed-bottom"</code> will cause the navbar to overlay your body content,
+unless you add padding, e.g.: <code>tags$style(type="text/css", "body
+{padding-top: 70px;}")</code></p>
+</td></tr>
+<tr valign="top"><td><code>header</code></td>
+<td>
+<p>Tag or list of tags to display as a common header above all
+tabPanels.</p>
+</td></tr>
+<tr valign="top"><td><code>footer</code></td>
+<td>
+<p>Tag or list of tags to display as a common footer below all
+tabPanels</p>
+</td></tr>
+<tr valign="top"><td><code>inverse</code></td>
+<td>
+<p><code>TRUE</code> to use a dark background and light text for the
+navigation bar</p>
+</td></tr>
+<tr valign="top"><td><code>collapsible</code></td>
+<td>
+<p><code>TRUE</code> to automatically collapse the navigation
+elements into a menu when the width of the browser is less than 940 pixels
+(useful for viewing on smaller touchscreen device)</p>
+</td></tr>
+<tr valign="top"><td><code>collapsable</code></td>
+<td>
+<p>Deprecated; use <code>collapsible</code> instead.</p>
+</td></tr>
+<tr valign="top"><td><code>fluid</code></td>
+<td>
+<p><code>TRUE</code> to use a fluid layout. <code>FALSE</code> to use a fixed
+layout.</p>
+</td></tr>
+<tr valign="top"><td><code>responsive</code></td>
+<td>
+<p>This option is deprecated; it is no longer optional with
+Bootstrap 3.</p>
+</td></tr>
+<tr valign="top"><td><code>theme</code></td>
+<td>
+<p>Alternative Bootstrap stylesheet (normally a css file within the
+www directory). For example, to use the theme located at
+<code>www/bootstrap.css</code> you would use <code>theme = "bootstrap.css"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>windowTitle</code></td>
+<td>
+<p>The title that should be displayed by the browser window.
+Useful if <code>title</code> is not a string.</p>
+</td></tr>
+<tr valign="top"><td><code>menuName</code></td>
+<td>
+<p>A name that identifies this <code>navbarMenu</code>. This
+is needed if you want to insert/remove or show/hide an entire
+<code>navbarMenu</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>icon</code></td>
+<td>
+<p>Optional icon to appear on a <code>navbarMenu</code> tab.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>navbarMenu</code> function can be used to create an embedded
+menu within the navbar that in turns includes additional tabPanels (see
+example below).
+</p>
+
+
+<h3>Value</h3>
+
+<p>A UI defintion that can be passed to the <a href="shinyUI.html">shinyUI</a> function.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="tabPanel.html">tabPanel</a></code>, <code><a href="tabsetPanel.html">tabsetPanel</a></code>,
+<code><a href="updateTabsetPanel.html">updateNavbarPage</a></code>, <code><a href="insertTab.html">insertTab</a></code>,
+<code><a href="showTab.html">showTab</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+navbarPage("App Title",
+  tabPanel("Plot"),
+  tabPanel("Summary"),
+  tabPanel("Table")
+)
+
+navbarPage("App Title",
+  tabPanel("Plot"),
+  navbarMenu("More",
+    tabPanel("Summary"),
+    "----",
+    "Section header",
+    tabPanel("Table")
+  )
+)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

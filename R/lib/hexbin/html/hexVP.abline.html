@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add a Straight Line to a HexPlot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hexVP.abline {hexbin}"><tr><td>hexVP.abline {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add a Straight Line to a HexPlot</h2>
+
+<h3>Description</h3>
+
+<p>This function adds one or more straight lines through the current
+plot; it is the hexbin version of <code><a href="../../graphics/html/abline.html">abline</a>()</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hexVP.abline(hvp, a = NULL, b = NULL, h = numeric(0), v = numeric(0),
+             col = "black", lty = 1, lwd = 2, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>hvp</code></td>
+<td>
+<p>A hexViewport object that is currently on the active device</p>
+</td></tr>
+<tr valign="top"><td><code>a,b</code></td>
+<td>
+<p>the intercept and slope or if <code>b</code> is <code>NULL</code>,
+an <code>lm</code> object or a vector of length 2 with
+<code>c(intercept,slope)</code></p>
+</td></tr>
+<tr valign="top"><td><code>h</code></td>
+<td>
+<p>the y-value for a horizontal line.</p>
+</td></tr>
+<tr valign="top"><td><code>v</code></td>
+<td>
+<p>the x-value for a vertical line.</p>
+</td></tr>
+<tr valign="top"><td><code>col, lty, lwd</code></td>
+<td>
+<p>line color, type and width.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further graphical parameters.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The first form specifies the line in intercept/slope form
+(alternatively <code>a</code> can be specified on its own and is taken to
+contain the slope and intercept in vector form).
+</p>
+<p>The <code>h=</code> and <code>v=</code> forms draw horizontal and vertical
+lines at the specified coordinates.
+</p>
+<p>The <code>coef</code> form specifies the line by a vector containing the
+slope and intercept.
+</p>
+<p><code>lm</code> is a regression object which contains <code>reg$coef</code>.  If it is
+of length 1 then the value is taken to be the slope of a line
+through the origin, otherwise, the first 2 values are taken to be
+the intercept and slope.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Nicholas Lewin-Koh</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="gplot.hexbin.html">gplot.hexbin</a></code>, <code><a href="hexViewport.html">hexViewport</a></code>,
+<code><a href="hexMA.loess.html">hexMA.loess</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

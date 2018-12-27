@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Axis on Side of Phylogeny</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for axisPhylo {ape}"><tr><td>axisPhylo {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Axis on Side of Phylogeny</h2>
+
+<h3>Description</h3>
+
+<p>This function adds a scaled axis on the side of a phylogeny plot.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+axisPhylo(side = 1, root.time = NULL, backward = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>side</code></td>
+<td>
+<p>a numeric value specifying the side where the axis is
+plotted: 1: below, 2: left, 3: above, 4: right.</p>
+</td></tr>
+<tr valign="top"><td><code>root.time</code></td>
+<td>
+<p>the time assigned to the root node of the tree. By
+default, this is taken from the <code>root.time</code> element of the
+tree. If it is absent, this is determined from the next option.</p>
+</td></tr>
+<tr valign="top"><td><code>backward</code></td>
+<td>
+<p>a logical value; if TRUE, the most distant tip from
+the root is considered as the origin of the time scale; if FALSE,
+this is the root node.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to <code>axis</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The further arguments (<code>...</code>) are used to format the axis. They
+may be <code>font</code>, <code>cex</code>, <code>col</code>, <code>las</code>, and so on (see
+the help pages on <code><a href="../../graphics/html/axis.html">axis</a></code> and
+<code><a href="../../graphics/html/par.html">par</a></code>).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code>, <code><a href="add.scale.bar.html">add.scale.bar</a></code>,
+<code><a href="../../graphics/html/axis.html">axis</a></code>, <code><a href="../../graphics/html/par.html">par</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tr &lt;- rtree(30)
+ch &lt;- rcoal(30)
+plot(ch)
+axisPhylo()
+plot(tr, "c", FALSE, direction = "u")
+axisPhylo(2, las = 1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

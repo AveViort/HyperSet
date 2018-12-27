@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Significance gradient of branches in a dendrogram (via...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pvclust_show_signif_gradient {dendextend}"><tr><td>pvclust_show_signif_gradient {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Significance gradient of branches in a dendrogram (via pvclust)</h2>
+
+<h3>Description</h3>
+
+<p>Shows the gradient of significance of branches in a dendrogram, based on a pvclust object
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pvclust_show_signif_gradient(dend, pvclust_obj, signif_type = c("bp", "au"),
+  signif_col_fun = colorRampPalette(c("black", "darkred", "red")), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>pvclust_obj</code></td>
+<td>
+<p>a pvclust object</p>
+</td></tr>
+<tr valign="top"><td><code>signif_type</code></td>
+<td>
+<p>a character scalar (either &quot;bp&quot; or &quot;au&quot;), indicating
+which of the two should be used to update the dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>signif_col_fun</code></td>
+<td>
+<p>a function to create colors for the significant 
+gradient. Default is: colorRampPalette(c(&quot;black&quot;, &quot;darkred&quot;, &quot;red&quot;))</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram with updated branches
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="pvclust_show_signif.html">pvclust_show_signif</a>, <a href="pvclust_show_signif_gradient.html">pvclust_show_signif_gradient</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+library(pvclust)
+data(lung) # 916 genes for 73 subjects
+set.seed(13134)
+result &lt;- pvclust(lung[, 1:20], method.dist="cor", method.hclust="average", nboot=100)
+
+dend &lt;- as.dendrogram(result)
+result %&gt;% as.dendrogram %&gt;% 
+   hang.dendrogram %&gt;% 
+   plot(main = "Cluster dendrogram with AU/BP values (%)")
+result %&gt;% text
+result %&gt;% pvrect(alpha=0.95)
+
+dend %&gt;% pvclust_show_signif(result) %&gt;% plot
+dend %&gt;% pvclust_show_signif(result, show_type = "lwd") %&gt;% plot
+result %&gt;% text
+result %&gt;% pvrect(alpha=0.95)
+
+dend %&gt;% pvclust_show_signif_gradient(result) %&gt;% plot
+
+dend %&gt;% 
+   pvclust_show_signif_gradient(result) %&gt;% 
+   pvclust_show_signif(result) %&gt;%
+   plot(main = "Cluster dendrogram with AU/BP values (%)\n bp values are highlighted by signif")
+result %&gt;% text
+result %&gt;% pvrect(alpha=0.95)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

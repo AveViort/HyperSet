@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Evinet Help</title>
+<LINK href="help.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<p class="headr1">Exploration of transcriptome landscapes</p>
+<ol>
+<li><a href="#ags_generate" class="clickable">Generating AGS file using NEArender</a></li>
+<li><a href="#ags_upload" class="clickable">Upload AGS file</a></li>
+<li><a href="#select_nw_fgs" class="clickable">Select Networks and Functional Gene Sets</a></li>
+<li><a href="#result" class="clickable">Results</a></li>
+</ol>
+<hr>
+<span id="ags_generate" class="headr2">Generating AGS file using NEArender</i></span>
+<br></br>
+Cancer samples are known to be highly heterogeneous across patients. In order to characterize them, one can choose the strategy described in <a href="http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-226">Alexeyenko et al., 2012</a>: in each 'omics' sample, select top N genes by which it differs from the rest of the cohort. We can do that with e.g. following R code (see more details in tutorial "Using R package NEArender in data analysis pipelines")
+<br></br>
+<img src="../pics/help_pics/p28.png" />
+<br></br>
+<hr>
+
+<span id="ags_upload" class="headr2">Upload AGS file </span>
+<br></br>
+We submit the obtained text file <span class="hlight"> OV.5groups.txt </span> using the <span class="hlight">Altered gene sets -> File -> Upload a local file</span> to EviNet.
+<br>
+<!--span class="hcolor">Note: Input files should contain either <span class="hlight">'group'</span> (eg: OV.groups.txt) or <span class="hlight">'ags'</span> (eg: OV.ags.txt) in its filename. <br>If the naming is done correctly, after Uploading file, 'Display AGS' button is seen. </span-->
+Here gene groups (list of tcga_* IDs) are submitted as input Altered Gene Sets to NEA.
+<br></br>
+<img src="../pics/help_newpics/p22_f.png" />
+<hr>
+<span id="select_nw_fgs" class="headr2">Select Networks and Functional Gene Sets</span>
+<br></br>
+Select a Network and then Functional Gene Sets. For more details go through: <a href="https://www.evinet.org/help/part1.html#networks">Selecting Network,</a> <a href="https://www.evinet.org/help/part1.html#fgs">Selecting Functional Genesets</a>.<br>
+After selecting AGS,FGS and NW review the parameters before running analysis <a href="https://www.evinet.org/help/part1.html#check">Check and Submit</a>. 
+<br></br>
+<img src="../pics/help_newpics/p23_f.png"/>
+<br>
+<a href="?">top</a>
+<hr>
+<span id="result" class="headr2">Results</span>
+<br></br>
+The first observation we can make is that, indeed, the 5 transcriptomes differ in their 
+pathway patterns. <span class="hlight">TCGA-61-2102, TCGA-29-2424, TCGA-25-1323 </span>  is enriched in connections to multiple cancer pathways (which pretty much say  ditto given the pathway overlap). <span class="hlight">TCGA-24-1103</span> could only be characterized by <span class="hlight">"Acidic switch"</span>. As possible next steps we could consider using another FGS collection, increasing the AGS sizes, or adding altered genes from other platforms (methylation, exome sequencing etc.). Note also the possibility to retrive a more detailed, gene-level view of each enrichment case. By clicking the orange buttons in either table or the graph, one can see the particular genes and edges behind the enrichment.
+<img src="../pics/help_newpics/p24_f.png"/>
+<span id="subnetworks" class="headr3">Subnetworks</span>
+<br></br>
+<img src="../pics/help_newpics/p25_f.png"/>
+<br>
+<a href="?">top</a>
+<hr>
+</body>
+</html>

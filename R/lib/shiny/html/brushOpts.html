@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create an object representing brushing options</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for brushOpts {shiny}"><tr><td>brushOpts {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create an object representing brushing options</h2>
+
+<h3>Description</h3>
+
+<p>This generates an object representing brushing options, to be passed as the
+<code>brush</code> argument of <code><a href="plotOutput.html">imageOutput</a></code> or
+<code><a href="plotOutput.html">plotOutput</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+brushOpts(id = NULL, fill = "#9cf", stroke = "#036",
+  opacity = 0.25, delay = 300, delayType = c("debounce", "throttle"),
+  clip = TRUE, direction = c("xy", "x", "y"), resetOnNew = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>id</code></td>
+<td>
+<p>Input value name. For example, if the value is <code>"plot_brush"</code>,
+then the coordinates will be available as <code>input$plot_brush</code>. Multiple
+<code>imageOutput</code>/<code>plotOutput</code> calls may share the same <code>id</code>
+value; brushing one image or plot will cause any other brushes with the
+same <code>id</code> to disappear.</p>
+</td></tr>
+<tr valign="top"><td><code>fill</code></td>
+<td>
+<p>Fill color of the brush.</p>
+</td></tr>
+<tr valign="top"><td><code>stroke</code></td>
+<td>
+<p>Outline color of the brush.</p>
+</td></tr>
+<tr valign="top"><td><code>opacity</code></td>
+<td>
+<p>Opacity of the brush</p>
+</td></tr>
+<tr valign="top"><td><code>delay</code></td>
+<td>
+<p>How long to delay (in milliseconds) when debouncing or
+throttling, before sending the brush data to the server.</p>
+</td></tr>
+<tr valign="top"><td><code>delayType</code></td>
+<td>
+<p>The type of algorithm for limiting the number of brush
+events. Use <code>"throttle"</code> to limit the number of brush events to one
+every <code>delay</code> milliseconds. Use <code>"debounce"</code> to suspend events
+while the cursor is moving, and wait until the cursor has been at rest for
+<code>delay</code> milliseconds before sending an event.</p>
+</td></tr>
+<tr valign="top"><td><code>clip</code></td>
+<td>
+<p>Should the brush area be clipped to the plotting area? If FALSE,
+then the user will be able to brush outside the plotting area, as long as
+it is still inside the image.</p>
+</td></tr>
+<tr valign="top"><td><code>direction</code></td>
+<td>
+<p>The direction for brushing. If <code>"xy"</code>, the brush can be
+drawn and moved in both x and y directions. If <code>"x"</code>, or <code>"y"</code>,
+the brush wil work horizontally or vertically.</p>
+</td></tr>
+<tr valign="top"><td><code>resetOnNew</code></td>
+<td>
+<p>When a new image is sent to the browser (via
+<code><a href="renderImage.html">renderImage</a></code>), should the brush be reset? The default,
+<code>FALSE</code>, is useful if you want to update the plot while keeping the
+brush. Using <code>TRUE</code> is useful if you want to clear the brush whenever
+the plot is updated.</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

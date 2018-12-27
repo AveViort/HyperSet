@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Wrappers for additional optimizers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nloptwrap {lme4}"><tr><td>nloptwrap {lme4}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Wrappers for additional optimizers</h2>
+
+<h3>Description</h3>
+
+<p>Wrappers to allow use of alternative optimizers,
+from <code>NLopt</code> library or elsewhere, for
+nonlinear optimization stage
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nloptwrap(par, fn, lower, upper, control=list(),...)
+nlminbwrap(par, fn, lower, upper, control=list(),...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>par</code></td>
+<td>
+<p>starting parameter vector</p>
+</td></tr>
+<tr valign="top"><td><code>fn</code></td>
+<td>
+<p>objective function</p>
+</td></tr>
+<tr valign="top"><td><code>lower</code></td>
+<td>
+<p>vector of lower bounds</p>
+</td></tr>
+<tr valign="top"><td><code>upper</code></td>
+<td>
+<p>vector of upper bounds</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p>list of control parameters</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments to be passed to objective function</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Using alternative optimizers is an important trouble-shooting
+tool for mixed models.  These wrappers provide convenient access to
+the optimizers provided by Steven Johnson's <code>NLopt</code> library
+(via the <code>nloptr</code> R package), and to the <code><a href="../../stats/html/nlminb.html">nlminb</a></code>
+optimizer from base R. (<code>nlminb</code> is also available via the
+<code>optimx</code> package; this wrapper provides access to <code>nlminb</code>
+without the need to install/link the package, and without the additional
+post-fitting checks that are implemented by <code>optimx</code> (see examples
+below).
+</p>
+<p>One important difference between the <code>nloptr</code>-provided
+implementation of BOBYQA and the <code>minqa</code>-provided version accessible
+via <code>optimizer="bobyqa"</code> is that it provides simpler access to
+optimization tolerances. <code>minqa::bobyqa</code> provides only the <code>rhoend</code>
+parameter (&quot;[t]he smallest value of the trust region radius that is
+allowed&quot;), while <code>nloptr</code> provides
+a more standard set of tolerances for relative
+or absolute change in the objective function
+or the parameter values (<code>ftol_rel</code>, <code>ftol_abs</code>,
+<code>xtol_rel</code>, <code>xtol_abs</code>).
+</p>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>par</code></td>
+<td>
+<p>estimated parameters</p>
+</td></tr>
+<tr valign="top"><td><code>fval</code></td>
+<td>
+<p>objective function value at minimum</p>
+</td></tr>
+<tr valign="top"><td><code>feval</code></td>
+<td>
+<p>number of function evaluations</p>
+</td></tr>
+<tr valign="top"><td><code>conv</code></td>
+<td>
+<p>convergence code (0 if no error)</p>
+</td></tr>
+<tr valign="top"><td><code>message</code></td>
+<td>
+<p>convergence message</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Gabor Grothendieck (<code>nlminbwrap</code>)</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+environment(nloptwrap)$defaultControl
+library(lme4)
+fm1 &lt;- lmer(Reaction~Days+(Days|Subject),sleepstudy)
+## BOBYQA (default)
+fm1_nloptr &lt;- update(fm1,control=lmerControl(optimizer="nloptwrap"))
+## Nelder-Mead
+fm1_nloptr_NM &lt;- update(fm1,control=lmerControl(optimizer="nloptwrap",
+                            optCtrl=list(algorithm="NLOPT_LN_NELDERMEAD")))
+## other nlOpt algorithm options include NLOPT_LN_COBYLA, NLOPT_LN_SBPLX
+fm1_nlminb &lt;- update(fm1,control=lmerControl(optimizer="nlminbwrap"))
+if (require(optimx)) {
+    fm1_nlminb2 &lt;- update(fm1,control=lmerControl(optimizer="optimx",
+                              optCtrl=list(method="nlminb",kkt=FALSE)))
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>lme4</em> version 1.1-19 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: List checks of a package</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for list_package_checks {rhub}"><tr><td>list_package_checks {rhub}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>List checks of a package</h2>
+
+<h3>Description</h3>
+
+<p>List checks of a package
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+list_package_checks(package = ".", email = NULL, howmany = 20)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>package</code></td>
+<td>
+<p>Directory of an R package, or a package tarball.</p>
+</td></tr>
+<tr valign="top"><td><code>email</code></td>
+<td>
+<p>Email address that was used for the check(s).
+If <code>NULL</code>, then the maintainer address is used.</p>
+</td></tr>
+<tr valign="top"><td><code>howmany</code></td>
+<td>
+<p>How many checks to show. The current maximum of the API
+is 20.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An <code>rhub_check</code> object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ch &lt;- list_my_checks()
+ch
+ch$details(1)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rhub</em> version 1.0.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

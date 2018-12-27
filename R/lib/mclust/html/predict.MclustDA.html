@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Classify multivariate observations by Gaussian finite mixture...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for predict.MclustDA {mclust}"><tr><td>predict.MclustDA {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Classify multivariate observations by Gaussian finite mixture modeling</h2>
+
+<h3>Description</h3>
+
+<p>Classify multivariate observations based on Gaussian finite mixture models estimated by <code><a href="MclustDA.html">MclustDA</a></code>.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  ## S3 method for class 'MclustDA'
+predict(object, newdata, prior, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>an object of class <code>'MclustDA'</code> resulting from a call to <code><a href="MclustDA.html">MclustDA</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>a data frame or matrix giving the data. If missing the train data obtained from the call to <code><a href="MclustDA.html">MclustDA</a></code> are classified.</p>
+</td></tr>
+<tr valign="top"><td><code>prior</code></td>
+<td>
+<p>the prior probabilities of the classes; by default, this is set
+at the proportions in the training data.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a list of with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>classification</code></td>
+<td>
+<p>a factor of predicted class labels for <code>newdata</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p>a matrix whose <em>[i,k]</em>th entry is the probability that 
+observation <em>i</em> in <code>newdata</code> belongs to the <em>k</em>th class.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Luca Scrucca</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="MclustDA.html">MclustDA</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+odd &lt;- seq(from = 1, to = nrow(iris), by = 2)
+even &lt;- odd + 1
+X.train &lt;- iris[odd,-5]
+Class.train &lt;- iris[odd,5]
+X.test &lt;- iris[even,-5]
+Class.test &lt;- iris[even,5]
+
+irisMclustDA &lt;- MclustDA(X.train, Class.train)
+
+predTrain &lt;- predict(irisMclustDA)
+predTrain
+predTest &lt;- predict(irisMclustDA, X.test)
+predTest
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

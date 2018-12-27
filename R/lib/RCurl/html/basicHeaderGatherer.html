@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Functions for processing the response header of a libcurl...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for basicHeaderGatherer {RCurl}"><tr><td>basicHeaderGatherer {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Functions for processing the response header of a libcurl request</h2>
+
+<h3>Description</h3>
+
+<p>These two functions are used to collect the contents of the header of
+an HTTP response via the <code>headerfunction</code> option of a curl handle
+and then processing that text into both the name: value pairs
+and also the initial line of the response that provides the
+status of the request.
+<code>basicHeaderGatherer</code> is a simple special case of
+<code><a href="basicTextGatherer.html">basicTextGatherer</a></code> with the built-in post-processing
+step done by <code>parseHTTPHeader</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+basicHeaderGatherer(txt = character(), max = NA)
+parseHTTPHeader(lines, multi = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>txt</code></td>
+<td>
+<p>any initial text that we want included with the header.
+This is passed to <code><a href="basicTextGatherer.html">basicTextGatherer</a></code>. Generally it
+should not be specified unless there is a good reason.</p>
+</td></tr>
+<tr valign="top"><td><code>max</code></td>
+<td>
+<p>This is passed directly to
+<code><a href="basicTextGatherer.html">basicTextGatherer</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>lines</code></td>
+<td>
+<p> the text as a character vector from the response header
+that
+<code>parseHTTPHeader</code> will convert to a status and name-value
+pairs.</p>
+</td></tr> 
+<tr valign="top"><td><code>multi</code></td>
+<td>
+<p>a logical value controlling whether we check for
+multiple HTTP headers in the lines of text. This is caused
+by a Continue being concatenated with the actual response.
+When this is <code>TRUE</code>, we look for the lines
+that start an HTTP header, e.g. <code>HTTP 200 ...</code>,
+and we use the content from the last of these.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The return value is the same as <code><a href="basicTextGatherer.html">basicTextGatherer</a></code>,
+i.e. a list with
+<code>update</code>, <code>value</code> and <code>reset</code> function elements.
+The <code>value</code> element will invoke <code>parseHTTPHeader</code>
+on the contents read during the processing of the  libcurl request
+and return that value.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang &lt;duncan@wald.ucdavis.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Curl homepage <a href="http://curl.haxx.se">http://curl.haxx.se</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="basicTextGatherer.html">basicTextGatherer</a></code>
+<code><a href="curlPerform.html">curlPerform</a></code>    
+<code><a href="curlSetOpt.html">curlSetOpt</a></code>  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  if(url.exists("http://www.omegahat.net/RCurl/index.html")) {
+     h = basicHeaderGatherer()
+     getURI("http://www.omegahat.net/RCurl/index.html",
+              headerfunction = h$update)
+     names(h$value())
+     h$value()
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Phylogenetically Independent Contrasts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pic {ape}"><tr><td>pic {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Phylogenetically Independent Contrasts</h2>
+
+<h3>Description</h3>
+
+<p>Compute the phylogenetically independent contrasts using the method
+described by Felsenstein (1985).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pic(x, phy, scaled = TRUE, var.contrasts = FALSE,
+    rescaled.tree = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a numeric vector.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>scaled</code></td>
+<td>
+<p>logical, indicates whether the contrasts should be
+scaled with their expected variances (default to <code>TRUE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>var.contrasts</code></td>
+<td>
+<p>logical, indicates whether the expected
+variances of the contrasts should be returned (default to
+<code>FALSE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>rescaled.tree</code></td>
+<td>
+<p>logical, if <code>TRUE</code> the rescaled tree is
+returned together with the main results.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If <code>x</code> has names, its values are matched to the tip labels of
+<code>phy</code>, otherwise its values are taken to be in the same order
+than the tip labels of <code>phy</code>.
+</p>
+<p>The user must be careful here since the function requires that both
+series of names perfectly match. If both series of names do not match,
+the values in the <code>x</code> are taken to be in the same order than the
+tip labels of <code>phy</code>, and a warning message is issued.
+</p>
+
+
+<h3>Value</h3>
+
+<p>either a vector of phylogenetically independent contrasts (if
+<code>var.contrasts = FALSE</code>), or a two-column matrix with the
+phylogenetically independent contrasts in the first column and their
+expected variance in the second column (if <code>var.contrasts =
+  TRUE</code>). If the tree has node labels, these are used as labels of the
+returned object.
+</p>
+<p>If <code>rescaled.tree = TRUE</code>, a list is returned with two elements
+named &ldquo;contr&rdquo; with the above results and &ldquo;rescaled.tree&rdquo; with the
+tree and its rescaled branch lengths (see Felsenstein 1985).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Felsenstein, J. (1985) Phylogenies and the comparative method.
+<em>American Naturalist</em>, <b>125</b>, 1&ndash;15.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.tree.html">read.tree</a></code>, <code><a href="compar.gee.html">compar.gee</a></code>,
+<code><a href="compar.lynch.html">compar.lynch</a></code>, <code><a href="pic.ortho.html">pic.ortho</a></code>,
+<code><a href="varCompPhylip.html">varCompPhylip</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### The example in Phylip 3.5c (originally from Lynch 1991)
+cat("((((Homo:0.21,Pongo:0.21):0.28,",
+   "Macaca:0.49):0.13,Ateles:0.62):0.38,Galago:1.00);",
+   file = "ex.tre", sep = "\n")
+tree.primates &lt;- read.tree("ex.tre")
+X &lt;- c(4.09434, 3.61092, 2.37024, 2.02815, -1.46968)
+Y &lt;- c(4.74493, 3.33220, 3.36730, 2.89037, 2.30259)
+names(X) &lt;- names(Y) &lt;- c("Homo", "Pongo", "Macaca", "Ateles", "Galago")
+pic.X &lt;- pic(X, tree.primates)
+pic.Y &lt;- pic(Y, tree.primates)
+cor.test(pic.X, pic.Y)
+lm(pic.Y ~ pic.X - 1) # both regressions
+lm(pic.X ~ pic.Y - 1) # through the origin
+unlink("ex.tre") # delete the file "ex.tre"
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

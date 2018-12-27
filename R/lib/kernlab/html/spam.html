@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Spam E-mail Database</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for spam {kernlab}"><tr><td>spam {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Spam E-mail Database</h2>
+
+<h3>Description</h3>
+
+<p>A data set collected at Hewlett-Packard Labs, that classifies 4601
+e-mails as spam or non-spam. In addition to this class label there are 57
+variables indicating the frequency of certain words and characters in the
+e-mail.</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(spam)</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 4601 observations and 58 variables.
+</p>
+<p>The first 48 variables contain the frequency of the variable name
+(e.g., business) in the e-mail. If the variable name starts with num (e.g.,
+num650) the it indicates the frequency of the corresponding number (e.g., 650).
+The variables 49-54 indicate the frequency of the characters &lsquo;;&rsquo;, &lsquo;(&rsquo;, &lsquo;[&rsquo;, &lsquo;!&rsquo;,
+&lsquo;\$&rsquo;, and &lsquo;\#&rsquo;. The variables 55-57 contain the average, longest 
+and total run-length of capital letters. Variable 58 indicates the type of the
+mail and is either <code>"nonspam"</code> or <code>"spam"</code>, i.e. unsolicited
+commercial e-mail.</p>
+
+
+<h3>Details</h3>
+
+<p>The data set contains 2788 e-mails classified as <code>"nonspam"</code> and 1813
+classified as <code>"spam"</code>.
+</p>
+<p>The &ldquo;spam&rdquo; concept is diverse: advertisements for products/web
+sites, make money fast schemes, chain letters, pornography...
+This collection of spam e-mails came from the collectors' postmaster and
+individuals who had filed spam.  The collection of non-spam
+e-mails came from filed work and personal e-mails, and hence
+the word 'george' and the area code '650' are indicators of
+non-spam.  These are useful when constructing a personalized
+spam filter.  One would either have to blind such non-spam
+indicators or get a very wide collection of non-spam to
+generate a general purpose spam filter.
+</p>
+
+
+<h3>Source</h3>
+
+
+<ul>
+<li><p> Creators: Mark Hopkins, Erik Reeber, George Forman, Jaap Suermondt at
+Hewlett-Packard Labs, 1501 Page Mill Rd., Palo Alto, CA 94304
+</p>
+</li>
+<li><p> Donor: George Forman (gforman at nospam hpl.hp.com)  650-857-7835
+</p>
+</li></ul>
+
+<p>These data have been taken from the UCI Repository Of Machine Learning
+Databases at <a href="http://www.ics.uci.edu/~mlearn/MLRepository.html">http://www.ics.uci.edu/~mlearn/MLRepository.html</a></p>
+
+
+<h3>References</h3>
+
+<p>T. Hastie, R. Tibshirani, J.H. Friedman. <em>The Elements of Statistical
+Learning.</em> Springer, 2001.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

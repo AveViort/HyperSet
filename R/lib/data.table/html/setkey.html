@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create key on a data table</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for setkey {data.table}"><tr><td>setkey {data.table}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Create key on a data table </h2>
+
+<h3>Description</h3>
+
+<p>In <code>data.table</code> parlance, all <code>set*</code> functions change their input
+<em>by reference</em>. That is, no copy is made at all, other than temporary
+working memory, which is as large as one column. The only other <code>data.table</code>
+operator that modifies input by reference is <code><a href="assign.html">:=</a></code>. Check out the
+<code>See Also</code> section below for other <code>set*</code> function <code>data.table</code>
+provides.
+</p>
+<p><code>setkey()</code> sorts a <code>data.table</code> and marks it as sorted (with an
+attribute <code>sorted</code>). The sorted columns are the key. The key can be any
+columns in any order. The columns are sorted in ascending order always. The table
+is changed <em>by reference</em> and is therefore very memory efficient.
+</p>
+<p><code>setindex()</code> creates an index (or indices) on provided columns. This index is simply an
+order of the dataset's according to the provided columns. This order is stored as a <code>data.table</code>
+attribute, and the dataset retains the original order in memory.
+See the <a href="../doc/datatable-secondary-indices-and-auto-indexing.html">Secondary indices and auto indexing</a> vignette for more details.
+</p>
+<p><code>key()</code> returns the <code>data.table</code>'s key if it exists, and <code>NULL</code>
+if none exist.
+</p>
+<p><code>haskey()</code> returns a logical <code>TRUE</code>/<code>FALSE</code> depending on whether
+the <code>data.table</code> has a key (or not).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+setkey(x, ..., verbose=getOption("datatable.verbose"), physical = TRUE)
+setkeyv(x, cols, verbose=getOption("datatable.verbose"), physical = TRUE)
+setindex(...)
+setindexv(x, cols, verbose=getOption("datatable.verbose"))
+key(x)
+indices(x, vectors = FALSE)
+haskey(x)
+key(x) &lt;- value   #  DEPRECATED, please use setkey or setkeyv instead.
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> A <code>data.table</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> The columns to sort by. Do not quote the column names. If
+<code>...</code> is missing (i.e. <code>setkey(DT)</code>), all the columns are used.
+<code>NULL</code> removes the key. </p>
+</td></tr>
+<tr valign="top"><td><code>cols</code></td>
+<td>
+<p> A character vector of column names. For <code>setindexv</code>, this can be a <code>list</code> of character vectors, in which case each element will be applied as an index. </p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p> In (deprecated) <code>key&lt;-</code>, a character vector (only) of column
+names.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p> Output status and information. </p>
+</td></tr>
+<tr valign="top"><td><code>physical</code></td>
+<td>
+<p> TRUE changes the order of the data in RAM. FALSE adds a
+secondary key a.k.a. index. </p>
+</td></tr>
+<tr valign="top"><td><code>vectors</code></td>
+<td>
+<p> logical scalar default <code>FALSE</code>, when set to <code>TRUE</code>
+then list of character vectors is returned, each vector refers to one index. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>setkey</code> reorders (or sorts) the rows of a data.table by the columns
+provided. In versions <code>1.9+</code>, for <code>integer</code> columns, a modified version
+of base's counting sort is implemented, which allows negative values as well. It
+is extremely fast, but is limited by the range of integer values being &lt;= 1e5. If
+that fails, it falls back to a (fast) 4-pass radix sort for integers, implemented
+based on Pierre Terdiman's and Michael Herf's code (see links below). Similarly,
+a very fast 6-pass radix order for columns of type <code>double</code> is also implemented.
+This gives a speed-up of about 5-8x compared to <code>1.8.10</code> on <code>setkey</code>
+and all internal <code>order</code>/<code>sort</code> operations. Fast radix sorting is also
+implemented for <code>character</code> and <code>bit64::integer64</code> types.
+</p>
+<p>The sort is <em>stable</em>; i.e., the order of ties (if any) is preserved, in both
+versions - <code>&lt;=1.8.10</code> and <code>&gt;= 1.9.0</code>.
+</p>
+<p>In <code>data.table</code> versions <code>&lt;= 1.8.10</code>, for columns of type <code>integer</code>,
+the sort is attempted with the very fast <code>"radix"</code> method in
+<code><a href="../../base/html/order.html">sort.list</a></code>. If that fails, the sort reverts to the default
+method in <code><a href="../../base/html/order.html">order</a></code>. For character vectors, <code>data.table</code>
+takes advantage of R's internal global string cache and implements a very efficient
+order, also exported as <code><a href="chmatch.html">chorder</a></code>.
+</p>
+<p>In v1.7.8, the <code>key&lt;-</code> syntax was deprecated. The <code>&lt;-</code> method copies
+the whole table and we know of no way to avoid that copy without a change in
+<span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> itself. Please use the <code>set</code>* functions instead, which make no copy at
+all. <code>setkey</code> accepts unquoted column names for convenience, whilst
+<code>setkeyv</code> accepts one vector of column names.
+</p>
+<p>The problem (for <code>data.table</code>) with the copy by <code>key&lt;-</code> (other than
+being slower) is that <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> doesn't maintain the over allocated truelength, but it
+looks as though it has. Adding a column by reference using <code>:=</code> after a
+<code>key&lt;-</code> was therefore a memory overwrite and eventually a segfault; the
+over allocated memory wasn't really there after <code>key&lt;-</code>'s copy. <code>data.table</code>s
+now have an attribute <code>.internal.selfref</code> to catch and warn about such copies.
+This attribute has been implemented in a way that is friendly with
+<code>identical()</code> and <code>object.size()</code>.
+</p>
+<p>For the same reason, please use the other <code>set*</code> functions which modify
+objects by reference, rather than using the <code>&lt;-</code> operator which results
+in copying the entire object.
+</p>
+<p>It isn't good programming practice, in general, to use column numbers rather
+than names. This is why <code>setkey</code> and <code>setkeyv</code> only accept column names.
+If you use column numbers then bugs (possibly silent) can more easily creep into
+your code as time progresses if changes are made elsewhere in your code; e.g., if
+you add, remove or reorder columns in a few months time, a <code>setkey</code> by column
+number will then refer to a different column, possibly returning incorrect results
+with no warning. (A similar concept exists in SQL, where <code>"select * from ..."</code>
+is considered poor programming style when a robust, maintainable system is
+required.)  If you really wish to use column numbers, it is possible but
+deliberately a little harder; e.g., <code>setkeyv(DT,colnames(DT)[1:2])</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The input is modified by reference, and returned (invisibly) so it can be used
+in compound statements; e.g., <code>setkey(DT,a)[J("foo")]</code>. If you require a
+copy, take a copy first (using <code>DT2=copy(DT)</code>). <code>copy()</code> may also
+sometimes be useful before <code>:=</code> is used to subassign to a column by
+reference. See <code>?copy</code>.
+</p>
+
+
+<h3>Note</h3>
+
+<p> Despite its name, <code>base::sort.list(x,method="radix")</code> actually
+invokes a <em>counting sort</em> in R, not a radix sort. See <code>do_radixsort</code> in
+src/main/sort.c. A counting sort, however, is particularly suitable for
+sorting integers and factors, and we like it. In fact we like it so much
+that <code>data.table</code> contains a counting sort algorithm for character vectors
+using R's internal global string cache. This is particularly fast for character
+vectors containing many duplicates, such as grouped data in a key column. This
+means that character is often preferred to factor. Factors are still fully
+supported, in particular ordered factors (where the levels are not in
+alphabetic order).
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://en.wikipedia.org/wiki/Radix_sort">http://en.wikipedia.org/wiki/Radix_sort</a><br />
+<a href="http://en.wikipedia.org/wiki/Counting_sort">http://en.wikipedia.org/wiki/Counting_sort</a><br />
+<a href="http://cran.at.r-project.org/web/packages/bit/index.html">http://cran.at.r-project.org/web/packages/bit/index.html</a><br />
+<a href="http://stereopsis.com/radix.html">http://stereopsis.com/radix.html</a>
+</p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="data.table.html">data.table</a></code>, <code><a href="tables.html">tables</a></code>, <code><a href="J.html">J</a></code>,
+<code><a href="../../base/html/order.html">sort.list</a></code>, <code><a href="copy.html">copy</a></code>, <code><a href="setDT.html">setDT</a></code>,
+<code><a href="setDF.html">setDF</a></code>, <code><a href="assign.html">set</a></code> <code><a href="assign.html">:=</a></code>, <code><a href="setorder.html">setorder</a></code>,
+<code><a href="setcolorder.html">setcolorder</a></code>, <code><a href="setattr.html">setattr</a></code>, <code><a href="setattr.html">setnames</a></code>,
+<code><a href="chmatch.html">chorder</a></code>, <code><a href="setNumericRounding.html">setNumericRounding</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Type 'example(setkey)' to run these at prompt and browse output
+
+DT = data.table(A=5:1,B=letters[5:1])
+DT # before
+setkey(DT,B)          # re-orders table and marks it sorted.
+DT # after
+tables()              # KEY column reports the key'd columns
+key(DT)
+keycols = c("A","B")
+setkeyv(DT,keycols)   # rather than key(DT)&lt;-keycols (which copies entire table)
+
+DT = data.table(A=5:1,B=letters[5:1])
+DT2 = DT              # does not copy
+setkey(DT2,B)         # does not copy-on-write to DT2
+identical(DT,DT2)     # TRUE. DT and DT2 are two names for the same keyed table
+
+DT = data.table(A=5:1,B=letters[5:1])
+DT2 = copy(DT)        # explicit copy() needed to copy a data.table
+setkey(DT2,B)         # now just changes DT2
+identical(DT,DT2)     # FALSE. DT and DT2 are now different tables
+
+DT = data.table(A=5:1,B=letters[5:1])
+setindex(DT)          # set indices
+setindex(DT, A)
+setindex(DT, B)
+indices(DT)           # get indices single vector
+indices(DT, vectors = TRUE) # get indices list
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>data.table</em> version 1.11.8 <a href="00Index.html">Index</a>]</div>
+</body></html>

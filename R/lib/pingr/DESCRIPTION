@@ -1,0 +1,22 @@
+Package: pingr
+Title: Check if a Remote Computer is Up
+Version: 1.1.2
+Authors@R: person(given = "Gábor", family = "Csárdi", role = c("aut", "cre"),
+             email = "csardi.gabor@gmail.com")
+Description: Check if a remote computer is up. It can either
+    just call the system ping command, or check a specified
+    TCP port.
+License: MIT + file LICENSE
+LazyData: true
+URL: https://github.com/gaborcsardi/pingr
+BugReports: https://github.com/gaborcsardi/pingr/issues
+Suggests: testthat
+RoxygenNote: 6.0.1
+Encoding: UTF-8
+NeedsCompilation: yes
+Packaged: 2017-03-02 13:06:11 UTC; gaborcsardi
+Author: Gábor Csárdi [aut, cre]
+Maintainer: Gábor Csárdi <csardi.gabor@gmail.com>
+Repository: CRAN
+Date/Publication: 2017-03-02 16:14:22
+Built: R 3.5.1; x86_64-redhat-linux-gnu; 2018-11-16 09:11:14 UTC; unix

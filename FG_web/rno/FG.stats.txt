@@ -1,0 +1,5 @@
+Network	Filename	No.of genes	No. of groups
+KEGG pathways, all 	KEGG.ALL.rno	3619	185
+KEGG pathways, basic 	KEGG.OTH.rno	1515	90
+KEGG pathways, disease 	KEGG.DIS.rno	512	32
+KEGG pathways, signaling 	KEGG.SIG.rno	2150	63

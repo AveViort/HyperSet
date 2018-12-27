@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get package dependencies</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getDependencies {gtools}"><tr><td>getDependencies {gtools}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Get package dependencies
+</h2>
+
+<h3>Description</h3>
+
+<p>Get package dependencies
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getDependencies(pkgs,
+                dependencies = c("Depends", "Imports", "LinkingTo"),
+                installed=TRUE,
+                available=TRUE,
+                base=FALSE,
+                recommended=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pkgs</code></td>
+<td>
+<p>character vector of package names</p>
+</td></tr>
+<tr valign="top"><td><code>dependencies</code></td>
+<td>
+<p>character vector of dependency types to include.
+Choices are &quot;Depends&quot;, &quot;Imports&quot;, &quot;LinkingTo&quot;, &quot;Suggests&quot;,
+and &quot;Enhances&quot;.  Defaults to <code>c("Depends", "Imports",
+      "LinkingTo")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>installed</code></td>
+<td>
+<p>Logical indicating whether to pull dependency
+information from installed packages. Defaults to TRUE.
+</p>
+</td></tr>
+<tr valign="top"><td><code>available</code></td>
+<td>
+<p>Logical indicating whether to pull dependency
+information from available packages.  Defaults to TRUE.
+</p>
+</td></tr>
+<tr valign="top"><td><code>base</code></td>
+<td>
+<p>Logical indicating whether to include dependencies on base
+packages that are included in the R installation. Defaults to
+FALSE.
+</p>
+</td></tr>
+<tr valign="top"><td><code>recommended</code></td>
+<td>
+<p>Logical indicating whether to include dependencies on
+recommended packages that are included in the R
+installation. Defaults to
+FALSE.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function recursively constructs the list of dependencies for the
+packages given by <code>pkgs</code>.  By default, the dependency information
+is extracted from both installed and available packages.  As a
+consequence, it works both for local and CRAN packages.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector of package names.
+</p>
+
+
+<h3>Note</h3>
+
+<p>If <code>available=TRUE</code> R will attempt to access the currently
+selected CRAN repository, prompting for one if necessary.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gregory R. Warnes emailgreg@warnes.net based on the non exported
+<code>utils:::getDependencies</code> and
+<code>utils:::.clean_up_dependencies2</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../utils/html/installed.packages.html">installed.packages</a></code>,
+<code><a href="../../utils/html/available.packages.html">available.packages</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## A locally installed package
+getDependencies("MASS", installed=TRUE, available=FALSE)
+
+## Not run: 
+## A package on CRAN
+getDependencies("gregmisc", installed=FALSE, available=TRUE)
+
+## End(Not run)
+
+## Show base and recommended dependencies
+getDependencies("MASS", available=FALSE, base=TRUE, recommended=TRUE)
+
+## Not run: 
+## Download the set of packages necessary to support a local package
+deps &lt;- getDependencies("MyLocalPackage", available=FALSE)
+download.packages(deps, destdir="./R_Packages")
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gtools</em> version 3.8.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

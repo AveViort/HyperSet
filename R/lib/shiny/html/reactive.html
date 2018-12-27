@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a reactive expression</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reactive {shiny}"><tr><td>reactive {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a reactive expression</h2>
+
+<h3>Description</h3>
+
+<p>Wraps a normal expression to create a reactive expression. Conceptually, a
+reactive expression is a expression whose result will change over time.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+reactive(x, env = parent.frame(), quoted = FALSE, label = NULL,
+  domain = getDefaultReactiveDomain(), ..stacktraceon = TRUE)
+
+is.reactive(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>For <code>reactive</code>, an expression (quoted or unquoted). For
+<code>is.reactive</code>, an object to test.</p>
+</td></tr>
+<tr valign="top"><td><code>env</code></td>
+<td>
+<p>The parent environment for the reactive expression. By default,
+this is the calling environment, the same as when defining an ordinary
+non-reactive expression.</p>
+</td></tr>
+<tr valign="top"><td><code>quoted</code></td>
+<td>
+<p>Is the expression quoted? By default, this is <code>FALSE</code>.
+This is useful when you want to use an expression that is stored in a
+variable; to do so, it must be quoted with <code>quote()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>A label for the reactive expression, useful for debugging.</p>
+</td></tr>
+<tr valign="top"><td><code>domain</code></td>
+<td>
+<p>See <a href="domains.html">domains</a>.</p>
+</td></tr>
+<tr valign="top"><td><code>..stacktraceon</code></td>
+<td>
+<p>Advanced use only. For stack manipulation purposes; see
+<code><a href="stacktrace.html">stacktrace</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Reactive expressions are expressions that can read reactive values and call
+other reactive expressions. Whenever a reactive value changes, any reactive
+expressions that depended on it are marked as &quot;invalidated&quot; and will
+automatically re-execute if necessary. If a reactive expression is marked as
+invalidated, any other reactive expressions that recently called it are also
+marked as invalidated. In this way, invalidations ripple through the
+expressions that depend on each other.
+</p>
+<p>See the <a href="http://rstudio.github.com/shiny/tutorial/">Shiny tutorial</a> for
+more information about reactive expressions.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a function, wrapped in a S3 class &quot;reactive&quot;
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+values &lt;- reactiveValues(A=1)
+
+reactiveB &lt;- reactive({
+  values$A + 1
+})
+
+# Can use quoted expressions
+reactiveC &lt;- reactive(quote({ values$A + 2 }), quoted = TRUE)
+
+# To store expressions for later conversion to reactive, use quote()
+expr_q &lt;- quote({ values$A + 3 })
+reactiveD &lt;- reactive(expr_q, quoted = TRUE)
+
+# View the values from the R console with isolate()
+isolate(reactiveB())
+isolate(reactiveC())
+isolate(reactiveD())
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

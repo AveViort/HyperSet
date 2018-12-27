@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tone perception data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tonedata {fpc}"><tr><td>tonedata {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Tone perception data</h2>
+
+<h3>Description</h3>
+
+<p>The tone perception data stem
+from an experiment of Cohen (1980) and have been analyzed in de Veaux
+(1989).
+A pure fundamental tone was played to a
+trained musician. Electronically generated overtones were added, determined 
+by a stretching ratio of <code>stretchratio</code>. <code>stretchratio=2.0</code>
+corresponds to the harmonic pattern
+usually heard in traditional definite pitched instruments. The musician was
+asked to tune an adjustable tone to the octave above the fundamental tone.
+<code>tuned</code> gives the ratio of the adjusted tone to the fundamental,
+i.e. <code>tuned=2.0</code> would be the correct tuning for all
+<code>stretchratio</code>-values.
+The data analyzed here belong to 150 trials 
+with the same musician. In the original study, there were four further
+musicians. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(tonedata)</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 2 variables <code>stretchratio</code> and
+<code>tuned</code> and 150 cases.</p>
+
+
+<h3>Source</h3>
+
+<p>Cohen, E. A. (1980) <em>Inharmonic tone
+perception</em>. Unpublished Ph.D. dissertation, Stanford University</p>
+
+
+<h3>References</h3>
+
+<p>de Veaux, R. D. (1989) Mixtures of Linear Regressions,
+<em>Computational Statistics and Data Analysis</em> 8, 227-245.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

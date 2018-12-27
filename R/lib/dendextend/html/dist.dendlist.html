@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Topological Distances Between Two dendrograms</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dist.dendlist {dendextend}"><tr><td>dist.dendlist {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Topological Distances Between Two dendrograms</h2>
+
+<h3>Description</h3>
+
+<p>This function computes the Robinson-Foulds distance (also known as symmetric difference) 
+between two dendrograms. This is the sum of edges in both trees with labels that exist in 
+only one of the two trees (i.e.: the length of <a href="distinct_edges.html">distinct_edges</a>).
+</p>
+<p>This function might implement other topological distances in the future.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dist.dendlist(dend, method = c("edgeset"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a <a href="dendlist.html">dendlist</a></p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>currently only 'edgeset' is implemented.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Ignored.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <a href="../../stats/html/dist.html">dist</a> object with topological distances between all trees
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="distinct_edges.html">distinct_edges</a>, 
+<a href="../../ape/html/dist.topo.html">dist.topo</a>, 
+<a href="../../distory/html/dist.multiPhylo.html">dist.multiPhylo</a>, 
+<a href="../../phangorn/html/treedist.html">treedist</a>,
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+x &lt;- 1:5 %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+y &lt;- set(x, "labels", 5:1)
+
+dist.dendlist(dendlist(x1 = x,x2 = x,y1 = y))
+dend_diff(x,y)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

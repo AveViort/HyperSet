@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Determine the location - file &amp; line number of an (internal)...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getLineNumber {XML}"><tr><td>getLineNumber {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Determine the location - file \&amp; line number of an (internal) XML node</h2>
+
+<h3>Description</h3>
+
+<p>The <code>getLineNumber</code> function is used to query the location of an internal/C-level
+XML node within its original &quot;file&quot;. This gives us the line number.
+<code>getNodeLocation</code> gives both the line number and the name of the
+file in which the node is located, handling XInclude files in a
+top-level document  and identifying the included file, as appropriate.
+<code>getNodePosition</code> returns a simplified version of
+<code>getNodeLocation</code>,
+combining the file and line number into a string and ignoring the
+<code>XPointer</code> component.
+</p>
+<p>This is useful when we identify a node with a particular charactestic
+and want to view/edit the original document, e.g. when authoring an
+Docbook article.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getLineNumber(node, ...)
+getNodeLocation(node, recursive = TRUE, fileOnly = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>the node whose location or line number is of interest</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters for methods should they be defined.</p>
+</td></tr>
+<tr valign="top"><td><code>recursive</code></td>
+<td>
+<p>a logical value that controls whether the 
+full path of the nested includes is returned or just the
+path in the immediate XInclude element.</p>
+</td></tr>
+<tr valign="top"><td><code>fileOnly</code></td>
+<td>
+<p>a logical value which if <code>TRUE</code> means that only
+the name of the file is returned, and not the <code>xpointer</code> attribute or
+line number .</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>getLineNumber</code> returns an integer.
+<code>getNodeLocation</code> returns a list with two elements -
+<code>file</code> and <code>line</code> which are a character string
+and the integer line number.
+</p>
+<p>For text nodes, the line number is taken from the previous sibling
+nodes or the parent node.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p>libxml2 </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="findXInclude.html">findXInclude</a></code>
+<code><a href="xmlTreeParse.html">xmlParse</a></code>
+<code><a href="getNodeSet.html">getNodeSet</a></code>
+<code><a href="getNodeSet.html">xpathApply</a></code>    
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+f = system.file("exampleData", "xysize.svg", package = "XML")
+doc = xmlParse(f)
+e = getNodeSet(doc, "//ellipse")
+sapply(e, getLineNumber)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

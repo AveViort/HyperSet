@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Draw Additional Edges on a Plotted Tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for edges {ape}"><tr><td>edges {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Draw Additional Edges on a Plotted Tree</h2>
+
+<h3>Description</h3>
+
+<p><code>edges</code> draws edges on a plotted tree. <code>fancyarrows</code>
+enhances <code><a href="../../graphics/html/arrows.html">arrows</a></code> with triangle and harpoon
+heads; it can be called from <code>edges</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+edges(nodes0, nodes1, arrows = 0, type = "classical", ...)
+fancyarrows(x0, y0, x1, y1, length = 0.25, angle = 30, code = 2,
+            col = par("fg"), lty = par("lty"), lwd = par("lwd"),
+            type = "triangle", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nodes0, nodes1</code></td>
+<td>
+<p>vectors of integers giving the tip and/or node
+numbers where to start and to end the edges (eventually recycled).</p>
+</td></tr>
+<tr valign="top"><td><code>arrows</code></td>
+<td>
+<p>an integer between 0 and 3; 0: lines (the default); 1:
+an arrow head is drawn at <code>nodes0</code>; 2: at <code>nodes1</code>; 3:
+both.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>if the previous argument is not 0, the type of arrow head:
+<code>"classical"</code> (just lines, the default), <code>"triangle"</code>,
+<code>"harpoon"</code>, or any unambiguous abbreviations of these. For
+<code>fancyarrows</code> only the last two are available.</p>
+</td></tr>
+<tr valign="top"><td><code>x0, y0, x1, y1</code></td>
+<td>
+<p>the coordinates of the start and end points for
+<code>fancyarrows</code> (these are not recycled and so should be vectors
+of the same length).</p>
+</td></tr>
+<tr valign="top"><td><code>length, angle, code, col, lty, lwd</code></td>
+<td>
+<p>default options similar to
+those of <code><a href="../../graphics/html/arrows.html">arrows</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to <code><a href="../../graphics/html/segments.html">segments</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The first function is helpful when drawing reticulations on a phylogeny,
+especially if computed from the edge matrix.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code>, <code><a href="nodelabels.html">nodelabels</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(2)
+tr &lt;- rcoal(6)
+plot(tr, "c")
+edges(10, 9, col = "red", lty = 2)
+edges(10:11, 8, col = c("blue", "green")) # recycling of 'nodes1'
+edges(1, 2, lwd = 2, type = "h", arrows = 3, col = "green")
+nodelabels()
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

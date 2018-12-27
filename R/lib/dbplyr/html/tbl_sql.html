@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create an SQL tbl (abstract)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tbl_sql {dbplyr}"><tr><td>tbl_sql {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create an SQL tbl (abstract)</h2>
+
+<h3>Description</h3>
+
+<p>Generally, you should no longer need to provide a custom <code>tbl()</code>
+method you you can default <code>tbl.DBIConnect</code> method.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tbl_sql(subclass, src, from, ..., vars = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>subclass</code></td>
+<td>
+<p>name of subclass</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>needed for agreement with generic. Not otherwise used.</p>
+</td></tr>
+<tr valign="top"><td><code>vars</code></td>
+<td>
+<p>If known, the names of the variables in the tbl. This is
+relatively expensive to determine automatically, so is cached throughout
+dplyr. However, you should usually be able to leave this blank and it
+will be determined from the context.</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Mahalanobis Fixed Point Clusters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fixmahal {fpc}"><tr><td>fixmahal {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Mahalanobis Fixed Point Clusters</h2>
+
+<h3>Description</h3>
+
+<p>Computes Mahalanobis fixed point clusters (FPCs), i.e.,
+subsets of the data, which consist exactly of the
+non-outliers w.r.t. themselves, and may be interpreted
+as generated from a homogeneous normal population.
+FPCs may
+overlap, are not necessarily exhausting and
+do not need a specification of the number of clusters.
+</p>
+<p>Note that while <code>fixmahal</code> has lots of parameters, only one (or
+few) of them have usually to be specified, cf. the examples. The
+philosophy is to allow much flexibility, but to always provide 
+sensible defaults.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fixmahal(dat, n = nrow(as.matrix(dat)), p = ncol(as.matrix(dat)), 
+                      method = "fuzzy", cgen = "fixed",
+                      ca = NA, ca2 = NA,
+                      calpha = ifelse(method=="fuzzy",0.95,0.99),
+                      calpha2 = 0.995,
+                      pointit = TRUE, subset = n,
+                      nc1 = 100+20*p,
+                      startn = 18+p, mnc = floor(startn/2), 
+                      mer = ifelse(pointit,0.1,0), 
+                      distcut = 0.85, maxit = 5*n, iter = n*1e-5,
+                      init.group = list(), 
+                      ind.storage = TRUE, countmode = 100, 
+                      plot = "none")
+
+
+## S3 method for class 'mfpc'
+summary(object, ...)
+
+## S3 method for class 'summary.mfpc'
+print(x, maxnc=30, ...)
+
+## S3 method for class 'mfpc'
+plot(x, dat, no, bw=FALSE, main=c("Representative FPC No. ",no),
+                    xlab=NULL, ylab=NULL,
+                    pch=NULL, col=NULL, ...)
+
+## S3 method for class 'mfpc'
+fpclusters(object, dat=NA, ca=object$ca, p=object$p, ...)
+
+fpmi(dat, n = nrow(as.matrix(dat)), p = ncol(as.matrix(dat)),
+                  gv, ca, ca2, method = "ml", plot,
+                  maxit = 5*n, iter = n*1e-6) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dat</code></td>
+<td>
+<p>something that can be coerced to a
+numerical matrix or vector. Data matrix, rows are points, columns
+are variables.
+<code>fpclusters.rfpc</code>
+does not need specification of <code>dat</code> if <code>fixmahal</code>
+has been run with <code>ind.storage=TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>optional positive integer.
+Number of cases.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>optional positive integer.
+Number of independent variables.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>a string. <code>method="classical"</code> means 0-1 weighting
+of observations by Mahalanobis distances and use of the classical
+normal covariance estimator. <code>method="ml"</code> uses the
+ML-covariance estimator (division by <code>n</code> instead of <code>n-1</code>) 
+This is used in Hennig and Christlieb (2002).
+<code>method</code> can also be <code>"mcd"</code> or <code>"mve"</code>,
+to enforce the use of robust centers and covariance matrices, see
+<code><a href="../../MASS/html/cov.rob.html">cov.rob</a></code>. This is experimental, not recommended at the
+moment, may be very slowly and requires library <code>lqs</code>.
+The default is
+<code>method="fuzzy"</code>, where weighted means and covariance matrices
+are used (Hennig, 2005).
+The weights are computed by <code><a href="wfu.html">wfu</a></code>, i.e., a
+function that is constant 1 for arguments smaller than <code>ca</code>, 0 for
+arguments larger than <code>ca2</code> and continuously linear in between.
+Convergence is only proven for <code>method="ml"</code> up to now.</p>
+</td></tr>  
+<tr valign="top"><td><code>cgen</code></td>
+<td>
+<p>optional string. <code>"fixed"</code> means that the same tuning
+constant <code>ca</code> is used for all iterations. <code>"auto"</code> means
+that <code>ca</code> is generated dependently on the size of the current data
+subset in each iteration by <code><a href="cmahal.html">cmahal</a></code>. This is 
+experimental.</p>
+</td></tr>
+<tr valign="top"><td><code>ca</code></td>
+<td>
+<p>optional positive number. Tuning constant, specifying
+required cluster
+separation. By default determined as <code>calpha</code>-quantile of the
+chisquared distribution with <code>p</code> degrees of freedom.</p>
+</td></tr>
+<tr valign="top"><td><code>ca2</code></td>
+<td>
+<p>optional positive number. Second tuning constant needed if
+<code>method="fuzzy"</code>.
+By default determined as <code>calpha2</code>-quantile of the
+chisquared distribution with <code>p</code> degrees of freedom.</p>
+</td></tr>
+<tr valign="top"><td><code>calpha</code></td>
+<td>
+<p>number between 0 and 1. See <code>ca</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>calpha2</code></td>
+<td>
+<p>number between 0 and 1, larger than <code>calpha</code>.
+See <code>ca2</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>pointit</code></td>
+<td>
+<p>optional logical. If <code>TRUE</code>, <code>subset</code> fixed point
+algorithms are started from initial configurations, which are built
+around single points of the dataset, cf. <code><a href="mahalconf.html">mahalconf</a></code>.
+Otherwise, initial configurations are only specified by
+<code>init.group</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>subset</code></td>
+<td>
+<p>optional positive integer smaller or equal than <code>n</code>.
+Initial configurations for the fixed point algorithm
+(cf. <code><a href="mahalconf.html">mahalconf</a></code>) are built from
+a subset of <code>subset</code> points from the data. No effect if
+<code>pointit=FALSE</code>. Default: all points.</p>
+</td></tr>
+<tr valign="top"><td><code>nc1</code></td>
+<td>
+<p>optional positive integer. Tuning constant needed by
+<code><a href="cmahal.html">cmahal</a></code> to generate <code>ca</code> automatically. Only 
+needed for <code>cgen="auto"</code>.</p>
+</td></tr> 
+<tr valign="top"><td><code>startn</code></td>
+<td>
+<p>optional positive integer. Size of the initial
+configurations. The default value is chosen to prevent that small 
+meaningless FPCs are found, but it should be decreased if 
+clusters of size smaller than the default value are of interest.</p>
+</td></tr> 
+<tr valign="top"><td><code>mnc</code></td>
+<td>
+<p>optional positive integer. Minimum size of clusters
+to be reported.</p>
+</td></tr>
+<tr valign="top"><td><code>mer</code></td>
+<td>
+<p>optional nonnegative number. FPCs (groups of them,
+respectively, see details)
+are only reported as stable if the ratio 
+of the number of their
+findings to their number of points exceeds <code>mer</code>. This holds
+under <code>pointit=TRUE</code> and <code>subset=n</code>. For <code>subset&lt;n</code>,
+the ratio is adjusted, but for small <code>subset</code>, the results
+may extremely vary and have to be taken with care.</p>
+</td></tr>
+<tr valign="top"><td><code>distcut</code></td>
+<td>
+<p>optional value between 0 and 1. A similarity
+measure between FPCs, given in Hennig (2002), and the corresponding
+Single Linkage groups of FPCs with similarity larger
+than <code>distcut</code> are computed.
+A single representative FPC is selected for each group.</p>
+</td></tr>
+<tr valign="top"><td><code>maxit</code></td>
+<td>
+<p>optional integer. Maximum number of iterations
+per algorithm run (usually an FPC is found much earlier).</p>
+</td></tr>
+<tr valign="top"><td><code>iter</code></td>
+<td>
+<p>positive number. Algorithm stops when difference between
+subsequent weight vectors is smaller than <code>iter</code>. Only needed
+for <code>method="fuzzy"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>init.group</code></td>
+<td>
+<p>optional list of logical vectors of length
+<code>n</code>.
+Every vector indicates a starting configuration for the fixed
+point algorithm. This can be used for datasets with high
+dimension, where the vectors of <code>init.group</code> indicate cluster
+candidates found by graphical inspection or background
+knowledge, as in Hennig and Christlieb (2002).</p>
+</td></tr>
+<tr valign="top"><td><code>ind.storage</code></td>
+<td>
+<p>optional logical. If <code>TRUE</code>,
+then all indicator
+vectors of found FPCs are given in the value of <code>fixmahal</code>.
+May need lots of memory, but is a bit faster.</p>
+</td></tr>
+<tr valign="top"><td><code>countmode</code></td>
+<td>
+<p>optional positive integer. Every <code>countmode</code>
+algorithm runs <code>fixmahal</code> shows a message.</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>optional string. If <code>"start"</code>, you get a scatterplot
+of the first two variables to highlight the initial configuration,
+<code>"iteration"</code> generates such a plot at each iteration,
+<code>"both"</code> does both (this may be very time consuming).
+The default is <code>"none"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>object of class <code>mfpc</code>, output of <code>fixmahal</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>object of class <code>mfpc</code>, output of <code>fixmahal</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>maxnc</code></td>
+<td>
+<p>positive integer. Maximum number of FPCs
+to be reported.</p>
+</td></tr>
+<tr valign="top"><td><code>no</code></td>
+<td>
+<p>positive integer. Number of the representative FPC to
+be plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>bw</code></td>
+<td>
+<p>optional logical. If <code>TRUE</code>, plot is black/white,
+FPC is
+indicated by different symbol. Else FPC is indicated red.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>plot title.</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>label for x-axis. If <code>NULL</code>, a default text is used.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>label for y-axis. If <code>NULL</code>, a default text is used.</p>
+</td></tr>
+<tr valign="top"><td><code>pch</code></td>
+<td>
+<p>plotting symbol, see <code><a href="../../graphics/html/par.html">par</a></code>.
+If <code>NULL</code>, the default is used.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>plotting color, see <code><a href="../../graphics/html/par.html">par</a></code>.
+If <code>NULL</code>, the default is used.</p>
+</td></tr>
+<tr valign="top"><td><code>gv</code></td>
+<td>
+<p>logical vector (or, with <code>method="fuzzy"</code>,
+vector of weights between 0 and 1) of length <code>n</code>.
+Indicates the initial
+configuration for the fixed point algorithm.</p>
+</td></tr> 
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters to be passed to <code>plot</code>
+(no effects elsewhere).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A (crisp) Mahalanobis FPC is a data subset 
+that reproduces itself under the following operation: <br />
+Compute mean and covariance matrix estimator for the data
+subset, and compute all points of the dataset for which the squared
+Mahalanobis distance is smaller than <code>ca</code>.<br />
+Fixed points of this operation can be considered as clusters,
+because they contain only
+non-outliers (as defined by the above mentioned procedure) and all other
+points are outliers w.r.t. the subset. <br />
+The current default is to compute fuzzy Mahalanobis FPCs, where the
+points in the subset have a membership weight between 0 and 1 and give
+rise to weighted means and covariance matrices.
+The new weights are then obtained by computing the weight function
+<code><a href="wfu.html">wfu</a></code> of the squared Mahalanobis distances, i.e.,
+full weight for squared distances smaller than <code>ca</code>, zero
+weight for squared distances larger than <code>ca2</code> and 
+decreasing weights (linear function of squared distances)
+in between.<br />
+A fixed point algorithm is started from the whole dataset,
+algorithms are started from the subsets specified in
+<code>init.group</code>, and further algorithms are started from further
+initial configurations as explained under <code>subset</code> and in the
+function <code><a href="mahalconf.html">mahalconf</a></code>. <br />
+Usually some of the FPCs are unstable, and more than one FPC may
+correspond to the same significant pattern in the data. Therefore the
+number of FPCs is reduced: A similarity matrix is computed
+between FPCs. Similarity between sets is defined as the ratio between
+2 times size of
+intersection and the sum of sizes of both sets. The Single Linkage
+clusters (groups)
+of level <code>distcut</code> are computed, i.e. the connectivity
+components of the graph where edges are drawn between FPCs with
+similarity larger than <code>distcut</code>. Groups of FPCs whose members
+are found often enough (cf. parameter <code>mer</code>) are considered as
+stable enough. A representative FPC is
+chosen for every Single Linkage cluster of FPCs according to the
+maximum expectation ratio <code>ser</code>. <code>ser</code> is the ratio between
+the number of findings of an FPC and the number of points
+of an FPC, adjusted suitably if <code>subset&lt;n</code>.
+Usually only the representative FPCs of stable groups
+are of interest. <br />
+Default tuning constants are taken from Hennig (2005).<br />
+Generally, the default settings are recommended for
+<code>fixmahal</code>. For large datasets, the use of
+<code>init.group</code> together with <code>pointit=FALSE</code>
+is useful. Occasionally, <code>mnc</code> and <code>startn</code> may be chosen
+smaller than the default,
+if smaller clusters are of interest, but this may lead to too many
+clusters. Decrease of
+<code>ca</code> will often lead to too many clusters, even for homogeneous
+data. Increase of <code>ca</code> will produce only very strongly
+separated clusters. Both may be of interest occasionally.<br />
+Singular covariance matrices during the iterations are handled by
+<code><a href="solvecov.html">solvecov</a></code>.
+</p>
+<p><code>summary.mfpc</code> gives a summary about the representative FPCs of
+stable groups.
+</p>
+<p><code>plot.mfpc</code> is a plot method for the representative FPC of stable
+group no. <code>no</code>. It produces a scatterplot, where
+the points belonging to the FPC are highlighted, the mean is and
+for <code>p&lt;3</code> also the region of the FPC is shown. For <code>p&gt;=3</code>,
+the optimal separating projection computed by <code><a href="batcoord.html">batcoord</a></code>
+is shown.  
+</p>
+<p><code>fpclusters.mfpc</code> produces a list of indicator vectors for the
+representative FPCs of stable groups.
+</p>
+<p><code>fpmi</code> is called by <code>fixmahal</code> for a single fixed point
+algorithm and will usually not be executed alone.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>fixmahal</code> returns an object of class <code>mfpc</code>. This is a list
+containing the components <code>nc, g, means, covs, nfound, er, tsc,
+    ncoll, skc, grto, imatrix, smatrix, stn, stfound, ser, sfpc, ssig,
+    sto, struc, n, p, method, cgen, ca, ca2, cvec, calpha, pointit,
+    subset, mnc, startn, mer, distcut</code>.
+</p>
+<p><code>summary.mfpc</code> returns an object of class <code>summary.mfpc</code>.
+This is a list containing the components <code>means, covs, stn,
+    stfound, sn, ser, tskip, skc, tsc, sim, ca, ca2, calpha, mer, method,
+    cgen, pointit</code>.
+</p>
+<p><code>fpclusters.mfpc</code> returns a list of indicator vectors for the
+representative FPCs of stable groups.
+</p>
+<p><code>fpmi</code> returns a list with the components <code>mg, covg, md,
+    gv, coll, method, ca</code>.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>nc</code></td>
+<td>
+<p>integer. Number of FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>list of logical vectors. Indicator vectors of FPCs. <code>FALSE</code>
+if <code>ind.storage=FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>means</code></td>
+<td>
+<p>list of numerical vectors. Means of FPCs. In
+<code>summary.mfpc</code>, only for representative
+FPCs of stable groups and sorted according to
+<code>ser</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>covs</code></td>
+<td>
+<p>list of numerical matrices. Covariance matrices of FPCs. In
+<code>summary.mfpc</code>, only for representative
+FPCs of stable groups and sorted according to
+<code>ser</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>nfound</code></td>
+<td>
+<p>vector of integers. Number of findings for the FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>er</code></td>
+<td>
+<p>numerical vector. Ratio of number of findings of FPCs to their
+size. Under <code>pointit=TRUE</code>,
+this can be taken as a measure of stability of FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>tsc</code></td>
+<td>
+<p>integer. Number of algorithm runs leading to too small or
+too seldom found FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>ncoll</code></td>
+<td>
+<p>integer. Number of algorithm runs where collinear
+covariance matrices occurred.</p>
+</td></tr>
+<tr valign="top"><td><code>skc</code></td>
+<td>
+<p>integer. Number of skipped clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>grto</code></td>
+<td>
+<p>vector of integers. Numbers of FPCs to which algorithm
+runs led, which were started by <code>init.group</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>imatrix</code></td>
+<td>
+<p>vector of integers. Size of intersection between
+FPCs. See <code><a href="sseg.html">sseg</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>smatrix</code></td>
+<td>
+<p>numerical vector. Similarities between
+FPCs. See <code><a href="sseg.html">sseg</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>stn</code></td>
+<td>
+<p>integer. Number of representative FPCs of stable groups.
+In <code>summary.mfpc</code>, sorted according to <code>ser</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>stfound</code></td>
+<td>
+<p>vector of integers. Number of findings of members of
+all groups of FPCs. In <code>summary.mfpc</code>, sorted according to
+<code>ser</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ser</code></td>
+<td>
+<p>numerical vector. Ratio of number of findings of groups of
+FPCs to their size. Under <code>pointit=TRUE</code>,
+this can be taken as a measure of stability of FPCs. In
+<code>summary.mfpc</code>, sorted from largest to smallest.</p>
+</td></tr>
+<tr valign="top"><td><code>sfpc</code></td>
+<td>
+<p>vector of integers.
+Numbers of representative FPCs of all groups.</p>
+</td></tr>
+<tr valign="top"><td><code>ssig</code></td>
+<td>
+<p>vector of integers of length <code>stn</code>.
+Numbers of representative FPCs of the stable groups.</p>
+</td></tr>
+<tr valign="top"><td><code>sto</code></td>
+<td>
+<p>vector of integers. Numbers of groups ordered
+according to largest <code>ser</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>struc</code></td>
+<td>
+<p>vector of integers. Number of group an FPC belongs to.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>cgen</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>ca</code></td>
+<td>
+<p>see arguments, if <code>cgen</code> has been <code>"fixed"</code>. Else
+numerical vector of length <code>nc</code> (see below), giving the
+final values of <code>ca</code> for all FPC. In <code>fpmi</code>, tuning
+constant for the iterated FPC.</p>
+</td></tr>
+<tr valign="top"><td><code>ca2</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>cvec</code></td>
+<td>
+<p>numerical vector of length <code>n</code> for
+<code>cgen="auto"</code>. The values for the
+tuning constant <code>ca</code> corresponding to the cluster sizes from
+<code>1</code> to <code>n</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>calpha</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>pointit</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>subset</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>mnc</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>startn</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>mer</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>distcut</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>sn</code></td>
+<td>
+<p>vector of integers. Number of points of representative
+FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>tskip</code></td>
+<td>
+<p>integer. Number of algorithm runs leading to skipped FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>sim</code></td>
+<td>
+<p>vector of integers. Size of intersections between
+representative FPCs of stable groups. See <code><a href="sseg.html">sseg</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>mg</code></td>
+<td>
+<p>mean vector.</p>
+</td></tr>
+<tr valign="top"><td><code>covg</code></td>
+<td>
+<p>covariance matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>md</code></td>
+<td>
+<p>Mahalanobis distances.</p>
+</td></tr>
+<tr valign="top"><td><code>gv</code></td>
+<td>
+<p>logical (numerical, respectively, if <code>method="fuzzy"</code>)
+indicator vector of iterated FPC.</p>
+</td></tr>
+<tr valign="top"><td><code>coll</code></td>
+<td>
+<p>logical. <code>TRUE</code> means that singular covariance
+matrices occurred during the iterations.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. (2002) Fixed point clusters for linear regression:
+computation and comparison, <em>Journal of
+Classification</em> 19, 249-276.
+</p>
+<p>Hennig, C. (2005) Fuzzy and Crisp Mahalanobis Fixed Point Clusters,
+in Baier, D., Decker, R., and Schmidt-Thieme, L. (eds.):
+<em>Data Analysis and Decision Support</em>. Springer, Heidelberg,
+47-56, <a href="http://www.homepages.ucl.ac.uk/~ucakche/papers/fuzzyfix.ps">http://www.homepages.ucl.ac.uk/~ucakche/papers/fuzzyfix.ps</a>
+</p>
+<p>Hennig, C. and Christlieb, N. (2002) Validating visual clusters in
+large datasets: Fixed point clusters of spectral features,
+<em>Computational Statistics and Data Analysis</em> 40, 723-739.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fixreg.html">fixreg</a></code> for linear regression fixed point clusters.
+</p>
+<p><code><a href="mahalconf.html">mahalconf</a></code>, <code><a href="wfu.html">wfu</a></code>, <code><a href="cmahal.html">cmahal</a></code>
+for computation of initial configurations, weights, tuning constants.  
+</p>
+<p><code><a href="sseg.html">sseg</a></code> for indexing the similarity/intersection vectors
+computed by <code>fixmahal</code>.
+</p>
+<p><code><a href="batcoord.html">batcoord</a></code>, <code><a href="../../MASS/html/cov.rob.html">cov.rob</a></code>, <code><a href="solvecov.html">solvecov</a></code>,
+<code><a href="cov.wml.html">cov.wml</a></code>, <code><a href="plotcluster.html">plotcluster</a></code>
+for computation of projections, (inverted)
+covariance matrices, plotting.
+</p>
+<p><code><a href="rFace.html">rFace</a></code> for generation of example data, see below.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=2)
+  set.seed(20000)
+  face &lt;- rFace(400,dMoNo=2,dNoEy=0, p=3)
+  # The first example uses grouping information via init.group.
+  initg &lt;- list()
+  grface &lt;- as.integer(attr(face,"grouping"))
+  for (i in 1:5) initg[[i]] &lt;- (grface==i)
+  ff0 &lt;- fixmahal(face, pointit=FALSE, init.group=initg)
+  summary(ff0)
+  cff0 &lt;- fpclusters(ff0)
+  plot(face, col=1+cff0[[1]])
+  plot(face, col=1+cff0[[4]]) # Why does this come out as a cluster? 
+  plot(ff0, face, 4) # A bit clearer...
+  # Without grouping information, examples need more time:
+  # ff1 &lt;- fixmahal(face)
+  # summary(ff1)
+  # cff1 &lt;- fpclusters(ff1)
+  # plot(face, col=1+cff1[[1]])
+  # plot(face, col=1+cff1[[6]]) # Why does this come out as a cluster? 
+  # plot(ff1, face, 6) # A bit clearer...
+  # ff2 &lt;- fixmahal(face,method="ml")
+  # summary(ff2)
+  # ff3 &lt;- fixmahal(face,method="ml",calpha=0.95,subset=50)
+  # summary(ff3)
+  ## ...fast, but lots of clusters. mer=0.3 may be useful here.
+  # set.seed(3000)
+  # face2 &lt;- rFace(400,dMoNo=2,dNoEy=0)
+  # ff5 &lt;- fixmahal(face2)
+  # summary(ff5)
+  ## misses right eye of face data; with p=6,
+  ## initial configurations are too large for 40 point clusters 
+  # ff6 &lt;- fixmahal(face2, startn=30)
+  # summary(ff6)
+  # cff6 &lt;- fpclusters(ff6)
+  # plot(face2, col=1+cff6[[3]])
+  # plot(ff6, face2, 3)
+  # x &lt;- c(1,2,3,6,6,7,8,120)
+  # ff8 &lt;- fixmahal(x)
+  # summary(ff8)
+  # ...dataset a bit too small for the defaults...
+  # ff9 &lt;- fixmahal(x, mnc=3, startn=3)
+  # summary(ff9)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

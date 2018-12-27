@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Simple classes for identifying an XML document containing R...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for XMLCodeFile-class {XML}"><tr><td>XMLCodeFile-class {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Simple classes for identifying an XML document containing R code</h2>
+
+<h3>Description</h3>
+
+<p>These two classes allow the user to identify an XML document or file
+as containing R code (amongst other content). Objects of either of these
+classes can then be passed to <code><a href="../../base/html/source.html">source</a></code> to read the 
+code into R and also used in <code>link{xmlSource}</code> to read just parts of it.
+<code>XMLCodeFile</code> represents the file by its name;
+<code>XMLCodeDoc</code> parses the contents of the file when the R object is created.
+Therefore, an <code>XMLCodeDoc</code> is a snapshot of the contents at a moment in time
+while an <code>XMLCodeFile</code> object re-reads the file each time and so reflects
+any &quot;asynchronous&quot; changes.
+</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>One can create these objects using coercion methods, e.g
+<code>as("file/name", "XMLCodeFile")</code>
+or  <code>as("file/name", "XMLCodeDoc")</code>.
+One can also use  <code>xmlCodeFile</code>.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>.Data</code>:</dt><dd><p>Object of class <code>"character"</code></p>
+</dd>
+</dl>
+
+
+
+<h3>Extends</h3>
+
+<p>Class <code>"<a href="../../methods/html/BasicClasses.html">character</a>"</code>, from data part.
+Class <code>"<a href="../../methods/html/BasicClasses.html">vector</a>"</code>, by class &quot;character&quot;, distance 2.
+
+
+
+
+</p>
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>[[</dt><dd><p><code>signature(x = "XMLCodeFile", i = "ANY", j = "ANY")</code>: 
+this method allows one to retrieve/access an individual R code element
+in the XML document. This is typically done by specifying the value of the XML element's 
+&quot;id&quot; attribute.
+</p>
+</dd>
+<dt>coerce</dt><dd><p><code>signature(from = "XMLCodeFile", to = "XMLCodeDoc")</code>:
+parse the XML document from the &quot;file&quot; and treat the result as a
+<code>XMLCodeDoc</code> object. 
+</p>
+</dd>
+<dt>source</dt><dd><p><code>signature(file = "XMLCodeFile")</code>: read and evaluate all the
+R code in the XML document. For more control, use <code><a href="xmlSource.html">xmlSource</a></code>.</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlSource.html">xmlSource</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ src =  system.file("exampleData", "Rsource.xml", package = "XML")
+   # mark the string as an XML file containing R code
+ k = xmlCodeFile(src)
+
+   # read and parse the code, but don't evaluate it.
+ code = xmlSource(k, eval = FALSE)
+
+   # read and evaluate the code in a special environment.
+ e = new.env()
+ ans = xmlSource(k, envir = e)
+ ls(e)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

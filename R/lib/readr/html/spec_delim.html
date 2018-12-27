@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate a column specification</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for spec_delim {readr}"><tr><td>spec_delim {readr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate a column specification</h2>
+
+<h3>Description</h3>
+
+<p>When printed, only the first 20 columns are printed by default. To override,
+set <code>options(readr.num_columns)</code> can be used to modify this (a value of 0
+turns off printing).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+spec_delim(file, delim, quote = "\"", escape_backslash = FALSE,
+  escape_double = TRUE, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
+  comment = "", trim_ws = FALSE, skip = 0, n_max = 0,
+  guess_max = 1000, progress = show_progress())
+
+spec_csv(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
+  quote = "\"", comment = "", trim_ws = TRUE, skip = 0, n_max = 0,
+  guess_max = 1000, progress = show_progress())
+
+spec_csv2(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
+  quote = "\"", comment = "", trim_ws = TRUE, skip = 0, n_max = 0,
+  guess_max = 1000, progress = show_progress())
+
+spec_tsv(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = c("", "NA"), quoted_na = TRUE,
+  quote = "\"", comment = "", trim_ws = TRUE, skip = 0, n_max = 0,
+  guess_max = 1000, progress = show_progress())
+
+spec_table(file, col_names = TRUE, col_types = NULL,
+  locale = default_locale(), na = "NA", skip = 0, n_max = 0,
+  guess_max = 1000, progress = show_progress(), comment = "")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>Either a path to a file, a connection, or literal data
+(either a single string or a raw vector).
+</p>
+<p>Files ending in <code>.gz</code>, <code>.bz2</code>, <code>.xz</code>, or <code>.zip</code> will
+be automatically uncompressed. Files starting with <code>http://</code>,
+<code>https://</code>, <code>ftp://</code>, or <code>ftps://</code> will be automatically
+downloaded. Remote gz files can also be automatically downloaded and
+decompressed.
+</p>
+<p>Literal data is most useful for examples and tests. It must contain at
+least one new line to be recognised as data (instead of a path).</p>
+</td></tr>
+<tr valign="top"><td><code>delim</code></td>
+<td>
+<p>Single character used to separate fields within a record.</p>
+</td></tr>
+<tr valign="top"><td><code>quote</code></td>
+<td>
+<p>Single character used to quote strings.</p>
+</td></tr>
+<tr valign="top"><td><code>escape_backslash</code></td>
+<td>
+<p>Does the file use backslashes to escape special
+characters? This is more general than <code>escape_double</code> as backslashes
+can be used to escape the delimiter character, the quote character, or
+to add special characters like <code>\n</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>escape_double</code></td>
+<td>
+<p>Does the file escape quotes by doubling them?
+i.e. If this option is <code>TRUE</code>, the value <code>""""</code> represents
+a single quote, <code>\"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>col_names</code></td>
+<td>
+<p>Either <code>TRUE</code>, <code>FALSE</code> or a character vector
+of column names.
+</p>
+<p>If <code>TRUE</code>, the first row of the input will be used as the column
+names, and will not be included in the data frame. If <code>FALSE</code>, column
+names will be generated automatically: X1, X2, X3 etc.
+</p>
+<p>If <code>col_names</code> is a character vector, the values will be used as the
+names of the columns, and the first row of the input will be read into
+the first row of the output data frame.
+</p>
+<p>Missing (<code>NA</code>) column names will generate a warning, and be filled
+in with dummy names <code>X1</code>, <code>X2</code> etc. Duplicate column names
+will generate a warning and be made unique with a numeric prefix.</p>
+</td></tr>
+<tr valign="top"><td><code>col_types</code></td>
+<td>
+<p>One of <code>NULL</code>, a <code><a href="cols.html">cols()</a></code> specification, or
+a string. See <code>vignette("column-types")</code> for more details.
+</p>
+<p>If <code>NULL</code>, all column types will be imputed from the first 1000 rows
+on the input. This is convenient (and fast), but not robust. If the
+imputation fails, you'll need to supply the correct types yourself.
+</p>
+<p>If a column specification created by <code><a href="cols.html">cols()</a></code>, it must contain
+one column specification for each column. If you only want to read a
+subset of the columns, use <code><a href="cols.html">cols_only()</a></code>.
+</p>
+<p>Alternatively, you can use a compact string representation where each
+character represents one column:
+c = character, i = integer, n = number, d = double,
+l = logical, D = date, T = date time, t = time, ? = guess, or
+<code>_</code>/<code>-</code> to skip the column.</p>
+</td></tr>
+<tr valign="top"><td><code>locale</code></td>
+<td>
+<p>The locale controls defaults that vary from place to place.
+The default locale is US-centric (like R), but you can use
+<code><a href="locale.html">locale()</a></code> to create your own locale that controls things like
+the default time zone, encoding, decimal mark, big mark, and day/month
+names.</p>
+</td></tr>
+<tr valign="top"><td><code>na</code></td>
+<td>
+<p>Character vector of strings to use for missing values. Set this
+option to <code>character()</code> to indicate no missing values.</p>
+</td></tr>
+<tr valign="top"><td><code>quoted_na</code></td>
+<td>
+<p>Should missing values inside quotes be treated as missing
+values (the default) or strings.</p>
+</td></tr>
+<tr valign="top"><td><code>comment</code></td>
+<td>
+<p>A string used to identify comments. Any text after the
+comment characters will be silently ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>trim_ws</code></td>
+<td>
+<p>Should leading and trailing whitespace be trimmed from
+each field before parsing it?</p>
+</td></tr>
+<tr valign="top"><td><code>skip</code></td>
+<td>
+<p>Number of lines to skip before reading data.</p>
+</td></tr>
+<tr valign="top"><td><code>n_max</code></td>
+<td>
+<p>Maximum number of records to read.</p>
+</td></tr>
+<tr valign="top"><td><code>guess_max</code></td>
+<td>
+<p>Maximum number of records to use for guessing column types.</p>
+</td></tr>
+<tr valign="top"><td><code>progress</code></td>
+<td>
+<p>Display a progress bar? By default it will only display
+in an interactive session and not while knitting a document. The display
+is updated every 50,000 values and will only display if estimated reading
+time is 5 seconds or more. The automatic progress bar can be disabled by
+setting option <code>readr.show_progress</code> to <code>FALSE</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The <code>col_spec</code> generated for the file.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Input sources -------------------------------------------------------------
+# Retrieve specs from a path
+spec_csv(system.file("extdata/mtcars.csv", package = "readr"))
+spec_csv(system.file("extdata/mtcars.csv.zip", package = "readr"))
+
+# Or directly from a string (must contain a newline)
+spec_csv("x,y\n1,2\n3,4")
+
+# Column types --------------------------------------------------------------
+# By default, readr guesses the columns types, looking at the first 1000 rows.
+# You can specify the number of rows used with guess_max.
+spec_csv(system.file("extdata/mtcars.csv", package = "readr"), guess_max = 20)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>readr</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Identifying Connected Components in Gaussian Finite Mixture...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for gmmhd {mclust}"><tr><td>gmmhd {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Identifying Connected Components in Gaussian Finite Mixture Models for Clustering</h2>
+
+<h3>Description</h3>
+
+<p>Starting with the density estimate obtained from a fitted Gaussian finite mixture model, cluster cores are identified from the connected components at a given density level. Once cluster cores are identified, the remaining observations are allocated to those cluster cores for which the probability of cluster membership is the highest. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+gmmhd(object, 
+      ngrid = min(round((log(nrow(data)))*10), nrow(data)), 
+      dr = list(d = 3, lambda = 1, cumEvalues = NULL, mindir = 2),
+      classify = list(G = 1:5, 
+                      modelNames = mclust.options("emModelNames")[-c(8, 10)]),
+      ...)
+
+## S3 method for class 'gmmhd'
+plot(x, what = c("mode", "cores", "clusters"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>An object returned by <code><a href="Mclust.html">Mclust</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ngrid</code></td>
+<td>
+<p>An integer specifying the number of grid points used to compute the density levels.</p>
+</td></tr>
+<tr valign="top"><td><code>dr</code></td>
+<td>
+<p>A list of parameters used in the dimension reduction step.</p>
+</td></tr>
+<tr valign="top"><td><code>classify</code></td>
+<td>
+<p>A list of parameters used in the classification step.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object of class <code>'gmmhd'</code> as returned by the function <code>gmmhd</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>A string specifying the type of plot to be produced. See Examples section.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Model-based clustering associates each component of a finite mixture distribution to a group or cluster.
+An underlying implicit assumption is that a one-to-one correspondence exists between mixture components and clusters. However, a single Gaussian density may not be sufficient, and two or more mixture components could be needed to reasonably approximate the distribution within a homogeneous group of observations. 
+</p>
+<p>This function implements the methodology proposed by Scrucca (2016) based on the identification of high density regions of the underlying density function. Starting with an estimated Gaussian finite mixture model, the corresponding density estimate is used to identify the cluster cores, i.e. those data points which form the core of the clusters. 
+These cluster cores are obtained from the connected components at a given density level <i>c</i>. A mode function gives the number of connected components as the level <i>c</i> is varied. 
+Once cluster cores are identified, the remaining observations are allocated to those cluster cores for which the probability of cluster membership is the highest.
+</p>
+<p>The method usually improves the identification of non-Gaussian clusters compared to a fully parametric approach. Furthermore, it enables the identification of clusters which cannot be obtained by merging mixture components, and it can be straightforwardly extended to cases of higher dimensionality.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of class <code>gmmhd</code> with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>Mclust</code></td>
+<td>
+<p>The input object of class <code>"Mclust"</code> representing an estimated Gaussian finite mixture model.</p>
+</td></tr>
+<tr valign="top"><td><code>MclustDA</code></td>
+<td>
+<p>An object of class <code>"MclustDA"</code> containing the model used for the classification step.</p>
+</td></tr>
+<tr valign="top"><td><code>MclustDR</code></td>
+<td>
+<p>An object of class <code>"MclustDR"</code> containing the dimension reduction step if performed, otherwise <code>NULL</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>The data used in the algorithm. This can be the input data or a projection if a preliminary dimension reduction step is performed.</p>
+</td></tr>
+<tr valign="top"><td><code>density</code></td>
+<td>
+<p>The density estimated from the input Gaussian finite mixture model evaluated at the input data.</p>
+</td></tr>
+<tr valign="top"><td><code>con</code></td>
+<td>
+<p>A list of connected components at each step.</p>
+</td></tr>
+<tr valign="top"><td><code>nc</code></td>
+<td>
+<p>A vector giving the number of connected components (i.e. modes) at each step.</p>
+</td></tr>
+<tr valign="top"><td><code>pn</code></td>
+<td>
+<p>Vector of values over a uniform grid of proportions of length <code>ngrid</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>qn</code></td>
+<td>
+<p>Vector of density quantiles corresponding to proportions <code>pn</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>pc</code></td>
+<td>
+<p>Vector of empirical proportions corresponding to quantiles <code>qn</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>clusterCores</code></td>
+<td>
+<p>Vector of cluster cores numerical labels; <code>NA</code>s indicate that an observation does not belong to any cluster core.</p>
+</td></tr>
+<tr valign="top"><td><code>clusterCores</code></td>
+<td>
+<p>Vector of numerical labels giving the final clustering.</p>
+</td></tr>
+<tr valign="top"><td><code>numClusters</code></td>
+<td>
+<p>An integer giving the number of clusters.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Luca Scrucca <a href="mailto:luca.scrucca@unipg.it">luca.scrucca@unipg.it</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Scrucca, L. (2016) Identifying connected components in Gaussian finite mixture models for clustering. <em>Computational Statistics &amp; Data Analysis</em>, 93, 5-17.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Mclust.html">Mclust</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+data(faithful)
+mod &lt;- Mclust(faithful)
+summary(mod)
+plot(as.densityMclust(mod), faithful, what = "density", 
+     points.pch = mclust.options("classPlotSymbols")[mod$classification], 
+     points.col = mclust.options("classPlotColors")[mod$classification])
+
+GMMHD &lt;- gmmhd(mod)
+summary(GMMHD)
+
+plot(GMMHD, what = "mode")
+plot(GMMHD, what = "cores")
+plot(GMMHD, what = "clusters")
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

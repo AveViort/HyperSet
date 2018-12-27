@@ -1,0 +1,400 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Draw Geographical Maps</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for map {maps}"><tr><td>map {maps}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Draw Geographical Maps
+</h2>
+
+<h3>Description</h3>
+
+<p>Draw lines and polygons as specified by a map database.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+map(database = "world", regions = ".", exact = FALSE, boundary = TRUE,
+  interior = TRUE, projection = "", parameters = NULL, orientation = NULL,
+  fill = FALSE, col = 1, plot = TRUE, add = FALSE, namesonly = FALSE,
+  xlim = NULL, ylim = NULL, wrap = FALSE, resolution = if (plot) 1 else 0,
+  type = "l", bg = par("bg"), mar = c(4.1, 4.1, par("mar")[3], 0.1),
+  myborder = 0.01, namefield="name", lforce="n", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>database</code></td>
+<td>
+
+<p>character string naming a geographical database, a list of
+<code>x</code>, <code>y</code>, and <code>names</code> obtained from a previous call to
+<code>map</code> or a spatial object of class <code>SpatialPolygons</code> or <code>SpatialLines</code>.
+The string choices include a <code><a href="world.html">world</a></code> map,
+three USA databases (<code><a href="usa.html">usa</a></code>, <code><a href="state.html">state</a></code>,
+<code><a href="county.html">county</a></code>), and more (type <code>help(package='maps')</code> to see the package index). If the requied database is in a different package that has not been attached, the string may be started with &quot;packagename::&quot;. The
+location of the map databases may be overridden by setting the
+<code>R_MAP_DATA_DIR</code> environment variable.
+</p>
+</td></tr>
+<tr valign="top"><td><code>regions</code></td>
+<td>
+
+<p>character vector that names the polygons to draw.
+Each database is composed of a collection of polygons, and each polygon has
+a unique name.
+When a region is composed of more than one polygon, the individual polygons
+have the name of the region, followed by a colon and a qualifier,
+as in <code>michigan:north</code> and <code>michigan:south</code>.
+Each element of <code>regions</code> is matched
+against the polygon names in the database and, according to
+<code>exact</code>, a subset is selected for drawing. The regions may also be 
+defined using (perl) regular expressions. This makes it possible to use 
+'negative' expressions like <code>"Norway(?!:Svalbard)"</code>, which means Norway
+and all islands except Svalbard. All entries are case insensitive.
+The default selects all polygons in the database.
+</p>
+</td></tr>
+<tr valign="top"><td><code>exact</code></td>
+<td>
+
+<p>If <code>TRUE</code>, only exact matches with <code>regions</code> are
+selected for drawing.
+If <code>FALSE</code>, each element of <code>regions</code> is matched
+as a regular expression
+against the polygon names in the database and all matches are selected
+for drawing.
+</p>
+</td></tr>
+<tr valign="top"><td><code>boundary</code></td>
+<td>
+
+<p>If <code>FALSE</code>, boundary segments are not drawn.
+A boundary segment is a line segment of the map that bounds only
+one of the polygons to be drawn.
+This argument is ignored if <code>fill</code> is <code>TRUE</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>interior</code></td>
+<td>
+
+<p>If <code>FALSE</code>, interior segments are not drawn.
+An interior segment is a line segment of the map that bounds two
+of the polygons to be drawn.
+This argument is ignored if <code>fill</code> is <code>TRUE</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>projection</code></td>
+<td>
+
+<p>character string that names a map projection to use.
+See <code><a href="../../mapproj/html/mapproject.html">mapproject</a></code> (in the <code>mapproj</code> library).
+The default is to use a rectangular projection with the aspect ratio
+chosen so that longitude and latitude scales are equivalent at the
+center of the picture.
+</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+<p>numeric vector of parameters for use with the
+<code>projection</code> argument.
+This argument is optional only in the sense that certain
+projections do not require additional parameters.
+If a projection does require additional parameters, these
+must be given in the <code>parameters</code> argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>orientation</code></td>
+<td>
+
+<p>a vector <code>c(latitude, longitude, rotation)</code> describing where
+the map should be centered and a clockwise rotation (in degrees)
+about this center.
+</p>
+</td></tr>
+<tr valign="top"><td><code>fill</code></td>
+<td>
+
+<p>logical flag that says whether to draw lines or fill areas.
+If <code>FALSE</code>, the lines bounding each region will be drawn (but
+only once, for interior lines).
+If <code>TRUE</code>, each region will be filled using colors from the
+<code>col =</code> argument, and bounding lines are drawn by default using <code>par("fg")</code>.
+To hide the bounding lines, use <code>border=NA</code> (see <code>...</code>).
+</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+
+<p>vector of colors.
+If <code>fill</code> is <code>FALSE</code>, the first color is used for plotting
+all lines, and any other colors are ignored.
+Otherwise, the colors are matched one-one with the polygons
+that get selected by the <code>region</code> argument (and are reused
+cyclically, if necessary). If <code>fill = TRUE</code>, the default boundary line colour 
+is given by <code>par("fg")</code>. To change this, you can use the <code>border</code> 
+argument (see '...').
+A color of <code>NA</code> causes the corresponding region to be deleted
+from the list of polygons to be drawn.
+Polygon colors are assigned <em>after</em> polygons are deleted due to values
+of the <code>xlim</code> and <code>ylim</code> arguments.
+</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+
+<p>logical flag that specifies whether plotting
+should be done.
+If <code>plot</code> is <code>TRUE</code> the return value of <code>map</code> will
+not be printed automatically .
+</p>
+</td></tr>
+<tr valign="top"><td><code>add</code></td>
+<td>
+
+<p>logical flag that specifies whether to add to the
+current plot.
+If <code>FALSE</code>, a new plot is begun, and a new coordinate
+system is set up.
+</p>
+</td></tr>
+<tr valign="top"><td><code>namesonly</code></td>
+<td>
+
+<p>If <code>TRUE</code>, the return value will be a character vector of
+the names of the selected polygons.  See the Value section below.
+</p>
+</td></tr>
+<tr valign="top"><td><code>xlim</code></td>
+<td>
+
+<p>two element numeric
+vector giving a range of longitudes, expressed
+in degrees, to which drawing
+should be restricted.
+Longitude is measured in degrees east of Greenwich, so that, in particular,
+locations in the USA have negative longitude.
+If <code>fill = TRUE</code>, polygons selected by <code>region</code> must be entirely inside
+the <code>xlim</code> range.
+The default value of this argument spans the entire longitude range
+of the <code>database</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+
+<p>two element 
+numeric vector giving a range of latitudes,
+expressed in degrees, to which drawing
+should be restricted.
+Latitude is measured in degrees north of the
+equator, so that, in particular,
+locations in the USA have positive latitude.
+If <code>fill = TRUE</code>, polygons selected by <code>region</code> must be entirely inside
+the <code>ylim</code> range.
+The default value of this argument spans the entire latitude range
+of the <code>database</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>wrap</code></td>
+<td>
+<p>Boolean or a numeric vector. If TRUE, lines that cross too far across the map
+(due to a strange projection) are omitted. If wrap is a vector of length 2 or more, it is interpreted as the longitude range to be used for a global map, e.g. <code>c(-180,180)</code> or <code>c(0,360)</code>. This wrapping even works when <code>fill=TRUE</code> and is performed before any projection (so the range must always be in degrees). However, the wrapping is performed <em>after</em> <code>xlim, ylim</code> are applied, so these options should probably never be combined. If there is a third component, this signifies the latitude at which Antarctica will be &quot;closed&quot;. The default value is -89.9. Special values are <code>NA</code> (don't draw Antarctica at all) and 0 (draw the line at the latitude of the extremal points, not at a fixed lower latitude). </p>
+</td></tr>
+<tr valign="top"><td><code>resolution</code></td>
+<td>
+
+<p>number that specifies the resolution with which
+to draw the map.
+Resolution 0 is the full resolution of the database.
+Otherwise, just before polylines are plotted they are thinned:
+roughly speaking, successive points on the polyline that are
+within <code>resolution</code> device pixels of one another are collapsed
+to a single point (see the Reference for further details).
+Thinning is not performed if <code>plot = FALSE</code> or when polygons are drawn (<code>fill = TRUE</code> or <code>database</code> is a list of polygons).
+</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+
+<p>character string that controls drawing of the map.
+Aside from the default <code>type = "l"</code>, the value <code>type = "n"</code>
+can be used
+to set up the coordinate system and projection for a map that will
+be added to in later calls.
+</p>
+</td></tr>
+<tr valign="top"><td><code>bg</code></td>
+<td>
+
+<p>background color.
+</p>
+</td></tr>
+<tr valign="top"><td><code>mar</code></td>
+<td>
+
+<p>margins, as in <code><a href="../../graphics/html/par.html">par</a></code>.  Defaults allow for map.axes().
+</p>
+</td></tr>
+<tr valign="top"><td><code>myborder</code></td>
+<td>
+
+<p>scalar or vector of length 2 specifying the porportion of the plot
+to add to the defined or computed limits as borders.
+</p>
+</td></tr>
+<tr valign="top"><td><code>namefield</code></td>
+<td>
+
+<p>A vector of column names to be used as region name if <code>database</code> is a <code>SpatialPolygonsDataFrame</code>. Ignored in all other cases.
+</p>
+</td></tr>
+<tr valign="top"><td><code>lforce</code></td>
+<td>
+<p>Limit enforcement. Only taken into account if <code>xlim</code> and/or <code>ylim</code> are defined and (for &quot;s&quot; and &quot;l&quot;) a projection is used. Possible values are <code>"n"</code> (none) <code>"e"</code> (exact),<code>"s"</code> (small),<code>"l"</code> (large). 
+If <code>lforce="e"</code>, map data is restricted exactly to the given limits prior to projection. This option affects the output value of the map, not only the plot window.
+If <code>lforce="s"</code>, the four corners defined by <code>xlim</code> and <code>ylim</code> are projected and the plot window is restricted to the largest rectangle inside this region. 
+<code>"l"</code> will result in a larger rectangle that includes the four corners. However, the parts that fall outside the original limits may not be complete (only polygons that partially fall inside the boundaries are included). This will also work with <code>fill=TRUE</code>. In this case the output value of the data is not changed, only the plot window is affected. These options are only useful for some projections.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Extra arguments passed to <code>polygon</code> or <code>lines</code>. Of particular interest may be the options <code>border</code> and<code>lty</code> that control the color and line type of the polygon borders when <code>fill = TRUE</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The simplest form of use of this function is:
+</p>
+<pre>map(mymap)</pre>
+<p>where <code>mymap</code> is the returned value from a previous call to
+<code>map()</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>If <code>plot = TRUE</code>, a plot is made where 
+the polygons selected from <code>database</code>, through the
+<code>regions</code>, <code>xlim</code>, and <code>ylim</code> arguments, are outlined
+(<code>fill</code> is <code>FALSE</code>) or filled (<code>fill</code> is <code>TRUE</code>)
+with the colors in <code>col</code>.  
+</p>
+<p>The return value is a list with
+<code>x</code>, <code>y</code>, <code>range</code>, and <code>names</code> components.  
+This object can be used as a <code>database</code> for successive calls
+to <code>map</code> and functions.
+If <code>fill</code> is <code>FALSE</code>, the <code>x</code> and <code>y</code> vectors are
+the coordinates of successive polylines, separated by <code>NA</code>s.  If
+<code>fill</code> is <code>TRUE</code>, the <code>x</code> and <code>y</code> vectors have
+coordinates of successive polygons, again separated by <code>NA</code>s.
+Thus the return value can be handed directly to <code>lines</code> or
+<code>polygon</code>, as appropriate.
+</p>
+<p>When <code>namesonly</code> is <code>TRUE</code>, only the names component is returned.
+</p>
+<p>After a call to <code>map</code> for which the <code>projection</code> argument was
+specified there will be a global variable <code>.Last.projection</code>
+containing information about the projection used.
+This will be consulted in subsequent calls to <code>map</code> which use
+<code>projection = ''</code>.
+</p>
+
+
+<h3>References</h3>
+
+<p>Richard A. Becker, and Allan R. Wilks,
+&quot;Maps in S&quot;,
+<em>AT&amp;T Bell Laboratories Statistics Research Report [93.2], 1993.</em>
+<a href="http://ect.bell-labs.com/sl/doc/93.2.ps">http://ect.bell-labs.com/sl/doc/93.2.ps</a>
+</p>
+<p>Richard A. Becker, and Allan R. Wilks,
+&quot;Constructing a Geographical Database&quot;,
+<em>AT&amp;T Bell Laboratories Statistics Research Report [95.2], 1995.</em>
+<a href="http://ect.bell-labs.com/sl/doc/95.2.ps">http://ect.bell-labs.com/sl/doc/95.2.ps</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="map.text.html">map.text</a></code>, <code><a href="map.axes.html">map.axes</a></code>,
+<code><a href="map.scale.html">map.scale</a></code>, <code><a href="../../mapproj/html/map.grid.html">map.grid</a></code> (in the <code>mapproj</code> library),
+<code><a href="../../graphics/html/polygon.html">polygon</a></code>, <code><a href="Spatial2map.html">SpatialPolygons2map</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+map()	# low resolution map of the world
+map(wrap = c(0,360), fill = TRUE, col = 2) # pacific-centered map of the world
+map(wrap = c(0, 360, NA), fill = TRUE, col = 2) # idem, without Antarctica
+map('usa')	# national boundaries
+map('county', 'new jersey')	# county map of New Jersey
+map('state', region = c('new york', 'new jersey', 'penn'))	# map of three states
+map("state", ".*dakota", myborder = 0)	# map of the dakotas
+map.axes()				# show the effect of myborder = 0
+if(require(mapproj))
+  map('state', proj = 'bonne', param = 45)	# Bonne equal-area projection of states
+
+# names of the San Juan islands in Washington state
+map('county', 'washington,san', names = TRUE, plot = FALSE)
+
+# national boundaries in one linetype, states in another
+# (figure 5 in the reference)
+map("state", interior = FALSE)
+map("state", boundary = FALSE, lty = 2, add = TRUE)
+
+# plot the ozone data on a base map
+# (figure 4 in the reference)
+data(ozone)
+map("state", xlim = range(ozone$x), ylim = range(ozone$y))
+text(ozone$x, ozone$y, ozone$median)
+box()
+if(require(mapproj)) {	# mapproj is used for  projection="polyconic"
+  # color US county map by 2009 unemployment rate
+  # match counties to map using FIPS county codes
+  # Based on J's solution to the "Choropleth Challenge"
+  # http://blog.revolutionanalytics.com/2009/11/choropleth-challenge-result.html
+
+  # load data
+  # unemp includes data for some counties not on the "lower 48 states" county
+  # map, such as those in Alaska, Hawaii, Puerto Rico, and some tiny Virginia
+  #  cities
+  data(unemp)
+  data(county.fips)
+
+  # define color buckets
+  colors = c("#F1EEF6", "#D4B9DA", "#C994C7", "#DF65B0", "#DD1C77", "#980043")
+  unemp$colorBuckets &lt;- as.numeric(cut(unemp$unemp, c(0, 2, 4, 6, 8, 10, 100)))
+  leg.txt &lt;- c("&lt;2%", "2-4%", "4-6%", "6-8%", "8-10%", "&gt;10%")
+
+  # align data with map definitions by (partial) matching state,county
+  # names, which include multiple polygons for some counties
+  cnty.fips &lt;- county.fips$fips[match(map("county", plot=FALSE)$names,
+    county.fips$polyname)]
+  colorsmatched &lt;- unemp$colorBuckets [match(cnty.fips, unemp$fips)]
+
+  # draw map
+  map("county", col = colors[colorsmatched], fill = TRUE, resolution = 0,
+    lty = 0, projection = "polyconic")
+  map("state", col = "white", fill = FALSE, add = TRUE, lty = 1, lwd = 0.2,
+    projection="polyconic")
+  title("unemployment by county, 2009")
+  legend("topright", leg.txt, horiz = TRUE, fill = colors)
+
+  # Choropleth Challenge example, based on J's solution, see:
+  # http://blog.revolutionanalytics.com/2009/11/choropleth-challenge-result.html
+  # To see the faint county boundaries, use RGui menu:  File/SaveAs/PDF
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>maps</em> version 3.3.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

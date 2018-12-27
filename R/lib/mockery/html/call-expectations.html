@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Expectation: does the given call match the expected?</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for call-expectations {mockery}"><tr><td>call-expectations {mockery}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Expectation: does the given call match the expected?</h2>
+
+<h3>Description</h3>
+
+<p>Together with <code><a href="mock.html">mock</a></code> can be used to verify whether the
+call expression (<code><a href="call-expectations.html">expect_call</a></code>) and/or argument values
+(<code><a href="call-expectations.html">expect_args</a></code>) match the expected.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+expect_call(mock_object, n, expected_call)
+
+expect_args(mock_object, n, ...)
+
+expect_called(mock_object, n)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>mock_object</code></td>
+<td>
+<p>A <code><a href="mock.html">mock</a></code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>Call number or total number of calls.</p>
+</td></tr>
+<tr valign="top"><td><code>expected_call</code></td>
+<td>
+<p>Expected call expression; will be compared unevaluated.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Arguments as passed in a call.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>With <code>expect_called</code> you can check how many times has the mock
+object been called.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(testthat)
+
+# expect call expression (signature)
+m &lt;- mock()
+with_mock(summary = m, summary(iris))
+
+# it has been called once
+expect_called(m, 1)
+
+# the first (and only) call's arguments matches summary(iris)
+expect_call(m, 1, summary(iris))
+
+# expect argument value
+m &lt;- mock()
+a &lt;- iris
+with_mock(summary = m, summary(object = a))
+expect_args(m, 1, object = a)
+# is an equivalent to ...
+expect_equal(mock_args(m)[[1]], list(object = a))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mockery</em> version 0.4.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

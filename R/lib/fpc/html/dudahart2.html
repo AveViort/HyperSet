@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Duda-Hart test for splitting</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dudahart2 {fpc}"><tr><td>dudahart2 {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Duda-Hart test for splitting</h2>
+
+<h3>Description</h3>
+
+<p>Duda-Hart test for whether a data set should be split into two
+clusters. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  dudahart2(x,clustering,alpha=0.001)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>data matrix or data frame.</p>
+</td></tr>
+<tr valign="top"><td><code>clustering</code></td>
+<td>
+<p>vector of integers. Clustering into two clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>numeric between 0 and 1. Significance level (recommended
+to be small if this is used for estimating the number of clusters).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>p.value</code></td>
+<td>
+<p>p-value against null hypothesis of homogemeity.</p>
+</td></tr>
+<tr valign="top"><td><code>dh</code></td>
+<td>
+<p>ratio of within-cluster sum of squares for two clusters and
+overall sum of squares.</p>
+</td></tr>
+<tr valign="top"><td><code>compare</code></td>
+<td>
+<p>critical value for <code>dh</code> at level <code>alpha</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster1</code></td>
+<td>
+<p><code>FALSE</code> if the null hypothesis of homogemeity is
+rejected.</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>see above.</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p><code>1-alpha</code>-quantile of a standard Gaussian.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Duda, R. O. and Hart, P. E. (1973) <em>Pattern Classification and
+Scene Analysis</em>. Wiley, New York.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cluster.stats.html">cluster.stats</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=2)
+  set.seed(98765)
+  iriss &lt;- iris[sample(150,20),-5]
+  km &lt;- kmeans(iriss,2)
+  dudahart2(iriss,km$cluster)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

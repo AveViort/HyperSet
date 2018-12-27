@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Majority vote</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for majorityVote {mclust}"><tr><td>majorityVote {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Majority vote</h2>
+
+<h3>Description</h3>
+
+<p>A function to compute the majority vote (some would say plurality) label in a vector of labels, breaking ties at random.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+majorityVote(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A vector of values, either numerical or not.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>table</code></td>
+<td>
+<p>A table of votes for each unique value of <code>x</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ind</code></td>
+<td>
+<p>An integer specifying which unique value of <code>x</code> corresponds to the majority vote.</p>
+</td></tr>
+<tr valign="top"><td><code>majority</code></td>
+<td>
+<p>A string specifying the majority vote label.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>L. Scrucca</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- c("A", "C", "A", "B", "C", "B", "A")
+majorityVote(x)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

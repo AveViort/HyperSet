@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Build reference section</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for build_reference {pkgdown}"><tr><td>build_reference {pkgdown}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Build reference section</h2>
+
+<h3>Description</h3>
+
+<p>By default, pkgdown will generate an index that simply lists all
+the functions in alphabetical order. To override this, provide a
+<code>reference</code> section in your <code>_pkgdown.yml</code> as described
+below.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+build_reference(pkg = ".", lazy = TRUE, document = FALSE,
+  examples = TRUE, run_dont_run = FALSE, mathjax = TRUE, seed = 1014,
+  override = list(), preview = NA)
+
+build_reference_index(pkg = ".")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pkg</code></td>
+<td>
+<p>Path to package.</p>
+</td></tr>
+<tr valign="top"><td><code>lazy</code></td>
+<td>
+<p>If <code>TRUE</code>, only rebuild pages where the <code>.Rd</code>
+is more recent than the <code>.html</code>. This makes it much easier to
+rapidly protoype. It is set to <code>FALSE</code> by <code><a href="build_site.html">build_site()</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>document</code></td>
+<td>
+<p>If <code>TRUE</code>, will run <code><a href="../../devtools/html/document.html">devtools::document()</a></code> before
+updating the site.</p>
+</td></tr>
+<tr valign="top"><td><code>examples</code></td>
+<td>
+<p>Run examples?</p>
+</td></tr>
+<tr valign="top"><td><code>run_dont_run</code></td>
+<td>
+<p>Run examples that are surrounded in \dontrun?</p>
+</td></tr>
+<tr valign="top"><td><code>mathjax</code></td>
+<td>
+<p>Use mathjax to render math symbols?</p>
+</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+<p>Seed used to initialize so that random examples are
+reproducible.</p>
+</td></tr>
+<tr valign="top"><td><code>override</code></td>
+<td>
+<p>An optional named list used to temporarily override
+values in <code>_pkgdown.yml</code></p>
+</td></tr>
+<tr valign="top"><td><code>preview</code></td>
+<td>
+<p>If <code>TRUE</code>, or <code>is.na(preview) &amp;&amp; interactive()</code>, will preview
+freshly generated section in browser.</p>
+</td></tr>
+</table>
+
+
+<h3>YAML config</h3>
+
+<p>To tweak the index page, you need a section called <code>reference</code>
+which provides a list of sections containing, a <code>title</code>, list of
+<code>contents</code>, and optional <code>description</code>.
+</p>
+<p>For example, the following code breaks up the functions in pkgdown
+into two groups:</p>
+<pre>reference:
+- title: Render components
+  desc:  Build each component of the site.
+  contents:
+  - starts_with("build_")
+  - init_site
+- title: Templates
+  contents:
+  - render_page
+</pre>
+<p>Note that <code>contents</code> can contain either a list of function names,
+or if the functions in a section share a common prefix or suffix, you
+can use <code>starts_with("prefix")</code> and <code>ends_with("suffix")</code> to
+select them all. For more complex naming schemes you can use an aribrary
+regular expression with <code>matches("regexp")</code>. You can also use a leading
+<code>-</code> to exclude matches from a section. By default, these functions that
+match multiple topics will exclude topics with keyword &quot;internal&quot;. To
+include, use (e.g.) <code>starts_with("build_", internal = TRUE)</code>.
+</p>
+<p>Alternatively, you can selected topics that contain specified concepts with
+<code>has_concept("blah")</code>. Concepts are not currently well-supported by
+roxygen2, but may be useful if you write Rd files by hand.
+</p>
+<p>pkgdown will check that all non-internal topics are included on
+this page, and will generate a warning if you have missed any.
+</p>
+
+
+<h3>Figures</h3>
+
+<p>You can control the default rendering of figues by specifying the <code>figures</code>
+field in <code>_pkgdown.yml</code>. The default settings are equivalent to:</p>
+<pre>figures:
+  dev: grDevices::png
+  dpi: 96
+  dev.args: []
+  fig.ext: png
+  fig.width: 7.2916667
+  fig.height: ~
+  fig.retina: 2
+  fig.asp: 1.618
+</pre>
+
+
+<h3>Icons</h3>
+
+<p>You can optionally supply an icon for each help topic. To do so, you'll
+need a top-level <code>icons</code> directory. This should contain .png files
+that are either 30x30 (for regular display) or 60x60 (if you want
+retina display). Icons are matched to topics by aliases.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# This example illustrates some important output types
+# The following output should be wrapped over multiple lines
+a &lt;- 1:100
+a
+
+cat("This some text!\n")
+message("This is a message!")
+warning("This is a warning!")
+
+# This is a multi-line block
+{
+  1 + 2
+  2 + 2
+}
+
+## Not run: 
+stop("This is an error!", call. = FALSE)
+
+## End(Not run)
+
+
+# This code won't generally be run by CRAN. But it
+# will be run by pkgdown
+b &lt;- 10
+a + b
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pkgdown</em> version 1.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

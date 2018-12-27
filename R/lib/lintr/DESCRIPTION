@@ -1,0 +1,24 @@
+Package: lintr
+Title: A 'Linter' for R Code
+Version: 1.0.3
+Authors@R: person("Jim", "Hester", email = "james.f.hester@gmail.com", role = c("aut", "cre"))
+URL: https://github.com/jimhester/lintr
+BugReports: https://github.com/jimhester/lintr/issues
+Description: Checks adherence to a given style, syntax errors and possible
+    semantic issues.  Supports on the fly checking of R code edited with 'RStudio IDE', 'Emacs',
+    'Vim', 'Sublime Text' and 'Atom'.
+Depends: R (>= 3.1.1)
+Imports: rex, crayon, codetools, stringdist, testthat, digest, igraph,
+        rstudioapi (>= 0.2), httr, jsonlite, knitr, stats, utils
+Suggests: rmarkdown, mockery
+License: MIT + file LICENSE
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
+NeedsCompilation: no
+Packaged: 2018-11-08 16:39:01 UTC; jhester
+Author: Jim Hester [aut, cre]
+Maintainer: Jim Hester <james.f.hester@gmail.com>
+Repository: CRAN
+Date/Publication: 2018-11-08 17:10:10 UTC
+Built: R 3.5.1; ; 2018-11-16 10:50:43 UTC; unix

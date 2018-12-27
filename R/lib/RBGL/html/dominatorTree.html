@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Compute dominator tree from a vertex in a directed graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dominatorTree {RBGL}"><tr><td>dominatorTree {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Compute dominator tree from a vertex in a directed graph </h2>
+
+<h3>Description</h3>
+
+<p>Compute dominator tree from a vertex in a directed graph</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dominatorTree(g, start=nodes(g)[1])
+lengauerTarjanDominatorTree(g, start=nodes(g)[1])
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>a directed graph, one instance of the <code>graph</code> class </p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>a vertex in graph <code>g</code> </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>As stated in documentation on Lengauer Tarjan dominator tree in Boost Graph Library:
+</p>
+<p>A vertex u dominates a vertex v, if every path of directed graph from the entry to v must go through u. 
+</p>
+<p>This function builds the dominator tree for a directed graph.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Output is a vector, giving each node its immediate dominator.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con1 &lt;- file(system.file("XML/dominator.gxl",package="RBGL"), open="r")
+g1 &lt;- fromGXL(con1)
+close(con1)
+
+dominatorTree(g1)
+lengauerTarjanDominatorTree(g1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

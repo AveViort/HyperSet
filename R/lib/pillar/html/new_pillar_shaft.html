@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Constructor for column data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for new_pillar_shaft {pillar}"><tr><td>new_pillar_shaft {pillar}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Constructor for column data</h2>
+
+<h3>Description</h3>
+
+<p>The <code>new_pillar_shaft()</code> constructor creates objects of the <code>"pillar_shaft"</code>
+class.
+This is a virtual or abstract class, you must specify the <code>subclass</code>
+argument.
+By convention, this should be a string that starts with <code>"pillar_shaft_"</code>.
+See <code>vignette("extending", package = "tibble")</code> for usage examples.
+</p>
+<p><code>new_pillar_shaft_simple()</code> provides an implementation of the <code>pillar_shaft</code>
+class suitable for output that has a fixed formatting, which will be
+truncated with a continuation character (ellipsis or <code>~</code>) if it doesn't fit
+the available width.
+By default, the required width is computed from the natural width of the
+<code>formatted</code> argument.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+new_pillar_shaft(x, ..., width, min_width = width, subclass)
+
+new_pillar_shaft_simple(formatted, ..., width = NULL, align = "left",
+  min_width = NULL, na_indent = 0L)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional attributes</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The maximum column width.</p>
+</td></tr>
+<tr valign="top"><td><code>min_width</code></td>
+<td>
+<p>The minimum allowed column width, <code>width</code> if omitted.</p>
+</td></tr>
+<tr valign="top"><td><code>subclass</code></td>
+<td>
+<p>The name of the subclass.</p>
+</td></tr>
+<tr valign="top"><td><code>formatted</code></td>
+<td>
+<p>An object coercible to <a href="../../base/html/character.html">character</a>.</p>
+</td></tr>
+<tr valign="top"><td><code>align</code></td>
+<td>
+<p>Alignment of the column.</p>
+</td></tr>
+<tr valign="top"><td><code>na_indent</code></td>
+<td>
+<p>Indention of <code>NA</code> values.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>formatted</code> argument may also contain ANSI escapes to change color
+or other attributes of the text, see <a href="../../crayon/html/crayon.html">crayon</a>.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>pillar</em> version 1.3.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

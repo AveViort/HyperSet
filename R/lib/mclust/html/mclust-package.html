@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Gaussian Mixture Modelling for Model-Based Clustering,...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mclust-package {mclust}"><tr><td>mclust-package {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Gaussian Mixture Modelling for Model-Based Clustering, Classification, and Density Estimation</h2>
+
+<h3>Description</h3>
+
+<p>Finite Gaussian mixture modelling fitted via EM algorithm for model-based clustering, classification, and density estimation, including Bayesian regularization and dimension reduction.</p>
+
+
+<h3>Details</h3>
+
+<p>For a quick introduction to <span class="pkg">mclust</span> see the vignette <a href="../doc/mclust.html">A quick tour of mclust</a>.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Chris Fraley, Adrian Raftery and Luca Scrucca.
+</p>
+<p>Maintainer: Luca Scrucca <a href="mailto:luca.scrucca@unipg.it">luca.scrucca@unipg.it</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and density estimation using Gaussian finite mixture models, <em>The R Journal</em>, 8/1, pp. 205-233. 
+</p>
+<p>Fraley C. and Raftery A. E. (2002) Model-based clustering, discriminant analysis and density estimation, <em>Journal of the American Statistical Association</em>, 97/458, pp. 611-631.
+</p>
+<p>Fraley C., Raftery A. E., Murphy T. B. and Scrucca L. (2012) mclust Version 4 for R: Normal Mixture Modeling for Model-Based Clustering, Classification, and Density Estimation. <em>Technical Report</em> No. 597, Department of Statistics, University of Washington.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+# Clustering
+mod1 &lt;- Mclust(iris[,1:4])
+summary(mod1)
+plot(mod1,  what = c("BIC", "classification"))
+
+# Classification
+data(banknote)
+mod2 &lt;- MclustDA(banknote[,2:7], banknote$Status)
+summary(mod2)
+plot(mod2)
+
+# Density estimation
+mod3 &lt;- densityMclust(faithful$waiting)
+summary(mod3)
+plot(mod3, faithful$waiting)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

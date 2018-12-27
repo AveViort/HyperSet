@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Collapse Single Nodes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for collapse.singles {ape}"><tr><td>collapse.singles {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Collapse Single Nodes</h2>
+
+<h3>Description</h3>
+
+<p><code>collapse.singles</code> deletes the single nodes (i.e., with a single
+descendant) in a tree.
+</p>
+<p><code>has.singles</code> tests for the presence of single node(s) in a tree.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+collapse.singles(tree, root.edge = FALSE)
+has.singles(tree)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>tree</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>root.edge</code></td>
+<td>
+<p>whether to get the singleton edges from the root
+until the first bifurcating node and put them as <code>root.edge</code> of
+the returned tree. By default, this is ignored or if the tree has no
+edge lengths (see examples).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis, Klaus Schliep</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code>, <code><a href="read.tree.html">read.tree</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## a tree with 3 tips and 3 nodes:
+e &lt;- c(4L, 6L, 6L, 5L, 5L, 6L, 1L, 5L, 3L, 2L)
+dim(e) &lt;- c(5, 2)
+tr &lt;- structure(list(edge = e, tip.label = LETTERS[1:3], Nnode = 3L),
+                class = "phylo")
+tr
+has.singles(tr)
+## the following shows that node #4 (ie, the root) is a singleton
+## and node #6 is the first bifurcating node
+tr$edge
+## A bifurcating tree has less nodes than it has tips:
+## the following used to fail with ape 4.1 or lower:
+plot(tr)
+collapse.singles(tr) # only 2 nodes
+## give branch lengths to use the 'root.edge' option:
+tr$edge.length &lt;- runif(5)
+str(collapse.singles(tr, TRUE)) # has a 'root.edge'
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

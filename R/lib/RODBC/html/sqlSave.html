@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Write a Data Frame to a Table in an ODBC Database</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sqlSave {RODBC}"><tr><td>sqlSave {RODBC}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Write a Data Frame to a Table in an ODBC Database</h2>
+
+<h3>Description</h3>
+
+<p>Write or update a table in an ODBC database.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sqlSave(channel, dat, tablename = NULL, append = FALSE,
+        rownames = TRUE, colnames = FALSE, verbose = FALSE,
+        safer = TRUE, addPK = FALSE, typeInfo, varTypes,
+        fast = TRUE, test = FALSE, nastring = NULL)
+
+sqlUpdate(channel, dat, tablename = NULL, index = NULL,
+          verbose = FALSE, test = FALSE, nastring = NULL,
+          fast = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>channel</code></td>
+<td>
+<p>connection handle returned by <code><a href="odbcConnect.html">odbcConnect</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>dat</code></td>
+<td>
+<p>a data frame.</p>
+</td></tr>
+<tr valign="top"><td><code>tablename</code></td>
+<td>
+<p>character: a database table name accessible from
+the connected DSN.  If missing, the name of <code>dat</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>index</code></td>
+<td>
+<p>character.  Name(s) of index column(s) to be used.</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+<p>logical.  Should data be appended to an existing table?</p>
+</td></tr>
+<tr valign="top"><td><code>rownames</code></td>
+<td>
+<p>either logical or character.  If logical, save the row
+names as the first column <code>rownames</code> in the table?  If
+character, the column name under which to save the rownames.</p>
+</td></tr>
+<tr valign="top"><td><code>colnames</code></td>
+<td>
+<p>logical: save column names as the first row of table?</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>display statements as they are sent to the server?</p>
+</td></tr>
+<tr valign="top"><td><code>safer</code></td>
+<td>
+<p>logical. If true, create a non-existing table but only
+allow appends to an existing table. If false, allow <code>sqlSave</code>
+to attempt to delete all the rows of an existing table, or to drop it.</p>
+</td></tr>
+<tr valign="top"><td><code>addPK</code></td>
+<td>
+<p>logical.  Should rownames (if included) be specified as a
+primary key?</p>
+</td></tr>
+<tr valign="top"><td><code>typeInfo</code></td>
+<td>
+<p>optional list of DBMS datatypes.  Should have elements
+named <code>"character"</code>, <code>"double"</code> and <code>"integer"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>varTypes</code></td>
+<td>
+<p>an optional named character vector giving the DBMSs
+datatypes to be used for some (or all) of the columns if a table is
+to be created.</p>
+</td></tr>
+<tr valign="top"><td><code>fast</code></td>
+<td>
+<p>logical.  If false, write data a row at a time.  If true,
+use a parametrized <code>INSERT INTO</code> or <code>UPDATE</code> query to
+write all the data in one operation.</p>
+</td></tr>
+<tr valign="top"><td><code>test</code></td>
+<td>
+<p>logical: if <code>TRUE</code> show what would be done, only.</p>
+</td></tr>
+<tr valign="top"><td><code>nastring</code></td>
+<td>
+<p>optional character string to be used for writing
+<code>NA</code>s to the database.  See &lsquo;Details&rsquo;.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>sqlSave</code> saves the data frame <code>dat</code> in the table
+<code>tablename</code>.  If the table exists and has the appropriate
+structure it is used, or else it is created anew.  If a new table is
+created, column names are remapped by removing any characters which
+are not alphanumeric or <code>_</code>, and the types are selected by
+consulting arguments <code>varTypes</code> and <code>typeInfo</code>, then looking
+the driver up in the database used by <code><a href="setSqlTypeInfo.html">getSqlTypeInfo</a></code> or
+failing that by interrogating <code><a href="sqlTypeInfo.html">sqlTypeInfo</a></code>.
+</p>
+<p>If <code>rownames = TRUE</code> the first column of the table will be the
+row labels with colname <code>rowname</code>: <code>rownames</code> can also be a
+string giving the desired column name (see &lsquo;Examples&rsquo;). If
+<code>colnames</code> is true, the column names are copied into row 1.  This
+is intended for cases where case conversion alters the original column
+names and it is desired that they are retained.  Note that there are
+drawbacks to this approach: it presupposes that the rows will be
+returned in the correct order; not always valid.  It will also cause
+numeric columns to be returned as factors.
+</p>
+<p>Argument <code>addPK = TRUE</code> causes the row names to be marked as a
+primary key.  This is usually a good idea, and may allow database
+updates to be done.  However, the ODBC drivers for some DBMSs
+(e.g. Access) do not support primary keys, and earlier versions of the
+PostgreSQL ODBC driver generated internal memory corruption if this
+option is used.
+</p>
+<p><code>sqlUpdate</code> updates the table where the rows already exist.  Data
+frame <code>dat</code> should contain columns with names that map to (some
+of) the columns in the table.  It also needs to contain the column(s)
+specified by <code>index</code> which together identify the rows to be
+updated.  If <code>index = NULL</code>, the function tries to identify such
+columns.  First it looks for a primary key for the table, then for the
+column(s) that the database regards as the optimal for defining a row
+uniquely (these are returned by <code><a href="sqlColumns.html">sqlColumns</a>(special =
+  TRUE)</code>: if this returns a pseudo-column it cannot be used as we do not
+have values for the rows to be changed).  Finally, the row names are
+used if they are stored as column <code>"rownames"</code> in the table.
+</p>
+<p>When <code>fast = TRUE</code>, <code>NA</code>s are always written as SQL nulls in
+the database, and this is also the case if <code>fast = FALSE</code> and
+<code>nastring = NULL</code> (its default value).  Otherwise <code>nastring</code>
+gives the character string to be sent to the driver when <code>NA</code>s
+are encountered: for all but the simplest applications it will be
+better to prepare a data frame with non-null missing values already
+substituted.
+</p>
+<p>If <code>fast = FALSE</code> all data are sent as character strings.
+If <code>fast = TRUE</code>, integer and double vectors are sent as types
+<code>SQL_C_SLONG</code> and <code>SQL_C_DOUBLE</code> respectively.  Some drivers
+seem to require <code>fast = FALSE</code> to send other types,
+e.g. <code>datetime</code>.  SQLite's approach is to use the data to determine
+how it is stored, and this does not work well with <code>fast = TRUE</code>.
+</p>
+<p>If <code>tablename</code> contains <span class="samp">.</span> and neither <code>catalog</code> nor
+<code>schema</code> is supplied, an attempt is made to interpret
+<code><var>qualifier</var>.<var>table</var></code> names as table <code><var>table</var></code>
+in schema <code><var>qualifier</var></code> (and for MySQL &lsquo;schema&rsquo; means
+&lsquo;database&rsquo;).  (This can be suppressed by opening the connection with
+<code>interpretDot = FALSE</code>.)
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>1</code> invisibly for success (and failures cause errors).
+</p>
+
+
+<h3>Warning</h3>
+
+<p><code>sqlSave(safer = FALSE)</code> uses the &lsquo;great white shark&rsquo;
+method of testing tables (bite it and see).  The logic will
+unceremoniously <code>DROP</code> the table and create it anew with its own
+choice of column types in its attempt to find a writable
+solution. <code>test = TRUE</code> will not necessarily predict this
+behaviour. Attempting to write indexed columns or writing to
+pseudo-columns are less obvious causes of failed writes followed by a
+<code>DROP</code>.  If your table structure is precious it is up to you back
+it up.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Lapsley and Brian Ripley
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sqlFetch.html">sqlFetch</a></code>, <code><a href="sqlQuery.html">sqlQuery</a></code>,
+<code><a href="odbcConnect.html">odbcConnect</a></code>, <code><a href="odbcGetInfo.html">odbcGetInfo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+channel &lt;- odbcConnect("test")
+sqlSave(channel, USArrests, rownames = "state", addPK=TRUE)
+sqlFetch(channel, "USArrests", rownames = "state") # get the lot
+foo &lt;- cbind(state=row.names(USArrests), USArrests)[1:3, c(1,3)]
+foo[1,2] &lt;- 222
+sqlUpdate(channel, foo, "USArrests")
+sqlFetch(channel, "USArrests", rownames = "state", max = 5)
+sqlDrop(channel, "USArrests") 
+close(channel)
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RODBC</em> version 1.3-15 <a href="00Index.html">Index</a>]</div>
+</body></html>

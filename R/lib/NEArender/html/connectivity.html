@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Connectivity</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for connectivity {NEArender}"><tr><td>connectivity {NEArender}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Connectivity</h2>
+
+<h3>Description</h3>
+
+<p>Function for plotting node degree distribution in order to test if the network is scale-free
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+connectivity(NET, Lowercase = 1, col.1 = 1, col.2 = 2, col.score = 3,
+  echo = 1, main = "Connectivity plot", min.score = NA, n.top = NA,
+  hex = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>NET</code></td>
+<td>
+<p>Input network file.</p>
+</td></tr>
+<tr valign="top"><td><code>Lowercase</code></td>
+<td>
+<p>If node IDs should be rendered lower-case (Default:1, i.e. 'yes').</p>
+</td></tr>
+<tr valign="top"><td><code>col.1</code></td>
+<td>
+<p>Number of column where 1st node of each edge should be found (only needed when NET is a text file rather than a list).</p>
+</td></tr>
+<tr valign="top"><td><code>col.2</code></td>
+<td>
+<p>Number of column where 2nd node of each edge should be found (only needed when NET is a text file rather than a list, i.e. passed down to import.net).</p>
+</td></tr>
+<tr valign="top"><td><code>col.score</code></td>
+<td>
+<p>Number of column  where edge confidence score is found (only needed when NET is a text file rather than a list, i.e. passed down to import.net).</p>
+</td></tr>
+<tr valign="top"><td><code>echo</code></td>
+<td>
+<p>If messages about execution progress should appear.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>title name for the plot, default: &quot;Connectivity plot&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>min.score</code></td>
+<td>
+<p>Minimum confidence score for an edge to be included in the network (is alternative to n.top and is only used when NET is a text file rather than a list, i.e. passed down to import.net).</p>
+</td></tr>
+<tr valign="top"><td><code>n.top</code></td>
+<td>
+<p>Number of edges to be included in the network, top when ranked by confidence score (is alternative to min.score and only used when NET is a text file rather than a list, i.e. passed down to import.net).</p>
+</td></tr>
+<tr valign="top"><td><code>hex</code></td>
+<td>
+<p>If the node degree distribution should be presented as density plot using package hexbin.</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="benchmark.html">benchmark</a></code> and <code><a href="import.net.html">import.net</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+file &lt;-  system.file("extdata", "Connectivity.FC1_full", package = "NEArender")
+
+connect &lt;- connectivity(file,hex=TRUE)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NEArender</em> version 1.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

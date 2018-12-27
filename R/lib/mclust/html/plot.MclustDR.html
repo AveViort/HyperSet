@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plotting method for dimension reduction for model-based...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plot.MclustDR {mclust}"><tr><td>plot.MclustDR {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plotting method for dimension reduction for model-based clustering and classification</h2>
+
+<h3>Description</h3>
+
+<p>Graphs data projected onto the estimated subspace for model-based clustering and classification.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'MclustDR'
+plot(x, dimens, 
+     what = c("scatterplot", "pairs", "contour", "classification",
+              "boundaries", "density", "evalues"), 
+     symbols, colors, col.contour = gray(0.7), col.sep = grey(0.4), 
+     ngrid = 100, nlevels = 5, asp = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>An object of class <code>'MclustDR'</code> resulting from a call to <code><a href="MclustDR.html">MclustDR</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>dimens</code></td>
+<td>
+
+<p>A vector of integers giving the dimensions of the desired coordinate
+projections for multivariate data.
+</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+
+<p>The type of graph requested: 
+</p>
+
+<dl>
+<dt><code>"scatterplot"</code> =</dt><dd><p>a two-dimensional plot of data projected onto the first two directions specified by <code>dimens</code> and with data points marked according to the corresponding mixture component.
+By default, the first two directions are selected for plotting.</p>
+</dd>
+<dt><code>"pairs"</code> =</dt><dd><p>a scatterplot matrix of data projected onto the estimated subspace and with data points marked according to the corresponding mixture component.
+By default, all the available directions are used, unless they have been specified by <code>dimens</code>.</p>
+</dd>
+<dt><code>"contour"</code> =</dt><dd><p>a two-dimensional plot of data projected onto the first two directions specified by <code>dimens</code> (by default, the first two directions) with density contours for classes or clusters and data points marked according to the corresponding mixture component.</p>
+</dd>
+<dt><code>"classification"</code> =</dt><dd><p>a two-dimensional plot of data projected onto the first two directions specified by <code>dimens</code> (by default, the first two directions) with classification region and data points marked according to the corresponding mixture component.</p>
+</dd>
+<dt><code>"boundaries"</code> =</dt><dd><p>a two-dimensional plot of data projected onto the first two directions specified by <code>dimens</code> (by default, the first two directions) with uncertainty boundaries and data points marked according to the corresponding mixture component.
+The uncertainty is shown using a greyscale with darker regions indicating higher uncertainty.
+</p>
+</dd>
+<dt><code>"density"</code> =</dt><dd><p>a one-dimensional plot of estimated density for the first direction specified by <code>dimens</code> (by default, the first one). A set of box-plots for each estimated cluster or known class are also shown at the bottom of the graph.
+</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>symbols</code></td>
+<td>
+
+<p>Either an integer or character vector assigning a plotting symbol to each
+unique mixture component. Elements in <code>colors</code> correspond to classes
+in order of appearance in the sequence of observations (the order used by
+the function <code>factor</code>). 
+The default is given by <code>mclust.options("classPlotSymbols")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>colors</code></td>
+<td>
+
+<p>Either an integer or character vector assigning a color to each
+unique cluster or known class. Elements in <code>colors</code>
+correspond to classes in order of appearance in the sequence of
+observations (the order used by the function <code>factor</code>). 
+The default is given by <code>mclust.options("classPlotColors")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>col.contour</code></td>
+<td>
+
+<p>The color of contours in case <code>what = "contour"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>col.sep</code></td>
+<td>
+
+<p>The color of classification boundaries in case <code>what = "classification"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ngrid</code></td>
+<td>
+
+<p>An integer specifying the number of grid points to use in evaluating the classification regions.
+</p>
+</td></tr>
+<tr valign="top"><td><code>nlevels</code></td>
+<td>
+
+<p>The number of levels to use in case <code>what = "contour"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>asp</code></td>
+<td>
+<p>For scatterplots the <i>y/x</i> aspect ratio, see
+<code><a href="../../graphics/html/plot.window.html">plot.window</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Luca Scrucca</p>
+
+
+<h3>References</h3>
+
+<p>Scrucca, L. (2010) Dimension reduction for model-based clustering.
+<em>Statistics and Computing</em>, 20(4), pp. 471-484.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="MclustDR.html">MclustDR</a></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+mod &lt;- Mclust(iris[,1:4], G = 3)
+dr &lt;- MclustDR(mod)
+plot(dr, what = "evalues")
+plot(dr, what = "pairs")
+plot(dr, what = "scatterplot", dimens = c(1,3))
+plot(dr, what = "contour")
+plot(dr, what = "classification", ngrid = 200)
+plot(dr, what = "boundaries", ngrid = 200)
+plot(dr, what = "density")
+plot(dr, what = "density", dimens = 2)
+
+data(banknote)
+da &lt;- MclustDA(banknote[,2:7], banknote$Status, G = 1:3)
+dr &lt;- MclustDR(da)
+plot(dr, what = "evalues")
+plot(dr, what = "pairs")
+plot(dr, what = "contour")
+plot(dr, what = "contour", dimens = c(1,3))
+plot(dr, what = "classification", ngrid = 200)
+plot(dr, what = "boundaries", ngrid = 200)
+plot(dr, what = "density")
+plot(dr, what = "density", dimens = 2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

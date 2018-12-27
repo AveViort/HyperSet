@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dynamically insert/remove a tabPanel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for insertTab {shiny}"><tr><td>insertTab {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Dynamically insert/remove a tabPanel</h2>
+
+<h3>Description</h3>
+
+<p>Dynamically insert or remove a <code><a href="tabPanel.html">tabPanel</a></code> (or a
+<code><a href="navbarPage.html">navbarMenu</a></code>) from an existing <code><a href="tabsetPanel.html">tabsetPanel</a></code>,
+<code><a href="navlistPanel.html">navlistPanel</a></code> or <code><a href="navbarPage.html">navbarPage</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+insertTab(inputId, tab, target, position = c("before", "after"),
+  select = FALSE, session = getDefaultReactiveDomain())
+
+prependTab(inputId, tab, select = FALSE, menuName = NULL,
+  session = getDefaultReactiveDomain())
+
+appendTab(inputId, tab, select = FALSE, menuName = NULL,
+  session = getDefaultReactiveDomain())
+
+removeTab(inputId, target, session = getDefaultReactiveDomain())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>inputId</code></td>
+<td>
+<p>The <code>id</code> of the <code>tabsetPanel</code> (or
+<code>navlistPanel</code> or <code>navbarPage</code>) into which <code>tab</code> will
+be inserted/removed.</p>
+</td></tr>
+<tr valign="top"><td><code>tab</code></td>
+<td>
+<p>The item to be added (must be created with <code>tabPanel</code>,
+or with <code>navbarMenu</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>target</code></td>
+<td>
+<p>If inserting: the <code>value</code> of an existing
+<code>tabPanel</code>, next to which <code>tab</code> will be added.
+If removing: the <code>value</code> of the <code>tabPanel</code> that
+you want to remove. See Details if you want to insert next to/remove
+an entire <code>navbarMenu</code> instead.</p>
+</td></tr>
+<tr valign="top"><td><code>position</code></td>
+<td>
+<p>Should <code>tab</code> be added before or after the
+<code>target</code> tab?</p>
+</td></tr>
+<tr valign="top"><td><code>select</code></td>
+<td>
+<p>Should <code>tab</code> be selected upon being inserted?</p>
+</td></tr>
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The shiny session within which to call this function.</p>
+</td></tr>
+<tr valign="top"><td><code>menuName</code></td>
+<td>
+<p>This argument should only be used when you want to
+prepend (or append) <code>tab</code> to the beginning (or end) of an
+existing <code><a href="navbarPage.html">navbarMenu</a></code> (which must itself be part of
+an existing <code><a href="navbarPage.html">navbarPage</a></code>). In this case, this argument
+should be the <code>menuName</code> that you gave your <code>navbarMenu</code>
+when you first created it (by default, this is equal to the value
+of the <code>title</code> argument). Note that you still need to set the
+<code>inputId</code> argument to whatever the <code>id</code> of the parent
+<code>navbarPage</code> is. If <code>menuName</code> is left as <code>NULL</code>,
+<code>tab</code> will be prepended (or appended) to whatever
+<code>inputId</code> is.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>When you want to insert a new tab before or after an existing tab, you
+should use <code>insertTab</code>. When you want to prepend a tab (i.e. add a
+tab to the beginning of the <code>tabsetPanel</code>), use <code>prependTab</code>.
+When you want to append a tab (i.e. add a tab to the end of the
+<code>tabsetPanel</code>), use <code>appendTab</code>.
+</p>
+<p>For <code>navbarPage</code>, you can insert/remove conventional
+<code>tabPanel</code>s (whether at the top level or nested inside a
+<code>navbarMenu</code>), as well as an entire <code><a href="navbarPage.html">navbarMenu</a></code>.
+For the latter case, <code>target</code> should be the <code>menuName</code> that
+you gave your <code>navbarMenu</code> when you first created it (by default,
+this is equal to the value of the <code>title</code> argument).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="showTab.html">showTab</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run this example in interactive R sessions
+if (interactive()) {
+
+# example app for inserting/removing a tab
+ui &lt;- fluidPage(
+  sidebarLayout(
+    sidebarPanel(
+      actionButton("add", "Add 'Dynamic' tab"),
+      actionButton("remove", "Remove 'Foo' tab")
+    ),
+    mainPanel(
+      tabsetPanel(id = "tabs",
+        tabPanel("Hello", "This is the hello tab"),
+        tabPanel("Foo", "This is the foo tab"),
+        tabPanel("Bar", "This is the bar tab")
+      )
+    )
+  )
+)
+server &lt;- function(input, output, session) {
+  observeEvent(input$add, {
+    insertTab(inputId = "tabs",
+      tabPanel("Dynamic", "This a dynamically-added tab"),
+      target = "Bar"
+    )
+  })
+  observeEvent(input$remove, {
+    removeTab(inputId = "tabs", target = "Foo")
+  })
+}
+
+shinyApp(ui, server)
+
+
+# example app for prepending/appending a navbarMenu
+ui &lt;- navbarPage("Navbar page", id = "tabs",
+  tabPanel("Home",
+    actionButton("prepend", "Prepend a navbarMenu"),
+    actionButton("append", "Append a navbarMenu")
+  )
+)
+server &lt;- function(input, output, session) {
+  observeEvent(input$prepend, {
+    id &lt;- paste0("Dropdown", input$prepend, "p")
+    prependTab(inputId = "tabs",
+      navbarMenu(id,
+        tabPanel("Drop1", paste("Drop1 page from", id)),
+        tabPanel("Drop2", paste("Drop2 page from", id)),
+        "------",
+        "Header",
+        tabPanel("Drop3", paste("Drop3 page from", id))
+      )
+    )
+  })
+  observeEvent(input$append, {
+    id &lt;- paste0("Dropdown", input$append, "a")
+    appendTab(inputId = "tabs",
+      navbarMenu(id,
+        tabPanel("Drop1", paste("Drop1 page from", id)),
+        tabPanel("Drop2", paste("Drop2 page from", id)),
+        "------",
+        "Header",
+        tabPanel("Drop3", paste("Drop3 page from", id))
+      )
+    )
+  })
+}
+
+shinyApp(ui, server)
+
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

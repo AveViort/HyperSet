@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Build pkgdown website</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for build_site {pkgdown}"><tr><td>build_site {pkgdown}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Build pkgdown website</h2>
+
+<h3>Description</h3>
+
+<p><code>build_site()</code> is a convenient wrapper around six functions:
+</p>
+
+<ul>
+<li> <p><code><a href="init_site.html">init_site()</a></code>
+</p>
+</li>
+<li> <p><code><a href="build_home.html">build_home()</a></code>
+</p>
+</li>
+<li> <p><code><a href="build_reference.html">build_reference()</a></code>
+</p>
+</li>
+<li> <p><code><a href="build_articles.html">build_articles()</a></code>
+</p>
+</li>
+<li> <p><code><a href="build_tutorials.html">build_tutorials()</a></code>
+</p>
+</li>
+<li> <p><code><a href="build_news.html">build_news()</a></code>
+</p>
+</li></ul>
+
+<p>See the documentation for the each function to learn how to control
+that aspect of the site.
+</p>
+<p>Note if names of generated files were changed, you will need to use
+<a href="clean_site.html">clean_site</a> first to clean up orphan files.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+build_site(pkg = ".", examples = TRUE, document = TRUE,
+  run_dont_run = FALSE, seed = 1014, mathjax = TRUE, lazy = FALSE,
+  override = list(), preview = NA, new_process = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pkg</code></td>
+<td>
+<p>Path to package.</p>
+</td></tr>
+<tr valign="top"><td><code>examples</code></td>
+<td>
+<p>Run examples?</p>
+</td></tr>
+<tr valign="top"><td><code>document</code></td>
+<td>
+<p>If <code>TRUE</code>, will run <code><a href="../../devtools/html/document.html">devtools::document()</a></code> before
+updating the site.</p>
+</td></tr>
+<tr valign="top"><td><code>run_dont_run</code></td>
+<td>
+<p>Run examples that are surrounded in \dontrun?</p>
+</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+<p>Seed used to initialize so that random examples are
+reproducible.</p>
+</td></tr>
+<tr valign="top"><td><code>mathjax</code></td>
+<td>
+<p>Use mathjax to render math symbols?</p>
+</td></tr>
+<tr valign="top"><td><code>lazy</code></td>
+<td>
+<p>If <code>TRUE</code>, will only rebuild articles and reference pages
+if the source is newer than the destination.</p>
+</td></tr>
+<tr valign="top"><td><code>override</code></td>
+<td>
+<p>An optional named list used to temporarily override
+values in <code>_pkgdown.yml</code></p>
+</td></tr>
+<tr valign="top"><td><code>preview</code></td>
+<td>
+<p>If <code>TRUE</code>, or <code>is.na(preview) &amp;&amp; interactive()</code>, will preview
+freshly generated section in browser.</p>
+</td></tr>
+<tr valign="top"><td><code>new_process</code></td>
+<td>
+<p>If <code>TRUE</code>, will run <code>build_site()</code> in a separate process.
+This enhances reproducibility by ensuring nothing that you have loaded
+in the current process affects the build process.</p>
+</td></tr>
+</table>
+
+
+<h3>YAML config</h3>
+
+<p>There are four top-level YAML settings that affect the entire site:
+<code>destination</code>, <code>url</code>, <code>title</code>, <code>template</code>, and <code>navbar</code>.
+</p>
+<p><code>destination</code> controls where the site will be generated. It defaults to
+<code>docs/</code> (for GitHub pages), but you can override if desired. Relative
+paths will be taken relative to the package root.
+</p>
+<p><code>url</code> optionally specifies the url where the site will be published.
+If you supply this, other pkgdown sites will link to your site when needed,
+rather than using generic links to <a href="rdocumentation.org">rdocumentation.org</a>.
+</p>
+<p><code>title</code> overrides the default site title, which is the package name.
+It's used in the page title and default navbar.
+</p>
+<p>You can also provided information to override the default display of
+the authors. Provided a list named with the name of each author,
+including <code>href</code> to add a link, or <code>html</code> to override the
+text:</p>
+<pre>authors:
+  Hadley Wickham:
+    href: http://hadley.nz
+  RStudio:
+    href: https://www.rstudio.com
+    html: &lt;img src="https://tidyverse.org/rstudio-logo.svg" height="24" /&gt;
+</pre>
+
+
+<h3>Development mode</h3>
+
+<p>The development mode of a site controls four main things:
+</p>
+
+<ul>
+<li><p> Where the site is built.
+</p>
+</li>
+<li><p> The colour of the package version in the navbar.
+</p>
+</li>
+<li><p> The optional tooltip associated with the version.
+</p>
+</li>
+<li><p> The indexing of the site by search engines.
+</p>
+</li></ul>
+
+<p>There are currently three possible development modes:
+</p>
+
+<ul>
+<li> <p><strong>release</strong>: site written to <code>docs/</code>, the version gets the default
+colouring, and no message.
+</p>
+</li>
+<li> <p><strong>development</strong>: written to <code>docs/dev/</code>, the version gets a danger label,
+and message stating these are docs for an in-development version of the
+package. The <code>noindex</code> meta tag is used to ensure that these packages are
+not indexed by search engines.
+</p>
+</li>
+<li> <p><strong>unreleased</strong>: the package is written to <code>docs/</code>, the version gets a &quot;danger&quot;
+label, and the message indicates the package is not yet on CRAN.
+</p>
+</li></ul>
+
+<p>The default development mode is &quot;release&quot;. You can override it by adding a
+new <code>development</code> field to <code>_pkgdown.yml</code>, e.g.</p>
+<pre>development:
+  mode: development
+</pre>
+<p>You can also have pkgdown automatically detect the mode with:</p>
+<pre>development:
+  mode: auto
+</pre>
+<p>The mode will be automatically determined based on the version number:
+</p>
+
+<ul>
+<li> <p><code>0.0.0.9000</code>: unreleased
+</p>
+</li>
+<li><p> four version components: development
+</p>
+</li>
+<li><p> everything else -&gt; release
+</p>
+</li></ul>
+
+<p>There are three other options that you can control:</p>
+<pre>development:
+  destination: dev
+  version_label: danger
+  version_tooltip: "Custom message here"
+</pre>
+<p><code>destination</code> allows you to override the default subdirectory used for the
+development site; it defaults to <code>dev/</code>. <code>version_label</code> allows you to
+override the style used for development (and unreleased) versions of the
+package. It defaults to &quot;danger&quot;, but you can set to &quot;default&quot;, &quot;info&quot;, or
+&quot;warning&quot; instead. (The precise colours are determined by your bootstrap
+theme, but become progressively more eye catching as you go from default
+to danger). Finally, you can choose to override the default tooltip with
+<code>version_tooltip</code>.
+</p>
+
+
+<h3>YAML config - navbar</h3>
+
+<p><code>navbar</code> controls the navbar at the top of the page. It has two primary
+components: <code>structure</code> and <code>components</code>. These components interact in
+a somewhat complicated way, but the complexity allows you to make minor
+tweaks to part of the navbar while relying on pkgdown to automatically
+generate the rest.
+</p>
+<p>The <code>structure</code> defines the layout of the navbar, i.e. the order
+of the components, and whether they're right aligned or left aligned.
+You can use this component to change the order of the default components,
+and to add your own components.</p>
+<pre>navbar:
+  structure:
+    left:  [home, intro, reference, articles, tutorials, news]
+    right: [github]
+</pre>
+<p>The <code>components</code> describes the appearance of each element in the navbar.
+It uses the same
+syntax as <a href="http://rmarkdown.rstudio.com/rmarkdown_websites.html#site_navigation">RMarkdown</a>.
+The following YAML snippet illustrates some of the most important features.</p>
+<pre>components:
+  home: ~
+  articles:
+    text: Articles
+    menu:
+    - text: Category A
+    - text: Title A1
+      href: articles/a1.html
+    - text: Title A2
+      href: articles/a2.html
+    - text: -------
+    - text: "Category B"
+    - text: Title B1
+      href: articles/b1.html
+   twitter:
+     icon: fa-lg fa-twitter
+     href: http://twitter.com/hadleywickham
+</pre>
+<p>Components can contain sub-<code>menu</code>s with headings (indicated by missing
+<code>href</code>) and separators (indiciated by a bunch of <code>-</code>). You can use <code>icon</code>s
+from fontawesome: see a full list <a href="http://fontawesome.io/icons/">http://fontawesome.io/icons/</a>.
+</p>
+<p>This yaml would override the default &quot;articles&quot; component, eliminate
+the &quot;home&quot; component, and add a new &quot;twitter&quot; component. Unless you
+explicitly mention new components in the <code>structure</code> they'll be added
+to the far right of the left menu.
+</p>
+
+
+<h3>YAML config - search</h3>
+
+<p>You can use <a href="https://community.algolia.com/docsearch/">docsearch</a> by algolia
+to add search to your site.</p>
+<pre>template:
+  params:
+    docsearch:
+      api_key: API_KEY
+      index_name: INDEX_NAME
+</pre>
+<p>You also need to add a <code>url:</code> field to <code>_pkgdown.yml</code> that specifies the
+location of your documentation on the web. For pkgdown, the URL field is:</p>
+<pre>url: http://pkgdown.r-lib.org
+</pre>
+<p>See <code>vignette("pkgdown")</code> for details.
+</p>
+
+
+<h3>YAML config - template</h3>
+
+<p>You can get complete control over the appearance of the site using the
+<code>template</code> component. There are two components to the template:
+the HTML templates used to layout each page, and the css/js assets
+used to render the page in the browser.
+</p>
+<p>The easiest way to tweak the default style is to use a bootswatch template,
+by passing on the <code>bootswatch</code> template parameter to the built-in
+template:</p>
+<pre>template:
+  params:
+    bootswatch: cerulean
+</pre>
+<p>See a complete list of themes and preview how they look at
+<a href="https://gallery.shinyapps.io/117-shinythemes/">https://gallery.shinyapps.io/117-shinythemes/</a>:
+</p>
+<p>Optionally provide the <code>ganalytics</code> template parameter to enable
+<a href="https://www.google.com/analytics/">Google Analytics</a>. It should
+correspond to your
+<a href="https://support.google.com/analytics/answer/1032385">tracking id</a>.</p>
+<pre>template:
+  params:
+    ganalytics: UA-000000-01
+</pre>
+<p>Suppress indexing of your pages by web robots by setting <code>noindex: true</code>:</p>
+<pre>template:
+  params:
+    noindex: true
+</pre>
+<p>You can also override the default templates and provide additional
+assets. You can do so by either storing in a <code>package</code> with
+directories <code>inst/pkgdown/assets</code> and <code>inst/pkgdown/templates</code>,
+or by supplying <code>path</code> and <code>asset_path</code>. To suppress inclusion
+of the default assets, set <code>default_assets</code> to false.</p>
+<pre>template:
+  package: mycustompackage
+
+# OR:
+
+template:
+  path: path/to/templates
+  assets: path/to/assets
+  default_assets: false
+</pre>
+<p>These settings are currently recommended for advanced users only. There
+is little documentation, and you'll need to read the existing source
+for pkgdown templates to ensure that you use the correct components.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+build_site()
+
+build_site(override = list(destination = tempdir()))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pkgdown</em> version 1.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

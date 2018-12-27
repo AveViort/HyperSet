@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Bootstrap a flexmix Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for boot {flexmix}"><tr><td>boot {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Bootstrap a flexmix Object</h2>
+
+<h3>Description</h3>
+
+<p>Given a <code>flexmix</code> object perform parametric or empirical bootstrap.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+boot(object, ...)
+## S4 method for signature 'flexmix'
+boot(object, R, sim = c("ordinary", "empirical", "parametric"),
+    initialize_solution = FALSE, keep_weights = FALSE,
+    keep_groups = TRUE, verbose = 0, control,
+    k, model = FALSE, ...)
+LR_test(object, ...)
+## S4 method for signature 'flexmix'
+LR_test(object, R, alternative = c("greater", "less"), control, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>A fitted finite mixture model of class <code>flexmix</code>.</p>
+</td></tr> 
+<tr valign="top"><td><code>R</code></td>
+<td>
+<p>The number of bootstrap replicates.</p>
+</td></tr>
+<tr valign="top"><td><code>sim</code></td>
+<td>
+<p>A character string indicating the type of simulation
+required.  Possible values are <code>"ordinary"</code> (the default),
+<code>"parametric"</code>, or <code>"empirical"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>initialize_solution</code></td>
+<td>
+<p>A logical. If <code>TRUE</code> the EM algorithm is
+initialized in the given solution.</p>
+</td></tr>
+<tr valign="top"><td><code>keep_weights</code></td>
+<td>
+<p>A logical. If <code>TRUE</code> the weights are kept.</p>
+</td></tr>
+<tr valign="top"><td><code>keep_groups</code></td>
+<td>
+<p>A logical. If <code>TRUE</code> the groups are kept.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>If a positive integer, then progress information
+is reported every <code>verbose</code> iterations. If 0,
+no output is generated during the bootstrap replications.</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p>Object of class <code>FLXcontrol</code> or a named list.
+If missing the control of the fitted <code>object</code> is taken.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>Vector of integers specifying for which number of components
+finite mixtures are fitted to the bootstrap samples.  If missing the
+number of components of the fitted <code>object</code> are taken.</p>
+</td></tr>
+<tr valign="top"><td><code>alternative</code></td>
+<td>
+<p>A character string specifying the alternative
+hypothesis, must be either <code>"greater"</code> (default) or
+<code>"less"</code> indicating if the alternative hypothesis is that the
+mixture has one more component or one less.</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>A logical. If <code>TRUE</code> the model and the weights slot for
+each sample are stored and returned.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments to be passed to or from methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>boot</code> returns an object of class <code>FLXboot</code> which
+contains the fitted parameters, the fitted priors, the log
+likelihoods, the number of components of the fitted mixtures and the
+information if the EM algorithm has converged.
+</p>
+<p><code>LR_test</code> returns an object of class <code>htest</code> containing the
+number of valid bootstrap replicates, the p-value, the - twice log
+likelihood ratio test statistics for the original data and the
+bootstrap replicates.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Bettina Gruen</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("NPreg", package = "flexmix")
+fitted &lt;- initFlexmix(yn ~ x + I(x^2) | id2, data = NPreg, k = 2)
+## Not run: 
+lrtest &lt;- LR_test(fitted, alternative = "greater", R = 20,
+                  verbose = 1)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

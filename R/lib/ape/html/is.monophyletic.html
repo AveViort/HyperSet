@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Is Group Monophyletic</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for is.monophyletic {ape}"><tr><td>is.monophyletic {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Is Group Monophyletic
+</h2>
+
+<h3>Description</h3>
+
+<p>This function tests whether a list of tip labels is monophyletic on a given tree.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+is.monophyletic(phy, tips, reroot = !is.rooted(phy), plot = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+
+<p>a phylogenetic tree description of class <code>"phylo"</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>tips</code></td>
+<td>
+
+<p>a vector of mode numeric or character specifying the tips to be tested.
+</p>
+</td></tr>
+<tr valign="top"><td><code>reroot</code></td>
+<td>
+
+<p>a logical. If <code>FALSE</code>, then the input tree is not unrooted before the test.
+</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+
+<p>a logical. If <code>TRUE</code>, then the tree is plotted with the specified group <code>tips</code> highlighted.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>further arguments passed to <code>plot</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If <code>phy</code> is rooted, the test is done on the rooted tree, otherwise
+the tree is first unrooted, then arbitrarily rerooted, in order to be
+independent on the current position of the root. That is, the test
+asks if <code>tips</code> could be monophyletic given any favourably rooting
+of <code>phy</code>.
+</p>
+<p>If <code>phy</code> is unrooted the test is done on an unrooted tree, unless
+<code>reroot = FALSE</code> is specified.
+</p>
+<p>If tip labels in the list <code>tips</code> are given as characters, they need
+to be spelled as in the object <code>phy</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>TRUE</code> or <code>FALSE</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Johan Nylander <a href="mailto:jnylander@users.sourceforge.net">jnylander@users.sourceforge.net</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="which.edge.html">which.edge</a></code>, <code><a href="drop.tip.html">drop.tip</a></code>, <code><a href="mrca.html">mrca</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+    ## Test one monophyletic and one paraphyletic group on the bird.orders tree
+    ## Not run: data("bird.orders")
+    ## Not run: is.monophyletic(phy = bird.orders, tips = c("Ciconiiformes", "Gruiformes"))
+    ## Not run: is.monophyletic(bird.orders, c("Passeriformes", "Ciconiiformes", "Gruiformes"))
+    
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

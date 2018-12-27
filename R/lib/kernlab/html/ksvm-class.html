@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;ksvm&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ksvm-class {kernlab}"><tr><td>ksvm-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;ksvm&quot; </h2>
+
+<h3>Description</h3>
+
+<p>An S4 class containing the output (model) of the
+<code>ksvm</code> Support Vector Machines function </p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("ksvm", ...)</code>
+or by calls to the <code>ksvm</code> function.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>type</code>:</dt><dd><p>Object of class <code>"character"</code>  containing
+the support vector machine type
+(&quot;C-svc&quot;, &quot;nu-svc&quot;, &quot;C-bsvc&quot;, &quot;spoc-svc&quot;,
+&quot;one-svc&quot;, &quot;eps-svr&quot;, &quot;nu-svr&quot;, &quot;eps-bsvr&quot;)</p>
+</dd>
+<dt><code>param</code>:</dt><dd><p>Object of class <code>"list"</code> containing the
+Support Vector Machine parameters (C, nu, epsilon)</p>
+</dd>
+<dt><code>kernelf</code>:</dt><dd><p>Object of class <code>"function"</code> containing
+the kernel function</p>
+</dd>
+<dt><code>kpar</code>:</dt><dd><p>Object of class <code>"list"</code> containing the
+kernel function parameters (hyperparameters)</p>
+</dd>
+<dt><code>kcall</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the      <code>ksvm</code> function call</p>
+</dd>
+<dt><code>scaling</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+scaling information performed on the data</p>
+</dd>
+<dt><code>terms</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+terms representation of the symbolic model used (when using a formula)</p>
+</dd>
+<dt><code>xmatrix</code>:</dt><dd><p>Object of class <code>"input"</code> (<code>"list"</code>
+for multiclass problems 
+or <code>"matrix"</code> for binary classification and regression
+problems) containing the support vectors calculated from
+the data matrix used during computations (possibly scaled and
+without NA). In the case of multi-class classification each list
+entry contains the support vectors from each binary classification
+problem from the one-against-one method.</p>
+</dd>
+<dt><code>ymatrix</code>:</dt><dd><p>Object of class <code>"output"</code>
+the response <code>"matrix"</code> or <code>"factor"</code> or <code>"vector"</code> or
+<code>"logical"</code></p>
+</dd>
+<dt><code>fitted</code>:</dt><dd><p>Object of class <code>"output"</code> with the fitted values,
+predictions using the training set.</p>
+</dd>
+<dt><code>lev</code>:</dt><dd><p>Object of class <code>"vector"</code> with the levels of the
+response (in the case of classification)</p>
+</dd>
+<dt><code>prob.model</code>:</dt><dd><p>Object of class <code>"list"</code> with the
+class prob. model</p>
+</dd>
+<dt><code>prior</code>:</dt><dd><p>Object of class <code>"list"</code> with the
+prior of the training set</p>
+</dd>
+<dt><code>nclass</code>:</dt><dd><p>Object of class <code>"numeric"</code>  containing
+the number of classes (in the case of classification)</p>
+</dd>
+<dt><code>alpha</code>:</dt><dd><p>Object of class <code>"listI"</code> containing the
+resulting alpha vector (<code>"list"</code> or <code>"matrix"</code> in case of multiclass classification) (support vectors)</p>
+</dd>
+<dt><code>coef</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+resulting coefficients</p>
+</dd>
+<dt><code>alphaindex</code>:</dt><dd><p>Object of class <code>"list"</code> containing</p>
+</dd>
+<dt><code>b</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+resulting offset </p>
+</dd>
+<dt><code>SVindex</code>:</dt><dd><p>Object of class <code>"vector"</code> containing
+the indexes of the support vectors</p>
+</dd>
+<dt><code>nSV</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+number of support vectors </p>
+</dd>
+<dt><code>obj</code>:</dt><dd><p>Object of class <code>vector</code> containing the value of the objective function. When using 
+one-against-one in multiclass classification this is a vector.</p>
+</dd>
+<dt><code>error</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+training error</p>
+</dd>
+<dt><code>cross</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+cross-validation error </p>
+</dd>
+<dt><code>n.action</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+action performed for NA </p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>SVindex</dt><dd><p><code>signature(object = "ksvm")</code>: return the indexes
+of support vectors</p>
+</dd>
+<dt>alpha</dt><dd><p><code>signature(object = "ksvm")</code>: returns the complete
+5    alpha vector (wit zero values)</p>
+</dd>
+<dt>alphaindex</dt><dd><p><code>signature(object = "ksvm")</code>: returns the
+indexes of non-zero alphas (support vectors)</p>
+</dd>
+<dt>cross</dt><dd><p><code>signature(object = "ksvm")</code>: returns the
+cross-validation error </p>
+</dd>
+<dt>error</dt><dd><p><code>signature(object = "ksvm")</code>: returns the training
+error </p>
+</dd>
+<dt>obj</dt><dd><p><code>signature(object = "ksvm")</code>: returns the value of the objective function</p>
+</dd>
+<dt>fitted</dt><dd><p><code>signature(object = "vm")</code>: returns the fitted
+values (predict on training set) </p>
+</dd>
+<dt>kernelf</dt><dd><p><code>signature(object = "ksvm")</code>: returns the kernel
+function</p>
+</dd>
+<dt>kpar</dt><dd><p><code>signature(object = "ksvm")</code>: returns the kernel
+parameters (hyperparameters)</p>
+</dd>
+<dt>lev</dt><dd><p><code>signature(object = "ksvm")</code>: returns the levels in
+case of classification  </p>
+</dd>
+<dt>prob.model</dt><dd><p><code>signature(object="ksvm")</code>: returns class
+prob. model values</p>
+</dd>
+<dt>param</dt><dd><p><code>signature(object="ksvm")</code>: returns 
+the parameters of the SVM in a list (C, epsilon, nu etc.)</p>
+</dd>
+<dt>prior</dt><dd><p><code>signature(object="ksvm")</code>: returns 
+the prior of the training set</p>
+</dd>
+<dt>kcall</dt><dd><p><code>signature(object="ksvm")</code>: returns the
+<code>ksvm</code> function call</p>
+</dd>
+<dt>scaling</dt><dd><p><code>signature(object = "ksvm")</code>: returns the
+scaling values </p>
+</dd>
+<dt>show</dt><dd><p><code>signature(object = "ksvm")</code>: prints the object information</p>
+</dd>
+<dt>type</dt><dd><p><code>signature(object = "ksvm")</code>: returns the problem type</p>
+</dd>
+<dt>xmatrix</dt><dd><p><code>signature(object = "ksvm")</code>: returns the data
+matrix used</p>
+</dd>
+<dt>ymatrix</dt><dd><p><code>signature(object = "ksvm")</code>: returns the
+response vector</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou <br /> <a href="mailto:alexandros.karatzolgou@ci.tuwien.ac.at">alexandros.karatzolgou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="ksvm.html">ksvm</a></code>, 
+<code><a href="rvm-class.html">rvm-class</a></code>,
+<code><a href="gausspr-class.html">gausspr-class</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## simple example using the promotergene data set
+data(promotergene)
+
+## train a support vector machine
+gene &lt;- ksvm(Class~.,data=promotergene,kernel="rbfdot",
+             kpar=list(sigma=0.015),C=50,cross=4)
+gene
+
+# the kernel  function
+kernelf(gene)
+# the alpha values
+alpha(gene)
+# the coefficients
+coef(gene)
+# the fitted values
+fitted(gene)
+# the cross validation error
+cross(gene)
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

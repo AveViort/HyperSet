@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: recursivly apply a function on a list</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rllply {dendextend}"><tr><td>rllply {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>recursivly apply a function on a list</h2>
+
+<h3>Description</h3>
+
+<p>recursivly apply a function on a list - and returns the output as a list, 
+following the naming convention in the plyr package
+the big difference between this and rapply is that this will also apply 
+the function on EACH element of the list, even if it's not a &quot;terminal node&quot;
+inside the list tree.
+An attribute is added to indicate if the value returned is 
+from a branch or a leaf.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rllply(x, FUN, add_notation = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a list.</p>
+</td></tr>
+<tr valign="top"><td><code>FUN</code></td>
+<td>
+<p>a function to apply on each element of the list</p>
+</td></tr>
+<tr valign="top"><td><code>add_notation</code></td>
+<td>
+<p>logical. Should each node be 
+added a &quot;position_type&quot; attribute, stating if it is a &quot;Branch&quot; or a &quot;Leaf&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list with ALL of the nodes (from the original &quot;x&quot; list),
+that FUN was applied on.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+x &lt;- list(1)
+x
+rllply(x, function(x){x}, add_notation  = TRUE)
+
+x &lt;- list(1, 2, list(31))
+x
+rllply(x, function(x){x}, add_notation  = TRUE)
+                     # the first element is the entire tree
+                           # after FUN was applied to its root element.
+
+hc &lt;- hclust(dist(USArrests[1:4,]), "ave")
+dend &lt;- as.dendrogram(hc)
+rllply(dend, function(x){attr(x, "height")})
+rllply(dend, function(x){attr(x, "members")})
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

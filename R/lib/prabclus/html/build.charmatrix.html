@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Internal: create character matrix out of allele list</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for build.charmatrix {prabclus}"><tr><td>build.charmatrix {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Internal: create character matrix out of allele list</h2>
+
+<h3>Description</h3>
+
+<p>For use in <code><a href="alleleinit.html">alleleinit</a></code>.
+Creates a matrix of characters in which there are two rows for
+every individual corresponding to the two alleles in every locus
+(column) out of a list of lists, such as required by
+<code><a href="alleledist.html">alleledist</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+   build.charmatrix(allelelist,n.individuals,n.variables)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>allelelist</code></td>
+<td>
+<p>A list of lists. In the &quot;outer&quot; list, there are
+<code>n.variables</code> lists, one for each locus. In the &quot;inner&quot; list, for every
+individual there is a vector of two codes (typically characters, see
+<code><a href="alleleinit.html">alleleinit</a></code>) for the two alleles in that locus.</p>
+</td></tr>  
+<tr valign="top"><td><code>n.individuals</code></td>
+<td>
+<p>integer. Number of individuals.</p>
+</td></tr>
+<tr valign="top"><td><code>n.variables</code></td>
+<td>
+<p>integer. Number of loci.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A matrix of characters in which there are two rows for
+every individual corresponding to the two alleles in every locus
+(column). 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="alleleinit.html">alleleinit</a></code>, <code><a href="unbuild.charmatrix.html">unbuild.charmatrix</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  alist &lt;- list()
+  alist[[1]] &lt;- list(c("A","A"),c("B","A"),c(NA,NA))
+  alist[[2]] &lt;- list(c("A","C"),c("B","B"),c("A","D"))
+  build.charmatrix(alist,3,2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

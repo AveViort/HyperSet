@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a copy of an internal XML document or node</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xmlClone {XML}"><tr><td>xmlClone {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a copy of an internal XML document or node</h2>
+
+<h3>Description</h3>
+
+<p>These methods allow the caller to create a copy of
+an XML internal node.  This is useful, for example, if we want to use
+the node or document in an  additional context, e.g.
+put the node into another document while leaving it in the
+existing document.  Similarly, if we want to remove nodes to simplify
+processing, we probably want to copy it so that the changes are not
+reflected in the original document.
+</p>
+<p>At present, the newly created object is not garbage collected.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xmlClone(node, recursive = TRUE, addFinalizer = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>the object to be cloned</p>
+</td></tr>
+<tr valign="top"><td><code>recursive</code></td>
+<td>
+<p>a logical value indicating whether the
+entire object and all its descendants should be duplicated/cloned (<code>TRUE</code>)
+or just the top-level object (<code>FALSE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>addFinalizer</code></td>
+<td>
+<p>typically a logical value indicating whether to bring this
+new object under R's regular garbage collection.
+This can also be a reference to a C routine which is to be used as
+the finalizer. See <code><a href="../../base/html/getNativeSymbolInfo.html">getNativeSymbolInfo</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters for methods</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A new R object representing the object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p>libxml2</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlTreeParse.html">xmlParse</a></code>  
+<code><a href="newXMLDoc.html">newXMLNode</a></code>
+<code><a href="newXMLDoc.html">newXMLDoc</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+doc =
+xmlParse('&lt;doc&gt;&lt;author id="dtl"&gt;&lt;firstname&gt;Duncan&lt;/firstname&gt;&lt;surname&gt;Temple Lang&lt;/surname&gt;&lt;/author&gt;&lt;/doc&gt;')
+
+  au = xmlRoot(doc)[[1]]
+     # make a copy
+  other = xmlClone(au)
+     # change it slightly
+  xmlAttrs(other) = c(id = "dtl2")
+     # add it to the children
+  addChildren(xmlRoot(doc), other)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

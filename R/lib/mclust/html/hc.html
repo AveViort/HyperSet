@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Model-based Hierarchical Clustering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hc {mclust}"><tr><td>hc {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Model-based Hierarchical Clustering</h2>
+
+<h3>Description</h3>
+
+<p>Agglomerative hierarchical clustering based on maximum likelihood criteria 
+for Gaussian mixture models parameterized by eigenvalue decomposition.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hc(data,
+   modelName = mclust.options("hcModelName"),  
+   use = mclust.options("hcUse"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations.
+Categorical variables are not allowed.
+If a matrix or data frame, rows correspond to observations and
+columns correspond to variables.
+</p>
+</td></tr>
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string indicating the model to be used.<br />
+Possible models are:
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+    <code>"E"</code> </td><td style="text-align: left;"> equal variance (one-dimensional) </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"V"</code> </td><td style="text-align: left;"> spherical, variable variance (one-dimensional) </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EII"</code></td><td style="text-align: left;"> spherical, equal volume </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VII"</code></td><td style="text-align: left;"> spherical, unequal volume </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EEE"</code></td><td style="text-align: left;"> ellipsoidal, equal volume, shape, and orientation </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VVV"</code></td><td style="text-align: left;"> ellipsoidal, varying volume, shape, and orientation.</td>
+</tr>
+<tr>
+ <td style="text-align: left;"></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    </td>
+</tr>
+
+</table>
+
+<p>By default the model provided by <code>mclust.options("hcModelName")</code> is used. 
+See <code><a href="mclust.options.html">mclust.options</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>use</code></td>
+<td>
+
+<p>A string or a vector of character strings specifying the type of input 
+variables/data transformation to be used for model-based hierarchical 
+clustering.<br />
+By default the method specified in <code>mclust.options("hcUse")</code> is used. 
+See <code><a href="mclust.options.html">mclust.options</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Arguments for the method-specific <code>hc</code> functions. See for example
+<code><a href="hcE.html">hcE</a></code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Most models have memory usage of the order of the square of the
+number groups in the initial partition for fast execution.
+Some models, such as equal variance or <code>"EEE"</code>,
+do not admit a fast algorithm under the usual agglomerative
+hierarchical clustering paradigm. 
+These use less memory but are much slower to execute.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A numeric two-column matrix in which the <em>i</em>th row gives the 
+minimum index for observations in each of the two clusters merged at the
+<em>i</em>th stage of agglomerative hierarchical clustering.
+</p>
+
+
+<h3>Note</h3>
+
+<p>If <code>modelName = "E"</code> (univariate with equal variances) or
+<code>modelName = "EII"</code> (multivariate with equal spherical
+covariances), then the method is equivalent to Ward's method for
+hierarchical clustering.
+</p>
+
+
+<h3>References</h3>
+
+<p>J. D. Banfield and A. E. Raftery (1993).
+Model-based Gaussian and non-Gaussian Clustering.
+<em>Biometrics 49:803-821</em>. 
+</p>
+<p>C. Fraley (1998).
+Algorithms for model-based Gaussian hierarchical clustering.
+<em>SIAM Journal on Scientific Computing 20:270-281</em>. 
+</p>
+<p>C. Fraley and A. E. Raftery (2002).
+Model-based clustering, discriminant analysis, and density estimation.
+<em>Journal of the American Statistical Association 97:611-631</em>. 
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hcE.html">hcE</a></code>,...,
+<code><a href="hcE.html">hcVVV</a></code>,
+<code><a href="hclass.html">hclass</a></code>,
+<code><a href="mclust.options.html">mclust.options</a></code>  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hcTree &lt;- hc(modelName = "VVV", data = iris[,-5])
+cl &lt;- hclass(hcTree,c(2,3))
+
+## Not run: 
+par(pty = "s", mfrow = c(1,1))
+clPairs(iris[,-5],cl=cl[,"2"])
+clPairs(iris[,-5],cl=cl[,"3"])
+
+par(mfrow = c(1,2))
+dimens &lt;- c(1,2)
+coordProj(iris[,-5], dimens = dimens, classification=cl[,"2"])
+coordProj(iris[,-5], dimens = dimens, classification=cl[,"3"])
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

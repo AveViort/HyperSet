@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Boxplot for hexbin lattice plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for panel.hexboxplot {hexbin}"><tr><td>panel.hexboxplot {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Boxplot for hexbin lattice plot</h2>
+
+<h3>Description</h3>
+
+<p>A panel function to add a boxplot to a hexbin lattice plot.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+panel.hexboxplot(x, y, xbins = 30,
+                 xbnds = c("data", "panel"), ybnds = c("data", "panel"),
+                 .prelim = FALSE, .cpl = current.panel.limits(),
+                 .xlim = .cpl$xlim, .ylim = .cpl$ylim,
+                 .aspect.ratio, type = character(0), cdfcut = 0.25,
+                 shadow = 0.05, ..., check.erosion = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x, y</code></td>
+<td>
+<p>numeric vector or factor.</p>
+</td></tr>
+<tr valign="top"><td><code>xbins</code></td>
+<td>
+<p>the number of bins partitioning the range of xbnds.</p>
+</td></tr>
+<tr valign="top"><td><code>xbnds, ybnds</code></td>
+<td>
+<p>horizontal and vertical limits of the binning
+region in x or y units respectively; must be numeric vector of
+length 2.</p>
+</td></tr>
+<tr valign="top"><td><code>.prelim, .cpl, .xlim, .ylim, .aspect.ratio</code></td>
+<td>
+<p>for internal use.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>character vector controlling additional augmentation of
+the display. A <code>"g"</code> in <code>type</code> adds a reference grid, an
+<code>"hg"</code> adds a hexagonal grid.</p>
+</td></tr>
+<tr valign="top"><td><code>cdfcut</code></td>
+<td>
+<p>number in (0,1) indicating the confidence level for the
+erosion limits.  See <code><a href="erode.hexbin.html">erode.hexbin</a></code> for more information.</p>
+</td></tr>
+<tr valign="top"><td><code>shadow</code></td>
+<td>
+<p>number in (0,1) indicating the confidence level for the
+erosion limits of a boxplot shadow.  See <code><a href="erode.hexbin.html">erode.hexbin</a></code>
+for more information.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>potential further arguments passed on.</p>
+</td></tr>
+<tr valign="top"><td><code>check.erosion</code></td>
+<td>
+<p>logical indicating only eroded points should be
+used for <code>"erodebin"</code> objects; simply passed to
+<code><a href="hcell2xy.html">hcell2xy</a></code>, see its documentation.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>There is no return value from this function. The results are plotted on
+the current active device.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Nicholas Lewin-Koh <a href="mailto:nikko@hailmail.net">nikko@hailmail.net</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hexbinplot.html">hexbinplot</a></code>, <code><a href="panel.hexgrid.html">panel.hexgrid</a></code>,
+<code><a href="../../lattice/html/panel.bwplot.html">panel.bwplot</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+mixdata &lt;-
+    data.frame(x = c(rnorm(5000),rnorm(5000,4,1.5)),
+               y = rep(1:2, 5000))
+hexbinplot(y ~ x, mixdata, panel = panel.hexboxplot)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

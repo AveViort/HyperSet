@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Classification given Probabilities</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for map {mclust}"><tr><td>map {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Classification given Probabilities</h2>
+
+<h3>Description</h3>
+
+<p>Converts a matrix in which each row sums to 1 to an integer vector 
+specifying for each row the column index of the maximum.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+map(z, warn = mclust.options("warn"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>z</code></td>
+<td>
+
+<p>A matrix (for example a matrix of conditional
+probabilities  in which each row sums to 1
+as produced by the E-step of the EM algorithm).
+</p>
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+
+<p>A logical variable indicating whether or not a warning should be
+issued when there are some columns of <code>z</code> for which no row
+attains a maximum.
+</p>
+</td></tr>
+<tr valign="top"><td><code>... </code></td>
+<td>
+
+<p>Provided to allow lists with elements other than the arguments can
+be passed in indirect or list calls with <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A integer vector with one entry for each row of z,
+in which the <em>i</em>-th value is the column index at which the
+<em>i</em>-th row of <code>z</code> attains a maximum.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="unmap.html">unmap</a></code>,
+<code><a href="estep.html">estep</a></code>,
+<code><a href="em.html">em</a></code>,
+<code><a href="me.html">me</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+emEst &lt;- me(modelName = "VVV", data = iris[,-5], z = unmap(iris[,5]))
+
+map(emEst$z)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

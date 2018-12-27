@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Moran's I Autocorrelation Index</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Moran.I {ape}"><tr><td>Moran.I {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Moran's I Autocorrelation Index</h2>
+
+<h3>Description</h3>
+
+<p>This function computes Moran's I autocorrelation coefficient of
+<code>x</code> giving a matrix of weights using the method described by
+Gittleman and Kot (1990).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  Moran.I(x, weight, scaled = FALSE, na.rm = FALSE,
+          alternative = "two.sided")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a numeric vector.</p>
+</td></tr>
+<tr valign="top"><td><code>weight</code></td>
+<td>
+<p>a matrix of weights.</p>
+</td></tr>
+<tr valign="top"><td><code>scaled</code></td>
+<td>
+<p>a logical indicating whether the coefficient should be
+scaled so that it varies between -1 and +1 (default to
+<code>FALSE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>na.rm</code></td>
+<td>
+<p>a logical indicating whether missing values should be
+removed.</p>
+</td></tr>
+<tr valign="top"><td><code>alternative</code></td>
+<td>
+<p>a character string specifying the alternative
+hypothesis that is tested against the null hypothesis of no
+phylogenetic correlation; must be of one &quot;two.sided&quot;, &quot;less&quot;, or
+&quot;greater&quot;, or any unambiguous abbrevation of these.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The matrix <code>weight</code> is used as &ldquo;neighbourhood&rdquo; weights, and
+Moran's I coefficient is computed using the formula:
+</p>
+<p style="text-align: center;"><i>\code{I = n/S0 * (sum{i=1..n} sum{j=1..n} wij(yi - ym))(yj - ym)
+      / (sum{i=1..n} (yi - ym)^2)}</i></p>
+
+<p>with
+</p>
+
+<ul>
+<li> <p><i>yi</i> = observations
+</p>
+</li>
+<li> <p><i>wij</i> = distance weight
+</p>
+</li>
+<li> <p><i>n</i> = number of observations
+</p>
+</li>
+<li> <p><i>S0</i> = <i>\code{sum_{i=1..n} sum{j=1..n} wij}</i>
+</p>
+</li></ul>
+
+<p>The null hypothesis of no phylogenetic correlation is tested assuming
+normality of I under this null hypothesis. If the observed value
+of I is significantly greater than the expected value, then the values
+of <code>x</code> are positively autocorrelated, whereas if Iobserved &lt;
+Iexpected, this will indicate negative autocorrelation.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list containing the elements:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>observed</code></td>
+<td>
+<p>the computed Moran's I.</p>
+</td></tr>
+<tr valign="top"><td><code>expected</code></td>
+<td>
+<p>the expected value of I under the null hypothesis.</p>
+</td></tr>
+<tr valign="top"><td><code>sd</code></td>
+<td>
+<p>the standard deviation of I under the null hypothesis.</p>
+</td></tr>
+<tr valign="top"><td><code>p.value</code></td>
+<td>
+<p>the P-value of the test of the null hypothesis against
+the alternative hypothesis specified in <code>alternative</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:julien.dutheil@univ-montp2.fr">julien.dutheil@univ-montp2.fr</a> and
+Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Gittleman, J. L. and Kot, M. (1990) Adaptation: statistics and a null
+model for estimating phylogenetic effects. <em>Systematic Zoology</em>,
+<b>39</b>, 227&ndash;241.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="weight.taxo.html">weight.taxo</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tr &lt;- rtree(30)
+x &lt;- rnorm(30)
+## weights w[i,j] = 1/d[i,j]:
+w &lt;- 1/cophenetic(tr)
+## set the diagonal w[i,i] = 0 (instead of Inf...):
+diag(w) &lt;- 0
+Moran.I(x, w)
+Moran.I(x, w, alt = "l")
+Moran.I(x, w, alt = "g")
+Moran.I(x, w, scaled = TRUE) # usualy the same
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

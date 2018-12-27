@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A function to compute layouts of graph objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for layoutGraph {Rgraphviz}"><tr><td>layoutGraph {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> A function to compute layouts of  graph objects </h2>
+
+<h3>Description</h3>
+
+<p>This is a wrapper to layout graph objects using arbitrary layout
+engines. The default engine (and so far the only implemented engine)
+is ATT's Graphviz.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+
+layoutGraph(x, layoutFun = layoutGraphviz, ...)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> A graph object </p>
+</td></tr>
+<tr valign="top"><td><code>layoutFun</code></td>
+<td>
+<p> A function that performs the graph layout and
+returns a graph object with all necessary rendering information </p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> Further arguments that are passed to <code>layoutFun</code> </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Layout of a graph and its rendering are two separate
+processes. <code>layoutGraph</code> provides an API to use an arbitrary
+algorithm for the layout. This is archived by abstraction of the
+layout process into a separate function (<code>layoutFun</code>) with
+well-defined inputs and outputs. The only requirements on the
+<code>layoutFun</code> are to accept a graph object as input and to return a
+valid graph object with all the necessary rendering information stored
+in its <code>renderInfo</code> slot. This information comprises
+</p>
+<p><strong>for nodes:</strong>
+</p>
+
+<dl>
+<dt>nodeX, nodeY</dt><dd><p>the locations of the nodes, in the coordinate
+system defined by <code>bbox</code> (see below). </p>
+</dd>
+<dt>lWidth, rWidth</dt><dd><p>the width components of the nodes,
+<code>lWidth+rWidth=total width</code>. </p>
+</dd>
+<dt>height</dt><dd><p>the heights of the nodes. </p>
+</dd>
+<dt>labelX, labelY</dt><dd><p>node label locations. </p>
+</dd>
+<dt>labelJust</dt><dd><p>the justification of the node labels. </p>
+</dd>
+<dt>label</dt><dd><p>node label text. </p>
+</dd>
+<dt>shape</dt><dd><p>the node shape. Valid values are <code>box</code>,
+<code>rectangle</code>, <code>ellipse</code>, <code>plaintext</code>, <code>circle</code>
+and <code>triangle</code>. </p>
+</dd>
+</dl>
+
+<p><strong>for edges:</strong>
+</p>
+
+<dl>
+<dt>splines</dt><dd><p>representation of the edge splines as a list of
+<code><a href="BezierCurve-class.html">BezierCurve</a></code> objects. </p>
+</dd>
+<dt>labelX, labelY</dt><dd><p>edge label locations. </p>
+</dd>
+<dt>label</dt><dd><p>edge label text. </p>
+</dd>
+<dt>arrowhead, arrowtail</dt><dd><p>some of Graphviz's arrow shapes are
+supported. Currently they are: <code>open</code>, <code>normal</code>,
+<code>dot</code>, <code>odot</code>, <code>box</code>, <code>obox</code>, <code>tee</code>,
+<code>diamond</code>, <code>odiamond</code> and <code>none</code>. In addition, a
+user-defined function can be passed which needs to be able to deal
+with 4 arguments: A list of xy coordinates for the center of the
+arrowhead, and the graphical parameters <code>col</code>, <code>lwd</code> and
+<code>lty</code>.</p>
+</dd>
+<dt>direction</dt><dd><p>The edge direction. The special value <code>both</code> is
+used when reciprocrated edges are to be collapsed. </p>
+</dd>
+</dl>
+
+<p>To indicate that this information has been added to the graph, the
+graph plotting function should also set the laidout flag in the
+<code>graphData</code> slot to <code>TRUE</code> and add the bounding box
+information (i.e., the coordinate system in which the graph is laid
+out) in the format of a two-by-two matrix as item <code>bbox</code> in the
+<code>graphData</code> slot.
+</p>
+<p>AT&amp;T's <code>Graphviz</code> is the default layout algorithm to use when
+<code>layoutGraph</code> is called without a specific <code>layoutFun</code>
+function. See <code><a href="agopen.html">agopen</a></code> for details about how to tweak
+<code>Graphviz</code> and the valid arguments that can be passed on through
+.... The most common ones to set in this context might be
+<code>layoutType</code>, which controls the type of layout to compute and
+the <code>nodeAttrs</code> and <code>edgeAttrs</code> arguments, which control the
+fine-tuning of nodes and edges.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object inheriting from class <code><a href="../../graph/html/graph-class.html">graph</a></code>
+</p>
+
+
+<h3>Note</h3>
+
+<p>Please note that the layout needs to be recomputed whenever attributes
+are changed which are bound to affect the position of nodes or
+edges. This is for instance the case for the <code>arrowhead</code> and
+<code>arrowtail</code> parameters.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Florian Hahne, Deepayan Sarkar </p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="../../graph/html/renderInfo-class.html">renderGraph</a></code>,
+<code><a href="../../graph/html/settings.html">graph.par</a></code>,
+<code><a href="../../graph/html/renderInfo-class.html">nodeRenderInfo</a></code>,
+<code><a href="../../graph/html/renderInfo-class.html">edgeRenderInfo</a></code>,
+<code><a href="agopen.html">agopen</a></code>,
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(123)
+V &lt;- letters[1:5]
+M &lt;- 1:2
+g1 &lt;- randomGraph(V, M, 0.5)
+edgemode(g1) &lt;- "directed"
+x &lt;- layoutGraph(g1)
+renderGraph(x)
+
+## one of Graphviz's additional layout algorithms
+x &lt;- layoutGraph(g1, layoutType="neato")
+renderGraph(x)
+
+## some tweaks to Graphviz's node and edge attributes,
+## including a user-defined arrowhead and node shape functions.
+myArrows &lt;- function(x, ...)
+{
+for(i in 1:4)
+points(x,cex=i)
+}
+
+myNode &lt;- function(x, col, fill, ...)
+symbols(x=mean(x[,1]), y=mean(x[,2]), thermometers=cbind(.5, 1,
+runif(1)), inches=0.5,
+fg=col, bg=fill, add=TRUE)
+
+eAtt &lt;- list(arrowhead=c("a~b"=myArrows, "b~d"="odiamond", "d~e"="tee"))
+nAtt &lt;- list(shape=c(d="box", c="ellipse", a=myNode))
+edgemode(g1) &lt;- "directed"
+x &lt;- layoutGraph(g1, edgeAttrs=eAtt, nodeAttrs=nAtt, layoutType="neato")
+renderGraph(x)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Simulate from a Parameterized MVN Mixture Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for simE {mclust}"><tr><td>simE {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Simulate from a Parameterized MVN Mixture Model
+</h2>
+
+<h3>Description</h3>
+
+<p>Simulate data from a parameterized MVN mixture model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+simE(parameters, n, seed = NULL, ...)
+simV(parameters, n, seed = NULL, ...)
+simEII(parameters, n, seed = NULL, ...)
+simVII(parameters, n, seed = NULL, ...)
+simEEI(parameters, n, seed = NULL, ...)
+simVEI(parameters, n, seed = NULL, ...)
+simEVI(parameters, n, seed = NULL, ...)
+simVVI(parameters, n, seed = NULL, ...)
+simEEE(parameters, n, seed = NULL, ...)
+simEEV(parameters, n, seed = NULL, ...)
+simVEV(parameters, n, seed = NULL, ...)
+simVVV(parameters, n, seed = NULL, ...)
+simEVE(parameters, n, seed = NULL, ...)
+simEVV(parameters, n, seed = NULL, ...)
+simVEE(parameters, n, seed = NULL, ...)
+simVVE(parameters, n, seed = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+<p>A list with the following components:
+</p>
+
+<dl>
+<dt><code>pro</code></dt><dd>
+<p>A vector whose <em>k</em>th component is the mixing proportion for
+the <em>k</em>th component of the mixture model.
+If missing, equal proportions are assumed.
+</p>
+</dd>
+<dt><code>mean</code></dt><dd>
+<p>The mean for each component. If there is more than one component,
+this is a matrix whose kth column is the mean of the <em>k</em>th
+component of the mixture model.
+</p>
+</dd>
+<dt><code>variance</code></dt><dd>
+<p>A list of variance parameters for the model.
+The components of this list depend on the model
+specification. See the help file for <code><a href="mclustVariance.html">mclustVariance</a></code>
+for details.
+</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+
+<p>An integer specifying the number of data points to be simulated.
+</p>
+</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+
+<p>An optional integer argument to <code>set.seed</code> for reproducible
+random class assignment. By default the current seed will be used.
+Reproducibility can also be achieved by calling <code>set.seed</code>
+before calling <code>sim</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>... </code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function can be used with an indirect or list call using
+<code>do.call</code>, allowing the output of e.g. <code>mstep</code>, <code>em</code>
+<code>me</code>, <code>Mclust</code>, to be passed directly without the need
+to specify individual parameters as arguments. 
+</p>
+
+
+<h3>Value</h3>
+
+<p>A matrix in which first column is the classification and the remaining
+columns are the <code>n</code> observations simulated from the specified MVN 
+mixture model.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>Attributes:</code></td>
+<td>
+
+<p><code>"modelName"</code> A character string indicating the variance 
+model used for the simulation.
+</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sim.html">sim</a></code>,
+<code><a href="Mclust.html">Mclust</a></code>,
+<code><a href="mstepE.html">mstepE</a></code>,
+<code><a href="mclustVariance.html">mclustVariance</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+d &lt;- 2
+G &lt;- 2
+scale &lt;- 1
+shape &lt;- c(1, 9)
+
+O1 &lt;- diag(2)
+O2 &lt;- diag(2)[,c(2,1)]
+O &lt;- array(cbind(O1,O2), c(2, 2, 2))
+O
+
+variance &lt;- list(d= d, G = G, scale = scale, shape = shape, orientation = O)
+mu &lt;- matrix(0, d, G) ## center at the origin
+simdat &lt;- simEEV( n = 200, 
+                  parameters = list(pro=c(1,1),mean=mu,variance=variance),
+                  seed = NULL)
+
+cl &lt;- simdat[,1]
+
+sigma &lt;- array(apply(O, 3, function(x,y) crossprod(x*y), 
+                 y = sqrt(scale*shape)), c(2,2,2))
+paramList &lt;- list(mu = mu, sigma = sigma)
+coordProj( simdat, paramList = paramList, classification = cl)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

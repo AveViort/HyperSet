@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/cookies.js" type="text/javascript"></script>
+<script type="text/javascript">
+function show()
+{
+		var url = localStorage.getItem("url");
+		var uname = 'Anonymous';
+		var signature = '';
+		var sid = '';
+		var usercookie = (getCookie("username")).split("|");
+		if (usercookie!="")
+		{
+			uname = usercookie[0];
+			signature = usercookie[1];
+			sid = ((getCookie("session_id")).split("|"))[0];
+		}
+		url = url + ";username=" + uname + ";signature=" + signature + ';sid=' + sid;
+		document.getElementById("result").height=window.innerHeight;
+		document.getElementById("result").width=window.innerWidth;
+		document.getElementById("result").src=url;
+		localStorage.removeItem("url");
+}
+
+window.onresize = function()
+{
+	document.getElementById("result").height=window.innerHeight;
+	document.getElementById("result").width=window.innerWidth;
+}
+</script>
+</head>
+<body onload=show()>
+<iframe id="result"></div>
+</body>
+</html>

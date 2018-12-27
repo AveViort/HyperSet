@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read DNA Sequences in a File</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for read.dna {ape}"><tr><td>read.dna {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read DNA Sequences in a File</h2>
+
+<h3>Description</h3>
+
+<p>These functions read DNA sequences in a file, and returns a matrix or a
+list of DNA sequences with the names of the taxa read in the file as
+rownames or names, respectively. By default, the sequences are stored
+in binary format, otherwise (if <code>as.character = TRUE</code>) in
+lowercase.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+read.dna(file, format = "interleaved", skip = 0,
+         nlines = 0, comment.char = "#",
+         as.character = FALSE, as.matrix = NULL)
+read.FASTA(file, type = "DNA")
+read.fastq(file, offset = -33)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a file name specified by either a variable of mode character,
+or a double-quoted string. Can also be a <a href="../../base/html/connections.html">connection</a> (which
+will be opened for reading if necessary, and if so
+<code><a href="../../base/html/connections.html">close</a></code>d (and hence destroyed) at the end of the
+function call).</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>a character string specifying the format of the DNA
+sequences. Four choices are possible: <code>"interleaved"</code>,
+<code>"sequential"</code>, <code>"clustal"</code>, or <code>"fasta"</code>, or any
+unambiguous abbreviation of these.</p>
+</td></tr>
+<tr valign="top"><td><code>skip</code></td>
+<td>
+<p>the number of lines of the input file to skip before
+beginning to read data (ignored for FASTA files; see below).</p>
+</td></tr>
+<tr valign="top"><td><code>nlines</code></td>
+<td>
+<p>the number of lines to be read (by default the file is
+read untill its end; ignored for FASTA files)).</p>
+</td></tr>
+<tr valign="top"><td><code>comment.char</code></td>
+<td>
+<p>a single character, the remaining of the line
+after this character is ignored (ignored for FASTA files).</p>
+</td></tr>
+<tr valign="top"><td><code>as.character</code></td>
+<td>
+<p>a logical controlling whether to return the
+sequences as an object of class <code>"DNAbin"</code> (the default).</p>
+</td></tr>
+<tr valign="top"><td><code>as.matrix</code></td>
+<td>
+<p>(used if <code>format = "fasta"</code>) one of the three
+followings: (i) <code>NULL</code>: returns the sequences in a matrix if
+they are of the same length, otherwise in a list; (ii) <code>TRUE</code>:
+returns the sequences in a matrix, or stops with an error if they
+are of different lengths; (iii) <code>FALSE</code>: always returns the
+sequences in a list.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>a character string giving the type of the sequences: one of
+<code>"DNA"</code> or <code>"AA"</code> (case-independent, can be abbreviated).</p>
+</td></tr>
+<tr valign="top"><td><code>offset</code></td>
+<td>
+<p>the value to be added to the quality scores (the default
+applies to the Sanger format and should work for most recent FASTQ
+files).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>read.dna</code> follows the interleaved and sequential formats defined
+in PHYLIP (Felsenstein, 1993) but with the original feature than there
+is no restriction on the lengths of the taxa names. For these two
+formats, the first line of the file must contain the dimensions of the
+data (the numbers of taxa and the numbers of nucleotides); the
+sequences are considered as aligned and thus must be of the same
+lengths for all taxa. For the FASTA and FASTQ formats, the conventions
+defined in the references are followed; the sequences are taken as
+non-aligned. For all formats, the nucleotides can be arranged in any
+way with blanks and line-breaks inside (with the restriction that the
+first ten nucleotides must be contiguous for the interleaved and
+sequential formats, see below). The names of the sequences are read in
+the file. Particularities for each format are detailed below.
+</p>
+
+<ul>
+<li><p>Interleaved:the function starts to read the sequences after it
+finds one or more spaces (or tabulations). All characters before the
+sequences are taken as the taxa names after removing the leading and
+trailing spaces (so spaces in taxa names are not allowed). It is
+assumed that the taxa names are not repeated in the subsequent
+blocks of nucleotides.
+</p>
+</li>
+<li><p>Sequential:the same criterion than for the interleaved format
+is used to start reading the sequences and the taxa names; the
+sequences are then read until the number of nucleotides specified in
+the first line of the file is reached. This is repeated for each taxa.
+</p>
+</li>
+<li><p>Clustal:this is the format output by the Clustal programs
+(.aln). It is close to the interleaved format: the differences are
+that the dimensions of the data are not indicated in the file, and
+the names of the sequences are repeated in each block.
+</p>
+</li>
+<li><p>FASTA:This looks like the sequential format but the taxa names
+(or a description of the sequence) are on separate lines beginning
+with a &lsquo;greater than&rsquo; character &lsquo;&gt;&rsquo; (there may be leading spaces
+before this character). These lines are taken as taxa names after
+removing the &lsquo;&gt;&rsquo; and the possible leading and trailing spaces. All
+the data in the file before the first sequence are ignored.
+</p>
+</li></ul>
+
+<p>The FASTQ format is explained in the references.
+</p>
+<p>Compressed files must be read through connections (see examples).
+<code>read.fastq</code> can read compressed files directly (see
+examples).
+</p>
+
+
+<h3>Value</h3>
+
+<p>a matrix or a list (if <code>format = "fasta"</code>) of DNA sequences
+stored in binary format, or of mode character (if <code>as.character =
+    "TRUE"</code>).
+</p>
+<p><code>read.FASTA</code> always returns a list of class <code>"DNAbin"</code> or
+<code>"AAbin"</code>.
+</p>
+<p><code>read.fastq</code> returns a list of class <code>"DNAbin"</code> with an
+atrribute <code>"QUAL"</code> (see examples).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis and RJ Ewing</p>
+
+
+<h3>References</h3>
+
+<p>Anonymous. FASTA format. <a href="https://en.wikipedia.org/wiki/FASTA_format">https://en.wikipedia.org/wiki/FASTA_format</a>
+</p>
+<p>Anonymous. FASTQ format. <a href="https://en.wikipedia.org/wiki/FASTQ_format">https://en.wikipedia.org/wiki/FASTQ_format</a>
+</p>
+<p>Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version
+3.5c. Department of Genetics, University of Washington.
+<a href="http://evolution.genetics.washington.edu/phylip/phylip.html">http://evolution.genetics.washington.edu/phylip/phylip.html</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.GenBank.html">read.GenBank</a></code>, <code><a href="write.dna.html">write.dna</a></code>,
+<code><a href="DNAbin.html">DNAbin</a></code>, <code><a href="dist.dna.html">dist.dna</a></code>, <code><a href="woodmouse.html">woodmouse</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## a small extract from data(woddmouse) in sequential format:
+cat("3 40",
+"No305     NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
+"No304     ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
+"No306     ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
+file = "exdna.txt", sep = "\n")
+ex.dna &lt;- read.dna("exdna.txt", format = "sequential")
+str(ex.dna)
+ex.dna
+## the same data in interleaved format...
+cat("3 40",
+"No305     NTTCGAAAAA CACACCCACT",
+"No304     ATTCGAAAAA CACACCCACT",
+"No306     ATTCGAAAAA CACACCCACT",
+"          ACTAAAANTT ATCAGTCACT",
+"          ACTAAAAATT ATCAACCACT",
+"          ACTAAAAATT ATCAATCACT",
+file = "exdna.txt", sep = "\n")
+ex.dna2 &lt;- read.dna("exdna.txt")
+## ... in clustal format...
+cat("CLUSTAL (ape) multiple sequence alignment", "",
+"No305     NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
+"No304     ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
+"No306     ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
+"           ************************** ******  ****",
+file = "exdna.txt", sep = "\n")
+ex.dna3 &lt;- read.dna("exdna.txt", format = "clustal")
+## ... and in FASTA format
+cat("&gt;No305",
+"NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
+"&gt;No304",
+"ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
+"&gt;No306",
+"ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
+file = "exdna.fas", sep = "\n")
+ex.dna4 &lt;- read.dna("exdna.fas", format = "fasta")
+## They are the same:
+identical(ex.dna, ex.dna2)
+identical(ex.dna, ex.dna3)
+identical(ex.dna, ex.dna4)
+
+## How to read compressed files:
+
+## create the ZIP file:
+zip("exdna.fas.zip", "exdna.fas")
+## create the GZ file with a connection:
+con &lt;- gzfile("exdna.fas.gz", "wt")
+cat("&gt;No305", "NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
+    "&gt;No304", "ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
+    "&gt;No306", "ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
+    file = con, sep = "\n")
+close(con)
+
+ex.dna5 &lt;- read.dna(unz("exdna.fas.zip", "exdna.fas"), "fasta")
+ex.dna6 &lt;- read.dna(gzfile("exdna.fas.gz"), "fasta")
+identical(ex.dna5, ex.dna4)
+identical(ex.dna6, ex.dna4)
+
+unlink("exdna.txt")
+unlink("exdna.fas")
+unlink("exdna.fas.zip")
+unlink("exdna.fas.gz")
+
+## read a FASTQ file from 1000 Genomes:
+## Not run: 
+a &lt;- "ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/data/HG00096/sequence_read/"
+b &lt;- "SRR062641.filt.fastq.gz"
+URL &lt;- paste0(a, b)
+download.file(URL, b)
+X &lt;- read.fastq(b)
+X # 109,811 sequences
+## get the qualities of the first sequence:
+(qual1 &lt;- attr(X, "QUAL")[[1]])
+## the corresponding probabilities:
+10^(-qual1/10)
+## get the mean quality for each sequence:
+mean.qual &lt;- sapply(attr(X, "Q"), mean)
+## can do the same for var, sd, ...
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add a Legend to a Hexbin Plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for grid.hexlegend {hexbin}"><tr><td>grid.hexlegend {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add a Legend to a Hexbin Plot</h2>
+
+<h3>Description</h3>
+
+<p>Plots the legend for the <code>plot</code> method of <code><a href="hexbin.html">hexbin</a></code>.
+Provides a legend indicating the count representations.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+grid.hexlegend(legend, ysize, lcex, inner, style = ,
+  	   minarea = 0.05, maxarea = 0.8, mincnt = 1, maxcnt, trans = NULL,
+	   inv = NULL, colorcut, density = NULL, border = NULL, pen = NULL,
+	   colramp = function(n) { LinGray(n,beg = 90,end = 15) },
+           leg.unit = "native")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>legend</code></td>
+<td>
+<p>positive number giving width of the legend in inches.</p>
+</td></tr>
+<tr valign="top"><td><code>ysize</code></td>
+<td>
+<p>height of legend in inches</p>
+</td></tr>
+<tr valign="top"><td><code>lcex</code></td>
+<td>
+<p>the characters expansion size for the text in the legend,
+see <code><a href="../../graphics/html/par.html">par</a>(cex=)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>inner</code></td>
+<td>
+<p>the inner diameter of a hexagon in inches.</p>
+</td></tr>
+<tr valign="top"><td><code>style</code></td>
+<td>
+<p>the hexagon style; see <code><a href="grid.hexagons.html">grid.hexagons</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>minarea, maxarea</code></td>
+<td>
+<p>fraction of the cell area for the lowest and largest
+count, respectively.</p>
+</td></tr>
+<tr valign="top"><td><code>mincnt, maxcnt</code></td>
+<td>
+<p>minimum and maximum count accepted in <code>plot</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>trans</code></td>
+<td>
+<p>a transformation function for the counts such as
+<code><a href="../../base/html/MathFun.html">sqrt</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>inv</code></td>
+<td>
+<p>the inverse transformation function.</p>
+</td></tr>
+<tr valign="top"><td><code>colorcut</code></td>
+<td>
+<p>numeric vector of values covering [0, 1] the determine
+hexagon color classes boundaries and hexagon legend size boundaries.</p>
+</td></tr>
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p>argument for <code><a href="../../graphics/html/polygon.html">polygon</a>()</code>.  Draw the border
+for each hexagon.</p>
+</td></tr>
+<tr valign="top"><td><code>density</code></td>
+<td>
+<p>argument for <code><a href="../../graphics/html/polygon.html">polygon</a>()</code> filling.  A
+<code>0</code> causes the polygon not to be filled.</p>
+</td></tr>
+<tr valign="top"><td><code>pen</code></td>
+<td>
+<p>color argument used for <code><a href="../../graphics/html/polygon.html">polygon</a>(col = .)</code>.
+Determines the color with which the polygon will be filled.</p>
+</td></tr>
+<tr valign="top"><td><code>colramp</code></td>
+<td>
+<p>function accepting an integer <code>n</code> as an argument and
+returning n colors.</p>
+</td></tr>
+<tr valign="top"><td><code>leg.unit</code></td>
+<td>
+<p>unit to use</p>
+</td></tr></table>
+
+
+
+<h3>Details</h3>
+
+<p>The <code>plot</code> method for <code><a href="hexbin.html">hexbin</a></code> objects calls this function
+to produce a legend
+by setting the graphics parameters, so <code>hex.legend</code> itself is not a
+standalone function.
+</p>
+<p>The legend function is <b>preliminary</b>.  Later version will include
+refinements and handle extreme cases (small and large) for cell size
+and counts.
+</p>
+<p>See the <b>Details</b> section of <code><a href="grid.hexagons.html">grid.hexagons</a></code>'s help page.
+</p>
+
+
+<h3>Value</h3>
+
+<p>This function does not return any value.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Dan Carr &lt;dcarr@voxel.galaxy.gmu.edu&gt;
+</p>
+<p>ported by Nicholas Lewin-Koh &lt;kohnicho@comp.nus.edu.sg&gt;
+</p>
+
+
+<h3>References</h3>
+
+<p> see in <code><a href="grid.hexagons.html">grid.hexagons</a></code>.</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hexbin.html">hexbin</a></code>, <code><a href="grid.hexagons.html">grid.hexagons</a></code>,
+
+<code><a href="smooth.hexbin.html">smooth.hexbin</a></code>, <code><a href="erode.hexbin.html">erode.hexbin</a></code>,
+
+<code><a href="hcell2xy.html">hcell2xy</a></code>,
+<code><a href="gplot.hexbin.html">gplot.hexbin</a></code>,
+
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not a stand alone function; typically only called from plot.hexbin()
+
+
+## Not run: 
+  grid.hexlegend(legend = 2, ysize = 1,lcex=8,inner=0.2,
+                 maxcnt = 100, colorcut = c(0.5,0.5))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Change col/lwd/lty of branches based on clusters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for branches_attr_by_clusters {dendextend}"><tr><td>branches_attr_by_clusters {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Change col/lwd/lty of branches based on clusters</h2>
+
+<h3>Description</h3>
+
+<p>The user supplies a dend, a vector of clusters, and what to modify (and how).
+</p>
+<p>And the function returns a dendrogram with branches col/lwd/lty accordingly.
+(the function assumes unique labels)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+branches_attr_by_clusters(dend, clusters, values, attr = c("col", "lwd",
+  "lty"), branches_changed_have_which_labels = c("any", "all"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram dend</p>
+</td></tr>
+<tr valign="top"><td><code>clusters</code></td>
+<td>
+<p>an integer vector of clusters.
+This HAS to be of the same length as the number of leaves.
+Items that belong to no cluster should get the value 0.
+The vector should be of the same order as that of the labels in the dendrogram.
+If you create the clusters from something like <a href="cutree-methods.html">cutree</a> you would first
+need to use <a href="../../stats/html/order.dendrogram.html">order.dendrogram</a> on it, before using it in the function.</p>
+</td></tr>
+<tr valign="top"><td><code>values</code></td>
+<td>
+<p>the attributes to use for non 0 values.
+This should be of the same length as the number of unique non-0 clusters.
+If it is shorter, it is recycled.
+</p>
+<p>OR, this can also be of the same length as the number of leaves in the tree
+In which case, the values will be aggreagted (i.e.: <a href="../../base/html/tapply.html">tapply</a>), to match
+the number of clusters. The first value of each cluster will be used as the main
+value.
+</p>
+<p>TODO: So far, the function doesn't deal well with NA values. (this might be changed in the future)</p>
+</td></tr>
+<tr valign="top"><td><code>attr</code></td>
+<td>
+<p>a character with one of the following values: col/lwd/lty</p>
+</td></tr>
+<tr valign="top"><td><code>branches_changed_have_which_labels</code></td>
+<td>
+<p>character with either &quot;any&quot; (default) or &quot;all&quot;.
+Inidicates how the branches should be updated.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>ignored.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is probably NOT a very fast implementation of the function, but it works.
+</p>
+<p>This function was designed to enable the manipulation (mainly coloring) of 
+branches, based on the results from the <a href="../../dynamicTreeCut/html/cutreeDynamic.html">cutreeDynamic</a>
+function.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram with modified branches (col/lwd/lty).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="branches_attr_by_labels.html">branches_attr_by_labels</a>,
+<a href="get_leaves_attr.html">get_leaves_attr</a>, <a href="nnodes.html">nnodes</a>, <a href="nleaves.html">nleaves</a>
+<a href="../../dynamicTreeCut/html/cutreeDynamic.html">cutreeDynamic</a>,
+<a href="../../WGCNA/html/plotDendroAndColors.html">plotDendroAndColors</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+### Getting the hc object
+iris_dist &lt;- iris[,-5] %&gt;% dist
+hc &lt;-  iris_dist %&gt;% hclust 
+# This is how it looks without any colors:
+dend &lt;- as.dendrogram(hc)
+plot(dend)
+
+# Both functions give the same outcome
+# options 1:
+dend %&gt;% set("branches_k_color", k = 4) %&gt;% plot
+# options 2:
+clusters &lt;- cutree(dend, 4)[order.dendrogram(dend)]
+dend %&gt;% branches_attr_by_clusters(clusters) %&gt;% plot
+
+# and the second option is much slower:
+system.time(set(dend, "branches_k_color", k = 4)) # 0.26 sec
+system.time(branches_attr_by_clusters(dend, clusters)) # 1.61 sec
+# BUT, it also allows us to do more flaxible things!
+
+#--------------------------
+#   Plotting dynamicTreeCut
+#--------------------------
+
+# let's get the clusters
+library(dynamicTreeCut)
+clusters &lt;- cutreeDynamic(hc, distM = as.matrix(iris_dist))
+# we need to sort them to the order of the dendrogram:
+clusters &lt;- clusters[order.dendrogram(dend)]
+
+# get some functions:
+library(dendextendRcpp)
+library(colorspace)
+no0_unique &lt;- function(x) {
+   u_x &lt;- unique(x)   
+   u_x[u_x != 0]
+}
+
+clusters_numbers &lt;- no0_unique(clusters)
+n_clusters &lt;- length(clusters_numbers)
+cols &lt;- rainbow_hcl(n_clusters)
+dend2 &lt;- branches_attr_by_clusters(dend, clusters, values = cols)
+# dend2 &lt;- branches_attr_by_clusters(dend, clusters)
+plot(dend2)
+# add colored bars:
+ord_cols &lt;- rainbow_hcl(n_clusters)[order(clusters_numbers)]
+tmp_cols  &lt;- rep(1, length(clusters))
+tmp_cols[clusters != 0] &lt;- ord_cols[clusters != 0][clusters]
+colored_bars(tmp_cols, y_shift = -1.1, rowLabels = "")
+# all of the ordering is to handle the fact that the cluster numbers are not ascending...
+
+# How is this compared with the usual cutree?
+dend3 &lt;- color_branches(dend, k = n_clusters)
+labels(dend2) &lt;- as.character(labels(dend2)) 
+# this needs fixing, since the labels are not character!
+# Well, both cluster solutions are not perfect, but at least they are interesting...
+ tanglegram(dend2, dend3, 
+            main_left = "cutreeDynamic", main_right = "cutree",
+            columns_width = c(5,.5,5), 
+            color_lines = cols[iris[order.dendrogram(dend2),5]])
+# (Notice how the color_lines is of the true Species of each Iris)
+# The main difference is at the bottom,
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

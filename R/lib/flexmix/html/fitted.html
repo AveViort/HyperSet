@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract Model Fitted Values</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fitted-methods {flexmix}"><tr><td>fitted-methods {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract Model Fitted Values</h2>
+
+<h3>Description</h3>
+
+<p>Extract fitted values for each component from a flexmix object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'flexmix'
+fitted(object, drop = TRUE, aggregate = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>an object of class <code>"flexmix"</code> or
+<code>"FLXR"</code></p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>logical, if <code>TRUE</code> then the function tries to
+simplify the return object by combining lists of length 1 into
+matrices.</p>
+</td></tr>
+<tr valign="top"><td><code>aggregate</code></td>
+<td>
+<p>logical, if <code>TRUE</code> then the fitted values for
+each model aggregated over the components are returned.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>currently not used</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Friedrich Leisch and Bettina Gruen</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("NPreg", package = "flexmix")
+ex1 &lt;- flexmix(yn ~ x + I(x^2), data = NPreg, k = 2)
+matplot(NPreg$x, fitted(ex1), pch = 16, type = "p")
+points(NPreg$x, NPreg$yn)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

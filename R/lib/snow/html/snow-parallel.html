@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Higher Level SNOW Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for snow-parallel {snow}"><tr><td>snow-parallel {snow}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Higher Level SNOW Functions</h2>
+
+<h3>Description</h3>
+
+<p>Parallel versions of <code>apply</code> and related functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+parLapply(cl, x, fun, ...)
+parSapply(cl, X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE) 
+parApply(cl, X, MARGIN, FUN, ...)
+parRapply(cl, x, fun, ...)
+parCapply(cl, x, fun, ...)
+parMM(cl, A, B)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cl</code></td>
+<td>
+<p>cluster object</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>function or character string naming a function</p>
+</td></tr>
+<tr valign="top"><td><code>X</code></td>
+<td>
+<p>array to be used</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>matrix to be used</p>
+</td></tr>
+<tr valign="top"><td><code>FUN</code></td>
+<td>
+<p>function or character string naming a function</p>
+</td></tr>
+<tr valign="top"><td><code>MARGIN</code></td>
+<td>
+<p>vector specifying the dimensions to use.</p>
+</td></tr>
+<tr valign="top"><td><code>simplify</code></td>
+<td>
+<p>logical; see <code>sapply</code></p>
+</td></tr>
+<tr valign="top"><td><code>USE.NAMES</code></td>
+<td>
+<p>logical; see <code>sapply</code></p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments to pass to standard function</p>
+</td></tr>
+<tr valign="top"><td><code>A</code></td>
+<td>
+<p>matrix</p>
+</td></tr>
+<tr valign="top"><td><code>B</code></td>
+<td>
+<p>matrix</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>parLapply</code>, <code>parSapply</code>, and <code>parApply</code> are parallel
+versions of <code>lapply</code>, <code>sapply</code>, and <code>apply</code>.
+</p>
+<p><code>parRapply</code> and <code>parCapply</code> are parallel row and column
+<code>apply</code> functions for a matrix <code>x</code>; they may be slightly
+more efficient than <code>parApply</code>.
+</p>
+<p><code>parMM</code> is a very simple(minded) parallel matrix multiply;
+it is intended as an illustration.
+</p>
+<p>For more details see
+<a href="http://www.stat.uiowa.edu/~luke/R/cluster/cluster.html">http://www.stat.uiowa.edu/~luke/R/cluster/cluster.html</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## Not run: 
+cl &lt;- makeSOCKcluster(c("localhost","localhost"))
+parSapply(cl, 1:20, get("+"), 3)
+  
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>snow</em> version 0.4-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

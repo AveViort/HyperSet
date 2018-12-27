@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Collapse and Resolve Multichotomies</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for multi2di {ape}"><tr><td>multi2di {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Collapse and Resolve Multichotomies</h2>
+
+<h3>Description</h3>
+
+<p>These two functions collapse or resolve multichotomies in phylogenetic
+trees.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+multi2di(phy, ...)
+## S3 method for class 'phylo'
+multi2di(phy, random = TRUE, ...)
+## S3 method for class 'multiPhylo'
+multi2di(phy, random = TRUE, ...)
+di2multi(phy, ...)
+## S3 method for class 'phylo'
+di2multi(phy, tol = 1e-08, ...)
+## S3 method for class 'multiPhylo'
+di2multi(phy, tol = 1e-08, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code> or <code>"multiPhylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>random</code></td>
+<td>
+<p>a logical value specifying whether to resolve the
+multichotomies randomly (the default) or in the order they appear in
+the tree (if <code>random = FALSE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>tol</code></td>
+<td>
+<p>a numeric value giving the tolerance to consider a branch
+length significantly greater than zero.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>arguments passed among methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>multi2di</code> transforms all multichotomies into a series of
+dichotomies with one (or several) branch(es) of length zero.
+</p>
+<p><code>di2multi</code> deletes all branches smaller than <code>tol</code> and
+collapses the corresponding dichotomies into a multichotomy.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of the same class than the input.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="is.binary.tree.html">is.binary</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(bird.families)
+is.binary(bird.families)
+is.binary(multi2di(bird.families))
+all.equal(di2multi(multi2di(bird.families)), bird.families)
+### To see the results of randomly resolving a trichotomy:
+tr &lt;- read.tree(text = "(a:1,b:1,c:1);")
+layout(matrix(1:4, 2, 2))
+for (i in 1:4)
+  plot(multi2di(tr), use.edge.length = FALSE, cex = 1.5)
+layout(1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

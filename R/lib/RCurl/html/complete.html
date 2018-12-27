@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Complete an asynchronous HTTP request</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for complete {RCurl}"><tr><td>complete {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Complete an asynchronous HTTP request</h2>
+
+<h3>Description</h3>
+
+<p>This is a generic function that is used within the
+RCurl package to force the completion of an
+HTTP request. If the request is asynchronous,
+this essentially blocks until the request is completed
+by repeatedly asking for more information to be
+retrieved from the HTTP connection.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+complete(obj, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>the object which is to be completed. This is typically a
+<code><a href="MultiCURLHandle-class.html">MultiCURLHandle-class</a></code> instance.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments intended to be used by specific methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The value is typically not of interest, but rather the side effect
+of processing the pending requests.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://curl.haxx.se">http://curl.haxx.se</a>, specifically the multi interface of libcurl.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="MultiCURLHandle-class.html">MultiCURLHandle-class</a></code>
+<code><a href="MultiCURLHandle-class.html">push</a></code>, <code><a href="MultiCURLHandle-class.html">pop</a></code>  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+if(url.exists("http://eeyore.ucdavis.edu/cgi-bin/testForm1.pl")) {
+
+  f = system.file("NAMESPACE", package = "RCurl")
+   postForm("http://eeyore.ucdavis.edu/cgi-bin/testForm1.pl",
+            "fileData" = fileUpload(f))
+
+
+   postForm("http://eeyore.ucdavis.edu/cgi-bin/testForm1.pl",
+            "fileData" = fileUpload("",
+                                    paste(readLines(f), collapse = "\n"),
+                                    "text/plain"))
+
+   postForm("http://eeyore.ucdavis.edu/cgi-bin/testForm1.pl",
+            "fileData" = fileUpload(f,
+                                    paste(readLines(f), collapse = "\n")
+                                    ),
+            .opts = list(verbose = TRUE, header = TRUE))
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

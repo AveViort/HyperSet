@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Wrap a try block in futile.logger</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ftry {futile.logger}"><tr><td>ftry {futile.logger}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Wrap a try block in futile.logger</h2>
+
+<h3>Description</h3>
+
+<p>This function integrates futile.logger with the error and warning system
+so problems can be caught both in the standard R warning system, while
+also being emitted via futile.logger.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ftry(expr, error = stop, finally = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>The expression to evaluate in a try block</p>
+</td></tr>
+<tr valign="top"><td><code>error</code></td>
+<td>
+<p>An error handler</p>
+</td></tr>
+<tr valign="top"><td><code>finally</code></td>
+<td>
+<p>Pass-through to tryCatch finally</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Brian Lee Yung Rowe
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ftry(log(-1))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>futile.logger</em> version 1.4.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

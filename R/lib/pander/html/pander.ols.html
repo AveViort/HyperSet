@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Prints an ols object from rms package in Pandoc's markdown.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pander.ols {pander}"><tr><td>pander.ols {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Prints an ols object from rms package in Pandoc's markdown.</h2>
+
+<h3>Description</h3>
+
+<p>Prints an ols object from rms package in Pandoc's markdown.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'ols'
+pander(x, long = FALSE, coefs = TRUE,
+  digits = panderOptions("digits"), round = panderOptions("round"),
+  ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an ols object</p>
+</td></tr>
+<tr valign="top"><td><code>long</code></td>
+<td>
+<p>if to print the correlation matrix of parameter estimates. default(<code>FALSE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>coefs</code></td>
+<td>
+<p>if to the table of model coefficients, standard errors, etc. default(<code>TRUE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>passed to <code>format</code>. Can be a vector specifying values for each column (has to be the same length as number of columns).</p>
+</td></tr>
+<tr valign="top"><td><code>round</code></td>
+<td>
+<p>passed to <code>round</code>. Can be a vector specifying values for each column (has to be the same length as number of columns). Values for non-numeric columns will be disregarded.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>optional parameters passed to raw <code>pandoc.table</code> function</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

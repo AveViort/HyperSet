@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Flex Box-based row/column layouts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fillRow {shiny}"><tr><td>fillRow {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Flex Box-based row/column layouts</h2>
+
+<h3>Description</h3>
+
+<p>Creates row and column layouts with proportionally-sized cells, using the
+Flex Box layout model of CSS3. These can be nested to create arbitrary
+proportional-grid layouts. <strong>Warning:</strong> Flex Box is not well supported
+by Internet Explorer, so these functions should only be used where modern
+browsers can be assumed.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fillRow(..., flex = 1, width = "100%", height = "100%")
+
+fillCol(..., flex = 1, width = "100%", height = "100%")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>UI objects to put in each row/column cell; each argument will
+occupy a single cell. (To put multiple items in a single cell, you can use
+<code><a href="tag.html">tagList</a></code> or <code><a href="builder.html">div</a></code> to combine them.) Named
+arguments will be used as attributes on the <code>div</code> element that
+encapsulates the row/column.</p>
+</td></tr>
+<tr valign="top"><td><code>flex</code></td>
+<td>
+<p>Determines how space should be distributed to the cells. Can be a
+single value like <code>1</code> or <code>2</code> to evenly distribute the available
+space; or use a vector of numbers to specify the proportions. For example,
+<code>flex = c(2, 3)</code> would cause the space to be split 40%/60% between
+two cells. NA values will cause the corresponding cell to be sized
+according to its contents (without growing or shrinking).</p>
+</td></tr>
+<tr valign="top"><td><code>width, height</code></td>
+<td>
+<p>The total amount of width and height to use for the
+entire row/column. For the default height of <code>"100%"</code> to be
+effective, the parent must be <code>fillPage</code>, another
+<code>fillRow</code>/<code>fillCol</code>, or some other HTML element whose height is
+not determined by the height of its contents.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If you try to use <code>fillRow</code> and <code>fillCol</code> inside of other
+Shiny containers, such as <code><a href="sidebarLayout.html">sidebarLayout</a></code>,
+<code><a href="navbarPage.html">navbarPage</a></code>, or even <code>tags$div</code>, you will probably find
+that they will not appear. This is due to <code>fillRow</code> and <code>fillCol</code>
+defaulting to <code>height="100%"</code>, which will only work inside of
+containers that have determined their own size (rather than shrinking to
+the size of their contents, as is usually the case in HTML).
+</p>
+<p>To avoid this problem, you have two options:
+</p>
+
+<ul>
+<li><p> only use <code>fillRow</code>/<code>fillCol</code> inside of <code>fillPage</code>,
+<code>fillRow</code>, or <code>fillCol</code>
+</p>
+</li>
+<li><p> provide an explicit <code>height</code> argument to
+<code>fillRow</code>/<code>fillCol</code>
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+# Only run this example in interactive R sessions.
+if (interactive()) {
+
+ui &lt;- fillPage(fillRow(
+  plotOutput("plotLeft", height = "100%"),
+  fillCol(
+    plotOutput("plotTopRight", height = "100%"),
+    plotOutput("plotBottomRight", height = "100%")
+  )
+))
+
+server &lt;- function(input, output, session) {
+  output$plotLeft &lt;- renderPlot(plot(cars))
+  output$plotTopRight &lt;- renderPlot(plot(pressure))
+  output$plotBottomRight &lt;- renderPlot(plot(AirPassengers))
+}
+
+shinyApp(ui, server)
+
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

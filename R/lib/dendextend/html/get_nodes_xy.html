@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get the x-y coordinates of a dendrogram's nodes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for get_nodes_xy {dendextend}"><tr><td>get_nodes_xy {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get the x-y coordinates of a dendrogram's nodes</h2>
+
+<h3>Description</h3>
+
+<p>Get the x-y coordinates of a dendrogram's nodes. Can be used to add text or images on the tree.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+get_nodes_xy(dend, type = c("rectangle", "triangle"), center = FALSE,
+  horiz = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>type of plot.</p>
+</td></tr>
+<tr valign="top"><td><code>center</code></td>
+<td>
+<p>logical; if TRUE, nodes are plotted centered with respect to the 
+leaves in the branch. Otherwise (default), 
+plot them in the middle of all direct child nodes.</p>
+</td></tr>
+<tr valign="top"><td><code>horiz</code></td>
+<td>
+<p>logical indicating if the dendrogram should be drawn horizontally or not.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A 2-dimensional matrix, with rows as the number of nodes,
+and the first column is the x location, while the second is the
+y location.
+</p>
+
+
+<h3>Source</h3>
+
+<p>This is a striped down version of the 
+function <code><a href="../../stats/html/dendrogram.html">plot.dendrogram</a></code>.
+It performs (almost) the same task, only it does not do any plotting
+but it does save the x-y coordiantes of the nodes.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="get_nodes_attr.html">get_nodes_attr</a>, <a href="nnodes.html">nnodes</a>,
+<a href="nleaves.html">nleaves</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# If we would like to see the numbers from plot:
+# ?getOption("verbose")
+# options(verbose=TRUE)
+# options(verbose=FALSE)
+
+# -----
+# Draw a depth first search illustration
+# -----
+
+dend &lt;- 1:5 %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+get_nodes_xy(dend)
+
+# polygon(get_nodes_xy(dend), col = 2)
+plot(dend, 
+     leaflab = "none",
+     main = "Depth-first search in a dendrogram")
+xy &lt;- get_nodes_xy(dend)
+for(i in 1:(nrow(xy)-1)) {
+   arrows(xy[i,1], xy[i,2], angle = 17,
+          length = .5,
+          xy[i+1,1], xy[i+1,2], 
+          lty = 1, col = 3, lwd = 1.5)   
+}
+points(xy, pch = 19, cex = 4)
+text(xy, labels = 1:nnodes(dend),cex = 1.2, col = "white", adj = c(0.4,0.4))
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

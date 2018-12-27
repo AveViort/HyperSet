@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Override window order and frame</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for window_order {dbplyr}"><tr><td>window_order {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Override window order and frame</h2>
+
+<h3>Description</h3>
+
+<p>Override window order and frame
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+window_order(.data, ...)
+
+window_frame(.data, from = -Inf, to = Inf)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>.data</code></td>
+<td>
+<p>A remote tibble</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Name-value pairs of expressions.</p>
+</td></tr>
+<tr valign="top"><td><code>from, to</code></td>
+<td>
+<p>Bounds of the frame.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(dplyr)
+df &lt;- lazy_frame(g = rep(1:2, each = 5), y = runif(10), z = 1:10)
+
+df %&gt;%
+  window_order(y) %&gt;%
+  mutate(z = cumsum(y)) %&gt;%
+  sql_build()
+
+df %&gt;%
+  group_by(g) %&gt;%
+  window_frame(-3, 0) %&gt;%
+  window_order(z) %&gt;%
+  mutate(z = sum(x)) %&gt;%
+  sql_build()
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

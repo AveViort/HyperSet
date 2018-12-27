@@ -1,0 +1,26 @@
+Network	Filename	No.of links	No. of genes
+PathwayCommons v.7	PathwayCommons7	2511638	20372
+Merged	merged6_and_wir1_HC2	974427	19028
+merged_high_confidence	merged7_HC2	1122021	33248
+FunCoup 1.0 	FC1_full	2024095	15882
+FunCoup 2.0 	FC2_full	4537819	19357
+FunCoup 3.0 	FC3_ref	941599	11303
+#FunCoup LE 	FC.2010.HUGO	1386483	15767
+FunCoup LE 	FClim_ref	911327	14586
+KEGG pathways	kgml.LNK.HUGO	25240	3630
+KINASE2SUBSTRATE 	Kinase_Substrate.2015.human	5319	482 kinases, 2178 substrates
+Protein complexes 	CORUM_and_KEGG_complexes.HUGO	48052	2674
+STRING 9 	STRING9_full	1625557	18018
+TCGA.GBM.RE	wir1.net	48763	12401
+TCGA.GBM.RN	Primary.GBM_150	149991	6759
+TCGA.ovarian.RN	Primary.OV_150	149999	7465
+TFs directed to targets	GenomeUCSC_and_HTRIdb.TF_TG	151663	327(TFs)
+TFs_and_Targets	TF_targets.MSigDB	86645	9204
+cd4plus.RE 	cd4plus.net	13463	11159
+cr.lung.RE	chemores.0.38.net	33156	16542
+expO.breast.RE 	expO.breast.net	27376	16399
+expO.lung.RE 	expO.lung.net	37247	18184
+expO.ovarian.RE 	expO.ovary.net	31820	16882
+expO.prostate.RE 	expO.prostate.net	79323	20177
+iREF.PPI 	iRefIndex	382230	12563
+si_MCF7.RE 	si_TP53.net	24407	12097

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot Entropy Plots</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for entPlot {mclust}"><tr><td>entPlot {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Plot Entropy Plots
+</h2>
+
+<h3>Description</h3>
+
+<p>Plot &quot;entropy plots&quot; to help select the number of classes from a hierarchy of combined clusterings.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+entPlot(z, combiM, abc = c("standard", "normalized"), reg = 2, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>z</code></td>
+<td>
+
+<p>A matrix whose <code>[i,k]</code>th entry is the probability that observation <em>i</em> in the data belongs to the <em>k</em>th class, for the initial solution (ie before any combining). Typically, the one returned by <code>Mclust</code>/BIC.
+</p>
+</td></tr>
+<tr valign="top"><td><code>combiM</code></td>
+<td>
+
+<p>A list of &quot;combining matrices&quot; (as provided by <code>clustCombi</code>), ie <code>combiM[[K]]</code> is the matrix whose <em>k</em>th row contains only zeros, but in columns corresponding to the labels of the classes in the <em>(K+1)</em>-classes solution to be merged to get the <em>K</em>-classes combined solution. <code>combiM</code> must contain matrices from <code>K</code> = number of classes in <code>z</code> to one.
+</p>
+</td></tr>
+<tr valign="top"><td><code>abc</code></td>
+<td>
+
+<p>Choose one or more of: &quot;standard&quot;, &quot;normalized&quot;, to specify whether the number of observations involved in each combining step should be taken into account to scale the plots or not.
+</p>
+</td></tr>
+<tr valign="top"><td><code>reg</code></td>
+<td>
+
+<p>The number of parts of the piecewise linear regression for the entropy plots. Choose one or more of: 2 (for 1 change-point), 3 (for 2 change-points).
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Other graphical arguments to be passed to the plot functions.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Please see the article cited in the references for more details. A clear elbow in the &quot;entropy plot&quot; should suggest the user to consider the corresponding number(s) of class(es).
+</p>
+
+
+<h3>Value</h3>
+
+<p>if <code>abc = "standard"</code>, plots the entropy against the number of clusters and the difference between the entropy of successive combined solutions against the number of clusters.
+if <code>abc = "normalized"</code>, plots the entropy against the cumulated number of observations involved in the successive combining steps and the difference between the entropy of successive combined solutions divided by the number of observations involved in the corresponding combining step against the number of clusters.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J.-P. Baudry, A. E. Raftery, L. Scrucca
+</p>
+
+
+<h3>References</h3>
+
+<p>J.-P. Baudry, A. E. Raftery, G. Celeux, K. Lo and R. Gottardo (2010). Combining mixture components for clustering. <em>Journal of Computational and Graphical Statistics, 19(2):332-353.</em>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.clustCombi.html">plot.clustCombi</a></code>, <code><a href="combiPlot.html">combiPlot</a></code>, <code><a href="clustCombi.html">clustCombi</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+data(Baudry_etal_2010_JCGS_examples)
+# run Mclust to get the MclustOutput
+output &lt;- clustCombi(data = ex4.2, modelNames = "VII") 
+
+entPlot(output$MclustOutput$z, output$combiM, reg = c(2,3)) 
+# legend: in red, the single-change-point piecewise linear regression;
+#         in blue, the two-change-point piecewise linear regression.
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

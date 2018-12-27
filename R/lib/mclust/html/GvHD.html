@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: GvHD Dataset</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for GvHD {mclust}"><tr><td>GvHD {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>GvHD Dataset</h2>
+
+<h3>Description</h3>
+
+<p>GvHD (Graft-versus-Host Disease) data of Brinkman et al. (2007). Two samples of this flow cytometry data, one from a patient with the GvHD, and the other from a control patient. The GvHD positive and control samples consist of 9083 and 6809 observations, respectively. Both samples include four biomarker variables, namely, CD4, CD8b, CD3, and CD8. The objective of the analysis is to identify CD3+ CD4+ CD8b+ cell sub-populations present in the GvHD positive sample.
+</p>
+<p>A treatment of this data by combining mixtures is proposed in Baudry et al. (2010).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(GvHD)</pre>
+
+
+<h3>Format</h3>
+
+<p>GvHD.pos (positive patient) is a data frame with 9083 observations on the following 4 variables, which are biomarker measurements.
+</p>
+
+<dl>
+<dt>CD4</dt><dd></dd>
+<dt>CD8b</dt><dd></dd>
+<dt>CD3</dt><dd></dd>
+<dt>CD8</dt><dd></dd>
+</dl>
+  
+<p>GvHD.control (control patient) is a data frame with 6809 observations on the following 4 variables, which are biomarker measurements.
+</p>
+
+<dl>
+<dt>CD4</dt><dd></dd>
+<dt>CD8b</dt><dd></dd>
+<dt>CD3</dt><dd></dd>
+<dt>CD8</dt><dd></dd>
+</dl>
+
+
+
+<h3>References</h3>
+
+<p>R. R. Brinkman, M. Gasparetto, S.-J. J. Lee, A. J. Ribickas, J. Perkins, W. Janssen, R. Smiley and C. Smith (2007). High-content flow cytometry and temporal data analysis for defining a cellular signature of Graft-versus-Host Disease. <em>Biology of Blood and Marrow Transplantation, 13: 691-700.</em>
+</p>
+<p>K. Lo, R. R. Brinkman, R. Gottardo (2008). Automated gating of flow cytometry data via robust model-based clustering. <em>Cytometry A, 73: 321-332.</em>
+</p>
+<p>J.-P. Baudry, A. E. Raftery, G. Celeux, K. Lo and R. Gottardo (2010). Combining mixture components for clustering. <em>Journal of Computational and Graphical Statistics, 19(2):332-353.</em>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+data(GvHD)
+dat &lt;- GvHD.pos[1:500,] # only a few lines for a quick example
+output &lt;- clustCombi(data = dat) 
+output # is of class clustCombi
+# plot the hierarchy of combined solutions
+plot(output, what = "classification") 
+# plot some "entropy plots" which may help one to select the number of classes
+plot(output, what = "entropy") 
+# plot the tree structure obtained from combining mixture components
+plot(output, what = "tree") 
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

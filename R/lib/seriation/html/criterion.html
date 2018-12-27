@@ -1,0 +1,430 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Criterion for a Loss/Merit Function for Data Given a...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for criterion {seriation}"><tr><td>criterion {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Criterion for a Loss/Merit Function for Data Given a Permutation</h2>
+
+<h3>Description</h3>
+
+<p>Compute the value for different loss functions <i>L</i> and
+merit function <i>M</i> for
+data given a permutation.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+criterion(x, order = NULL, method = NULL, force_loss = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>dist</code> or a matrix (currently no
+functions are implemented for array).</p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>an object of class <code>ser_permutation</code> suitable for
+<code>x</code>.  If <code>NULL</code>, the identity permutation is used.
+</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>a character vector with the names of the criteria to be
+employed, or <code>NULL</code> (default) in which case all available
+criteria are used.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters passed on to the criterion method.</p>
+</td></tr>
+<tr valign="top"><td><code>force_loss</code></td>
+<td>
+<p>logical; should merit function be converted into
+loss functions by multiplying with -1?</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For a symmetric dissimilarity matrix
+<i>D</i> with elements <i>d(i,j)</i> where <i>i, j = 1 &hellip; n</i>,
+the aim is generally to place low distance values close to the diagonal.
+The following criteria to judge the quality of a
+certain permutation of the objects in a dissimilarity matrix
+are currently implemented (for a more detailed description and an
+experimental comparison see Hahsler (2017)):
+</p>
+
+<dl>
+<dt><code>"Gradient_raw", "Gradient_weighted"</code></dt><dd><p>Gradient measures
+(Hubert et al 2001).
+A symmetric dissimilarity matrix
+where the values in all rows and columns only increase when
+moving away from the main diagonal is called a perfect
+<em>anti-Robinson matrix</em> (Robinson 1951). A suitable merit
+measure which quantifies the divergence of a matrix from the
+anti-Robinson form is
+</p>
+<p style="text-align: center;"><i>
+    M(D) = &sum;_{i=1}^n &sum;_{i&lt;k&lt;j} f(d_{ij}, d_{ik}) + &sum;_{i&lt;k&lt;j} f(d_{ij}, d_{kj})</i></p>
+
+<p>where <i>f(.,.)</i>
+is a function which defines how a violation
+or satisfaction
+of a gradient condition for an object triple (<i>O_i, O_k, O_j</i>)
+is counted.
+</p>
+<p>Hubert et al (2001) suggest two functions. The first
+function is given by:
+</p>
+<p style="text-align: center;"><i>f(z,y) = sign(y-z) = +1 if z &lt; y; 0 if z = y; and -1 if z &gt; y.</i></p>
+
+<p>It results in raw number of triples satisfying the gradient
+constraints minus triples which violate the constraints.
+</p>
+<p>The second function is defined as:
+</p>
+<p style="text-align: center;"><i>f(z,y) = |y-z| sign(y-z) = y-z</i></p>
+
+<p>It weights the each satisfaction or violation by the difference by
+its magnitude given by the absolute difference between the values.
+</p>
+</dd>
+<dt><code>"AR_events", "AR_deviations"</code></dt><dd><p>Anti-Robinson events (Chen 2002).
+An even simpler loss function can be created in the same way as the gradient
+measures above by concentrating on violations only.
+</p>
+<p style="text-align: center;"><i>
+        L(D) =
+        &sum;_{i=1}^n &sum;_{i&lt;k&lt;j} f(d_{ik}, d_{ij}) + &sum;_{i&lt;k&lt;j} f(d_{kj}, d_{ij})
+    </i></p>
+
+<p>To only count the violations we use
+</p>
+<p style="text-align: center;"><i>
+        f(z, y) = I(z, y) = 1 if z &lt; y and 0 otherwise.
+   </i></p>
+
+<p><i>I(\cdot)</i> is an indicator function returning 1 only for violations.
+Chen (2002) presented a formulation for an equivalent
+loss function and called the violations <em>anti-Robinson events</em>
+and also introduced a weighted versions of the loss
+function resulting in
+</p>
+<p style="text-align: center;"><i>
+        f(z, y) = |y-z|I(z, y)
+    </i></p>
+
+<p>using the absolute deviations as weights.
+</p>
+</dd>
+<dt><code>"RGAR"</code></dt><dd><p>Relative generalized Anti-Robinson events (Tien et al 2008).
+Counts Anti-Robinson events in a variable band
+(window specified by <code>w</code> defaults to the maximum of <i>n-1</i>) around the main diagonal and normalizes by
+the maximum of possible events.
+</p>
+<p style="text-align: center;"><i>
+        L(D) = 1/m
+        &sum;_{i=1}^n &sum;_{(i-w)&le; j&lt;k&lt;i} I(d_{ij} &lt; d_{ik}) + &sum;_{i&lt;j&lt;k&le;(i+w))} I(d_{ij} &gt; d_{ik})
+    </i></p>
+
+<p>where <i>m=(2/3-n)w + nw^2 - 2/3 w^3</i>, the maximal number
+of possible anti-Robinson events in the window.
+The window size <i>w</i> represents the number of neighboring objects (number of entries from the diagonal of the distance matrix) are considered. The window size is <i>2 &le; w &lt; n</i>, where smaller values result in
+focusing on the local structure while larger values look at the global structure. Alternatively, <code>pct</code> can be used instead of <code>w</code> to
+specify the window as a percentage of <i>n</i>. <code>relative=FALSE</code> can be
+to get the GAR, i.e., the absolute number of AR events in the window.
+</p>
+</dd>
+<dt><code>"BAR"</code></dt><dd><p>Banded Anti-Robinson Form (Earle and Hurley 2015).
+</p>
+<p>Simplified measure for closeness to the anti-Robinson form in a band of
+size <i>b</i> with <i>1 &lt;= b &lt; n</i> around the diagonal.
+</p>
+<p style="text-align: center;"><i>
+        L(D) =
+        &sum;_{|i-j|&lt;=b} (b+1-|i-j|) d_{ij}
+    </i></p>
+
+<p>For <i>b=1</i> the measure reduces to the Hamiltonian path length.
+For <i>b=n-1</i> the measure is equivalent to ARc defined
+(Earle and Hurley, 2015). Note that ARc is equivalent to the
+Linear Seriation criterion (scaled by 1/2).
+</p>
+<p><i>b</i> defaults to a band of 20% of <i>n</i>.
+</p>
+</dd>
+<dt><code>"Path_length"</code></dt><dd><p>Hamiltonian path length (Caraux and Pinloche 2005).
+</p>
+<p>The order of the objects in a dissimilarity matrix corresponds to a path
+through a graph where each node represents an object and is visited exactly
+once, i.e., a Hamilton path. The length of the path is defined as the sum
+of the edge weights, i.e., dissimilarities.
+</p>
+<p style="text-align: center;"><i>L(D) = &sum;_{i=1}^{n-1} d_{i,i+1}</i></p>
+
+<p>The length of the Hamiltonian path is equal to the
+value of the minimal span loss function (as used by Chen 2002).
+Both notions are related to the <em>traveling salesperson problem (TSP).</em>
+</p>
+<p>If <code>order</code> is not unique or
+there are non-finite distance values <code>NA</code> is returned.</p>
+</dd>
+<dt><code>"Lazy_path_length"</code></dt><dd><p>Lazy path length (Earl and Hurley 2015).
+</p>
+<p>A weighted version of the Hamiltonian path criterion. This loss function
+postpones larger distances to later in the order (i.e., a lazy traveling
+sales person).
+</p>
+<p style="text-align: center;"><i>L(D) = &sum;_{i=1}^{n-1} (n-i) d_{i,i+1}</i></p>
+
+<p>Earl and Hurley (2015) proposed this criterion for reordering in
+visualizations to concentrate on closer objects first.
+</p>
+</dd>
+<dt><code>"Inertia"</code></dt><dd><p>Inertia criterion (Caraux and Pinloche 2005).
+</p>
+<p>Measures the moment of the inertia of dissimilarity values
+around the diagonal as
+</p>
+<p style="text-align: center;"><i>M(D) = &sum;_{i=1}^n &sum;_{j=1}^n d(i,j)|i-j|^2</i></p>
+
+<p><i>|i-j|</i> is used as a measure for the distance to the diagonal and
+<i>d(i,j)</i> gives the weight. This criterion gives higher weight
+to values farther away from the diagonal. It increases with quality.</p>
+</dd>
+<dt><code>"Least_squares"</code></dt><dd><p>Least squares criterion (Caraux and Pinloche 2005).
+</p>
+<p>The sum of squares of deviations between the
+dissimilarities and rank differences (in the matrix) between two
+elements:
+</p>
+<p style="text-align: center;"><i>L(D) = &sum;_{i=1}^n &sum;_{j=1}^n (d(i,j) - |i-j|)^2,</i></p>
+
+<p>where <i>d(i,j)</i> is an element of the dissimilarity matrix <i>D</i> and
+<i>|i-j|</i> is the rank difference between the objects.
+</p>
+<p>Note that if Euclidean distance is used to calculate <i>D</i> from
+a data matrix <i>X</i>, the order of the elements in <i>X</i> by projecting
+them on the first principal component of <i>X</i> minimizes this criterion.
+The least squares criterion is related to
+<em>unidimensional scaling.</em>
+</p>
+</dd>
+<dt><code>"LS"</code></dt><dd><p>Linear Seriation Criterion (Hubert and Schultz 1976).
+</p>
+<p>Weights the distances with the absolute rank differences.
+</p>
+<p style="text-align: center;"><i>L(D) &sum;_{i,j=1}^n d(i,j) (-|i-j|)</i></p>
+
+</dd>
+<dt><code>"2SUM"</code></dt><dd><p>2-Sum Criterion (Barnard, Pothen, and Simon 1993).
+</p>
+<p>The 2-Sum
+loss criterion multiplies the similarity between objects
+with the squared rank differences.
+</p>
+<p style="text-align: center;"><i>L(D) &sum;_{i,j=1}^n 1/(1+d(i,j)) (i-j)^2,</i></p>
+
+<p>where <i>s(i,j) = 1/(1+d(i,j))</i> represents the similarity between
+objects <i>i</i> and <i>j</i>.
+</p>
+</dd>
+<dt><code>"ME"</code>, <code>"Moore_stress"</code>,
+<code>"Neumann_stress"</code>, <code>"Cor_R"</code></dt><dd><p>These
+criteria are defined on general matrices (see below for definitions).
+The dissimilarity matrix is first converted into a similarity matrix
+using <i>S = 1/(1+D)</i>. If a different transformation is required, then
+perform the transformation first and supply a matrix instead
+of a dist object.</p>
+</dd>
+</dl>
+
+<p>For a general matrix
+<i>X = x_{ij}</i>, <i>i = 1 &hellip; n</i> and <i>j = 1 &hellip; m</i>,
+currently the
+following loss/merit functions
+are implemented:
+</p>
+
+<dl>
+<dt><code>"ME"</code></dt><dd><p>Measure of
+Effectiveness (McCormick 1972).
+</p>
+<p>The measure of effectiveness (ME) for matrix
+<i>X</i>, is defined as
+</p>
+<p style="text-align: center;"><i>M(X) = 1/2 &sum;_{i=1}^{n} &sum;_{j=1}^{m} x_{i,j}(x_{i,j-1}+x_{i,j+1}+x_{i-1,j}+x_{i+1,j})</i></p>
+
+<p>with, by convention
+</p>
+<p style="text-align: center;"><i>x_{0,j}=x_{m+1,j}=x_{i,0}=x_{i,n+1}=0.</i></p>
+
+<p>ME is a merit measure,
+i.e. a higher ME indicates a better arrangement.
+Maximizing ME is the objective of the bond energy algorithm
+(BEA).
+</p>
+</dd>
+<dt><code>"Cor_R"</code></dt><dd><p>Weighted correlation coefficient R developed
+as the Measure of Effectiveness for the Moment Ordering
+Algorithm (Deutsch and Martin 1971).
+</p>
+<p>R is a merit measure normalized so that its value always
+lies in <i>[-1,1]</i>.
+For the special case of a square matrix <i>R=1</i> corresponds to only the
+main diagonal being filled, <i>R=0</i> to a random distribution of value
+throughout the array, and <i>R=-1</i> to the opposite diagonal only being
+filled.
+</p>
+</dd>
+<dt><code>"Moore_stress"</code>, <code>"Neumann_stress"</code></dt><dd><p> Stress (Niermann 2005).
+</p>
+<p>Stress measures the conciseness of the presentation of a matrix/table and can
+be seen as a purity function which compares the values in a matrix/table with
+its neighbors. The stress measure used here is computed as the sum of squared
+distances of each matrix entry from its adjacent entries.
+</p>
+<p style="text-align: center;"><i>
+    L(X) =
+    &sum;_{i=1}^n &sum;_{j=1}^m &sigma;_{ij}
+</i></p>
+
+<p>The following types
+of neighborhoods are available:
+</p>
+
+<dl>
+<dt>Moore:</dt><dd><p>comprises the eight adjacent entries.
+</p>
+<p style="text-align: center;"><i>   &sigma;_{ij} = &sum;_{k=\max(1,i-1)}^{\min(n,i+1)}
+                &sum;_{l=\max(1,j-1)}^{\min(m,j+1)}
+                (x_{ij} - x_{kl})^2
+</i></p>
+
+</dd>
+<dt>Neumann:</dt><dd><p>comprises the four adjacent entries.
+</p>
+<p style="text-align: center;"><i>
+     &sigma;_{ij} =
+            &sum;_{k=\max(1,i-1)}^{\min(n,i+1)} (x_{ij} - x_{kj})^2 +
+            &sum;_{l=\max(1,j-1)}^{\min(m,j+1)} (x_{ij} - x_{il})^2
+    </i></p>
+
+</dd>
+</dl>
+
+<p>The major difference between the Moore and the Neumann
+neighborhood is that for
+the later the contribution of row and column permutations to stress are
+independent and thus can be optimized independently.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Value</h3>
+
+<p>A named vector of real values.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Buchta and Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Barnard, S.T.,  A. Pothen, and H. D. Simon (1993): A Spectral Algorithm for Envelope Reduction of Sparse Matrices. <em>In Proceedings of the 1993
+ACM/IEEE Conference on Supercomputing,</em> 493&ndash;502. Supercomputing '93.
+New York, NY, USA: ACM.
+</p>
+<p>Caraux, G. and S. Pinloche (2005): Permutmatrix: A Graphical Environment
+to Arrange Gene Expression Profiles in Optimal Linear Order,
+<em>Bioinformatics,</em>
+<b>21</b>(7), 1280&ndash;1281.
+</p>
+<p>Chen, C.-H. (2002): Generalized association plots:
+Information visualization via iteratively generated correlation matrices,
+<em>Statistica Sinica,</em> <b>12</b>(1), 7&ndash;29.
+</p>
+<p>Deutsch, S.B. and J.J. Martin (1971): An ordering algorithm for analysis of
+data arrays. <em>Operational Research,</em> <b>19</b>(6), 1350&ndash;1362.
+</p>
+<p>Earle, D. and C.B. Hurley (2015): Advances in Dendrogram Seriation for Application to Visualization. <em>Journal of Computational and Graphical Statistics,</em>
+<b>24</b>(1), 1&ndash;25.
+</p>
+<p>Hahsler, M. (2017): An experimental comparison of seriation methods for one-mode two-way data. <em>European Journal of Operational Research,</em> <b>257</b>,
+133&ndash;143.
+</p>
+<p>Hubert, L. and J. Schultz (1976): Quadratic Assignment as a General Data Analysis Strategy. <em>British Journal of Mathematical and Statistical
+Psychology,</em> <b>29</b>(2). Blackwell Publishing Ltd. 190&ndash;241.
+</p>
+<p>Hubert, L., P. Arabie, and J. Meulman (2001): <em>Combinatorial Data Analysis:
+Optimization by Dynamic Programming.</em> Society for Industrial Mathematics.
+</p>
+<p>Niermann, S. (2005): Optimizing the Ordering of Tables
+With Evolutionary Computation, <em>The American Statistician,</em>
+<b>59</b>(1), 41&ndash;46.
+</p>
+<p>McCormick, W.T., P.J. Schweitzer and T.W. White (1972):
+Problem decomposition and data reorganization by a clustering technique,
+<em>Operations Research,</em>
+<b>20</b>(5), 993-1009.
+</p>
+<p>Robinson, W.S. (1951): A method for chronologically ordering archaeological
+deposits,
+<em>American Antiquity,</em> <b>16</b>, 293&ndash;301.
+</p>
+<p>Tien, Y-J., Yun-Shien Lee, Han-Ming Wu and Chun-Houh Chen (2008):
+Methods for simultaneously identifying coherent local clusters with
+smooth global patterns in gene expression profiles,
+<em>BMC Bioinformatics,</em> <b>9</b>(155), 1&ndash;16.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="criterion_methods.html">list_criterion_methods</a></code> to query the criterion registry.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## create random data and calculate distances
+m &lt;- matrix(runif(20),ncol=2)
+d &lt;- dist(m)
+
+## get an order for rows (optimal for the least squares criterion)
+o &lt;- seriate(d, method = "MDS")
+o
+
+## compare the values for all available criteria
+rbind(
+    unordered = criterion(d),
+    ordered = criterion(d, o)
+)
+
+## compare RGAR by window size (from local to global)
+w &lt;- 2:(nrow(m)-1)
+RGAR &lt;- sapply(w, FUN = function (w)
+  criterion(d, o, method="RGAR", w = w))
+plot(w, RGAR, type = "b", ylim = c(0,1),
+  xlab = "Windows size (w)", main = "RGAR by window size")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

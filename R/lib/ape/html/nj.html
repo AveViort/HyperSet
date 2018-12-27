@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Neighbor-Joining Tree Estimation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nj {ape}"><tr><td>nj {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Neighbor-Joining Tree Estimation</h2>
+
+<h3>Description</h3>
+
+<p>This function performs the neighbor-joining tree estimation of Saitou
+and Nei (1987).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nj(X)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>X</code></td>
+<td>
+<p>a distance matrix; may be an object of class &ldquo;dist&rdquo;.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Saitou, N. and Nei, M. (1987) The neighbor-joining method: a new
+method for reconstructing phylogenetic trees. <em>Molecular Biology
+and Evolution</em>, <b>4</b>, 406&ndash;425.
+</p>
+<p>Studier, J. A. and Keppler, K. J. (1988) A note on the
+neighbor-joining algorithm of Saitou and Nei. <em>Molecular Biology
+and Evolution</em>, <b>5</b>, 729&ndash;731.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="write.tree.html">write.tree</a></code>, <code><a href="read.tree.html">read.tree</a></code>,
+<code><a href="dist.dna.html">dist.dna</a></code>, <code><a href="bionj.html">bionj</a></code>,
+<code><a href="fastme.html">fastme</a></code>, <code><a href="njs.html">njs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### From Saitou and Nei (1987, Table 1):
+x &lt;- c(7, 8, 11, 13, 16, 13, 17, 5, 8, 10, 13,
+       10, 14, 5, 7, 10, 7, 11, 8, 11, 8, 12,
+       5, 6, 10, 9, 13, 8)
+M &lt;- matrix(0, 8, 8)
+M[lower.tri(M)] &lt;- x
+M &lt;- t(M)
+M[lower.tri(M)] &lt;- x
+dimnames(M) &lt;- list(1:8, 1:8)
+tr &lt;- nj(M)
+plot(tr, "u")
+### a less theoretical example
+data(woodmouse)
+trw &lt;- nj(dist.dna(woodmouse))
+plot(trw)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Classes to describe an XML node object.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for XMLNode-class {XML}"><tr><td>XMLNode-class {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Classes to describe an XML node object.</h2>
+
+<h3>Description</h3>
+
+<p>These classes are intended to 
+represent an XML node, either directly in S or a reference to an internal
+libxml node.  Such nodes respond to queries about 
+their name, attributes, namespaces and children.  
+These are old-style, S3 class definitions at present.
+</p>
+
+
+<h3>Slots</h3>
+
+<p>These are old-style S3 class definitions and do not have
+formal slots
+</p>
+
+
+<h3>Methods</h3>
+
+<p>No methods defined with class &quot;XMLNode&quot; in the signature.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.w3.org/XML">http://www.w3.org/XML</a>, <a href="http://www.xmlsoft.org">http://www.xmlsoft.org</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlTreeParse.html">xmlTreeParse</a></code>
+<code><a href="xmlTree.html">xmlTree</a></code>
+<code><a href="newXMLDoc.html">newXMLNode</a></code>
+<code><a href="xmlNode.html">xmlNode</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+           # An R-level XMLNode object
+   a &lt;- xmlNode("arg", attrs = c(default="T"),
+                 xmlNode("name", "foo"), xmlNode("defaultValue","1:10"))
+
+  xmlAttrs(a) = c(a = 1, b = "a string")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Minimal CSS parser</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for css.parser {highlight}"><tr><td>css.parser {highlight}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Minimal CSS parser</h2>
+
+<h3>Description</h3>
+
+<p>Minimal CSS parser
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+css.parser(file, lines = readLines(file))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>file to parse</p>
+</td></tr>
+<tr valign="top"><td><code>lines</code></td>
+<td>
+<p>text lines to parse</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with one element per style class declaration. Each element
+is a list which has one element per CSS setting
+(<span class="samp">color</span>, <span class="samp">background</span>, ...)
+</p>
+
+
+<h3>Note</h3>
+
+<p>The parser is very minimal and will only identify CSS declarations like
+the following :
+</p>
+<pre>
+.classname{
+	setting1 : value ;
+	setting2 : value ;
+} </pre>
+<p>The line where a declaration occurs must start with a dot,
+followed by the name of the class and a left brace. The declaration
+ends with the first line that starts with a right brace. The function
+will warn about class names containing numbers as this is likely to
+cause trouble when the parsed style is translated into another
+language (e.g. latex commands).
+</p>
+<p>Within the css declaration, the parser identifies setting/value
+pairs separated by <span class="samp">:</span> on a single line. Each setting must
+be on a seperate line.
+</p>
+<p>If the setting is <span class="samp">color</span> or <span class="samp">background</span>, the parser then
+tries to map the value to a hex color specification
+by trying the following options: the value is already a hex
+color, the name of the color is one of the 16 w3c standard colors, the name
+is an R color (see <code><a href="../../grDevices/html/colors.html">colors</a></code>), the
+color is specified as <span class="samp">rgb(r,g,b)</span>. If all fails, the
+color used is black for the <span class="samp">color</span> setting and
+<span class="samp">white</span> for the <span class="samp">background</span> setting.
+</p>
+<p>Other settings are not further parsed at present.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>highlight</em> version 0.4.7.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Z-score Equivalents</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for zscore {limma}"><tr><td>zscore {limma}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Z-score Equivalents</h2>
+
+<h3>Description</h3>
+
+<p>Compute z-score equivalents of non-normal random deviates.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+zscore(q, distribution, ...)
+zscoreGamma(q, shape, rate = 1, scale = 1/rate) 
+zscoreT(x, df, approx=FALSE)
+tZscore(x, df)
+zscoreHyper(q, m, n, k) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>q, x</code></td>
+<td>
+<p>numeric vector or matrix giving deviates of a random variable</p>
+</td></tr>
+<tr valign="top"><td><code>distribution</code></td>
+<td>
+<p>character name of probabability distribution for which a cumulative distribution function exists</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other arguments specify distributional parameters and are passed to the cumulative distribution function</p>
+</td></tr>
+<tr valign="top"><td><code>shape</code></td>
+<td>
+<p>gamma shape parameter (&gt;0)</p>
+</td></tr>
+<tr valign="top"><td><code>rate</code></td>
+<td>
+<p>gamma rate parameter (&gt;0)</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>gamma scale parameter (&gt;0)</p>
+</td></tr>
+<tr valign="top"><td><code>df</code></td>
+<td>
+<p>degrees of freedom (&gt;0 for <code>zscoreT</code> or &gt;=1 for <code>tZscore</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>approx</code></td>
+<td>
+<p>logical, if <code>TRUE</code> then a fast approximation is used to convert t-statistics into z-scores. If <code>FALSE</code>, z-scores will be exact.</p>
+</td></tr>
+<tr valign="top"><td><code>m</code></td>
+<td>
+<p>as for <code><a href="../../stats/html/Hypergeometric.html">qhyper</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>as for <code><a href="../../stats/html/Hypergeometric.html">qhyper</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>as for <code><a href="../../stats/html/Hypergeometric.html">qhyper</a></code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions compute the standard normal deviates which have the same quantiles as the given values in the specified distribution.
+For example, if <code>z &lt;- zscoreT(x,df=df)</code> then <code>pnorm(z)</code> equals <code>pt(x,df=df)</code>.
+</p>
+<p><code>zscore</code> works for any distribution for which a cumulative distribution function (like <code>pnorm</code>) exists in R.
+The argument <code>distribution</code> is the name of the cumulative distribution function with the <code>"p"</code> removed.
+</p>
+<p><code>zscoreGamma</code>, <code>zscoreT</code> and <code>zscoreHyper</code> are specific functions for the gamma, t and hypergeometric distributions respectively.
+</p>
+<p><code>tZscore</code> is the inverse of <code>zscoreT</code>, and computes t-distribution equivalents for standard normal deviates.
+</p>
+<p>The transformation to z-scores is done by converting to log tail probabilities, and then using <code>qnorm</code>.
+For numerical accuracy, the left or right tail is used, depending on which is likely to be smaller.
+</p>
+<p>If <code>approx=TRUE</code>, then the approximation from Hill (1970) is used to convert t-statistics to z-scores directly without computing tail probabilities.
+Brophy (1987) showed this to be most accurate of a variety of possible closed-form transformations.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Numeric vector giving equivalent deviates from the standard normal distribution.
+The exception is <code>tZscore</code> which gives deviates from the specified t-distribution.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gordon Smyth</p>
+
+
+<h3>References</h3>
+
+<p>Hill, GW (1970). Algorithm 395: Student's t-distribution.
+<em>Communications of the ACM</em> 13, 617-620.
+</p>
+<p>Brophy, AL (1987).
+Efficient estimation of probabilities in the t distribution.
+<em>Behavior Research Methods</em> 19, 462&ndash;466.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../stats/html/Normal.html">qnorm</a></code>, <code><a href="../../stats/html/GammaDist.html">pgamma</a></code>, <code><a href="../../stats/html/TDist.html">pt</a></code> in the stats package.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# First three are equivalent
+zscore(c(1,2.5), dist="gamma", shape=0.5, scale=2)
+zscore(c(1,2.5), dist="chisq", df=1)
+zscoreGamma(c(1,2.5), shape=0.5, scale=2)
+
+zscoreT(2, df=3)
+tZscore(2, df=3)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>limma</em> version 3.38.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

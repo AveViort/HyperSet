@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Start and stop the Curl library</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for curlGlobalInit {RCurl}"><tr><td>curlGlobalInit {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Start and stop the Curl library</h2>
+
+<h3>Description</h3>
+
+<p>These functions provide a way to both start/initialize
+and stop/uninitialize the libcurl engine.
+There is no need to call
+<code>curlGlobalInit</code> as it is done implicitly the
+first time one uses the libcurl facilities.
+However, this function does permit one to explicitly
+control how it is initialized.
+Specifically, on Windows one might want to
+avoid re-initializing the Win32 socket facilities
+if the  host application (e.g. R) has already done this.
+</p>
+<p><code>curlGlobalInit</code> should only be called once per R session.
+Subsequent calls will have no effect, or may confuse the libcurl engine.
+</p>
+<p>One can reclaim the resources the libcurl engine is
+consuming via the <code>curlGlobalCleanup</code> function
+when one no longer needs the libcurl facilities in
+an R session.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+curlGlobalInit(flags = c("ssl", "win32"))
+curlGlobalCleanup()
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>flags</code></td>
+<td>
+<p>flags indicating which features to activate.
+These come from the <code><a href="CurlFeatureBits.html">CurlGlobalBits</a></code>
+bit-field.  The default is to activate both SSL and Win32 sockets
+(if on Windows).  One can specify either the names of the features
+that are matched (via <code><a href="getBitIndicators.html">setBitIndicators</a></code>) or
+the integer value.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>curlGobalInit</code> returns a status code which should be 0.
+<code>curlGlobalCleanup</code> returns <code>NULL</code> in  all cases.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang &lt;duncan@wald.ucdavis.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Curl homepage <a href="http://curl.haxx.se">http://curl.haxx.se</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getCurlHandle.html">getCurlHandle</a></code>  
+<code><a href="curlPerform.html">curlPerform</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+    # Activate only the SSL.
+ curlGlobalInit("ssl")
+
+## Not run: 
+# Don't run these automatically as we should only call this function
+# once per R session
+
+    # Everything, the default.
+ curlGlobalInit()
+
+   # Nothing.
+ curlGlobalInit("none")
+ curlGlobalInit(0)
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

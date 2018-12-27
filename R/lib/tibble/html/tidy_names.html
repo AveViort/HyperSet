@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Repair object names</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for set_tidy_names {tibble}"><tr><td>set_tidy_names {tibble}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Repair object names</h2>
+
+<h3>Description</h3>
+
+<p><code>set_tidy_names()</code> ensures its input has non-missing and
+unique names (duplicated names get a suffix of the format <code>..#</code>
+where <code>#</code> is the position in the vector).
+Valid names are left unchanged, with the exception that existing suffixes
+are reorganized.
+</p>
+<p><code>tidy_names()</code> is the workhorse behind <code>set_tidy_names()</code>, it treats the
+argument as a string to be used to name a data frame or a vector.
+</p>
+<p><code>repair_names()</code> is an older version with different renaming heuristics,
+kept for backward compatibility.  New code should prefer <code>tidy_names()</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+set_tidy_names(x, syntactic = FALSE, quiet = FALSE)
+
+tidy_names(name, syntactic = FALSE, quiet = FALSE)
+
+repair_names(x, prefix = "V", sep = "")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A named vector.</p>
+</td></tr>
+<tr valign="top"><td><code>syntactic</code></td>
+<td>
+<p>Should all names be made syntactically valid via <code><a href="../../base/html/make.names.html">make.names()</a></code>?</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>If <code>TRUE</code> suppresses output from this function</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>A character vector representing names.</p>
+</td></tr>
+<tr valign="top"><td><code>prefix</code></td>
+<td>
+<p>A string, the prefix to use for new column names.</p>
+</td></tr>
+<tr valign="top"><td><code>sep</code></td>
+<td>
+<p>A string inserted between the column name and de-duplicating
+number.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>x</code> with valid names.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Works for lists and vectors, too:
+set_tidy_names(3:5)
+set_tidy_names(list(3, 4, 5))
+
+# Clean data frames are left unchanged:
+set_tidy_names(mtcars)
+
+# By default, all rename operations are printed to the console:
+tbl &lt;- as_tibble(structure(list(3, 4, 5), class = "data.frame"),
+                 validate = FALSE)
+set_tidy_names(tbl)
+
+# Optionally, names can be made syntactic:
+tidy_names("a b", syntactic = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>tibble</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

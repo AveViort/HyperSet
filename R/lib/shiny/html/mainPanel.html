@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a main panel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mainPanel {shiny}"><tr><td>mainPanel {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a main panel</h2>
+
+<h3>Description</h3>
+
+<p>Create a main panel containing output elements that can in turn be passed to
+<code><a href="sidebarLayout.html">sidebarLayout</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mainPanel(..., width = 8)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Output elements to include in the main panel</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The width of the main panel. For fluid layouts this is out of 12
+total units; for fixed layouts it is out of whatever the width of the main
+panel's parent column is.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A main panel that can be passed to <code><a href="sidebarLayout.html">sidebarLayout</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Show the caption and plot of the requested variable against mpg
+mainPanel(
+   h3(textOutput("caption")),
+   plotOutput("mpgPlot")
+)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

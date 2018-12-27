@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Parse date from any format</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for parse_date {parsedate}"><tr><td>parse_date {parsedate}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Parse date from any format</h2>
+
+<h3>Description</h3>
+
+<p>Recognize and parse dates from a wide range of formats. The current
+algorithm is the following:
+</p>
+
+<ol>
+<li><p> Try parsing dates using all valid ISO 8601 formats, by
+calling <code><a href="parse_iso_8601.html">parse_iso_8601</a></code>.
+</p>
+</li>
+<li><p> If this fails, then try parsing them using the git
+date parser.
+</p>
+</li>
+<li><p> If this fails, then try parsing them using <code>as.POSIXct</code>.
+(It is unlikely that this step will parse any dates that the
+first two steps couldn't, but it is still a logical fallback,
+to make sure that we can parse at least as many dates as
+<code>as.POSIXct</code>.
+</p>
+</li></ol>
+
+<p><code>parse_date</code> returns quickly in case of empty input elements.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+parse_date(dates, approx = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dates</code></td>
+<td>
+<p>A character vector. An error is reported if
+the function cannot coerce this parameter to a character vector.</p>
+</td></tr>
+<tr valign="top"><td><code>approx</code></td>
+<td>
+<p>Logical flag, whether the git parse should try
+hard(er). If this is set to <code>TRUE</code>, then the current time is used
+to fill in the missing parts of the date and time.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <code>POSIXct</code> vector. <code>NA</code> is returned for
+the dates that <code>parse_date</code> could not parse.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Some easy examples
+parse_date("2014-12-12")
+parse_date("04/15/99")
+parse_date("15/04/99")
+
+# Ambiguous format, parsed assuming MM/DD/YY
+parse_date("12/11/99")
+parse_date("11/12/99")
+
+# Fill in the current date and time
+parse_date("03/20")
+parse_date("12")
+
+# But not for this, because this is ISO 8601
+parse_date("2014")
+
+# Handle vectors and empty input
+parse_date(c("2014","2015","","2016"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>parsedate</em> version 1.1.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

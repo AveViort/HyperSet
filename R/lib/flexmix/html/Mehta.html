@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Mehta Trial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Mehta {flexmix}"><tr><td>Mehta {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Mehta Trial</h2>
+
+<h3>Description</h3>
+
+<p>For a 22-centre trial the number of responses and the total number of
+patients is reported for the control group and the group receiving
+a new drug.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("Mehta")</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 44 observations on the following 4 variables.
+</p>
+
+<dl>
+<dt>Response</dt><dd><p>Number of responses.</p>
+</dd>
+<dt>Total</dt><dd><p>Total number of observations.</p>
+</dd>
+<dt>Drug</dt><dd><p>A factor indicating treatment with levels <code>New</code> and
+<code>Control</code>.</p>
+</dd>
+<dt>Site</dt><dd><p>A factor indicating the site/centre.</p>
+</dd>
+</dl>
+
+
+
+<h3>Source</h3>
+
+<p>M. Aitkin. Meta-analysis by random effect modelling in
+generalized linear models.
+<em>Statistics in Medicine</em>, <b>18</b>, 2343&ndash;2351, 1999.
+</p>
+
+
+<h3>References</h3>
+
+<p>C.R. Mehta, N.R. Patel and P. Senchaudhuri. Importance sampling
+for estimating exact probabilities in permutational inference.
+<em>Journal of the American Statistical Association</em>, <em>83</em>,
+999&ndash;1005, 1988.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("Mehta", package = "flexmix")
+mehtaMix &lt;- initFlexmix(cbind(Response, Total-Response) ~ 1|Site, 
+                        data = Mehta, nrep = 5, k = 3,
+                        model = FLXMRglmfix(family = "binomial",
+                          fixed = ~ Drug), 
+                        control = list(minprior = 0.04))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

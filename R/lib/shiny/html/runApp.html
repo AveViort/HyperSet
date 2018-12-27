@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Run Shiny Application</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for runApp {shiny}"><tr><td>runApp {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Run Shiny Application</h2>
+
+<h3>Description</h3>
+
+<p>Runs a Shiny application. This function normally does not return; interrupt R
+to stop the application (usually by pressing Ctrl+C or Esc).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+runApp(appDir = getwd(), port = getOption("shiny.port"),
+  launch.browser = getOption("shiny.launch.browser", interactive()),
+  host = getOption("shiny.host", "127.0.0.1"), workerId = "",
+  quiet = FALSE, display.mode = c("auto", "normal", "showcase"),
+  test.mode = getOption("shiny.testmode", FALSE))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>appDir</code></td>
+<td>
+<p>The application to run. Should be one of the following:
+</p>
+
+<ul>
+<li><p> A directory containing <code>server.R</code>, plus, either <code>ui.R</code> or
+a <code>www</code> directory that contains the file <code>index.html</code>.
+</p>
+</li>
+<li><p> A directory containing <code>app.R</code>.
+</p>
+</li>
+<li><p> An <code>.R</code> file containing a Shiny application, ending with an
+expression that produces a Shiny app object.
+</p>
+</li>
+<li><p> A list with <code>ui</code> and <code>server</code> components.
+</p>
+</li>
+<li><p> A Shiny app object created by <code><a href="shinyApp.html">shinyApp</a></code>.
+</p>
+</li></ul>
+</td></tr>
+<tr valign="top"><td><code>port</code></td>
+<td>
+<p>The TCP port that the application should listen on. If the
+<code>port</code> is not specified, and the <code>shiny.port</code> option is set (with
+<code>options(shiny.port = XX)</code>), then that port will be used. Otherwise,
+use a random port.</p>
+</td></tr>
+<tr valign="top"><td><code>launch.browser</code></td>
+<td>
+<p>If true, the system's default web browser will be
+launched automatically after the app is started. Defaults to true in
+interactive sessions only. This value of this parameter can also be a
+function to call with the application's URL.</p>
+</td></tr>
+<tr valign="top"><td><code>host</code></td>
+<td>
+<p>The IPv4 address that the application should listen on. Defaults
+to the <code>shiny.host</code> option, if set, or <code>"127.0.0.1"</code> if not. See
+Details.</p>
+</td></tr>
+<tr valign="top"><td><code>workerId</code></td>
+<td>
+<p>Can generally be ignored. Exists to help some editions of
+Shiny Server Pro route requests to the correct process.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>Should Shiny status messages be shown? Defaults to FALSE.</p>
+</td></tr>
+<tr valign="top"><td><code>display.mode</code></td>
+<td>
+<p>The mode in which to display the application. If set to
+the value <code>"showcase"</code>, shows application code and metadata from a
+<code>DESCRIPTION</code> file in the application directory alongside the
+application. If set to <code>"normal"</code>, displays the application normally.
+Defaults to <code>"auto"</code>, which displays the application in the mode given
+in its <code>DESCRIPTION</code> file, if any.</p>
+</td></tr>
+<tr valign="top"><td><code>test.mode</code></td>
+<td>
+<p>Should the application be launched in test mode? This is
+only used for recording or running automated tests. Defaults to the
+<code>shiny.testmode</code> option, or FALSE if the option is not set.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The host parameter was introduced in Shiny 0.9.0. Its default value of
+<code>"127.0.0.1"</code> means that, contrary to previous versions of Shiny, only
+the current machine can access locally hosted Shiny apps. To allow other
+clients to connect, use the value <code>"0.0.0.0"</code> instead (which was the
+value that was hard-coded into Shiny in 0.8.0 and earlier).
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Start app in the current working directory
+runApp()
+
+# Start app in a subdirectory called myapp
+runApp("myapp")
+
+## End(Not run)
+
+## Only run this example in interactive R sessions
+if (interactive()) {
+  options(device.ask.default = FALSE)
+
+  # Apps can be run without a server.r and ui.r file
+  runApp(list(
+    ui = bootstrapPage(
+      numericInput('n', 'Number of obs', 100),
+      plotOutput('plot')
+    ),
+    server = function(input, output) {
+      output$plot &lt;- renderPlot({ hist(runif(input$n)) })
+    }
+  ))
+
+
+  # Running a Shiny app object
+  app &lt;- shinyApp(
+    ui = bootstrapPage(
+      numericInput('n', 'Number of obs', 100),
+      plotOutput('plot')
+    ),
+    server = function(input, output) {
+      output$plot &lt;- renderPlot({ hist(runif(input$n)) })
+    }
+  )
+  runApp(app)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

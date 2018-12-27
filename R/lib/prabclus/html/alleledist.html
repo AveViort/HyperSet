@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Shared allele distance for diploid loci</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for alleledist {prabclus}"><tr><td>alleledist {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Shared allele distance for diploid loci</h2>
+
+<h3>Description</h3>
+
+<p>Shared allele distance for codominant markers (Bowcock et al., 1994).
+One minus proportion of alleles shared by two individuals averaged
+over loci (loci with missing values for at least one individual are
+ignored).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  alleledist(allelelist,ni,np,count=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>allelelist</code></td>
+<td>
+<p>a list of lists. In the &quot;outer&quot; list, there are
+<code>np</code> lists, one for each locus. In the &quot;inner&quot; list, for every
+individual there is a vector of two codes (typically characters, see
+<code><a href="alleleinit.html">alleleinit</a></code>) for the two alleles in that locus. Such a
+list can be constructed by <code><a href="unbuild.charmatrix.html">unbuild.charmatrix</a></code> out of
+the <code>charmatrix</code> component of an output object of
+<code><a href="alleleinit.html">alleleinit</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ni</code></td>
+<td>
+<p>integer. Number of individuals.</p>
+</td></tr>
+<tr valign="top"><td><code>np</code></td>
+<td>
+<p>integer. Number of loci.</p>
+</td></tr>
+<tr valign="top"><td><code>count</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the number of the individual to
+be processed is printed.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A symmetrical matrix of shared allele distances between individuals.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Bowcock, A. M., Ruiz-Linares, A., Tomfohrde, J., Minch, E., Kidd, J. R.,
+Cavalli-Sforza, L. L. (1994) High resolution of human evolutionary
+trees with polymorphic microsatellites. <em>Nature</em> 368, 455-457.
+</p>
+
+
+<h3>See Also</h3>
+
+
+<p><code><a href="alleleinit.html">alleleinit</a></code>, <code><a href="unbuild.charmatrix.html">unbuild.charmatrix</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  data(tetragonula)
+  tnb &lt;-
+  coord2dist(coordmatrix=tetragonula.coord[1:50,],cut=50,file.format="decimal2",neighbors=TRUE)
+  ta &lt;- alleleconvert(strmatrix=tetragonula[1:50,])
+  tai &lt;- alleleinit(allelematrix=ta,neighborhood=tnb$nblist,distance="none")
+  str(alleledist((unbuild.charmatrix(tai$charmatrix,50,13)),50,13)) 
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

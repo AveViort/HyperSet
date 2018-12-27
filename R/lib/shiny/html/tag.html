@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: HTML Tag Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tag {shiny}"><tr><td>tag {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>HTML Tag Object</h2>
+
+<h3>Description</h3>
+
+<p><code>tag()</code> creates an HTML tag definition. Note that all of the valid HTML5
+tags are already defined in the <code><a href="builder.html">tags</a></code> environment so these
+functions should only be used to generate additional tags.
+<code>tagAppendChild()</code> and <code>tagList()</code> are for supporting package
+authors who wish to create their own sets of tags; see the contents of
+bootstrap.R for examples.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tagList(...)
+
+tagAppendAttributes(tag, ...)
+
+tagAppendChild(tag, child)
+
+tagAppendChildren(tag, ..., list = NULL)
+
+tagSetChildren(tag, ..., list = NULL)
+
+tag(`_tag_name`, varArgs)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>_tag_name</code></td>
+<td>
+<p>HTML tag name</p>
+</td></tr>
+<tr valign="top"><td><code>varArgs</code></td>
+<td>
+<p>List of attributes and children of the element. Named list
+items become attributes, and unnamed list items become children. Valid
+children are tags, single-character character vectors (which become text
+nodes), and raw HTML (see <code><a href="HTML.html">HTML</a></code>). You can also pass lists that
+contain tags, text nodes, and HTML.</p>
+</td></tr>
+<tr valign="top"><td><code>tag</code></td>
+<td>
+<p>A tag to append child elements to.</p>
+</td></tr>
+<tr valign="top"><td><code>child</code></td>
+<td>
+<p>A child element to append to a parent tag.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Unnamed items that comprise this list of tags.</p>
+</td></tr>
+<tr valign="top"><td><code>list</code></td>
+<td>
+<p>An optional list of elements. Can be used with or instead of the
+<code>...</code> items.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An HTML tag object that can be rendered as HTML using
+<code><a href="../../base/html/as.character.html">as.character</a>()</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tagList(tags$h1("Title"),
+        tags$h2("Header text"),
+        tags$p("Text here"))
+
+# Can also convert a regular list to a tagList (internal data structure isn't
+# exactly the same, but when rendered to HTML, the output is the same).
+x &lt;- list(tags$h1("Title"),
+          tags$h2("Header text"),
+          tags$p("Text here"))
+tagList(x)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

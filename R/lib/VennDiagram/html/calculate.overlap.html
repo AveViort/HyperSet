@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calculate Overlap</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for calculate.overlap {VennDiagram}"><tr><td>calculate.overlap {VennDiagram}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calculate Overlap</h2>
+
+<h3>Description</h3>
+
+<p>Determine the groupings of values as they would be presented in the venn diagram.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+calculate.overlap(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A list of vectors (e.g., integers, chars), with each component corresponding 
+to a separate circle in the Venn diagram</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function mostly complements the venn.diagram() function for the case where users
+want to know what values are grouped into the particular areas of the venn diagram.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns a list of lists which contain the values assigned to each of the areas of a venn diagram.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christopher Lalansingh</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# A simple single-set diagram
+cardiome &lt;- letters[1:10]
+superset &lt;- letters[8:24]
+overlap &lt;- calculate.overlap(
+	x = list(
+		"Cardiome" = cardiome,
+		"SuperSet" = superset
+		)
+	);
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>VennDiagram</em> version 1.6.20 <a href="00Index.html">Index</a>]</div>
+</body></html>

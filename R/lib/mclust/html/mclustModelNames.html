@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: MCLUST Model Names</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mclustModelNames {mclust}"><tr><td>mclustModelNames {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+MCLUST Model Names 
+</h2>
+
+<h3>Description</h3>
+
+<p>Description of model names used in the <em>MCLUST</em> package.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mclustModelNames(model)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>A string specifying the model.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The following models are available in package <span class="pkg">mclust</span>:
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+<b>univariate mixture</b> </td><td style="text-align: center;"> </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"E"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> equal variance  (one-dimensional) </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"V"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> variable variance (one-dimensional) </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<b>multivariate mixture</b>  </td><td style="text-align: center;"> </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EII"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> spherical, equal volume </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VII"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> spherical, unequal volume </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EEI"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> diagonal, equal volume and shape</td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+    <code>"VEI"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> diagonal, varying volume, equal shape</td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+    <code>"EVI"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> diagonal, equal volume, varying shape </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VVI"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> diagonal, varying volume and shape </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EEE"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, equal volume, shape, and orientation </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EVE"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, equal volume and orientation (*)</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VEE"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, equal shape and orientation (*)</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VVE"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, equal orientation (*)</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EEV"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, equal volume and equal shape</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VEV"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, equal shape </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EVV"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, equal volume (*)</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VVV"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal, varying volume, shape, and orientation </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<b>single component</b>  </td><td style="text-align: center;"> </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"X"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> univariate normal </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"XII"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> spherical multivariate normal </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"XXI"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> diagonal multivariate normal </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"XXX"</code> </td><td style="text-align: center;"> = </td><td style="text-align: left;"> ellipsoidal multivariate normal 
+</td>
+</tr>
+
+</table>
+
+<p>(*) new models in <span class="pkg">mclust</span> version &gt;= 5.0.0.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns a list with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>a character string indicating the model (as in input).</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>the description of the indicated model (see Details section).</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Mclust.html">Mclust</a></code>,
+<code><a href="mclustBIC.html">mclustBIC</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+mclustModelNames("E")
+mclustModelNames("EEE")
+mclustModelNames("VVV")
+mclustModelNames("XXI")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

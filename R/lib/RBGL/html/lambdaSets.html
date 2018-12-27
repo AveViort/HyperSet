@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find all the lambda-sets in an undirected graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lambdaSets {RBGL}"><tr><td>lambdaSets {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find all the lambda-sets in an undirected graph</h2>
+
+<h3>Description</h3>
+
+<p>Find all the lambda-sets in an undirected graph </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+lambdaSets(g)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>an instance of the <code>graph</code> class </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>From reference (1), p. 270:
+A set of nodes is a lambda-set if any pair of nodes in the lambda set has 
+larger edge connectivity than any pair of nodes consisting of one node from 
+within the lamda set and a second node from outside the lamda set.
+</p>
+<p>As stated in reference (2), a lambda set is a maximal subset of nodes who have 
+more edge-independent paths connecting them to each other than to outsiders.
+</p>
+<p>A lambda set could be characterized by the minimum edge connectivity <code>k</code>
+among its members, and could be called <code>lambda-k</code> sets.
+</p>
+<p>Let N be maximum edge connectivity of graph <code>g</code>,
+we output all the lambda-k set for all k = 1, ..., N.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Maximum edge connectivity, <code>N</code>, of the graph <code>g</code>, and
+A list of length N; k-th entry (k = 1, ..., N) is a list of all the lambda-k 
+sets in graph <code>g</code>. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>(1) Social Network Analysis: Methods and Applications.  By S. Wasserman and K. Faust, pp. 269. 
+(2) LS sets, lambda sets and other cohesive subsets.  By S. P. Borgatti, M. G. Everett, P. R. Shirey, Social Networks 12 (1990) p. 337-357
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/snalambdaex.gxl",package="RBGL"))
+coex &lt;- fromGXL(con)
+close(con)
+
+lambdaSets(coex)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

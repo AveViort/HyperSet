@@ -1,0 +1,104 @@
+> c ~/.psql_history
+> c ~/hyperset_db
+Database: hyperset
+Username: hyperset
+
+
+> psql -d hyperset -U hyperset
+http://www.postgresql.org/docs/8.4/static/libpq-pgpass.html
+
+>  cat  ~/.pgpass
+localhost:*:database:hyperset:SuperSet
+
+>  FC.awk /home/proj/func/NW/hsa/FC.2010.fc.joined 1 6 7 24 8-12 14-21 | grep -v FBS_max > /var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_hsa.txt
+
+
+
+ 
+CREATE TABLE shownames1 (hsname varchar(64), description varchar(1024), org_id varchar(64));
+CREATE TABLE
+\copy shownames1 from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/shownames1.txt'
+
+CREATE TABLE optnames1 (hsname varchar(64), optname varchar(64), org_id varchar(64), source varchar(64));
+\copy optnames1 from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/optnames1.txt'
+
+
+
+  10:13 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/rat.ENSEMBL74 7 1 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "rno", "ENSG" }' > input_files/optnames1.txt
+ 10:14 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/rat.ENSEMBL74 7 2 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "rno", "ENSP" }' >> input_files/optnames1.txt
+ 10:15 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/rat.ENSEMBL74 7 12 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "rno", "UPTR.Acc" }' >> input_files/optnames1.txt
+ 10:15 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/rat.ENSEMBL74 7 13 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "rno", "UPSP.Acc" }' >> input_files/optnames1.txt
+ 10:16 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/rat.ENSEMBL74 7 14 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "rno", "UPSP.ID" }' >> input_files/optnames1.txt
+ 10:16 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/rat.ENSEMBL74 7 7 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "rno", "GeneName" }' >> input_files/optnames1.txt
+ 10:20 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/rat.ENSEMBL74 7 11 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "rno", "MGI" }' >> input_files/optnames1.txt
+ 
+ 
+ 
+
+ 10:18 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/mouse.ENSEMBL74 7 15 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "mmu", "UPSP.ID" }' >> input_files/optnames1.txt
+ 10:19 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/mouse.ENSEMBL74 7 14 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "mmu", "UPSP.Acc" }' >> input_files/optnames1.txt
+ 10:19 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/mouse.ENSEMBL74 7 13 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "mmu", "UPTR.Acc" }' >> input_files/optnames1.txt
+ 10:20 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/mouse.ENSEMBL74 7 12 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "mmu", "MGI" }' >> input_files/optnames1.txt
+ 10:21 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/mouse.ENSEMBL74 7 7 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "mmu", "GeneName" }' >> input_files/optnames1.txt
+ 10:21 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/mouse.ENSEMBL74 7 2 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "mmu", "ENSP" }' >> input_files/optnames1.txt
+ 10:22 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/mouse.ENSEMBL74 7 1 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "mmu", "ENSG" }' >> input_files/optnames1.txt
+
+ 10:23 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/human.ENSEMBL74 6 1 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "hsa", "ENSG" }' >> input_files/optnames1.txt
+ 10:24 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/human.ENSEMBL74 6 2 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "hsa", "ENSP" }' >> input_files/optnames1.txt
+ 10:24 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/human.ENSEMBL74 6 6 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "hsa", "GeneName" }' >> input_files/optnames1.txt
+ 10:24 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/human.ENSEMBL74 6 13 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "hsa", "HGNC" }' >> input_files/optnames1.txt
+ 10:25 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/human.ENSEMBL74 6 14 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "hsa", "UPTR.Acc" }' >> input_files/optnames1.txt
+ 10:25 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/human.ENSEMBL74 6 15 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "hsa", "UPSP.Acc" }' >> input_files/optnames1.txt
+ 10:26 b4:/var/www/html/research/andrej_alexeyenko/HyperSet/db >>>> FO.awk /home/proj/func/Name_2_name/human.ENSEMBL74 6 16 | sort -u |  gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {if (FNR == 1) next;  print $1, $2, "hsa", "UPSP.ID" }' >> input_files/optnames1.txt
+
+DROP  TABLE net_fc_hsa; 
+CREATE TABLE net_fc_hsa (fbs float4, prot1 varchar(64), prot2 varchar(64), blast_score float4, hsa float4, mmu float4, rno float4, dme float4, cel float4, pearson float4, ppi float4, coloc float4, phylo float4, mirna float4, tf float4, hpa float4, domain float4);
+\copy net_fc_hsa from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_hsa.txt' delimiter as E'\t' null as ''
+CREATE INDEX p1ind_hsa ON net_fc_hsa (prot1);
+CREATE INDEX
+CREATE INDEX p2ind_hsa ON net_fc_hsa (prot2);
+CREATE INDEX
+CREATE INDEX fbsind_hsa ON net_fc_hsa (fbs);
+
+
+CREATE TABLE net_fc_mmu (fbs float4, prot1 varchar(64), prot2 varchar(64), blast_score float4, hsa float4, mmu float4, rno float4, dme float4, cel float4, pearson float4, ppi float4, coloc float4, phylo float4, mirna float4, tf float4, hpa float4, domain float4);
+CREATE TABLE
+hyperset=> \copy net_fc_mmu from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_mmu.txt' delimiter as E'\t' null as ''
+
+CREATE TABLE net_fc_rno (fbs float4, prot1 varchar(64), prot2 varchar(64), blast_score float4, hsa float4, mmu float4, rno float4, dme float4, cel float4, pearson float4, ppi float4, coloc float4, phylo float4, mirna float4, tf float4, hpa float4, domain float4);
+ \copy net_fc_rno from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_rno.txt' delimiter as E'\t' null as ''
+
+
+ 
+CREATE TABLE shownames1 hsname varchar(64), description varchar(1024), org_id varchar(64) ;
+CREATE INDEX hsname_show ON shownames1 (hsname);
+CREATE INDEX org_id_show ON shownames1 (org_id);
+CREATE INDEX hsname_uc_show ON shownames1 (upper(hsname));
+ANALYZE shownames1 ;
+
+CREATE TABLE optnames1 hsname varchar(64), optname varchar(64), org_id varchar(64), source varchar(64);
+CREATE INDEX hsname_opt ON optnames1 (hsname);
+CREATE INDEX hsname_uc_opt ON optnames1 (upper(hsname));
+CREATE INDEX org_id_opt ON optnames1 (org_id);
+CREATE INDEX source_opt ON optnames1 (source);
+ANALYZE optnames1;
+
+
+CREATE VIEW sel (gene) AS select gene FROM temporal_switch where ((condition1 = 'WT_Prog_3.5_SC' and condition2 = 'Fmut_Prog_4.5_noAg') ) AND abs(fc) > 3 AND fdr < 0.05;
+SELECT gene, description from sel  inner join shownames1 on upper(shownames1.hsname) = upper(gene) where org_id='mmu';
+DROP VIEW sel;
+
+or simply:
+SELECT gene, description from (select gene FROM temporal_switch where ((condition1 = 'WT_Prog_3.5_SC' and condition2 = 'Fmut_Prog_4.5_noAg') ) AND abs(fc) > 3 AND fdr < 0.05) as sel  inner join shownames1 on upper(shownames1.hsname) = upper(gene) where org_id='mmu'
+
+
+
+# This CREATE statement is made using /home/proj/func/DATA/PathwayCommons/PathwayCommons.makeWideTable.pl :
+CREATE TABLE pathwaycommons (prot1 varchar(1024), interaction_type text, prot2 varchar(1024), summary int, intact text, reactome text, biogrid text, transfac text, hprd text, mirtarbase text, humancyc text, panther text, pid text, ctd text, corum text, kegg text, bind text, dip text, phosphosite text, drugbank text, recon text);
+\copy pathwaycommons from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/PathwayCommons.7.PubMedOrPathway.SQL' delimiter as E'\t' null as ''
+CREATE INDEX p1_pwc ON pathwaycommons (prot1);
+CREATE INDEX p2_pwc ON pathwaycommons (prot2);
+CREATE INDEX p1_uc_pwc ON pathwaycommons (upper(prot1));
+CREATE INDEX p2_uc_pwc ON pathwaycommons (upper(prot2));
+ANALYZE pathwaycommons;
+

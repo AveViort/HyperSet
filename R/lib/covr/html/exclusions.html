@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Exclusions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for exclusions {covr}"><tr><td>exclusions {covr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Exclusions</h2>
+
+<h3>Description</h3>
+
+<p>covr supports a couple of different ways of excluding some or all of a file.
+</p>
+
+
+<h3>Line Exclusions</h3>
+
+<p>The <code>line_exclusions</code> argument to <code>package_coverage()</code> can be used
+to exclude some or all of a file.  This argument takes a list of filenames
+or named ranges to exclude.
+</p>
+
+
+<h3>Function Exclusions</h3>
+
+<p>Alternatively <code>function_exclusions</code> can be used to exclude R functions
+based on regular expression(s). For example <code>print\\.*</code> can be used to
+exclude all the print methods defined in a package from coverage.
+</p>
+
+
+<h3>Exclusion Comments</h3>
+
+<p>In addition you can exclude lines from the coverage by putting special comments
+in your source code. This can be done per line or by specifying a range.
+The patterns used can be specified by the <code>exclude_pattern</code>, <code>exclude_start</code>,
+<code>exclude_end</code> arguments to <code>package_coverage()</code> or by setting the global
+options <code>covr.exclude_pattern</code>, <code>covr.exclude_start</code>, <code>covr.exclude_end</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# exclude whole file of R/test.R
+package_coverage(exclusions = "R/test.R")
+
+# exclude lines 1 to 10 and 15 from R/test.R
+package_coverage(line_exclusions = list("R/test.R" = c(1:10, 15)))
+
+# exclude lines 1 to 10 from R/test.R, all of R/test2.R
+package_coverage(line_exclusions = list("R/test.R" = 1:10, "R/test2.R"))
+
+# exclude all print and format methods from the package.
+package_coverage(function_exclusions = c("print\\.", "format\\."))
+
+# single line exclusions
+f1 &lt;- function(x) {
+  x + 1 # nocov
+}
+
+# ranged exclusions
+f2 &lt;- function(x) { # nocov start
+  x + 2
+} # nocov end
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>covr</em> version 3.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

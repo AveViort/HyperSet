@@ -1,0 +1,498 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Interface functions for clustering methods</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kmeansCBI {fpc}"><tr><td>kmeansCBI {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Interface functions for clustering methods</h2>
+
+<h3>Description</h3>
+
+<p>These functions provide an interface to several clustering methods
+implemented in R, for use together with the cluster stability
+assessment in <code><a href="clusterboot.html">clusterboot</a></code> (as parameter
+<code>clustermethod</code>; &quot;CBI&quot; stands for &quot;clusterboot interface&quot;).
+In some situations it could make sense to use them to compute a
+clustering even if you don't want to run <code>clusterboot</code>, because
+some of the functions contain some additional features (e.g., normal
+mixture model based clustering of dissimilarity matrices projected
+into the Euclidean space by MDS or partitioning around medoids with
+estimated number of clusters, noise/outlier identification in
+hierarchical clustering).   
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+kmeansCBI(data,krange,k,scaling=FALSE,runs=1,criterion="ch",...)
+
+hclustCBI(data,k,cut="number",method,scaling=TRUE,noisecut=0,...)
+
+hclusttreeCBI(data,minlevel=2,method,scaling=TRUE,...)
+
+disthclustCBI(dmatrix,k,cut="number",method,noisecut=0,...)
+
+
+
+noisemclustCBI(data,G,k,modelNames,nnk,hcmodel=NULL,Vinv=NULL,
+                        summary.out=FALSE,...)
+
+distnoisemclustCBI(dmatrix,G,k,modelNames,nnk,
+                        hcmodel=NULL,Vinv=NULL,mdsmethod="classical",
+                        mdsdim=4, summary.out=FALSE, points.out=FALSE,...)
+
+claraCBI(data,k,usepam=TRUE,diss=inherits(data,"dist"),...)
+
+pamkCBI(data,krange=2:10,k=NULL,criterion="asw", usepam=TRUE,
+        scaling=TRUE,diss=inherits(data,"dist"),...)
+
+trimkmeansCBI(data,k,scaling=TRUE,trim=0.1,...)
+
+tclustCBI(data,k,trim=0.05,...)
+
+disttrimkmeansCBI(dmatrix,k,scaling=TRUE,trim=0.1,
+                         mdsmethod="classical",
+                         mdsdim=4,...)
+
+dbscanCBI(data,eps,MinPts,diss=inherits(data,"dist"),...)
+
+mahalCBI(data,clustercut=0.5,...)
+
+mergenormCBI(data, G=NULL, k=NULL, modelNames=NULL, nnk=0,
+                         hcmodel = NULL,
+                         Vinv = NULL, mergemethod="bhat",
+                         cutoff=0.1,...)
+
+speccCBI(data,k,...)
+
+pdfclustCBI(data,...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>a numeric matrix. The data
+matrix - usually a cases*variables-data matrix. <code>claraCBI</code>,
+<code>pamkCBI</code> and <code>dbscanCBI</code> work with an
+<code>n*n</code>-dissimilarity matrix as well, see parameter <code>diss</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>dmatrix</code></td>
+<td>
+<p>a squared numerical dissimilarity matrix or a
+<code>dist</code>-object.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>numeric, usually integer. In most cases, this is the number
+of clusters for methods where this is fixed. For <code>hclustCBI</code>
+and <code>disthclustCBI</code> see parameter <code>cut</code> below. Some
+methods have a <code>k</code> parameter on top of a <code>G</code> or
+<code>krange</code> parameter for compatibility; <code>k</code> in these cases
+does not have to be specified but if it is, it is always a single
+number of clusters and overwrites <code>G</code> and
+<code>krange</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>scaling</code></td>
+<td>
+<p>either a logical value or a numeric vector of length
+equal to the number of variables. If <code>scaling</code> is a numeric
+vector with length equal to the number of variables, then each
+variable is divided by the corresponding value from <code>scaling</code>.
+If <code>scaling</code> is <code>TRUE</code> then scaling is done by dividing
+the (centered) variables by their root-mean-square, and if
+<code>scaling</code> is <code>FALSE</code>, no scaling is done before execution.</p>
+</td></tr>
+<tr valign="top"><td><code>runs</code></td>
+<td>
+<p>integer. Number of random initializations from which the
+k-means algorithm is started.</p>
+</td></tr>
+<tr valign="top"><td><code>criterion</code></td>
+<td>
+<p><code>"ch"</code> or <code>"asw"</code>. Decides whether number
+of clusters is estimated by the Calinski-Harabasz criterion or by the
+average silhouette width.</p>
+</td></tr>
+<tr valign="top"><td><code>cut</code></td>
+<td>
+<p>either &quot;level&quot; or &quot;number&quot;. This determines how
+<code>cutree</code> is used to obtain a partition from a hierarchy
+tree. <code>cut="level"</code> means that the tree is cut at a particular
+dissimilarity level, <code>cut="number"</code> means that the tree is cut
+in order to obtain a fixed number of clusters. The parameter
+<code>k</code> specifies the number of clusters or the dissimilarity
+level, depending on <code>cut</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>method for hierarchical clustering, see the
+documentation of <code><a href="../../stats/html/hclust.html">hclust</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>noisecut</code></td>
+<td>
+<p>numeric. All clusters of size <code>&lt;=noisecut</code> in the
+<code>disthclustCBI</code>/<code>hclustCBI</code>-partition are joined and declared as
+noise/outliers.</p>
+</td></tr>
+<tr valign="top"><td><code>minlevel</code></td>
+<td>
+<p>integer. <code>minlevel=1</code> means that all clusters in
+the tree are given out by <code>hclusttreeCBI</code> or
+<code>disthclusttreeCBI</code>, including one-point
+clusters (but excluding the cluster with all
+points). <code>minlevel=2</code> excludes the one-point clusters.
+<code>minlevel=3</code> excludes the two-point cluster which has been
+merged first, and increasing the value of <code>minlevel</code> by 1 in
+all further steps means that the remaining earliest formed cluster
+is excluded.</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+<p>vector of integers. Number of clusters or numbers of clusters
+used by
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code>. If
+<code>G</code> has more than one entry, the number of clusters is
+estimated by the BIC.</p>
+</td></tr>
+<tr valign="top"><td><code>modelNames</code></td>
+<td>
+<p>vector of string. Models for covariance matrices,
+see documentation of
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>nnk</code></td>
+<td>
+<p>integer. Tuning constant for
+<code><a href="../../prabclus/html/NNclean.html">NNclean</a></code>, which is used to estimate the
+initial noise for <code>noisemclustCBI</code> and
+<code>distnoisemclustCBI</code>. See parameter <code>k</code> in the
+documentation of <code><a href="../../prabclus/html/NNclean.html">NNclean</a></code>. <code>nnk=0</code> means
+that no noise component is fitted.</p>
+</td></tr>
+<tr valign="top"><td><code>hcmodel</code></td>
+<td>
+<p>string or <code>NULL</code>. Determines the initialization of
+the EM-algorithm for
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code>.
+Documented in <code><a href="../../mclust/html/hc.html">hc</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>Vinv</code></td>
+<td>
+<p>numeric. See documentation of
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>summary.out</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the result of
+<code><a href="../../mclust/html/summary.mclustBIC.html">summary.mclustBIC</a></code> is added as component
+<code>mclustsummary</code> to the output of <code>noisemclustCBI</code> and
+<code>distnoisemclustCBI</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>mdsmethod</code></td>
+<td>
+<p>&quot;classical&quot;, &quot;kruskal&quot; or &quot;sammon&quot;. Determines the
+multidimensional scaling method to compute Euclidean data from a
+dissimilarity matrix. See <code><a href="../../stats/html/cmdscale.html">cmdscale</a></code>,
+<code><a href="../../MASS/html/isoMDS.html">isoMDS</a></code> and <code><a href="../../MASS/html/sammon.html">sammon</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>mdsdim</code></td>
+<td>
+<p>integer. Dimensionality of MDS solution.</p>
+</td></tr>
+<tr valign="top"><td><code>points.out</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the matrix of MDS points
+is added as component
+<code>points</code> to the output of <code>noisemclustCBI</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>usepam</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the function
+<code><a href="../../cluster/html/pam.html">pam</a></code> is used for clustering, otherwise
+<code><a href="../../cluster/html/clara.html">clara</a></code>. <code><a href="../../cluster/html/pam.html">pam</a></code> is better,
+<code><a href="../../cluster/html/clara.html">clara</a></code> is faster.</p>
+</td></tr>
+<tr valign="top"><td><code>diss</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, <code>data</code> will be considered as
+a dissimilarity matrix. In <code>claraCBI</code>, this requires
+<code>usepam=TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>krange</code></td>
+<td>
+<p>vector of integers. Numbers of clusters to be compared.</p>
+</td></tr>
+<tr valign="top"><td><code>trim</code></td>
+<td>
+<p>numeric between 0 and 1. Proportion of data points
+trimmed, i.e., assigned to noise. See <code>tclust</code> in the tclust package,
+<code><a href="../../trimcluster/html/trimkmeans.html">trimkmeans</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>eps</code></td>
+<td>
+<p>numeric. The radius of the neighborhoods to be considered
+by <code><a href="dbscan.html">dbscan</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>MinPts</code></td>
+<td>
+<p>integer. How many points have to be in a neighborhood so
+that a point is considered to be a cluster seed? See documentation
+of <code><a href="dbscan.html">dbscan</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>clustercut</code></td>
+<td>
+<p>numeric between 0 and 1. If <code><a href="fixmahal.html">fixmahal</a></code>
+is used for fuzzy clustering, a crisp partition is generated and
+points with cluster membership values above <code>clustercut</code> are
+considered as members of the corresponding cluster.</p>
+</td></tr>
+<tr valign="top"><td><code>mergemethod</code></td>
+<td>
+<p>method for merging Gaussians, passed on as
+<code>method</code> to <code><a href="mergenormals.html">mergenormals</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>cutoff</code></td>
+<td>
+<p>numeric between 0 and 1, tuning constant for
+<code><a href="mergenormals.html">mergenormals</a></code>.</p>
+</td></tr> 
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further parameters to be transferred to the original
+clustering functions (not required).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>All these functions call clustering methods implemented in R to
+cluster data and to provide output in the format required by
+<code><a href="clusterboot.html">clusterboot</a></code>. Here is a brief overview. For further
+details see the help pages of the involved clustering methods.
+</p>
+
+<dl>
+<dt>kmeansCBI</dt><dd><p>an interface to the function
+<code><a href="kmeansruns.html">kmeansruns</a></code> calling <code><a href="../../stats/html/kmeans.html">kmeans</a></code>
+for k-means clustering. (<code><a href="kmeansruns.html">kmeansruns</a></code> allows the
+specification of several random initializations of the
+k-means algorithm and estimation of k by the Calinski-Harabasz
+index or the average silhouette width.)</p>
+</dd>
+<dt>hclustCBI</dt><dd><p>an interface to the function
+<code><a href="../../stats/html/hclust.html">hclust</a></code> for agglomerative hierarchical clustering with
+noise component (see parameter <code>noisecut</code> above). This
+function produces a partition and assumes a cases*variables
+matrix as input.</p>
+</dd>
+<dt>hclusttreeCBI</dt><dd><p>an interface to the function
+<code>hclust</code> for agglomerative hierarchical clustering. This
+function gives out all clusters belonging to the hierarchy
+(upward from a certain level, see parameter <code>minlevel</code>
+above).</p>
+</dd>
+<dt>disthclustCBI</dt><dd><p>an interface to the function
+<code>hclust</code> for agglomerative hierarchical clustering with
+noise component (see parameter <code>noisecut</code> above). This
+function produces a partition and assumes a dissimilarity
+matrix as input.</p>
+</dd>
+</dl>
+
+
+
+
+
+<dl>
+<dt>noisemclustCBI</dt><dd><p>an interface to the function
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code>, for normal mixture model based
+clustering. Warning: <code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code> often
+has problems with multiple
+points. In <code><a href="clusterboot.html">clusterboot</a></code>, it is recommended to use
+this together with <code>multipleboot=FALSE</code>.</p>
+</dd>	
+<dt>distnoisemclustCBI</dt><dd><p>an interface to the function
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code> for normal mixture model based
+clustering. This assumes a dissimilarity matrix as input and
+generates a data matrix by multidimensional scaling first.
+Warning: <code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code> often has
+problems with multiple
+points. In <code><a href="clusterboot.html">clusterboot</a></code>, it is recommended to use
+this together with <code>multipleboot=FALSE</code>.</p>
+</dd>
+<dt>claraCBI</dt><dd><p>an interface to the functions
+<code><a href="../../cluster/html/pam.html">pam</a></code> and <code><a href="../../cluster/html/clara.html">clara</a></code>
+for partitioning around medoids.</p>
+</dd>
+<dt>pamkCBI</dt><dd><p>an interface to the function
+<code><a href="pamk.html">pamk</a></code> calling <code><a href="../../cluster/html/pam.html">pam</a></code> for
+partitioning around medoids. The number
+of clusters is estimated by the Calinski-Harabasz index or by the
+average silhouette width.</p>
+</dd>
+<dt>trimkmeansCBI</dt><dd><p>an interface to the function
+<code><a href="../../trimcluster/html/trimkmeans.html">trimkmeans</a></code> for trimmed k-means
+clustering. This assumes a cases*variables matrix as input. Note
+that for
+most applications, <code>tclustCBI</code> with parameter
+<code>restr.fact=1</code> will do about the same but faster.</p>
+</dd>	
+<dt>tclustCBI</dt><dd><p>an interface to the function
+<code>tclust</code> in the tclust package for trimmed Gaussian 
+clustering. This assumes a cases*variables matrix as input.</p>
+</dd>
+</dl>
+
+
+
+
+
+
+<dl>
+<dt>disttrimkmeansCBI</dt><dd><p>an interface to the function
+<code><a href="../../trimcluster/html/trimkmeans.html">trimkmeans</a></code> for trimmed k-means
+clustering. This assumes a dissimilarity matrix as input and
+generates a data matrix by multidimensional scaling first.</p>
+</dd>
+<dt>dbscanCBI</dt><dd><p>an interface to the function
+<code><a href="dbscan.html">dbscan</a></code> for density based 
+clustering.</p>
+</dd>
+<dt>mahalCBI</dt><dd><p>an interface to the function
+<code><a href="fixmahal.html">fixmahal</a></code> for fixed point
+clustering. This assumes a cases*variables matrix as input.</p>
+</dd>
+<dt>mergenormCBI</dt><dd><p>an interface to the function
+<code><a href="mergenormals.html">mergenormals</a></code> for clustering by merging Gaussian
+mixture components. Unlike <code><a href="mergenormals.html">mergenormals</a></code>, <code>mergenormCBI</code>
+includes the computation of the initial Gaussian mixture.
+This assumes a cases*variables matrix as input.
+</p>
+</dd>
+<dt>speccCBI</dt><dd><p>an interface to the function
+<code><a href="../../kernlab/html/specc.html">specc</a></code> for spectral clustering. See
+the <code><a href="../../kernlab/html/specc.html">specc</a></code> help page for additional tuning
+parameters. This assumes a cases*variables matrix as input.</p>
+</dd>
+<dt>pdfclustCBI</dt><dd><p>an interface to the function
+<code><a href="../../pdfCluster/html/pdfCluster.html">pdfCluster</a></code> for density-based clustering. See
+the <code><a href="../../pdfCluster/html/pdfCluster.html">pdfCluster</a></code> help page for additional tuning
+parameters. This assumes a cases*variables matrix as input.</p>
+</dd>
+</dl>
+
+
+
+<h3>Value</h3>
+
+<p>All interface functions return a list with the following components
+(there may be some more, see <code>summary.out</code> and <code>points.out</code>
+above):
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>result</code></td>
+<td>
+<p>clustering result, usually a list with the full
+output of the clustering method (the precise format doesn't
+matter); whatever you want to use later.</p>
+</td></tr>
+<tr valign="top"><td><code>nc</code></td>
+<td>
+<p>number of clusters. If some points don't belong to any
+cluster, these are declared &quot;noise&quot;. <code>nc</code> includes the
+&quot;noise cluster&quot;, and there should be another component
+<code>nccl</code>, being the number of clusters not including the
+noise cluster.</p>
+</td></tr>
+<tr valign="top"><td><code>clusterlist</code></td>
+<td>
+<p>this is a list consisting of a logical vectors
+of length of the number of data points (<code>n</code>) for each cluster,
+indicating whether a point is a member of this cluster
+(<code>TRUE</code>) or not. If a noise cluster is included, it
+should always be the last vector in this list.</p>
+</td></tr>
+<tr valign="top"><td><code>partition</code></td>
+<td>
+<p>an integer vector of length <code>n</code>,
+partitioning the data. If the method produces a partition, it
+should be the clustering. This component is only used for plots,
+so you could do something like <code>rep(1,n)</code> for
+non-partitioning methods. If a noise cluster is included,
+<code>nc=nccl+1</code> and the noise cluster is cluster no. <code>nc</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>clustermethod</code></td>
+<td>
+<p>a string indicating the clustering method.</p>
+</td></tr>      
+</table>
+<p>The output of some of the functions has further components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>nccl</code></td>
+<td>
+<p>see <code>nc</code> above.</p>
+</td></tr>
+<tr valign="top"><td><code>nnk</code></td>
+<td>
+<p>by <code>noisemclustCBI</code> and <code>distnoisemclustCBI</code>,
+see above.</p>
+</td></tr>
+<tr valign="top"><td><code>initnoise</code></td>
+<td>
+<p>logical vector, indicating initially estimated noise by
+<code><a href="../../prabclus/html/NNclean.html">NNclean</a></code>, called by <code>noisemclustCBI</code>
+and <code>distnoisemclustCBI</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>noise</code></td>
+<td>
+<p>logical. <code>TRUE</code> if points were classified as
+noise/outliers by <code>disthclustCBI</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="clusterboot.html">clusterboot</a></code>, <code><a href="../../stats/html/dist.html">dist</a></code>,
+<code><a href="../../stats/html/kmeans.html">kmeans</a></code>, <code><a href="kmeansruns.html">kmeansruns</a></code>, <code><a href="../../stats/html/hclust.html">hclust</a></code>,
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code>, 
+<code><a href="../../cluster/html/pam.html">pam</a></code>,  <code><a href="pamk.html">pamk</a></code>,
+<code><a href="../../cluster/html/clara.html">clara</a></code>,
+<code><a href="../../trimcluster/html/trimkmeans.html">trimkmeans</a></code>, <code><a href="dbscan.html">dbscan</a></code>,
+<code><a href="fixmahal.html">fixmahal</a></code>,
+<code><a href="../../tclust/html/tclust.html">tclust</a></code>, <code><a href="../../pdfCluster/html/pdfCluster.html">pdfCluster</a></code> 
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  set.seed(20000)
+  face &lt;- rFace(50,dMoNo=2,dNoEy=0,p=2)
+  dbs &lt;- dbscanCBI(face,eps=1.5,MinPts=4)
+  dhc &lt;- disthclustCBI(dist(face),method="average",k=1.5,noisecut=2)
+  table(dbs$partition,dhc$partition)
+  dm &lt;- mergenormCBI(face,G=10,modelNames="EEE",nnk=2)
+  dtc &lt;- tclustCBI(face,6,trim=0.1,restr.fact=500)
+  table(dm$partition,dtc$partition)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

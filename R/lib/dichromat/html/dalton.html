@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Effects of Daltonism (Red-Green Color Blindness)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dalton {dichromat}"><tr><td>dalton {dichromat}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Effects of Daltonism (Red-Green Color Blindness)</h2>
+
+<h3>Description</h3>
+
+<p>A 256-color palette as it would appear with normal vision, and with
+two types of red-green color blindness: protanopia and deuteronopia.
+Furthermore, a color palette for a type of green-blue color blindness
+(tritanopia) is available.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("dalton")</pre>
+
+
+<h3>Format</h3>
+
+<p><code>dalton</code> A 256 x 3 x 4 array. The columns index the red, green and blue color
+values, the layers index the vision type.
+</p>
+<p><code>dalton.colors</code>: A list of colors, with names
+<code>normal</code>, <code>protan</code>, <code>deutan</code>, <code>tritan</code>.
+</p>
+
+
+<h3>Details</h3>
+
+<p>The <code>dalton</code> array lists a grid of 256 colors in RGB coordinates for
+<code>"normal"</code> vision as well as corresponding RGB coordinates in which
+certain red-green (<code>"deutan"</code> and <code>"protan"</code>) or green-blue
+contrasts (<code>"tritan"</code>) are collapsed.
+</p>
+<p>The formulas for mapping the RGB coordinates to the collapsed coordinates
+have been developed in a series of papers by Brettel, Mollon, and Viénot.
+The protan/deutan mapping is provided in Table 2 of Viénot et al. (1999)
+while the tritan case is discussed in Brettel at al. (1997).
+</p>
+<p>The <code>dalton.colors</code> list contains the sRGB colors (as R color strings)
+as computed with <code><a href="../../grDevices/html/rgb.html">rgb</a></code> from <code>dalton</code>.
+</p>
+<p>For an automatic mapping of a given color vector to its dichromatic
+counterpart, see <code><a href="dichromat.html">dichromat</a></code>.
+</p>
+
+
+<h3>Source</h3>
+
+<p>The data were kindly provided by Françoise Viénot.
+</p>
+<p>The deutan/protan data (rounded to integers) is also available in Table 2 of
+Viénot et al. (1999). See also
+<a href="http://tsi.enst.fr/~brettel/CRA24/table2.html">http://tsi.enst.fr/~brettel/CRA24/table2.html</a>.
+</p>
+
+
+<h3>References</h3>
+
+<p>Brettel H, Viénot F, Mollon, JD (1997).
+Computerized Simulation of Color Appearance for Dichromats.
+<em>Journal of the Optical Society of America A</em>, <b>14</b>, 2647&ndash;2655.
+</p>
+<p>Viénot F, Brettel H, Ott L, M'Barek AB, Mollon JD (1995).
+What Do Colour-Blind People See?
+<em>Nature</em>, <b>376</b>, 127&ndash;128.
+</p>
+<p>Viénot F, Brettel H, Mollon JD (1999).
+Digital Video Colourmaps for Checking the Legibility of Displays by Dichromats.
+<em>Color Research and Application</em>, <b>24</b>(4), 243&ndash;252.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dichromat.html">dichromat</a></code>, <code><a href="../../grDevices/html/rgb.html">rgb</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ data("dalton", package = "dichromat")
+ par(mfrow = c(4, 1))
+ image(matrix(1:256, 128), col = dalton.colors$normal)
+ image(matrix(1:256, 128), col = dalton.colors$deutan)
+ image(matrix(1:256, 128), col = dalton.colors$protan)
+ image(matrix(1:256, 128), col = dalton.colors$tritan)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dichromat</em> version 2.0-0 <a href="00Index.html">Index</a>]</div>
+</body></html>

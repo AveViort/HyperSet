@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Coerce lists and matrices to data frames</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for as_tibble {tibble}"><tr><td>as_tibble {tibble}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Coerce lists and matrices to data frames</h2>
+
+<h3>Description</h3>
+
+<p><code><a href="../../base/html/as.data.frame.html">as.data.frame()</a></code> is effectively a thin wrapper around <code>data.frame</code>,
+and hence is rather slow (because it calls <code><a href="../../base/html/data.frame.html">data.frame()</a></code> on each element
+before <a href="../../base/html/cbind.html">cbind</a>ing together). <code>as_tibble</code> is a new S3 generic
+with more efficient methods for matrices and data frames.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+as_tibble(x, ...)
+
+## S3 method for class 'tbl_df'
+as_tibble(x, ..., validate = FALSE, rownames = NULL)
+
+## S3 method for class 'data.frame'
+as_tibble(x, validate = TRUE, ..., rownames = NA)
+
+## S3 method for class 'list'
+as_tibble(x, validate = TRUE, ...)
+
+## S3 method for class 'matrix'
+as_tibble(x, ..., rownames = NULL)
+
+## S3 method for class 'table'
+as_tibble(x, n = "n", ...)
+
+## S3 method for class 'NULL'
+as_tibble(x, ...)
+
+## Default S3 method:
+as_tibble(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A list. Each element of the list must have the same length.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Other arguments passed on to individual methods.</p>
+</td></tr>
+<tr valign="top"><td><code>validate</code></td>
+<td>
+<p>When <code>TRUE</code>, verifies that the input is a valid data
+frame (i.e. all columns are named, and are 1d vectors or lists). You may
+want to suppress this when you know that you already have a valid data
+frame and you want to save some time, or to explicitly enable it
+if you have a tibble that you want to re-check.</p>
+</td></tr>
+<tr valign="top"><td><code>rownames</code></td>
+<td>
+<p>If <code>NULL</code>, remove row names (default for matrices, may become
+default for data frames in the future). If <code>NA</code>, keep row names (current
+default for data frames). Otherwise, the name of the new column that will
+contain the existing row names.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>Name for count column, default: <code>"n"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is an S3 generic. tibble includes methods for data frames (adds tbl_df
+classes), tibbles (returns unchanged input), lists, matrices, and tables.
+Other types are first coerced via <code>as.data.frame()</code> with
+<code>stringsAsFactors = FALSE</code>.
+</p>
+<p><code>as_data_frame</code> and <code>as.tibble</code> are aliases.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+l &lt;- list(x = 1:500, y = runif(500), z = 500:1)
+df &lt;- as_tibble(l)
+
+m &lt;- matrix(rnorm(50), ncol = 5)
+colnames(m) &lt;- c("a", "b", "c", "d", "e")
+df &lt;- as_tibble(m)
+
+# as_tibble is considerably simpler than as.data.frame
+# making it more suitable for use when you have things that are
+# lists
+## Not run: 
+if (requireNamespace("microbenchmark", quiet = TRUE)) {
+  l2 &lt;- replicate(26, sample(letters), simplify = FALSE)
+  names(l2) &lt;- letters
+  microbenchmark::microbenchmark(
+    as_tibble(l2, validate = FALSE),
+    as_tibble(l2),
+    as.data.frame(l2)
+  )
+}
+
+if (requireNamespace("microbenchmark", quiet = TRUE)) {
+  m &lt;- matrix(runif(26 * 100), ncol = 26)
+  colnames(m) &lt;- letters
+  microbenchmark::microbenchmark(
+    as_tibble(m),
+    as.data.frame(m)
+  )
+}
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>tibble</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

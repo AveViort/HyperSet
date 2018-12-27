@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add Scale to Existing Unprojected Map</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for map.scale {maps}"><tr><td>map.scale {maps}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Add Scale to Existing Unprojected Map
+</h2>
+
+<h3>Description</h3>
+
+<p>Adds a scale to an existing map, both as a ratio and a distance gauge.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+map.scale(x, y, relwidth = 0.15, metric = TRUE, ratio = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+
+<p>Location of left end of distance gauge.  If not specified, this will be
+taken to be near the lower left corner of the map.
+</p>
+</td></tr>
+<tr valign="top"><td><code>relwidth</code></td>
+<td>
+
+<p>Proportion of width of display to be used for the scale.  The default is
+0.15 (15%).
+</p>
+</td></tr>
+<tr valign="top"><td><code>metric</code></td>
+<td>
+
+<p>If <code>TRUE</code>, the distance gauge will be in km, otherwise miles.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ratio</code></td>
+<td>
+
+<p>If <code>FALSE</code>, the scale ratio of the map is not displayed.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Further plotting parameters may be specified as for the command text().
+</p>
+</td></tr></table>
+
+
+<h3>Details</h3>
+
+<p>The scale is calculated from the displayed graph's plotting parameters,
+and the latitude of the location at which the distance gauge will be
+displayed.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The exact calculated scale is returned.
+</p>
+
+
+<h3>NOTE</h3>
+
+<p>This function is meaningful only if no projection= has been specified
+in the call to map().
+</p>
+
+
+<h3>Side Effects</h3>
+
+<p>A scale is added to the currently displayed map. This takes the form of
+an approximate 1:n scale (containing 2-3 significant digits), above a
+distance gauge which is reasonably accurate for the latitude at which it
+appears.  The circumference at the given latitude is interpolated from a
+radius of 6356.78 km at the pole and 6378.16 km at the equator.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="map.axes.html">map.axes</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+map("world", "China")
+map.scale()
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>maps</em> version 3.3.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

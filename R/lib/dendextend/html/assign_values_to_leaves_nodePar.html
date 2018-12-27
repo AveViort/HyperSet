@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Assign values to nodePar of dendrogram's leaves</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for assign_values_to_leaves_nodePar {dendextend}"><tr><td>assign_values_to_leaves_nodePar {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Assign values to nodePar of dendrogram's leaves</h2>
+
+<h3>Description</h3>
+
+<p>Go through the dendrogram leaves and updates the values inside its nodePar
+</p>
+<p>If the value has Inf then the value in edgePar will not be changed.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+assign_values_to_leaves_nodePar(dend, value, nodePar,
+  warn = dendextend_options("warn"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>a new value vector for the nodePar attribute. It should be 
+the same length as the number of leaves in the tree. If not, it will recycle
+the value and issue a warning.</p>
+</td></tr>
+<tr valign="top"><td><code>nodePar</code></td>
+<td>
+<p>the value inside nodePar to adjust.</p>
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+<p>logical (default from dendextend_options(&quot;warn&quot;) is FALSE).
+Set if warning are to be issued, it is safer to keep this at TRUE,
+but for keeping the noise down, the default is FALSE.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram, after adjusting the nodePar attribute in all of its leaves,
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="get_leaves_attr.html">get_leaves_attr</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+dend &lt;- USArrests[1:5,] %&gt;% dist %&gt;% hclust("ave") %&gt;% as.dendrogram
+
+# reproduces "labels_colors&lt;-" 
+# although it does force us to run through the tree twice, 
+# hence "labels_colors&lt;-" is better...
+plot(dend)
+dend &lt;- assign_values_to_leaves_nodePar(dend=dend, value = c(3,2), nodePar = "lab.col")
+plot(dend)
+
+dend &lt;- assign_values_to_leaves_nodePar(dend, 1, "pch")
+plot(dend)
+# fix the annoying pch=1:
+dend &lt;- assign_values_to_leaves_nodePar(dend, NA, "pch")
+plot(dend)
+# adjust the cex:
+dend &lt;- assign_values_to_leaves_nodePar(dend, 19, "pch")
+dend &lt;- assign_values_to_leaves_nodePar(dend, 2, "lab.cex")
+plot(dend)
+
+str(unclass(dend))
+
+get_leaves_attr(dend, "nodePar", simplify=FALSE)
+
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

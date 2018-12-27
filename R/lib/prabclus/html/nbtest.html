@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Test of neighborhood list</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nbtest {prabclus}"><tr><td>nbtest {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Test of neighborhood list</h2>
+
+<h3>Description</h3>
+
+<p>Tests a list of neighboring regions for proper format. Neighborhood is
+tested for being symmetrical. Causes an error if tests fail.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nbtest(nblist, n.regions=length(nblist))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>nblist</code></td>
+<td>
+<p>A list with a component for
+every region. The
+components are vectors of integers indicating
+neighboring regions. A region without neighbors (e.g., an island)
+should be assigned a vector <code>numeric(0)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>n.regions</code></td>
+<td>
+<p>Number of regions.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>invisible{TRUE}</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="prabinit.html">prabinit</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(nb)
+nbtest(nb)
+nb[[1]][1] &lt;- 1
+try(nbtest(nb))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

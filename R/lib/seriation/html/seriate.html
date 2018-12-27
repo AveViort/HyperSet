@@ -1,0 +1,533 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Seriate Dissimilarity Matrices, Matrices or Arrays</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for seriate {seriation}"><tr><td>seriate {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Seriate Dissimilarity Matrices, Matrices or Arrays</h2>
+
+<h3>Description</h3>
+
+<p>Tries to find an linear order for objects using data in form of a dissimilarity
+matrix (two-way one mode data), a data matrix (two-way two-mode data) or a
+data array (k-way k-mode data).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'dist'
+seriate(x, method = "Spectral", control = NULL, ...)
+## S3 method for class 'matrix'
+seriate(x, method = "PCA", control = NULL,
+    margin = c(1,2), ...)
+## S3 method for class 'array'
+seriate(x, method = "PCA", control = NULL,
+    margin = seq(length(dim(x))), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the data.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p> a character string with the name of the seriation method
+(default: varies by data type).</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p> a list of control options passed on to the seriation
+algorithm.</p>
+</td></tr>
+<tr valign="top"><td><code>margin</code></td>
+<td>
+<p> a vector giving the margins to be seriated. For matrix,
+<code>1</code> indicates rows, <code>2</code> indicates columns, <code>c(1,2)</code>
+indicates rows and columns. For array, margin gets a vector with
+the dimensions to seriate.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> further arguments (unused).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Seriation methods are available via a registry.
+See <code><a href="seriation_methods.html">list_seriation_methods</a></code> for help.
+</p>
+<p>Many seriation methods (heuristically) optimize (minimize or maximize)
+an objective function.
+The value of the function for a given seriation can be calculated using
+<code><a href="criterion.html">criterion</a></code>. In this manual page we only state the measure
+which is optimized (using <b>bold font</b>).
+A definition of the measures can be found in the
+<code><a href="criterion.html">criterion</a></code> manual page.
+</p>
+<p>Two-way two-mode data has to be provided as a dist object (not as a symmetric
+matrix). Similarities have to be transformed in a suitable way into
+dissimilarities. Currently the following methods are implemented for dist
+(for a more detailed description and an experimental comparison see
+Hahsler (2017)):
+</p>
+
+<dl>
+<dt><code>"ARSA"</code></dt><dd><p>Anti-Robinson seriation by simulated annealing to minimize
+the <b>linear seriation criterion</b> (simulated annealing initialization used in Brusco et al 2008).
+</p>
+<p>Several <code>control</code> parameters are available:
+<code>cool</code> (cooling rate),
+<code>tmin</code> (minimum temperature),
+<code>swap_to_inversion</code> (proportion of swaps to inversions for local neighborhood search),
+<code>try_multiplier</code> (local search tries per temperature; multiplied with the number of objects),
+<code>reps</code> (repeat the algorithm with random initialization),
+<code>verbose</code>. Use <code>verbose = TRUE</code> to see the default values
+for the parameters.
+</p>
+</dd>
+<dt><code>"BBURCG"</code></dt><dd><p>Anti-Robinson seriation by branch-and-bound to minimize
+the <b>unweighted gradient measure</b> (Brusco and Stahl 2005).
+This is only feasible for a
+relatively small number of objects.
+</p>
+</dd>
+<dt><code>"BBWRCG"</code></dt><dd><p>Anti-Robinson seriation by branch-and-bound to minimize
+the <b>weighted gradient measure</b> (Brusco and Stahl 2005). This is only feasible for a
+relatively small number of objects.
+</p>
+</dd>
+<dt><code>"TSP"</code></dt><dd><p>Traveling salesperson problem solver to minimize
+the <b>Hamiltonian path length</b>.
+The solvers in <span class="pkg">TSP</span> are used (see <code>solve_TSP</code>).
+The solver method can be passed on via the
+<code>control</code> argument, e.g. <code>control = list(method = "two_opt")</code>.
+Default is the est of 10 runs of
+arbitrary insertion heuristic with 2-opt improvement.
+</p>
+<p>Since a tour returned by a TSP solver is a connected circle and we are
+looking for a path representing a linear order, we need to find the best
+cutting point.  Climer and Zhang (2006) suggest to add a dummy city with
+equal distance to each other city before generating the tour. The place
+of this dummy city in an optimal tour with minimal length is the best
+cutting point (it lies between the most distant cities).</p>
+</dd>
+<dt><code>"R2E"</code></dt><dd><p>Rank-two ellipse seriation (Chen 2002).
+</p>
+<p>This method starts with generating a sequence of correlation matrices
+<i>R^1, R^2, &hellip;</i>. <i>R^1</i> is the correlation matrix
+of the original distance matrix <i>D</i> (supplied to the function as
+<code>x</code>),
+and
+</p>
+<p style="text-align: center;"><i>R^{n+1} = &phi; R^n,</i></p>
+
+<p>where <i>&phi;</i> calculates the
+correlation matrix.
+</p>
+<p>The rank of the matrix <i>R^n</i> falls with increasing <i>n</i>. The
+first <i>R^n</i> in the sequence which has a rank of 2 is found.
+Projecting all points in this matrix on the first two eigenvectors,
+all points fall on an ellipse. The order of the points on this ellipse
+is the resulting order.
+</p>
+<p>The ellipse can be cut at the two interception points
+(top or bottom) of the vertical axis with the ellipse.
+In this implementation the top most cutting point is used.
+</p>
+</dd>
+<dt><code>"MDS"</code>, <code>"MDS_metric"</code>, <code>"MDS_nonmetric"</code>,
+<code>"MDS_angle"</code></dt><dd><p>Multidimensional scaling (MDS).
+</p>
+<p>Use multidimensional scaling techniques to find an linear order
+by minimizing <b>stress</b>. Note
+MDS algorithms used for a single dimension tend to end up in local optima
+and unidimensional scaling (see Maier and De Leeuw, 2015)
+would be more appropriate.
+However, generally, ordering along the first component of
+MDS provides good results.
+</p>
+<p>By default, metric MDS (<code>cmdscale</code> in <span class="pkg">stats</span>) is used.
+In case of of general dissimilarities, non-metric MDS can be used.
+The choices are <code>isoMDS</code> and <code>sammon</code> from <span class="pkg">MASS</span>.
+The method can be specified as the element <code>method</code>
+(<code>"cmdscale"</code>, <code>"isoMDS"</code> or <code>"sammon"</code>) in <code>control</code>.
+</p>
+<p>For convenience, <code>"MDS_metric"</code> performs <code>cmdscale</code> and
+<code>"MDS_nonmetric"</code> performs <code>isoMDS</code>.
+</p>
+<p><code>"MDS_angle"</code> projects the data on the first two components
+found by MDS and then orders by the angle in this space. The order
+is split by the larges gap between adjacent angles. A similar method was
+used for ordering correlation matrices by Friendly (2002).
+</p>
+</dd>
+<dt><code>"HC"</code>, <code>"HC_single"</code>, <code>"HC_complete"</code>, <code>"HC_average"</code>,<code>"HC_ward"</code></dt><dd><p>Hierarchical clustering.
+</p>
+<p>Using the order of the leaf nodes in a dendrogram obtained by hierarchical
+clustering can be used as a very simple seriation technique.
+This method applies hierarchical clustering (<code>hclust</code>) to <code>x</code>.
+The clustering method can be given using a <code>"method"</code> element in
+the <code>control</code> list. If omitted, the default <code>"average"</code> is
+used.
+</p>
+<p>For convenience the other methods are provided as shortcuts.
+</p>
+</dd>
+<dt><code>"GW"</code>, <code>"OLO"</code></dt><dd><p>Hierarchical
+clustering (by default using average-link)
+with additional leaf-node reordering to minimize
+<b>Hamiltonian path length (restricted)</b>.
+</p>
+<p>A dendrogram (binary tree) has <i>2^{n-1}</i> internal nodes (subtrees) and
+the same number of leaf orderings. That is, at each internal node the left
+and right subtree (or leaves) can be swapped, or, in terms of a dendrogram,
+be flipped.
+</p>
+<p>Method <code>"GW"</code> uses an algorithm developed by Gruvaeus and Wainer
+(1972) and implemented in package <span class="pkg">gclus</span> (Hurley 2004).  The clusters are
+ordered at each level so that the objects at the edge of each cluster are
+adjacent to that object outside the cluster to which it is nearest. The method
+produces an unique order.
+</p>
+<p>Method <code>"OLO"</code> (Optimal leaf ordering, Bar-Joseph et al., 2001)
+produces an optimal leaf ordering with respect to the
+minimizing the sum of the distances along the (Hamiltonian) path connecting the
+leaves in the given order. The time complexity of the algorithm is <i>O(n^3)</i>.
+Note that non-finite distance values are not allowed.
+</p>
+<p>Both methods start with a dendrogram created by <code>hclust</code>. As  the
+<code>"method"</code> element in the <code>control</code> list a clustering method (default
+<code>"average"</code>) can be specified. Alternatively, a <code>hclust</code> object can
+be supplied using an element named <code>"hclust"</code>.
+</p>
+<p>For convenience  <code>"GW_single"</code>, <code>"GW_average"</code>,
+<code>"GW_complete"</code>, <code>"GW_ward"</code> and
+<code>"OLO_single"</code>,    <code>"OLO_average"</code>,
+<code>"OLO_complete"</code>,  <code>"OLO_ward"</code> are provided.
+</p>
+</dd>
+<dt><code>"VAT"</code></dt><dd><p>Visual Assessment of (Clustering) Tendency (Bezdek and Hathaway (2002)).
+</p>
+<p>Creates an order based on Prim's algorithm for finding a minimum spanning
+tree (MST) in a weighted connected graph representing the distance matrix.
+The order is given by the order in which the nodes (objects) are added
+to the MST.
+</p>
+</dd>
+<dt><code>"SA"</code></dt><dd><p> Simulated Annealing for diverse criterion measures.
+</p>
+<p>Implement simulated annealing similar to the ARSA method, however,
+it works for any criterion measure defined in <span class="pkg">seriation</span>.
+By default the algorithm optimizes for raw gradient measure and is warm started with the result of spectral seriation (2-Sum problem)
+since Hahsler (2017) shows that 2-Sum solutions are similar to
+solutions for the gradient measure.
+</p>
+<p>Local neighborhood functions are <code>LS_insert</code>, <code>LS_swap</code>,
+<code>LS_reverse</code>, and <code>LS_mix</code> (1/3 insertion, 1/3 swap and 1/3 reverse).
+Any neighborhood function can be defined. It needs to take as the only argument
+the order (integer vector) and return a random neighbor.
+</p>
+<p>Note that this is an R implementation repeatedly calling criterion, and therefore is relatively slow.
+</p>
+<p>Several <code>control</code> parameters are available:
+<code>criterion</code> (criterion to optimize; default: &quot;Gradient_raw&quot;),
+<code>init</code> (initial order; default: &quot;Spectral&quot;),
+<code>localsearch</code> (neighborhood function; default: LS_insert),
+<code>cool</code> (cooling rate),
+<code>tmin</code> (minimum temperature),
+<code>swap_to_inversion</code> (proportion of swaps to inversions),
+<code>nlocal</code> (number of objects times nlocal is the number of search tries per temperature),
+<code>verbose</code>. Use <code>verbose = TRUE</code> to see the default values
+for the parameters.
+</p>
+</dd>
+<dt><code>"Spectral"</code>, <code>"Spectral_norm"</code></dt><dd><p> Spectral seriation (Ding and He 2004).
+</p>
+<p>Spectral seriation uses a relaxation to
+minimize the <b>2-Sum Problem</b> (Barnard, Pothen, and Simon 1993).
+It uses the order of the Fiedler
+vector of the similarity matrix's (normalized) Laplacian.
+</p>
+<p>Spectral seriation gives a good trade-off between seriation quality, speed and
+scalability (see Hahsler, 2017).
+</p>
+</dd>
+<dt><code>"SPIN_NH"</code>, <code>"SPIN_STS"</code></dt><dd><p> Sorting Points Into Neighborhoods (SPIN) (Tsafrir 2005).
+Given a weight matrix <i>W</i>, the algorithms try to minimize the energy for a permutation (matrix <i>P</i>)
+given by </p>
+<p style="text-align: center;"><i>F(P) = tr(PDP^TW),</i></p>
+<p> where <i>tr</i> denotes the matrix
+trace.
+</p>
+<p><code>"SPIN_STS"</code> implements the Side-to-Side algorithm which tries
+to push out large distance values. The default weight matrix
+suggested in the paper with <i>W=XX^T</i> and <i>X_i=i-(n+1)/2</i> is used.
+We run the algorithm from <code>step</code> (25) iteration and restart the
+algorithm <code>nstart</code> (10) with random initial permutations (default values in parentheses). Via <code>control</code> the parameters <code>step</code>, <code>nstart</code>,
+<code>X</code> and <code>verbose</code>.
+</p>
+<p><code>"SPIN_NH"</code> implements the neighborhood algorithm (concentrate
+low distance values around the diagonal) with a
+Gaussian weight matrix
+<i>W_{ij} = exp(-(i-j)^2/n&sigma;)</i>, where <i>n</i> is the size of the
+dissimilarity matrix and <i>&sigma;</i> is the variance around the diagonal
+that control the influence
+of global (large <i>&sigma;</i>) or local (small <i>&sigma;</i>) structure.
+</p>
+<p>We use the heuristic suggested in the paper for the linear assignment problem.
+We do not terminate as indicated in the algorithm, but run all the iterations since the heuristic does not guarantee that the energy is strictly decreasing.
+We also implement the heuristic &quot;annealing&quot; scheme where <i>&sigma;</i> is
+successively reduced. The parameters in <code>control</code>
+are <code>sigma</code> which can be a single value or a decreasing sequence
+(default: 20 to 1 in 10 steps) and <code>step</code> which defines how many update
+steps are performed before for each value of <code>alpha</code>.
+Via <code>W_function</code> a custom function to create <i>W</i> with the function
+signature <code>function(n, sigma, verbose)</code> can be specified.
+The parameter <code>verbose</code> can be used to display progress information.
+</p>
+</dd>
+<dt><code>"QAP_LS"</code>, <code>"QAP_2SUM"</code>, <code>"QAP_BAR"</code>, <code>"QAP_Inertia"</code> </dt><dd><p> Quadratic assignment problem
+formulations for seriation using a simulated annealing solver.
+These methods minimize the <b>Linear Seriation Problem</b> (LS)
+formulation (Hubert and Schultz 1976),
+the <b>2-Sum Problem</b> formulation
+(Barnard, Pothen, and Simon 1993),
+the <b>banded anti-Robinson form</b> (BAR) or
+the <b>inertia criterion.</b>
+</p>
+<p>The parameters in <code>control</code> are passed on to <code>qap</code> in <span class="pkg">qap</span>.
+An important parameter is <code>rep</code> to return the best result out of
+the given number of repetitions with random restarts. Default is 1, but bigger numbers result in better and more stable results.
+</p>
+</dd>
+<dt><code>"GA"</code></dt><dd><p> Use a genetic algorithm to optimize for various criteria.
+The GA code has to be first registered. A detailed description can be found in the manual page for <code><a href="register_GA.html">register_GA</a></code>.</p>
+</dd>
+<dt><code>"DendSer"</code></dt><dd><p> Use heuristic dendrogram seriation to optimize for various criteria.
+The DendSer code has to be first registered. A detailed description can be found in the manual page for <code><a href="register_DendSer.html">register_DendSer</a></code>.</p>
+</dd>
+<dt><code>"Identity"</code></dt><dd><p> Produces an identity permutation. </p>
+</dd>
+<dt><code>"Random"</code></dt><dd><p> Produces a random permutation. </p>
+</dd>
+</dl>
+
+<p>Two-way two mode data are general positive matrices.
+Currently the following methods are implemented for matrix:
+</p>
+
+<dl>
+<dt><code>"BEA"</code></dt><dd><p>Bond Energy Algorithm (BEA; McCormick 1972).
+The algorithm tries to maximize the <b>Measure of Effectiveness.</b>
+of a non-negative matrix. Due to the definition
+of this measure, the tasks of ordering rows and columns is separable
+and can  be solved independently.
+</p>
+<p>A row is arbitrarily placed; then rows are positioned one by one. When
+this is completed, the columns are treated similarly. The overall
+procedure amounts to two approximate traveling salesperson problems (TSP),
+one on the rows and one on the columns. The so-called 'best insertion
+strategy' is used: rows (or columns) are inserted into the current
+permuted list of rows (or columns). Several consecutive runs of the
+algorithm might improve the energy.
+</p>
+<p>Note that Arabie and Hubert (1990) question its use with non-binary data
+if the objective is to find a seriation or one-dimensional orderings of
+rows and columns.
+</p>
+<p>The BEA code used in this package was implemented by Fionn Murtagh.
+</p>
+<p>In <code>control</code> as element <code>"rep"</code> the number of runs can be
+specified. The results of the best run will be returned.
+</p>
+</dd>
+<dt><code>"BEA_TSP"</code></dt><dd><p>Use a TSP to optimize the <b>Measure of Effectiveness</b>
+(Lenstra 1974).
+</p>
+<p>In <code>control</code> as element <code>"method"</code> a TSP solver method can be
+specified (see package <span class="pkg">TSP</span>).
+</p>
+</dd>
+<dt><code>"PCA"</code>, <code>"PCA_angle"</code></dt><dd><p> Principal component analysis.
+</p>
+<p>Uses the projection of the data on its first principal component to
+determine the order.
+</p>
+<p>Note that for a distance matrix calculated from <code>x</code> with Euclidean
+distance, this methods minimizes the least square criterion.
+</p>
+<p><code>"PCA_angle"</code> projects the data on the first two principal components
+and then orders by the angle in this space. The order
+is split by the larges gap between adjacent angles. A similar method was
+used for ordering correlation matrices by Friendly (2002).
+</p>
+</dd>
+<dt><code>"Identity"</code></dt><dd><p> Produces an identity permutation. </p>
+</dd>
+<dt><code>"Random"</code></dt><dd><p> Produces a random permutation. </p>
+</dd>
+</dl>
+
+<p>For array no built-in methods are currently available.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns an object of class <code>ser_permutation</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Arabie, P. and L.J. Hubert (1990): The bond energy algorithm revisited,
+<em>IEEE Transactions on Systems, Man, and Cybernetics,</em>
+<b>20</b>(1), 268&ndash;274.
+</p>
+<p>Bar-Joseph, Z., E. D. Demaine, D. K. Gifford, and T. Jaakkola. (2001): Fast
+Optimal Leaf Ordering for Hierarchical Clustering.
+<em>Bioinformatics,</em> <b>17</b>(1), 22&ndash;29.
+</p>
+<p>Barnard, S. T., A. Pothen, and H. D. Simon (1993): A Spectral Algorithm for Envelope Reduction of Sparse Matrices. <em>In Proceedings of the 1993
+ACM/IEEE Conference on Supercomputing,</em> 493&ndash;502. Supercomputing '93.
+New York, NY, USA: ACM.
+</p>
+<p>Bezdek, J.C. and Hathaway, R.J. (2002): VAT: a tool for visual assessment of (cluster) tendency. <em>Proceedings of the 2002 International Joint
+Conference on Neural Networks (IJCNN '02)</em>, Volume: 3, 2225&ndash;2230.
+</p>
+<p>Brusco, M., Koehn, H.F., and Stahl, S. (2008): Heuristic Implementation of
+Dynamic Programming for Matrix Permutation Problems in Combinatorial
+Data Analysis. <em>Psychometrika,</em> <b>73</b>(3), 503&ndash;522.
+</p>
+<p>Brusco, M., and Stahl, S. (2005):
+<em>Branch-and-Bound Applications in Combinatorial Data Analysis.</em>
+New York: Springer.
+</p>
+<p>Chen, C. H. (2002):  Generalized Association Plots: Information
+Visualization via Iteratively Generated Correlation Matrices.
+<em>Statistica Sinica,</em> <b>12</b>(1), 7&ndash;29.
+</p>
+<p>Ding, C. and Xiaofeng He (2004): Linearized cluster assignment via spectral ordering. <em>Proceedings of the Twenty-first International Conference on Machine learning (ICML '04)</em>.
+</p>
+<p>Climer, S. and Xiongnu Zhang (2006): Rearrangement Clustering: Pitfalls,
+Remedies, and Applications,
+<em>Journal of Machine Learning Research,</em> <b>7</b>(Jun),
+919&ndash;943.
+</p>
+<p>Friendly, M. (2002):
+Corrgrams: Exploratory Displays for Correlation Matrices.
+<em>The American Statistician</em>, <b>56</b>(4), 316&ndash;324.
+</p>
+<p>Gruvaeus, G. and Wainer, H. (1972): Two Additions to Hierarchical Cluster
+Analysis,
+<em>British Journal of Mathematical and Statistical Psychology,</em>
+<b>25</b>, 200&ndash;206.
+</p>
+<p>Hahsler, M. (2017): An experimental comparison of seriation methods for one-mode two-way data. <em>European Journal of Operational Research,</em> <b>257</b>,
+133&ndash;143.
+</p>
+<p>Hubert, Lawrence, and James Schultz (1976): Quadratic Assignment as a General Data Analysis Strategy. <em>British Journal of Mathematical and Statistical
+Psychology</em> <b>29</b>(2). Blackwell Publishing Ltd. 190&ndash;241.
+</p>
+<p>Hurley, Catherine B. (2004): Clustering Visualizations of Multidimensional
+Data.
+<em>Journal of Computational and Graphical Statistics,</em>
+<b>13</b>(4), 788&ndash;806.
+</p>
+<p>Lenstra, J.K (1974): Clustering a Data Array and the Traveling-Salesman
+Problem, <em>Operations Research,</em> <b>22</b>(2) 413&ndash;414.
+</p>
+<p>Mair P., De Leeuw J. (2015). Unidimensional scaling. In <em>Wiley StatsRef: Statistics Reference Online,</em> Wiley, New York.
+</p>
+<p>McCormick, W.T., P.J. Schweitzer and T.W. White (1972): Problem decomposition
+and data reorganization by a clustering technique,
+<em>Operations Research,</em>
+<b>20</b>(5), 993&ndash;1009.
+</p>
+<p>Tsafrir, D., Tsafrir, I., Ein-Dor, L., Zuk, O., Notterman, D.A. and Domany, E.
+(2005): Sorting points into neighborhoods (SPIN): data analysis and visualization by ordering distance matrices, <em>Bioinformatics,</em> <b>21</b>(10) 2301&ndash;8.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="seriation_methods.html">list_seriation_methods</a></code>,
+<code><a href="criterion.html">criterion</a></code>,
+<code><a href="register_GA.html">register_GA</a></code>,
+<code><a href="register_DendSer.html">register_DendSer</a></code>,
+<code><a href="../../TSP/html/solve_TSP.html">solve_TSP</a></code> in <span class="pkg">TSP</span>,
+<code><a href="../../stats/html/hclust.html">hclust</a></code> in <span class="pkg">stats</span>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## show available seriation methods (for dist and matrix)
+show_seriation_methods("dist")
+show_seriation_methods("matrix")
+
+##seriate dist
+data("iris")
+x &lt;- as.matrix(iris[-5])
+x &lt;- x[sample(1:nrow(x)),]
+d &lt;- dist(x)
+
+## default seriation
+order &lt;- seriate(d)
+order
+
+## plot
+pimage(d, main = "Random")
+pimage(d, order, main = "Reordered")
+
+## compare quality
+rbind(
+        random = criterion(d),
+        reordered = criterion(d, order)
+     )
+
+## seriate matrix
+data("iris")
+x &lt;- as.matrix(iris[-5])
+
+## to make the variables comparable, we scale the data
+x &lt;- scale(x, center = FALSE)
+
+## try some methods
+pimage(x, main = "original data")
+criterion(x)
+
+order &lt;- seriate(x, method = "BEA_TSP")
+pimage(x, order, main = "TSP to optimize ME")
+criterion(x, order)
+
+order &lt;- seriate(x, method = "PCA")
+pimage(x, order, main = "First principal component")
+criterion(x, order)
+
+## 2 TSPs
+order &lt;- c(
+    seriate(dist(x), method = "TSP"),
+    seriate(dist(t(x)), method = "TSP")
+)
+pimage(x, order, main = "2 TSPs")
+criterion(x, order)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Compilation flags for RcppParallel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for RcppParallelFlags {RcppParallel}"><tr><td>RcppParallelFlags {RcppParallel}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Compilation flags for RcppParallel
+</h2>
+
+<h3>Description</h3>
+
+<p>Output the compiler or linker flags required to build against RcppParallel.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+CxxFlags()
+LdFlags()
+RcppParallelLibs()
+</pre>
+
+
+<h3>Details</h3>
+
+<p>These functions are typically called from <code>Makevars</code> as follows:
+</p>
+<p><code>PKG_LIBS += $(shell "${R_HOME}/bin/Rscript" -e "RcppParallel::LdFlags()")</code>
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns <code>NULL</code> invisibly. The function is not called for it's
+return value rather for the side effect of outputting the flags.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>RcppParallel</em> version 4.4.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

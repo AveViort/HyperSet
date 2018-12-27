@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate a sequence over the range of a vector</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for seq_range {modelr}"><tr><td>seq_range {modelr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate a sequence over the range of a vector</h2>
+
+<h3>Description</h3>
+
+<p>Generate a sequence over the range of a vector
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+seq_range(x, n, by, trim = NULL, expand = NULL, pretty = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A numeric vector</p>
+</td></tr>
+<tr valign="top"><td><code>n, by</code></td>
+<td>
+<p>Specify the output sequence either by supplying the
+length of the sequence with <code>n</code>, or the spacing between value
+with <code>by</code>. Specifying both is an error.
+</p>
+<p>I recommend that you name these arguments in order to make it clear to
+the reader.</p>
+</td></tr>
+<tr valign="top"><td><code>trim</code></td>
+<td>
+<p>Optionally, trim values off the tails.
+<code>trim / 2 * length(x)</code> values are removed from each tail.</p>
+</td></tr>
+<tr valign="top"><td><code>expand</code></td>
+<td>
+<p>Optionally, expand the range by <code>expand * (1 + range(x)</code>
+(computed after trimming).</p>
+</td></tr>
+<tr valign="top"><td><code>pretty</code></td>
+<td>
+<p>If <code>TRUE</code>, will generate a pretty sequence. If <code>n</code>
+is supplied, this will use <code><a href="../../base/html/pretty.html">pretty()</a></code> instead of
+<code><a href="../../base/html/seq.html">seq()</a></code>. If <code>by</code> is supplied, it will round the first
+value to a multiple of <code>by</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- rcauchy(100)
+seq_range(x, n = 10)
+seq_range(x, n = 10, trim = 0.1)
+seq_range(x, by = 1, trim = 0.1)
+
+# Make pretty sequences
+y &lt;- runif(100)
+seq_range(y, n = 10)
+seq_range(y, n = 10, pretty = TRUE)
+seq_range(y, n = 10, expand = 0.5, pretty = TRUE)
+
+seq_range(y, by = 0.1)
+seq_range(y, by = 0.1, pretty = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>modelr</em> version 0.1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

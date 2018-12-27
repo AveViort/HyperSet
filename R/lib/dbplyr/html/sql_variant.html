@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create an sql translator</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sql_variant {dbplyr}"><tr><td>sql_variant {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create an sql translator</h2>
+
+<h3>Description</h3>
+
+<p>When creating a package that maps to a new SQL based src, you'll often
+want to provide some additional mappings from common R commands to the
+commands that your tbl provides. These three functions make that
+easy.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sql_variant(scalar = sql_translator(), aggregate = sql_translator(),
+  window = sql_translator())
+
+sql_translator(..., .funs = list(), .parent = new.env(parent = emptyenv()))
+
+sql_infix(f)
+
+sql_prefix(f, n = NULL)
+
+sql_aggregate(f)
+
+sql_aggregate_2(f)
+
+sql_not_supported(f)
+
+sql_cast(type)
+
+sql_log()
+
+sql_cot()
+
+base_scalar
+
+base_agg
+
+base_win
+
+base_no_win
+
+base_odbc_scalar
+
+base_odbc_agg
+
+base_odbc_win
+
+sql_paste(default_sep, f = "CONCAT_WS")
+
+sql_paste_infix(default_sep, op, cast)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>scalar, aggregate, window</code></td>
+<td>
+<p>The three families of functions than an
+SQL variant can supply.</p>
+</td></tr>
+<tr valign="top"><td><code>..., .funs</code></td>
+<td>
+<p>named functions, used to add custom converters from standard
+R functions to sql functions. Specify individually in <code>...</code>, or
+provide a list of <code>.funs</code></p>
+</td></tr>
+<tr valign="top"><td><code>.parent</code></td>
+<td>
+<p>the sql variant that this variant should inherit from.
+Defaults to <code>base_agg</code> which provides a standard set of
+mappings for the most common operators and functions.</p>
+</td></tr>
+<tr valign="top"><td><code>f</code></td>
+<td>
+<p>the name of the sql function as a string</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>for <code>sql_infix()</code>, an optional number of arguments to expect.
+Will signal error if not correct.</p>
+</td></tr>
+</table>
+
+
+<h3>Helper functions</h3>
+
+<p><code>sql_infix()</code> and <code>sql_prefix()</code> create default SQL infix and prefix
+functions given the name of the SQL function. They don't perform any input
+checking, but do correctly escape their input, and are useful for
+quickly providing default wrappers for a new SQL variant.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="win_over.html">win_over()</a></code> for helper functions for window functions.
+</p>
+<p><code><a href="sql.html">sql()</a></code> for an example of a more customised sql
+conversion function.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# An example of adding some mappings for the statistical functions that
+# postgresql provides: http://bit.ly/K5EdTn
+
+postgres_agg &lt;- sql_translator(.parent = base_agg,
+  cor = sql_aggregate_2("corr"),
+  cov = sql_aggregate_2("covar_samp"),
+  sd =  sql_aggregate("stddev_samp"),
+  var = sql_aggregate("var_samp")
+)
+postgres_var &lt;- sql_variant(
+  base_scalar,
+  postgres_agg,
+  base_no_win
+)
+
+# Next we have to simulate a connection that uses this variant
+con &lt;- structure(
+  list(),
+  class = c("TestCon", "DBITestConnection", "DBIConnection")
+)
+sql_translate_env.TestCon &lt;- function(x) postgres_var
+
+translate_sql(cor(x, y), con = con, window = FALSE)
+translate_sql(sd(income / years), con = con, window = FALSE)
+
+# Any functions not explicitly listed in the converter will be translated
+# to sql as is, so you don't need to convert all functions.
+translate_sql(regr_intercept(y, x), con = con)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

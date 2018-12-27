@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Balance of a Dichotomous Phylogenetic Tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for balance {ape}"><tr><td>balance {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Balance of a Dichotomous Phylogenetic Tree</h2>
+
+<h3>Description</h3>
+
+<p>This function computes the balance of a phylogenetic tree, that is for
+each node of the tree the numbers of descendants (i.e. tips) on each
+of its daughter-branch. The tree must be fully dichotomous.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+balance(phy)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a numeric matrix with two columns and one row for each node of the
+tree. The columns give the numbers of descendants on each
+daughter-branches (the order of both columns being arbitrary). If the
+phylogeny <code>phy</code> has an element <code>node.label</code>, this is used as
+rownames for the returned matrix; otherwise the numbers (of mode
+character) of the matrix <code>edge</code> of <code>phy</code> are used as rownames.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Aldous, D. J. (2001) Stochastic models and descriptive statistics for
+phylogenetic trees, from Yule to today. <em>Statistical Science</em>,
+<b>16</b>, 23&ndash;34.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

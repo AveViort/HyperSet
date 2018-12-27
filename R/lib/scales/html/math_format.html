@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add arbitrary expression to a label. The symbol that will be...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for math_format {scales}"><tr><td>math_format {scales}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add arbitrary expression to a label.
+The symbol that will be replace by the label value is <code>.x</code>.</h2>
+
+<h3>Description</h3>
+
+<p>Add arbitrary expression to a label.
+The symbol that will be replace by the label value is <code>.x</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+math_format(expr = 10^.x, format = force)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>expression to use</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>another format function to apply prior to mathematical
+transformation - this makes it easier to use floating point numbers in
+mathematical expressions.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a function with single parameter x, a numeric vector, that
+returns a list of expressions
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../grDevices/html/plotmath.html">plotmath()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+math_format()(1:10)
+math_format(alpha + frac(1, .x))(1:10)
+math_format()(runif(10))
+math_format(format = percent)(runif(10))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>scales</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

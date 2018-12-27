@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Ladderize a Tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ladderize {dendextend}"><tr><td>ladderize {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Ladderize a Tree</h2>
+
+<h3>Description</h3>
+
+<p>This function reorganizes the internal structure of the tree to get the ladderized effect when plotted.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ladderize(x, right = TRUE, ...)
+
+## S3 method for class 'dendrogram'
+ladderize(x, right = TRUE, ...)
+
+## S3 method for class 'phylo'
+ladderize(x, right = TRUE, phy, ...)
+
+## S3 method for class 'dendlist'
+ladderize(x, right = TRUE, which, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a tree object (either a <a href="../../stats/html/dendrogram.html">dendrogram</a>, <a href="dendlist.html">dendlist</a>, or <a href="../../ape/html/phylo.html">phylo</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>right</code></td>
+<td>
+<p>a logical (TRUE) specifying whether the smallest clade is on the right-hand side (when the tree is plotted upwards), or the opposite (if FALSE).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Currently ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>a placeholder in case the user uses &quot;phy =&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>an integer (can have any number of elements).
+It indicates the elements in the <a href="dendlist.html">dendlist</a> to ladderize.
+If missing, it will ladderize all the dendrograms in the dendlist.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A rotated tree object
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../ape/html/ladderize.html">ladderize</a></code>,
+<code><a href="../../stats/html/dendrogram.html">rev.dendrogram</a></code>, <code><a href="rotate.html">rotate</a></code> (dendextend), <code><a href="../../ape/html/rotate.html">rotate</a></code> (ape)
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+dend &lt;- USArrests[1:8,] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram %&gt;% 
+   set("labels_colors") %&gt;% set("branches_k_color", k = 5)
+set.seed(123)
+dend &lt;- shuffle(dend)
+
+par(mfrow = c(1,3))
+dend %&gt;% plot(main = "Original")
+dend %&gt;% ladderize(TRUE) %&gt;% plot(main = "Right (default)")
+dend %&gt;% ladderize(FALSE) %&gt;% plot(main = "Left (rev of right)")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a download button or link</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for downloadButton {shiny}"><tr><td>downloadButton {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a download button or link</h2>
+
+<h3>Description</h3>
+
+<p>Use these functions to create a download button or link; when clicked, it
+will initiate a browser download. The filename and contents are specified by
+the corresponding <code><a href="downloadHandler.html">downloadHandler</a></code> defined in the server
+function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+downloadButton(outputId, label = "Download", class = NULL, ...)
+
+downloadLink(outputId, label = "Download", class = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>outputId</code></td>
+<td>
+<p>The name of the output slot that the <code>downloadHandler</code>
+is assigned to.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>The label that should appear on the button.</p>
+</td></tr>
+<tr valign="top"><td><code>class</code></td>
+<td>
+<p>Additional CSS classes to apply to the tag, if any.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Other arguments to pass to the container tag function.</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="downloadHandler.html">downloadHandler</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# In server.R:
+output$downloadData &lt;- downloadHandler(
+  filename = function() {
+    paste('data-', Sys.Date(), '.csv', sep='')
+  },
+  content = function(con) {
+    write.csv(data, con)
+  }
+)
+
+# In ui.R:
+downloadLink('downloadData', 'Download')
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

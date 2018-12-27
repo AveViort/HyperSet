@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Concensus Trees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for consensus {ape}"><tr><td>consensus {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Concensus Trees</h2>
+
+<h3>Description</h3>
+
+<p>Given a series of trees, this function returns the consensus tree. By
+default, the strict-consensus tree is computed. To get the
+majority-rule consensus tree, use <code>p = 0.5</code>. Any value between
+0.5 and 1 can be used.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+consensus(..., p = 1, check.labels = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>either (i) a single object of class <code>"phylo"</code>, (ii) a
+series of such objects separated by commas, or (iii) a list
+containing such objects.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>a numeric value between 0.5 and 1 giving the proportion for a
+clade to be represented in the consensus tree.</p>
+</td></tr>
+<tr valign="top"><td><code>check.labels</code></td>
+<td>
+<p>a logical specifying whether to check the labels
+of each tree. If <code>FALSE</code> (the default), it is assumed that all
+trees have the same tip labels, and that they are in the same order
+(see details).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Using <code>check.labels = FALSE</code> results in
+considerable decrease in computing times. This requires that all
+trees have the same tip labels, <em>and</em> these labels are
+ordered similarly in all trees (in other words, the element
+<code>tip.label</code> are identical in all trees).
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Felsenstein, J. (2004) <em>Inferring Phylogenies</em>. Sunderland:
+Sinauer Associates.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="boot.phylo.html">prop.part</a></code>, <code><a href="dist.topo.html">dist.topo</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

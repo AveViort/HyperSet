@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: FlexMix Poisson Clustering Driver</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for FLXMCmvpois {flexmix}"><tr><td>FLXMCmvpois {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>FlexMix Poisson Clustering Driver</h2>
+
+<h3>Description</h3>
+
+<p>This is a model driver for <code><a href="flexmix.html">flexmix</a></code> implementing
+model-based clustering of Poisson distributed data. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+FLXMCmvpois(formula = . ~ .)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+<p>A formula which is interpreted relative to the formula
+specified in the call to <code><a href="flexmix.html">flexmix</a></code> using
+<code><a href="../../stats/html/update.formula.html">update.formula</a></code>. Only the left-hand side (response) of
+the formula is used. Default is to use the original
+<code><a href="flexmix.html">flexmix</a></code> model
+formula.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This can be used to cluster Poisson distributed data where given the
+component membership the variables are mutually independent.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>FLXMCmvpois</code> returns an object of class <code>FLXMC</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Friedrich Leisch and Bettina Gruen</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="flexmix.html">flexmix</a></code></p>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

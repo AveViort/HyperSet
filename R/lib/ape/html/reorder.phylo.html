@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Internal Reordering of Trees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reorder.phylo {ape}"><tr><td>reorder.phylo {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Internal Reordering of Trees</h2>
+
+<h3>Description</h3>
+
+<p><code>reorder</code> changes the internal structure of a phylogeny stored as
+an object of class <code>"phylo"</code>. The tree returned is the same than
+the one input, but the ordering of the edges could be different.
+</p>
+<p><code>cladewise</code> and <code>postorder</code> are convenience functions to
+return only the indices of the reordered edge matrices (see examples).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'phylo'
+reorder(x, order = "cladewise", index.only = FALSE, ...)
+## S3 method for class 'multiPhylo'
+reorder(x, order = "cladewise", ...)
+cladewise(x)
+postorder(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>"phylo"</code> or <code>"multiPhylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>a character string: either <code>"cladewise"</code> (the
+default), <code>"postorder"</code>, <code>"pruningwise"</code>, or any
+unambiguous abbreviation of these.</p>
+</td></tr>
+<tr valign="top"><td><code>index.only</code></td>
+<td>
+<p>should the function return only the ordered indices
+of the rows of the edge matrix?</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Because in a tree coded as an object of class <code>"phylo"</code> each
+branch is represented by a row in the element &lsquo;edge&rsquo;, there is an
+arbitrary choice for the ordering of these rows. <code>reorder</code> allows
+to reorder these rows according to three rules: in the
+<code>"cladewise"</code> order each clade is formed by a series of
+contiguous rows. In the <code>"postorder"</code> order, the rows are
+arranged so that computations following pruning-like algorithm the
+tree (or postorder tree traversal) can be done by descending along
+these rows (conversely, a preorder tree traversal can be performed by
+moving from the last to the first row). The <code>"pruningwise"</code> order
+is an alternative &ldquo;pruning&rdquo; order which is actually a bottom-up
+traversal order (Valiente 2002). (This third choice might be removed
+in the future as it merely duplicates the second one which is more
+efficient.) The possible multichotomies and branch lengths are preserved.
+</p>
+<p>Note that for a given order, there are several possible orderings of
+the rows of &lsquo;edge&rsquo;.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code> (with the attribute <code>"order"</code>
+set accordingly), or a numeric vector if <code>index.only = TRUE</code>; if
+<code>x</code> is of class <code>"multiPhylo"</code>, then an object of the same
+class.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Valiente, G. (2002) <em>Algorithms on Trees and Graphs.</em> New York:
+Springer.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.tree.html">read.tree</a></code> to read tree files in Newick format,
+<code><a href="../../stats/html/reorder.html">reorder</a></code> for the generic function
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(bird.families)
+tr &lt;- reorder(bird.families, "postorder")
+all.equal(bird.families, tr) # uses all.equal.phylo actually
+all.equal.list(bird.families, tr) # bypasses the generic
+
+## get the number of descendants for each tip or node:
+nr_desc &lt;-  function(x) {
+    res &lt;- numeric(max(x$edge))
+    res[1:Ntip(x)] &lt;- 1L
+    for (i in postorder(x)) {
+       tmp &lt;- x$edge[i,1]
+       res[tmp] &lt;- res[tmp] + res[x$edge[i, 2]]
+   }
+   res
+}
+## apply it to a random tree:
+tree &lt;- rtree(10)
+plot(tree, show.tip.label = FALSE)
+tiplabels()
+nodelabels()
+nr_desc(tree)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

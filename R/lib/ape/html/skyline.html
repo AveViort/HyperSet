@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Skyline Plot Estimate of Effective Population Size</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for skyline {ape}"><tr><td>skyline {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Skyline Plot Estimate of Effective Population Size</h2>
+
+<h3>Description</h3>
+
+<p><code>skyline</code> computes the <em>generalized skyline plot</em> estimate of effective population size
+from an estimated phylogeny.  The demographic history is approximated by
+a step-function.  The number of parameters of the skyline plot (i.e. its smoothness)
+is controlled by a parameter <code>epsilon</code>.
+</p>
+<p><code>find.skyline.epsilon</code> searches for an optimal value of the <code>epsilon</code> parameter,
+i.e. the value that maximizes the AICc-corrected log-likelihood (<code>logL.AICc</code>).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+skyline(x, ...)
+## S3 method for class 'phylo'
+skyline(x, ...)
+## S3 method for class 'coalescentIntervals'
+skyline(x, epsilon=0, ...)
+## S3 method for class 'collapsedIntervals'
+skyline(x, old.style=FALSE, ...)
+find.skyline.epsilon(ci, GRID=1000, MINEPS=1e-6, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Either an ultrametric tree (i.e. an object of class
+<code>"phylo"</code>), or coalescent intervals (i.e. an object of class
+<code>"coalescentIntervals"</code>), or collapsed coalescent intervals
+(i.e. an object of class <code>"collapsedIntervals"</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>epsilon</code></td>
+<td>
+<p>collapsing parameter that controls the amount of smoothing
+(allowed range: from <code>0</code> to <code>ci$total.depth</code>, default value: 0). This is the same parameter as in
+<a href="collapsed.intervals.html">collapsed.intervals</a>.</p>
+</td></tr>
+<tr valign="top"><td><code>old.style</code></td>
+<td>
+<p>Parameter to choose between two slightly different variants of the
+generalized skyline plot (Strimmer and Pybus, pers. comm.). The default value <code>FALSE</code> is
+recommended.</p>
+</td></tr>
+<tr valign="top"><td><code>ci</code></td>
+<td>
+<p>coalescent intervals (i.e. an object of class <code>"coalescentIntervals"</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>GRID</code></td>
+<td>
+<p>Parameter for the grid search for <code>epsilon</code> in <code>find.skyline.epsilon</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>MINEPS</code></td>
+<td>
+<p>Parameter for the grid search for <code>epsilon</code> in <code>find.skyline.epsilon</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Any of the above parameters.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>skyline</code> implements the <em>generalized skyline plot</em>  introduced in
+Strimmer and Pybus (2001).  For <code>epsilon = 0</code> the
+generalized skyline plot degenerates to the
+<em>classic skyline plot</em> described in
+Pybus et al. (2000).  The latter is in turn directly related to lineage-through-time plots
+(Nee et al., 1995).
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>skyline</code> returns an object of class <code>"skyline"</code> with the following entries:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>time</code></td>
+<td>
+<p> A vector with the time at the end of each coalescent
+interval (i.e. the accumulated interval lengths from the beginning of the first interval
+to the end of an interval)</p>
+</td></tr>
+<tr valign="top"><td><code>interval.length</code></td>
+<td>
+<p> A vector with the length of each interval.</p>
+</td></tr>
+<tr valign="top"><td><code>population.size</code></td>
+<td>
+<p>A vector with the effective population size of each interval.</p>
+</td></tr>
+<tr valign="top"><td><code>parameter.count</code></td>
+<td>
+<p> Number of free parameters in the skyline plot.</p>
+</td></tr>
+<tr valign="top"><td><code>epsilon</code></td>
+<td>
+<p>The value of the underlying smoothing parameter.</p>
+</td></tr>
+<tr valign="top"><td><code>logL</code></td>
+<td>
+<p>Log-likelihood of skyline plot (see Strimmer and Pybus, 2001).</p>
+</td></tr>
+<tr valign="top"><td><code>logL.AICc</code></td>
+<td>
+<p>AICc corrected log-likelihood (see Strimmer and Pybus, 2001).</p>
+</td></tr>
+</table>
+<p><code>find.skyline.epsilon</code> returns the value of the <code>epsilon</code> parameter
+that maximizes <code>logL.AICc</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Korbinian Strimmer</p>
+
+
+<h3>References</h3>
+
+<p>Strimmer, K. and Pybus, O. G. (2001) Exploring the demographic history
+of DNA sequences using the generalized skyline plot. <em>Molecular
+Biology and Evolution</em>, <b>18</b>, 2298&ndash;2305.
+</p>
+<p>Pybus, O. G, Rambaut, A. and Harvey, P. H. (2000) An integrated
+framework for the inference of viral population history from
+reconstructed genealogies. <em>Genetics</em>, <b>155</b>, 1429&ndash;1437.
+</p>
+<p>Nee, S., Holmes, E. C., Rambaut, A. and Harvey, P. H. (1995) Inferring
+population history from molecular phylogenies. <em>Philosophical
+Transactions of the Royal Society of London. Series B. Biological
+Sciences</em>, <b>349</b>, 25&ndash;31.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="coalescent.intervals.html">coalescent.intervals</a></code>, <code><a href="collapsed.intervals.html">collapsed.intervals</a></code>,
+<code><a href="skylineplot.html">skylineplot</a></code>, <code><a href="ltt.plot.html">ltt.plot</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# get tree
+data("hivtree.newick") # example tree in NH format
+tree.hiv &lt;- read.tree(text = hivtree.newick) # load tree
+
+# corresponding coalescent intervals
+ci &lt;- coalescent.intervals(tree.hiv) # from tree
+
+# collapsed intervals
+cl1 &lt;- collapsed.intervals(ci,0)
+cl2 &lt;- collapsed.intervals(ci,0.0119)
+
+#### classic skyline plot ####
+sk1 &lt;- skyline(cl1)        # from collapsed intervals 
+sk1 &lt;- skyline(ci)         # from coalescent intervals
+sk1 &lt;- skyline(tree.hiv)   # from tree
+sk1
+
+plot(skyline(tree.hiv))
+skylineplot(tree.hiv) # shortcut
+
+plot(sk1, show.years=TRUE, subst.rate=0.0023, present.year = 1997)
+
+#### generalized skyline plot ####
+
+sk2 &lt;- skyline(cl2)              # from collapsed intervals
+sk2 &lt;- skyline(ci, 0.0119)       # from coalescent intervals
+sk2 &lt;- skyline(tree.hiv, 0.0119) # from tree
+sk2
+
+plot(sk2)
+
+# classic and generalized skyline plot together in one plot
+plot(sk1, show.years=TRUE, subst.rate=0.0023, present.year = 1997, col=c(grey(.8),1))
+lines(sk2,  show.years=TRUE, subst.rate=0.0023, present.year = 1997)
+legend(.15,500, c("classic", "generalized"), col=c(grey(.8),1),lty=1)
+
+
+# find optimal epsilon parameter using AICc criterion
+find.skyline.epsilon(ci)
+
+sk3 &lt;- skyline(ci, -1) # negative epsilon also triggers estimation of epsilon
+sk3$epsilon
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

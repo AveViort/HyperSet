@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Evinet Help</title>
+<LINK href="help.css" type="text/css" rel="stylesheet">
+<LINK href="https://www.evinet.org/js/jquery-ui-themes-1.11.2/themes/redmond/jquery-ui-1.11.icon-font.min.css" type="text/css" rel="stylesheet">
+
+</head>
+<body>
+<p class="headr1">Setting up the first analysis</p>
+This page introduces you to the various tabs in Evinet and let you get familiar with various tabs and its functionalities available inside EviNet. 
+<ol>
+<li><a href="#projectid" class="clickable">Begin with the project ID and species selection</a></li>
+<li><a href="#ags" class="clickable">Altered Gene sets</a>
+	<ul>
+       <li><a href="#pasteids" class="clickable">Paste gene symbols</li>
+	<li><a href="#upload_ags" class="clickable">Upload a file</li></ul>
+</li>
+<li><a href="#networks" class="clickable">Selecting Network</a></li>
+<li><a href="#fgs" class="clickable">Selecting Functional genesets</a></li>
+<li><a href="#check" class="clickable">Check and Submit</a></li>
+<li><a href="#demos" class="clickable">Interactive Demos</a></li>
+<li><a href="#archive" class="clickable">Project Archive</a></li>
+
+</ol>
+<hr>
+<span id="projectid" class="headr2">Begin with the project ID and species selection</span>
+<br></br>
+ALWAYS start from setting your project ID and the organism. Otherwise your analysis might use irrelevant data. 
+Project names should be unique and should not contain any <span class="hlight">special characters (!@#$%^&*'"()[]/\|{}_) or empty spaces</span>. A project name cannot start with a digit.<br> 
+<!--Type in <span class="hlight">project1</span> to see and try our example files.--> 
+<img src="../pics/help_newpics/p1_f.png" />
+<hr>
+<span id="ags" class="headr2">Altered Gene sets</span>
+<br></br>
+The whole aim of network enrichment analysis (Alexeyenko et al., 2012) is characterization of certain genes or gene lists.
+Hence continue by submitting your altered gene sets (AGS) by either directly pasting gene symbols or by uploading a file with pre-compiled AGS(s)<span class="hlight"> (see below)</span>. Finally, the most advanced, dynamic mode of AGS formation is provided via Venn diagrams: see <a href="https://www.evinet.org/help/venn_help.html">here</a>. 
+<br>
+<span class="hcolor">
+<h4><b>Note</b>: uploaded files and text box input accepts any of the following gene/protein IDs:</h4>
+</span>
+<p>
+<span class="hcolor"><b>Human, mouse, rat:</b></span><br>
+Gene symbol (HUGO/MGI), <br>
+ENSEMBL gene and protein ID, <br>
+Swiss-Prot accession number, <br>
+Swiss-Prot ID, <br>
+TREMBL accession number <br>
+</p>
+<p>
+<span class="hcolor"><b>A. thaliana:</b><br></span>
+Symbol, <br>
+Locus name <br>
+</p> 
+<p><span class="hcolor">These ids will be converted to <span class="hlight hcolor">Gene symbols</span> and analyzed against functional gene sets and networks, which are also stored in this format.</span></p> 
+</span>
+<br>
+<span id="pasteids" class="headr3">Paste gene symbols</span>
+<br>
+Paste your list of gene symbols (or list of other accepted IDs) in the text box. Examples:<span class="hcolor">Nkx2-2/NKX2-2 Foxa2/FOXA2 Phox2b Phox2a Nkx2-9 Shh PTCH1/Ptch1</span>.
+<br></br>
+<img src="../pics/help_newpics/p2_f.png" /><br>
+<span id="upload_ags" class="headr3">Upload a file</span>
+<br></br>
+Once uploaded, a file might remain in your project space 
+to be re-analyzed later. NOTE: the file should contain at least two columns and you have to specify column roles and the column delimiter. An advantage of  using files is that they might contain multiple AGSs (the AGS IDs should then appear in a special column).  
+<br></br>
+<img src="../pics/help_newpics/p3_f.png"/>
+<!--Our example file contains a few lists of differentially expressed genes <span class="hlight">"experiment" vs. "control"</span>. You can choose desirable AGS and proceed to the next two tabs.Another file in <span class="hlight">"project1"</span> is <span class="hlight">CPW_collection.hsa</span>. It is  one of the FGS files found in the third tab. Although, we can present any FGS (known pathway etc.) as a novel gene list and explore its functions. <br><span class="hcolor">Note: Gene symbols in this particular file are in col. 2, hence leaving the default col. 1 leads to submitting gene IDs in a wrong format (ENSEMBL –currently not supported)</span><br-->
+<!--span class="hcolor">Note: <span class="hlight">project1</span> also contains other example files apart from <span class="hlight">P.matrix.NoModNodiff_wESC.VENN.txt</span>, which were uploaded earlier</span-->
+<br>
+<a href="?">top</a>
+<hr>
+<span id="networks" class="headr2">Selecting Network</span>
+<br></br>
+Select a network. More detailed networks (FunCoup, STRING) are larger but less precise. Networks  from curated resources like KEGG, CORUM, PhosphoSite are confident but much less comprehensive and hence might miss novel genes.
+Currently networks has to be choosen from the existing pre-loaded network files. In future implementations, users can upload their own network files via existing non-functional tabs<span class="hlight"> File </span> or <span class="hlight">Genes</span>. 
+<!--You can investigate comparative efficiency of the networks by looking at the ROC curves (below the table). More sensitive and specific options must be higher and shifted to the left. <br><span class="hcolor"> Note: For each individual analysis one can create unions of networks of different types ("Merged" is a pre-compiled example of such a union). Such merging is often beneficial.</span-->
+<br></br>
+<img src="../pics/help_newpics/p4_f.png"/><br>
+<br><a href="?">top</a>
+<hr>
+<span id="fgs" class="headr2">Selecting Functional genesets</span>
+<br></br>
+Select a collection of functional gene sets, i.e. pathways or GO terms. They should be as close to your angle of view as possible.<!-- For example, for cancer it might be our CPW_collection (alternatively, you submit a general collection and then filter the output in the next tab)-->. In most specific and important cases consider submitting your own pathway as a gene list via the tabs <span class="hlight"> File </span> or <span class="hlight">Genes</span>. Currently for mouse, rat and A.thaliana, we have limited FGS collections from KEGG pathways. For human, wide collection of FGS were collected from various resources. By clicking on the FGS source link, users can view the file contents and these files are downloadable. 
+<br></br>
+<img src="../pics/help_newpics/p5_f.png"/><br>
+<br><a href="?">top</a>
+<hr>
+<span id="check" class="headr2">Check and Submit</span>
+<br></br>
+Check if the three components of the analysis correctly appear at the "Check and submit" tab. NOTE:For editing, there is an option "change" if you mouse over on the respective textbox.<br>
+Finally , click the button <q><span class="hlight">Submit and calculate</span></q>. It might take time to get the job finished, thus we recommend starting from smaller networks (< 10000 links) and smaller FGS/AGS collections. NOTE: options <q><span class="hlight"> Analyze ...individually</span></q> can alter the output only if you tick the <q><span class="hlight">checkbox</span></q>. <!--As long as you try different options and parameters on your AGS files, executed analyses accumulate in your project directory and can be seen in the <q><span class="hlight">Archive</span> tab-->. 
+<br></br>
+<img src="../pics/help_newpics/p6_f.png"/><br>
+<a href="?">top</a>
+<br></br>
+<hr>
+<span id="demos" class="headr2">Interactive Demos</span>
+<br></br>
+Interactive demo buttons helps to go through the various tabs and gives an idea, how to run the EviNet and generate results.
+<br></br>
+<img src="../pics/help_newpics/p7_f.png"/><br>
+<a href="?">top</a>
+<br>
+<hr>
+<span id="archive" class="headr2">Project Archive</span>
+<br><br>
+Within the project ID, all executed jobs are stored in "Project Archive" folder <span class="ui-icon ui-icon-folder-open" style="color:#2e6e9e"></span>. This helps you to retrieve your analysis anytime later and share your results with collaborators. Note that you always have to set the same ID in the project box and press Enter. However, Archive does not allow you to re-calculate the results. In order to do that, you would need to look up the parameters from the respective Archive line (AGS, FGS, network etc.), set them  manually and press "Check and submit" again.</p>
+
+<br>
+<img src="../pics/help_newpics/p26_f.png"></br>
+<a href="?">top</a>
+</body>
+</html>

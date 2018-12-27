@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Run a Shiny application from a URL</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for runUrl {shiny}"><tr><td>runUrl {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Run a Shiny application from a URL</h2>
+
+<h3>Description</h3>
+
+<p><code>runUrl()</code> downloads and launches a Shiny application that is hosted at
+a downloadable URL. The Shiny application must be saved in a .zip, .tar, or
+.tar.gz file. The Shiny application files must be contained in the root
+directory or a subdirectory in the archive. For example, the files might be
+<code>myapp/server.r</code> and <code>myapp/ui.r</code>. The functions <code>runGitHub()</code>
+and <code>runGist()</code> are based on <code>runUrl()</code>, using URL's from GitHub
+(<a href="https://github.com">https://github.com</a>) and GitHub gists (<a href="https://gist.github.com">https://gist.github.com</a>),
+respectively.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+runUrl(url, filetype = NULL, subdir = NULL, destdir = NULL, ...)
+
+runGist(gist, destdir = NULL, ...)
+
+runGitHub(repo, username = getOption("github.user"), ref = "master",
+  subdir = NULL, destdir = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>url</code></td>
+<td>
+<p>URL of the application.</p>
+</td></tr>
+<tr valign="top"><td><code>filetype</code></td>
+<td>
+<p>The file type (<code>".zip"</code>, <code>".tar"</code>, or
+<code>".tar.gz"</code>. Defaults to the file extension taken from the url.</p>
+</td></tr>
+<tr valign="top"><td><code>subdir</code></td>
+<td>
+<p>A subdirectory in the repository that contains the app. By
+default, this function will run an app from the top level of the repo, but
+you can use a path such as '<code>"inst/shinyapp"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>destdir</code></td>
+<td>
+<p>Directory to store the downloaded application files. If <code>NULL</code>
+(the default), the application files will be stored in a temporary directory
+and removed when the app exits</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Other arguments to be passed to <code><a href="runApp.html">runApp</a>()</code>, such as
+<code>port</code> and <code>launch.browser</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>gist</code></td>
+<td>
+<p>The identifier of the gist. For example, if the gist is
+https://gist.github.com/jcheng5/3239667, then <code>3239667</code>,
+<code>'3239667'</code>, and <code>'https://gist.github.com/jcheng5/3239667'</code> are
+all valid values.</p>
+</td></tr>
+<tr valign="top"><td><code>repo</code></td>
+<td>
+<p>Name of the repository.</p>
+</td></tr>
+<tr valign="top"><td><code>username</code></td>
+<td>
+<p>GitHub username. If <code>repo</code> is of the form
+<code>"username/repo"</code>, <code>username</code> will be taken from <code>repo</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ref</code></td>
+<td>
+<p>Desired git reference. Could be a commit, tag, or branch name.
+Defaults to <code>"master"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run this example in interactive R sessions
+if (interactive()) {
+  runUrl('https://github.com/rstudio/shiny_example/archive/master.tar.gz')
+
+  # Can run an app from a subdirectory in the archive
+  runUrl("https://github.com/rstudio/shiny_example/archive/master.zip",
+    subdir = "inst/shinyapp/")
+}
+## Only run this example in interactive R sessions
+if (interactive()) {
+  runGist(3239667)
+  runGist("https://gist.github.com/jcheng5/3239667")
+
+  # Old URL format without username
+  runGist("https://gist.github.com/3239667")
+}
+
+## Only run this example in interactive R sessions
+if (interactive()) {
+  runGitHub("shiny_example", "rstudio")
+  # or runGitHub("rstudio/shiny_example")
+
+  # Can run an app from a subdirectory in the repo
+  runGitHub("shiny_example", "rstudio", subdir = "inst/shinyapp/")
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

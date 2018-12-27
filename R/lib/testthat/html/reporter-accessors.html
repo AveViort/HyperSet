@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get/set reporter; execute code in specified reporter.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reporter-accessors {testthat}"><tr><td>reporter-accessors {testthat}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get/set reporter; execute code in specified reporter.</h2>
+
+<h3>Description</h3>
+
+<p>Changes global reporter to that specified, runs code and the returns
+global reporter back to previous value.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+set_reporter(reporter)
+
+get_reporter()
+
+with_reporter(reporter, code, start_end_reporter = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>reporter</code></td>
+<td>
+<p>test reporter to use</p>
+</td></tr>
+<tr valign="top"><td><code>code</code></td>
+<td>
+<p>code block to execute</p>
+</td></tr>
+<tr valign="top"><td><code>start_end_reporter</code></td>
+<td>
+<p>whether to start and end the reporter</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>with_reporter()</code> function returns the reporter that has been used
+for running the code.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>testthat</em> version 2.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

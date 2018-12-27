@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Roots Phylogenetic Trees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for root {ape}"><tr><td>root {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Roots Phylogenetic Trees</h2>
+
+<h3>Description</h3>
+
+<p><code>root</code> reroots a phylogenetic tree with respect to the specified
+outgroup or at the node specified in <code>node</code>.
+</p>
+<p><code>unroot</code> unroots a phylogenetic tree, or returns it unchanged if
+it is already unrooted.
+</p>
+<p><code>is.rooted</code> tests whether a tree is rooted.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+root(phy, ...)
+## S3 method for class 'phylo'
+root(phy, outgroup, node = NULL, resolve.root = FALSE,
+     interactive = FALSE, edgelabel = FALSE, ...)
+## S3 method for class 'multiPhylo'
+root(phy, outgroup, ...)
+
+unroot(phy)
+## S3 method for class 'phylo'
+unroot(phy)
+## S3 method for class 'multiPhylo'
+unroot(phy)
+
+is.rooted(phy)
+## S3 method for class 'phylo'
+is.rooted(phy)
+## S3 method for class 'multiPhylo'
+is.rooted(phy)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code> or <code>"multiPhylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>outgroup</code></td>
+<td>
+<p>a vector of mode numeric or character specifying the
+new outgroup.</p>
+</td></tr>
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>alternatively, a node number where to root the tree.</p>
+</td></tr>
+<tr valign="top"><td><code>resolve.root</code></td>
+<td>
+<p>a logical specifying whether to resolve the new
+root as a bifurcating node.</p>
+</td></tr>
+<tr valign="top"><td><code>interactive</code></td>
+<td>
+<p>if <code>TRUE</code> the user is asked to select the node
+by clicking on the tree which must be plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>edgelabel</code></td>
+<td>
+<p>a logical value specifying whether to treat node
+labels as edge labels and thus eventually switching them so that
+they are associated with the correct edges when using
+<code><a href="plot.phyloExtra.html">drawSupportOnEdges</a></code> (see Czech et al. 2016).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>arguments passed among methods (e.g., when rooting lists
+of trees).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The argument <code>outgroup</code> can be either character or numeric. In
+the first case, it gives the labels of the tips of the new outgroup;
+in the second case the numbers of these labels in the vector
+<code>phy$tip.label</code> are given.
+</p>
+<p>If <code>outgroup</code> is of length one (i.e., a single value), then the
+tree is rerooted using the node below this tip as the new root.
+</p>
+<p>If <code>outgroup</code> is of length two or more, the most recent common
+ancestor (MRCA) <em>of the ingroup</em> is used as the new root. Note
+that the tree is unrooted before being rerooted, so that if
+<code>outgroup</code> is already the outgroup, then the returned tree is not
+the same than the original one (see examples). If <code>outgroup</code> is
+not monophyletic, the operation fails and an error message is issued.
+</p>
+<p>If <code>resolve.root = TRUE</code>, <code>root</code> adds a zero-length branch
+below the MRCA of the ingroup.
+</p>
+<p>A tree is considered rooted if either only two branches connect to the
+root, or if there is a <code>root.edge</code> element. In all other cases,
+<code>is.rooted</code> returns <code>FALSE</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code> or <code>"multiPhylo"</code> for
+<code>root</code> and <code>unroot</code>; a logical vector for <code>is.rooted</code>.
+</p>
+
+
+<h3>Note</h3>
+
+<p>The use of <code>resolve.root = TRUE</code> together with <code>node = </code>
+gives an error if the specified node is the current root of the
+tree. This is because there is an ambiguity when resolving a node in
+an unrooted tree with no explicit outgroup. If the node is not the
+current root, the ambiguity is solved arbitrarily by considering the
+clade on the right of <code>node</code> (when the tree is plotted by
+default) as the ingroup. See a detailed explanation there:
+</p>
+<p><a href="http://www.mail-archive.com/r-sig-phylo@r-project.org/msg03805.html">http://www.mail-archive.com/r-sig-phylo@r-project.org/msg03805.html</a>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Czech, L., Huerta-Cepas, J. and Stamatakis, A. (2016) A critical
+review on the use of support values in tree viewers and bioinformatics
+toolkits. <a href="http://dx.doi.org/10.1101/035360">http://dx.doi.org/10.1101/035360</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bind.tree.html">bind.tree</a></code>, <code><a href="drop.tip.html">drop.tip</a></code>,
+<code><a href="nodelabels.html">nodelabels</a></code>, <code><a href="identify.phylo.html">identify.phylo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(bird.orders)
+plot(root(bird.orders, 1))
+plot(root(bird.orders, 1:5))
+
+tr &lt;- root(bird.orders, 1)
+is.rooted(bird.orders) # yes
+is.rooted(tr)          # no
+### This is because the tree has been unrooted first before rerooting.
+### You can delete the outgroup...
+is.rooted(drop.tip(tr, "Struthioniformes"))
+### ... or resolve the basal trichotomy in two ways:
+is.rooted(multi2di(tr))
+is.rooted(root(bird.orders, 1, r = TRUE))
+### To keep the basal trichotomy but forcing the tree as rooted:
+tr$root.edge &lt;- 0
+is.rooted(tr)
+
+x &lt;- setNames(rmtree(10, 10), LETTERS[1:10])
+is.rooted(x)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

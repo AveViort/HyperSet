@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/cookies.js" type="text/javascript"></script>
+<script type="text/javascript">
+function show()
+{
+	var params = (location.hash).substr(1);
+	//alert(params);
+	var uname = 'Anonymous';
+	var signature = '';
+	var sid = '';
+	var usercookie = (getCookie("username")).split("|");
+	if (usercookie != "")
+	{
+		uname = usercookie[0];
+		signature = usercookie[1];
+		sid = ((getCookie("session_id")).split("|"))[0];
+	}
+	var project_id = params.split("/")[0];
+	var table_id = params.split("/")[1];
+	//alert("ProjectID: " + project_id + " TableID: " + table_id);
+	//url = url + ";username=" + uname + ";signature=" + signature + ';sid=' + sid;
+	var url = "https://www.evinet.org/cgi/show_table.cgi?project_id=" + project_id + "&table_id=" + table_id + "&username=" + uname + "&signature=" + signature + "&session_id=" + sid;
+	document.getElementById("result").height=window.innerHeight*0.9;
+	document.getElementById("result").width=window.innerWidth;
+	//alert("Current height: " + window.innerHeight + " current width: " + window.innerWidth);
+	document.getElementById("result").src=url;
+}
+
+window.onresize = function()
+{
+	document.getElementById("result").height=window.innerHeight*0.9;
+	document.getElementById("result").width=window.innerWidth;
+}
+</script>
+</head>
+<body onload=show()>
+<iframe id="result" scrolling = "yes"></div>
+</body>
+</html>

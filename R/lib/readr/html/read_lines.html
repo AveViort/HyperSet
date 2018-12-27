@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read/write lines to/from a file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for read_lines {readr}"><tr><td>read_lines {readr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read/write lines to/from a file</h2>
+
+<h3>Description</h3>
+
+<p><code>read_lines()</code> reads up to <code>n_max</code> lines from a file. New lines are
+not included in the output. <code>read_lines_raw()</code> produces a list of raw
+vectors, and is useful for handling data with unknown encoding.
+<code>write_lines()</code> takes a character vector or list of raw vectors, appending a
+new line after each entry.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+read_lines(file, skip = 0, n_max = -1L, locale = default_locale(),
+  na = character(), progress = show_progress())
+
+read_lines_raw(file, skip = 0, n_max = -1L, progress = show_progress())
+
+write_lines(x, path, na = "NA", append = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>Either a path to a file, a connection, or literal data
+(either a single string or a raw vector).
+</p>
+<p>Files ending in <code>.gz</code>, <code>.bz2</code>, <code>.xz</code>, or <code>.zip</code> will
+be automatically uncompressed. Files starting with <code>http://</code>,
+<code>https://</code>, <code>ftp://</code>, or <code>ftps://</code> will be automatically
+downloaded. Remote gz files can also be automatically downloaded and
+decompressed.
+</p>
+<p>Literal data is most useful for examples and tests. It must contain at
+least one new line to be recognised as data (instead of a path).</p>
+</td></tr>
+<tr valign="top"><td><code>skip</code></td>
+<td>
+<p>Number of lines to skip before reading data.</p>
+</td></tr>
+<tr valign="top"><td><code>n_max</code></td>
+<td>
+<p>Number of lines to read. If <code>n_max</code> is -1, all lines in
+file will be read.</p>
+</td></tr>
+<tr valign="top"><td><code>locale</code></td>
+<td>
+<p>The locale controls defaults that vary from place to place.
+The default locale is US-centric (like R), but you can use
+<code><a href="locale.html">locale()</a></code> to create your own locale that controls things like
+the default time zone, encoding, decimal mark, big mark, and day/month
+names.</p>
+</td></tr>
+<tr valign="top"><td><code>na</code></td>
+<td>
+<p>Character vector of strings to use for missing values. Set this
+option to <code>character()</code> to indicate no missing values.</p>
+</td></tr>
+<tr valign="top"><td><code>progress</code></td>
+<td>
+<p>Display a progress bar? By default it will only display
+in an interactive session and not while knitting a document. The display
+is updated every 50,000 values and will only display if estimated reading
+time is 5 seconds or more. The automatic progress bar can be disabled by
+setting option <code>readr.show_progress</code> to <code>FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A data frame to write to disk</p>
+</td></tr>
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p>Path or connection to write to.</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+<p>If <code>FALSE</code>, will overwrite existing file. If <code>TRUE</code>,
+will append to existing file. In both cases, if file does not exist a new
+file is created.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>read_lines()</code>: A character vector with one element for each line.
+<code>read_lines_raw()</code>: A list containing a raw vector for each line.
+</p>
+<p><code>write_lines()</code> returns <code>x</code>, invisibly.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+read_lines(file.path(R.home("doc"), "AUTHORS"), n_max = 10)
+read_lines_raw(file.path(R.home("doc"), "AUTHORS"), n_max = 10)
+
+tmp &lt;- tempfile()
+
+write_lines(rownames(mtcars), tmp)
+read_lines(tmp)
+read_file(tmp) # note trailing \n
+
+write_lines(airquality$Ozone, tmp, na = "-1")
+read_lines(tmp)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>readr</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

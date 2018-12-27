@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get links to datasets related to records from an NCBI...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for entrez_link {rentrez}"><tr><td>entrez_link {rentrez}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get links to datasets related to records from an NCBI database</h2>
+
+<h3>Description</h3>
+
+<p>Discover records related to a set of unique identifiers from
+an NCBI database. The object returned by this function depends on the value
+set for the <code>cmd</code> argument. Printing the returned object lists the names
+, and provides a brief description, of the elements included in the object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+entrez_link(dbfrom, web_history = NULL, id = NULL, db = NULL,
+  cmd = "neighbor", by_id = FALSE, config = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dbfrom</code></td>
+<td>
+<p>character Name of database from which the Id(s) originate</p>
+</td></tr>
+<tr valign="top"><td><code>web_history</code></td>
+<td>
+<p>a web_history object</p>
+</td></tr>
+<tr valign="top"><td><code>id</code></td>
+<td>
+<p>vector with unique ID(s) for records in database <code>db</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>db</code></td>
+<td>
+<p>character Name of the database to search for links (or use &quot;all&quot; to 
+search all databases available for <code>db</code>. <code>entrez_db_links</code> allows you
+to discover databases that might have linked information (see examples).</p>
+</td></tr>
+<tr valign="top"><td><code>cmd</code></td>
+<td>
+<p>link function to use. Allowed values include
+</p>
+
+<ul>
+<li><p> neighbor (default). Returns a set of IDs in <code>db</code> linked to the
+input IDs in <code>dbfrom</code>.
+</p>
+</li>
+<li><p> neighbor_score. As 'neighbor&rdquo;, but additionally returns similarity scores.
+</p>
+</li>
+<li><p> neighbor_history. As &lsquo;neighbor&rsquo;, but returns web history objects.
+</p>
+</li>
+<li><p> acheck. Returns a list of linked databases available from NCBI for a set of IDs.
+</p>
+</li>
+<li><p> ncheck. Checks for the existence of links within a single database.
+</p>
+</li>
+<li><p> lcheck. Checks for external (i.e. outside NCBI) links.
+</p>
+</li>
+<li><p> llinks. Returns a list of external links for each ID, excluding links
+provided by libraries.
+</p>
+</li>
+<li><p> llinkslib. As 'llinks' but additionally includes links provided by
+libraries.
+</p>
+</li>
+<li><p> prlinks. As 'llinks' but returns only the primary external link for
+each ID.
+</p>
+</li></ul>
+</td></tr>
+<tr valign="top"><td><code>by_id</code></td>
+<td>
+<p>logical If FALSE (default) return a single 
+<code>elink</code> objects containing links for all of the provided <code>id</code>s. 
+Alternatively, if TRUE return a list of <code>elink</code> objects, one for each 
+ID in <code>id</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>config</code></td>
+<td>
+<p>vector configuration options passed to httr::GET</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>character Additional terms to add to the request, see NCBI
+documentation linked to in references for a complete list</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An elink object containing the data defined by the <code>cmd</code> argument
+(if by_id=FALSE) or a list of such object (if by_id=TRUE).
+</p>
+<p>file XMLInternalDocument xml file resulting from search, parsed with
+<code><a href="../../XML/html/xmlTreeParse.html">xmlTreeParse</a></code>
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_ELink_">http://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_ELink_</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../httr/html/config.html">config</a></code> for available configs
+</p>
+<p><code>entrez_db_links</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+ pubmed_search &lt;- entrez_search(db = "pubmed", term ="10.1016/j.ympev.2010.07.013[doi]")
+ linked_dbs &lt;- entrez_db_links("pubmed")
+ linked_dbs
+ nucleotide_data &lt;- entrez_link(dbfrom = "pubmed", id = pubmed_search$ids, db ="nuccore")
+ #Sources for the full text of the paper 
+ res &lt;- entrez_link(dbfrom="pubmed", db="", cmd="llinks", id=pubmed_search$ids)
+ linkout_urls(res)
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rentrez</em> version 1.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

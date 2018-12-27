@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Multivariate Character Simulation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rTraitMult {ape}"><tr><td>rTraitMult {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Multivariate Character Simulation</h2>
+
+<h3>Description</h3>
+
+<p>This function simulates the evolution of a multivariate set of traits
+along a phylogeny. The calculation is done recursively from the
+root.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rTraitMult(phy, model, p = 1, root.value = rep(0, p), ancestor = FALSE,
+           asFactor = NULL, trait.labels = paste("x", 1:p, sep = ""), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>a function specifying the model (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>an integer giving the number of traits.</p>
+</td></tr>
+<tr valign="top"><td><code>root.value</code></td>
+<td>
+<p>a numeric vector giving the values at the root.</p>
+</td></tr>
+<tr valign="top"><td><code>ancestor</code></td>
+<td>
+<p>a logical value specifying whether to return the
+values at the nodes as well (by default, only the values at the tips
+are returned).</p>
+</td></tr>
+<tr valign="top"><td><code>asFactor</code></td>
+<td>
+<p>the indices of the traits that are returned as factors
+(discrete traits).</p>
+</td></tr>
+<tr valign="top"><td><code>trait.labels</code></td>
+<td>
+<p>a vector of mode character giving the names of the
+traits.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to <code>model</code> if it is a
+function.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The model is specified with an <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> function of the form <code>foo(x,
+    l)</code> where <code>x</code> is a vector of the traits of the ancestor and
+<code>l</code> is the branch length. Other arguments may be added. The
+function must return a vector of length <code>p</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A data frame with <code>p</code> columns whose names are given by
+<code>trait.labels</code> and row names taken from the labels of the tree.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="rTraitCont.html">rTraitCont</a></code>, <code><a href="rTraitDisc.html">rTraitDisc</a></code>, <code><a href="ace.html">ace</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## correlated evolution of 2 continuous traits:
+mod &lt;- function(x, l) {
+    y1 &lt;- rnorm(1, x[1] + 0.5*x[2], 0.1)
+    y2 &lt;- rnorm(1, 0.5*x[1] + x[2], 0.1)
+    c(y1, y2)
+}
+set.seed(11)
+tr &lt;- makeNodeLabel(rcoal(20))
+x &lt;- rTraitMult(tr, mod, 2, ancestor = TRUE)
+op &lt;- par(mfcol = c(2, 1))
+plot(x, type = "n")
+text(x, labels = rownames(x), cex = 0.7)
+oq &lt;- par(mar = c(0, 1, 0, 1), xpd = TRUE)
+plot(tr, font = 1, cex = 0.7)
+nodelabels(tr$node.label, cex = 0.7, adj = 1)
+par(c(op, oq))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

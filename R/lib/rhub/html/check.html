@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Check an R package on r-hub</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for check {rhub}"><tr><td>check {rhub}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Check an R package on r-hub</h2>
+
+<h3>Description</h3>
+
+<p>Check an R package on r-hub
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+check(path = ".", platform = NULL, email = NULL, valgrind = FALSE,
+  check_args = character(), env_vars = character(),
+  show_status = interactive())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p>Path to a directory containing an R package, or path to
+source R package tarball built with <code>R CMD build</code> or
+<code>devtools::build()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>platform</code></td>
+<td>
+<p>Platform to build/check the package on. See
+<code><a href="platforms.html">platforms()</a></code> for the available platforms. If this is <code>NULL</code>,
+and the R session is interactive, then a menu is shown. If it is
+<code>NULL</code>, and the session is not interactive, then the default
+r-hub platforms is used. Can take a vector of platforms which saves
+time by building one R package tarball that is used for all the
+platforms specified.</p>
+</td></tr>
+<tr valign="top"><td><code>email</code></td>
+<td>
+<p>Email address to send notification to about the build.
+It must be a validated email address, see <code><a href="validate_email.html">validate_email()</a></code>. If
+<code>NULL</code>, then the email address of the maintainer is used, as defined
+in the <code>DESCRIPTION</code> file of the package.</p>
+</td></tr>
+<tr valign="top"><td><code>valgrind</code></td>
+<td>
+<p>Whether to run the check in valgrind. Only supported on
+Linux currently, and ignored on other platforms.</p>
+</td></tr>
+<tr valign="top"><td><code>check_args</code></td>
+<td>
+<p>Extra arguments for the <code>R CMD check</code> command.</p>
+</td></tr>
+<tr valign="top"><td><code>env_vars</code></td>
+<td>
+<p>Environment variables to set on the builder machine
+before the check. A named character vector.</p>
+</td></tr>
+<tr valign="top"><td><code>show_status</code></td>
+<td>
+<p>Whether to show the status of the build as it is
+happening.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An <a href="rhub_check.html">rhub_check</a> object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+check(".")
+check("mypackage_1.0.0.tar.gz", platform = "fedora-clang-devel")
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rhub</em> version 1.0.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

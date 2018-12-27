@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot of DNA Sequence Alignement</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for image.DNAbin {ape}"><tr><td>image.DNAbin {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot of DNA Sequence Alignement</h2>
+
+<h3>Description</h3>
+
+<p>This function plots an image of an alignment of nucleotide sequences.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'DNAbin'
+image(x, what, col, bg = "white", xlab = "", ylab = "",
+      show.labels = TRUE, cex.lab = 1, legend = TRUE,
+      grid = FALSE, show.bases = FALSE, base.cex = 1,
+      base.font = 1, base.col = "black", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a matrix of DNA sequences (class <code>"DNAbin"</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>a vector of characters specifying the bases to
+visualize. If missing, this is set to &ldquo;a&rdquo;, &ldquo;g&rdquo;, &ldquo;c&rdquo;, &ldquo;t&rdquo;,
+&ldquo;n&rdquo;, and &ldquo;-&rdquo; (in this order).</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>a vector of colours. If missing, this is set to &ldquo;red&rdquo;,
+&ldquo;yellow&rdquo;, &ldquo;green&rdquo;, &ldquo;blue&rdquo;, &ldquo;grey&rdquo;, and &ldquo;black&rdquo;. If it is
+shorter (or longer) than <code>what</code>, it is recycled (or shortened).</p>
+</td></tr>
+<tr valign="top"><td><code>bg</code></td>
+<td>
+<p>the colour used for nucleotides whose base is not among
+<code>what</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>the label for the <em>x</em>-axis; none by default.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>Idem for the <em>y</em>-axis. Note that by default, the
+labels of the sequences are printed on the <em>y</em>-axis (see next option).</p>
+</td></tr>
+<tr valign="top"><td><code>show.labels</code></td>
+<td>
+<p>a logical controlling whether the sequence labels
+are printed (<code>TRUE</code> by default).</p>
+</td></tr>
+<tr valign="top"><td><code>cex.lab</code></td>
+<td>
+<p>a single numeric controlling the size of the sequence labels.
+Use <code>cex.axis</code> to control the size of the annotations on the
+<em>x</em>-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>legend</code></td>
+<td>
+<p>a logical controlling whether the legend is plotted
+(<code>TRUE</code> by default).</p>
+</td></tr>
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>a logical controlling whether to draw a grid (<code>FALSE</code>
+by default).</p>
+</td></tr>
+<tr valign="top"><td><code>show.bases</code></td>
+<td>
+<p>a logical controlling whether to show the base symbols
+(<code>FALSE</code> by default).</p>
+</td></tr>
+<tr valign="top"><td><code>base.cex, base.font, base.col</code></td>
+<td>
+<p>control the aspect of the base
+symbols (ignored if the previous is <code>FALSE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to
+<code><a href="../../graphics/html/image.default.html">image.default</a></code> (e.g., <code>xlab</code>,
+<code>cex.axis</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The idea of this function is to allow flexible plotting and colouring
+of a nucleotide alignment. By default, the most common bases (a, g, c,
+t, and n) and alignment gap are plotted using a standard colour
+scheme.
+</p>
+<p>It is possible to plot only one base specified as <code>what</code> with a
+chosen colour: this might be useful to check, for instance, the
+distribution of alignment gaps (<code>image(x, "-")</code>) or missing data
+(see examples).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="DNAbin.html">DNAbin</a></code>, <code><a href="del.gaps.html">del.gaps</a></code>, <code><a href="alex.html">alex</a></code>,
+<code><a href="alview.html">alview</a></code>, <code><a href="all.equal.DNAbin.html">all.equal.DNAbin</a></code>,
+<code><a href="clustal.html">clustal</a></code>, <code><a href="../../graphics/html/grid.html">grid</a></code>,
+<code><a href="AAbin.html">image.AAbin</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(woodmouse)
+image(woodmouse)
+rug(seg.sites(woodmouse), -0.02, 3, 1)
+image(woodmouse, "n", "blue") # show missing data
+image(woodmouse, c("g", "c"), "green") # G+C
+par(mfcol = c(2, 2))
+### barcoding style:
+for (x in c("a", "g", "c", "t"))
+    image(woodmouse, x, "black", cex.lab = 0.5, cex.axis = 0.7)
+par(mfcol = c(1, 1))
+### zoom on a portion of the data:
+image(woodmouse[11:15, 1:50], c("a", "n"), c("blue", "grey"))
+grid(50, 5, col = "black")
+### see the guanines on a black background:
+image(woodmouse, "g", "yellow", "black")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

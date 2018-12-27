@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find which nodes satisfies a condition</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for noded_with_condition {dendextend}"><tr><td>noded_with_condition {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find which nodes satisfies a condition</h2>
+
+<h3>Description</h3>
+
+<p>Goes through a tree's nodes in order to return a vector 
+with whether (TRUE/FALSE) each node satisies some condition (function)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+noded_with_condition(dend, condition, include_leaves = TRUE,
+  include_branches = TRUE, na.rm = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram dend</p>
+</td></tr>
+<tr valign="top"><td><code>condition</code></td>
+<td>
+<p>a function that gets a node and return TRUE or FALSE
+(based on whether or not that node/tree fulfills the &quot;condition&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>include_leaves</code></td>
+<td>
+<p>logical. Should leaves attributes be included as well?</p>
+</td></tr>
+<tr valign="top"><td><code>include_branches</code></td>
+<td>
+<p>logical. Should non-leaf (branch node) 
+attributes be included as well?</p>
+</td></tr>
+<tr valign="top"><td><code>na.rm</code></td>
+<td>
+<p>logical. Should NA attributes be REMOVED from the resulting vector?</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to the condition function</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A logical vector with TRUE/FALSE, specifying for each of the dendrogram's nodes if it fulfills the condition or not.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="branches_attr_by_labels.html">branches_attr_by_labels</a>, <a href="get_leaves_attr.html">get_leaves_attr</a>, <a href="nnodes.html">nnodes</a>, <a href="nleaves.html">nleaves</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+library(dendextend)
+
+set.seed(23235)
+ss &lt;- sample(1:150, 10 )
+
+# Getting the dend dend
+dend &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+dend %&gt;% plot
+
+
+
+this is the basis for branches_attr_by_labels
+has_any_labels &lt;- function(sub_dend, the_labels) any(labels(sub_dend) %in% the_labels)
+cols &lt;- noded_with_condition(dend, has_any_labels,
+            the_labels = c("126","109", "59")) %&gt;% 
+            ifelse(2,1)
+set(dend, "branches_col", cols) %&gt;% plot
+
+# Similar to branches_attr_by_labels - but for heights!
+high_enough &lt;- function(sub_dend, height) attr(sub_dend, "height") &gt; height
+cols &lt;- noded_with_condition(dend, high_enough, height = 1) %&gt;% ifelse(2,1)
+set(dend, "branches_col", cols) %&gt;% plot
+
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

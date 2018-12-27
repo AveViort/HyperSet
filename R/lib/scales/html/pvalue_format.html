@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: p-values formatter</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pvalue_format {scales}"><tr><td>pvalue_format {scales}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>p-values formatter</h2>
+
+<h3>Description</h3>
+
+<p>Formatter for p-values, adding a symbol &quot;&lt;&quot; for small p-values.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pvalue_format(accuracy = 0.001, decimal.mark = ".", add_p = FALSE)
+
+pvalue(x, accuracy = 0.001, decimal.mark = ".", add_p = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>accuracy</code></td>
+<td>
+<p>Number to round to.</p>
+</td></tr>
+<tr valign="top"><td><code>decimal.mark</code></td>
+<td>
+<p>The character to be used to indicate the numeric
+decimal point.</p>
+</td></tr>
+<tr valign="top"><td><code>add_p</code></td>
+<td>
+<p>Add &quot;p=&quot; before the value?</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A numeric vector of p-values.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>pvalue_format</code> returns a function with single parameter
+<code>x</code>, a numeric vector, that returns a character vector.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+p &lt;- c(.50, 0.12, .045, .011, .009, .00002, NA)
+pvalue(p)
+pvalue(p, accuracy = .01)
+pvalue(p, add_p = TRUE)
+custom_function &lt;- pvalue_format(accuracy = .1, decimal.mark = ",")
+custom_function(p)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>scales</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

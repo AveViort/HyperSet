@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Density estimate of multivariate observations by Gaussian...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for predict.densityMclust {mclust}"><tr><td>predict.densityMclust {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Density estimate of multivariate observations by Gaussian finite mixture modeling</h2>
+
+<h3>Description</h3>
+
+<p>Compute density estimation for multivariate observations based on Gaussian finite mixture models estimated by <code><a href="densityMclust.html">densityMclust</a></code>.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  ## S3 method for class 'densityMclust'
+predict(object, newdata, what = c("dens", "cdens"), logarithm = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>an object of class <code>'densityMclust'</code> resulting from a call to <code><a href="densityMclust.html">densityMclust</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>a vector, a data frame or matrix giving the data. If missing the density is computed for the input data obtained from the call to <code><a href="densityMclust.html">densityMclust</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>a character string specifying what to retrieve: <code>"dens"</code> returns a vector of values for the mixture density: <code>"cdens"</code> returns a matrix of component densities for each mixture component (along the columns).</p>
+</td></tr>
+<tr valign="top"><td><code>logarithm</code></td>
+<td>
+<p>A logical value indicating whether or not the logarithm of the density or component densities should be returned.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a vector or a matrix of densities evaluated at <code>newdata</code> depending on the argument <code>what</code> (see above).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Luca Scrucca</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Mclust.html">Mclust</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+x &lt;- faithful$waiting
+dens &lt;- densityMclust(x)
+x0 &lt;- seq(50, 100, by = 10)
+d0 &lt;- predict(dens, x0)
+plot(dens)
+points(x0, d0, pch = 20)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

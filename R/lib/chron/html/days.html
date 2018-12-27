@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Return Various Periods from a Chron or Dates Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for days {chron}"><tr><td>days {chron}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Return Various Periods from a Chron or Dates Object
+</h2>
+
+<h3>Description</h3>
+
+<p>Given a chron or dates object, extract the year, quarter, month, day
+(within the month) or weekday (days within the week) of the date it
+represents.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+days(x)
+## Default S3 method:
+weekdays(x, abbreviate = TRUE)
+## Default S3 method:
+months(x, abbreviate = TRUE)
+## Default S3 method:
+quarters(x, abbreviate = TRUE)
+years(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object inheriting from class <code>"<a href="dates.html">dates</a>"</code>, or
+coercible to such via <code><a href="chron.html">as.chron</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>abbreviate</code></td>
+<td>
+
+<p>should abbreviated names be returned?  Default is <code>TRUE</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Note that <code>months</code>, <code>quarters</code> and <code>weekdays</code> are
+generics defined in package <span class="pkg">base</span> which also provides methods for
+objects of class <code>"<a href="../../base/html/Dates.html">Date</a>"</code> as generated, e.g., by
+<code><a href="../../base/html/Sys.time.html">Sys.Date</a></code>.  These methods return <a href="../../base/html/character.html">character</a> rather
+than <a href="../../base/html/factor.html">factor</a> variables as the default methods in <span class="pkg">chron</span> do.
+To take advantage of the latter, Date objects can be converted to
+dates objects using <code><a href="chron.html">as.chron</a></code>, see the examples.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an ordered factor corresponding to days, weekdays, months, quarters,
+or years of <code>x</code> for the respective function.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="is.holiday.html">is.weekend</a></code>,
+<code><a href="is.holiday.html">is.holiday</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+dts &lt;- dates("07/01/78") + trunc(50 * rnorm(30))
+plot(weekdays(dts))
+plot(months(dts))
+
+## The day in the current timezone as a Date object.
+Dt &lt;- Sys.Date()
+## Using the months method for Date objects.
+months(Dt)
+## Using the months default method.
+months(as.chron(Dt))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>chron</em> version 2.3-53 <a href="00Index.html">Index</a>]</div>
+</body></html>

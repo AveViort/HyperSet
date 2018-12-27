@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find the documents that are XInclude'd in an XML document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getXIncludes {XML}"><tr><td>getXIncludes {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find the documents that are XInclude'd in an XML document</h2>
+
+<h3>Description</h3>
+
+<p>The <code>getXMLIncludes</code> function finds the names of the  documents
+that are XIncluded in a given XML document,
+optionally processing these documents recursively.
+</p>
+<p><code>xmlXIncludes</code> returns the hierarchy of included documents.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getXIncludes(filename, recursive = TRUE, skip = character(),
+             omitPattern = "\\.(js|html?|txt|R|c)$",
+             namespace = c(xi = "http://www.w3.org/2003/XInclude"),
+            duplicated = TRUE)
+xmlXIncludes(filename, recursive = TRUE,
+         omitPattern = "\\.(js|html?|txt|R|c)$",
+         namespace = c(xi = "http://www.w3.org/2003/XInclude"),
+         addNames = TRUE,
+         clean = NULL, ignoreTextParse = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>the name of the XML document's URL or file or the
+parsed document itself.</p>
+</td></tr>
+<tr valign="top"><td><code>recursive</code></td>
+<td>
+<p>a logical value controlling whether to recursively
+process the XInclude'd files for their XInclude'd files</p>
+</td></tr>
+<tr valign="top"><td><code>skip</code></td>
+<td>
+<p>a character vector of file names to ignore or skip over</p>
+</td></tr>
+<tr valign="top"><td><code>omitPattern</code></td>
+<td>
+<p>a regular expression for indentifying files that
+are included that we do not want to recursively process</p>
+</td></tr>
+<tr valign="top"><td><code>namespace</code></td>
+<td>
+<p>the namespace to use for the XInclude. There are two
+that are in use 2001 and 2003.</p>
+</td></tr>
+<tr valign="top"><td><code>duplicated</code></td>
+<td>
+<p>a logical value that controls whether only the
+unique names of the files are returned, or if we get all references
+to all files.</p>
+</td></tr>
+<tr valign="top"><td><code>addNames</code></td>
+<td>
+<p>a logical that controls whether we add the name of
+the parent file as the names vector for the collection of included
+file names. This is useful, but sometimes we want to disable this,
+e.g. to create a <code>JSON</code> representation of the hierarchy for use
+in, e.g., D3.</p>
+</td></tr>
+<tr valign="top"><td><code>clean</code></td>
+<td>
+<p>how to process the names of the files. This can be a
+function or a character vector of two regular expressions passed to
+<code>gsub</code>.
+The function is called with a vector of file names. The regular
+expressions are used in a call to <code>gsub</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ignoreTextParse</code></td>
+<td>
+<p>undocuemnted.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>If <code>recursive</code> is <code>FALSE</code>, a character vector giving the
+names of the included files.
+</p>
+<p>For <code>recursive</code> is <code>TRUE</code>, currently the same character
+vector form. However, this will be a hierarchical list.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getHTMLLinks.html">getHTMLExternalFiles</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+  f = system.file("exampleData", "xinclude", "a.xml", package = "XML")
+
+  getXIncludes(f, recursive = FALSE)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

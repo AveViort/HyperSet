@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extracting Order Information from a Permutation Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for get_order {seriation}"><tr><td>get_order {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extracting Order Information from a Permutation Object</h2>
+
+<h3>Description</h3>
+
+<p>Method to get the order information from an object of class
+<code>ser_permutation</code> or <code>ser_permutation_vector</code>.
+Order information can be extracted as an integer permutation vector,
+a vector containing the object ranks or a permutation matrix.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+get_order(x, ...)
+## S3 method for class 'ser_permutation_vector'
+get_order(x, ...)
+## S3 method for class 'ser_permutation'
+get_order(x, dim = 1, ...)
+
+get_rank(x, ...)
+
+get_permutation_matrix(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> an object of class <code>ser_permutation</code> or
+<code>ser_permutation_vector</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>dim</code></td>
+<td>
+<p> order information for which dimension should be returned?</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments are ignorred for <code>get_order</code>.
+For <code>get_rank</code> and
+for <code>get_permutation_matrix</code> the additional arguments are passed on to
+<code>get_order</code> (e.g., as <code>dim</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>get_order</code> returns the seriation as an integer vector containing
+the order of the objects after permutation. That is, the index of the first,
+second, <i>..., n</i>-th object. These permuation vectors can directly be
+used to reorder objects using subsetting with <code>"["</code>.
+<em>Note:</em> In <span class="pkg">seriation</span> we usually use these
+order-based permutation vectors.
+</p>
+<p><code>get_rank</code> returns the seriation as an integer vector containing
+the rank/position for each objects in the permutation. That is,
+position of the first, second, <i>..., n</i>-th object after permutation.
+Note: Use <code>order()</code> to convert ranks back to an order.
+</p>
+<p><code>get_permutation_matrix</code> returns a <i>n x n</i> permutation matrix.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns an integer permutation vector/a permutation matrix.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="permutation_vector.html">ser_permutation_vector</a></code>,
+<code><a href="permutation.html">ser_permutation</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## permutation_vector
+o &lt;- ser_permutation_vector(sample(10))
+o
+
+get_order(o)
+get_rank(o)
+get_permutation_matrix(o)
+
+## permutation
+o2 &lt;- ser_permutation(o, sample(5))
+o2
+
+get_order(o2, dim = 2)
+get_rank(o2, dim = 2)
+get_permutation_matrix(o2, dim = 2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: E. coli promoter gene sequences (DNA)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for promotergene {kernlab}"><tr><td>promotergene {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>E. coli promoter gene sequences (DNA)</h2>
+
+<h3>Description</h3>
+
+<p>Promoters have a region where a protein (RNA polymerase) must make contact
+and the helical DNA sequence must have a valid conformation so that
+the two pieces of the contact region spatially align.
+The data contains DNA sequences of promoters and non-promoters.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(promotergene)</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 106 observations and 58 variables.
+The first variable <code>Class</code> is a factor with levels <code>+</code> for a promoter gene  
+and <code>-</code> for a non-promoter gene. 
+The remaining 57 variables <code>V2 to V58</code> are factors describing the sequence. 
+The DNA bases are coded as follows: <code>a</code> adenine <code>c</code> cytosine <code>g</code> 
+guanine <code>t</code> thymine
+</p>
+
+
+<h3>Source</h3>
+
+<p>UCI Machine Learning data repository <br />
+<a href="ftp://ftp.ics.uci.edu/pub/machine-learning-databases/molecular-biology/promoter-gene-sequences">ftp://ftp.ics.uci.edu/pub/machine-learning-databases/molecular-biology/promoter-gene-sequences</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Towell, G., Shavlik, J. and Noordewier, M. <br />
+<em>Refinement of Approximate Domain Theories by Knowledge-Based
+Artificial Neural Networks.</em> <br />
+In Proceedings of the Eighth National Conference on Artificial Intelligence (AAAI-90)
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(promotergene)
+
+## Create classification model using Gaussian Processes
+
+prom &lt;- gausspr(Class~.,data=promotergene,kernel="rbfdot",
+                kpar=list(sigma=0.02),cross=4)
+prom
+
+## Create model using Support Vector Machines
+
+promsv &lt;- ksvm(Class~.,data=promotergene,kernel="laplacedot",
+               kpar="automatic",C=60,cross=4)
+promsv
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

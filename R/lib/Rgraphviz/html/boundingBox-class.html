@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;boundingBox&quot;: A class to describe the bounding box of...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for boundingBox-class {Rgraphviz}"><tr><td>boundingBox-class {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;boundingBox&quot;: A class to describe the bounding box of a
+Ragraph</h2>
+
+<h3>Description</h3>
+
+<p>The <code>boundingBox</code> class is used to describe the
+dimensons of the bounding box for a laid out Ragraph</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("boundingBox", ...)</code>.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>botLeft</code>:</dt><dd><p>Object of class <code>"xyPoint"</code> Defines the
+bottom left point of the bounding box</p>
+</dd>
+<dt><code>upRight</code>:</dt><dd><p>Object of class <code>"xyPoint"</code> Defines the
+upper right point of the bounding box</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>botLeft</dt><dd><p>Retrieve the botLeft slot</p>
+</dd>
+<dt>upRight</dt><dd><p>Retrieve the upRight slot</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="Ragraph-class.html">Ragraph</a></code>, <code><a href="../../graph/html/graph-class.html">graph-class</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+V &lt;- letters[1:10]
+M &lt;- 1:4
+g1 &lt;- randomGraph(V, M, .2)
+z &lt;- agopen(g1,"foo")
+x &lt;- boundBox(z)
+x
+
+botLeft(x)
+upRight(x)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

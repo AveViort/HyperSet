@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: bindrcpp: An 'Rcpp' Interface to Active Bindings</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bindrcpp-package {bindrcpp}"><tr><td>bindrcpp-package {bindrcpp}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>bindrcpp: An 'Rcpp' Interface to Active Bindings</h2>
+
+<h3>Description</h3>
+
+<p>Provides an easy way to fill an environment with active bindings
+that call a C++ function.
+</p>
+
+
+<h3>Details</h3>
+
+<p>Use <code>LinkingTo: bindrcpp</code> in <code>DESCRIPTION</code> and
+<code>#include &lt;bindrcpp.h&gt;</code> in your C++ headers and/or modules to access the
+C++ functions provided by this package:
+</p>
+
+<ul>
+<li> <p><code>create_env_string()</code> creates an environment with active bindings, with
+names given as a character vector.  Access of these bindings triggers a
+call to a C++ function with a fixed signature (<code>GETTER_FUNC_STRING</code>);
+this call contains the name of the binding (as character) and an arbitrary
+payload (<code>PAYLOAD</code>, essentially a wrapped <code>void*</code>).
+</p>
+</li>
+<li> <p><code>create_env_symbol()</code> is similar, the callback function accepts the name of
+the binding as symbol instead of character (<code>GETTER_FUNC_SYMBOL</code>).
+</p>
+</li>
+<li> <p><code>populate_env_string()</code> and <code>populate_env_symbol()</code> populate an existing
+environment instead of creating a new one.
+</p>
+</li></ul>
+
+
+
+<h3>Author(s)</h3>
+
+<p><strong>Maintainer</strong>: Kirill Müller <a href="mailto:krlmlr+r@mailbox.org">krlmlr+r@mailbox.org</a>
+</p>
+<p>Other contributors:
+</p>
+
+<ul>
+<li><p> RStudio [copyright holder]
+</p>
+</li></ul>
+
+
+
+<h3>See Also</h3>
+
+<p>Useful links:
+</p>
+
+<ul>
+<li> <p><a href="https://github.com/krlmlr/bindrcpp">https://github.com/krlmlr/bindrcpp</a>
+</p>
+</li>
+<li> <p><a href="https://krlmlr.github.io/bindrcpp">https://krlmlr.github.io/bindrcpp</a>
+</p>
+</li>
+<li><p> Report bugs at <a href="https://github.com/krlmlr/bindrcpp/issues">https://github.com/krlmlr/bindrcpp/issues</a>
+</p>
+</li></ul>
+
+
+<hr /><div style="text-align: center;">[Package <em>bindrcpp</em> version 0.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

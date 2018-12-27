@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Weaving and Tangling with syntax highlighting</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Hweave {highlight}"><tr><td>Hweave {highlight}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Weaving and Tangling with syntax highlighting</h2>
+
+<h3>Description</h3>
+
+<p><code>Hweave</code> and <code>Htangle</code> are similar to <code>Sweave</code>
+and <code>Stangle</code>, but they take advantage of the
+custom driver shipped with this package
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+Hweave(file, driver = HighlightWeaveLatex(), syntax = HweaveSyntaxNoweb,
+  encoding = "", ...)
+
+Htangle(file, driver = HighlightTangle(), syntax = HweaveSyntaxNoweb,
+  encoding = "", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>Path to Sweave source file</p>
+</td></tr>
+<tr valign="top"><td><code>driver</code></td>
+<td>
+<p>The actual workhorse, see the Details section in <code><a href="../../utils/html/Sweave.html">Sweave</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>syntax</code></td>
+<td>
+<p><code>NULL</code> or an object of class <code>SweaveSyntax</code>
+or a character string with its name. See the section <code>Syntax Definition</code>
+in <code><a href="../../utils/html/Sweave.html">Sweave</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>encoding</code></td>
+<td>
+<p>The default encoding to assume for <code>file</code></p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments passed to the driver's setup function.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions exist for the purpose of the
+<code>\VignetteEngine</code> option in vignette introduced in R 3.0.0
+</p>
+<p><code>highlight</code> loads the <code>highlight</code> vignette engine
+at load time. Client packages must declare to use it
+with the <code>VignetteBuilder</code> field in their <code>DESCRIPTION</code>
+file
+</p>
+<p>The vignette engine looks for files matching the
+pattern <code>"[.][hHrRsS]nw$"</code> although in order to distinguish
+vignettes using this engine and the default
+Sweave engine, the recommandation is to use vignette with the <code>".Hnw"</code>
+extension.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>highlight</em> version 0.4.7.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,6232 @@
+AAK1	AP2M1	human	X	
+AAK1	NUMB	human	X	X
+ABL1	Abi1	human	X	
+ABL1	ABI1	human	X	X
+ABL1	ABL1	human	X	X
+ABL1	ABL2	human	X	X
+ABL1	ANXA1	human		X
+ABL1	ATR	human	X	X
+ABL1	BCR	human	X	X
+ABL1	BTK	human	X	
+ABL1	CASP9	human	X	X
+ABL1	Cat	human	X	
+ABL1	CAT	human	X	X
+ABL1	CAV1	human		X
+ABL1	CD19	human		X
+ABL1	Cdkn1a	human		X
+ABL1	CDKN1B	human		X
+ABL1	CEBPB	human	X	
+ABL1	Crk	human		X
+ABL1	CRK	human	X	X
+ABL1	CRKL	human	X	X
+ABL1	CTNNB1	human		X
+ABL1	CTNNB1	human	X	X
+ABL1	CTTN	human	X	
+ABL1	Dab1	human		X
+ABL1	DDX5	human	X	X
+ABL1	Dlg4	human	X	
+ABL1	EGFR	human	X	
+ABL1	EMD	human		X
+ABL1	ERCC6	human		X
+ABL1	ESR1	human	X	X
+ABL1	GNB2L1	human	X	X
+ABL1	GPX1	human	X	X
+ABL1	Jak2	human		X
+ABL1	JUN	human	X	
+ABL1	LASP1	human	X	X
+ABL1	LGALS3	human	X	X
+ABL1	MDM2	human		X
+ABL1	MDM2	human	X	X
+ABL1	MDM4	human	X	
+ABL1	MET	human		X
+ABL1	MYC	human	X	
+ABL1	MYLK	human		X
+ABL1	MYLK	human	X	X
+ABL1	Myod1	human	X	X
+ABL1	NCK1	human	X	X
+ABL1	NCOA3	human	X	X
+ABL1	NFAT5	human	X	
+ABL1	Nfat5	human	X	X
+ABL1	NFKBIA	human	X	
+ABL1	PARK2	human	X	X
+ABL1	PDGFRB	human	X	
+ABL1	PDK1	human		X
+ABL1	PIK3AP1	human	X	
+ABL1	PIK3R1	human		X
+ABL1	PLEKHG2	human	X	
+ABL1	PLSCR1	human		X
+ABL1	PRKD1	human	X	X
+ABL1	PSMA7	human	X	X
+ABL1	Ptpn11	human		X
+ABL1	Ptpn11	human	X	
+ABL1	Ptpn11	human	X	X
+ABL1	RAD51	human	X	
+ABL1	RAD51	human	X	X
+ABL1	RAD52	human	X	
+ABL1	RAD9A	human	X	X
+ABL1	RAPGEF1	human	X	X
+ABL1	RB1	human	X	X
+ABL1	Rin1	human	X	
+ABL1	ROBO1	human		X
+ABL1	ROBO1	human	X	X
+ABL1	Sorbs1	human	X	
+ABL1	Sorbs3	human	X	X
+ABL1	SPTLC1	human	X	X
+ABL1	SRCIN1	human	X	X
+ABL1	STK3	human	X	X
+ABL1	Top1	human	X	
+ABL1	TOP1	human		X
+ABL1	TP63	human	X	
+ABL1	TP73	human	X	X
+ABL1	VAV1	human		X
+ABL1	WAS	human		X
+ABL1	WASL	human	X	X
+ABL1	Wwtr1	human	X	X
+ABL1	YAP1	human	X	X
+ABL1	ZAP70	human	X	
+ABL2	ABL2	human		X
+ABL2	Cat	human	X	
+ABL2	CAT	human	X	X
+ABL2	CEBPB	human	X	
+ABL2	CRK	human		X
+ABL2	GPX1	human	X	X
+ABL2	LGALS3	human	X	X
+ABL2	MAPT	human	X	
+ABL2	Nfkbib	human		X
+ABL2	PDGFRB	human	X	
+ABL2	PSMA7	human	X	X
+ABL2	Ptpn11	human	X	
+ABL2	Ptpn11	human	X	X
+ABL2	Rin1	human	X	
+ABL2	SIVA1	human	X	X
+ACVR1B	TDP2	human		X
+ACVRL1	ENG	human		X
+ACVRL1	ENG	human	X	
+ADRBK1	ADRB2	human		X
+ADRBK1	ADRB2	human	X	
+ADRBK1	CHRM2	human		X
+ADRBK1	CLTB	human	X	X
+ADRBK1	EZR	human	X	X
+ADRBK1	HRH1	human		X
+ADRBK1	KCNIP3	human		X
+ADRBK1	LOC100399755	human	X	
+ADRBK1	MAPK14	human	X	X
+ADRBK1	MSN	human	X	
+ADRBK1	OPRD1	human	X	
+ADRBK1	Oprm1	human		X
+ADRBK1	Rdx	human		X
+ADRBK1	RDX	human	X	
+ADRBK1	Rplp2	human		X
+ADRBK1	SLC9A5	human		X
+ADRBK1	SMAD2	human		X
+ADRBK1	SNCA	human	X	X
+ADRBK1	Sstr2	human	X	
+ADRBK1	TBXA2R	human	X	
+ADRBK1	Trhr	human		X
+ADRBK1	Trhr	human	X	X
+ADRBK1	Tubb3	human		X
+ADRBK1	Tubb5	human		X
+ADRBK2	CCR5	human	X	
+ADRBK2	Oprk1	human	X	X
+ADRBK2	Sstr2	human	X	
+ADRBK2	SSTR2	human	X	
+ADRBK2	TBXA2R	human	X	
+AKT1	ACAP1	human	X	X
+AKT1	Acin1	human		X
+AKT1	ACIN1	human	X	
+AKT1	ADRB2	human	X	X
+AKT1	AGAP2	human	X	X
+AKT1	AKT1	human		X
+AKT1	AKT1S1	human	X	X
+AKT1	ALYREF	human		X
+AKT1	ALYREF	human	X	X
+AKT1	ARFIP2	human	X	X
+AKT1	ARHGAP22	human		X
+AKT1	AR	human	X	X
+AKT1	ATXN1	human	X	X
+AKT1	Bad	human		X
+AKT1	Bad	human	X	X
+AKT1	BAD	human	X	X
+AKT1	BCL10	human		X
+AKT1	BCL2L11	human		X
+AKT1	Bex1	human	X	X
+AKT1	BRAF	human		X
+AKT1	BRCA1	human	X	X
+AKT1	Cacnb2	human	X	
+AKT1	CARHSP1	human	X	X
+AKT1	CASP9	human	X	X
+AKT1	CBY1	human		X
+AKT1	CCDC88A	human	X	X
+AKT1	CCT2	human	X	X
+AKT1	CDCA7	human	X	X
+AKT1	CDK2	human	X	X
+AKT1	CDKN1A	human	X	X
+AKT1	Cdkn1b	human		X
+AKT1	CDKN1B	human	X	X
+AKT1	CDKN1C	human	X	X
+AKT1	CELF1	human		X
+AKT1	CFLAR	human	X	
+AKT1	CHEK1	human	X	X
+AKT1	CHUK	human	X	X
+AKT1	CLK2	human	X	X
+AKT1	COPS6	human	X	X
+AKT1	Creb1	human	X	X
+AKT1	Crebbp	human	X	
+AKT1	Csnk1d	human		X
+AKT1	Ctnnb1	human		X
+AKT1	CTNNB1	human	X	X
+AKT1	Ctnnd2	human		X
+AKT1	CYTH2	human		X
+AKT1	Dlc1	human	X	X
+AKT1	Dnajc5	human	X	X
+AKT1	DNMT1	human	X	X
+AKT1	EDC3	human	X	
+AKT1	Eif2ak3	human		X
+AKT1	Eif4b	human		X
+AKT1	EP300	human	X	X
+AKT1	EPHA2	human	X	
+AKT1	ESR1	human		X
+AKT1	ESR1	human	X	X
+AKT1	Esr2	human	X	X
+AKT1	EZH2	human	X	X
+AKT1	FAM129A	human	X	X
+AKT1	FANCA	human		X
+AKT1	FLNC	human		X
+AKT1	FOXA2	human	X	
+AKT1	FOXG1	human	X	
+AKT1	Foxg1	human	X	X
+AKT1	FOXO1	human	X	X
+AKT1	Foxo3	human		X
+AKT1	Foxo3	human	X	
+AKT1	FOXO3	human	X	X
+AKT1	Foxo4	human		X
+AKT1	FOXO4	human	X	X
+AKT1	GAB2	human	X	X
+AKT1	Gabrb2	human	X	X
+AKT1	Gata1	human		X
+AKT1	GATA1	human	X	X
+AKT1	GATA2	human		X
+AKT1	Gja1	human		X
+AKT1	Golga3	human	X	
+AKT1	Grin2c	human	X	
+AKT1	Grin2c	human	X	X
+AKT1	Gsk3a	human		X
+AKT1	GSK3A	human		X
+AKT1	GSK3B	human	X	X
+AKT1	HIST1H2BB	human		X
+AKT1	HJURP	human		X
+AKT1	Hk2	human	X	
+AKT1	HMOX1	human	X	X
+AKT1	HNRNPA1	human	X	X
+AKT1	HSPB1	human	X	X
+AKT1	HTRA2	human	X	X
+AKT1	HTT	human	X	X
+AKT1	ILF3	human	X	X
+AKT1	IRAK1	human		X
+AKT1	IRS1	human	X	X
+AKT1	ITGB3	human		X
+AKT1	Itpr1	human	X	X
+AKT1	KCNH2	human	X	
+AKT1	KHSRP	human	X	
+AKT1	Lmna	human		X
+AKT1	LTB4R2	human	X	X
+AKT1	MAP2K4	human	X	X
+AKT1	MAP3K11	human	X	X
+AKT1	Map3k5	human	X	
+AKT1	MAP3K5	human	X	X
+AKT1	MAP3K8	human		X
+AKT1	MDM2	human	X	X
+AKT1	MDM4	human	X	X
+AKT1	Mettl1	human	X	
+AKT1	METTL1	human	X	X
+AKT1	MST1R	human	X	X
+AKT1	MTOR	human		X
+AKT1	MTOR	human	X	X
+AKT1	MXD1	human	X	X
+AKT1	NCF1	human		X
+AKT1	NCOR1	human	X	X
+AKT1	NDRG2	human		X
+AKT1	NOS3	human		X
+AKT1	NOS3	human	X	
+AKT1	NOS3	human	X	X
+AKT1	NR3C1	human	X	X
+AKT1	Nr4a1	human	X	X
+AKT1	NR4A1	human	X	X
+AKT1	NUAK1	human	X	X
+AKT1	PACS2	human	X	
+AKT1	PALLD	human	X	X
+AKT1	Pawr	human	X	X
+AKT1	Pcbp1	human		X
+AKT1	PDCD4	human	X	X
+AKT1	Pde3a	human	X	
+AKT1	PEA15	human	X	X
+AKT1	PFKFB2	human		X
+AKT1	PFKFB2	human	X	X
+AKT1	PFKFB3	human		X
+AKT1	PHF20	human		X
+AKT1	PHF20	human	X	X
+AKT1	Pikfyve	human		X
+AKT1	PIKFYVE	human	X	X
+AKT1	Pkmyt1	human	X	X
+AKT1	PLCG1	human	X	
+AKT1	Pln	human		X
+AKT1	Ppargc1a	human		X
+AKT1	PPP1CA	human		X
+AKT1	Prkaa1	human		X
+AKT1	Prph	human	X	X
+AKT1	PTPN1	human	X	X
+AKT1	RAC1	human		X
+AKT1	RANBP3	human	X	X
+AKT1	RARA	human	X	X
+AKT1	RGCC	human		X
+AKT1	RICTOR	human	X	
+AKT1	RNF11	human	X	
+AKT1	RPS3	human		X
+AKT1	RUNX2	human		X
+AKT1	S1PR1	human	X	X
+AKT1	Scnn1a	human	X	
+AKT1	Sh2b2	human	X	X
+AKT1	Sh3bp4	human	X	X
+AKT1	SH3RF1	human		X
+AKT1	SKI	human	X	X
+AKT1	SLC9A1	human		X
+AKT1	Slc9a1	human	X	X
+AKT1	Sox2	human	X	X
+AKT1	SRPK2	human	X	X
+AKT1	Ssb	human		X
+AKT1	STK3	human	X	X
+AKT1	STK4	human	X	X
+AKT1	SYTL1	human	X	
+AKT1	TAL1	human	X	X
+AKT1	TBC1D1	human		X
+AKT1	TBC1D4	human	X	X
+AKT1	TERF1	human		X
+AKT1	TERT	human		X
+AKT1	TOPBP1	human	X	
+AKT1	TP53RK	human	X	X
+AKT1	Tsc2	human		X
+AKT1	TSC2	human	X	
+AKT1	TSC2	human	X	X
+AKT1	TTC3	human	X	X
+AKT1	TWIST1	human		X
+AKT1	TWIST1	human	X	X
+AKT1	Usp8	human	X	
+AKT1	VCP	human	X	X
+AKT1	VIM	human	X	X
+AKT1	WEE1	human	X	
+AKT1	WNK1	human	X	X
+AKT1	XIAP	human	X	X
+AKT1	YAP1	human	X	X
+AKT1	YBX1	human	X	X
+AKT1	YWHAZ	human	X	X
+AKT1	ZFP36L1	human		X
+AKT1	ZFP36L1	human	X	X
+AKT1	ZYX	human	X	X
+AKT2	ANKRD2	human	X	X
+AKT2	CBY1	human		X
+AKT2	Cd34	human		X
+AKT2	CHUK	human	X	X
+AKT2	Clk2	human		X
+AKT2	CTNNB1	human	X	X
+AKT2	EDC3	human		X
+AKT2	ESR1	human	X	
+AKT2	EZR	human	X	X
+AKT2	FLNC	human		X
+AKT2	GAPDH	human	X	
+AKT2	HIST1H3A	human		X
+AKT2	HIST1H3A	human	X	X
+AKT2	HTRA2	human	X	X
+AKT2	KHSRP	human		X
+AKT2	MAP3K5	human	X	X
+AKT2	Myo5a	human		X
+AKT2	Pcbp1	human	X	
+AKT2	Pitx2	human		X
+AKT2	RACGAP1	human		X
+AKT2	Sfrs5	human		X
+AKT2	SH3RF1	human		X
+AKT2	Sik2	human		X
+AKT2	XIAP	human	X	X
+AKT3	AGO2	human	X	X
+AKT3	BRAF	human	X	X
+ALK	ALK	human		X
+ALK	ATIC	human	X	
+ALK	GRB2	human	X	
+ALK	PTPN11	human	X	
+ALK	SFPQ	human	X	X
+ALK	SRCIN1	human		X
+ALK	Stat3	human	X	
+ALK	STAT3	human	X	
+ALK	VASP	human	X	
+ARAF	BAD	human		X
+ARAF	MAP2K1	human	X	X
+ATM	AATF	human		X
+ATM	APLF	human	X	
+ATM	ATF2	human	X	
+ATM	ATM	human		X
+ATM	ATM	human	X	X
+ATM	AVEN	human		X
+ATM	BAG6	human	X	
+ATM	BLM	human		X
+ATM	BLM	human	X	X
+ATM	BRCA1	human		X
+ATM	BRCA1	human	X	X
+ATM	BUB1	human	X	
+ATM	C1qbp	human		X
+ATM	CCDC6	human	X	
+ATM	CHD4	human	X	
+ATM	CHEK1	human	X	
+ATM	CHEK2	human	X	
+ATM	CHEK2	human	X	X
+ATM	CREB1	human		X
+ATM	CREB1	human	X	X
+ATM	DBF4	human	X	X
+ATM	DCLRE1C	human		X
+ATM	DCLRE1C	human	X	X
+ATM	DYRK2	human	X	
+ATM	E2F1	human	X	X
+ATM	EIF4EBP1	human		X
+ATM	Eif4ebp1	human	X	X
+ATM	EP300	human	X	X
+ATM	EWSR1	human	X	
+ATM	EYA3	human	X	
+ATM	FANCD2	human	X	
+ATM	FANCD2	human	X	X
+ATM	FANCI	human	X	
+ATM	FBXO31	human	X	X
+ATM	FUS	human	X	
+ATM	HIF1A	human	X	X
+ATM	HUWE1	human	X	
+ATM	KHSRP	human	X	X
+ATM	Mcm3	human		X
+ATM	MCM3	human	X	X
+ATM	MDM2	human		X
+ATM	MDM2	human	X	X
+ATM	MDM4	human		X
+ATM	MED1	human	X	
+ATM	MEN1	human	X	
+ATM	MRE11A	human		X
+ATM	NABP2	human		X
+ATM	NBN	human	X	X
+ATM	NFAT5	human	X	
+ATM	NHEJ1	human	X	
+ATM	NUSAP1	human	X	
+ATM	PPP1R2	human	X	X
+ATM	PRKDC	human	X	
+ATM	PTEN	human	X	
+ATM	RAD17	human	X	X
+ATM	RAD18	human	X	
+ATM	RAD9A	human	X	X
+ATM	RASSF1	human		X
+ATM	RASSF1	human	X	X
+ATM	RBBP8	human	X	
+ATM	RFWD2	human	X	X
+ATM	RFWD3	human	X	
+ATM	RIF1	human	X	
+ATM	RNF20	human	X	
+ATM	RNF40	human	X	
+ATM	RPA2	human	X	
+ATM	RPA2	human	X	X
+ATM	RRM2B	human	X	X
+ATM	SIAH1	human	X	X
+ATM	SLX4	human	X	
+ATM	SMAD1	human	X	X
+ATM	SMARCC2	human		X
+ATM	SMC1A	human	X	X
+ATM	SMC3	human	X	X
+ATM	SP1	human	X	
+ATM	SP1	human	X	X
+ATM	TAOK1	human		X
+ATM	TAOK3	human	X	
+ATM	TDP1	human	X	
+ATM	TDP1	human	X	X
+ATM	TERF1	human	X	X
+ATM	TOPBP1	human		X
+ATM	TP53BP1	human	X	
+ATM	TP53BP1	human	X	X
+ATM	Tp53	human	X	
+ATM	TP53	human	X	
+ATM	TP53	human	X	X
+ATM	TP63	human	X	X
+ATM	TRIM28	human	X	
+ATM	Ttc5	human		X
+ATM	UBR5	human	X	
+ATM	Uimc1	human		X
+ATM	UIMC1	human	X	
+ATM	USP10	human	X	
+ATM	USP15	human	X	
+ATM	USP28	human	X	
+ATM	USP34	human	X	
+ATM	VCP	human	X	
+ATM	WHSC1	human	X	
+ATM	WRN	human		X
+ATM	XPA	human		X
+ATM	ZBTB2	human	X	
+ATM	ZNF148	human	X	X
+ATM	ZNF420	human	X	
+ATR	ATM	human	X	X
+ATR	ATR	human		X
+ATR	ATRIP	human	X	X
+ATR	BLM	human		X
+ATR	BRCA1	human	X	
+ATR	BRCA1	human	X	X
+ATR	CCAR2	human	X	
+ATR	CCDC82	human	X	
+ATR	CDKN2A	human	X	
+ATR	CHEK1	human		X
+ATR	CHEK1	human	X	X
+ATR	CHEK2	human	X	X
+ATR	CHTF18	human	X	
+ATR	CNOT2	human	X	
+ATR	CREB1	human	X	X
+ATR	CUX1	human	X	
+ATR	DAXX	human	X	
+ATR	DBF4	human	X	X
+ATR	DCLRE1C	human	X	
+ATR	E2F1	human		X
+ATR	EWSR1	human	X	
+ATR	FANCA	human	X	X
+ATR	FANCD2	human		X
+ATR	FANCD2	human	X	X
+ATR	FARSA	human	X	
+ATR	GINS2	human	X	
+ATR	GPS1	human	X	
+ATR	HUWE1	human	X	
+ATR	IRS1	human	X	
+ATR	KMT2A	human	X	X
+ATR	MARCKSL1	human	X	
+ATR	MCM2	human	X	X
+ATR	MCM3	human		X
+ATR	MDC1	human	X	
+ATR	MDM2	human	X	X
+ATR	NBN	human	X	
+ATR	NBN	human	X	X
+ATR	NPM1	human		X
+ATR	PHF14	human	X	
+ATR	POLH	human	X	X
+ATR	PRKDC	human	X	
+ATR	RAD17	human	X	X
+ATR	RBBP8	human	X	X
+ATR	Rpa2	human		X
+ATR	RPA2	human		X
+ATR	RPA2	human	X	X
+ATR	SIAH1	human	X	
+ATR	SMARCC2	human		X
+ATR	SMC1A	human	X	
+ATR	SP1	human	X	
+ATR	SUGP2	human	X	
+ATR	SUN2	human	X	
+ATR	TP53	human		X
+ATR	TP53	human	X	X
+ATR	Trp53	human		X
+ATR	TUT1	human	X	
+ATR	UIMC1	human	X	
+ATR	VCP	human	X	
+ATR	XPA	human		X
+ATR	XPA	human	X	X
+ATR	ZSCAN5A	human	X	
+AURKA	AR	human	X	X
+AURKA	ARPC1B	human	X	
+AURKA	AURKA	human		X
+AURKA	AURKA	human	X	X
+AURKA	BRCA1	human	X	X
+AURKA	CDC25B	human	X	X
+AURKA	CENPA	human		X
+AURKA	CETN2	human	X	X
+AURKA	Cpeb1	human		X
+AURKA	CRMP1	human		X
+AURKA	DCTN1	human		X
+AURKA	DLGAP5	human		X
+AURKA	FADD	human	X	X
+AURKA	FAF1	human	X	X
+AURKA	GSK3B	human	X	X
+AURKA	HIST1H3A	human	X	X
+AURKA		human		X
+AURKA	kif2c	human		X
+AURKA	LATS2	human	X	X
+AURKA	MAP9	human		X
+AURKA	MAP9	human	X	X
+AURKA	MAPRE3	human	X	X
+AURKA	MBD3	human	X	X
+AURKA	MCM2	human		X
+AURKA	MYBBP1A	human		X
+AURKA	Ndel1	human	X	X
+AURKA	PARD3	human	X	X
+AURKA	PHLDA1	human	X	
+AURKA	PIN1	human	X	X
+AURKA	PLK1	human	X	X
+AURKA	RALA	human	X	
+AURKA	RASSF1	human	X	X
+AURKA	Tacc3	human	X	
+AURKA	TACC3	human		X
+AURKA	TP53	human	X	X
+AURKA	WWC1	human	X	X
+AURKB	AHNAK	human		X
+AURKB	ARHGAP21	human		X
+AURKB	ATM	human	X	X
+AURKB	AURKB	human		X
+AURKB	AURKB	human	X	X
+AURKB	BIRC5	human		X
+AURKB	BIRC5	human	X	X
+AURKB	C19orf21	human		X
+AURKB	CASC5	human	X	X
+AURKB	CBX5	human		X
+AURKB	CCDC86	human		X
+AURKB	CDCA5	human		X
+AURKB	CDCA8	human		X
+AURKB	CENPA	human		X
+AURKB	CHMP4C	human	X	X
+AURKB	CKAP2	human	X	X
+AURKB	COBLL1	human		X
+AURKB	DDA1	human		X
+AURKB	DDX3X	human		X
+AURKB	DDX52	human		X
+AURKB	DEK	human		X
+AURKB	DES	human	X	X
+AURKB	DIAPH2	human		X
+AURKB	DIAPH2	human	X	X
+AURKB	DSN1	human	X	X
+AURKB	GFAP	human	X	X
+AURKB	H3F3A	human	X	X
+AURKB	HDAC5	human	X	X
+AURKB	Hist1h2ail	human	X	
+AURKB	HIST1H2BB	human		X
+AURKB	Hist1h3a	human	X	
+AURKB	HIST1H3A	human	X	
+AURKB	HIST1H3A	human	X	X
+AURKB	HMGN2	human	X	
+AURKB	HMGN2	human	X	X
+AURKB	HMGN5	human		X
+AURKB	HSP90AB1	human		X
+AURKB	Incenp	human		X
+AURKB	INCENP	human		X
+AURKB	KIF23	human	X	
+AURKB	kif2c	human		X
+AURKB	KIF2C	human		X
+AURKB	kif2c	human	X	X
+AURKB	KIF2C	human	X	X
+AURKB	KRT8	human		X
+AURKB	LMO7	human		X
+AURKB	MAPRE3	human	X	X
+AURKB	MKI67	human		X
+AURKB	MPHOSPH10	human		X
+AURKB	MYBBP1A	human	X	X
+AURKB	MYL12B	human		X
+AURKB	NAGK	human		X
+AURKB	NDC80	human		X
+AURKB	NELFE	human		X
+AURKB	NINL	human	X	X
+AURKB	NSUN2	human	X	X
+AURKB	NUMA1	human		X
+AURKB	NUSAP1	human		X
+AURKB	PARD3	human	X	X
+AURKB	PLEC	human		X
+AURKB	PPHLN1	human		X
+AURKB	PRKDC	human		X
+AURKB	PTRF	human		X
+AURKB	RACGAP1	human		X
+AURKB	RACGAP1	human	X	X
+AURKB	RASSF1	human	X	X
+AURKB	RB1	human		X
+AURKB	RBM14	human		X
+AURKB	RBM3	human		X
+AURKB	RBMX	human		X
+AURKB	RIF1	human		X
+AURKB	RPL21	human		X
+AURKB	RPL8	human		X
+AURKB	RPS10	human		X
+AURKB	SEPT1	human		X
+AURKB	SH2D4A	human		X
+AURKB	SSH3	human		X
+AURKB	SUPT16H	human		X
+AURKB	TP53	human	X	X
+AURKB	UTP3	human		X
+AURKB	VIM	human	X	X
+AURKB	WWC1	human	X	X
+AURKB	YY1	human	X	X
+AURKC	HIST1H3A	human		X
+AURKC	TACC1	human		X
+BAZ1B	H2AFX	human		X
+BCKDK	Bckdha	human		X
+BCR/ABL	BCR	human		X
+BCR/ABL	BCR	human	X	
+BCR/ABL	BCR	human	X	X
+BCR/ABL	Cdv3	human	X	
+BCR/ABL	CRKL	human	X	X
+BCR/ABL	GRB2	human	X	
+BCR/ABL	Jak2	human		X
+BCR/ABL	Jak2	human	X	X
+BCR/ABL	RAD51	human	X	
+BCR/ABL	RAD52	human	X	
+BCR	MLLT4	human		X
+BCR	YWHAQ	human		X
+BCR	YWHAZ	human		X
+BLK	Dbnl	human		X
+BLK	FCGR2A	human		X
+BLK	FCGR2B	human		X
+BLK	FCGR2C	human		X
+BLVRA	BLVRA	human		X
+BLVRA	PRKCB	human	X	X
+BMPR1B	SMAD1	human	X	X
+BMPR1B	SMAD2	human	X	
+BMX	FGFR1	human	X	
+BMX	MET	human	X	
+BMX	PTK2	human		X
+BMX	PTK2	human	X	X
+BMX	RUFY1	human	X	
+BMX	TNK2	human	X	
+BRAF	BAD	human	X	X
+BRAF	BRAF	human		X
+BRAF	MAP2K1	human	X	X
+BRAF	MAP2K2	human		X
+BRAF	TTK	human	X	
+BRD4	Polr2a	human	X	
+BRD4	POLR2A	human	X	X
+BRSK1	BRSK1	human		X
+BRSK1	CDC25B	human		X
+BRSK1	CDC25C	human	X	X
+BRSK1	Mapt	human		X
+BRSK1	PRKAA1	human		X
+BRSK1	TUBG1	human	X	X
+BRSK1	WEE1	human		X
+BRSK2	PRKAA1	human		X
+BTK	BMX	human		X
+BTK	BTK	human	X	X
+BTK	Creb1	human	X	
+BTK	GTF2I	human	X	X
+BTK	IKZF1	human	X	
+BTK	ITK	human		X
+BTK	Plcg2	human	X	X
+BTK	PLCG2	human	X	X
+BTK	Stat5a	human	X	
+BTK	TEC	human		X
+BTK	TIRAP	human		X
+BUB1	BUB3	human		X
+BUB1	CDC20	human		X
+CAMK1	Arhgef7	human	X	X
+CAMK1	CAMK2A	human		X
+CAMK1	Dnm1l	human	X	X
+CAMK1	EIF4G3	human		X
+CAMK1G	EIF4G3	human	X	X
+CAMK1	HDAC5	human	X	
+CAMK1	Hdac7	human	X	
+CAMK1	HDAC9	human	X	
+CAMK1	LIPE	human		X
+CAMK1	Mark2	human	X	
+CAMK1	MYL9	human	X	
+CAMK1	Numb	human		X
+CAMK1	Pklr	human		X
+CAMK1	Rps19	human		X
+CAMK1	Rps19	human	X	
+CAMK1	RPS19	human		X
+CAMK1	RYR1	human		X
+CAMK1	Sik1	human		X
+CAMK1	Snf1lk2	human	X	X
+CAMK1	Th	human		X
+CAMK2A	Abi1	human	X	
+CAMK2A	ALOX5	human		X
+CAMK2A	Brsk1	human	X	X
+CAMK2A	CACB	human		X
+CAMK2A	Cacna1b	human		X
+CAMK2A	Cacna1c	human		X
+CAMK2A	CACNA1C	human		X
+CAMK2A	CALD1	human		X
+CAMK2A	Camk2a	human		X
+CAMK2A	CAMK2A	human		X
+CAMK2A	CAMK2A	human	X	X
+CAMK2A	CARD11	human		X
+CAMK2A	CD44	human	X	X
+CAMK2A	Cdk5r1	human		X
+CAMK2A	CDKN1B	human		X
+CAMK2A	CHAT	human		X
+CAMK2A	Chrm4	human	X	X
+CAMK2A	CLCN3	human		X
+CAMK2A	Creb1	human		X
+CAMK2A	Creb1	human	X	X
+CAMK2A	CTNNB1	human		X
+CAMK2A	Dlg1	human		X
+CAMK2A	Dlg4	human	X	X
+CAMK2A	Drd3	human		X
+CAMK2A	ESPL1	human		X
+CAMK2A	ETS1	human	X	X
+CAMK2A	ETS2	human		X
+CAMK2A	ETS2	human	X	X
+CAMK2A	FBXO43	human		X
+CAMK2A	FLNA	human	X	
+CAMK2A	Gabbr1	human		X
+CAMK2A	GFPT1	human		X
+CAMK2A	Gja1	human		X
+CAMK2A	Gjc1	human		X
+CAMK2A	GLO1	human	X	
+CAMK2A	Gria1	human		X
+CAMK2A	GRIA1	human		X
+CAMK2A	Gria4	human		X
+CAMK2A	Grin2b	human		X
+CAMK2A	GRIN2B	human		X
+CAMK2A	Grm1	human		X
+CAMK2A	HRH1	human		X
+CAMK2A	HSF1	human		X
+CAMK2A		human		X
+CAMK2A	ITGB1BP1	human	X	
+CAMK2A	ITGB1	human	X	
+CAMK2A	ITPKA	human	X	X
+CAMK2A	Itpr2	human		X
+CAMK2A	Kcnd2	human	X	X
+CAMK2A	KIF3A	human		X
+CAMK2A	Lipe	human		X
+CAMK2A	Lrp4	human		X
+CAMK2A	MAPT	human		X
+CAMK2A	Mcu	human	X	
+CAMK2A	Mecp2	human		X
+CAMK2A	Myh9	human	X	
+CAMK2A	NCOR2	human		X
+CAMK2A	NCOR2	human	X	X
+CAMK2A	Nlgn1	human	X	X
+CAMK2A	Nos1	human	X	
+CAMK2A	Oprm1	human		X
+CAMK2A	Oprm1	human	X	
+CAMK2A	OPRM1	human	X	
+CAMK2A	Pdc	human		X
+CAMK2A	Pea15	human		X
+CAMK2A	PLCB3	human	X	X
+CAMK2A	PLN	human		X
+CAMK2A	PLN	human	X	
+CAMK2A	PPP1R14A	human		X
+CAMK2A	Ptk2	human		X
+CAMK2A	Ptpra	human		X
+CAMK2A	RCHY1	human	X	X
+CAMK2A	Rims1	human		X
+CAMK2A	Rph3a	human		X
+CAMK2A	RRAD	human		X
+CAMK2A	Ryr2	human		X
+CAMK2A	Ryr2	human	X	
+CAMK2A	RYR2	human		X
+CAMK2A	RYR2	human	X	
+CAMK2A	Slc6a3	human		X
+CAMK2A	SLC6A4	human		X
+CAMK2A	Sln	human		X
+CAMK2A	Sln	human	X	
+CAMK2A	SLN	human		X
+CAMK2A	SMAD2	human	X	X
+CAMK2A	SNCA	human		X
+CAMK2A	Spr	human		X
+CAMK2A	SPR	human		X
+CAMK2A	SRF	human		X
+CAMK2A	Syn1	human	X	
+CAMK2A	SYN1	human		X
+CAMK2A	TCAP	human		X
+CAMK2A	TH	human		X
+CAMK2A	TH	human	X	X
+CAMK2A	Tph2	human		X
+CAMK2A	Trpv1	human	X	
+CAMK2A	Vim	human		X
+CAMK2A	VIM	human	X	
+CAMK2A	Wee2	human	X	X
+CAMK2B	Gsk3a	human		X
+CAMK2B	Gsk3b	human		X
+CAMK2B	PRKAA1	human		X
+CAMK2B	STMN1	human		X
+CAMK2D	ANKRD28	human		X
+CAMK2D	CACNB2	human	X	
+CAMK2D	CEACAM1	human		X
+CAMK2D	CEACAM1	human	X	X
+CAMK2D	HDAC4	human	X	X
+CAMK2D	Itpr2	human	X	
+CAMK2D	KCNJ11	human	X	X
+CAMK2D	Ryr2	human		X
+CAMK2D	SCN5A	human		X
+CAMK2D	TPD52	human	X	X
+CAMK2G	Bad	human		X
+CAMK2G	CAMK2G	human		X
+CAMK4	CAMK2A	human		X
+CAMK4	Creb1	human	X	
+CAMK4	CREB1	human		X
+CAMK4	Crebbp	human	X	X
+CAMK4	HDAC5	human	X	X
+CAMK4	HNRNPL	human	X	X
+CAMK4	Myh9	human	X	
+CAMK4	PHB2	human	X	X
+CAMK4	RELA	human		X
+CAMK4	Snf1lk2	human		X
+CAMK4	STMN1	human		X
+CAMKK1	BRSK1	human		X
+CAMKK1	CAMK1D	human		X
+CAMKK1	CAMK1	human		X
+CAMKK1	CAMK4	human		X
+CAMKK1	PRKAA1	human	X	
+CAMKK2	Prkaa1	human		X
+CAMKK2	PRKAA1	human	X	
+CASK	CASK	human		X
+CASK	NRXN1	human		X
+CDC42BPA	CDC42BPA	human		X
+CDC42BPA	MYL9	human	X	X
+CDC7	MCM2	human		X
+CDC7	MCM2	human	X	X
+CDC7	PSIP1	human	X	X
+CDC7	RAD18	human	X	X
+CDK11A	CDK11B	human	X	X
+CDK11B	EIF3F	human	X	X
+CDK16	Nsf	human		X
+CDK19	EIF3F	human	X	X
+CDK19	PAK1	human	X	X
+CDK1	Aak1	human		X
+CDK1	AAK1	human		X
+CDK1	ADD1	human		X
+CDK1	AHNAK	human		X
+CDK1	AMPH	human		X
+CDK1	ANAPC1	human		X
+CDK1	ANAPC4	human		X
+CDK1	APLP2	human		X
+CDK1	APP	human		X
+CDK1	AR	human	X	
+CDK1	Bad	human		X
+CDK1	BAD	human		X
+CDK1	BARD1	human		X
+CDK1	BCL2	human	X	X
+CDK1	BCL2L11	human		X
+CDK1	BIRC5	human	X	X
+CDK1	BLM	human		X
+CDK1	BORA	human		X
+CDK1	BRCA1	human		X
+CDK1	BUB1B	human		X
+CDK1	BUB1	human		X
+CDK1	CALD1	human		X
+CDK1	Canx	human		X
+CDK1	CANX	human		X
+CDK1	CARHSP1	human		X
+CDK1	CASP8	human	X	X
+CDK1	CASP9	human	X	X
+CDK1	CCNB1	human		X
+CDK1	CD3EAP	human		X
+CDK1	CDC16	human		X
+CDK1	CDC23	human		X
+CDK1	CDC25A	human		X
+CDK1	CDC25B	human		X
+CDK1	CDC25B	human	X	
+CDK1	cdc25c-b	human		X
+CDK1	CDC25C	human		X
+CDK1	CDC25C	human	X	X
+CDK1	CDC27	human		X
+CDK1	CDC7	human		X
+CDK1	CDCA5	human		X
+CDK1	CDK7	human		X
+CDK1	CEP55	human	X	
+CDK1	Chek1	human	X	
+CDK1	CHEK1	human		X
+CDK1	CHEK1	human	X	X
+CDK1	CKAP2	human	X	X
+CDK1	CLASP2	human		X
+CDK1	CSNK2A1	human		X
+CDK1	CSNK2B	human		X
+CDK1	CTTN	human		X
+CDK1	Cux1	human		X
+CDK1	DCTN1	human		X
+CDK1	DCTN6	human		X
+CDK1	DDX3X	human		X
+CDK1	DDX3X	human	X	X
+CDK1	DIAPH1	human		X
+CDK1	DLG1	human	X	X
+CDK1	DLGAP5	human		X
+CDK1	Dnm1l	human		X
+CDK1	DNM1L	human		X
+CDK1	DNM2	human		X
+CDK1	DNMT1	human		X
+CDK1	DUT	human		X
+CDK1	DYNC1LI1	human		X
+CDK1	E2F1	human		X
+CDK1	ECT2	human		X
+CDK1	ECT2	human	X	X
+CDK1	EEF1D	human		X
+CDK1	EEF2K	human	X	X
+CDK1	Efhd2	human		X
+CDK1	EFHD2	human		X
+CDK1	EGFR	human		X
+CDK1	EIF4EBP1	human		X
+CDK1	ELAVL1	human		X
+CDK1	EPB41	human		X
+CDK1	EPN1	human		X
+CDK1	ERCC6L	human		X
+CDK1	ESPL1	human		X
+CDK1	Ezh2	human		X
+CDK1	EZH2	human	X	X
+CDK1	FANCG	human		X
+CDK1	FEN1	human	X	X
+CDK1	FLNA	human		X
+CDK1	FOXK2	human		X
+CDK1	FOXK2	human	X	X
+CDK1	FOXM1	human	X	X
+CDK1	FOXO1	human	X	X
+CDK1	GAPVD1	human		X
+CDK1	GIGYF2	human		X
+CDK1	GMPS	human		X
+CDK1	HIF1A	human		X
+CDK1	HIST1H1E	human		X
+CDK1	Hmga1	human		X
+CDK1	HMGA1	human		X
+CDK1	Hmga2	human		X
+CDK1	HMGCS1	human		X
+CDK1	HMGN5	human		X
+CDK1	Hnrnpk	human		X
+CDK1	HNRNPK	human		X
+CDK1	IL16	human		X
+CDK1	Incenp	human		X
+CDK1	ING1	human		X
+CDK1	IREB2	human	X	X
+CDK1	IRS2	human		X
+CDK1	ITPR1	human		X
+CDK1	Itpr1	human	X	X
+CDK1	Junb	human	X	X
+CDK1	Jun	human		X
+CDK1	KAT5	human	X	
+CDK1	KAT5	human	X	X
+CDK1	KAT7	human		X
+CDK1	KIF11	human		X
+CDK1	KIF20B	human		X
+CDK1	KIF22	human		X
+CDK1	KIF2C	human	X	X
+CDK1	KMT2E	human	X	
+CDK1	KRT8	human	X	X
+CDK1	LATS1	human		X
+CDK1	LATS1	human	X	X
+CDK1	LBR	human		X
+CDK1	LDHA	human		X
+CDK1	LIG1	human		X
+CDK1	LIG3	human		X
+CDK1	Lmna	human		X
+CDK1	LMNA	human		X
+CDK1	LMNB1	human		X
+CDK1	LOC690372	human		X
+CDK1	Map2k1	human		X
+CDK1	MAP2K1	human		X
+CDK1	MAP2K1	human	X	X
+CDK1	MAP4	human		X
+CDK1	MAP4	human	X	X
+CDK1	Map7	human		X
+CDK1	MAP7	human		X
+CDK1	MAPK6	human		X
+CDK1	MAPK6	human	X	X
+CDK1	MAPT	human		X
+CDK1	MCL1	human		X
+CDK1	MCL1	human	X	
+CDK1	Mcm3	human		X
+CDK1	MCTS1	human		X
+CDK1	MDM4	human	X	X
+CDK1	MEF2C	human		X
+CDK1	MKI67	human		X
+CDK1	MKI67IP	human		X
+CDK1	MPLKIP	human	X	
+CDK1	Myod1	human		X
+CDK1	NAGK	human		X
+CDK1	NCAPG	human		X
+CDK1	NCL	human		X
+CDK1	NCOA3	human		X
+CDK1	NCOA3	human	X	X
+CDK1	NDEL1	human		X
+CDK1	NEDD1	human		X
+CDK1	NINL	human		X
+CDK1	Nme1	human		X
+CDK1	NME1	human		X
+CDK1	Nme2	human		X
+CDK1	NME2	human		X
+CDK1	Nolc1	human		X
+CDK1	NOLC1	human		X
+CDK1	Npm1	human		X
+CDK1	NPM1	human		X
+CDK1	NPM1	human	X	X
+CDK1	NSFL1C	human	X	X
+CDK1	Nucks1	human		X
+CDK1	NUCKS1	human		X
+CDK1	Numa1	human		X
+CDK1	NUMA1	human		X
+CDK1	NUMA1	human	X	X
+CDK1	NUP50	human	X	X
+CDK1	NUP98	human		X
+CDK1	NUSAP1	human	X	X
+CDK1	ODF2	human	X	
+CDK1	OGFR	human		X
+CDK1	ORC6	human		X
+CDK1	PAICS	human		X
+CDK1	Pak1	human		X
+CDK1	PALLD	human		X
+CDK1	PBK	human		X
+CDK1	Pdia3	human		X
+CDK1	PDIA3	human		X
+CDK1	PDS5B	human		X
+CDK1	PHF8	human		X
+CDK1	PI4KB	human		X
+CDK1	PIK3C2A	human	X	X
+CDK1	PIK3C3	human	X	X
+CDK1	PIP5K1C	human		X
+CDK1	PITPNM1	human	X	
+CDK1	PITPNM1	human	X	X
+CDK1	PKN2	human		X
+CDK1	Polr2a	human		X
+CDK1	POLR2A	human		X
+CDK1	Pom210	human		X
+CDK1	Ppp1ca	human		X
+CDK1	PPP1CA	human		X
+CDK1	Ppp1r12a	human		X
+CDK1	PRC1	human		X
+CDK1	PRDX1	human	X	X
+CDK1	PTPN1	human		X
+CDK1	PTPN2	human	X	X
+CDK1	PTTG2	human	X	X
+CDK1	PYCR2	human		X
+CDK1	RAB4A	human		X
+CDK1	RAB5B	human		X
+CDK1	RAD9A	human	X	
+CDK1	RAD9A	human	X	X
+CDK1	Ranbp2	human		X
+CDK1	RANBP2	human		X
+CDK1	Rangap1	human		X
+CDK1	RANGAP1	human	X	
+CDK1	Rara	human		X
+CDK1	RB1	human		X
+CDK1	RCC1	human		X
+CDK1	REPS2	human		X
+CDK1	RFC1	human		X
+CDK1	RGCC	human		X
+CDK1	RGPD3	human		X
+CDK1	RGPD4	human		X
+CDK1	RGPD6	human		X
+CDK1	RGPD8	human		X
+CDK1	RPA2	human		X
+CDK1	RPS3	human	X	X
+CDK1	Rps6kb1	human		X
+CDK1	RPS6KB1	human	X	
+CDK1	RPTOR	human		X
+CDK1	RPTOR	human	X	X
+CDK1	Rrm2	human		X
+CDK1	RRM2	human		X
+CDK1	Rsn	human	X	X
+CDK1	Rtn4	human		X
+CDK1	RUNX1	human		X
+CDK1	RUNX2	human	X	X
+CDK1	SAMHD1	human	X	X
+CDK1	SETD8	human	X	X
+CDK1	SIRT1	human		X
+CDK1	SIRT2	human	X	X
+CDK1	SLBP	human		X
+CDK1	SP1	human	X	X
+CDK1	SQSTM1	human	X	X
+CDK1	SREBF1	human	X	X
+CDK1	SRRM2	human		X
+CDK1	SSR1	human		X
+CDK1	STIM1	human		X
+CDK1	Stip1	human		X
+CDK1	Stmn1	human		X
+CDK1	STMN1	human	X	X
+CDK1	SUPT5H	human		X
+CDK1	TCOF1	human		X
+CDK1	TERF1	human		X
+CDK1	TEX14	human	X	
+CDK1	TFPT	human		X
+CDK1	TK1	human		X
+CDK1	TMPO	human		X
+CDK1	TOP1	human		X
+CDK1	TOP2A	human		X
+CDK1	TOP2B	human		X
+CDK1	Tp53bp1	human	X	
+CDK1	TP53	human	X	X
+CDK1	TP73	human	X	X
+CDK1	TPP1	human		X
+CDK1	TPX2	human		X
+CDK1	TSC1	human	X	X
+CDK1	Tubb5	human	X	X
+CDK1	U2AF2	human		X
+CDK1	UBAP2L	human		X
+CDK1	UBE2A	human	X	X
+CDK1	UBE2I	human		X
+CDK1	UBXN2B	human		X
+CDK1	Ugdh	human		X
+CDK1	UGDH	human		X
+CDK1	UNG	human		X
+CDK1	USP14	human		X
+CDK1	USP16	human	X	X
+CDK1	USP1	human		X
+CDK1	Vim	human		X
+CDK1	VIM	human		X
+CDK1	WEE1	human		X
+CDK1	ZC3H11A	human		X
+CDK1	ZC3HC1	human		X
+CDK1	ZMYM3	human		X
+CDK20	CDK2	human	X	X
+CDK20	ICK	human	X	X
+CDK2	AARS2	human		X
+CDK2	ADD1	human		X
+CDK2	ADD3	human		X
+CDK2	ADRBK1	human		X
+CDK2	AKIRIN2	human		X
+CDK2	ALDH5A1	human		X
+CDK2	AMOT	human		X
+CDK2	ANKLE2	human		X
+CDK2	ANKRD17	human		X
+CDK2	APC	human		X
+CDK2	ARHGAP19	human		X
+CDK2	ARID1A	human		X
+CDK2	ARID4A	human		X
+CDK2	ARID4A	human	X	X
+CDK2	ATF2	human		X
+CDK2	ATRIP	human	X	X
+CDK2	BARD1	human		X
+CDK2	BAZ2A	human		X
+CDK2	BOD1L1	human		X
+CDK2	BRCA1	human	X	X
+CDK2	BTG1	human		X
+CDK2	C17orf49	human		X
+CDK2	C1orf198	human		X
+CDK2	C2orf49	human		X
+CDK2	C6orf106	human		X
+CDK2	C9orf40	human		X
+CDK2	CALD1	human		X
+CDK2	CAMSAP1	human		X
+CDK2	CC2D1A	human		X
+CDK2	CCDC6	human		X
+CDK2	CCNA2	human	X	X
+CDK2	CCNE1	human		X
+CDK2	CCNE1	human	X	X
+CDK2	cdc25c-b	human		X
+CDK2	CDC25C	human	X	
+CDK2	CDC5L	human		X
+CDK2	CDC6	human	X	X
+CDK2	CDC7	human		X
+CDK2	CDK16	human		X
+CDK2	CDK2	human		X
+CDK2	CDK7	human		X
+CDK2	CDKN1A	human	X	X
+CDK2	CDKN1B	human		X
+CDK2	CDKN2D	human	X	X
+CDK2	CDT1	human		X
+CDK2	CDX2	human	X	X
+CDK2	Cebpb	human		X
+CDK2	CENPF	human		X
+CDK2	CHD4	human		X
+CDK2	CHD7	human		X
+CDK2	CHEK1	human		X
+CDK2	CIC	human		X
+CDK2	CRMP1	human		X
+CDK2	CROCC	human	X	X
+CDK2	CRTC2	human		X
+CDK2	Ctnnb1	human	X	
+CDK2	CTTNBP2NL	human		X
+CDK2	CTTN	human		X
+CDK2	Dab1	human	X	
+CDK2	DBNL	human		X
+CDK2	DDX3X	human		X
+CDK2	DHX38	human		X
+CDK2	DIAPH3	human		X
+CDK2	DLG1	human	X	X
+CDK2	DLGAP5	human		X
+CDK2	DMAP1	human		X
+CDK2	DNM1L	human		X
+CDK2	DNM2	human		X
+CDK2	DNMT1	human		X
+CDK2	DPF2	human		X
+CDK2	DPYSL3	human		X
+CDK2	DTL	human		X
+CDK2	EEF2	human		X
+CDK2	EFHD2	human		X
+CDK2	EIF2A	human		X
+CDK2	EIF4A3	human		X
+CDK2	EIF4G1	human		X
+CDK2	ELAVL1	human		X
+CDK2	ELF4	human		X
+CDK2	EML3	human		X
+CDK2	EPB41L3	human		X
+CDK2	ERAL1	human		X
+CDK2	ESR1	human		X
+CDK2	ESR1	human	X	X
+CDK2	EYA3	human		X
+CDK2	EZH2	human	X	X
+CDK2	FAM122A	human		X
+CDK2	FAM168B	human		X
+CDK2	FOXC1	human		X
+CDK2	FOXK2	human		X
+CDK2	FOXM1	human	X	
+CDK2	FOXO1	human	X	
+CDK2	Foxp3	human		X
+CDK2	GATAD2A	human		X
+CDK2	GIGYF2	human		X
+CDK2	GMPS	human		X
+CDK2	GORASP2	human		X
+CDK2	GTF2F1	human		X
+CDK2	GTF2I	human		X
+CDK2	HIRA	human		X
+CDK2	HIRA	human	X	X
+CDK2	HIST1H1A	human		X
+CDK2	HIST1H1E	human		X
+CDK2	HMGA1	human		X
+CDK2	HMGN5	human		X
+CDK2	HN1L	human		X
+CDK2	HNRNPD	human		X
+CDK2	HNRNPH1	human		X
+CDK2	HNRNPH2	human		X
+CDK2	HNRNPK	human		X
+CDK2	HNRNPUL1	human		X
+CDK2	ID3	human	X	X
+CDK2	ILF3	human		X
+CDK2	IMPDH2	human		X
+CDK2	INCA1	human		X
+CDK2	INO80E	human		X
+CDK2	IREB2	human		X
+CDK2	ITGB3BP	human		X
+CDK2	KAT7	human		X
+CDK2	KDM2A	human		X
+CDK2	KIF22	human		X
+CDK2	KMT2D	human		X
+CDK2	LARP1	human		X
+CDK2	LIG1	human		X
+CDK2	LIG1	human	X	X
+CDK2	LIG3	human		X
+CDK2	LIG3	human	X	X
+CDK2	LMNB2	human		X
+CDK2	LRCH3	human		X
+CDK2	LRWD1	human		X
+CDK2	MACF1	human		X
+CDK2	Map2	human		X
+CDK2	MARCKS	human		X
+CDK2	MCL1	human		X
+CDK2	MCM2	human		X
+CDK2	Mcm3	human		X
+CDK2	MCM3	human		X
+CDK2	Mcm4	human		X
+CDK2	MCM4	human		X
+CDK2	Mcm4	human	X	X
+CDK2	MCM7	human		X
+CDK2	MDC1	human		X
+CDK2	Mdm2	human		X
+CDK2	MED1	human		X
+CDK2	MICALL1	human		X
+CDK2	MKI67	human		X
+CDK2	MKL1	human		X
+CDK2	MLLT4	human		X
+CDK2	MRPS18B	human		X
+CDK2	MTA1	human		X
+CDK2	MTA2	human		X
+CDK2	MTHFD1L	human		X
+CDK2	Mybl2	human	X	
+CDK2	Myod1	human		X
+CDK2	NCAPH	human		X
+CDK2	NCL	human		X
+CDK2	NDE1	human		X
+CDK2	NELFA	human		X
+CDK2	NOB1	human		X
+CDK2	NOSIP	human		X
+CDK2	NPAT	human		X
+CDK2	NPAT	human	X	X
+CDK2	Npm1	human		X
+CDK2	NPM1	human		X
+CDK2	NR1I2	human		X
+CDK2	NR1I2	human	X	
+CDK2	Nr3c1	human		X
+CDK2	NUCKS1	human		X
+CDK2	NUDC	human		X
+CDK2	NUFIP2	human		X
+CDK2	NUMA1	human		X
+CDK2	NUP107	human		X
+CDK2	NUP133	human		X
+CDK2	NUP153	human		X
+CDK2	NUP98	human		X
+CDK2	ORC1	human		X
+CDK2	ORC2	human	X	X
+CDK2	PAICS	human		X
+CDK2	PARP10	human		X
+CDK2	PBRM1	human		X
+CDK2	PDS5B	human		X
+CDK2	PELP1	human		X
+CDK2	PELP1	human	X	X
+CDK2	PGR	human		X
+CDK2	PGR	human	X	
+CDK2	PHF6	human		X
+CDK2	POLL	human		X
+CDK2	POLM	human		X
+CDK2	POLR2A	human		X
+CDK2	POU2F1	human		X
+CDK2	PPP1CA	human	X	X
+CDK2	PPP1R12C	human		X
+CDK2	PPP1R35	human		X
+CDK2	PRKAR1A	human		X
+CDK2	PRPF31	human		X
+CDK2	PRPF3	human		X
+CDK2	PRRC2A	human		X
+CDK2	PTHLH	human	X	X
+CDK2	PTPN2	human	X	X
+CDK2	Ptpn6	human	X	X
+CDK2	PYCR1	human		X
+CDK2	PYCR2	human		X
+CDK2	QTRT1	human		X
+CDK2	RAD18	human		X
+CDK2	RAD9A	human	X	X
+CDK2	RALY	human		X
+CDK2	Rangap1	human		X
+CDK2	RB1	human		X
+CDK2	RB1	human	X	X
+CDK2	RBBP8	human	X	X
+CDK2	RBL1	human		X
+CDK2	RBL2	human	X	
+CDK2	RBM27	human		X
+CDK2	RPL11	human		X
+CDK2	RPL12	human	X	X
+CDK2	RPS27	human		X
+CDK2	RPS27L	human		X
+CDK2	RPS3	human		X
+CDK2	RRM2	human		X
+CDK2	RRN3	human		X
+CDK2	Rtn4	human		X
+CDK2	RUNX1	human		X
+CDK2	SAMHD1	human		X
+CDK2	SCML2	human		X
+CDK2	SETDB1	human		X
+CDK2	SF3B1	human		X
+CDK2	SIRT2	human	X	X
+CDK2	SKP2	human		X
+CDK2	SLAIN2	human		X
+CDK2	SNAPIN	human		X
+CDK2	SNRNP70	human		X
+CDK2	SNW1	human		X
+CDK2	SORBS3	human		X
+CDK2	SPAG9	human		X
+CDK2	SPDL1	human		X
+CDK2	SRRM1	human		X
+CDK2	SRSF11	human		X
+CDK2	SRSF9	human		X
+CDK2	STMN1	human		X
+CDK2	SUDS3	human		X
+CDK2	SUPT5H	human		X
+CDK2	SUPT6H	human		X
+CDK2	TANC1	human		X
+CDK2	TBCE	human		X
+CDK2	TCF3	human		X
+CDK2	TCOF1	human		X
+CDK2	TERF2	human		X
+CDK2	TERF2IP	human		X
+CDK2	TFAM	human		X
+CDK2	TFCP2	human		X
+CDK2	TFCP2	human	X	X
+CDK2	THRAP3	human		X
+CDK2	TK1	human		X
+CDK2	TNKS1BP1	human		X
+CDK2	TOPBP1	human		X
+CDK2	TOR1AIP1	human		X
+CDK2	TP53BP1	human		X
+CDK2	TP53	human		X
+CDK2	TP63	human	X	X
+CDK2	TP73	human	X	X
+CDK2	TPR	human		X
+CDK2	TPX2	human		X
+CDK2	TSPYL2	human		X
+CDK2	TSR1	human		X
+CDK2	TUBG1	human		X
+CDK2	UBE2A	human	X	X
+CDK2	UBE2O	human		X
+CDK2	UBXN1	human		X
+CDK2	UHRF1	human		X
+CDK2	UNG	human		X
+CDK2	VIM	human		X
+CDK2	VIPAS39	human		X
+CDK2	XRCC1	human		X
+CDK2	XRCC6	human		X
+CDK2	ZBTB16	human	X	X
+CDK2	ZC3H11A	human		X
+CDK2	ZC3H18	human		X
+CDK2	ZC3HC1	human		X
+CDK2	ZHX1	human		X
+CDK2	ZMYM3	human		X
+CDK2	ZNF609	human		X
+CDK2	ZYX	human		X
+CDK3	ATF1	human	X	X
+CDK3	CABLES1	human	X	X
+CDK3	Cebpb	human		X
+CDK3	JUN	human	X	X
+CDK3	LIN9	human	X	X
+CDK3	RB1	human	X	
+CDK3	TFCP2	human	X	X
+CDK4	BRCA1	human	X	X
+CDK4	Cebpa	human	X	X
+CDK4	Celf1	human		X
+CDK4	CELF1	human		X
+CDK4	FOXM1	human		X
+CDK4	FOXM1	human	X	
+CDK4	FOXM1	human	X	X
+CDK4	FOXO1	human	X	X
+CDK4	Gata4	human		X
+CDK4	PELP1	human	X	X
+CDK4	RASSF1	human	X	X
+CDK4	Rb1	human	X	
+CDK4	RB1	human		X
+CDK4	RB1	human	X	X
+CDK4	RBL1	human		X
+CDK4	RBL2	human	X	
+CDK4	RUNX3	human	X	X
+CDK4	SMAD3	human	X	
+CDK4	TCF3	human		X
+CDK4	WDR77	human		X
+CDK5	Aatk	human	X	X
+CDK5	ADD2	human	X	
+CDK5	AGAP2	human		X
+CDK5	AGAP2	human	X	X
+CDK5	AMPH	human		X
+CDK5	Apex1	human		X
+CDK5	AR	human		X
+CDK5	ATM	human	X	X
+CDK5	AXIN1	human		X
+CDK5	Cacna1b	human		X
+CDK5	Cask	human		X
+CDK5	Cdk16	human	X	
+CDK5	Cdk5r1	human	X	
+CDK5	CDK5R1	human	X	X
+CDK5	CLOCK	human	X	X
+CDK5	Crmp1	human	X	
+CDK5	CRMP1	human		X
+CDK5	CRMP1	human	X	X
+CDK5	CTNNB1	human		X
+CDK5	Ctnnd2	human	X	
+CDK5	Dab1	human	X	
+CDK5	Dab1	human	X	X
+CDK5	DBN1	human		X
+CDK5	Dixdc1	human		X
+CDK5	DNM1	human		X
+CDK5	Dnm1	human	X	X
+CDK5	DNMT1	human	X	X
+CDK5	DPYSL2	human		X
+CDK5	Dpysl2	human	X	X
+CDK5	DPYSL3	human		X
+CDK5	DRD2	human	X	
+CDK5	EPRS	human	X	X
+CDK5	Esyt1	human		X
+CDK5	FZR1	human		X
+CDK5	HTRA2	human	X	X
+CDK5	Htt	human		X
+CDK5	HTT	human	X	X
+CDK5	Kalrn	human	X	X
+CDK5	KCNMA1	human	X	
+CDK5	LMTK2	human	X	
+CDK5	MAPT	human		X
+CDK5	MAPT	human	X	X
+CDK5	MEF2A	human	X	X
+CDK5	Mef2d	human		X
+CDK5	MEF2D	human	X	
+CDK5	MYC	human	X	
+CDK5	Ndel1	human		X
+CDK5	NEFL	human		X
+CDK5	NFAT5	human	X	X
+CDK5	NOS3	human	X	X
+CDK5	NR3C1	human		X
+CDK5	NR3C1	human	X	X
+CDK5	Odf1	human		X
+CDK5	Oprd1	human	X	X
+CDK5	PARK2	human	X	X
+CDK5	PIK3C3	human		X
+CDK5	PIK3C3	human	X	X
+CDK5	PIP5K1C	human	X	X
+CDK5	PLD2	human	X	
+CDK5	PMAIP1	human	X	X
+CDK5	PPARG	human		X
+CDK5	Pparg	human	X	X
+CDK5	PPP1CA	human	X	
+CDK5	Ppp1r1a	human		X
+CDK5	PPP1R2	human		X
+CDK5	PSEN1	human	X	X
+CDK5	PTK2	human		X
+CDK5	PXN	human		X
+CDK5	Rasgrf1	human		X
+CDK5	Rasgrf2	human	X	X
+CDK5	RB1	human		X
+CDK5	Rps6kb1	human		X
+CDK5	Rps6kb1	human	X	X
+CDK5	Sept5	human		X
+CDK5	SEPT5	human	X	X
+CDK5	Sh3glb1	human	X	X
+CDK5	Sipa1l1	human	X	
+CDK5	SRC	human	X	
+CDK5	Stmn1	human		X
+CDK5	Suds3	human		X
+CDK5	Th	human		X
+CDK5	TLN1	human	X	X
+CDK5	TP53	human		X
+CDK5	TP53	human	X	
+CDK5	TP53	human	X	X
+CDK5	TPPP	human		X
+CDK5	VIM	human	X	
+CDK5	Wasf1	human	X	
+CDK5	Wasf2	human		X
+CDK6	CDKN1A	human		X
+CDK6	CDKN1B	human		X
+CDK6	CELF1	human		X
+CDK6	FOXM1	human		X
+CDK6	NPM1	human	X	
+CDK6	RB1	human		X
+CDK6	RBL2	human	X	
+CDK6	RUNX1	human		X
+CDK7	AR	human		X
+CDK7	CDK11B	human		X
+CDK7	CDK1	human		X
+CDK7	CDK2	human		X
+CDK7	CDK4	human		X
+CDK7	CDK6	human		X
+CDK7	E2F1	human	X	X
+CDK7	ESR1	human	X	X
+CDK7	Ick	human	X	X
+CDK7	MCM2	human		X
+CDK7	MCM2	human	X	X
+CDK7	Nr5a1	human	X	
+CDK7	NR5A1	human	X	X
+CDK7	PCGF6	human		X
+CDK7	POLR2A	human		X
+CDK7	Rara	human		X
+CDK7	Rara	human	X	X
+CDK7	RARA	human	X	X
+CDK7	RARG	human		X
+CDK7	SMAD1	human	X	
+CDK7	TP53	human		X
+CDK8	CCNH	human	X	X
+CDK8	E2F1	human	X	X
+CDK8	SMAD1	human		X
+CDK8	SMAD1	human	X	X
+CDK8	SMAD3	human		X
+CDK8	SMAD3	human	X	X
+CDK9	CDK9	human		X
+CDK9	HIST1H1A	human	X	X
+CDK9		human		X
+CDK9	NCOA2	human	X	
+CDK9	POLR2A	human		X
+CDK9	POLR2A	human	X	
+CDK9	POLR2A	human	X	X
+CDK9	PPARG	human	X	
+CDK9	RB1	human		X
+CDK9	RCHY1	human	X	X
+CDK9	SMAD1	human		X
+CDK9	SMAD1	human	X	X
+CDK9	SMAD3	human		X
+CDK9	SMAD3	human	X	X
+CDK9	SUPT5H	human	X	X
+CDK9	TP53	human		X
+CDK9	TP53	human	X	X
+CDKL5	CDKL5	human		X
+CDKL5	LRRC4C	human	X	X
+CHEK1	ADD1	human		X
+CHEK1	ADD2	human		X
+CHEK1	ADD3	human		X
+CHEK1	ANKRD12	human		X
+CHEK1	ARHGEF2	human		X
+CHEK1	AURKB	human	X	X
+CHEK1	BAZ1A	human		X
+CHEK1	BLM	human		X
+CHEK1	BLM	human	X	X
+CHEK1	BUD13	human		X
+CHEK1	C17orf85	human		X
+CHEK1	CAAP1	human		X
+CHEK1	CAMSAP2	human		X
+CHEK1	CCDC6	human		X
+CHEK1	CDC25A	human	X	X
+CHEK1	CDC25B	human		X
+CHEK1	CDC25B	human	X	X
+CHEK1	CDC25C	human		X
+CHEK1	CDK13	human		X
+CHEK1	CDK1	human		X
+CHEK1	CEP170B	human		X
+CHEK1	CHD7	human		X
+CHEK1	CHEK1	human		X
+CHEK1	CHTOP	human		X
+CHEK1	CLK3	human		X
+CHEK1	CLSPN	human	X	X
+CHEK1	CSDA	human		X
+CHEK1	CSNK2B	human		X
+CHEK1	CTR9	human		X
+CHEK1	CTTN	human		X
+CHEK1	CWC25	human		X
+CHEK1	DDX19A	human		X
+CHEK1	DDX19B	human		X
+CHEK1	DDX24	human		X
+CHEK1	DRG2	human		X
+CHEK1	E2F3	human	X	X
+CHEK1	E2F6	human		X
+CHEK1	EBNA1BP2	human		X
+CHEK1	EML3	human		X
+CHEK1	EPRS	human		X
+CHEK1	Errfi1	human		X
+CHEK1	FANCD2	human	X	X
+CHEK1	FANCE	human	X	X
+CHEK1	FEN1	human		X
+CHEK1	FYTTD1	human		X
+CHEK1	GOLGA4	human		X
+CHEK1	GTF3C1	human		X
+CHEK1	HDLBP	human		X
+CHEK1	HIVEP1	human		X
+CHEK1	HNRNPA2B1	human		X
+CHEK1	HNRNPM	human		X
+CHEK1	IDI1	human		X
+CHEK1	INF2	human		X
+CHEK1	ING1	human		X
+CHEK1	KIFC1	human		X
+CHEK1	KPNA1	human		X
+CHEK1	KPNA2	human		X
+CHEK1	LAMC1	human		X
+CHEK1	LATS2	human	X	
+CHEK1	LIG1	human		X
+CHEK1	LMNA	human		X
+CHEK1	LMO7	human		X
+CHEK1	MAP2K1	human		X
+CHEK1	MAP2K2	human		X
+CHEK1	MAP4	human		X
+CHEK1	MAPT	human		X
+CHEK1	MATR3	human		X
+CHEK1	MCM5	human		X
+CHEK1	MDC1	human		X
+CHEK1	Mdm4	human	X	
+CHEK1	MDM4	human		X
+CHEK1	MDM4	human	X	X
+CHEK1	MED1	human		X
+CHEK1	MINK1	human		X
+CHEK1	MKI67	human		X
+CHEK1	MYBBP1A	human		X
+CHEK1	MYCBP2	human		X
+CHEK1	NEK11	human	X	X
+CHEK1	NFKB1	human	X	X
+CHEK1	NHS	human		X
+CHEK1	NUP153	human		X
+CHEK1	OGT	human		X
+CHEK1	OSBPL11	human		X
+CHEK1	PHF2	human		X
+CHEK1	PHF8	human		X
+CHEK1	PLRG1	human		X
+CHEK1	POLDIP3	human		X
+CHEK1	POP4	human		X
+CHEK1	PPME1	human		X
+CHEK1	PPP2R5D	human	X	X
+CHEK1	PROSER2	human		X
+CHEK1	PRPF3	human		X
+CHEK1	PRR5	human		X
+CHEK1	PRRC2B	human		X
+CHEK1	PRRC2C	human		X
+CHEK1	RACGAP1	human		X
+CHEK1	RALY	human		X
+CHEK1	RANBP2	human		X
+CHEK1	RASSF1	human		X
+CHEK1	RASSF1	human	X	X
+CHEK1	RAVER1	human		X
+CHEK1	RB1	human		X
+CHEK1	RBM14	human		X
+CHEK1	RBM26	human		X
+CHEK1	RBM42	human		X
+CHEK1	RIF1	human		X
+CHEK1	RPL13	human		X
+CHEK1	RPL19	human		X
+CHEK1	RRP12	human		X
+CHEK1	SCAF11	human		X
+CHEK1	SENP2	human		X
+CHEK1	SEPT7	human		X
+CHEK1	SIN3A	human		X
+CHEK1	SLTM	human		X
+CHEK1	SNCB	human	X	X
+CHEK1	SPEN	human		X
+CHEK1	SRRM2	human		X
+CHEK1	SSBP1	human		X
+CHEK1	STK4	human		X
+CHEK1	SYK	human	X	X
+CHEK1	TBC1D4	human		X
+CHEK1	TFDP1	human		X
+CHEK1	TICRR	human		X
+CHEK1	TLK1	human		X
+CHEK1	TLK1	human	X	X
+CHEK1	TLK2	human		X
+CHEK1	TNK1	human		X
+CHEK1	TP53BP1	human		X
+CHEK1	TP53	human		X
+CHEK1	TP53	human	X	X
+CHEK1	TP73	human	X	X
+CHEK1	TRIM28	human		X
+CHEK1	TRIP12	human		X
+CHEK1	UIMC1	human		X
+CHEK1	WIZ	human		X
+CHEK1	XRCC6	human		X
+CHEK1	YBX1	human		X
+CHEK1	YBX2	human		X
+CHEK1	ZBTB11	human		X
+CHEK1	ZC3HC1	human		X
+CHEK1	ZNF395	human		X
+CHEK1	ZNF638	human		X
+CHEK2	AATF	human		X
+CHEK2	BDNF	human	X	
+CHEK2	BRCA1	human	X	X
+CHEK2	CDC25A	human		X
+CHEK2	CDC25A	human	X	X
+CHEK2	CDC25C	human		X
+CHEK2	CHEK2	human		X
+CHEK2	CHEK2	human	X	X
+CHEK2	E2F1	human	X	X
+CHEK2	E2F3	human		X
+CHEK2	ELAVL1	human		X
+CHEK2	FOXM1	human	X	X
+CHEK2	HIST1H1C	human		X
+CHEK2		human		X
+CHEK2	LATS2	human		X
+CHEK2	MAPT	human	X	X
+CHEK2	MDM4	human	X	X
+CHEK2	PML	human	X	X
+CHEK2	RB1	human	X	X
+CHEK2	REV3L	human		X
+CHEK2	TP53	human		X
+CHEK2	TP53	human	X	X
+CHEK2	TRIM28	human	X	
+CHEK2	TTK	human	X	X
+CHEK2	VHL	human	X	X
+CHEK2	XRCC1	human		X
+CHEK2	XRCC1	human	X	X
+CHUK	BBC3	human	X	
+CHUK	CCND1	human	X	X
+CHUK	CREBBP	human	X	X
+CHUK	CTNNB1	human	X	
+CHUK	ESR1	human		X
+CHUK	FOXA2	human	X	X
+CHUK	FOXO3	human		X
+CHUK	NCOA3	human		X
+CHUK	Ncor1	human		X
+CHUK	NCOR2	human	X	X
+CHUK	NFKB1	human		X
+CHUK	NFKB1	human	X	X
+CHUK	NFKB2	human		X
+CHUK	NFKBIA	human		X
+CHUK	Pias1	human	X	
+CHUK	Rela	human	X	X
+CHUK	RELA	human	X	X
+CHUK	REL	human		X
+CHUK	TAX1BP1	human	X	
+CHUK	TRAF4	human	X	X
+CIT	Myl9	human	X	
+CIT	MYL9	human		X
+CLK1	ABL1	human		X
+CLK1	PTPN1	human		X
+CLK2	Csnk1d	human		X
+CLK2	PTPN1	human		X
+CLK4	ABL1	human		X
+COL4A3BP	COL4A3	human		X
+CSF1R	CSF1R	human		X
+CSF1R	CSF1R	human	X	
+CSF1R	CSF1R	human	X	X
+CSK	LCK	human		X
+CSK	P2rx3	human	X	X
+CSK	PTPRC	human	X	X
+CSK	Src	human	X	
+CSK	SRC	human	X	X
+CSK	YES1	human		X
+CSNK1A1	Ahcyl1	human		X
+CSNK1A1	APC	human		X
+CSNK1A1	ATF1	human	X	
+CSNK1A1	BACE1	human		X
+CSNK1A1	Bid	human		X
+CSNK1A1	CARD11	human	X	
+CSNK1A1	CDC25A	human	X	X
+CSNK1A1	CDH1	human	X	
+CSNK1A1	CDK5	human		X
+CSNK1A1	CREB1	human		X
+CSNK1A1	CREB1	human	X	
+CSNK1A1	CREB1	human	X	X
+CSNK1A1	Crem	human		X
+CSNK1A1	Ctnnb1	human		X
+CSNK1A1	CTNNB1	human	X	X
+CSNK1A1	CTPS2	human	X	X
+CSNK1A1	DEPTOR	human		X
+CSNK1A1	DEPTOR	human	X	
+CSNK1A1	DEPTOR	human	X	X
+CSNK1A1	ECE1	human		X
+CSNK1A1	Eif2b5	human		X
+CSNK1A1	EIF6	human	X	
+CSNK1A1	FADD	human	X	
+CSNK1A1	FOXG1	human	X	X
+CSNK1A1	FOXO1	human		X
+CSNK1A1	Gja1	human	X	X
+CSNK1A1	Gjc1	human		X
+CSNK1A1	GYS1	human		X
+CSNK1A1	HNRNPC	human	X	X
+CSNK1A1		human		X
+CSNK1A1	IFNAR1	human		X
+CSNK1A1	KCNIP3	human		X
+CSNK1A1	LGALS3	human		X
+CSNK1A1	LGALS3	human	X	X
+CSNK1A1L	NFAT5	human	X	
+CSNK1A1	LRP6	human	X	X
+CSNK1A1	MDM4	human	X	X
+CSNK1A1	NFAT5	human		X
+CSNK1A1	NFATC3	human	X	X
+CSNK1A1	PARK2	human		X
+CSNK1A1	PHLPP1	human		X
+CSNK1A1	Ppp1r1b	human		X
+CSNK1A1	PTK2	human		X
+CSNK1A1	RHOB	human	X	X
+CSNK1A1	Slc18a2	human		X
+CSNK1A1	SLC4A1	human		X
+CSNK1A1	SNCA	human	X	X
+CSNK1A1	Stx1a	human		X
+CSNK1A1	TARDBP	human		X
+CSNK1A1	Tbx21	human		X
+CSNK1A1	Tp53	human		X
+CSNK1A1	Tp53	human	X	
+CSNK1A1	TP53	human	X	
+CSNK1A1	TP53	human	X	X
+CSNK1A1	VHL	human		X
+CSNK1A1	YWHAQ	human		X
+CSNK1A1	YWHAZ	human		X
+CSNK1D	APC	human		X
+CSNK1D	BACE1	human		X
+CSNK1D	CDH1	human		X
+CSNK1D	CTNNB1	human		X
+CSNK1D	DCK	human		X
+CSNK1D	Dvl2	human		X
+CSNK1D	DVL2	human	X	X
+CSNK1D	FGFBP1	human		X
+CSNK1D	Foxo1	human	X	X
+CSNK1D	HIF1A	human	X	X
+CSNK1D		human		X
+CSNK1D	KIR3DL1	human		X
+CSNK1D	MAPT	human	X	X
+CSNK1D	Mdm2	human		X
+CSNK1D	MDM2	human		X
+CSNK1D	MDM2	human	X	
+CSNK1D	MDM2	human	X	X
+CSNK1D	MTSS1	human	X	
+CSNK1D	NCOA3	human	X	X
+CSNK1D	PER2	human	X	
+CSNK1D	PSEN2	human		X
+CSNK1D	TP53	human		X
+CSNK1D	Tp53	human	X	X
+CSNK1D	UHRF1	human	X	X
+CSNK1D	YAP1	human	X	
+CSNK1E	APC	human	X	
+CSNK1E	CDH1	human	X	
+CSNK1E	CSNK1E	human	X	
+CSNK1E	CTNNB1	human	X	
+CSNK1E	Ctnnb1	human	X	X
+CSNK1E	Dvl1	human	X	X
+CSNK1E	DVL2	human	X	X
+CSNK1E	EIF4EBP1	human	X	X
+CSNK1E	LRP6	human		X
+CSNK1E	NFIL3	human	X	X
+CSNK1E	Per1	human	X	X
+CSNK1E	PER2	human	X	
+CSNK1E	PER2	human	X	X
+CSNK1E	SNAI1	human		X
+CSNK1E	Tp53	human	X	X
+CSNK1E	Zbed3	human	X	
+CSNK1G1	APC	human		X
+CSNK1G1	LRP6	human	X	X
+CSNK1G2	COL4A3BP	human	X	X
+CSNK2A1	ABCA1	human		X
+CSNK2A1	ABCC1	human	X	X
+CSNK2A1	ABCF1	human		X
+CSNK2A1	ACE	human	X	
+CSNK2A1	AIP	human		X
+CSNK2A1	AKT1	human		X
+CSNK2A1	AMPH	human	X	X
+CSNK2A1	ANP32A	human		X
+CSNK2A1	ANP32B	human	X	X
+CSNK2A1	APOE	human		X
+CSNK2A1	Aqp4	human		X
+CSNK2A1	ARNT	human		X
+CSNK2A1	Arntl	human		X
+CSNK2A1	ARRB2	human		X
+CSNK2A1	Arrb2	human	X	X
+CSNK2A1	Ascl1	human	X	X
+CSNK2A1	ATF1	human	X	
+CSNK2A1	ATF1	human	X	X
+CSNK2A1	ATXN3	human	X	
+CSNK2A1	Atxn3	human	X	X
+CSNK2A1	BCAM	human		X
+CSNK2A1	BIK	human		X
+CSNK2A1	BIRC5	human		X
+CSNK2A1	BRCA1	human		X
+CSNK2A1	C1R	human		X
+CSNK2A1	CACB	human		X
+CSNK2A1	Cadps	human		X
+CSNK2A1	CALD1	human		X
+CSNK2A1	Calm1	human	X	
+CSNK2A1	CALM3	human		X
+CSNK2A1	CAPZA1	human	X	X
+CSNK2A1	CARD9	human	X	X
+CSNK2A1	CASP2	human	X	X
+CSNK2A1	CASQ1	human		X
+CSNK2A1	CASQ2	human		X
+CSNK2A1	CAV1	human		X
+CSNK2A1	CAV2	human	X	X
+CSNK2A1	CBX1	human	X	X
+CSNK2A1	CCNH	human		X
+CSNK2A1	CD5	human	X	X
+CSNK2A1	CDC25B	human		X
+CSNK2A1	CDC25C	human	X	X
+CSNK2A1	CDC27	human	X	
+CSNK2A1	CDC34	human	X	X
+CSNK2A1	Cdc37	human		X
+CSNK2A1	CDC37	human		X
+CSNK2A1	Cdh1	human		X
+CSNK2A1	CDH1	human		X
+CSNK2A1	CDK1	human	X	X
+CSNK2A1	CDKN1B	human		X
+CSNK2A1	Cftr	human		X
+CSNK2A1	CFTR	human	X	X
+CSNK2A1	CLIP1	human	X	X
+CSNK2A1	Clph	human		X
+CSNK2A1	COL17A1	human		X
+CSNK2A1	CORO1C	human	X	X
+CSNK2A1	CPLX1	human		X
+CSNK2A1	CPLX2	human		X
+CSNK2A1	Creb1	human		X
+CSNK2A1	Creb1	human	X	
+CSNK2A1	CREB1	human		X
+CSNK2A1	Crem	human		X
+CSNK2A1	CSNK2A1	human		X
+CSNK2A1	CSNK2B	human		X
+CSNK2A1	CTCF	human		X
+CSNK2A1	CTCF	human	X	X
+CSNK2A1	CTDP1	human		X
+CSNK2A1	CTNNA1	human	X	X
+CSNK2A1	DAXX	human	X	X
+CSNK2A1	DDIT3	human		X
+CSNK2A1	DDX58	human	X	X
+CSNK2A1	Dmbt1	human		X
+CSNK2A1	EEF1D	human	X	X
+CSNK2A1	EIF2S2	human	X	X
+CSNK2A1	Eif4ebp1	human		X
+CSNK2A1	EIF4EBP1	human		X
+CSNK2A1	EIF5	human		X
+CSNK2A1	EIF5	human	X	X
+CSNK2A1	ERCC3	human		X
+CSNK2A1	ESR1	human		X
+CSNK2A1	ESR1	human	X	X
+CSNK2A1	EXOSC9	human	X	X
+CSNK2A1	F5	human		X
+CSNK2A1	FAF1	human		X
+CSNK2A1	FDX1	human		X
+CSNK2A1	FGA	human		X
+CSNK2A1	FMR1	human		X
+CSNK2A1	FOSB	human	X	X
+CSNK2A1	FURIN	human		X
+CSNK2A1	GADD45GIP1	human		X
+CSNK2A1	Gap43	human		X
+CSNK2A1	GGA1	human		X
+CSNK2A1	GJA8	human	X	X
+CSNK2A1	GMFB	human		X
+CSNK2A1	GMNN	human		X
+CSNK2A1	GPI	human		X
+CSNK2A1	Grin2b	human		X
+CSNK2A1	GYS1	human		X
+CSNK2A1	HCLS1	human		X
+CSNK2A1	HDAC1	human	X	X
+CSNK2A1	HDAC2	human	X	X
+CSNK2A1	HDAC3	human		X
+CSNK2A1	HES6	human		X
+CSNK2A1	HHEX	human		X
+CSNK2A1	Hmga2	human		X
+CSNK2A1	HMGN1	human		X
+CSNK2A1	HNRNPA1	human		X
+CSNK2A1	HNRNPC	human		X
+CSNK2A1	Hoxb6	human		X
+CSNK2A1	HOXB7	human		X
+CSNK2A1	HSP90AA1	human		X
+CSNK2A1	HSP90AB1	human		X
+CSNK2A1	Hsph1	human		X
+CSNK2A1		human		X
+CSNK2A1		human	X	
+CSNK2A1		human	X	X
+CSNK2A1	Ibsp	human		X
+CSNK2A1	IFI16	human		X
+CSNK2A1	IGF2R	human	X	X
+CSNK2A1	IGFBP1	human	X	
+CSNK2A1	IGFBP3	human		X
+CSNK2A1	IGFBP3	human	X	
+CSNK2A1	Ikzf1	human		X
+CSNK2A1	IL16	human		X
+CSNK2A1	IP6K2	human	X	
+CSNK2A1	Irs1	human		X
+CSNK2A1	Itch	human		X
+CSNK2A1	JUN	human		X
+CSNK2A1	JUN	human	X	X
+CSNK2A1	KIR3DL1	human		X
+CSNK2A1	L1CAM	human		X
+CSNK2A1	LEF1	human		X
+CSNK2A1	LIG1	human		X
+CSNK2A1	M6pr	human		X
+CSNK2A1	MAPK9	human		X
+CSNK2A1	MAX	human		X
+CSNK2A1	MAZ	human	X	X
+CSNK2A1	MCM2	human		X
+CSNK2A1	MDC1	human	X	
+CSNK2A1	MDM2	human		X
+CSNK2A1	MEF2A	human	X	
+CSNK2A1	MME	human	X	X
+CSNK2A1	MRE11A	human		X
+CSNK2A1	Musk	human		X
+CSNK2A1	MYB	human		X
+CSNK2A1	MYBL1	human		X
+CSNK2A1	MYBL2	human		X
+CSNK2A1	MYC	human		X
+CSNK2A1	MYCN	human		X
+CSNK2A1	MYF5	human		X
+CSNK2A1	MYH10	human		X
+CSNK2A1	MYH2	human		X
+CSNK2A1	MYH9	human		X
+CSNK2A1	MYL12B	human		X
+CSNK2A1	NCAPH	human		X
+CSNK2A1	NCF1	human		X
+CSNK2A1	Ncl	human		X
+CSNK2A1	NCOA2	human	X	
+CSNK2A1	NCOR2	human		X
+CSNK2A1	NFKBIA	human		X
+CSNK2A1	NFKBIA	human	X	X
+CSNK2A1	NFKBIB	human		X
+CSNK2A1	NHE-3	human	X	
+CSNK2A1	NHE-3	human	X	X
+CSNK2A1	Nkx2-5	human		X
+CSNK2A1	Nol3	human		X
+CSNK2A1	NPHP1	human	X	X
+CSNK2A1	NR1H3	human	X	X
+CSNK2A1	Oaz2	human		X
+CSNK2A1	Odc1	human		X
+CSNK2A1	PACS1	human		X
+CSNK2A1	Pacsin1	human		X
+CSNK2A1	Pax3	human		X
+CSNK2A1	PAX3	human		X
+CSNK2A1	PDCD5	human	X	X
+CSNK2A1	Pdcl	human		X
+CSNK2A1	PDCL	human		X
+CSNK2A1	PDCL	human	X	X
+CSNK2A1	PDIA6	human		X
+CSNK2A1	Pdx1	human	X	X
+CSNK2A1	Pea15	human		X
+CSNK2A1	Per2	human	X	X
+CSNK2A1	PGR	human		X
+CSNK2A1	PIAS1	human	X	X
+CSNK2A1	PIK3R1	human		X
+CSNK2A1	PIN4	human		X
+CSNK2A1	PIP4K2A	human	X	X
+CSNK2A1	PKD2	human		X
+CSNK2A1	PLD1	human		X
+CSNK2A1	PML	human		X
+CSNK2A1	PML	human	X	X
+CSNK2A1	Polr2f	human		X
+CSNK2A1	Pparg	human	X	
+CSNK2A1	PPP1R2	human		X
+CSNK2A1	PRPF3	human	X	X
+CSNK2A1	PSEN2	human		X
+CSNK2A1	Psma3	human		X
+CSNK2A1	PTEN	human		X
+CSNK2A1	PTEN	human	X	X
+CSNK2A1	PTGES3	human	X	X
+CSNK2A1	RAD1	human		X
+CSNK2A1	RAD51	human		X
+CSNK2A1	RAD9A	human		X
+CSNK2A1	RANGAP1	human	X	X
+CSNK2A1	RELA	human	X	X
+CSNK2A1	Rfc1	human		X
+CSNK2A1	RGS19	human		X
+CSNK2A1	RNF7	human	X	X
+CSNK2A1	RNPS1	human	X	X
+CSNK2A1	Rps5	human		X
+CSNK2A1	RPS6KA4	human		X
+CSNK2A1	RPS6KA5	human		X
+CSNK2A1	Rps6kb1	human		X
+CSNK2A1	RRAD	human		X
+CSNK2A1	RRN3	human	X	X
+CSNK2A1	SAT1	human		X
+CSNK2A1	Scn2a	human		X
+CSNK2A1	SEPT2	human	X	X
+CSNK2A1	SERPINF1	human		X
+CSNK2A1	SHOX	human	X	X
+CSNK2A1	Sirt1	human	X	X
+CSNK2A1	SIRT1	human	X	X
+CSNK2A1	SLBP	human		X
+CSNK2A1	Slc18a2	human		X
+CSNK2A1	Slc28a2	human	X	
+CSNK2A1	SLC3A2	human		X
+CSNK2A1	SLC9A5	human		X
+CSNK2A1	SLITRK1	human		X
+CSNK2A1	SMC3	human	X	
+CSNK2A1	SNAI1	human		X
+CSNK2A1	SNCA	human	X	X
+CSNK2A1	Sptan1	human		X
+CSNK2A1	SPTBN1	human		X
+CSNK2A1	SRF	human		X
+CSNK2A1	SRPK1	human		X
+CSNK2A1	SSB	human	X	X
+CSNK2A1	SSRP1	human		X
+CSNK2A1	STARD10	human		X
+CSNK2A1	STAT1	human	X	
+CSNK2A1	STC2	human		X
+CSNK2A1	Stip1	human		X
+CSNK2A1	Stx1a	human		X
+CSNK2A1	STX1A	human	X	X
+CSNK2A1	Stx1b	human		X
+CSNK2A1	TARDBP	human		X
+CSNK2A1	TELO2	human	X	X
+CSNK2A1	TERF1	human	X	X
+CSNK2A1	TFAP2A	human	X	X
+CSNK2A1	TFPI	human		X
+CSNK2A1	Thra	human		X
+CSNK2A1	TLE1	human	X	X
+CSNK2A1	TNFAIP1	human		X
+CSNK2A1	TNFAIP1	human	X	X
+CSNK2A1	TOP1	human		X
+CSNK2A1	TOP2A	human		X
+CSNK2A1	TOP2A	human	X	
+CSNK2A1	TP53	human		X
+CSNK2A1	Trhr	human		X
+CSNK2A1	TSPY1	human		X
+CSNK2A1	TWIST1	human	X	X
+CSNK2A1	TYMS	human		X
+CSNK2A1	UBE2R2	human	X	X
+CSNK2A1	VDR	human	X	X
+CSNK2A1	VHL	human	X	
+CSNK2A1	VTN	human		X
+CSNK2A1	WASF2	human		X
+CSNK2A1	WAS	human	X	X
+CSNK2A1	Wasl	human	X	X
+CSNK2A1	WEE1	human		X
+CSNK2A1	XRCC1	human		X
+CSNK2A1	XRCC1	human	X	X
+CSNK2A1	XRCC4	human		X
+CSNK2A1	YY1	human	X	X
+CSNK2A2	CCNH	human		X
+CSNK2A2	Cdc37	human		X
+CSNK2A2	CDC37	human	X	
+CSNK2A2	CSNK2B	human		X
+CSNK2A2	CTNNB1	human		X
+CSNK2A2	HSF1	human	X	X
+CSNK2A2	NKX3-1	human	X	X
+CSNK2A2	SMC3	human	X	
+CSNK2A2	SRPK1	human		X
+CSNK2A2	TYMS	human		X
+CSNK2A2	XRCC1	human	X	
+DAPK1	BECN1	human	X	X
+DAPK1	CAMKK2	human	X	X
+DAPK1	Dapk1	human		X
+DAPK1	DAPK1	human	X	X
+DAPK1	MCM3	human	X	X
+DAPK1	MYL12B	human		X
+DAPK1	Stx1a	human	X	X
+DAPK1	TP53	human		X
+DAPK1	TP53	human	X	X
+DAPK2	DAPK2	human		X
+DAPK3	CDKN1A	human	X	X
+DAPK3	DAPK3	human		X
+DAPK3	MDM2	human		X
+DAPK3	MYL12B	human	X	X
+DAPK3	Myl9	human	X	
+DAPK3	Myl9	human	X	X
+DAPK3	PPP1R12A	human		X
+DAPK3	PPP1R12A	human	X	X
+DAPK3	PPP1R14A	human		X
+DAPK3	RPL13A	human	X	X
+DAPK3	TP53	human		X
+DMPK	SRF	human	X	X
+DYRK1A	AMPH	human		X
+DYRK1A	AMPH	human	X	X
+DYRK1A	Casp9	human	X	X
+DYRK1A	CCND1	human	X	X
+DYRK1A	CCNL2	human		X
+DYRK1A	DNM1	human	X	X
+DYRK1A	DYRK1A	human	X	
+DYRK1A	Eif2b5	human		X
+DYRK1A	FOXO1	human	X	
+DYRK1A	GYS1	human		X
+DYRK1A	MAPT	human	X	
+DYRK1A	MAPT	human	X	X
+DYRK1A	RCAN1	human		X
+DYRK1A	SF3B1	human		X
+DYRK1A	SF3B1	human	X	X
+DYRK1A	Sfrs1	human		X
+DYRK1A	Sirt1	human	X	X
+DYRK1A	SNCA	human	X	X
+DYRK1A	SPRY2	human	X	X
+DYRK1A	TP53	human	X	X
+DYRK1B	CCND1	human	X	
+DYRK1B	CDKN1A	human	X	X
+DYRK1B	GYS1	human	X	X
+DYRK1B	H3F3A	human		X
+DYRK1B	Hdac5	human		X
+DYRK1B	HNF1A	human		X
+DYRK1B	SF3B1	human	X	
+DYRK2	CARHSP1	human		X
+DYRK2	CRMP1	human		X
+DYRK2	DPYSL2	human		X
+DYRK2	DPYSL3	human		X
+DYRK2	Eif2b5	human		X
+DYRK2	EIF4EBP1	human		X
+DYRK2	Gli2	human		X
+DYRK2	GYS1	human	X	
+DYRK2	H3F3A	human		X
+DYRK2	KATNA1	human		X
+DYRK2	MAPT	human		X
+DYRK2	SIAH2	human	X	
+DYRK2	SIAH2	human	X	X
+DYRK2	TP53	human	X	X
+DYRK3	AKT1S1	human	X	X
+DYRK3	H3F3A	human		X
+DYRK3	Sirt1	human	X	X
+EEF2K	EEF2	human		X
+EEF2K	EEF2K	human		X
+EEF2K	EEF2K	human	X	
+EGFR	ADRBK1	human	X	X
+EGFR	AGO2	human		X
+EGFR	ANXA1	human		X
+EGFR	Calm1	human		X
+EGFR	CCDC50	human	X	
+EGFR	Crk	human		X
+EGFR	CTNNB1	human		X
+EGFR	EGFR	human	X	
+EGFR	EGFR	human	X	X
+EGFR	EPB41	human		X
+EGFR	Eps15	human	X	
+EGFR	EZR	human		X
+EGFR	GAB1	human		X
+EGFR	Grlf1	human	X	
+EGFR	GSTP1	human	X	X
+EGFR	HDAC6	human		X
+EGFR	LOC100343293	human		X
+EGFR	LRRK1	human	X	
+EGFR	PCNA	human	X	X
+EGFR	PDP1	human		X
+EGFR	Plcg1	human		X
+EGFR	PLCG1	human		X
+EGFR	PLD2	human		X
+EGFR	PPP2CA	human		X
+EGFR	Prkcd	human		X
+EGFR	PTK2	human	X	X
+EGFR	PTPN1	human	X	X
+EGFR	Rasa1	human	X	X
+EGFR	RGS16	human		X
+EGFR	SHC1	human		X
+EGFR	SHC3	human		X
+EGFR	VAV2	human		X
+EIF2AK1	Eif2s1	human		X
+EIF2AK1	EIF2S1	human		X
+EIF2AK1		human		X
+EIF2AK2	CDK1	human	X	X
+EIF2AK2	EIF2AK2	human		X
+EIF2AK2	EIF2AK2	human	X	X
+EIF2AK2	Eif2s1	human		X
+EIF2AK2	EIF2S1	human		X
+EIF2AK2	EIF2S1	human	X	X
+EIF2AK2		human		X
+EIF2AK2	Ilf3	human	X	
+EIF2AK2	Irs1	human	X	
+EIF2AK2	MAPT	human	X	
+EIF2AK2	PPP2R5A	human	X	X
+EIF2AK2	TP53	human		X
+EIF2AK3	Eif2ak3	human	X	X
+EIF2AK3	EIF2S1	human		X
+EIF2AK3	EIF2S1	human	X	X
+EIF2AK4	MARS	human		X
+EIF2AK4	MARS	human	X	X
+ENPP3	ENPP3	human		X
+EPHA2	CLDN4	human	X	
+EPHA2	EPHA2	human	X	
+EPHA2	EPHA2	human	X	X
+EPHA4	EPHA4	human		X
+EPHA4	Ngef	human		X
+EPHB1	Caskin1	human	X	
+EPHB1	Sdc3	human		X
+EPHB1	Stat3	human	X	
+EPHB2	RRAS	human		X
+EPHB2	Sdc2	human	X	X
+EPHB3	EPHB3	human	X	
+ERBB2	CDK1	human	X	X
+ERBB2	CTNNB1	human		X
+ERBB2	DOCK7	human	X	X
+ERBB2	ERBB2	human		X
+ERBB2	ERBB2	human	X	
+ERBB2	ERBB2	human	X	X
+ERBB2	PLXNB1	human	X	
+ERBB4	ERBB4	human		X
+FER	AR	human	X	X
+FER	Ctnnb1	human	X	
+FER	Cttn	human	X	
+FER	FER	human	X	
+FER	JUP	human		X
+FER	NSF	human		X
+FER	Pecam1	human	X	
+FER	PTPN1	human		X
+FER	STAT3	human	X	
+FES	BCR	human		X
+FES	Dpysl2	human	X	
+FES	FES	human	X	X
+FES	NSF	human		X
+FES	Pecam1	human	X	
+FGFR1	FGFR1	human		X
+FGFR1	LDHA	human		X
+FGFR1	PDK1	human	X	X
+FGFR1	PDP1	human		X
+FGFR1	Pkm2	human	X	X
+FGFR1	ZMYM2	human	X	
+FGFR2	FGFR2	human		X
+FGFR2	PTEN	human	X	X
+FGFR3	FGFR3	human		X
+FGFR3	FGFR3	human	X	
+FGFR3	PTEN	human		X
+FGFR3	RPS6KA3	human		X
+FGFR3	STAT1	human		X
+FGFR4	FGFR4	human		X
+FGR	Aco2	human		X
+FGR	PTK2	human	X	
+FGR	Sdha	human		X
+FLT1	FLT1	human		X
+FLT1	FLT1	human	X	X
+FLT3	EPHB6	human		X
+FLT3	FLT3	human		X
+FLT3	FLT3	human	X	
+FLT3	PDK1	human		X
+FRK	Fos	human		X
+FRK	PTEN	human		X
+FYN	Aatk	human	X	X
+FYN	ABL1	human		X
+FYN	ADD2	human	X	
+FYN	AGAP2	human	X	X
+FYN	APP	human	X	
+FYN	ARHGAP33	human	X	
+FYN	BCR	human		X
+FYN	CAV1	human	X	X
+FYN	CBL	human	X	
+FYN	CBL	human	X	X
+FYN	CD300LB	human	X	
+FYN	CD300LF	human	X	
+FYN	CD3E	human		X
+FYN	CD5	human		X
+FYN	CHN2	human	X	X
+FYN	CLIC5	human	X	
+FYN	Cnn1	human		X
+FYN	Cnn3	human		X
+FYN	CRMP1	human	X	
+FYN	Ctnnb1	human	X	
+FYN	Ctnnd1	human		X
+FYN	Cyth1	human	X	
+FYN	Dab1	human	X	
+FYN	Dcc	human		X
+FYN	DLG4	human	X	X
+FYN	Dpysl2	human		X
+FYN	Dpysl3	human		X
+FYN	FCGR2A	human		X
+FYN	FCGR2B	human		X
+FYN	FLOT1	human		X
+FYN	FLOT2	human		X
+FYN	FYB	human		X
+FYN	FYN	human		X
+FYN	FYN	human	X	X
+FYN	Gabrg2	human		X
+FYN	GRB10	human	X	X
+FYN	GRIN2A	human		X
+FYN	H3F3A	human	X	X
+FYN		human	X	
+FYN	ITCH	human	X	
+FYN	ITPR1	human	X	X
+FYN	JUP	human		X
+FYN	Kirrel	human	X	X
+FYN	MAP2	human	X	
+FYN	MAPK14	human		X
+FYN	MAPT	human		X
+FYN	NMT1	human		X
+FYN	Nphs1	human		X
+FYN	PECAM1	human		X
+FYN	PLCG2	human		X
+FYN	PROM1	human	X	
+FYN	PTPN11	human	X	
+FYN	PTPRT	human	X	
+FYN	PXN	human	X	
+FYN	RPS6KA3	human		X
+FYN	RPS6KA3	human	X	X
+FYN	RTN4	human	X	
+FYN	SCN5A	human		X
+FYN	SCN5A	human	X	X
+FYN	SIGLEC10	human	X	
+FYN	SKAP1	human	X	
+FYN	Skap2	human	X	X
+FYN	SLAMF1	human	X	
+FYN	SNCA	human		X
+FYN	Stk11	human		X
+FYN	Stk11	human	X	X
+FYN	TGFB1I1	human	X	
+GRK1	Cldn5	human	X	X
+GRK1		human	X	
+GRK1	Ocln	human	X	X
+GRK1	RHO	human		X
+GRK4	BDKRB2	human	X	
+GRK4	Drd1	human	X	
+GRK5	ADRB2	human		X
+GRK5	ADRB2	human	X	
+GRK5	GRK5	human		X
+GRK5	SNCA	human	X	X
+GRK5	TP53	human	X	X
+GRK6	CXCR4	human	X	
+GRK6	GRK6	human	X	
+GRK6		human	X	X
+GRK6	LTB4R	human	X	
+GSG2	HIST1H3A	human	X	X
+GSK3A	ANKRD28	human		X
+GSK3A	Arhgap31	human	X	X
+GSK3A	BCL2L1	human		X
+GSK3A	BCL3	human	X	
+GSK3A	CCNE1	human	X	
+GSK3A	Cebpa	human	X	X
+GSK3A	CTNNB1	human		X
+GSK3A	DPYSL2	human		X
+GSK3A	GSK3A	human	X	
+GSK3A		human		X
+GSK3A	Irs2	human		X
+GSK3A	LRP6	human		X
+GSK3A	MAPT	human		X
+GSK3A	MAPT	human	X	
+GSK3A	MITF	human		X
+GSK3A	MKI67IP	human		X
+GSK3A	MYC	human	X	
+GSK3A	NDRG1	human		X
+GSK3A	Nefm	human		X
+GSK3A	Neurog2	human		X
+GSK3A	Nr3c1	human		X
+GSK3A	PKD2	human	X	X
+GSK3A	Tbx21	human		X
+GSK3B	ADD2	human	X	
+GSK3B	APC	human		X
+GSK3B	App	human		X
+GSK3B	Arhgap31	human	X	X
+GSK3B	ARNTL	human	X	X
+GSK3B	ATXN3	human		X
+GSK3B	Atxn3	human	X	X
+GSK3B	BAX	human	X	X
+GSK3B	BCAM	human		X
+GSK3B	BCL2L12	human	X	X
+GSK3B	BCL2L1	human		X
+GSK3B	BCLAF1	human	X	
+GSK3B	BORA	human	X	X
+GSK3B	CABYR	human		X
+GSK3B	CCND1	human	X	X
+GSK3B	CCND2	human	X	X
+GSK3B	CCND3	human	X	X
+GSK3B	CCNE1	human		X
+GSK3B	CCNE1	human	X	X
+GSK3B	CDC25A	human	X	X
+GSK3B	Cdh1	human		X
+GSK3B	CDKN1A	human		X
+GSK3B	CDKN1A	human	X	X
+GSK3B	CDX2	human		X
+GSK3B	Cebpb	human		X
+GSK3B	CEBPB	human		X
+GSK3B	Cebpb	human	X	X
+GSK3B	CIITA	human		X
+GSK3B	CLASP2	human		X
+GSK3B	CLOCK	human	X	
+GSK3B	Creb1	human	X	
+GSK3B	CREB1	human	X	
+GSK3B	Ctnnb1	human	X	
+GSK3B	CTNNB1	human	X	X
+GSK3B	Ctnnd1	human		X
+GSK3B	Ctnnd2	human	X	X
+GSK3B	DCX	human	X	X
+GSK3B	Dnm1	human	X	X
+GSK3B	Dpysl2	human		X
+GSK3B	DPYSL2	human	X	
+GSK3B	Dpysl2	human	X	X
+GSK3B	DPYSL2	human	X	X
+GSK3B	Dpysl3	human		X
+GSK3B	DPYSL3	human	X	X
+GSK3B	DROSHA	human		X
+GSK3B	E2F1	human		X
+GSK3B	Eif2b5	human		X
+GSK3B	EIF4EBP1	human	X	X
+GSK3B	ESR1	human	X	X
+GSK3B	FBXO4	human	X	X
+GSK3B	FRAT1	human		X
+GSK3B	GCM1	human	X	
+GSK3B	Gphn	human	X	
+GSK3B	GSK3B	human		X
+GSK3B	GSK3B	human	X	X
+GSK3B	GYS1	human		X
+GSK3B	HDAC4	human	X	X
+GSK3B	HIST1H1B	human	X	X
+GSK3B	HNRNPD	human		X
+GSK3B	HSF1	human		X
+GSK3B	Htr1b	human	X	
+GSK3B		human		X
+GSK3B	Irs1	human	X	X
+GSK3B	JUNB	human	X	
+GSK3B	JUN	human		X
+GSK3B	KAT5	human	X	X
+GSK3B	KLC2	human		X
+GSK3B	KLF5	human	X	X
+GSK3B	Lpcat1	human	X	
+GSK3B	LRP6	human	X	X
+GSK3B	Map1b	human	X	X
+GSK3B	Map2	human	X	
+GSK3B	MAPT	human		X
+GSK3B	MAPT	human	X	X
+GSK3B	Mark2	human		X
+GSK3B	MARK2	human		X
+GSK3B	MCL1	human	X	X
+GSK3B	Mef2d	human	X	X
+GSK3B	MITF	human		X
+GSK3B	MKI67IP	human		X
+GSK3B	Mnx1	human	X	X
+GSK3B	MUC1	human		X
+GSK3B	Myb	human	X	X
+GSK3B	MYC	human	X	X
+GSK3B	MYCL	human		X
+GSK3B	MYLK	human		X
+GSK3B	Myocd	human	X	X
+GSK3B	NACA	human	X	X
+GSK3B	Nefh	human	X	
+GSK3B	NEFH	human	X	X
+GSK3B	Neurog2	human		X
+GSK3B	NFE2L1	human	X	X
+GSK3B	NFKB2	human	X	
+GSK3B	NFKB2	human	X	X
+GSK3B	NR1D1	human	X	X
+GSK3B	Nr3c1	human	X	
+GSK3B	NR3C1	human	X	X
+GSK3B	Pax3	human		X
+GSK3B	Pdx1	human		X
+GSK3B	Pdx1	human	X	
+GSK3B	Pdx1	human	X	X
+GSK3B	PHLPP1	human		X
+GSK3B	PHLPP1	human	X	X
+GSK3B	PPP1R16B	human		X
+GSK3B	PPP1R2	human	X	X
+GSK3B	PRKCE	human	X	X
+GSK3B	PSEN1	human	X	X
+GSK3B	PTEN	human		X
+GSK3B	PTEN	human	X	X
+GSK3B	PTK2	human	X	X
+GSK3B	RASSF1	human	X	
+GSK3B	RBM38	human	X	X
+GSK3B	RCAN1	human		X
+GSK3B	RELA	human	X	X
+GSK3B	RELB	human		X
+GSK3B	SFPQ	human	X	X
+GSK3B	Sik1	human		X
+GSK3B	SMAD1	human		X
+GSK3B	SNAI1	human	X	X
+GSK3B	SNAI2	human	X	
+GSK3B	SNCAIP	human	X	X
+GSK3B	SPAG5	human	X	X
+GSK3B	SREBF1	human	X	X
+GSK3B	SUFU	human	X	
+GSK3B	TNKS	human		X
+GSK3B	TOP2A	human	X	
+GSK3B	TP53	human		X
+GSK3B	Tsc2	human	X	X
+GSK3B	VHL	human	X	
+GSK3B	Zbed3	human	X	
+GSK3B	Zc3hav1	human		X
+GSK3B	Zc3hav1	human	X	X
+GTF2F1	GTF2F1	human		X
+GTF2F1	RARG	human		X
+HCK	Abl1	human		X
+HCK	ABL1	human		X
+HCK	Abl2	human		X
+HCK	ADAM15	human	X	X
+HCK	BCR	human		X
+HCK	ELMO1	human	X	X
+HCK	HCK	human		X
+HCK	RAPGEF1	human	X	X
+HCK	STAT5B	human	X	
+HIPK1	PAGE4	human		X
+HIPK2	CBX4	human	X	
+HIPK2	CDKN1B	human	X	X
+HIPK2	CREB1	human	X	X
+HIPK2	CTBP1	human	X	X
+HIPK2	HMGA1	human		X
+HIPK2	Pax6	human	X	X
+HIPK2	Pdx1	human		X
+HIPK2	Pdx1	human	X	X
+HIPK2	PML	human		X
+HIPK2	PML	human	X	X
+HIPK2	RUNX1	human	X	
+HIPK2	SIAH2	human	X	
+HIPK2	Tp53	human	X	
+HIPK2	TP53	human	X	X
+HIPK2	ZBTB4	human		X
+HSPA5	HSPA5	human		X
+ICK	BAG6	human		X
+ICK	Ick	human	X	
+ICK	RPTOR	human	X	X
+IGF1R	IGF1R	human		X
+IGF1R	IGF1R	human	X	X
+IGF1R	PDPK1	human	X	X
+IKBKB	BBC3	human	X	
+IKBKB	BCL10	human		X
+IKBKB	CDKN2A	human	X	X
+IKBKB	CYLD	human	X	X
+IKBKB	DOK1	human	X	
+IKBKB	FOS	human		X
+IKBKB	FOXO3	human	X	X
+IKBKB	Ikbkg	human		X
+IKBKB	IKBKG	human		X
+IKBKB	IKBKG	human	X	
+IKBKB	IKBKG	human	X	X
+IKBKB	IRF3	human	X	
+IKBKB	IRS1	human		X
+IKBKB	NFKB1	human		X
+IKBKB	NFKB1	human	X	X
+IKBKB	NFKBIA	human	X	X
+IKBKB	Rela	human	X	X
+IKBKB	RELA	human	X	X
+IKBKB	REL	human		X
+IKBKB	RPS3	human		X
+IKBKB	Snap23	human		X
+IKBKB	TP63	human	X	
+IKBKB	TSC1	human	X	X
+IKBKB	Zc3h12a	human	X	
+IKBKE	Cyld	human	X	
+IKBKE	ESR1	human	X	X
+IKBKE	FOXO3	human	X	X
+IKBKE	IRF3	human		X
+IKBKE	IRF3	human	X	X
+IKBKE	IRF7	human		X
+IKBKE	NFKBIA	human	X	
+IKBKE	PELI1	human		X
+IKBKE	Rela	human	X	
+IKBKE	RELA	human	X	X
+IKBKE	Stat1	human		X
+ILK	Akt1	human	X	
+ILK	AKT1	human	X	X
+ILK	Cfl1	human		X
+ILK	MYL12B	human		X
+ILK	MYL12B	human	X	X
+ILK	NACA	human	X	X
+ILK	PPP1R12A	human		X
+ILK	PPP1R14A	human		X
+ILK	PPP1R14B	human		X
+ILK	PPP1R14C	human		X
+INSR	Adrb2	human		X
+INSR	Adrb2	human	X	X
+INSR	ARHGAP5	human		X
+INSR	BLVRA	human		X
+INSR	Calm1	human		X
+INSR	Ceacam1	human		X
+INSR	DOK1	human		X
+INSR	GAB1	human		X
+INSR	INSR	human		X
+INSR	Irs2	human		X
+INSR	NFKBIA	human		X
+INSR	PHB	human		X
+INSR	PIK3R1	human		X
+INSR	PIK3R3	human	X	X
+INSR	PPP2CA	human		X
+INSR	PTPN6	human	X	X
+INSR	Socs3	human		X
+INSR	Stat5b	human		X
+IRAK1	IRAK1	human		X
+IRAK1	PELI1	human		X
+IRAK1	PELI2	human	X	
+IRAK1	STAT3	human		X
+IRAK4	IRAK1	human		X
+IRAK4	IRAK4	human		X
+IRAK4	IRAK4	human	X	X
+IRAK4	NCF1	human		X
+IRAK4	NCF1	human	X	X
+IRAK4	PELI1	human		X
+ITK	BMX	human		X
+ITK	BTK	human		X
+ITK	HAVCR2	human	X	
+ITK	ITK	human		X
+ITK	Plcg1	human	X	
+ITK	PLCG1	human		X
+ITK	SIGLEC10	human		X
+ITK	TEC	human		X
+JAK1	MAP3K5	human		X
+JAK1	STAT1	human	X	
+JAK2	ARHGEF1	human	X	X
+JAK2	CCR2	human	X	
+JAK2	Ctla4	human	X	X
+JAK2	Epor	human	X	
+JAK2	EZH2	human	X	X
+JAK2	GAB2	human	X	X
+JAK2	GRB2	human	X	
+JAK2	GTF2I	human	X	X
+JAK2	HIST1H3A	human	X	X
+JAK2	HLTF	human	X	X
+JAK2	JAK2	human	X	
+JAK2	JAK2	human	X	X
+JAK2	MAP3K5	human	X	X
+JAK2	MAPK1	human	X	
+JAK2	MAPK3	human	X	
+JAK2	PAK1	human		X
+JAK2	PDK1	human		X
+JAK2	Prlr	human	X	
+JAK2	PRMT5	human	X	X
+JAK2	SOCS3	human	X	
+JAK2	STAP2	human	X	
+JAK2	STAT1	human	X	
+JAK2	STAT3	human	X	
+JAK2	STAT5A	human		X
+JAK2	STAT5A	human	X	
+JAK2	Stat5b	human		X
+JAK3	ELAVL1	human		X
+JAK3	JAK1	human		X
+JAK3	JAK3	human	X	X
+JAK3	PLD2	human		X
+JAK3	SIGLEC10	human		X
+JAK3	STAT1	human		X
+JAK3	STAT5A	human	X	
+KDR	KDR	human	X	X
+KDR	PFN1	human		X
+KDR	PFN1	human	X	
+KIT	KIT	human		X
+KIT	LAT2	human	X	
+KSR1	RAF1	human	X	X
+KSR2	MAP2K1	human		X
+LATS1	LATS1	human		X
+LATS1	YAP1	human	X	
+LATS2	ABL1	human	X	X
+LATS2	SNAI1	human	X	X
+LATS2	YAP1	human	X	
+LATS2	YAP1	human	X	X
+LATS2	YWHAG	human	X	X
+LCK	ACP1	human	X	
+LCK	ADAM15	human		X
+LCK	CBL	human	X	
+LCK	CCDC50	human	X	
+LCK	CD163L1	human		X
+LCK	CD247	human		X
+LCK	CD33	human	X	
+LCK	CD5	human	X	X
+LCK	CHN2	human	X	
+LCK	DAPP1	human		X
+LCK	DGKA	human	X	X
+LCK	ESR1	human		X
+LCK	EZR	human		X
+LCK	FOXP3	human	X	X
+LCK	G3BP1	human	X	X
+LCK	IL2RB	human		X
+LCK	ITGB2	human		X
+LCK	ITK	human	X	
+LCK	LCK	human		X
+LCK	LCK	human	X	X
+LCK	LCP2	human		X
+LCK	MAPK14	human		X
+LCK	MED28	human	X	X
+LCK	NFKBIA	human	X	X
+LCK	PECAM1	human		X
+LCK	PIK3R1	human		X
+LCK	PIK3R1	human	X	
+LCK	PLCG2	human		X
+LCK	PPP2CA	human		X
+LCK	PRDX1	human		X
+LCK	PRKCQ	human	X	X
+LCK	PTEN	human	X	
+LCK	PTPN6	human		X
+LCK	PTPN6	human	X	X
+LCK	Sh2b3	human		X
+LCK	SH2D2A	human		X
+LCK	SHC1	human	X	
+LCK	SIGLEC10	human		X
+LCK	SLAMF1	human	X	
+LCK	SLC25A4	human		X
+LCK	SOCS3	human		X
+LCK	Sptan1	human		X
+LCK	SSBP3	human	X	
+LCK	STAT2	human		X
+LCK	STAT5A	human	X	
+LCK	Syk	human		X
+LCK	Vav1	human		X
+LCK	VAV1	human		X
+LCK	WAS	human		X
+LCK	ZAP70	human		X
+LCK	ZAP70	human	X	X
+LIMK1	CFL1	human	X	X
+LIMK1	DSTN	human		X
+LIMK2	CFL1	human	X	X
+LIMK2	DSTN	human		X
+LMTK2	CFTR	human		X
+LMTK2		human		X
+LMTK2	PPP1CA	human	X	
+LMTK2	PYGB	human		X
+LRRK2	AKT1	human	X	X
+LRRK2	EZR	human		X
+LRRK2	LRRK2	human		X
+LRRK2	LRRK2	human	X	X
+LRRK2	MSN	human		X
+LRRK2	RDX	human		X
+LRRK2	SNAPIN	human	X	X
+LRRK2	TUBB2B	human		X
+LRRK2	TUBB2C	human		X
+LRRK2	TUBB3	human		X
+LRRK2	TUBB4	human		X
+LRRK2	TUBB5	human		X
+LYN	ABL1	human		X
+LYN	BCR	human		X
+LYN	Btk	human	X	
+LYN	BTK	human	X	
+LYN	CASP8	human	X	
+LYN	CD163L1	human		X
+LYN	CD19	human	X	X
+LYN	CDK4	human		X
+LYN	CDKN1B	human	X	
+LYN	CSF2RB	human		X
+LYN	DAPP1	human		X
+LYN	Dbnl	human		X
+LYN	FCGR2A	human		X
+LYN	FCGR2B	human		X
+LYN	FCGR2C	human		X
+LYN	GCSAM	human	X	
+LYN	Gria2	human	X	
+LYN	HCLS1	human	X	
+LYN	LAT2	human	X	
+LYN	Lpxn	human	X	
+LYN	LY96	human	X	
+LYN	NMT1	human		X
+LYN	PEAK1	human	X	
+LYN	PPP1R8	human		X
+LYN	Prkcd	human		X
+LYN	PTEN	human		X
+LYN	Ptpn6	human		X
+LYN	RGS16	human		X
+LYN	SLAMF1	human	X	X
+LYN	SLC4A1	human		X
+LYN	SLC4A1	human	X	X
+LYN	Syk	human	X	X
+LYN	TRIM28	human		X
+LYN	WAS	human		X
+MAP2K1	GSK3B	human	X	X
+MAP2K1	KRT8	human	X	
+MAP2K1	Mapk1	human		X
+MAP2K1	MAPK1	human	X	
+MAP2K1	Mapk1	human	X	X
+MAP2K1	MAPK1	human	X	X
+MAP2K1	Mapk3	human		X
+MAP2K1	MAPK3	human	X	X
+MAP2K1	Myod1	human	X	
+MAP2K1	RAF1	human		X
+MAP2K1	TAL1	human	X	
+MAP2K2	KRT8	human	X	
+MAP2K2	MAPK3	human	X	X
+MAP2K3	MAP2K3	human		X
+MAP2K3	Mapk14	human	X	
+MAP2K3	MAPK14	human	X	X
+MAP2K4		human		X
+MAP2K4	MAP2K4	human		X
+MAP2K4	MAPK10	human		X
+MAP2K4	MAPK10	human	X	
+MAP2K4	MAPK14	human		X
+MAP2K4	MAPK8	human		X
+MAP2K4	MAPK8	human	X	X
+MAP2K4	Mapk9	human	X	
+MAP2K4	MAPK9	human	X	X
+MAP2K4	RXRA	human		X
+MAP2K5	MAPK7	human		X
+MAP2K6	HSF4	human	X	
+MAP2K6	MAP2K6	human		X
+MAP2K6	MAP2K6	human	X	
+MAP2K6	MAPK12	human		X
+MAP2K6	Mapk14	human		X
+MAP2K6	Mapk14	human	X	
+MAP2K6	MAPK14	human	X	X
+MAP2K6	PAK6	human	X	
+MAP2K7	FADD	human	X	
+MAP2K7	MAPK10	human		X
+MAP2K7	MAPK10	human	X	
+MAP2K7	MAPK8	human		X
+MAP2K7	MAPK8	human	X	X
+MAP2K7	Mapk9	human	X	
+MAP2K7	MAPK9	human		X
+MAP2K7	MAPK9	human	X	X
+MAP3K10	DYRK2	human		X
+MAP3K10	TCF3	human	X	X
+MAP3K11	MAP2K3	human	X	
+MAP3K11	Map2k4	human		X
+MAP3K11	MAP2K4	human	X	X
+MAP3K11	MAP3K11	human		X
+MAP3K11	PIN1	human	X	X
+MAP3K12	Hist1h2ail	human		X
+MAP3K12	MYL12B	human		X
+MAP3K14	CHUK	human	X	
+MAP3K14	CHUK	human	X	X
+MAP3K14	Ezr	human	X	X
+MAP3K14	IKBKB	human	X	
+MAP3K14	Msn	human		X
+MAP3K14	NFKB2	human		X
+MAP3K14	NFKBIA	human		X
+MAP3K1	FADD	human	X	
+MAP3K1	MAFA	human	X	
+MAP3K1	Map2k1	human		X
+MAP3K1	MAP2K7	human	X	
+MAP3K2	Ripk4	human	X	X
+MAP3K3	RCAN1	human	X	
+MAP3K3	Ripk4	human	X	X
+MAP3K4	MAP3K4	human	X	
+MAP3K5	CDKN1A	human	X	X
+MAP3K5	DAXX	human	X	X
+MAP3K5	MAP2K3	human		X
+MAP3K5	MAP2K4	human	X	
+MAP3K5	MAP2K6	human		X
+MAP3K5	MAP3K5	human		X
+MAP3K5	MAPK14	human	X	
+MAP3K5	MAPK8	human	X	
+MAP3K5	PDPK1	human		X
+MAP3K5	STRAP	human		X
+MAP3K6	Map3k5	human	X	
+MAP3K6	MAP3K6	human	X	X
+MAP3K6	MAPK14	human	X	
+MAP3K6	MAPK8	human	X	
+MAP3K7	HDAC4	human	X	
+MAP3K7	HDAC5	human	X	
+MAP3K7	HDAC7	human	X	X
+MAP3K7	MAP3K7	human	X	
+MAP3K7	MAP3K7	human	X	X
+MAP3K7	PRKAA2	human	X	X
+MAP3K7	PTPN3	human		X
+MAP3K7	Rcan1	human	X	X
+MAP3K8	ABL1	human		X
+MAP3K8	CDK1	human		X
+MAP3K8	CHEK1	human		X
+MAP3K8	CREB1	human		X
+MAP3K8	EIF4EBP1	human		X
+MAP3K8	EIF4G1	human		X
+MAP3K8	EZR	human		X
+MAP3K8	HIST1H2BB	human		X
+MAP3K8	MAP2K1	human	X	X
+MAP3K8	MAP2K2	human	X	X
+MAP3K8	MAP2K3	human		X
+MAP3K8	MAP2K6	human		X
+MAP3K8	MSN	human		X
+MAP3K8	PLK1	human		X
+MAP3K8	PLK1	human	X	X
+MAP3K8	RDX	human		X
+MAP3K8	RPS6KA1	human		X
+MAP4K1	CARD11	human		X
+MAP4K1	LCP2	human	X	X
+MAP4K1	MAP3K11	human		X
+MAP4K1	MAP4K1	human		X
+MAP4K2	PRH1	human	X	
+MAP4K3	MAP4K3	human	X	X
+MAP4K3	PRKCQ	human	X	X
+MAP4K5	Gsk3b	human	X	
+MAP4K5	GSK3B	human	X	X
+MAPK10	APLP2	human		X
+MAPK10	APP	human	X	X
+MAPK10	ATN1	human		X
+MAPK10	Bcl2l11	human		X
+MAPK10	Cbx7	human		X
+MAPK10	Kif5b	human		X
+MAPK10	Mcl1	human		X
+MAPK10	MYC	human		X
+MAPK10	NFATC1	human		X
+MAPK10	Nr3c1	human		X
+MAPK10	Shc1	human		X
+MAPK10	Stmn1	human		X
+MAPK11	CCND3	human		X
+MAPK11	CDC25B	human		X
+MAPK11	E2F1	human		X
+MAPK11	EEF2K	human		X
+MAPK11	EGFR	human	X	
+MAPK11	EWSR1	human	X	
+MAPK11	GYS1	human		X
+MAPK11	HNF4A	human	X	
+MAPK11	MAPKAPK5	human		X
+MAPK11	NR3C1	human	X	
+MAPK11	Pias2	human	X	X
+MAPK11	PRKCE	human		X
+MAPK11	RPTOR	human	X	X
+MAPK11	Stat1	human	X	X
+MAPK12	CCND3	human		X
+MAPK12	Dlg4	human		X
+MAPK12	HTRA2	human		X
+MAPK12	MAPK12	human		X
+MAPK12	MAPT	human		X
+MAPK12	Sh3bp5	human		X
+MAPK13	CCND3	human		X
+MAPK13	Dlg4	human		X
+MAPK13	EEF2K	human		X
+MAPK13	EEF2K	human	X	X
+MAPK13	MAFA	human	X	X
+MAPK13	MAPT	human		X
+MAPK13	Prkd1	human		X
+MAPK13	Stmn1	human		X
+MAPK13	STMN1	human	X	X
+MAPK14	ADAM17	human	X	X
+MAPK14	AR	human	X	X
+MAPK14	ATF2	human	X	
+MAPK14	Atf2	human	X	X
+MAPK14	ATF2	human	X	X
+MAPK14	BAZ1B	human		X
+MAPK14	BCL2	human	X	X
+MAPK14	Bcl2l11	human	X	X
+MAPK14	BCL2L1	human		X
+MAPK14	Btg2	human		X
+MAPK14	Cacng2	human		X
+MAPK14	CALD1	human	X	
+MAPK14	CASP3	human	X	X
+MAPK14	CASP8	human	X	X
+MAPK14	CCND2	human	X	X
+MAPK14	CDKN1A	human		X
+MAPK14	CDKN1A	human	X	X
+MAPK14	Cdkn1c	human	X	X
+MAPK14	CDX2	human		X
+MAPK14	Cebpa	human	X	
+MAPK14	Cryab	human	X	
+MAPK14	CRYAB	human	X	
+MAPK14	DDIT3	human		X
+MAPK14	DDX5	human		X
+MAPK14	Dlx5	human	X	X
+MAPK14	E2F4	human	X	
+MAPK14	EEA1	human	X	X
+MAPK14	EGFR	human		X
+MAPK14	EGFR	human	X	
+MAPK14	EIF2AK2	human		X
+MAPK14	EIF2S1	human		X
+MAPK14	Eif4ebp1	human		X
+MAPK14	Eif4ebp1	human	X	
+MAPK14	Eif4ebp1	human	X	X
+MAPK14	ELAVL1	human	X	X
+MAPK14	ELK1	human	X	
+MAPK14	EPS15	human	X	X
+MAPK14	ESR1	human	X	
+MAPK14	ESR1	human	X	X
+MAPK14	ETV6	human	X	
+MAPK14	EWSR1	human	X	X
+MAPK14	F3	human		X
+MAPK14	F3	human	X	X
+MAPK14	FGFR1	human	X	X
+MAPK14	FOXO3	human		X
+MAPK14	FOXO3	human	X	X
+MAPK14	FPR1	human		X
+MAPK14	GJA1	human	X	
+MAPK14	HBP1	human	X	X
+MAPK14	Hist1h3a	human		X
+MAPK14	HNF4A	human	X	X
+MAPK14	HSPB1	human		X
+MAPK14	JDP2	human		X
+MAPK14	Kcnb1	human		X
+MAPK14	KHSRP	human		X
+MAPK14	KRT8	human	X	X
+MAPK14	LIMK1	human		X
+MAPK14	MAOA	human	X	
+MAPK14	Mapk14	human		X
+MAPK14	MAPKAPK2	human	X	
+MAPK14	MAPKAPK2	human	X	X
+MAPK14	MAPKAPK5	human		X
+MAPK14	MEF2A	human		X
+MAPK14	MEF2A	human	X	
+MAPK14	MEF2C	human		X
+MAPK14	MKNK1	human		X
+MAPK14	Mzf1	human		X
+MAPK14	NCF1	human		X
+MAPK14	NCF1	human	X	X
+MAPK14	Ncoa2	human	X	X
+MAPK14	NCOA3	human		X
+MAPK14	NFATC1	human		X
+MAPK14	Nfatc4	human		X
+MAPK14	NFATC4	human	X	
+MAPK14	NOXA1	human		X
+MAPK14	NOXA1	human	X	X
+MAPK14	NR3C1	human	X	
+MAPK14	NR3C1	human	X	X
+MAPK14	PAK6	human	X	
+MAPK14	PDX1	human		X
+MAPK14	PIP4K2B	human	X	X
+MAPK14	PPARGC1A	human	X	X
+MAPK14	PRKCE	human		X
+MAPK14	PTPN7	human		X
+MAPK14	Pxn	human	X	
+MAPK14	PXN	human	X	X
+MAPK14	RB1	human	X	X
+MAPK14	RPS27	human		X
+MAPK14	RPS6KA4	human	X	
+MAPK14	Rps6ka5	human		X
+MAPK14	RPS6KA5	human	X	
+MAPK14	Runx2	human	X	
+MAPK14	S100A9	human		X
+MAPK14	Scn10a	human	X	X
+MAPK14	Scn8a	human		X
+MAPK14	Shc1	human		X
+MAPK14	SHC1	human		X
+MAPK14	Siah2	human		X
+MAPK14	SLC6A4	human		X
+MAPK14	SLC9A1	human		X
+MAPK14	SLC9A1	human	X	X
+MAPK14	SMAD9	human		X
+MAPK14	Sp7	human	X	X
+MAPK14	Stat1	human		X
+MAPK14	STAT1	human	X	
+MAPK14	STAT3	human	X	
+MAPK14	Stmn1	human		X
+MAPK14	TAB1	human		X
+MAPK14	TAB1	human	X	X
+MAPK14	tao2beta	human		X
+MAPK14	TP53	human	X	X
+MAPK14	TWIST1	human	X	X
+MAPK14	USF1	human		X
+MAPK14	Xbp1	human		X
+MAPK14	ZFYVE20	human	X	X
+MAPK14	ZNHIT1	human	X	X
+MAPK15	JUN	human	X	X
+MAPK15	MAPK15	human		X
+MAPK15	MAPK15	human	X	X
+MAPK1	ABI1	human	X	
+MAPK1	ABI1	human	X	X
+MAPK1	ALOX5	human		X
+MAPK1	APBB1	human	X	X
+MAPK1	ARHGEF2	human	X	
+MAPK1	AR	human	X	
+MAPK1	ARRB1	human	X	X
+MAPK1	ASB2	human	X	
+MAPK1	Atf2	human	X	
+MAPK1	ATF2	human	X	X
+MAPK1	Bcl2	human		X
+MAPK1	BCL2	human	X	
+MAPK1	Bcl2l11	human	X	
+MAPK1	BCL2L11	human	X	X
+MAPK1	BCL6	human	X	
+MAPK1	BMF	human	X	X
+MAPK1	BRAF	human	X	
+MAPK1	BRAF	human	X	X
+MAPK1	Btg2	human		X
+MAPK1	CACNA1B	human		X
+MAPK1	Cacnb1	human		X
+MAPK1	Cacng2	human		X
+MAPK1	Cad	human		X
+MAPK1	CAD	human	X	X
+MAPK1	CAPN2	human	X	
+MAPK1	CASP8	human	X	X
+MAPK1	CASP9	human	X	X
+MAPK1	Cbx7	human		X
+MAPK1	CCNB1	human		X
+MAPK1	CDCA5	human	X	
+MAPK1	CDK2	human	X	
+MAPK1	CDKN1A	human	X	X
+MAPK1	CDKN1B	human		X
+MAPK1	CEBPA	human	X	X
+MAPK1	Cebpb	human		X
+MAPK1	CEBPB	human	X	
+MAPK1	CENPE	human		X
+MAPK1	CEP55	human	X	
+MAPK1	CIC	human	X	
+MAPK1	CIITA	human	X	X
+MAPK1	Cryab	human	X	
+MAPK1	CSNK2A1	human	X	X
+MAPK1	Cspg4	human	X	
+MAPK1	CTTN	human	X	X
+MAPK1	DAPK1	human	X	X
+MAPK1	DAZAP1	human		X
+MAPK1	Dcc	human		X
+MAPK1	Dcp1a	human		X
+MAPK1	Dlg2	human	X	
+MAPK1	DLG2	human		X
+MAPK1	Dlg4	human		X
+MAPK1	DUSP16	human	X	
+MAPK1	DUSP1	human	X	X
+MAPK1	DUSP5	human	X	
+MAPK1	Dusp6	human	X	
+MAPK1	DUSP6	human	X	X
+MAPK1	EGFR	human		X
+MAPK1	EIF2AK2	human		X
+MAPK1	Eif2b5	human		X
+MAPK1	EIF2S1	human		X
+MAPK1	Eif4ebp1	human		X
+MAPK1	EIF4EBP1	human		X
+MAPK1	ELK1	human		X
+MAPK1	EP300	human		X
+MAPK1	Ep300	human	X	X
+MAPK1	EP300	human	X	X
+MAPK1	ERF	human	X	X
+MAPK1	ESPL1	human		X
+MAPK1	ESR1	human	X	X
+MAPK1	Esr2	human		X
+MAPK1	ETS1	human		X
+MAPK1	EWSR1	human	X	X
+MAPK1	EXOC7	human	X	X
+MAPK1	FGFR1	human		X
+MAPK1	Fos	human		X
+MAPK1	FOS	human		X
+MAPK1	FOXO3	human	X	X
+MAPK1	GAB1	human		X
+MAPK1	GAB2	human		X
+MAPK1	Gata4	human	X	
+MAPK1	GATA6	human	X	
+MAPK1	Gorasp1	human		X
+MAPK1	GORASP2	human		X
+MAPK1	GRB10	human	X	X
+MAPK1	GSK3B	human	X	
+MAPK1	GTF2I	human	X	
+MAPK1	HDAC6	human	X	
+MAPK1	HIF1A	human		X
+MAPK1		human		X
+MAPK1		human	X	X
+MAPK1	IER3	human	X	X
+MAPK1	IRS1	human		X
+MAPK1	Itpr1	human		X
+MAPK1	Itpr1	human	X	X
+MAPK1	Jak2	human	X	
+MAPK1	Jund	human	X	
+MAPK1	Jun	human		X
+MAPK1	Kcnd2	human		X
+MAPK1	Kcnd2	human	X	
+MAPK1	Kcnj11	human		X
+MAPK1	Khdrbs1	human		X
+MAPK1	Khdrbs1	human	X	X
+MAPK1	Klc1	human	X	
+MAPK1	Klc1	human	X	X
+MAPK1	L1CAM	human		X
+MAPK1	LCK	human		X
+MAPK1	LIFR	human	X	X
+MAPK1	LYL1	human		X
+MAPK1	MAFA	human	X	X
+MAPK1	MAP2K1	human		X
+MAPK1	MAPKAPK2	human		X
+MAPK1	MAPKAPK5	human		X
+MAPK1	MAPT	human		X
+MAPK1	MBP	human		X
+MAPK1	Mcl1	human		X
+MAPK1	MCL1	human	X	X
+MAPK1	MCTS1	human		X
+MAPK1	MED1	human	X	
+MAPK1	MED1	human	X	X
+MAPK1	MITF	human	X	X
+MAPK1	MKL1	human	X	
+MAPK1	MKNK1	human		X
+MAPK1	MYC	human		X
+MAPK1	MYLK	human		X
+MAPK1	Myocd	human	X	X
+MAPK1	NCF1	human	X	
+MAPK1	NCF2	human		X
+MAPK1	NCOA1	human		X
+MAPK1	NCOA2	human		X
+MAPK1	NCOA6	human		X
+MAPK1	NDEL1	human		X
+MAPK1	NEFL	human		X
+MAPK1	Neurod1	human		X
+MAPK1	NFATC4	human	X	X
+MAPK1	NOX5	human	X	
+MAPK1	NOXA1	human	X	X
+MAPK1	Nr0b2	human	X	X
+MAPK1	Nr2c1	human	X	
+MAPK1	NR4A1	human	X	
+MAPK1	Nr5a1	human	X	X
+MAPK1	NUP153	human		X
+MAPK1	NUP153	human	X	X
+MAPK1	NUP214	human		X
+MAPK1	NUP50	human	X	X
+MAPK1	Papola	human	X	X
+MAPK1	PARP1	human	X	
+MAPK1	PDE4B	human		X
+MAPK1	PDE4C	human		X
+MAPK1	PDE4D	human	X	X
+MAPK1	PDX1	human		X
+MAPK1	Pgr	human	X	
+MAPK1	PGR	human	X	X
+MAPK1	PITPNM1	human	X	
+MAPK1	PLA2G4A	human		X
+MAPK1	PLCB1	human	X	X
+MAPK1	PML	human	X	X
+MAPK1	POU5F1	human		X
+MAPK1	POU5F1	human	X	X
+MAPK1	PPARG	human		X
+MAPK1	Prdx6	human		X
+MAPK1	PRDX6	human		X
+MAPK1	PTPN7	human		X
+MAPK1	Ptprr	human	X	
+MAPK1	Pttg1	human	X	X
+MAPK1	PXN	human	X	
+MAPK1	Pxn	human	X	X
+MAPK1	RGS19	human	X	X
+MAPK1	Rims1	human		X
+MAPK1	RORA	human		X
+MAPK1	RPS3	human	X	X
+MAPK1	Rps6ka1	human		X
+MAPK1	Rps6ka5	human		X
+MAPK1	RPS6KA5	human	X	
+MAPK1	Rps6kb1	human		X
+MAPK1	RPS6KB1	human		X
+MAPK1	RPTOR	human	X	X
+MAPK1	RUNX1	human	X	
+MAPK1	Runx2	human	X	
+MAPK1	RXRA	human	X	X
+MAPK1	SH2B1	human		X
+MAPK1	SLC6A4	human		X
+MAPK1	Slc9a1	human	X	
+MAPK1	SLC9A1	human		X
+MAPK1	SMAD1	human		X
+MAPK1	SMAD2	human		X
+MAPK1	SMAD3	human		X
+MAPK1	SORBS3	human	X	X
+MAPK1	SOS1	human		X
+MAPK1	SP1	human	X	X
+MAPK1	SP3	human	X	X
+MAPK1	SPHK1	human	X	X
+MAPK1	SPHK2	human	X	X
+MAPK1	SREBF1	human	X	X
+MAPK1	SREBF2	human	X	X
+MAPK1	STAT5A	human	X	X
+MAPK1	Stim1	human	X	X
+MAPK1	STIM1	human	X	X
+MAPK1	Stmn1	human		X
+MAPK1	SVIL	human	X	X
+MAPK1	TCF3	human		X
+MAPK1	TGS1	human	X	X
+MAPK1	Th	human		X
+MAPK1	TH	human		X
+MAPK1	THRB	human	X	X
+MAPK1	Tnfrsf1a	human		X
+MAPK1	TOB1	human	X	X
+MAPK1	TOP2A	human		X
+MAPK1	TP53BP2	human		X
+MAPK1	TP53	human	X	X
+MAPK1	TPPP	human		X
+MAPK1	TSC2	human	X	
+MAPK1	TTK	human	X	
+MAPK1	TWIST1	human	X	X
+MAPK1	WASF2	human		X
+MAPK1	WWC1	human		X
+MAPK1	WWC1	human	X	X
+MAPK1	Zc3hc1	human		X
+MAPK1	Zfp36	human		X
+MAPK3	ABI1	human	X	
+MAPK3	Adam17	human		X
+MAPK3	ADAM17	human	X	X
+MAPK3	ADRBK1	human		X
+MAPK3	Arhgap31	human		X
+MAPK3	Arhgap31	human	X	X
+MAPK3	ARHGEF2	human	X	
+MAPK3	AR	human	X	
+MAPK3	ARRB1	human		X
+MAPK3	ASB2	human	X	
+MAPK3	Atf2	human	X	
+MAPK3	ATF2	human		X
+MAPK3	ATF2	human	X	X
+MAPK3	BAZ1B	human		X
+MAPK3	Bcl2	human		X
+MAPK3	BCL2	human		X
+MAPK3	Bcl2l11	human	X	X
+MAPK3	BCL2L11	human	X	X
+MAPK3	BCL6	human	X	
+MAPK3	BLVRA	human		X
+MAPK3	BRAF	human	X	
+MAPK3	BRAF	human	X	X
+MAPK3	Btg2	human		X
+MAPK3	CACNA1B	human		X
+MAPK3	Cacnb1	human		X
+MAPK3	Cad	human		X
+MAPK3	CAD	human	X	
+MAPK3	CALD1	human		X
+MAPK3	CANX	human	X	
+MAPK3	CAPN2	human	X	X
+MAPK3	CASP8	human	X	
+MAPK3	CASP9	human	X	
+MAPK3	Cbx7	human		X
+MAPK3	CDCA5	human	X	
+MAPK3	CDK2	human	X	
+MAPK3	CDKN1B	human		X
+MAPK3	CEBPA	human	X	X
+MAPK3	Cebpb	human		X
+MAPK3	CEBPB	human	X	
+MAPK3	CIC	human	X	
+MAPK3	CIITA	human	X	
+MAPK3	CIITA	human	X	X
+MAPK3	Cryab	human	X	
+MAPK3	Cspg4	human	X	
+MAPK3	CTTN	human	X	X
+MAPK3	Dlg2	human	X	
+MAPK3	DUSP5	human	X	
+MAPK3	Dusp6	human	X	
+MAPK3	DUSP6	human	X	
+MAPK3	EGFR	human		X
+MAPK3	EIF4EBP1	human		X
+MAPK3	ELK1	human	X	X
+MAPK3	Eps8	human		X
+MAPK3	ESR1	human	X	
+MAPK3	ESR1	human	X	X
+MAPK3	Ets1	human	X	X
+MAPK3	ETV6	human	X	X
+MAPK3	EWSR1	human	X	
+MAPK3	EXOC7	human	X	
+MAPK3	FGFR1	human	X	X
+MAPK3	Fos	human		X
+MAPK3	FOXO3	human	X	
+MAPK3	GAB2	human	X	X
+MAPK3	Gabra1	human	X	
+MAPK3	Gata1	human		X
+MAPK3	Gata4	human	X	
+MAPK3	GATA6	human	X	
+MAPK3	Gorasp1	human		X
+MAPK3	GORASP2	human		X
+MAPK3	GSK3B	human	X	
+MAPK3	GTF2I	human	X	X
+MAPK3	HDAC6	human		X
+MAPK3	HDAC6	human	X	X
+MAPK3	HNRNPK	human		X
+MAPK3	HSF1	human		X
+MAPK3	HSPB8	human		X
+MAPK3		human		X
+MAPK3		human	X	
+MAPK3	IRS1	human	X	
+MAPK3	IRX2	human		X
+MAPK3	ITGB4	human	X	
+MAPK3	Jak2	human	X	
+MAPK3	Jund	human	X	
+MAPK3	KARS	human		X
+MAPK3	Kcnd2	human		X
+MAPK3	Klc1	human	X	
+MAPK3	Klc1	human	X	X
+MAPK3	KRT8	human	X	X
+MAPK3	LAT	human	X	X
+MAPK3	LCK	human		X
+MAPK3	LIFR	human	X	X
+MAPK3	LYL1	human		X
+MAPK3	MAGEA11	human	X	X
+MAPK3	MAP2K1	human		X
+MAPK3	MAPK3	human		X
+MAPK3	MAPT	human		X
+MAPK3	MAZ	human	X	X
+MAPK3	MBP	human		X
+MAPK3	Mcl1	human		X
+MAPK3	MCL1	human		X
+MAPK3	MCL1	human	X	X
+MAPK3	MCTS1	human		X
+MAPK3	MED1	human	X	
+MAPK3	MITF	human	X	
+MAPK3	MKL1	human	X	
+MAPK3	MKNK1	human		X
+MAPK3	MYB	human	X	X
+MAPK3	MYLK	human		X
+MAPK3	Myocd	human	X	X
+MAPK3	Mzf1	human		X
+MAPK3	NCF1	human		X
+MAPK3	NCF1	human	X	X
+MAPK3	NCOA1	human	X	
+MAPK3	NCOA2	human		X
+MAPK3	NFATC1	human		X
+MAPK3	NFATC4	human	X	X
+MAPK3	NOS2	human	X	X
+MAPK3	NOXA1	human	X	
+MAPK3	Nr0b2	human	X	X
+MAPK3	NR3C1	human	X	
+MAPK3	Nsmf	human		X
+MAPK3	NUP153	human		X
+MAPK3	NUP153	human	X	X
+MAPK3	NUP214	human		X
+MAPK3	NUP50	human	X	X
+MAPK3	Papola	human	X	X
+MAPK3	PDE4D	human	X	X
+MAPK3	PDE6G	human		X
+MAPK3	Pgr	human	X	
+MAPK3	PGR	human	X	X
+MAPK3	PIP5K1C	human		X
+MAPK3	PLCB1	human	X	X
+MAPK3	PML	human	X	
+MAPK3	POU5F1	human	X	
+MAPK3	Ptprr	human	X	
+MAPK3	Pttg1	human	X	X
+MAPK3	PXN	human	X	
+MAPK3	Pxn	human	X	X
+MAPK3	RAB5A	human		X
+MAPK3	RAF1	human	X	X
+MAPK3	RARG	human		X
+MAPK3	RPS3	human	X	X
+MAPK3	Rps6ka1	human		X
+MAPK3	RPS6KA3	human	X	
+MAPK3	RPS6KA5	human	X	
+MAPK3	RPTOR	human	X	X
+MAPK3	RRN3	human	X	
+MAPK3	RUNX1	human	X	
+MAPK3	Runx2	human	X	
+MAPK3	RUNX2	human		X
+MAPK3	RUNX2	human	X	X
+MAPK3	RXRA	human	X	X
+MAPK3	SH2B1	human		X
+MAPK3	Shc1	human		X
+MAPK3	Slc6a3	human		X
+MAPK3	SLC6A4	human		X
+MAPK3	Slc9a1	human	X	
+MAPK3	SMAD2	human	X	X
+MAPK3	SP1	human	X	
+MAPK3	SP1	human	X	X
+MAPK3	SP3	human	X	
+MAPK3	Sphk1	human	X	
+MAPK3	SPHK1	human	X	
+MAPK3	SPHK2	human	X	X
+MAPK3	SREBF1	human	X	X
+MAPK3	SREBF2	human	X	X
+MAPK3	Star	human		X
+MAPK3	STAT1	human	X	
+MAPK3	Stat1	human	X	X
+MAPK3	STAT5A	human	X	X
+MAPK3	Stim1	human	X	X
+MAPK3	Stmn1	human		X
+MAPK3	STMN1	human		X
+MAPK3	SULT4A1	human		X
+MAPK3	SVIL	human	X	X
+MAPK3	Syn1	human		X
+MAPK3	TAL1	human	X	
+MAPK3	TAL2	human		X
+MAPK3	Th	human		X
+MAPK3	TH	human		X
+MAPK3	THRB	human	X	X
+MAPK3	TOB1	human	X	X
+MAPK3	TOP2A	human		X
+MAPK3	TP53	human	X	
+MAPK3	TSC2	human	X	
+MAPK3	TTK	human	X	
+MAPK3	TWIST1	human	X	X
+MAPK3	WASF2	human	X	
+MAPK3	WWC1	human		X
+MAPK3	WWC1	human	X	X
+MAPK3	Zc3hc1	human		X
+MAPK6	MAPK6	human		X
+MAPK6	NCOA3	human	X	X
+MAPK7	DLG1	human	X	
+MAPK7	ETS1	human	X	X
+MAPK7	FOS	human		X
+MAPK7	Gja1	human	X	X
+MAPK7	MAP2K5	human		X
+MAPK7	MAPK7	human		X
+MAPK7	MEF2A	human	X	X
+MAPK7	MEF2C	human	X	X
+MAPK7	Mef2d	human	X	X
+MAPK7	Neurog1	human	X	X
+MAPK7	Nfatc4	human		X
+MAPK7	PML	human		X
+MAPK7	SGK1	human	X	X
+MAPK8	AIMP1	human	X	X
+MAPK8	APLP2	human	X	X
+MAPK8	App	human	X	X
+MAPK8	APP	human	X	X
+MAPK8	AR	human	X	X
+MAPK8	Atf2	human	X	
+MAPK8	ATF2	human		X
+MAPK8	ATF2	human	X	X
+MAPK8	ATN1	human		X
+MAPK8	Bad	human	X	X
+MAPK8	BCL2	human	X	
+MAPK8	Bcl2	human	X	X
+MAPK8	BCL2	human	X	X
+MAPK8	Bcl2l11	human		X
+MAPK8	Bcl2l11	human	X	X
+MAPK8	BCL2L11	human	X	X
+MAPK8	BCL2L1	human	X	
+MAPK8	BCL2L1	human	X	X
+MAPK8	BMF	human		X
+MAPK8	CDC25B	human		X
+MAPK8	CDC25C	human	X	
+MAPK8	CDKN1A	human		X
+MAPK8	CDKN1A	human	X	X
+MAPK8	CDT1	human	X	
+MAPK8	CTBP1	human	X	X
+MAPK8	Ctnnb1	human	X	
+MAPK8	CTNNB1	human	X	X
+MAPK8	Dcx	human		X
+MAPK8	Dlg4	human		X
+MAPK8	Dusp8	human	X	
+MAPK8	EEF1A2	human		X
+MAPK8	EIF4ENIF1	human	X	X
+MAPK8	EWSR1	human	X	X
+MAPK8	FOXO4	human		X
+MAPK8	FOXO4	human	X	X
+MAPK8	Hes1	human	X	X
+MAPK8	HNRNPK	human		X
+MAPK8	IRF3	human	X	X
+MAPK8	IRS1	human	X	
+MAPK8	Irs2	human		X
+MAPK8	Itch	human		X
+MAPK8	JUNB	human		X
+MAPK8	JUND	human		X
+MAPK8	Jun	human		X
+MAPK8	JUN	human	X	
+MAPK8	JUN	human	X	X
+MAPK8	KRT8	human		X
+MAPK8	LAT	human	X	X
+MAPK8	Mafb	human	X	X
+MAPK8	MAPK8IP1	human		X
+MAPK8	MAPK8IP1	human	X	X
+MAPK8	Mapk8ip3	human	X	X
+MAPK8	MAPT	human		X
+MAPK8	MAPT	human	X	
+MAPK8	MCL1	human		X
+MAPK8	MCL1	human	X	
+MAPK8	MYC	human		X
+MAPK8	MYC	human	X	X
+MAPK8	NCOA3	human		X
+MAPK8	Nfatc2	human		X
+MAPK8	Nfatc2	human	X	X
+MAPK8	NFATC4	human		X
+MAPK8	Nr3c1	human	X	X
+MAPK8	NR3C1	human	X	X
+MAPK8	NR4A1	human	X	X
+MAPK8	PPARG	human		X
+MAPK8	Ppm1j	human	X	X
+MAPK8	PXN	human	X	X
+MAPK8	RARA	human		X
+MAPK8	RXRA	human	X	
+MAPK8	SFN	human	X	X
+MAPK8	Shc1	human	X	X
+MAPK8	SIRT1	human	X	X
+MAPK8	SP1	human	X	X
+MAPK8	Stat1	human		X
+MAPK8	STAT3	human	X	X
+MAPK8	STAT6	human	X	X
+MAPK8	STK4	human	X	X
+MAPK8	Stmn1	human	X	X
+MAPK8	Stmn2	human	X	
+MAPK8	TP53	human	X	X
+MAPK8	TWIST1	human	X	X
+MAPK8	YWHAB	human		X
+MAPK8	YWHAZ	human	X	X
+MAPK9	APLP2	human		X
+MAPK9	APP	human		X
+MAPK9	Atf2	human	X	
+MAPK9	ATF2	human		X
+MAPK9	ATF2	human	X	X
+MAPK9	BAZ1B	human		X
+MAPK9	Bcl2l11	human		X
+MAPK9	BCL2L1	human		X
+MAPK9	Cbx7	human		X
+MAPK9	CDC25C	human	X	X
+MAPK9	Ctnnb1	human	X	X
+MAPK9	DCX	human		X
+MAPK9	FOXO4	human	X	
+MAPK9	Hes1	human		X
+MAPK9	JDP2	human		X
+MAPK9	JUN	human		X
+MAPK9	JUN	human	X	X
+MAPK9	MAPK8IP1	human	X	
+MAPK9	MAPKAPK5	human		X
+MAPK9	MAPT	human		X
+MAPK9	MFN2	human	X	X
+MAPK9	MYC	human		X
+MAPK9	NFATC3	human	X	X
+MAPK9	NFATC4	human		X
+MAPK9	Nr3c1	human		X
+MAPK9	PDX1	human		X
+MAPK9	PSEN1	human	X	X
+MAPK9	RRN3	human		X
+MAPK9	RXRA	human	X	
+MAPK9	Sh3bp5	human		X
+MAPK9	Shc1	human		X
+MAPK9	SLC6A4	human		X
+MAPK9	STAT3	human	X	X
+MAPK9	Stmn1	human		X
+MAPK9	TOB1	human		X
+MAPK9	TP53	human	X	X
+MAPKAPK2	AATF	human	X	X
+MAPKAPK2	AGO2	human	X	X
+MAPKAPK2	AKT1	human		X
+MAPKAPK2	ALOX5	human		X
+MAPKAPK2	ARPC5	human		X
+MAPKAPK2	BAG2	human	X	X
+MAPKAPK2	BCL2L1	human		X
+MAPKAPK2	CDC25B	human		X
+MAPKAPK2	CDC25C	human		X
+MAPKAPK2	Creb1	human		X
+MAPKAPK2	CREB1	human	X	X
+MAPKAPK2	EEF2K	human	X	
+MAPKAPK2	HSF1	human		X
+MAPKAPK2	Hspb1	human		X
+MAPKAPK2	HSPB1	human		X
+MAPKAPK2		human		X
+MAPKAPK2	KRT18	human		X
+MAPKAPK2	Krt20	human	X	
+MAPKAPK2	KRT20	human		X
+MAPKAPK2	LIMK1	human	X	X
+MAPKAPK2	Lpcat2	human	X	
+MAPKAPK2	Lsp1	human		X
+MAPKAPK2	LSP1	human		X
+MAPKAPK2	MAPKAPK2	human	X	
+MAPKAPK2	MDM2	human		X
+MAPKAPK2	PARN	human	X	X
+MAPKAPK2	Pde4a	human	X	X
+MAPKAPK2	PIAS1	human	X	X
+MAPKAPK2	PLK1	human		X
+MAPKAPK2	PLK1	human	X	X
+MAPKAPK2	RCSD1	human		X
+MAPKAPK2	Rps6ka1	human		X
+MAPKAPK2	RTN4	human	X	X
+MAPKAPK2	SRF	human	X	X
+MAPKAPK2	TH	human		X
+MAPKAPK2	TP53	human		X
+MAPKAPK2	TRIM29	human		X
+MAPKAPK2	TSC2	human	X	X
+MAPKAPK2	YWHAZ	human		X
+MAPKAPK2	Zfp36	human		X
+MAPKAPK2	ZFP36L1	human	X	X
+MAPKAPK5	DNAJB1	human	X	X
+MAPKAPK5	SEPT8	human		X
+MAPKAPK5	TH	human		X
+MAPKAPK5	TP53	human	X	X
+MARK1	Dcx	human		X
+MARK1	MAPT	human		X
+MARK1	MAPT	human	X	X
+MARK2	ARHGEF2	human		X
+MARK2	ARHGEF2	human	X	X
+MARK2	BAIAP2	human		X
+MARK2	Crtc2	human	X	
+MARK2	Crtc2	human	X	X
+MARK2	HDAC4	human	X	
+MARK2	HDAC5	human	X	
+MARK2	HDAC7	human	X	
+MARK2	Mapt	human		X
+MARK2	MAPT	human	X	
+MARK2	MARK2	human		X
+MARK2	PARD3	human	X	
+MARK2	RAB11FIP2	human	X	X
+MARK2	RNF41	human		X
+MARK2	UTRN	human	X	X
+MARK3	CDC25C	human		X
+MARK3	Crtc2	human		X
+MARK3	MARK3	human		X
+MARK4	Crtc2	human	X	
+MATK	LYN	human	X	
+MELK	CDC25B	human		X
+MELK	CDC25B	human	X	X
+MELK	MELK	human		X
+MELK	MELK	human	X	
+MELK	MELK	human	X	X
+MERTK	MERTK	human	X	X
+MET	MET	human		X
+MET	MET	human	X	X
+MET	PTK2	human	X	X
+MET	SHC1	human	X	
+MKNK1	EIF4E	human	X	
+MKNK1	Eif4e	human	X	X
+MKNK1	EIF4E	human	X	X
+MKNK1	HNRNPA1	human		X
+MKNK1	SFPQ	human		X
+MKNK1	SPRY2	human	X	X
+MKNK2	EIF4E	human	X	X
+MKNK2	SFPQ	human		X
+MKNK2	SPRY2	human	X	
+MOS	MAP2K1	human		X
+MOS	Mos	human		X
+MOS	VIM	human		X
+MST1R	MET	human	X	
+MST4	EZR	human	X	X
+MST4	PDCD10	human	X	
+MTOR	AKT1	human		X
+MTOR	AKT1	human	X	X
+MTOR	AKT1S1	human	X	
+MTOR	AKT1S1	human	X	X
+MTOR	ANKRD17	human	X	
+MTOR	APBA3	human	X	
+MTOR	BAG3	human	X	
+MTOR	BRD9	human	X	
+MTOR	DAP	human		X
+MTOR	DEPTOR	human		X
+MTOR	DEPTOR	human	X	X
+MTOR	DNMT1	human	X	
+MTOR	EEF2K	human	X	
+MTOR	EIF4EBP1	human	X	
+MTOR	EIF4EBP1	human	X	X
+MTOR	ELL	human	X	
+MTOR	FAM21A	human	X	
+MTOR	Grb10	human		X
+MTOR	GRB10	human		X
+MTOR	Irs1	human		X
+MTOR	ISCU	human	X	X
+MTOR	LARP1	human	X	
+MTOR	MAF1	human		X
+MTOR	MAF1	human	X	X
+MTOR	MAPKAP1	human		X
+MTOR	MTOR	human		X
+MTOR	MTOR	human	X	X
+MTOR	MYC	human	X	
+MTOR	MYCN	human	X	
+MTOR	Nfatc4	human		X
+MTOR	OXSR1	human		X
+MTOR	PATL1	human	X	
+MTOR	RPRD1B	human	X	
+MTOR	Rps6kb1	human		X
+MTOR	RPS6KB1	human		X
+MTOR	RPS6KB1	human	X	
+MTOR	RPS6KB1	human	X	X
+MTOR	RPTOR	human	X	X
+MTOR	SGK1	human	X	X
+MTOR	SRRM1	human	X	
+MTOR	SRRM2	human	X	
+MTOR	UBR4	human	X	
+MTOR	ULK1	human	X	
+MTOR	WNK1	human	X	
+MTOR	ZNF768	human	X	
+MYLK	CALD1	human		X
+MYLK	Myl12b	human		X
+MYLK	MYL12B	human		X
+MYLK	MYL12B	human	X	X
+MYLK	MYL9	human		X
+MYO3A	MYO3A	human		X
+NEK11	CDC25A	human		X
+NEK11	CDC25A	human	X	X
+NEK1	NDC80	human	X	
+NEK1	VDAC1	human	X	X
+NEK1	Wwtr1	human	X	X
+NEK2	CEP250	human		X
+NEK2	CNTROB	human	X	
+NEK2	NDC80	human	X	X
+NEK2	NEK2	human		X
+NEK2	PPP1CC	human		X
+NEK2	SGOL1	human	X	X
+NEK6	CDK7	human		X
+NEK6	DDR1	human		X
+NEK6	GRIN1	human		X
+NEK6	NUP98	human		X
+NEK6	RBL2	human		X
+NEK6	RPS6KB1	human		X
+NEK6	Rps6kb1	human	X	X
+NEK6	SGK1	human		X
+NEK9		human		X
+NEK9	NEDD1	human		X
+NEK9	NEK6	human	X	X
+NEK9	NEK9	human	X	X
+NLK	FOXO1	human	X	
+NLK	LEF1	human	X	X
+NLK	SETDB1	human		X
+NLK	SMAD4	human		X
+NLK	Stat3	human	X	X
+NLK	TCF7L2	human	X	X
+NME1	Acly	human		X
+NME1	Ksr1	human	X	X
+NME1	NME1	human		X
+NME1	NME1	human	X	X
+NME2	KCNN4	human	X	X
+NME2	NME2	human		X
+NPM/ALK	Zc3hc1	human	X	
+NTRK1	NTRK1	human		X
+NTRK1	NTRK1	human	X	
+NTRK1	SHC1	human	X	
+NTRK1	SHC3	human		X
+NTRK2	KCNA3	human	X	
+NTRK2	NTRK2	human		X
+NTRK2	SHC3	human		X
+NUAK1	CASP6	human		X
+NUAK1	LATS1	human	X	X
+NUAK1	PPP1R12A	human	X	X
+NUAK1	TP53	human	X	
+NUAK2	LATS1	human		X
+OXSR1	Pak1	human		X
+OXSR1	SLC12A1	human		X
+OXSR1	SLC12A2	human		X
+OXSR1	SLC12A2	human	X	X
+OXSR1	SLC12A3	human		X
+PAK1	ARHGDIA	human	X	X
+PAK1	ARHGEF2	human	X	X
+PAK1	Arhgef7	human		X
+PAK1	ARPC1B	human	X	X
+PAK1	AURKA	human		X
+PAK1	AURKA	human	X	X
+PAK1	Bad	human		X
+PAK1	BAD	human	X	X
+PAK1	BRAF	human	X	
+PAK1	Ctbp1	human	X	
+PAK1	CTBP1	human	X	X
+PAK1	CTTN	human	X	X
+PAK1	DYNLL1	human	X	X
+PAK1	ELF3	human	X	X
+PAK1	ESR1	human	X	X
+PAK1	FLNA	human		X
+PAK1	FLNA	human	X	X
+PAK1	FXR1	human	X	
+PAK1	GIT1	human		X
+PAK1	GIT1	human	X	
+PAK1	GNAZ	human	X	X
+PAK1	HIST1H3A	human	X	X
+PAK1	ILK	human	X	X
+PAK1	ITGB3BP	human	X	X
+PAK1	Jub	human	X	X
+PAK1	KIF2C	human	X	X
+PAK1	LIMK1	human		X
+PAK1	MAP2K1	human	X	X
+PAK1	MAP3K1	human		X
+PAK1	MYL9	human		X
+PAK1	MYLK	human		X
+PAK1	Net1	human		X
+PAK1	Net1	human	X	X
+PAK1	NF2	human	X	X
+PAK1	PA2G4	human	X	X
+PAK1	PAK1	human		X
+PAK1	PCBP1	human	X	
+PAK1	PGAM1	human	X	X
+PAK1	PGM1	human	X	X
+PAK1	PLK1	human	X	X
+PAK1	Ppp1r12a	human		X
+PAK1	Ppp1r14a	human		X
+PAK1	PXN	human	X	X
+PAK1	Raf1	human	X	
+PAK1	RAF1	human	X	
+PAK1	RAF1	human	X	X
+PAK1	SNAI1	human	X	X
+PAK1	SPEN	human	X	X
+PAK1	Stat5a	human	X	
+PAK1	STMN1	human	X	
+PAK1	STMN1	human	X	X
+PAK1	TBCB	human	X	X
+PAK1	VIM	human	X	X
+PAK2	ABL1	human	X	X
+PAK2	Arhgdia	human	X	X
+PAK2	CALD1	human		X
+PAK2	EIF4G1	human		X
+PAK2	JUN	human	X	X
+PAK2	MAPK6	human		X
+PAK2	Mknk1	human		X
+PAK2	MYLK	human		X
+PAK2	NF2	human	X	X
+PAK2	PAK2	human		X
+PAK2	SYN1	human		X
+PAK3	CALD1	human		X
+PAK3	Map2k1	human		X
+PAK3	MYO6	human		X
+PAK4	ARHGEF2	human	X	
+PAK4	CTNNB1	human	X	X
+PAK4	ITGB5	human	X	X
+PAK4	PAK4	human	X	X
+PAK4	PXN	human	X	X
+PAK4	RAN	human	X	X
+PAK6	PACSIN1	human	X	
+PAK7	PAK7	human	X	
+PASK	EEF1A1	human		X
+PASK	GYS1	human		X
+PASK	PASK	human		X
+PASK	Pdx1	human		X
+PBK	GPSM2	human	X	X
+PBK	HIST1H3A	human	X	X
+PBK	PRC1	human	X	
+PBK	PRDX1	human	X	X
+PDGFRA	PDGFRA	human		X
+PDGFRA	PDGFRA	human	X	
+PDGFRA	SRC	human	X	
+PDGFRB	ABL2	human		X
+PDGFRB	FYN	human		X
+PDGFRB	MUC1	human		X
+PDGFRB	PDGFRA	human		X
+PDGFRB	PDGFRB	human		X
+PDGFRB	PDGFRB	human	X	
+PDGFRB	PDGFRB	human	X	X
+PDGFRB	PTK2	human	X	X
+PDGFRB	SRC	human	X	
+PDGFRB	THOC5	human	X	
+PDK1		human		X
+PDK1	PDHA1	human		X
+PDK1	PDHA2	human		X
+PDK2	PDHA1	human		X
+PDK2	PDHA2	human		X
+PDK3	PDHA1	human		X
+PDK3	PDHA2	human		X
+PDK4	PDHA1	human		X
+PDK4	PDHA2	human		X
+PDPK1	Akt1	human	X	X
+PDPK1	AKT1	human	X	X
+PDPK1	AKT2	human		X
+PDPK1	AKT3	human		X
+PDPK1	EPAS1	human		X
+PDPK1	ITGB3	human		X
+PDPK1	MAP2K1	human	X	X
+PDPK1	MAP2K2	human	X	X
+PDPK1	Map3k5	human		X
+PDPK1	MAP3K5	human	X	
+PDPK1	PAK1	human		X
+PDPK1	PDHA1	human		X
+PDPK1	PDPK1	human		X
+PDPK1	PDPK1	human	X	X
+PDPK1	PKN1	human	X	X
+PDPK1	PKN2	human	X	
+PDPK1	Prkaca	human		X
+PDPK1	Prkcd	human	X	X
+PDPK1	PRKCE	human	X	X
+PDPK1	PRKCZ	human		X
+PDPK1	Prkcz	human	X	X
+PDPK1	Rps6ka1	human		X
+PDPK1	RPS6KA1	human	X	X
+PDPK1	Rps6ka3	human	X	X
+PDPK1	RPS6KB1	human	X	X
+PDPK1	Rps6kb2	human		X
+PDPK1	Sgk1	human	X	
+PDPK1	SGK1	human		X
+PDPK1	SGK2	human		X
+PDPK1	SGK3	human	X	X
+PDPK1	Tssk3	human		X
+PHKG1	GAP43	human		X
+PHKG1		human		X
+PIK3CA	PIK3R1	human	X	X
+PIK3CA	RPS6KB1	human	X	
+PIK3CA	TPM1	human		X
+PIK3CB	PIK3CB	human		X
+PIK3CD	PIK3CD	human		X
+PIK3CG	PIK3CG	human		X
+PIKFYVE	AKT1	human	X	
+PIM1	ABCG2	human	X	
+PIM1	BAD	human	X	
+PIM1	Bad	human	X	X
+PIM1	CDKN1A	human		X
+PIM1	CDKN1A	human	X	X
+PIM1	CDKN1B	human	X	X
+PIM1	Cxcr4	human		X
+PIM1	CXCR4	human	X	
+PIM1	FOXO3	human	X	
+PIM1	HIST1H3A	human	X	X
+PIM1	MAP3K5	human	X	X
+PIM1	MARK3	human		X
+PIM1	MDM2	human	X	X
+PIM1	Myc	human	X	X
+PIM1	POU5F1	human		X
+PIM1	RELA	human	X	X
+PIM1	RUNX3	human	X	
+PIM1	SKP2	human	X	
+PIM2	Bad	human	X	
+PIM2	Bad	human	X	X
+PIM2	CDKN1A	human		X
+PIM2	CDKN1A	human	X	X
+PIM2	Eif4b	human		X
+PIM2	Myc	human	X	X
+PIM3	Bad	human	X	
+PIM3	BAD	human	X	
+PINK1	PARK2	human	X	X
+PINK1	PINK1	human	X	
+PINK1	RHOT1	human		X
+PKDCC	Pkdcc	human	X	
+PKM	STAT3	human	X	X
+PKMYT1	Cdk1	human		X
+PKMYT1	CDK1	human	X	X
+PKN1	CLIP1	human		X
+PKN1	EGFR	human	X	X
+PKN1	HDAC5	human		X
+PKN1	HDAC9	human		X
+PKN1	HIST1H3A	human	X	X
+PKN1	MAPT	human		X
+PKN1	MAPT	human	X	X
+PKN1	Marcks	human		X
+PKN1	PKN1	human		X
+PKN1	Traf1	human		X
+PKN3	CLIP1	human		X
+PKN3	EGFR	human		X
+PLK1	ANAPC1	human		X
+PLK1	ANAPC4	human		X
+PLK1	ANAPC7	human		X
+PLK1	ATXN10	human	X	X
+PLK1	Axin1	human	X	X
+PLK1	BCL2L1	human		X
+PLK1	BIRC5	human		X
+PLK1	BIRC5	human	X	X
+PLK1	BORA	human	X	
+PLK1	BRCA2	human		X
+PLK1	BRCA2	human	X	X
+PLK1	BUB1B	human	X	
+PLK1	BUB1B	human	X	X
+PLK1	CCNB1	human	X	X
+PLK1	CCNT1	human		X
+PLK1	CDC16	human		X
+PLK1	CDC23	human		X
+PLK1	CDC25C	human	X	X
+PLK1	CDC27	human		X
+PLK1	CDC6	human	X	X
+PLK1	CENPU	human	X	X
+PLK1	CEP55	human	X	X
+PLK1	CHEK2	human	X	
+PLK1	CHEK2	human	X	X
+PLK1	CLIP1	human		X
+PLK1	CLIP1	human	X	X
+PLK1	CLSPN	human	X	
+PLK1	CTNNB1	human	X	X
+PLK1	DCTN1	human	X	X
+PLK1	DVL2	human	X	X
+PLK1	ERCC6L	human	X	X
+PLK1	ESPL1	human		X
+PLK1	FADD	human	X	X
+PLK1	FBXO5	human		X
+PLK1	GTSE1	human		X
+PLK1	GTSE1	human	X	X
+PLK1	HSF1	human	X	X
+PLK1	IKBKB	human		X
+PLK1	IKBKB	human	X	X
+PLK1	IRS1	human	X	
+PLK1	KAT7	human	X	X
+PLK1	Kif23	human		X
+PLK1	MAD1L1	human	X	
+PLK1	MAP9	human	X	X
+PLK1	Mdm2	human		X
+PLK1	MDM2	human	X	X
+PLK1	NEDD1	human		X
+PLK1	NINL	human		X
+PLK1	NPM1	human	X	X
+PLK1	NUDC	human	X	X
+PLK1	OPTN	human	X	X
+PLK1	PCNT	human		X
+PLK1	PIN1	human	X	X
+PLK1	PINX1	human	X	X
+PLK1	PKMYT1	human	X	X
+PLK1	PLEKHG6	human	X	X
+PLK1	PLK1S1	human	X	X
+PLK1	PRC1	human		X
+PLK1	PTPN1	human		X
+PLK1	RACGAP1	human		X
+PLK1	RACGAP1	human	X	X
+PLK1	RAD51	human		X
+PLK1	RAN	human	X	X
+PLK1	ROCK2	human		X
+PLK1	Sgol1	human	X	
+PLK1	SNCA	human		X
+PLK1	SNCB	human	X	X
+PLK1	SRI	human	X	X
+PLK1	SUGT1	human		X
+PLK1	Sugt1	human	X	X
+PLK1	TERF1	human	X	X
+PLK1	TEX14	human	X	
+PLK1	TOP2A	human		X
+PLK1	TOP2A	human	X	X
+PLK1	TOPORS	human	X	X
+PLK1	TP73	human	X	X
+PLK1	Tpt1	human	X	
+PLK1	TRIOBP	human	X	X
+PLK1	Vim	human		X
+PLK1	VIM	human	X	
+PLK1	Vim	human	X	X
+PLK1	WEE1	human		X
+PLK1	YY1	human	X	X
+PLK2	Adam17	human	X	
+PLK2	CALU	human		X
+PLK2	CENPJ	human	X	X
+PLK2	FBXW7	human		X
+PLK2	FBXW7	human	X	X
+PLK2	SNCA	human	X	X
+PLK2	SNCB	human	X	
+PLK2	YWHAE	human		X
+PLK3	ATF2	human		X
+PLK3	BCL2L1	human	X	X
+PLK3	CALU	human		X
+PLK3	CCNB1	human		X
+PLK3	CDC25A	human	X	X
+PLK3	CDC25C	human		X
+PLK3	CHEK2	human		X
+PLK3	HIF1A	human	X	X
+PLK3	HSP90AB1	human		X
+PLK3	JUN	human	X	
+PLK3	NPM1	human		X
+PLK3	PTEN	human		X
+PLK3	SNCA	human	X	X
+PLK3	SNCB	human	X	X
+PLK3	TOP2A	human	X	X
+PLK3	TP53	human	X	X
+PLK3	VRK1	human	X	X
+PLK3	YWHAE	human		X
+PLK4	CENPJ	human	X	X
+PLK4	Hand1	human	X	
+PLK4	PLK4	human		X
+PLK4	PLK4	human	X	X
+PNCK	EIF4G3	human	X	X
+PNCK	HSP90AA1	human	X	X
+PNCK	HSP90AB1	human	X	X
+PRKAA1	ACACA	human	X	
+PRKAA1	ACACB	human	X	
+PRKAA1	Cdkn1b	human		X
+PRKAA1	CDKN1B	human		X
+PRKAA1	CFTR	human		X
+PRKAA1	Cry1	human	X	
+PRKAA1	CSNK1E	human		X
+PRKAA1	CTBP1	human		X
+PRKAA1	EEF2K	human	X	X
+PRKAA1	EP300	human	X	X
+PRKAA1	Gabbr1	human		X
+PRKAA1	Gabbr2	human	X	X
+PRKAA1	GBF1	human	X	X
+PRKAA1	GFPT1	human		X
+PRKAA1	GFPT1	human	X	X
+PRKAA1	HDAC5	human	X	X
+PRKAA1	HNF4A	human	X	
+PRKAA1		human		X
+PRKAA1	Kcnb1	human		X
+PRKAA1	Kcnj11	human	X	
+PRKAA1	Kcnma1	human		X
+PRKAA1	KLC1	human		X
+PRKAA1	KLC2	human		X
+PRKAA1	KPNA2	human	X	X
+PRKAA1	Lipe	human		X
+PRKAA1	LIPE	human		X
+PRKAA1	MAPT	human		X
+PRKAA1	Med1	human		X
+PRKAA1	Mlxipl	human		X
+PRKAA1	Mtor	human	X	X
+PRKAA1	NOS3	human	X	
+PRKAA1	PFKFB2	human		X
+PRKAA1	PFKFB3	human	X	X
+PRKAA1	PPP1R3C	human	X	
+PRKAA1	PPP2R5C	human		X
+PRKAA1	PRKAA1	human		X
+PRKAA1	PRKAB1	human		X
+PRKAA1	Rb1	human		X
+PRKAA1	RPTOR	human	X	X
+PRKAA1	RRN3	human	X	X
+PRKAA1	SLC12A1	human	X	
+PRKAA1	TBC1D1	human		X
+PRKAA1	TBC1D1	human	X	X
+PRKAA1	TNNI3	human		X
+PRKAA1	TP53	human		X
+PRKAA1	Tsc2	human		X
+PRKAA1	Tsc2	human	X	X
+PRKAA1	ULK1	human	X	
+PRKAA1	Ulk1	human	X	X
+PRKAA1	VASP	human		X
+PRKAA1	ZNF692	human		X
+PRKAA2	ACACA	human	X	
+PRKAA2	BAIAP2	human	X	X
+PRKAA2	CDC27	human	X	X
+PRKAA2	FOXO3	human	X	
+PRKAA2	HAS2	human	X	
+PRKAA2	HDAC5	human	X	
+PRKAA2	IKBKB	human	X	X
+PRKAA2	Kcnb1	human	X	
+PRKAA2	PAK2	human	X	X
+PRKAA2	PLD1	human	X	X
+PRKAA2	Ppargc1a	human	X	
+PRKAA2	PPP1R12C	human	X	X
+PRKAA2	Tbc1d4	human		X
+PRKAA2	Tp53	human		X
+PRKAA2	Vasp	human		X
+PRKACA	AANAT	human		X
+PRKACA	ABCA1	human		X
+PRKACA	ABCB1	human		X
+PRKACA	Abcc9	human		X
+PRKACA	Abcc9	human	X	X
+PRKACA	Acaca	human		X
+PRKACA	ADRB1	human	X	
+PRKACA	ADRB2	human		X
+PRKACA	ADRBK1	human		X
+PRKACA	Aicda	human		X
+PRKACA	AICDA	human	X	X
+PRKACA	AKAP13	human	X	X
+PRKACA	AKAP9	human	X	
+PRKACA	ALOX5	human		X
+PRKACA	ALOX5	human	X	
+PRKACA	ANXA1	human		X
+PRKACA	Apoa1bp	human		X
+PRKACA	APOBEC3G	human	X	X
+PRKACA	APPL1	human		X
+PRKACA	Aqp2	human		X
+PRKACA	AQP2	human	X	
+PRKACA	AQP5	human	X	
+PRKACA	ARFGEF1	human	X	
+PRKACA	ARHGDIA	human	X	X
+PRKACA	Arhgef2	human	X	
+PRKACA	Arhgef7	human	X	X
+PRKACA	Arpp19	human		X
+PRKACA	ARPP-21	human		X
+PRKACA	ASIC1	human	X	X
+PRKACA	Atp1a1	human		X
+PRKACA	ATP1A1	human		X
+PRKACA	Atp6v1a	human	X	X
+PRKACA	ATXN1	human	X	
+PRKACA	AURKA	human		X
+PRKACA	AVPR2	human		X
+PRKACA	Bad	human		X
+PRKACA	BAD	human	X	
+PRKACA	Bad	human	X	X
+PRKACA	BAD	human	X	X
+PRKACA	BCAM	human	X	
+PRKACA	BIRC5	human		X
+PRKACA	BRSK2	human		X
+PRKACA	CA9	human	X	X
+PRKACA	CACB	human		X
+PRKACA	CACB	human	X	X
+PRKACA	Cacna1b	human		X
+PRKACA	Cacna1c	human		X
+PRKACA	Cacna1c	human	X	X
+PRKACA	Cacna1d	human		X
+PRKACA	Cacna1d	human	X	X
+PRKACA	CACNA1H	human		X
+PRKACA	Cacnb2	human	X	X
+PRKACA	Cacng2	human		X
+PRKACA	Cad	human		X
+PRKACA	CAD	human	X	
+PRKACA	CAD	human	X	X
+PRKACA	Camkk1	human		X
+PRKACA	CAMKK1	human	X	
+PRKACA	CAPN2	human	X	
+PRKACA	CAPN2	human	X	X
+PRKACA	Cask	human		X
+PRKACA	Cask	human	X	X
+PRKACA	CASP9	human		X
+PRKACA	CASP9	human	X	X
+PRKACA	CBX3	human	X	X
+PRKACA	CCND1	human		X
+PRKACA	CD44	human	X	X
+PRKACA	Cdc25b	human		X
+PRKACA	CDK16	human		X
+PRKACA	CDK16	human	X	X
+PRKACA	CDKN2D	human	X	
+PRKACA	CEBPB	human	X	
+PRKACA	Ces1d	human		X
+PRKACA	CFTR	human		X
+PRKACA	CFTR	human	X	X
+PRKACA	CHNRD	human		X
+PRKACA	Chrna4	human		X
+PRKACA	CHRNG	human		X
+PRKACA	CIITA	human		X
+PRKACA	CIITA	human	X	X
+PRKACA	Cldn16	human	X	X
+PRKACA	CLDN3	human	X	X
+PRKACA	CLNS1A	human		X
+PRKACA	Creb1	human		X
+PRKACA	CREB1	human		X
+PRKACA	Creb1	human	X	X
+PRKACA	Crem	human		X
+PRKACA	CRHR1	human		X
+PRKACA	Csf2rb	human		X
+PRKACA	CSK	human	X	X
+PRKACA	CSNK1A1	human	X	
+PRKACA	Csnk1d	human	X	X
+PRKACA	CTNNB1	human		X
+PRKACA	CTNNB1	human	X	X
+PRKACA	CTPS1	human		X
+PRKACA	CUL5	human	X	
+PRKACA	CUX1	human	X	
+PRKACA	CYP17A1	human		X
+PRKACA	Cyp2b1	human		X
+PRKACA	CYP3A4	human		X
+PRKACA	DACT1	human	X	
+PRKACA	DAP3	human		X
+PRKACA	DES	human		X
+PRKACA	DNAJC5	human		X
+PRKACA	DNM1L	human		X
+PRKACA	Dnm1l	human	X	X
+PRKACA	DSP	human	X	
+PRKACA	DTNB	human		X
+PRKACA	DUOX1	human	X	X
+PRKACA	DYNLRB1	human	X	X
+PRKACA	EMD	human		X
+PRKACA	En2	human	X	X
+PRKACA	EPB49	human		X
+PRKACA	ERBB2	human	X	X
+PRKACA	ESPL1	human		X
+PRKACA	ESR1	human	X	X
+PRKACA	ETV1	human	X	X
+PRKACA	ETV5	human	X	X
+PRKACA	EZR	human		X
+PRKACA	Fcor	human		X
+PRKACA	FLNA	human	X	
+PRKACA	FRAT1	human	X	X
+PRKACA	Fxyd1	human	X	
+PRKACA	FXYD1	human		X
+PRKACA	Fxyd1	human	X	X
+PRKACA	FXYD1	human	X	X
+PRKACA	FYN	human	X	X
+PRKACA	Gabbr2	human		X
+PRKACA	Gabrb1	human	X	
+PRKACA	GAD1	human		X
+PRKACA	GATA3	human	X	
+PRKACA	GATA4	human	X	
+PRKACA	GFAP	human		X
+PRKACA	GFPT1	human		X
+PRKACA	Gfpt2	human		X
+PRKACA	Gja1	human	X	X
+PRKACA	GJA8	human		X
+PRKACA	GJA8	human	X	X
+PRKACA	Gjd2	human		X
+PRKACA	GLI1	human		X
+PRKACA	GLI3	human	X	X
+PRKACA	GMFB	human		X
+PRKACA	GNA13	human		X
+PRKACA	Gnmt	human		X
+PRKACA	GPLD1	human		X
+PRKACA	Gria1	human		X
+PRKACA	GRIA1	human	X	
+PRKACA	Gria1	human	X	X
+PRKACA	Gria4	human	X	X
+PRKACA	Grik2	human	X	
+PRKACA	Grin2c	human		X
+PRKACA	GRK1	human		X
+PRKACA	GRK7	human		X
+PRKACA	Grm7	human		X
+PRKACA	Gsk3a	human	X	X
+PRKACA	GSK3A	human	X	X
+PRKACA	Gsk3b	human		X
+PRKACA	Gsk3b	human	X	X
+PRKACA	GSK3B	human	X	X
+PRKACA	GSTA4	human	X	
+PRKACA	GYS1	human		X
+PRKACA	H3F3A	human		X
+PRKACA	Hcn4	human		X
+PRKACA	HDAC5	human	X	X
+PRKACA	HDAC8	human	X	X
+PRKACA	Hist1h1a	human		X
+PRKACA	HIST1H1E	human	X	
+PRKACA	HLA-A	human		X
+PRKACA	Hnf4a	human		X
+PRKACA	HNRNPD	human		X
+PRKACA	HRH1	human		X
+PRKACA	HSF1	human	X	X
+PRKACA	HSP90AA1	human	X	X
+PRKACA	HSPB1	human		X
+PRKACA	HSPB6	human	X	X
+PRKACA	HSPB8	human		X
+PRKACA		human		X
+PRKACA		human	X	
+PRKACA	Inpp5d	human		X
+PRKACA	Inpp5d	human	X	X
+PRKACA	Itch	human		X
+PRKACA	ITGA4	human	X	X
+PRKACA	ITGB4	human	X	X
+PRKACA	Itpr1	human		X
+PRKACA	Itpr1	human	X	X
+PRKACA	Itpr2	human	X	X
+PRKACA	KCNA4	human		X
+PRKACA	Kcnd2	human	X	
+PRKACA	KCND2	human	X	
+PRKACA	KCNH2	human	X	X
+PRKACA	Kcnj10	human	X	
+PRKACA	Kcnj12	human		X
+PRKACA	KCNJ13	human	X	
+PRKACA	Kcnj1	human		X
+PRKACA	Kcnj1	human	X	
+PRKACA	Kcnj1	human	X	X
+PRKACA	KCNJ2	human	X	
+PRKACA	Kcnj3	human		X
+PRKACA	KCNJ3	human	X	X
+PRKACA	Kcnj4	human		X
+PRKACA	KCNJ5	human		X
+PRKACA	Kcnj8	human		X
+PRKACA	Kcnk18	human		X
+PRKACA	KCNK3	human	X	X
+PRKACA	KCNK9	human	X	X
+PRKACA	KCNN2	human		X
+PRKACA	KCNN2	human	X	X
+PRKACA	KCNQ1	human	X	
+PRKACA	KDELR1	human	X	X
+PRKACA	Krt8	human		X
+PRKACA	KSR1	human		X
+PRKACA	LASP1	human	X	X
+PRKACA	LCK	human		X
+PRKACA	LCP1	human	X	X
+PRKACA	Lipe	human		X
+PRKACA	LIPE	human		X
+PRKACA	LOC100009479	human	X	X
+PRKACA	LRP1	human		X
+PRKACA	LRP6	human		X
+PRKACA	Lrrk2	human	X	X
+PRKACA	Map1lc3a	human		X
+PRKACA	MAP1LC3A	human	X	
+PRKACA	Map2	human		X
+PRKACA	MAP2	human	X	X
+PRKACA	MAPKAPK5	human		X
+PRKACA	Mapt	human		X
+PRKACA	MAPT	human		X
+PRKACA	MARK3	human	X	X
+PRKACA	MAZ	human		X
+PRKACA	MC4R	human	X	
+PRKACA	MCOLN1	human	X	X
+PRKACA	Mef2c	human		X
+PRKACA	Mef2d	human	X	X
+PRKACA	MSN	human	X	
+PRKACA	MYB	human	X	X
+PRKACA	Mybpc3	human		X
+PRKACA	MYBPC3	human		X
+PRKACA	MYLK	human		X
+PRKACA	MYLK	human	X	X
+PRKACA	MYOM2	human	X	X
+PRKACA	Naca	human	X	X
+PRKACA	NCF1	human		X
+PRKACA	NCOA3	human		X
+PRKACA	NCOR1	human		X
+PRKACA	NDE1	human	X	
+PRKACA	NDE1	human	X	X
+PRKACA	NDRG1	human	X	
+PRKACA	NDUFS4	human		X
+PRKACA	NEDD4L	human		X
+PRKACA	Nefl	human		X
+PRKACA	NF2	human		X
+PRKACA	NF2	human	X	X
+PRKACA	NFATC1	human	X	X
+PRKACA	Nfkb1	human	X	
+PRKACA	NFKB1	human	X	X
+PRKACA	Nkx2-1	human	X	
+PRKACA	Nolc1	human	X	
+PRKACA	Nos3	human		X
+PRKACA	NOS3	human		X
+PRKACA	NOXA1	human		X
+PRKACA	NOXA1	human	X	X
+PRKACA	NPR1	human		X
+PRKACA	NR5A2	human	X	
+PRKACA	Pah	human		X
+PRKACA	PAH	human		X
+PRKACA	Pawr	human	X	X
+PRKACA	Pdc	human		X
+PRKACA	PDE10A	human	X	X
+PRKACA	PDE11A	human		X
+PRKACA	PDE3A	human		X
+PRKACA	PDE3A	human	X	X
+PRKACA	PDE3B	human		X
+PRKACA	Pde4a	human	X	
+PRKACA	PDE4A	human		X
+PRKACA	PDE4B	human		X
+PRKACA	PDE4C	human		X
+PRKACA	PDE4D	human		X
+PRKACA	PDE4D	human	X	X
+PRKACA	PDE5A	human		X
+PRKACA	Pdlim4	human	X	X
+PRKACA	Pdzk1	human	X	X
+PRKACA	Pfkfb1	human		X
+PRKACA	PFKFB2	human		X
+PRKACA	PFKFB3	human		X
+PRKACA	Pfkl	human		X
+PRKACA	PHOX2A	human	X	X
+PRKACA	PIN1	human	X	X
+PRKACA	PJA2	human	X	X
+PRKACA	PKD1	human		X
+PRKACA	PLCB3	human	X	X
+PRKACA	PLCG1	human	X	X
+PRKACA	Plin1	human	X	
+PRKACA	PLN	human		X
+PRKACA	POLD3	human	X	X
+PRKACA	POU3F2	human		X
+PRKACA	POU5F1	human		X
+PRKACA	Ppara	human		X
+PRKACA	Ppargc1a	human	X	X
+PRKACA	Ppp1r12a	human	X	
+PRKACA	PPP1R12A	human		X
+PRKACA	PPP1R14A	human		X
+PRKACA	PPP1R14C	human		X
+PRKACA	PPP1R16B	human		X
+PRKACA	PPP1R1A	human		X
+PRKACA	PPP1R1B	human		X
+PRKACA	PPP1R1C	human		X
+PRKACA	PPP1R9A	human		X
+PRKACA	Ppp1r9b	human		X
+PRKACA	Ppp1r9b	human	X	X
+PRKACA	Ppp2r5d	human	X	
+PRKACA	PPP2R5D	human		X
+PRKACA	Prkaa1	human		X
+PRKACA	Prkaca	human		X
+PRKACA	PRKACA	human		X
+PRKACA	PRKAR2B	human		X
+PRKACA	Prkd1	human	X	X
+PRKACA	PSMC5	human	X	X
+PRKACA	PTBP1	human	X	X
+PRKACA	PTK2	human		X
+PRKACA	PTPN12	human	X	X
+PRKACA	PTPN7	human	X	X
+PRKACA	RAF1	human		X
+PRKACA	RAP1A	human		X
+PRKACA	RAP1B	human	X	X
+PRKACA	RARA	human	X	
+PRKACA	Rasgrf1	human	X	X
+PRKACA	RASGRF1	human	X	X
+PRKACA	Rasgrp2	human	X	
+PRKACA	RASSF1	human		X
+PRKACA	RB1	human	X	
+PRKACA	Rela	human		X
+PRKACA	Rela	human	X	
+PRKACA	RELA	human	X	X
+PRKACA	RET	human	X	X
+PRKACA	Rfc1	human	X	X
+PRKACA	RG1	human		X
+PRKACA	RGS10	human	X	X
+PRKACA	RGS13	human		X
+PRKACA	Rgs14	human		X
+PRKACA	RGS4	human	X	
+PRKACA	RHOA	human	X	
+PRKACA	Rims1	human		X
+PRKACA	Rph3a	human		X
+PRKACA	Rps19	human		X
+PRKACA	RPS19	human		X
+PRKACA	Rps6	human		X
+PRKACA	RRAD	human		X
+PRKACA	RXRA	human	X	X
+PRKACA	Ryr2	human		X
+PRKACA	RYR2	human		X
+PRKACA	Ryr2	human	X	X
+PRKACA	RYR2	human	X	X
+PRKACA	Sdc1	human	X	X
+PRKACA	SEC14L2	human		X
+PRKACA	SERPINF1	human		X
+PRKACA	SGK1	human	X	
+PRKACA	Sik1	human	X	
+PRKACA	SLC4A4	human		X
+PRKACA	Slc6a3	human		X
+PRKACA	Slc8a1	human		X
+PRKACA	Smtnl1	human		X
+PRKACA	SNAI1	human		X
+PRKACA	SNAPIN	human	X	
+PRKACA	Sox9	human	X	
+PRKACA	SOX9	human	X	X
+PRKACA	SPTBN1	human		X
+PRKACA	SRC	human	X	
+PRKACA	SRC	human	X	X
+PRKACA	SREBF1	human	X	X
+PRKACA	SRF	human	X	X
+PRKACA	Sri	human		X
+PRKACA	SRSF1	human	X	X
+PRKACA	Ssb	human		X
+PRKACA	Star	human		X
+PRKACA	Star	human	X	
+PRKACA	STK24	human	X	X
+PRKACA	Stmn1	human		X
+PRKACA	STMN1	human		X
+PRKACA	Stmn2	human		X
+PRKACA	Stxbp5	human		X
+PRKACA	SUFU	human	X	
+PRKACA	SUN2	human		X
+PRKACA	Syne1	human		X
+PRKACA	Syt12	human		X
+PRKACA	Tal1	human	X	X
+PRKACA	TAL1	human	X	X
+PRKACA	TBXA2R	human		X
+PRKACA	TBXA2R	human	X	
+PRKACA	TBXA2R	human	X	X
+PRKACA	TFAM	human		X
+PRKACA	TFAM	human	X	X
+PRKACA	TFAP2A	human	X	X
+PRKACA	TGM2	human		X
+PRKACA	Th	human		X
+PRKACA	TH	human		X
+PRKACA	Thop1	human		X
+PRKACA	Tnni3	human		X
+PRKACA	TNNI3	human		X
+PRKACA	TP53	human		X
+PRKACA	Tph1	human		X
+PRKACA	TPH2	human	X	X
+PRKACA	TPPP	human		X
+PRKACA	TRPM8	human	X	
+PRKACA	TRPV1	human	X	
+PRKACA	Trpv4	human	X	
+PRKACA	TRPV4	human	X	
+PRKACA	Trpv5	human	X	X
+PRKACA	TTN	human		X
+PRKACA	TVB5	human		X
+PRKACA	UHRF1	human		X
+PRKACA	VASP	human		X
+PRKACA	VASP	human	X	X
+PRKACA	Vax2	human	X	X
+PRKACA	VDR	human		X
+PRKACA	Vim	human		X
+PRKACA	VIM	human		X
+PRKACA	VTN	human		X
+PRKACA	Wee2	human		X
+PRKACA	WT1	human	X	X
+PRKACA	YWHAZ	human	X	X
+PRKACB	NGFR	human	X	X
+PRKCA	Aanat	human		X
+PRKCA	ABCB1	human		X
+PRKCA	Accn3	human	X	
+PRKCA	ACO1	human		X
+PRKCA	ACO1	human	X	
+PRKCA	ADAM17	human	X	
+PRKCA	ADAP1	human		X
+PRKCA	Adcy2	human	X	
+PRKCA	Adcy6	human		X
+PRKCA	ADD1	human	X	
+PRKCA	ADD2	human	X	
+PRKCA	ADRBK1	human	X	
+PRKCA	AFAP1	human	X	
+PRKCA	Agtr2	human	X	
+PRKCA	AHR	human		X
+PRKCA	Aicda	human		X
+PRKCA	Akap12	human		X
+PRKCA	Akt1	human		X
+PRKCA	AKT1	human		X
+PRKCA	ANXA1	human		X
+PRKCA	ANXA1	human	X	
+PRKCA	ANXA2	human	X	
+PRKCA	ANXA5	human		X
+PRKCA	Aplp1	human		X
+PRKCA	APLP2	human		X
+PRKCA	AQP1	human	X	X
+PRKCA	AQP4	human	X	
+PRKCA	ARHGAP35	human		X
+PRKCA	Arhgdia	human	X	
+PRKCA	ARHGDIA	human		X
+PRKCA	ARHGDIB	human	X	X
+PRKCA	AR	human		X
+PRKCA	ATF2	human		X
+PRKCA	Atp1a1	human		X
+PRKCA	ATP4A	human		X
+PRKCA	BCL2	human	X	X
+PRKCA	BDKRB2	human	X	
+PRKCA	BEST1	human	X	
+PRKCA	BNC1	human		X
+PRKCA	C5AR1	human		X
+PRKCA	CACB	human		X
+PRKCA	CACB	human	X	X
+PRKCA	Cacna1b	human		X
+PRKCA	Cacna1c	human	X	
+PRKCA	Cacna1c	human	X	X
+PRKCA	CALD1	human		X
+PRKCA	CALD1	human	X	
+PRKCA	CASR	human	X	X
+PRKCA	CD226	human	X	
+PRKCA	CD3G	human	X	
+PRKCA	CD44	human		X
+PRKCA	CD4	human	X	
+PRKCA	CD5	human	X	
+PRKCA	CDK1	human		X
+PRKCA	CDKN1A	human		X
+PRKCA	CDKN1A	human	X	X
+PRKCA	CDKN2A	human		X
+PRKCA	CFL1	human	X	X
+PRKCA	CFLAR	human	X	
+PRKCA	CFTR	human		X
+PRKCA	CHAT	human		X
+PRKCA	Cldn4	human		X
+PRKCA	CLDN4	human	X	
+PRKCA	CLDN7	human	X	
+PRKCA	CLNS1A	human		X
+PRKCA	CNN1	human	X	
+PRKCA	CORO1B	human	X	X
+PRKCA	Crem	human		X
+PRKCA	Csnk1d	human		X
+PRKCA	Cspg4	human	X	X
+PRKCA	Ctnnd1	human	X	
+PRKCA	CTNND1	human	X	
+PRKCA	CTPS1	human	X	X
+PRKCA	CYBA	human		X
+PRKCA	Cyp1a1	human	X	
+PRKCA	CYP3A4	human		X
+PRKCA	CYTH2	human		X
+PRKCA	Dab2	human	X	
+PRKCA	Dmbt1	human		X
+PRKCA	DNM1	human	X	
+PRKCA	DTNB	human		X
+PRKCA	EGFR	human	X	X
+PRKCA	EGLN2	human		X
+PRKCA	EIF2S3	human		X
+PRKCA	Eif4ebp1	human		X
+PRKCA	EIF6	human	X	X
+PRKCA	ELAVL1	human		X
+PRKCA	Enah	human	X	
+PRKCA	EP300	human	X	
+PRKCA	ERBB2	human	X	
+PRKCA	EWSR1	human		X
+PRKCA	EZR	human	X	
+PRKCA	F11R	human	X	X
+PRKCA	F3	human	X	
+PRKCA	FBXW7	human	X	
+PRKCA	FRAT1	human		X
+PRKCA	FSCN1	human		X
+PRKCA	Fxyd1	human	X	
+PRKCA	FXYD1	human		X
+PRKCA	FXYD1	human	X	
+PRKCA	FXYD1	human	X	X
+PRKCA	Gap43	human		X
+PRKCA	GAP43	human		X
+PRKCA	Gja1	human		X
+PRKCA	GMFB	human		X
+PRKCA	GNAZ	human	X	X
+PRKCA	Gpsm2	human		X
+PRKCA	GPSM2	human	X	
+PRKCA	Gria1	human		X
+PRKCA	GRIA1	human	X	
+PRKCA	Gria1	human	X	X
+PRKCA	GRIA1	human	X	X
+PRKCA	Gria2	human	X	
+PRKCA	Gria4	human		X
+PRKCA	Grid2	human		X
+PRKCA	Grik1	human		X
+PRKCA	Grik2	human	X	
+PRKCA	Grik2	human	X	X
+PRKCA	Grin1	human		X
+PRKCA	Grin2c	human	X	X
+PRKCA	GRK7	human	X	
+PRKCA	Grm5	human		X
+PRKCA	Grm7	human		X
+PRKCA	Gsk3a	human	X	
+PRKCA	GSK3A	human	X	X
+PRKCA	Gsk3b	human	X	
+PRKCA	GSK3B	human	X	X
+PRKCA	GSTA4	human	X	
+PRKCA	GSTP1	human		X
+PRKCA	GUCY2C	human	X	
+PRKCA	HABP4	human		X
+PRKCA	HIST1H2BB	human		X
+PRKCA	Hmga1	human		X
+PRKCA	Hnf4a	human		X
+PRKCA	Hnrnpa1	human		X
+PRKCA	Hoxa9	human		X
+PRKCA	HRH1	human		X
+PRKCA		human		X
+PRKCA		human	X	
+PRKCA		human	X	X
+PRKCA	IKBKB	human		X
+PRKCA	IL2RA	human	X	X
+PRKCA	INSR	human		X
+PRKCA	IQGAP1	human	X	X
+PRKCA	Irs1	human		X
+PRKCA	ITGB1	human	X	
+PRKCA	ITGB2	human		X
+PRKCA	ITGB4	human		X
+PRKCA	ITGB4	human	X	X
+PRKCA	KCNA5	human	X	
+PRKCA	KCNAB2	human		X
+PRKCA	KCNC4	human	X	
+PRKCA	Kcnd2	human		X
+PRKCA	Kcnd2	human	X	X
+PRKCA	KCNE3	human	X	
+PRKCA	KCNH2	human	X	
+PRKCA	KCNJ13	human	X	
+PRKCA	KCNJ1	human		X
+PRKCA	KCNJ4	human	X	
+PRKCA	Kcnj8	human		X
+PRKCA	KCNMA1	human	X	
+PRKCA	KIR3DL1	human		X
+PRKCA	KIT	human		X
+PRKCA	KRT20	human	X	
+PRKCA	L1CAM	human		X
+PRKCA	LCK	human		X
+PRKCA	Lmna	human		X
+PRKCA	LRP1	human	X	X
+PRKCA	MAP4	human		X
+PRKCA	MAPT	human		X
+PRKCA	MARCKS	human		X
+PRKCA	MARCKS	human	X	X
+PRKCA	MBD4	human		X
+PRKCA	MET	human		X
+PRKCA	Mkln1	human	X	
+PRKCA	MMP2	human		X
+PRKCA	Mt1	human		X
+PRKCA	MYH9	human		X
+PRKCA	MYL9	human		X
+PRKCA	MYL9	human	X	X
+PRKCA	Myog	human	X	
+PRKCA	NCF1	human		X
+PRKCA	NCF4	human	X	X
+PRKCA	NCOR1	human	X	
+PRKCA	NKX3-1	human	X	X
+PRKCA	NMNAT1	human		X
+PRKCA	NOS3	human		X
+PRKCA	NOX5	human	X	X
+PRKCA	NOXA1	human	X	X
+PRKCA	NPHS1	human	X	X
+PRKCA	NR1H4	human	X	X
+PRKCA	NR1I3	human		X
+PRKCA	Nr2c1	human		X
+PRKCA	Nr2c1	human	X	
+PRKCA	NR2F6	human		X
+PRKCA	Ocln	human		X
+PRKCA	Oprd1	human	X	
+PRKCA	Oprm1	human		X
+PRKCA	Oprm1	human	X	
+PRKCA	Oprm1	human	X	X
+PRKCA	PA2G4	human		X
+PRKCA	PDE3A	human	X	X
+PRKCA	Pdlim2	human	X	X
+PRKCA	Pea15	human		X
+PRKCA	PEBP1	human		X
+PRKCA	PFKFB3	human		X
+PRKCA	PFN1	human		X
+PRKCA	Pick1	human		X
+PRKCA	Pip5k1b	human	X	X
+PRKCA	Pitpnb	human	X	
+PRKCA	PLAU	human	X	
+PRKCA	PLCB1	human		X
+PRKCA	Plcb1	human	X	X
+PRKCA	PLCB3	human	X	X
+PRKCA	Plcd1	human		X
+PRKCA	PLCG1	human	X	X
+PRKCA	PLD2	human	X	
+PRKCA	PLEK	human	X	X
+PRKCA	Ppara	human		X
+PRKCA	PPARA	human		X
+PRKCA	PPP1R14A	human		X
+PRKCA	PPP1R14B	human		X
+PRKCA	Ppp1r1a	human		X
+PRKCA	PPP1R1A	human		X
+PRKCA	Ppp1r1a	human	X	X
+PRKCA	PPP2R5A	human		X
+PRKCA	Prkce	human	X	
+PRKCA	PRKCE	human		X
+PRKCA	PRKD1	human	X	X
+PRKCA	PRKD2	human	X	
+PRKCA	PRKD3	human	X	
+PRKCA	PRKG1	human		X
+PRKCA	PTGIR	human	X	
+PRKCA	PTPN11	human	X	
+PRKCA	PTPN12	human	X	X
+PRKCA	PTPN1	human		X
+PRKCA	PTPN6	human	X	X
+PRKCA	Ptpra	human	X	
+PRKCA	RAF1	human		X
+PRKCA	RAF1	human	X	X
+PRKCA	RALB	human	X	X
+PRKCA	RALBP1	human		X
+PRKCA	RET	human	X	
+PRKCA	RGS7	human		X
+PRKCA	RORA	human	X	X
+PRKCA	Rph3a	human		X
+PRKCA	Rps6	human		X
+PRKCA	RPS6KB2	human	X	X
+PRKCA	RRAD	human		X
+PRKCA	RSC1A1	human	X	
+PRKCA	Scn2a	human		X
+PRKCA	Sdc4	human		X
+PRKCA	Slc12a5	human	X	X
+PRKCA	SLC18A2	human		X
+PRKCA	Slc1a1	human	X	
+PRKCA	Slc22a1	human	X	
+PRKCA	Slc38a3	human		X
+PRKCA	Slc6a3	human		X
+PRKCA	SLC6A4	human		X
+PRKCA	SLC6A6	human	X	X
+PRKCA	Slc9a3r1	human		X
+PRKCA	SLC9A3R1	human		X
+PRKCA	Snap25	human	X	
+PRKCA	SNAP25	human	X	X
+PRKCA	SPN	human		X
+PRKCA	SRC	human	X	X
+PRKCA	SRF	human	X	X
+PRKCA	Sstr2	human	X	
+PRKCA	Stxbp1	human		X
+PRKCA	TACSTD2	human		X
+PRKCA	TAGLN	human		X
+PRKCA	TBXA2R	human		X
+PRKCA	TBXA2R	human	X	
+PRKCA	TFRC	human		X
+PRKCA	Th	human		X
+PRKCA	THOC5	human	X	X
+PRKCA	Thop1	human	X	
+PRKCA	Tnni3	human		X
+PRKCA	TNNI3	human		X
+PRKCA	Tnnt2	human		X
+PRKCA	TNNT2	human		X
+PRKCA	TOP1	human		X
+PRKCA	TP53	human		X
+PRKCA	TP73	human	X	
+PRKCA	TRPC3	human	X	
+PRKCA	TRPM4	human	X	
+PRKCA	Trpv1	human		X
+PRKCA	TRPV1	human	X	
+PRKCA	Trpv1	human	X	X
+PRKCA	Trpv4	human	X	
+PRKCA	Trpv5	human	X	
+PRKCA	TRPV5	human	X	
+PRKCA	TRPV6	human		X
+PRKCA	Ttn	human		X
+PRKCA	TTN	human		X
+PRKCA	TUBA1C	human		X
+PRKCA	TUBA1C	human	X	
+PRKCA	TXN	human	X	
+PRKCA	VASP	human	X	
+PRKCA	VCL	human		X
+PRKCA	VDR	human	X	
+PRKCA	VIM	human		X
+PRKCA	VTN	human		X
+PRKCB	Aicda	human		X
+PRKCB	AKT1	human		X
+PRKCB	ANXA1	human	X	
+PRKCB	ANXA2	human	X	
+PRKCB	ATF2	human		X
+PRKCB	Atp1a1	human	X	
+PRKCB	C5AR1	human	X	X
+PRKCB	CACB	human		X
+PRKCB	CACB	human	X	X
+PRKCB	Cacna1b	human	X	
+PRKCB	Cacna1d	human		X
+PRKCB	Card11	human		X
+PRKCB	Card11	human	X	X
+PRKCB	CFLAR	human	X	
+PRKCB	CHAT	human		X
+PRKCB	Ckm	human		X
+PRKCB	DAB2	human		X
+PRKCB	EPB41	human	X	
+PRKCB	FUS	human		X
+PRKCB	GHRL	human		X
+PRKCB	Grm5	human		X
+PRKCB	Gsk3a	human	X	
+PRKCB	GSK3A	human		X
+PRKCB	GSK3A	human	X	
+PRKCB	Gsk3b	human	X	
+PRKCB	GSK3B	human		X
+PRKCB	GSK3B	human	X	
+PRKCB	Hmga1	human		X
+PRKCB	Hnf4a	human		X
+PRKCB	IBTK	human	X	X
+PRKCB	ILF3	human	X	X
+PRKCB	Irs1	human		X
+PRKCB	IRS1	human		X
+PRKCB	ITGB2	human		X
+PRKCB	KCNC4	human		X
+PRKCB	KIR3DL1	human		X
+PRKCB	LMNB1	human		X
+PRKCB	Mapk9	human		X
+PRKCB	MAPT	human		X
+PRKCB	MSX2	human		X
+PRKCB	Myh9	human	X	X
+PRKCB	NCF1	human		X
+PRKCB	NOX5	human	X	
+PRKCB	Oprm1	human		X
+PRKCB	ORAI1	human	X	X
+PRKCB	PPARA	human		X
+PRKCB	PRKCB	human		X
+PRKCB	PRKCB	human	X	X
+PRKCB	PTPN11	human	X	
+PRKCB	RAB11A	human		X
+PRKCB	RASGRP3	human	X	
+PRKCB	Rbck1	human		X
+PRKCB	RCJMB04_5k17	human	X	X
+PRKCB	RPS6KB2	human		X
+PRKCB	RPS6KB2	human	X	X
+PRKCB	Snap25	human		X
+PRKCB	STMN1	human	X	
+PRKCB	SYT6	human		X
+PRKCB	Tfeb	human		X
+PRKCB	Tnni3	human		X
+PRKCB	TP73	human	X	
+PRKCB	TRPV6	human	X	
+PRKCB	TYR	human	X	X
+PRKCD	ADAM17	human	X	
+PRKCD	Aicda	human		X
+PRKCD	BAG3	human	X	X
+PRKCD	BEST1	human		X
+PRKCD	C5AR1	human		X
+PRKCD	CACB	human		X
+PRKCD	CAT	human		X
+PRKCD	CHAT	human		X
+PRKCD	CHN2	human	X	X
+PRKCD	CXCR4	human	X	
+PRKCD	CYBA	human		X
+PRKCD	DAB2	human		X
+PRKCD	DAP3	human		X
+PRKCD	DBI	human	X	
+PRKCD	DNM1L	human	X	
+PRKCD	Dnm1l	human	X	X
+PRKCD	ELAVL1	human	X	X
+PRKCD	ENOX2	human	X	X
+PRKCD	EP300	human	X	X
+PRKCD	FLI1	human	X	X
+PRKCD	G6PD	human	X	X
+PRKCD	GSK3A	human		X
+PRKCD	GSK3B	human		X
+PRKCD	HDAC5	human		X
+PRKCD	HIST1H3A	human	X	X
+PRKCD	Hmga1	human		X
+PRKCD	HNRNPK	human	X	X
+PRKCD		human		X
+PRKCD	HVCN1	human		X
+PRKCD	IL6ST	human	X	X
+PRKCD	Irs1	human		X
+PRKCD	IRS1	human		X
+PRKCD	ITGB2	human		X
+PRKCD	KRT8	human	X	
+PRKCD	LCP1	human	X	
+PRKCD	LIMK2	human	X	X
+PRKCD	MET	human	X	
+PRKCD	MUC1	human	X	X
+PRKCD	Mybpc3	human		X
+PRKCD	NCF1	human		X
+PRKCD	Nfe2l2	human	X	
+PRKCD	NOS3	human	X	
+PRKCD	NR2F6	human		X
+PRKCD	Pa2g4	human		X
+PRKCD	PA2G4	human	X	X
+PRKCD	PEBP1	human		X
+PRKCD	Pip5k1b	human		X
+PRKCD	PLD2	human	X	X
+PRKCD	PLSCR3	human	X	X
+PRKCD	Ppara	human		X
+PRKCD	PPP1R14A	human		X
+PRKCD	PPP1R14B	human		X
+PRKCD	PRKCD	human		X
+PRKCD	PRKCD	human	X	X
+PRKCD	PRKD1	human	X	X
+PRKCD	PTPN22	human	X	X
+PRKCD	RASGRP3	human		X
+PRKCD	RPS3	human	X	X
+PRKCD	RPS6	human	X	
+PRKCD	RPS6KB2	human	X	X
+PRKCD	Runx2	human		X
+PRKCD	Sdc4	human	X	X
+PRKCD	SHC1	human	X	X
+PRKCD	SMPD1	human	X	X
+PRKCD	SRC	human	X	
+PRKCD	STAT1	human	X	
+PRKCD	STAT3	human	X	X
+PRKCD	TBL1XR1	human	X	
+PRKCD	TNNI3	human		X
+PRKCD	TP53	human	X	X
+PRKCD	TP73	human	X	X
+PRKCD	Trim28	human	X	
+PRKCD	Trpc6	human	X	
+PRKCD	TRPV4	human	X	
+PRKCD	Vrk1	human	X	X
+PRKCE	ADAM17	human	X	
+PRKCE	ADAP1	human		X
+PRKCE	Aicda	human		X
+PRKCE	ATF2	human	X	X
+PRKCE	BAD	human		X
+PRKCE	BAD	human	X	
+PRKCE	BAD	human	X	X
+PRKCE	CACB	human		X
+PRKCE	Cacna1b	human	X	
+PRKCE	Cacna1d	human		X
+PRKCE	CHAT	human		X
+PRKCE	CREB1	human	X	
+PRKCE	CTNND1	human	X	X
+PRKCE	FGFR1	human	X	X
+PRKCE	FXYD1	human		X
+PRKCE	Gabrg2	human		X
+PRKCE	Gja1	human		X
+PRKCE	GJA1	human	X	X
+PRKCE	GNAI2	human	X	
+PRKCE		human		X
+PRKCE	IQGAP1	human	X	X
+PRKCE	Irs1	human		X
+PRKCE	ITGB1	human	X	
+PRKCE	KIR3DL1	human		X
+PRKCE	KRT18	human		X
+PRKCE	MAPT	human		X
+PRKCE	MET	human	X	
+PRKCE	Mybpc3	human	X	X
+PRKCE	NREP	human	X	
+PRKCE	NSF	human		X
+PRKCE	OCLN	human	X	X
+PRKCE	Oprm1	human		X
+PRKCE	PPP1R14A	human		X
+PRKCE	PRKCE	human		X
+PRKCE	PRKCE	human	X	X
+PRKCE	PRKD1	human		X
+PRKCE	PRKD2	human	X	
+PRKCE	RAB11A	human		X
+PRKCE	RPS6KB2	human	X	X
+PRKCE	Slc24a2	human	X	
+PRKCE	SLC6A2	human		X
+PRKCE	STAT3	human	X	
+PRKCE	TICAM2	human	X	X
+PRKCE	Tjp1	human	X	
+PRKCE	TJP2	human	X	X
+PRKCE	TNNI3	human		X
+PRKCE	UGT1A7	human		X
+PRKCG	ADRBK1	human		X
+PRKCG	Aicda	human		X
+PRKCG	APTX	human	X	X
+PRKCG	ARHGEF7	human	X	X
+PRKCG	C5AR1	human		X
+PRKCG	CACB	human		X
+PRKCG	CD5	human		X
+PRKCG	CHAT	human		X
+PRKCG	DAB2	human		X
+PRKCG	Gja1	human		X
+PRKCG	Gria4	human	X	
+PRKCG	Grm5	human		X
+PRKCG	GSK3A	human		X
+PRKCG	GSK3B	human		X
+PRKCG	Hmga1	human		X
+PRKCG	Hnf4a	human		X
+PRKCG	HSP90AA1	human	X	X
+PRKCG	KCNC4	human		X
+PRKCG	KIR3DL1	human		X
+PRKCG	MAPT	human		X
+PRKCG	MMP14	human		X
+PRKCG	NGFR	human		X
+PRKCG	Oprm1	human		X
+PRKCG	RPS6KB2	human	X	X
+PRKCG	Slc38a3	human		X
+PRKCG	Stk17b	human	X	X
+PRKCH	Aicda	human		X
+PRKCH	Grm5	human		X
+PRKCH	Gsk3a	human	X	
+PRKCH	GSK3A	human	X	X
+PRKCH	Gsk3b	human	X	
+PRKCH	GSK3B	human	X	X
+PRKCH	GSTP1	human		X
+PRKCH	ITGB2	human		X
+PRKCH	PRKCH	human		X
+PRKCH	PRKD1	human	X	X
+PRKCH	PRKD2	human	X	
+PRKCH	PTPN11	human	X	
+PRKCI	Aicda	human		X
+PRKCI	BAD	human	X	X
+PRKCI	ECT2	human	X	X
+PRKCI	Ezr	human	X	X
+PRKCI	EZR	human	X	X
+PRKCI	FBXW7	human	X	
+PRKCI	GLI1	human	X	
+PRKCI	Irak1	human		X
+PRKCI	MAPT	human		X
+PRKCI	MARK2	human	X	
+PRKCI	MARK3	human	X	
+PRKCI	RPS6KB2	human	X	
+PRKCQ	Aicda	human		X
+PRKCQ	BAD	human		X
+PRKCQ	CACB	human		X
+PRKCQ	Card11	human		X
+PRKCQ	CARD11	human		X
+PRKCQ	CBLB	human		X
+PRKCQ	Cd4	human		X
+PRKCQ	EZR	human		X
+PRKCQ	Grm5	human		X
+PRKCQ	HABP4	human		X
+PRKCQ	HIST1H3A	human		X
+PRKCQ	ICAM3	human		X
+PRKCQ	Irs1	human		X
+PRKCQ	IRS1	human		X
+PRKCQ	KRAS	human	X	
+PRKCQ	MSN	human		X
+PRKCQ	NR2F6	human		X
+PRKCQ	Pdpk1	human		X
+PRKCQ	Pip5k1b	human		X
+PRKCQ	PPP1R12A	human		X
+PRKCQ	PRKCQ	human	X	
+PRKCQ	Ptpn6	human	X	
+PRKCQ	PTPN7	human		X
+PRKCQ	RAPGEF2	human	X	X
+PRKCQ	RASGRP1	human	X	
+PRKCQ	RASGRP3	human	X	X
+PRKCQ	RCJMB04_5k17	human	X	
+PRKCQ	RDX	human		X
+PRKCQ	STK39	human		X
+PRKCQ	WIPF1	human	X	
+PRKCZ	ADD1	human	X	
+PRKCZ	ADD2	human	X	
+PRKCZ	Aicda	human		X
+PRKCZ	AQP9	human	X	
+PRKCZ	AQP9	human	X	X
+PRKCZ	Atp1a1	human	X	
+PRKCZ	BAX	human	X	X
+PRKCZ	Cabp4	human		X
+PRKCZ	CACB	human		X
+PRKCZ	CASP9	human	X	X
+PRKCZ	Cdk5r1	human	X	X
+PRKCZ	CHAT	human		X
+PRKCZ	F11r	human	X	X
+PRKCZ	GEM	human	X	
+PRKCZ	HABP4	human		X
+PRKCZ	IKBKB	human		X
+PRKCZ	Irs1	human		X
+PRKCZ	IRS1	human		X
+PRKCZ	IRS1	human	X	X
+PRKCZ	Lnpep	human		X
+PRKCZ	Mapk7	human		X
+PRKCZ	MAPT	human		X
+PRKCZ	MARK2	human	X	X
+PRKCZ	MARK3	human	X	X
+PRKCZ	MYH10	human	X	X
+PRKCZ	NCF1	human	X	
+PRKCZ	NCOA3	human	X	
+PRKCZ	NOS3	human	X	
+PRKCZ	Notch1	human	X	X
+PRKCZ	NR1H4	human	X	
+PRKCZ	NREP	human	X	
+PRKCZ	Numb	human		X
+PRKCZ	Pard3	human	X	
+PRKCZ	PFKFB2	human		X
+PRKCZ	PPP1R14A	human		X
+PRKCZ	Prkcz	human		X
+PRKCZ	PTEN	human		X
+PRKCZ	RELA	human	X	
+PRKCZ	RPS6KB2	human	X	
+PRKCZ	SP1	human	X	
+PRKCZ	SP1	human	X	X
+PRKCZ	Stk11	human	X	
+PRKCZ	STK11	human	X	X
+PRKCZ	TNNI3	human		X
+PRKCZ	TRAF2	human	X	X
+PRKCZ	WWC1	human		X
+PRKD1	Ahcyl1	human		X
+PRKD1	AKT1	human	X	
+PRKD1	ARFIP1	human	X	X
+PRKD1	BAD	human		X
+PRKD1	BAD	human	X	X
+PRKD1	CACB	human		X
+PRKD1	CACNA1C	human	X	
+PRKD1	CFL1	human	X	
+PRKD1	COL4A3BP	human	X	X
+PRKD1	CREB1	human		X
+PRKD1	CREB1	human	X	X
+PRKD1	CTNNB1	human	X	X
+PRKD1	CTTN	human	X	X
+PRKD1	DLC1	human	X	X
+PRKD1	HDAC5	human	X	
+PRKD1	HDAC5	human	X	X
+PRKD1	HDAC7	human	X	
+PRKD1	HSPB1	human	X	X
+PRKD1	JUN	human		X
+PRKD1	Kidins220	human	X	X
+PRKD1	MAP4K1	human		X
+PRKD1	MARK2	human	X	
+PRKD1	MBP	human		X
+PRKD1	MYBPC3	human		X
+PRKD1	OSBP	human	X	
+PRKD1	PI4KB	human	X	X
+PRKD1	Pik3r1	human	X	X
+PRKD1	PIP4K2A	human	X	X
+PRKD1	PPP1R14A	human		X
+PRKD1	PRKD1	human	X	
+PRKD1	PRKD1	human	X	X
+PRKD1	PTRH2	human	X	
+PRKD1	PTRH2	human	X	X
+PRKD1	RABEP1	human		X
+PRKD1	RIN1	human	X	X
+PRKD1	SNAI1	human	X	X
+PRKD1	SPHK2	human	X	
+PRKD1	SSH1	human		X
+PRKD1	SSH1	human	X	X
+PRKD1	Syk	human		X
+PRKD1	TCAP	human		X
+PRKD1	TFAP2A	human		X
+PRKD1	TLR4	human		X
+PRKD1	TLR5	human	X	X
+PRKD1	Tnni3	human		X
+PRKD2	HDAC5	human		X
+PRKD2	MARK2	human	X	
+PRKD2	PI4KB	human	X	X
+PRKD2	PKD2	human	X	
+PRKD2	PRKD2	human		X
+PRKD2	RIN1	human	X	
+PRKD2	SSH1	human	X	
+PRKD3	GIT1	human	X	X
+PRKD3	HDAC5	human		X
+PRKD3	PRKD1	human	X	
+PRKDC	AIRE	human		X
+PRKDC	AKT1	human		X
+PRKDC	CASP2	human	X	X
+PRKDC	CHEK2	human		X
+PRKDC	DCLRE1C	human		X
+PRKDC	DCLRE1C	human	X	X
+PRKDC	Foxa2	human		X
+PRKDC	FUS	human		X
+PRKDC	H2AFX	human	X	X
+PRKDC	HNRNPU	human	X	
+PRKDC	HNRNPU	human	X	X
+PRKDC	HSP90AA1	human		X
+PRKDC	IGFBP3	human	X	
+PRKDC	IRF3	human	X	X
+PRKDC	LIG4	human		X
+PRKDC	NFKB1	human		X
+PRKDC	NHEJ1	human		X
+PRKDC	NHEJ1	human	X	X
+PRKDC	Nr3c1	human		X
+PRKDC	PDX1	human		X
+PRKDC	POLR2A	human		X
+PRKDC	POU2F1	human		X
+PRKDC	PRKDC	human		X
+PRKDC	PRKDC	human	X	X
+PRKDC	RAG2	human		X
+PRKDC	RPA2	human		X
+PRKDC	RPA2	human	X	
+PRKDC	RPA2	human	X	X
+PRKDC	SRF	human		X
+PRKDC	TDP1	human	X	X
+PRKDC	Tp53	human		X
+PRKDC	TP53	human		X
+PRKDC	Usf1	human	X	X
+PRKDC	VCP	human		X
+PRKDC	VIM	human		X
+PRKDC	WRN	human		X
+PRKDC	WRN	human	X	X
+PRKDC	XPA	human		X
+PRKDC	XRCC1	human		X
+PRKDC	XRCC4	human		X
+PRKDC	XRCC5	human		X
+PRKDC	XRCC6	human		X
+PRKDC	Zic2	human		X
+PRKG1	Bad	human		X
+PRKG1	CAB2	human	X	
+PRKG1	CACB	human	X	
+PRKG1	CCDC80	human		X
+PRKG1	Crip2	human	X	
+PRKG1	FHOD1	human	X	X
+PRKG1	Grm7	human		X
+PRKG1	Gsk3b	human		X
+PRKG1	GTF2I	human	X	
+PRKG1	GTF2I	human	X	X
+PRKG1	Gucy1a3	human	X	
+PRKG1	HIST1H1C	human		X
+PRKG1	HRH1	human		X
+PRKG1	HSPB1	human		X
+PRKG1		human		X
+PRKG1	Itpr1	human		X
+PRKG1	KCNMA1	human		X
+PRKG1	LASP1	human		X
+PRKG1	LASP1	human	X	X
+PRKG1	LIPE	human		X
+PRKG1	MYLK	human		X
+PRKG1	PAK1	human		X
+PRKG1	PDE5A	human		X
+PRKG1	Ppp1r12a	human	X	
+PRKG1	PPP1R12A	human		X
+PRKG1	PPP1R14A	human		X
+PRKG1	PRKG1	human		X
+PRKG1	PRKG1	human	X	X
+PRKG1	PTS	human		X
+PRKG1	RAP1B	human		X
+PRKG1	RAP1GAP2	human		X
+PRKG1	RGS2	human		X
+PRKG1	RGS4	human	X	
+PRKG1	RHOA	human		X
+PRKG1	RYR1	human		X
+PRKG1	Ryr2	human		X
+PRKG1	Sf1	human	X	
+PRKG1	SLC6A4	human	X	
+PRKG1	SRF	human		X
+PRKG1	Ssb	human		X
+PRKG1	TBXA2R	human		X
+PRKG1	TNNI3	human		X
+PRKG1	TRPC3	human	X	X
+PRKG1	Trpc6	human		X
+PRKG1	TRPC6	human		X
+PRKG1	Trpc7	human	X	X
+PRKG1	TTN	human		X
+PRKG1	VASP	human	X	X
+PRKG2	CLNS1A	human		X
+PRKG2	Hcn2	human	X	
+PRKG2		human		X
+PRKG2	LASP1	human		X
+PRKG2	NOS3	human		X
+PRKG2	PTS	human	X	X
+PRKG2	Star	human		X
+PRKX	PKD1	human	X	X
+PRKX	SMAD6	human		X
+PRPF4B	ELK1	human	X	X
+PTK2	ACTN1	human	X	X
+PTK2	ATP2B4	human	X	
+PTK2B	Asap1	human		X
+PTK2	BCAR1	human	X	
+PTK2B	Nos3	human	X	
+PTK2B	NOS3	human	X	
+PTK2B	NPHP1	human	X	
+PTK2B	PTK2B	human	X	
+PTK2B	PTK2	human	X	
+PTK2B	SNCA	human	X	
+PTK2B	TGFB1I1	human	X	
+PTK2	CDCP1	human	X	
+PTK2	Cttn	human		X
+PTK2	GRB7	human	X	
+PTK2	ITGB7	human		X
+PTK2	Ptk2	human	X	
+PTK2	PTK2	human		X
+PTK2	PTK2	human	X	
+PTK2	PTK2	human	X	X
+PTK2	Pxn	human	X	
+PTK2	PXN	human		X
+PTK2	RAC1	human		X
+PTK2	RET	human	X	X
+PTK2	SH3GL1	human	X	X
+PTK2	TRIO	human	X	
+PTK6	AKT1	human	X	X
+PTK6	ARAP1	human	X	
+PTK6	ARHGAP5	human	X	X
+PTK6	BCAR1	human	X	X
+PTK6	CTNNB1	human		X
+PTK6	Khdrbs1	human	X	
+PTK6	PTK6	human		X
+PTK6	PXN	human	X	
+PTK6	STAP2	human	X	
+PTK6	STAT5B	human	X	X
+RAF1	Adcy6	human	X	
+RAF1	Bad	human		X
+RAF1	BAD	human	X	
+RAF1	BAD	human	X	X
+RAF1	MAP2K1	human	X	X
+RAF1	MYC	human		X
+RAF1	PPP1R12A	human		X
+RAF1	RAF1	human	X	
+RAF1	RAF1	human	X	X
+RAF1	Tnnt2	human		X
+RET	AFAP1L2	human	X	
+RET	AKT1	human	X	X
+RET	DOK1	human		X
+RET	MAPK14	human		X
+RET	MAPK1	human		X
+RET	MAPK3	human		X
+RET	MAPK8	human		X
+RET	MAPK9	human		X
+RET	PDPK1	human	X	
+RET	PIK3R1	human		X
+RET	PLCG1	human		X
+RET	PTK2	human		X
+RET	PTK2	human	X	X
+RET	RET	human		X
+RET	RET	human	X	X
+RET	STAT3	human	X	
+RIPK1	DAB2IP	human	X	
+RIPK1	RIPK1	human		X
+RIPK2	RIPK2	human		X
+RIPK2	RIPK2	human	X	X
+ROCK1	ADD1	human	X	X
+ROCK1	ARHGAP24	human	X	
+ROCK1	ARHGAP35	human		X
+ROCK1	ARHGAP35	human	X	X
+ROCK1	CNN1	human		X
+ROCK1	DAPK3	human		X
+ROCK1	DES	human		X
+ROCK1	DES	human	X	
+ROCK1	DES	human	X	X
+ROCK1	DPYSL2	human		X
+ROCK1	EZR	human	X	X
+ROCK1	FHOD1	human	X	X
+ROCK1	GFAP	human	X	X
+ROCK1	HIST1H3A	human	X	
+ROCK1	HIST1H3A	human	X	X
+ROCK1		human		X
+ROCK1		human	X	
+ROCK1	LIMK1	human	X	X
+ROCK1	LIMK2	human		X
+ROCK1	MAPK8IP3	human	X	X
+ROCK1	MARCKS	human		X
+ROCK1	Msn	human	X	
+ROCK1	MSN	human		X
+ROCK1	MYL12B	human	X	X
+ROCK1	Myl9	human		X
+ROCK1	MYL9	human		X
+ROCK1	Myl9	human	X	X
+ROCK1	Pard3	human		X
+ROCK1	PFN1	human	X	X
+ROCK1	Ppp1r12a	human		X
+ROCK1	PPP1R12A	human		X
+ROCK1	PPP1R12A	human	X	
+ROCK1	PPP1R12A	human	X	X
+ROCK1	PPP1R12B	human	X	X
+ROCK1	PTEN	human	X	X
+ROCK1	PTK2	human	X	
+ROCK1	RDX	human		X
+ROCK1	RND3	human		X
+ROCK1	RND3	human	X	X
+ROCK1	SOX9	human	X	X
+ROCK1	Tiam2	human		X
+ROCK1	Vim	human		X
+ROCK1	VIM	human	X	X
+ROCK2	APP	human		X
+ROCK2	BACE1	human		X
+ROCK2	CNN3	human		X
+ROCK2	DPYSL2	human	X	
+ROCK2	EEF1A1	human		X
+ROCK2		human	X	
+ROCK2	Irf4	human		X
+ROCK2	LIMK2	human	X	
+ROCK2	Ppp1r12a	human		X
+ROCK2	PPP1R12A	human		X
+ROCK2	PPP1R12A	human	X	
+ROCK2	PPP1R14A	human		X
+ROCK2	PPP1R14B	human		X
+ROCK2	SH3GL2	human	X	X
+ROCK2	SORL1	human		X
+ROCK2	Tnni3	human	X	
+RPS6KA1	Bad	human		X
+RPS6KA1	Bad	human	X	X
+RPS6KA1	BAD	human	X	X
+RPS6KA1	CARHSP1	human		X
+RPS6KA1	CCT2	human	X	X
+RPS6KA1	CDC25A	human	X	X
+RPS6KA1	CDC25B	human	X	X
+RPS6KA1	CDC25C	human		X
+RPS6KA1	CIC	human	X	X
+RPS6KA1	CREB1	human	X	X
+RPS6KA1	DAPK1	human	X	
+RPS6KA1	DEPTOR	human	X	X
+RPS6KA1	Dlc1	human		X
+RPS6KA1	EEF2K	human	X	X
+RPS6KA1	Eif4b	human	X	
+RPS6KA1	EIF4B	human	X	
+RPS6KA1	ESR1	human	X	X
+RPS6KA1	FLNA	human	X	X
+RPS6KA1	FOS	human	X	
+RPS6KA1	GMFB	human		X
+RPS6KA1	GSK3B	human	X	X
+RPS6KA1	ITGB4	human	X	
+RPS6KA1	Kcnd3	human	X	X
+RPS6KA1	Krt17	human		X
+RPS6KA1	METTL1	human	X	X
+RPS6KA1	Mitf	human	X	
+RPS6KA1	MITF	human	X	X
+RPS6KA1	MXD1	human	X	X
+RPS6KA1	NDRG2	human		X
+RPS6KA1	NFKBIA	human		X
+RPS6KA1	Nr4a1	human		X
+RPS6KA1	RANBP3	human	X	X
+RPS6KA1	RPS6	human	X	X
+RPS6KA1	Rps6ka1	human	X	
+RPS6KA1	RPS6KA1	human		X
+RPS6KA1	RPTOR	human	X	X
+RPS6KA1	SLC9A1	human	X	X
+RPS6KA1	Tsc2	human		X
+RPS6KA1	TSC2	human	X	
+RPS6KA1	VASP	human	X	X
+RPS6KA1	WWC1	human	X	X
+RPS6KA1	YBX1	human	X	X
+RPS6KA2	CREB1	human	X	
+RPS6KA3	ATF4	human	X	X
+RPS6KA3	BAD	human		X
+RPS6KA3	BAD	human	X	X
+RPS6KA3	Cebpb	human	X	
+RPS6KA3	CIC	human		X
+RPS6KA3	Creb1	human	X	
+RPS6KA3	CREB1	human	X	
+RPS6KA3	DAPK1	human	X	
+RPS6KA3	EIF2AK2	human		X
+RPS6KA3	EIF2S1	human		X
+RPS6KA3	ESR1	human	X	
+RPS6KA3	Gata4	human	X	
+RPS6KA3	GSK3A	human		X
+RPS6KA3	GSK3B	human		X
+RPS6KA3	HIST1H2BB	human	X	X
+RPS6KA3	HIST1H3A	human	X	
+RPS6KA3	Htr2a	human	X	X
+RPS6KA3	KCNK3	human		X
+RPS6KA3	Mybpc3	human		X
+RPS6KA3	NFATC4	human	X	X
+RPS6KA3	NFKBIA	human	X	X
+RPS6KA3	Nr4a1	human		X
+RPS6KA3	PFKFB2	human		X
+RPS6KA3	PPP1R3A	human		X
+RPS6KA3	RANBP3	human	X	
+RPS6KA3	Rps6	human		X
+RPS6KA3	RPS6	human		X
+RPS6KA3	RRN3	human	X	
+RPS6KA3	STAT3	human		X
+RPS6KA3	TH	human		X
+RPS6KA3	TINF2	human	X	X
+RPS6KA3	WWC1	human	X	X
+RPS6KA3	YBX1	human	X	X
+RPS6KA4	CREB1	human	X	
+RPS6KA4	RELA	human	X	
+RPS6KA4	RPS6KA4	human	X	
+RPS6KA5	ATF1	human	X	X
+RPS6KA5	Bad	human		X
+RPS6KA5	Creb1	human		X
+RPS6KA5	CREB1	human	X	X
+RPS6KA5	Eif4ebp1	human	X	
+RPS6KA5	Eif4ebp1	human	X	X
+RPS6KA5	ELK1	human		X
+RPS6KA5	Hist1h2ab	human		X
+RPS6KA5	HIST1H2AI	human		X
+RPS6KA5	Hist1h3a	human	X	
+RPS6KA5	HIST1H3A	human	X	X
+RPS6KA5	Nr4a1	human		X
+RPS6KA5	Rela	human		X
+RPS6KA5	RELA	human	X	X
+RPS6KA5	RPS6KA5	human	X	X
+RPS6KA5	SRF	human		X
+RPS6KA5	TH	human		X
+RPS6KA5	WNK1	human		X
+RPS6KB1	BACH2	human	X	
+RPS6KB1	Bad	human		X
+RPS6KB1	CAD	human	X	X
+RPS6KB1	CCT2	human	X	X
+RPS6KB1	DEPTOR	human	X	X
+RPS6KB1	EEF2K	human	X	X
+RPS6KB1	Eif4b	human	X	
+RPS6KB1	EIF4B	human	X	
+RPS6KB1	ESR1	human	X	X
+RPS6KB1	FMR1	human		X
+RPS6KB1	Gria1	human		X
+RPS6KB1	Gsk3b	human		X
+RPS6KB1	GSK3B	human		X
+RPS6KB1	Irs1	human	X	
+RPS6KB1	IRS1	human		X
+RPS6KB1	IRS1	human	X	X
+RPS6KB1	MAPT	human		X
+RPS6KB1	Mdm2	human		X
+RPS6KB1	MTOR	human	X	X
+RPS6KB1	MXD1	human	X	X
+RPS6KB1	NCBP1	human	X	
+RPS6KB1	NDRG2	human		X
+RPS6KB1	PDCD4	human	X	
+RPS6KB1	POLDIP3	human	X	X
+RPS6KB1	RICTOR	human	X	X
+RPS6KB1	RPS6	human	X	X
+RPS6KB1	RPS6KB1	human	X	
+RPS6KB1	TP63	human	X	X
+RPS6KB2	EEF2K	human		X
+RPS6KB2	HSPB1	human	X	
+RPS6KB2	KRT18	human		X
+RPS6KB2	RICTOR	human		X
+SGK1	Apbb1	human		X
+SGK1	CARHSP1	human		X
+SGK1	CDKN1B	human		X
+SGK1	CDKN1B	human	X	X
+SGK1	CREB1	human		X
+SGK1	Creb1	human	X	X
+SGK1	Elk1	human	X	X
+SGK1	FBXW7	human	X	X
+SGK1	Foxo3	human	X	
+SGK1	FOXO3	human	X	
+SGK1	Gdi1	human		X
+SGK1	HTT	human	X	X
+SGK1	IKBKB	human		X
+SGK1	Map3k3	human	X	X
+SGK1	MAPK1	human		X
+SGK1	Mapt	human	X	
+SGK1	MAPT	human	X	X
+SGK1	NCSTN	human	X	
+SGK1	NDRG1	human		X
+SGK1	NDRG1	human	X	X
+SGK1	NDRG2	human	X	
+SGK1	NDRG2	human	X	X
+SGK1	Nedd4l	human	X	
+SGK1	NEDD4L	human	X	
+SGK1	NEDD4L	human	X	X
+SGK1	NFKBIA	human		X
+SGK1	NHE-3	human		X
+SGK1	PIKFYVE	human	X	
+SGK1	RICTOR	human	X	
+SGK1	Scnn1a	human	X	
+SGK1	Slc1a6	human	X	
+SGK1	SLC2A4	human	X	
+SGK1	Srf	human		X
+SGK1	Trpv4	human	X	
+SGK1	WNK1	human		X
+SGK1	Wnk4	human		X
+SGK1	WNK4	human	X	
+SGK1	Wnk4	human	X	X
+SGK3	FLII	human		X
+SGK3	FLII	human	X	X
+SGK3	ITCH	human		X
+SIK1	Crtc2	human	X	
+SIK1	Crtc2	human	X	X
+SIK1	Srebf1	human		X
+SIK2	CDK5R1	human	X	X
+SIK2	CEP250	human	X	X
+SIK2	Crtc2	human	X	X
+SIK2	Irs1	human		X
+SLK	Pxn	human		X
+SMG1	TP53	human	X	
+SMG1	UPF1	human		X
+SMG1	UPF1	human	X	X
+SRC	Aatk	human	X	
+SRC	Adam12	human	X	X
+SRC	ADRBK1	human	X	
+SRC	AFAP1	human	X	
+SRC	AGTR1	human		X
+SRC	AKAP8	human		X
+SRC	ANXA1	human		X
+SRC	ANXA2	human	X	
+SRC	AP2B1	human	X	X
+SRC	ARAF	human	X	
+SRC	Arap3	human	X	X
+SRC	ARHGAP5	human	X	
+SRC	ARHGDIA	human	X	
+SRC	ARHGDIA	human	X	X
+SRC	ARHGDIB	human	X	X
+SRC	ARHGEF4	human	X	X
+SRC	AR	human	X	
+SRC	Arrb1	human	X	X
+SRC	ATP4A	human		X
+SRC	ATXN2L	human		X
+SRC	BCAR1	human	X	
+SRC	BCLAF1	human		X
+SRC	BDKRB2	human		X
+SRC	BMX	human	X	X
+SRC	CACNA1C	human		X
+SRC	Cacna1c	human	X	X
+SRC	Calm1	human		X
+SRC	CASP8	human	X	X
+SRC	CAV1	human	X	X
+SRC	CAV2	human	X	
+SRC	CBLC	human		X
+SRC	CBL	human	X	
+SRC	CD163L1	human	X	
+SRC	CD46	human		X
+SRC	CDC42	human	X	X
+SRC	CDCP1	human	X	
+SRC	CDH2	human		X
+SRC	Cdh5	human		X
+SRC	CDH5	human	X	
+SRC	CDH5	human	X	X
+SRC	CDK1	human		X
+SRC	CDK4	human		X
+SRC	CDKN1B	human	X	X
+SRC	Celf2	human	X	X
+SRC	CFL1	human	X	X
+SRC	CHN2	human	X	X
+SRC	CHRNA7	human		X
+SRC	CLTC	human		X
+SRC	CNN2	human	X	
+SRC	CNN3	human	X	
+SRC	CORO7	human		X
+SRC	Csf2rb	human		X
+SRC	CTNNB1	human	X	X
+SRC	Ctnnd1	human		X
+SRC	Ctnnd1	human	X	X
+SRC	Cttn	human		X
+SRC	CTTN	human		X
+SRC	CTTN	human	X	
+SRC	Cttn	human	X	X
+SRC	CYP19A1	human	X	X
+SRC	Dab1	human	X	X
+SRC	Dag1	human	X	
+SRC	DAPP1	human	X	X
+SRC	DDR2	human		X
+SRC	DDR2	human	X	
+SRC	DGKA	human	X	X
+SRC	DLG4	human	X	X
+SRC	Dnm1	human		X
+SRC	Dok1	human		X
+SRC	DVL2	human		X
+SRC	EGFR	human		X
+SRC	EGFR	human	X	X
+SRC	EMD	human		X
+SRC	EMD	human	X	X
+SRC	ESR1	human		X
+SRC	EWSR1	human	X	
+SRC	EZR	human	X	X
+SRC	FBXO5	human	X	X
+SRC	FCRL3	human		X
+SRC	FHIT	human	X	X
+SRC	FIP1L1	human	X	
+SRC	Flot2	human	X	
+SRC	FLT4	human		X
+SRC	FLT4	human	X	X
+SRC	FUBP1	human		X
+SRC	FUBP1	human	X	
+SRC	G3BP1	human		X
+SRC	G6PD	human	X	
+SRC	GAB1	human	X	X
+SRC	Gabrg2	human		X
+SRC	GAPDH	human		X
+SRC	Gja1	human		X
+SRC	GJA1	human		X
+SRC	GLRB	human	X	
+SRC	GNAT1	human	X	
+SRC	GNB2L1	human	X	X
+SRC	GRB10	human	X	X
+SRC	Grb2	human		X
+SRC	Gria2	human		X
+SRC	GRIN1	human	X	
+SRC	GRIN2A	human		X
+SRC	GRIN2A	human	X	X
+SRC	Grlf1	human		X
+SRC	GSN	human		X
+SRC	GTF2I	human	X	
+SRC	GUCY1B3	human	X	X
+SRC	Hcn2	human	X	
+SRC	HCN4	human	X	
+SRC	HCRTR1	human	X	
+SRC	HLA-A	human		X
+SRC	HLA-B	human		X
+SRC	HNF4A	human	X	X
+SRC	HNRNPK	human		X
+SRC	HNRNPK	human	X	X
+SRC	HSP90AB1	human	X	X
+SRC		human		X
+SRC		human	X	
+SRC	Igf2bp1	human	X	
+SRC	IGF2BP1	human	X	X
+SRC	IKBKB	human	X	
+SRC	ITGB3	human	X	
+SRC	ITGB7	human		X
+SRC	JUP	human		X
+SRC	KCNA3	human	X	
+SRC	Kcnb1	human	X	
+SRC	KCNB1	human	X	
+SRC	KCNJ1	human	X	X
+SRC	KDR	human	X	
+SRC	KHSRP	human		X
+SRC	KRT19	human	X	X
+SRC	L1CAM	human		X
+SRC	LRP1	human	X	X
+SRC	MAPT	human		X
+SRC	MEGF10	human	X	
+SRC	MMP14	human	X	X
+SRC	MPZL1	human	X	
+SRC	MUC1	human		X
+SRC	MYLK	human		X
+SRC	NCKIPSD	human		X
+SRC	NDFIP2	human		X
+SRC	NDFIP2	human	X	X
+SRC	Ngef	human		X
+SRC	Nos2	human	X	
+SRC	NOS2	human	X	
+SRC	NOS2	human	X	X
+SRC	NOS3	human	X	X
+SRC	NOXA1	human	X	X
+SRC	NPHP1	human	X	
+SRC	Ntrk2	human		X
+SRC	OCLN	human		X
+SRC	PDPK1	human	X	X
+SRC	PELP1	human	X	
+SRC	PFN1	human		X
+SRC	PFN1	human	X	
+SRC	Pip5k1c	human	X	X
+SRC	PIP5K1C	human	X	X
+SRC	PKD1	human		X
+SRC	Plcg1	human		X
+SRC	PLCG2	human		X
+SRC	PLD2	human		X
+SRC	PLEKHG2	human	X	
+SRC	PLSCR1	human		X
+SRC	PPP2CA	human	X	X
+SRC	Prkcd	human		X
+SRC	Prkcd	human	X	
+SRC	PRKCD	human		X
+SRC	Prkcd	human	X	X
+SRC	Prkci	human		X
+SRC	Prkci	human	X	X
+SRC	PRKD1	human	X	
+SRC	PROM1	human	X	X
+SRC	PTEN	human	X	
+SRC	PTEN	human	X	X
+SRC	PTK2B	human	X	X
+SRC	Ptk2	human		X
+SRC	Ptk2	human	X	
+SRC	PTK2	human		X
+SRC	Ptk2	human	X	X
+SRC	PTK2	human	X	X
+SRC	PTPN6	human		X
+SRC	PTPRA	human	X	
+SRC	RAC1	human		X
+SRC	RAF1	human	X	
+SRC	RAF1	human	X	X
+SRC	RAPGEF1	human	X	
+SRC	RBM10	human		X
+SRC	RET	human		X
+SRC	RGS16	human		X
+SRC	RGS16	human	X	X
+SRC	RHBG	human		X
+SRC	RHOU	human	X	
+SRC	Rock2	human		X
+SRC	RPS6KA3	human		X
+SRC	RPS6KA3	human	X	X
+SRC	Rps6kb1	human		X
+SRC	RPS6KB2	human	X	X
+SRC	RRAS	human	X	
+SRC	SDC2	human		X
+SRC	SF3B2	human		X
+SRC	SFPQ	human		X
+SRC	SH3GL1	human	X	X
+SRC	SH3GLB1	human	X	X
+SRC	Sh3pxd2a	human	X	
+SRC	SH3PXD2B	human	X	
+SRC	SHC1	human		X
+SRC	SHC1	human	X	
+SRC	SHC1	human	X	X
+SRC	SHC3	human		X
+SRC	SLC25A4	human		X
+SRC	SNCA	human	X	
+SRC	Sorbs1	human	X	
+SRC	SPRY2	human	X	X
+SRC	SPTAN1	human		X
+SRC	Src	human		X
+SRC	SRC	human		X
+SRC	SRC	human	X	X
+SRC	SRRT	human		X
+SRC	STAP2	human	X	
+SRC	STAT1	human	X	
+SRC	STAT5A	human	X	X
+SRC	STAT5B	human	X	
+SRC	SYN1	human		X
+SRC	SYNJ2	human		X
+SRC	TERT	human	X	
+SRC	TFG	human		X
+SRC	TGFBR2	human		X
+SRC	THRAP3	human		X
+SRC	Tiam1	human	X	X
+SRC	TNS3	human	X	X
+SRC	TRIP10	human	X	
+SRC	Trip6	human	X	X
+SRC	TRIP6	human	X	X
+SRC	TRPV1	human	X	
+SRC	Trpv4	human	X	
+SRC	Trpv6	human	X	
+SRC	UGT2B7	human	X	X
+SRC	Unc5c	human	X	
+SRC	Vav1	human		X
+SRC	VAV3	human	X	
+SRC	VCL	human	X	
+SRC	VCL	human	X	X
+SRC	VIL1	human		X
+SRC	WASF1	human	X	X
+SRC	WWOX	human	X	X
+SRC	Ywhaz	human		X
+SRC	ZC3H4	human		X
+SRPK1	RBM4	human		X
+SRPK1	RBM8A	human		X
+SRPK1	SRPK1	human		X
+SRPK1	SRPK1	human	X	X
+SRPK1	SRSF1	human		X
+SRPK2	ACIN1	human	X	X
+STK10	EZR	human		X
+STK10	MSN	human	X	X
+STK10	PLK1	human		X
+STK10	RDX	human		X
+STK11	BRSK1	human		X
+STK11	BRSK2	human		X
+STK11		human		X
+STK11	MARK1	human	X	X
+STK11	MARK2	human	X	X
+STK11	MARK3	human		X
+STK11	MARK3	human	X	X
+STK11	MARK4	human	X	X
+STK11	MELK	human		X
+STK11	NUAK1	human	X	X
+STK11	NUAK2	human	X	X
+STK11	PAK1	human		X
+STK11	Prkaa1	human		X
+STK11	PRKAA1	human	X	X
+STK11	PTEN	human	X	X
+STK11	Sik1	human	X	
+STK11	SIK1	human	X	X
+STK11	SIK2	human	X	X
+STK11	SIK3	human	X	X
+STK11	SMAD4	human		X
+STK11	SNRK	human		X
+STK11	STK11	human		X
+STK11	STRADA	human		X
+STK11	TP53	human	X	X
+STK16	DRG1	human		X
+STK16	SLN	human	X	
+STK16	STK16	human		X
+STK17A	TP53	human		X
+STK24	STK24	human	X	X
+STK24	STK38L	human	X	X
+STK25	PDCD10	human	X	X
+STK38L	NUAK1	human	X	
+STK38L	RAB3IP	human		X
+STK38L	STK38L	human	X	
+STK38	RAB3IP	human		X
+STK38	STK38	human	X	X
+STK39	Slc12a2	human		X
+STK39	SLC12A2	human		X
+STK39	Slc12a2	human	X	X
+STK39	SLC12A3	human		X
+STK39	SLC4A4	human	X	
+STK3	ABL1	human		X
+STK3	LATS1	human		X
+STK3	MOB1A	human		X
+STK3	MOB1B	human		X
+STK3	MOB1B	human	X	X
+STK3	NEK2	human		X
+STK3	NEK2	human	X	X
+STK3	SAV1	human	X	
+STK3	STK3	human	X	
+STK3	YAP1	human	X	
+STK4	ABL1	human		X
+STK4	AURKB	human	X	
+STK4	Foxo1	human	X	X
+STK4	FOXO3	human		X
+STK4	FOXO3	human	X	X
+STK4	H2AFX	human	X	X
+STK4	HIST1H2BB	human	X	X
+STK4	MOB1B	human		X
+STK4	PRDX1	human		X
+STK4	STK38	human	X	
+STK4	Stk4	human		X
+STK4	STK4	human	X	
+STK4	TNNI3	human	X	X
+SYK	BLNK	human		X
+SYK	BLNK	human	X	X
+SYK	BTK	human		X
+SYK	CBL	human	X	
+SYK	Cd79a	human	X	X
+SYK	Dbnl	human		X
+SYK	DUSP3	human	X	X
+SYK	FCGR2A	human		X
+SYK	FCGR2C	human		X
+SYK	GCSAM	human	X	
+SYK	HCLS1	human	X	X
+SYK	IKZF1	human	X	
+SYK	LAT2	human	X	
+SYK	LCP2	human	X	
+SYK	MAPT	human	X	X
+SYK	Nrip1	human	X	X
+SYK	PIP5K1B	human	X	
+SYK	PLCG1	human		X
+SYK	PLCG2	human		X
+SYK	Prkaca	human	X	X
+SYK	RHBG	human		X
+SYK	SHC1	human		X
+SYK	SLC4A1	human		X
+SYK	SLC4A1	human	X	X
+SYK	SNCA	human	X	X
+SYK	STAT5A	human	X	
+SYK	Syk	human		X
+SYK	SYK	human		X
+TAF1	GTF2A1	human	X	X
+TAF1	TP53	human	X	X
+TBK1	AKT1	human	X	
+TBK1	AKT1	human	X	X
+TBK1	Insr	human		X
+TBK1	IRF3	human		X
+TBK1	IRF3	human	X	X
+TBK1	IRF5	human	X	X
+TBK1	IRF7	human		X
+TBK1	Optn	human	X	
+TBK1	OPTN	human		X
+TBK1	PELI1	human		X
+TBK1	RELA	human	X	X
+TBK1	SQSTM1	human	X	X
+TBK1	TBK1	human	X	
+TBK1	TMEM173	human	X	
+TEC	BMX	human		X
+TEC	BTK	human		X
+TEC	Fgf2	human		X
+TEC	Fgf2	human	X	X
+TEC	ITK	human		X
+TEC	TEC	human		X
+TEK	TEK	human		X
+TESK1	CFL1	human	X	
+TGFBR1	EEF1A1	human	X	X
+TGFBR1	ENG	human	X	
+TGFBR1	SMAD2	human	X	X
+TGFBR1	TP63	human	X	X
+TGFBR2	ENG	human	X	
+TGFBR2	TGFBR1	human	X	
+TGFBR2	TGFBR2	human		X
+TGFBR2	TGFBR2	human	X	
+TGM2	HIST1H3A	human		X
+TLK1	HIST1H3A	human	X	X
+TLK1	RAD9A	human	X	X
+TLK2	ASF1A	human		X
+TLK2	ASF1B	human		X
+TNIK	TCF7L2	human	X	X
+TNK2	AR	human	X	
+TNK2	TNK2	human		X
+TNK2	WAS	human		X
+TNK2	Wasl	human		X
+TNK2	Wasl	human	X	X
+TNK2	WWOX	human	X	
+TNNI3K	Tnni3	human		X
+TP53RK	TP53	human	X	X
+TRPM6	TRPM6	human		X
+TRPM7	ANXA1	human		X
+TRPM7	EEF2K	human		X
+TRPM7		human		X
+TRPM7	Myh9	human		X
+TRPM7	MYH9	human		X
+TRPM7	TMOD1	human		X
+TRPM7	TRPM7	human		X
+TSSK4	CREB1	human		X
+TTBK1	MAPT	human		X
+TTBK1	MAPT	human	X	X
+TTK	ABL1	human	X	X
+TTK	BLM	human	X	
+TTK	BUB1B	human	X	
+TTK	CDCA8	human		X
+TTK	CHEK2	human		X
+TTK	HSPA9	human		X
+TTK	TTK	human		X
+TTK	TTK	human	X	X
+TTN	Tcap	human		X
+TXK	TXK	human		X
+TYK2	GNB2L1	human	X	
+TYK2	IFNAR1	human		X
+TYK2	SIVA1	human	X	
+TYK2	TYK2	human		X
+UHMK1	CDKN1B	human	X	X
+UHMK1	FAM64A	human	X	X
+UHMK1	SF1	human	X	X
+UHMK1	STMN1	human		X
+ULK1	Prkaa1	human		X
+ULK1	Prkab2	human		X
+ULK1	Prkag1	human		X
+ULK3	ULK3	human		X
+VRK1	ATF2	human	X	X
+VRK1	BANF1	human	X	X
+VRK1	HIST1H3A	human	X	X
+VRK1	JUN	human	X	X
+VRK1	Tp53	human		X
+VRK1	TP53	human	X	X
+VRK1	VRK1	human		X
+VRK2	BANF1	human		X
+VRK2	Tp53	human		X
+VRK2	Tp53	human	X	
+VRK2	Tp53	human	X	X
+WEE1	Cdk1	human		X
+WEE1	CDK1	human	X	X
+WEE1	CDK2	human		X
+WNK1	OXSR1	human		X
+WNK1	SLC12A6	human	X	
+WNK1	STK39	human		X
+WNK1	WNK1	human		X
+WNK3	Slc12a1	human	X	
+WNK4	CLDN7	human		X
+WNK4	Slc12a3	human		X
+YES1	CDK4	human	X	X
+YES1	CDKN1B	human		X
+YES1	DPYSL2	human	X	
+ZAK	CHEK2	human	X	X
+ZAK	HIST1H3A	human	X	X
+ZAK	ZAK	human	X	X
+ZAP70	DBNL	human	X	X
+ZAP70	DUSP3	human	X	X
+ZAP70	GAB2	human	X	
+ZAP70	LAT	human		X
+ZAP70	LCP2	human	X	X
+ZAP70	Mapk14	human		X
+ZAP70	MAPK14	human	X	X
+ZAP70	Plcg1	human		X
+ZAP70	Sh2b3	human		X
+ZAP70	ZAP70	human		X
+ZAP70	ZAP70	human	X	X

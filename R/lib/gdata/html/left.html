@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Return the leftmost or rightmost columns of a matrix or...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for left {gdata}"><tr><td>left {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Return the leftmost or rightmost columns of a matrix or dataframe</h2>
+
+<h3>Description</h3>
+
+<p>Return the leftmost or rightmost or  columns of a matrix or dataframe
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+right(x, n = 6)
+left(x, n=6)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Matrix or dataframe</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>Number of columns to return</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object consisting of the leftmost or rightmost  <code>n</code> columns
+of <code>x</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gregory R. Warnes <a href="mailto:greg@warnes.net">greg@warnes.net</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="first.html">first</a></code>,
+<code><a href="first.html">last</a></code>,
+<code><a href="../../utils/html/head.html">head</a></code>,
+<code><a href="../../utils/html/tail.html">tail</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ m &lt;- matrix( 1:100, ncol=10 )
+ colnames(m) &lt;- paste("Col",1:10, sep="_")
+ left(m)
+ right(m)
+
+ d &lt;- as.data.frame(m)
+ left(d)
+ right(d)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;kha&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kha-class {kernlab}"><tr><td>kha-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;kha&quot;</h2>
+
+<h3>Description</h3>
+
+<p> The Kernel Hebbian Algorithm class</p>
+
+
+<h3>Objects objects of class &quot;kha&quot;</h3>
+
+<p>Objects can be created by calls of the form <code>new("kha", ...)</code>.
+or by calling the <code>kha</code> function.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>pcv</code>:</dt><dd><p>Object of class <code>"matrix"</code> containing the
+principal component vectors </p>
+</dd>
+<dt><code>eig</code>:</dt><dd><p>Object of class <code>"vector"</code> containing the
+corresponding normalization values</p>
+</dd>
+<dt><code>eskm</code>:</dt><dd><p>Object of class <code>"vector"</code> containing the
+kernel sum</p>
+</dd>
+<dt><code>kernelf</code>:</dt><dd><p>Object of class <code>"kfunction"</code> containing
+the kernel function used</p>
+</dd>
+<dt><code>kpar</code>:</dt><dd><p>Object of class <code>"list"</code> containing the
+kernel parameters used </p>
+</dd>
+<dt><code>xmatrix</code>:</dt><dd><p>Object of class <code>"matrix"</code> containing
+the data matrix used </p>
+</dd>
+<dt><code>kcall</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+function call </p>
+</dd>
+<dt><code>n.action</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+action performed on NA </p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>eig</dt><dd><p><code>signature(object = "kha")</code>: returns the
+normalization values </p>
+</dd>
+<dt>kcall</dt><dd><p><code>signature(object = "kha")</code>: returns the
+performed call</p>
+</dd>
+<dt>kernelf</dt><dd><p><code>signature(object = "kha")</code>: returns the used
+kernel function</p>
+</dd>
+<dt>pcv</dt><dd><p><code>signature(object = "kha")</code>: returns the principal
+component vectors </p>
+</dd>
+<dt>eskm</dt><dd><p><code>signature(object = "kha")</code>: returns the kernel sum</p>
+</dd>
+<dt>predict</dt><dd><p><code>signature(object = "kha")</code>: embeds new data </p>
+</dd>
+<dt>xmatrix</dt><dd><p><code>signature(object = "kha")</code>: returns the used
+data matrix </p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="kha.html">kha</a></code>,
+<code><a href="ksvm-class.html">ksvm-class</a></code>, 
+<code><a href="kcca-class.html">kcca-class</a></code> 
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# another example using the iris
+data(iris)
+test &lt;- sample(1:50,20)
+
+kpc &lt;- kha(~.,data=iris[-test,-5], kernel="rbfdot",
+           kpar=list(sigma=0.2),features=2, eta=0.001, maxiter=65)
+
+#print the principal component vectors
+pcv(kpc)
+kernelf(kpc)
+eig(kpc)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

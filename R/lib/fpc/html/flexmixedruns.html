@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fitting mixed Gaussian/multinomial mixtures with flexmix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for flexmixedruns {fpc}"><tr><td>flexmixedruns {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Fitting mixed Gaussian/multinomial mixtures with flexmix</h2>
+
+<h3>Description</h3>
+
+<p><code>flexmixedruns</code> fits a latent class
+mixture (clustering) model where some variables are continuous
+and modelled within the mixture components by Gaussian distributions
+and some variables are categorical and modelled within components by
+independent multinomial distributions. The fit is by maximum
+likelihood estimation computed with the EM-algorithm. The number of
+components can be estimated by the BIC.
+</p>
+<p>Note that at least one categorical variable is needed, but it is
+possible to use data without continuous variable.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+flexmixedruns(x,diagonal=TRUE,xvarsorted=TRUE,
+                          continuous,discrete,ppdim=NULL,initial.cluster=NULL,
+                          simruns=20,n.cluster=1:20,verbose=TRUE,recode=TRUE,
+                          allout=TRUE,control=list(minprior=0.001),silent=TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>data matrix or data frame. The data need to be organised
+case-wise, i.e., if there are categorical variables only, and 15
+cases with values c(1,1,2) on the 3 variables, the data matrix needs
+15 rows with values 1 1 2. (Categorical variables could take numbers
+or strings or anything that can be coerced to factor levels as values.)</p>
+</td></tr>
+<tr valign="top"><td><code>diagonal</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, Gaussian models are fitted
+restricted to diagonal covariance matrices. Otherwise, covariance
+matrices are unrestricted. <code>TRUE</code> is consistent with the
+&quot;within class independence&quot; assumption for the multinomial
+variables.</p>
+</td></tr>
+<tr valign="top"><td><code>xvarsorted</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the continuous variables
+are assumed to be the first ones, and the categorical variables to
+be behind them.</p>
+</td></tr>
+<tr valign="top"><td><code>continuous</code></td>
+<td>
+<p>vector of integers giving positions of the
+continuous variables. If <code>xvarsorted=TRUE</code>, a single integer,
+number of continuous variables.</p>
+</td></tr>
+<tr valign="top"><td><code>discrete</code></td>
+<td>
+<p>vector of integers giving positions of the
+categorical variables. If <code>xvarsorted=TRUE</code>, a single integer,
+number of categorical variables.</p>
+</td></tr>
+<tr valign="top"><td><code>ppdim</code></td>
+<td>
+<p>vector of integers specifying the number of (in the data)
+existing categories for each categorical variable. If
+<code>recode=TRUE</code>, this can be omitted and is computed
+automatically.</p>
+</td></tr>
+<tr valign="top"><td><code>initial.cluster</code></td>
+<td>
+<p>this corresponds to the <code>cluster</code>
+parameter in <code>flexmix</code> and should only be specified if
+<code>simruns=1</code> and <code>n.cluster</code> is a single number.
+Either a matrix with <code>n.cluster</code> columns of initial cluster
+membership probabilities for each observation; or a factor or
+integer vector with the initial cluster assignments of
+observations at the start of the EM algorithm. Default is
+random assignment into <code>n.cluster</code> clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>simruns</code></td>
+<td>
+<p>integer. Number of starts of the EM algorithm with
+random initialisation in order to find a good global optimum.</p>
+</td></tr>
+<tr valign="top"><td><code>n.cluster</code></td>
+<td>
+<p>vector of integers, numbers of components (the optimum
+one is found by minimising the BIC).</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, some information about the
+different runs of the EM algorithm is given out.</p>
+</td></tr>
+<tr valign="top"><td><code>recode</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the function
+<code>discrete.recode</code> is applied in order to recode categorical
+data so that the <code>lcmixed</code>-method can use it. Only set this
+to <code>FALSE</code> if your data already has that format (even it that
+case, <code>TRUE</code> doesn't do harm). If <code>recode=FALSE</code>, the
+categorical variables are assumed to be coded 1,2,3,...</p>
+</td></tr>
+<tr valign="top"><td><code>allout</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the regular
+<code>flexmix</code>-output is given out for every single number of
+clusters, which can create a huge output object.</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p>list of control parameters for <code>flexmix</code>, for
+details see the help page of <code><a href="../../flexmix/html/FLXcontrol-class.html">FLXcontrol-class</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>silent</code></td>
+<td>
+<p>logical. This is passed on to the
+<code><a href="../../base/html/try.html">try</a></code>-function. If <code>FALSE</code>, error messages from
+failed runs of <code>flexmix</code> are suppressed. (The information that
+a <code>flexmix</code>-error occurred is still given out if
+<code>verbose=TRUE</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Sometimes flexmix produces errors because of degenerating covariance
+matrices, too small clusters etc. <code>flexmixedruns</code> tolerates these
+and treats them as non-optimal runs. (Higher <code>simruns</code> or
+different <code>control</code> may be required to get a valid solution.)
+</p>
+<p>General documentation on flexmix can be found in 
+Friedrich Leisch's &quot;FlexMix: A General Framework for Finite Mixture
+Models and Latent Class Regression in R&quot;,
+<a href="https://CRAN.R-project.org/package=flexmix">https://CRAN.R-project.org/package=flexmix</a>
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>optsummary</code></td>
+<td>
+<p>summary object for <code>flexmix</code> object with
+optimal number of components.</p>
+</td></tr>
+<tr valign="top"><td><code>optimalk</code></td>
+<td>
+<p>optimal number of components.</p>
+</td></tr>
+<tr valign="top"><td><code>errcount</code></td>
+<td>
+<p>vector with numbers of EM runs for each number of
+components that led to flexmix errors.</p>
+</td></tr>
+<tr valign="top"><td><code>flexout</code></td>
+<td>
+<p>if <code>allout=TRUE</code>, list of flexmix output objects
+for all numbers of components, for details see the help page of
+<code><a href="../../flexmix/html/flexmix-class.html">flexmix-class</a></code>. Slots that can be used
+include for example <code>cluster</code> and <code>components</code>. So
+if <code>fo</code> is the <code>flexmixedruns</code>-output object,
+<code>fo$flexout[[fo$optimalk]]@cluster</code> gives a component number
+vector for the observations (maximum posterior rule), and
+<code>fo$flexout[[fo$optimalk]]@components</code> gives the estimated
+model parameters, which for <code>lcmixed</code> and therefore
+<code>flexmixedruns</code> are called
+</p>
+
+<dl>
+<dt>center</dt><dd><p>mean vector</p>
+</dd>
+<dt>cov</dt><dd><p>covariance matrix</p>
+</dd>
+<dt>pp</dt><dd><p>list of categorical variable-wise category probabilities</p>
+</dd>
+</dl>
+
+<p>If <code>allout=FALSE</code>, only the flexmix output object for the
+optimal number of components, i.e., the <code>[[fo$optimalk]]</code>
+indexing above can then be omitted.
+</p>
+</td></tr>
+<tr valign="top"><td><code>bicvals</code></td>
+<td>
+<p>vector of values of the BIC for each number of
+components.</p>
+</td></tr>
+<tr valign="top"><td><code>ppdim</code></td>
+<td>
+<p>vector of categorical variable-wise numbers of
+categories.</p>
+</td></tr>
+<tr valign="top"><td><code>discretelevels</code></td>
+<td>
+<p>list of levels of the categorical variables
+belonging to what is treated by <code>flexmixedruns</code> as category
+1, 2, 3 etc.</p>
+</td></tr> 
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. and Liao, T. (2013) How to find an appropriate clustering
+for mixed-type variables with application to socio-economic
+stratification, <em>Journal of the Royal Statistical Society, Series
+C Applied Statistics</em>, 62, 309-369.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="lcmixed.html">lcmixed</a></code>, <code><a href="../../flexmix/html/flexmix.html">flexmix</a></code>,
+<code><a href="../../flexmix/html/FLXcontrol-class.html">FLXcontrol-class</a></code>,
+<code><a href="../../flexmix/html/flexmix-class.html">flexmix-class</a></code>,
+<code><a href="discrete.recode.html">discrete.recode</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  set.seed(776655)
+  v1 &lt;- rnorm(100)
+  v2 &lt;- rnorm(100)
+  d1 &lt;- sample(1:5,100,replace=TRUE)
+  d2 &lt;- sample(1:4,100,replace=TRUE)
+  ldata &lt;- cbind(v1,v2,d1,d2)
+  fr &lt;- flexmixedruns(ldata,
+    continuous=2,discrete=2,simruns=2,n.cluster=2:3,allout=FALSE)
+  print(fr$optimalk)
+  print(fr$optsummary)
+  print(fr$flexout@cluster)
+  print(fr$flexout@components)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Select helpers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for select_helpers {tidyselect}"><tr><td>select_helpers {tidyselect}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Select helpers</h2>
+
+<h3>Description</h3>
+
+<p>These functions allow you to select variables based on their names.
+</p>
+
+<ul>
+<li> <p><code>starts_with()</code>: Starts with a prefix.
+</p>
+</li>
+<li> <p><code>ends_with()</code>: Ends with a suffix.
+</p>
+</li>
+<li> <p><code>contains()</code>: Contains a literal string.
+</p>
+</li>
+<li> <p><code>matches()</code>: Matches a regular expression.
+</p>
+</li>
+<li> <p><code>num_range()</code>: Matches a numerical range like x01, x02, x03.
+</p>
+</li>
+<li> <p><code>one_of()</code>: Matches variable names in a character vector.
+</p>
+</li>
+<li> <p><code>everything()</code>: Matches all variables.
+</p>
+</li>
+<li> <p><code>last_col()</code>: Select last variable, possibly with an offset.
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+starts_with(match, ignore.case = TRUE, vars = peek_vars())
+
+ends_with(match, ignore.case = TRUE, vars = peek_vars())
+
+contains(match, ignore.case = TRUE, vars = peek_vars())
+
+matches(match, ignore.case = TRUE, vars = peek_vars())
+
+num_range(prefix, range, width = NULL, vars = peek_vars())
+
+one_of(..., .vars = peek_vars())
+
+everything(vars = peek_vars())
+
+last_col(offset = 0L, vars = peek_vars())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>match</code></td>
+<td>
+<p>A string.</p>
+</td></tr>
+<tr valign="top"><td><code>ignore.case</code></td>
+<td>
+<p>If <code>TRUE</code>, the default, ignores case when matching
+names.</p>
+</td></tr>
+<tr valign="top"><td><code>vars, .vars</code></td>
+<td>
+<p>A character vector of variable names. When called
+from inside selecting functions like <code><a href="../../dplyr/html/select.html">dplyr::select()</a></code> these are
+automatically set to the names of the table.</p>
+</td></tr>
+<tr valign="top"><td><code>prefix</code></td>
+<td>
+<p>A prefix that starts the numeric range.</p>
+</td></tr>
+<tr valign="top"><td><code>range</code></td>
+<td>
+<p>A sequence of integers, like <code>1:5</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>Optionally, the &quot;width&quot; of the numeric range. For example,
+a range of 2 gives &quot;01&quot;, a range of three &quot;001&quot;, etc.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>One or more character vectors.</p>
+</td></tr>
+<tr valign="top"><td><code>offset</code></td>
+<td>
+<p>Set it to <code>n</code> to select the nth var from the end.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An integer vector giving the position of the matched variables.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+nms &lt;- names(iris)
+vars_select(nms, starts_with("Petal"))
+vars_select(nms, ends_with("Width"))
+vars_select(nms, contains("etal"))
+vars_select(nms, matches(".t."))
+vars_select(nms, Petal.Length, Petal.Width)
+vars_select(nms, everything())
+vars_select(nms, last_col())
+vars_select(nms, last_col(offset = 2))
+
+vars &lt;- c("Petal.Length", "Petal.Width")
+vars_select(nms, one_of(vars))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>tidyselect</em> version 0.2.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

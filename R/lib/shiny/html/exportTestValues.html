@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Register expressions for export in test mode</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for exportTestValues {shiny}"><tr><td>exportTestValues {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Register expressions for export in test mode</h2>
+
+<h3>Description</h3>
+
+<p>This function registers expressions that will be evaluated when a test export
+event occurs. These events are triggered by accessing a snapshot URL.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+exportTestValues(..., quoted_ = FALSE, env_ = parent.frame(),
+  session_ = getDefaultReactiveDomain())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Named arguments that are quoted or unquoted expressions that will
+be captured and evaluated when snapshot URL is visited.</p>
+</td></tr>
+<tr valign="top"><td><code>quoted_</code></td>
+<td>
+<p>Are the expression quoted? Default is <code>FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>env_</code></td>
+<td>
+<p>The environment in which the expression should be evaluated.</p>
+</td></tr>
+<tr valign="top"><td><code>session_</code></td>
+<td>
+<p>A Shiny session object.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function only has an effect if the app is launched in test mode. This is
+done by calling <code>runApp()</code> with <code>test.mode=TRUE</code>, or by setting the
+global option <code>shiny.testmode</code> to <code>TRUE</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run this example in interactive R sessions
+if (interactive()) {
+
+options(shiny.testmode = TRUE)
+
+# This application shows the test snapshot URL; clicking on it will
+# fetch the input, output, and exported values in JSON format.
+shinyApp(
+  ui = basicPage(
+    h4("Snapshot URL: "),
+    uiOutput("url"),
+    h4("Current values:"),
+    verbatimTextOutput("values"),
+    actionButton("inc", "Increment x")
+  ),
+
+  server = function(input, output, session) {
+    vals &lt;- reactiveValues(x = 1)
+    y &lt;- reactive({ vals$x + 1 })
+
+    observeEvent(input$inc, {
+      vals$x &lt;&lt;- vals$x + 1
+    })
+
+    exportTestValues(
+      x = vals$x,
+      y = y()
+    )
+
+    output$url &lt;- renderUI({
+      url &lt;- session$getTestSnapshotUrl(format="json")
+      a(href = url, url)
+    })
+
+    output$values &lt;- renderText({
+      paste0("vals$x: ", vals$x, "\ny: ", y())
+    })
+  }
+)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

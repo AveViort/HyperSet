@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Uniform Random Number Generation in SNOW Clusters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for snow-rand {snow}"><tr><td>snow-rand {snow}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Uniform Random Number Generation in SNOW Clusters</h2>
+
+<h3>Description</h3>
+
+<p>Initialize independent uniform random number streams to be used in a
+SNOW cluster. It uses either the L'Ecuyer's random number generator
+(package rlecuyer required) or the SPRNG generator (package rsprng required).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+clusterSetupRNG (cl, type = "RNGstream", ...)
+
+clusterSetupRNGstream (cl, seed=rep(12345,6), ...)
+clusterSetupSPRNG (cl, seed = round(2^32 * runif(1)),
+                   prngkind = "default", para = 0, ...) 
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cl</code></td>
+<td>
+<p>Cluster object.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p><code>type="RNGstream"</code> (default) initializes the
+L'Ecuyer's RNG.  <code>type="SPRNG"</code> initializes the
+SPRNG generator.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Arguments passed to the underlying function (see details
+bellow).</p>
+</td></tr> 
+<tr valign="top"><td><code>seed</code></td>
+<td>
+<p>Integer value (SPRNG) or a vector of six integer values
+(RNGstream) used as seed
+for the RNG.</p>
+</td></tr>
+<tr valign="top"><td><code>prngkind</code></td>
+<td>
+<p>Character string naming generator type used with SPRNG.</p>
+</td></tr>
+<tr valign="top"><td><code>para</code></td>
+<td>
+<p>Additional parameters for the generator.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>clusterSetupRNG</code> calls (subject to its argument values) one of
+the other functions, passing arguments <code>(cl, ...)</code>.  If the
+&quot;SPRNG&quot; type is used, then the function <code>clusterSetupSPRNG</code> is
+called.  If the &quot;RNGstream&quot; type is used, then the function
+<code>clusterSetupRNGstream</code> is called.
+</p>
+<p><code>clusterSetupSPRNG</code> loads the <code>rsprng</code> package and initializes
+separate streams  on each node. For further details see the documentation
+of <code>init.sprng</code>.  The generator on the master is not affected.
+NOTE: SPRNG is currently not supported.
+</p>
+<p><code>clusterSetupRNGstream</code> loads the <code>rlecuyer</code> package,
+creates one stream per node and distributes the stream states
+to the nodes.
+</p>
+<p>For more details see
+<a href="http://www.stat.uiowa.edu/~luke/R/cluster/cluster.html">http://www.stat.uiowa.edu/~luke/R/cluster/cluster.html</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## Not run: 
+clusterSetupSPRNG(cl)
+clusterSetupSPRNG(cl, seed=1234)
+clusterSetupRNG(cl, seed=rep(1,6))
+  
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>snow</em> version 0.4-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

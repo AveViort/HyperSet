@@ -1,0 +1,35 @@
+Package: threejs
+Type: Package
+Title: Interactive 3D Scatter Plots, Networks and Globes
+Description: Create interactive 3D scatter plots, network plots, and
+    globes using the 'three.js' visualization library (<https://threejs.org>).
+Version: 0.3.1
+Date: 2017-08-11
+Authors@R: c(
+    person("B. W.", "Lewis", role=c("aut","cre"), email="blewis@illposed.net"),
+    person(given="Three.js authors", role="cph", comment="three.js JavaScript library"),
+    person("Alexey", "Stukalov", role=("ctb"), email="astukalov@gmail.com"),
+    person("Yihui","Xie", role=("ctb"), email="xie@yihui.name"),
+    person("Andreas", "Briese", role=("ctb"), email="ab@edutoolbox.de"),
+    person("B.",  "Thieurmel", role=("ctb"), email="bthieurmel@gmail.com")
+    )
+URL: https://bwlewis.github.io/rthreejs
+BugReports: https://github.com/bwlewis/rthreejs/issues
+License: MIT + file LICENSE
+Depends: R (>= 3.0.0), igraph (>= 1.0.0)
+Imports: htmlwidgets (>= 0.3.2), base64enc, crosstalk, methods, stats
+Suggests: maps
+Enhances: knitr, shiny
+RoxygenNote: 5.0.1
+NeedsCompilation: no
+Packaged: 2017-08-12 13:04:06 UTC; blewis
+Author: B. W. Lewis [aut, cre],
+  Three.js authors [cph] (three.js JavaScript library),
+  Alexey Stukalov [ctb],
+  Yihui Xie [ctb],
+  Andreas Briese [ctb],
+  B. Thieurmel [ctb]
+Maintainer: B. W. Lewis <blewis@illposed.net>
+Repository: CRAN
+Date/Publication: 2017-08-13 05:42:40 UTC
+Built: R 3.5.1; ; 2018-11-15 16:39:58 UTC; unix

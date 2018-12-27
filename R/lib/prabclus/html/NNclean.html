@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Nearest neighbor based clutter/noise detection</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for NNclean {prabclus}"><tr><td>NNclean {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Nearest neighbor based clutter/noise detection</h2>
+
+<h3>Description</h3>
+
+<p>Detects if data points are noise or part of a cluster,
+based on a Poisson process model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+NNclean(data, k, distances = NULL, edge.correct = FALSE, wrap = 0.1,
+convergence = 0.001, plot=FALSE, quiet=TRUE)
+
+## S3 method for class 'nnclean'
+print(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>numerical matrix or data frame.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>integer. Number of considered nearest neighbors per point.</p>
+</td></tr>
+<tr valign="top"><td><code>distances</code></td>
+<td>
+<p>distance matrix object of class <code>dist</code>. If
+specified, it is used instead of computing distances from the data.</p>
+</td></tr>
+<tr valign="top"><td><code>edge.correct</code></td>
+<td>
+<p>logical. If <code>TRUE</code> and the data is
+two-dimensional, neighbors for points at the edges of the parent
+region of the noise Poisson process are determined after wrapping
+the region onto a toroid.</p>
+</td></tr>
+<tr valign="top"><td><code>wrap</code></td>
+<td>
+<p>numerical. If <code>edge.correct=TRUE</code>, points in a
+strip of size <code>wrap*range</code> along the edge for each variable
+are candidates for
+being neighbors of points from the opposite.</p>
+</td></tr>
+<tr valign="top"><td><code>convergence</code></td>
+<td>
+<p>numerical. Convergence criterion for EM-algorithm.</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, a histogram of the distance to
+kth nearest neighbor and fit is plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>logical. If <code>FALSE</code>, the likelihood is printed
+during the iterations.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>object of class <code>nnclean</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>necessary for print methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The assumption is that the noise is distributed as a homogeneous
+Poisson process  on a certain region and the clusters are distributed
+as a homogeneous Poisson process with larger intensity on a
+subregion (disconnected in case of more than one cluster).
+The distances are then distributed according to a mixture of two
+transformed Gamma distributions, and this mixture is estimated via the
+EM-algorithm. The points are assigned to noise or cluster component
+by use of the estimated a posteriori probabilities. 
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>NNclean</code> returns a list of class <code>nnclean</code> with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p>0-1-vector of length of the number of data points. 1 means
+cluster, 0 means noise.</p>
+</td></tr>
+<tr valign="top"><td><code>probs</code></td>
+<td>
+<p>vector of estimated a priori probabilities for each point
+to belong to the cluster component.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>see above.</p>
+</td></tr>
+<tr valign="top"><td><code>lambda1</code></td>
+<td>
+<p>intensity parameter of cluster component.</p>
+</td></tr>
+<tr valign="top"><td><code>lambda2</code></td>
+<td>
+<p>intensity parameter of noise component.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>estimated probability of cluster component.</p>
+</td></tr>
+<tr valign="top"><td><code>kthNND</code></td>
+<td>
+<p>distance to kth nearest neighbor.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>The software can be freely used for non-commercial purposes, and can
+be freely distributed for non-commercial purposes only.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>R-port by Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a>,<br />
+original Splus package by S. Byers and A. E. Raftery.
+</p>
+
+
+<h3>References</h3>
+
+<p>Byers, S. and Raftery, A. E. (1998) Nearest-Neighbor Clutter
+Removal for Estimating Features in Spatial Point Processes,
+<em>Journal of the American Statistical Association</em>, 93, 577-584.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(mclust)
+data(chevron)
+nnc &lt;-  NNclean(chevron[,2:3],15,plot=TRUE)
+plot(chevron[,2:3],col=1+nnc$z)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

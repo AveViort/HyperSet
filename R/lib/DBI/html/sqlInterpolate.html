@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Safely interpolate values into an SQL string</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sqlInterpolate {DBI}"><tr><td>sqlInterpolate {DBI}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Safely interpolate values into an SQL string</h2>
+
+<h3>Description</h3>
+
+<p>Safely interpolate values into an SQL string
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sqlInterpolate(conn, sql, ..., .dots = list())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>conn</code></td>
+<td>
+<p>A database connection.</p>
+</td></tr>
+<tr valign="top"><td><code>sql</code></td>
+<td>
+<p>A SQL string containing variables to interpolate.
+Variables must start with a question mark and can be any valid R
+identifier, i.e. it must start with a letter or <code>.</code>, and be followed
+by a letter, digit, <code>.</code> or <code>_</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>..., .dots</code></td>
+<td>
+<p>Named values (for <code>...</code>) or a named list (for <code>.dots</code>)
+to interpolate into a string. All strings
+will be first escaped with <code><a href="dbQuoteString.html">dbQuoteString()</a></code> prior
+to interpolation to protect against SQL injection attacks.</p>
+</td></tr>
+</table>
+
+
+<h3>Backend authors</h3>
+
+<p>If you are implementing an SQL backend with non-ANSI quoting rules, you'll
+need to implement a method for <code><a href="sqlParseVariables.html">sqlParseVariables()</a></code>. Failure to
+do so does not expose you to SQL injection attacks, but will (rarely) result
+in errors matching supplied and interpolated variables.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+sql &lt;- "SELECT * FROM X WHERE name = ?name"
+sqlInterpolate(ANSI(), sql, name = "Hadley")
+
+# This is safe because the single quote has been double escaped
+sqlInterpolate(ANSI(), sql, name = "H'); DROP TABLE--;")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>DBI</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

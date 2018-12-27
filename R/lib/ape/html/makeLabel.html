@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Label Management</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for makeLabel {ape}"><tr><td>makeLabel {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Label Management</h2>
+
+<h3>Description</h3>
+
+<p>This is a generic function with methods for character vectors, trees
+of class <code>"phylo"</code>, lists of trees of class <code>"multiPhylo"</code>,
+and DNA sequences of class <code>"DNAbin"</code>. All options for the class
+character may be used in the other methods.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+makeLabel(x, ...)
+## S3 method for class 'character'
+makeLabel(x, len = 99, space = "_", make.unique = TRUE,
+          illegal = "():;,[]", quote = FALSE, ...)
+## S3 method for class 'phylo'
+makeLabel(x, tips = TRUE, nodes = TRUE, ...)
+## S3 method for class 'multiPhylo'
+makeLabel(x, tips = TRUE, nodes = TRUE, ...)
+## S3 method for class 'DNAbin'
+makeLabel(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a vector of mode character or an object for which labels are
+to be changed.</p>
+</td></tr>
+<tr valign="top"><td><code>len</code></td>
+<td>
+<p>the maximum length of the labels: those longer than &lsquo;len&rsquo;
+will be truncated.</p>
+</td></tr>
+<tr valign="top"><td><code>space</code></td>
+<td>
+<p>the character to replace spaces, tabulations, and
+linebreaks.</p>
+</td></tr>
+<tr valign="top"><td><code>make.unique</code></td>
+<td>
+<p>a logical specifying whether duplicate labels
+should be made unique by appending numerals; <code>TRUE</code> by
+default.</p>
+</td></tr>
+<tr valign="top"><td><code>illegal</code></td>
+<td>
+<p>a string specifying the characters to be deleted.</p>
+</td></tr>
+<tr valign="top"><td><code>quote</code></td>
+<td>
+<p>a logical specifying whether to quote the labels;
+<code>FALSE</code> by default.</p>
+</td></tr>
+<tr valign="top"><td><code>tips</code></td>
+<td>
+<p>a logical specifying whether tip labels are to be
+modified; <code>TRUE</code> by default.</p>
+</td></tr>
+<tr valign="top"><td><code>nodes</code></td>
+<td>
+<p>a logical specifying whether node labels are to be
+modified; <code>TRUE</code> by default.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The option <code>make.unique</code> does not work exactly in the same way
+then the function of the same name: numbers are suffixed to all labels
+that are identical (without separator). See the examples.
+</p>
+<p>If there are 10&ndash;99 identical labels, the labels returned are &quot;xxx01&quot;,
+&quot;xxx02&quot;, etc, or &quot;xxx001&quot;, &quot;xxx002&quot;, etc, if they are 100&ndash;999, and so
+on. The number of digits added preserves the option &lsquo;len&rsquo;.
+</p>
+<p>The default for &lsquo;len&rsquo; makes labels short enough to be read by
+PhyML. Clustal accepts labels up to 30 character long.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of the appropriate class.
+</p>
+
+
+<h3>Note</h3>
+
+<p>The current version does not perform well when trying to make very
+short unique labels (e.g., less than 5 character long).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="makeNodeLabel.html">makeNodeLabel</a></code>, <code><a href="../../base/html/make.unique.html">make.unique</a></code>,
+<code><a href="../../base/html/make.names.html">make.names</a></code>, <code><a href="../../base/html/abbreviate.html">abbreviate</a></code>,
+<code><a href="mixedFontLabel.html">mixedFontLabel</a></code>, <code><a href="label2table.html">label2table</a></code>,
+<code><a href="updateLabel.html">updateLabel</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- rep("a", 3)
+makeLabel(x)
+make.unique(x) # &lt;- from R's base
+x &lt;- rep("aaaaa", 2)
+makeLabel(x, len = 3) # made unique and of length 3
+makeLabel(x, len = 3, make.unique = FALSE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

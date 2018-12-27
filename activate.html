@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<HTML lang="en-US">
+<head>
+<TITLE>Activate EviNet account</TITLE>
+
+<base id="myBase" href="https://www.evinet.org/" target="_blank">
+
+<script src="js/account.js" type="text/javascript"></script>
+
+<script>
+function activate()
+{
+	var s = location.hash;
+	var activation_status = activate_account(s.substr(1));
+	if (activation_status == 1) {
+		alert("You can log in with your email and password");
+		window.location.replace("/");}
+	else {
+		alert("Activation failed. Please check the link and make sure you did not activate your account earlier");}
+}
+</script>
+</head>
+<body onload=activate()>
+</body>
+</html>

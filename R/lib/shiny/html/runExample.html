@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Run Shiny Example Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for runExample {shiny}"><tr><td>runExample {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Run Shiny Example Applications</h2>
+
+<h3>Description</h3>
+
+<p>Launch Shiny example applications, and optionally, your system's web browser.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+runExample(example = NA, port = NULL,
+  launch.browser = getOption("shiny.launch.browser", interactive()),
+  host = getOption("shiny.host", "127.0.0.1"), display.mode = c("auto",
+  "normal", "showcase"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>example</code></td>
+<td>
+<p>The name of the example to run, or <code>NA</code> (the default) to
+list the available examples.</p>
+</td></tr>
+<tr valign="top"><td><code>port</code></td>
+<td>
+<p>The TCP port that the application should listen on. Defaults to
+choosing a random port.</p>
+</td></tr>
+<tr valign="top"><td><code>launch.browser</code></td>
+<td>
+<p>If true, the system's default web browser will be
+launched automatically after the app is started. Defaults to true in
+interactive sessions only.</p>
+</td></tr>
+<tr valign="top"><td><code>host</code></td>
+<td>
+<p>The IPv4 address that the application should listen on. Defaults
+to the <code>shiny.host</code> option, if set, or <code>"127.0.0.1"</code> if not.</p>
+</td></tr>
+<tr valign="top"><td><code>display.mode</code></td>
+<td>
+<p>The mode in which to display the example. Defaults to
+<code>showcase</code>, but may be set to <code>normal</code> to see the example without
+code or commentary.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run this example in interactive R sessions
+if (interactive()) {
+  # List all available examples
+  runExample()
+
+  # Run one of the examples
+  runExample("01_hello")
+
+  # Print the directory containing the code for all examples
+  system.file("examples", package="shiny")
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

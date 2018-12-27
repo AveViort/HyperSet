@@ -1,0 +1,6 @@
+<Files ~ "^.*\.([rR])">
+ #Order allow,deny
+ #Deny from all
+ #Satisfy All
+ Require all granted
+</Files>

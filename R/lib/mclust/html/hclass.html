@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Classifications from Hierarchical Agglomeration</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hclass {mclust}"><tr><td>hclass {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Classifications from Hierarchical Agglomeration 
+</h2>
+
+<h3>Description</h3>
+
+<p>Determines the classifications corresponding to different numbers of groups
+given merge pairs from hierarchical agglomeration.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hclass(hcPairs, G)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>hcPairs</code></td>
+<td>
+
+<p>A numeric two-column matrix in which the <em>i</em>th row gives the minimum 
+index for observations in each of the two clusters merged at the
+<em>i</em>th stage of agglomerative hierarchical clustering.
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>An integer or vector of integers giving the number of clusters for which
+the corresponding classfications are wanted.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A matrix with <code>length(G)</code> columns, each column 
+corresponding to a classification. Columns are indexed by the character
+representation of the integers in <code>G</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hc.html">hc</a></code>,
+<code><a href="hcE.html">hcE</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hcTree &lt;- hc(modelName="VVV", data = iris[,-5])
+cl &lt;- hclass(hcTree,c(2,3))
+
+## Not run: 
+par(pty = "s", mfrow = c(1,1))
+clPairs(iris[,-5],cl=cl[,"2"])
+clPairs(iris[,-5],cl=cl[,"3"])
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

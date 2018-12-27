@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: FlexMix Clustering of Univariate Distributions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for FLXMCdist1 {flexmix}"><tr><td>FLXMCdist1 {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>FlexMix Clustering of Univariate Distributions</h2>
+
+<h3>Description</h3>
+
+<p>These are drivers for <code><a href="flexmix.html">flexmix</a></code> implementing model-based
+clustering of univariate data using different distributions for the
+component-specific models.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+FLXMCdist1(formula = . ~ ., dist, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+<p>A formula which is interpreted relative to the formula
+specified in the call to <code><a href="flexmix.html">flexmix</a></code> using
+<code><a href="../../stats/html/update.formula.html">update.formula</a></code>. Only the left-hand side (response) of
+the formula is used. Default is to use the original
+<code><a href="flexmix.html">flexmix</a></code> model
+formula.</p>
+</td></tr>
+<tr valign="top"><td><code>dist</code></td>
+<td>
+<p>Character string indicating the component-specific
+univariate distribution.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Arguments for the specific model drivers.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Currently drivers for the following distributions are available:
+</p>
+
+<ol>
+<li><p> Lognormal (<code>"lnorm"</code>)
+</p>
+</li>
+<li><p> inverse Gaussian (<code>"invGauss"</code> using <code><a href="../../SuppDists/html/dinvGauss.html">dinvGauss</a></code>)
+</p>
+</li>
+<li><p> gamma (<code>"gamma"</code>)
+</p>
+</li>
+<li><p> exponential (<code>"exp"</code>)
+</p>
+</li>
+<li><p> Weibull (<code>"weibull"</code>)
+</p>
+</li>
+<li><p> Burr (<code>"burr"</code> using <code><a href="../../actuar/html/dburr.html">dburr</a></code>)
+</p>
+</li>
+<li><p> Inverse Burr (<code>"invburr"</code> using <code><a href="../../actuar/html/dinvburr.html">dinvburr</a></code>)
+</p>
+</li></ol>
+
+
+
+<h3>Value</h3>
+
+<p><code>FLXMCmvnorm</code> returns an object of class <code>FLXMC</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Friedrich Leisch and Bettina Gruen</p>
+
+
+<h3>References</h3>
+
+<p>Tatjana Miljkovic and Bettina Gruen. Modeling loss data using
+mixtures of distributions. <em>Insurance: Mathematics and
+Economics</em>, <b>70</b>, 387-396, 2016.
+doi:10.1016/j.insmatheco.2016.06.019
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="flexmix.html">flexmix</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+if (require("actuar")) {
+    set.seed(123)
+    y &lt;- c(rexp(100, 10), rexp(100, 1))
+    ex &lt;- flexmix(y ~ 1, cluster = rep(1:2, each = 100), model = FLXMCdist1(dist = "exp"))    
+    parameters(ex)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

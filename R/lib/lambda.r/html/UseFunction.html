@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Primary dispatcher for functional programming</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for UseFunction {lambda.r}"><tr><td>UseFunction {lambda.r}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Primary dispatcher for functional programming </h2>
+
+<h3>Description</h3>
+
+<p>UseFunction manages the dispatching for multipart functions in 
+lambda.r. This is used internally by lambda.r.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+UseFunction(fn, fn.name, ...)
+NewObject(type.fn, type.name, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>fn</code></td>
+<td>
+<p>The function reference that is being applied</p>
+</td></tr>
+<tr valign="top"><td><code>fn.name</code></td>
+<td>
+<p>The name of a function that uses functional dispatching. This
+is just the name of the function being defined</p>
+</td></tr>
+<tr valign="top"><td><code>type.fn</code></td>
+<td>
+<p>The function representing the type constructor</p>
+</td></tr>
+<tr valign="top"><td><code>type.name</code></td>
+<td>
+<p>The name of the type</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>The arguments that are passed to dispatched functions </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function is used internally and generally does not need to be called
+by an end user.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns the value of the dispatched function
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Brian Lee Yung Rowe </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="framework.html">%as%</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Note that these are trivial examples for pedagogical purposes. Due to their
+# trivial nature, most of these examples can be implemented more concisely
+# using built-in R features.
+
+
+reciprocal(x) %::% numeric : numeric
+reciprocal(x) %when% {
+  x != 0
+} %as% {
+  1 / x
+}
+
+reciprocal(x) %::% character : numeric
+reciprocal(x) %as% {
+  reciprocal(as.numeric(x))
+}
+
+seal(reciprocal)
+
+print(reciprocal)
+reciprocal(4)
+reciprocal("4")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>lambda.r</em> version 1.2.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

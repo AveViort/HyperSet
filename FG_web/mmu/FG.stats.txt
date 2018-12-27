@@ -1,0 +1,9 @@
+Network	Filename	No.of genes	No. of groups
+CPW_collection 	CPW_collection.mmu	1529	42
+GO biological process 	GO.BP.mouse.groups	13241	8175
+GO cellular compartment 	GO.CC.mouse.groups	20928	1097
+GO molecular function 	GO.MF.mouse.groups	21405	3244
+KEGG pathways, all 	KEGG.ALL.mmu	5839	230
+KEGG pathways, basic 	KEGG.OTH.mmu	2052	136
+KEGG pathways, disease 	KEGG.DIS.mmu	1110	30
+KEGG pathways, signaling 	KEGG.SIG.mmu	3819	64

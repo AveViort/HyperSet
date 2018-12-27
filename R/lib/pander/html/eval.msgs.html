@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Evaluate with messages</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for eval.msgs {pander}"><tr><td>eval.msgs {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Evaluate with messages</h2>
+
+<h3>Description</h3>
+
+<p>This function takes text(s) of R code and <code>eval</code>s all at one run - returning a list with four elements. See <code>Details</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+eval.msgs(src, env = NULL, showInvisible = FALSE,
+  graph.unify = evalsOptions("graph.unify"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>src</code></td>
+<td>
+<p>character values containing R code</p>
+</td></tr>
+<tr valign="top"><td><code>env</code></td>
+<td>
+<p>environment where evaluation takes place. If not set (by default), a new temporary environment is created.</p>
+</td></tr>
+<tr valign="top"><td><code>showInvisible</code></td>
+<td>
+<p>return <code>invisible</code> results?</p>
+</td></tr>
+<tr valign="top"><td><code>graph.unify</code></td>
+<td>
+<p>should <code>eval.msgs</code> try to unify the style of (<code>lattice</code> and <code>ggplot2</code>) plots? If set to <code>TRUE</code> (by default), some <code>panderOptions()</code> would apply. Please note that this argument has no effect on <code>base</code> plots, use <code>evals</code> instead.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>eval.msgs</code> returns a detailed list of the result of evaluation:
+</p>
+
+<ul>
+<li> <p><em>src</em> - character vector of specified R code.
+</p>
+</li>
+<li> <p><em>result</em> - result of evaluation. <code>NULL</code> if nothing is returned. If any R code returned an R object while evaluating then the <em>last</em> R object will be returned as a raw R object. If a graph is plotted in the end of the given R code (remember: <em>last</em> R object), it would be automatically printed (see e.g. <code>lattice</code> and <code>ggplot2</code>).
+</p>
+</li>
+<li> <p><em>output</em> - character vector of printed version (<code>capture.output</code>) of <code>result</code>
+</p>
+</li>
+<li> <p><em>type</em> - class of generated output. 'NULL' if nothing is returned, 'error' if some error occurred.
+</p>
+</li>
+<li> <p><em>msg</em> - possible messages grabbed while evaluating specified R code with the following structure:
+</p>
+
+<ul>
+<li> <p><em>messages</em> - character vector of possible diagnostic message(s)
+</p>
+</li>
+<li> <p><em>warnings</em> - character vector of possible warning message(s)
+</p>
+</li>
+<li> <p><em>errors</em> - character vector of possible error message(s)
+</p>
+</li></ul>
+
+</li>
+<li> <p><em>stdout</em> - character vector of possibly printed texts to standard output (console)
+</p>
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p>a list of parsed elements each containing: <code>src</code> (the command run), <code>result</code> (R object: <code>NULL</code> if nothing returned), <code>print</code>ed <code>output</code>, <code>type</code> (class of returned object if any), informative/wawrning and error messages (if any returned by the command run, otherwise set to <code>NULL</code>) and possible <code>stdout</code>t value. See Details above.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="evals.html">evals</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+eval.msgs('1:5')
+eval.msgs('x &lt;- 1:5')
+eval.msgs('lm(mtcars$hp ~ mtcars$wt)')
+
+## plots
+eval.msgs('plot(runif(100))')
+eval.msgs('histogram(runif(100))')
+
+## error handling
+eval.msgs('runiff(23)')
+eval.msgs('runif is a nice function')
+eval.msgs('no.R.object.like.that')
+
+## messages
+eval.msgs(c('message("FOO")', '1:2'))
+eval.msgs(c('warning("FOO")', '1:2'))
+eval.msgs(c('message("FOO");message("FOO");warning("FOO")', '1:2'))
+eval.msgs('warning("d");warning("f");1')
+
+## stdout
+eval.msgs('cat("writing to console")')
+eval.msgs('cat("writing to console");1:4')
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

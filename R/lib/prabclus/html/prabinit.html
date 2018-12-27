@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Presence-absence/abundance matrix initialization</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for prabinit {prabclus}"><tr><td>prabinit {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Presence-absence/abundance matrix initialization</h2>
+
+<h3>Description</h3>
+
+<p><code>prabinit</code> converts a matrix into an object
+of class <code>prab</code> (presence-absence). The matrix may be read from a
+file or an R-object. It may be a 0-1 matrix or a matrix with
+non-negative entries (usually abundances).
+<code>print.prab</code> is a print method for such
+objects.
+</p>
+<p>Documentation here is in terms of biotic elements analysis (species
+are to be clustered). For species delimitation with dominant markers,
+see Hausdorf and Hennig (2010), individuals take the role of species
+and loci take the role of regions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+prabinit(file = NULL, prabmatrix = NULL, rows.are.species = TRUE,
+neighborhood = "none", nbbetweenregions=TRUE, geodist=NULL, gtf=0.1,
+distance = "kulczynski", toprab = FALSE, toprabp
+= 0.05, outc = 5.2)
+
+## S3 method for class 'prab'
+print(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>string. non-negative matrix ASCII file (such as example dataset
+<code>kykladspecreg.dat</code>) from which the
+matrix is read by <code>read.table</code>. The usual interpretation is
+that it is a species-by-regions matrix of species presences/absences
+(0-1 matrix) or abundances.</p>
+</td></tr>
+<tr valign="top"><td><code>prabmatrix</code></td>
+<td>
+<p>matrix with non-negative entries. Either <code>file</code>
+or <code>prabmatrix</code> should be <code>NA</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>rows.are.species</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, rows are interpreted
+as species and columns are interpreted as regions. In this case,
+rows and columns are interchanged by <code>prabinit</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>neighborhood</code></td>
+<td>
+<p>A string or a list with a component for
+every region. The
+components are vectors of integers indicating
+neighboring regions. A region without neighbors (e.g., an island)
+should be assigned a vector <code>numeric(0)</code>. If <code>neighborhood</code>
+is a filename, it is attempted to read such a list from a file,
+where every row should correspond to one region (such as example
+dataset <code>nb.dat</code>). If
+<code>neighborhood="none"</code>, all neighborhoods are set to
+<code>numeric(0)</code>. The neighborhood can be tested by
+<code><a href="nbtest.html">nbtest</a></code> for consistency.</p>
+</td></tr>
+<tr valign="top"><td><code>nbbetweenregions</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the neighborhood is
+defined between regions as explained above. Otherwise it is defined
+between species (or individuals, if this is used for species
+delimitation).</p>
+</td></tr>
+<tr valign="top"><td><code>geodist</code></td>
+<td>
+<p>matrix of non-negative reals. Geographical distances
+between regions. Only used if <code>distance="geco"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>gtf</code></td>
+<td>
+<p>tuning constant for geco-distance if <code>distance="geco"</code>,
+see <code>geco</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>distance</code></td>
+<td>
+<p><code>"kulczynski"</code>, <code>"jaccard"</code>, <code>"geco"</code>,
+<code>"qkulczynski"</code>, <code>"logkulczynski"</code> (this calls function
+<code>qkulczynski</code> with <code>log.distance=TRUE</code>), <code>"dice"</code>, or
+<code>"none"</code>. The distance measure
+between species to compute by <code>prabinit</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>toprab</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, a presence-absence matrix is
+computed from the non-negative input matrix. &quot;Absence&quot;, i.e., the
+entry 0, is chosen if the original entry is 0, or the original entry
+is smaller than or equal to <code>toprabp</code> times the
+sum of entries in the
+corresponding region, and log(original entry) is considered to be a
+lower outlier compared with the other entries of the corresponding
+species (see <code>outc</code>). &quot;Presence&quot;, i.e., the entry 1, thus
+means that the original
+entry is non-negligible w.r.t. the species or w.r.t. the region.</p>
+</td></tr>
+<tr valign="top"><td><code>toprabp</code></td>
+<td>
+<p>numerical between 0 and 1, see <code>toprab</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>outc</code></td>
+<td>
+<p>numerical. Tuning constant for the outlier identification
+associated with <code>toprab=TRUE</code>. An entry smaller than or equal to
+<code>outc*mad</code> times the median is considered as a lower outlier.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>object of class <code>prab</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>necessary for print method.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Species that are absent in all regions are omitted.</p>
+
+
+<h3>Value</h3>
+
+<p><code>prabinit</code> produces
+an object of class <code>prab</code>, which is a list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>distmat</code></td>
+<td>
+<p>distance matrix between species.</p>
+</td></tr>
+<tr valign="top"><td><code>prab</code></td>
+<td>
+<p>abundance or presence/absence matrix (if presence/absence,
+the entries are logical). Rows are regions, columns are
+species.</p>
+</td></tr>
+<tr valign="top"><td><code>nb</code></td>
+<td>
+<p>neighborhood list, see above.</p>
+</td></tr>
+<tr valign="top"><td><code>regperspec</code></td>
+<td>
+<p>vector of the number of regions occupied by a
+species.</p>
+</td></tr>
+<tr valign="top"><td><code>specperreg</code></td>
+<td>
+<p>vector of the number of species present in a region.</p>
+</td></tr>
+<tr valign="top"><td><code>n.species</code></td>
+<td>
+<p>number of species (in the <code>prab</code>-object, see 
+<code>nonzero</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>n.regions</code></td>
+<td>
+<p>number of regions.</p>
+</td></tr>
+<tr valign="top"><td><code>distance</code></td>
+<td>
+<p>string denoting the chosen distance measure.</p>
+</td></tr>
+<tr valign="top"><td><code>geodist</code></td>
+<td>
+<p>non-negative matrix. see above.</p>
+</td></tr>
+<tr valign="top"><td><code>gtf</code></td>
+<td>
+<p>numeric. see above.</p>
+</td></tr>
+<tr valign="top"><td><code>spatial</code></td>
+<td>
+<p><code>TRUE</code>, if there is a specified neighborhood
+structure.</p>
+</td></tr> 
+<tr valign="top"><td><code>nonempty.species</code></td>
+<td>
+<p>logical vector. The length is the number of species
+in the original file/matrix. If <code>FALSE</code>, the corresponding species 
+had only zero entries and was therefore absent. Note that these species
+are not included in any other component of a <code>prab</code> object, i.e.,
+<code>n.species</code> is the number of <code>TRUE</code>-entries in
+<code>nonzero</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>nbbetweenregions</code></td>
+<td>
+<p>see above.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Hausdorf, B. and Hennig, C. (2010) Species Delimitation Using Dominant
+and Codominant Multilocus Markers. <em>Systematic Biology</em>, 59, 491-503.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../utils/html/read.table.html">read.table</a></code>, <code><a href="jaccard.html">jaccard</a></code>,
+<code><a href="kulczynski.html">kulczynski</a></code>, <code><a href="geco.html">geco</a></code>,
+<code><a href="qkulczynski.html">qkulczynski</a></code>, <code><a href="nbtest.html">nbtest</a></code>,
+<code><a href="alleleinit.html">alleleinit</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# If you want to use your own ASCII data files, use
+# x &lt;- prabinit(file="path/prabmatrixfile",
+# neighborhood="path/neighborhoodfile")
+data(kykladspecreg)
+data(nb)
+prabinit(prabmatrix=kykladspecreg, neighborhood=nb)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

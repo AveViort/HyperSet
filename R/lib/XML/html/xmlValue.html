@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract or set the contents of a leaf XML node</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xmlValue {XML}"><tr><td>xmlValue {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract or set the contents of a leaf XML node</h2>
+
+<h3>Description</h3>
+
+<p>Some types of XML nodes have no children nodes, but are leaf nodes and
+simply contain text. Examples are <code>XMLTextMode</code>, <code>XMLProcessingInstruction</code>.
+This function provides access to their raw contents.
+This has been extended to operate recursivel on arbitrary XML nodes
+that contain a single text node.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xmlValue(x, ignoreComments = FALSE, recursive = TRUE,
+          encoding = getEncoding(x), trim = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the <code>XMLNode</code> object whose
+contents are to be  returned.</p>
+</td></tr>
+<tr valign="top"><td><code>ignoreComments</code></td>
+<td>
+<p>a logical value which, if <code>TRUE</code>
+does not include the text in XML comment nodes.
+If this is <code>FALSE</code>, the text in the comments is part
+of the return value.
+</p>
+</td></tr>
+<tr valign="top"><td><code>recursive</code></td>
+<td>
+<p>a logical value indicating whether to process all
+sub-nodes (<code>TRUE</code>) or only the text nodes within the node <code>x</code>.
+</p>
+</td></tr>
+</table>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>encoding</code></td>
+<td>
+<p>experimental functionality and parameter related to
+encoding.</p>
+</td></tr>
+<tr valign="top"><td><code>trim</code></td>
+<td>
+<p>a logical value controlling whether we remove leading or
+trailing white space when returning the string value</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The object stored in the 
+<code>value</code> slot of the <code>XMLNode</code> object.
+This is typically a string.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Duncan Temple Lang </p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.w3.org/XML">http://www.w3.org/XML</a>, <a href="http://www.jclark.com/xml">http://www.jclark.com/xml</a>,
+<a href="http://www.omegahat.net">http://www.omegahat.net</a>  </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlChildren.html">xmlChildren</a></code>
+<code><a href="xmlName.html">xmlName</a></code>
+<code><a href="xmlAttrs.html">xmlAttrs</a></code>
+<code><a href="xmlNamespace.html">xmlNamespace</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ node &lt;- xmlNode("foo", "Some text")
+ xmlValue(node)
+
+ xmlValue(xmlTextNode("some more raw text"))
+
+  # Setting the xmlValue().
+ a = newXMLNode("a")
+ xmlValue(a) = "the text"
+ xmlValue(a) = "different text"
+
+ a = newXMLNode("x", "bob")
+ xmlValue(a) = "joe"
+
+ b = xmlNode("bob")
+ xmlValue(b) = "Foo"
+ xmlValue(b) = "again"
+
+ b = newXMLNode("bob", "some text")
+ xmlValue(b[[1]]) = "change"
+ b
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

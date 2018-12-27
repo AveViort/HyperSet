@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Specify information about a file to upload in an HTTP request</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fileUpload {RCurl}"><tr><td>fileUpload {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Specify information about a file to upload in an HTTP request</h2>
+
+<h3>Description</h3>
+
+<p>This function creates an object that describes all of the details
+needed to include the contents of a file in the submission of an
+HTTP request, typically a multi-part form submitted via
+<code><a href="postForm.html">postForm</a></code>.
+The idea is that we want to transfer the contents of a file or a
+buffer of data within R that is not actually stored on the file
+system but is resident in the R session.  We want to be able to
+specify either the name of the file and have RCurl read the contents
+when they are needed, or alternatively specify the contents ourselves
+if it makes sense that we already have the contents in R, e.g. that
+they are dynamically generated. Additionally, we may need to specify
+the type of data in the file/buffer via the Content-Type field for
+this parameter in the request.
+This function allows us to specify either the file name or contents
+and optionally the content type.
+</p>
+<p>This is used as an element in of the <code>params</code> argument
+<code><a href="postForm.html">postForm</a></code> and the native C code understands and processes
+objects returned from this function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fileUpload(filename = character(), contents = character(), contentType = character())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>the name of the file that RCurl is to pass in the form
+submission/HTTP request. If this is specified and no value for
+<code>contents</code> is given, this has to identify a valid/existing
+file.  If <code>contents</code> is specified, any value provided here
+is used simply to provide information about the provenance of the
+data in contents. The file need not exist.
+The path is expanded by the function, so <code>~</code> can be used.
+</p>
+</td></tr>
+<tr valign="top"><td><code>contents</code></td>
+<td>
+<p> either a character vector or a <code>raw</code> vector
+giving the contents or data to be submitted. If this is provided,
+<code>filename</code> is not needed and not read.
+</p>
+</td></tr>
+<tr valign="top"><td><code>contentType</code></td>
+<td>
+<p>a character string (vector of length 1) giving the
+type of the content, e.g. text/plain, text/html, which helps the
+server receiving the data to interpret the contents.  If omitted,
+this is omitted from the form submission and the recipient left to guess.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of (S3) class <code>FileUploadInfo</code> with fields
+<code>filename</code>, <code>contents</code> and <code>contentType</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://curl.haxx.se">http://curl.haxx.se</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="postForm.html">postForm</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

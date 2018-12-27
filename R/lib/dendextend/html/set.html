@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Set (/update) features to a dendrogram</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for set {dendextend}"><tr><td>set {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Set (/update) features to a dendrogram</h2>
+
+<h3>Description</h3>
+
+<p>a master function for updating various attributes and 
+features of dendrogram objects.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+set(dend, ...)
+
+## S3 method for class 'dendrogram'
+set(dend, what = c("labels", "labels_colors",
+  "labels_cex", "labels_to_character", "leaves_pch", "leaves_cex", "leaves_col",
+  "nodes_pch", "nodes_cex", "nodes_col", "hang_leaves", "rank_branches",
+  "branches_k_color", "branches_k_lty", "branches_col", "branches_lwd",
+  "branches_lty", "by_labels_branches_col", "by_labels_branches_lwd",
+  "by_labels_branches_lty", "by_lists_branches_col", "by_lists_branches_lwd",
+  "by_lists_branches_lty", "highlight_branches_col", "highlight_branches_lwd",
+  "clear_branches", "clear_leaves"), value, order_value = FALSE, ...)
+
+## S3 method for class 'dendlist'
+set(dend, ..., which)
+
+## S3 method for class 'data.table'
+set(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a tree (<a href="../../stats/html/dendrogram.html">dendrogram</a>, or <a href="dendlist.html">dendlist</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to the specific function for more options.</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>a character indicating what is the property of
+the tree that should be set/updated. (see the usage and the example section
+for the different options)</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>an object with the value to set in the dendrogram tree.
+(the type of the value depends on the &quot;what&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>order_value</code></td>
+<td>
+<p>logical. Default is FALSE. If TRUE, it means the order of 
+the value is in the order of the data which produced the <a href="../../stats/html/hclust.html">hclust</a> 
+or <a href="../../stats/html/dendrogram.html">dendrogram</a> - and will reorder the value to conform with the order
+of the labels in the dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>an integer vector indicating, in the case &quot;dend&quot; is
+a dendlist, on which of the trees should the modification be performed.
+If missing - the change will be performed on all of dends in the dendlist.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is a wrapper function for many of the main tasks we 
+might wish to perform on a dendrogram before plotting.
+</p>
+<p>The options of by_labels_branches_col, by_labels_branches_lwd, by_labels_branches_lty
+have extra parameters: type, attr, TF_value, and by_lists_branches_col, by_lists_branches_lwd,
+by_lists_branches_lty have extra parameters: attr, TF_value. You can read more about them here:
+<a href="branches_attr_by_labels.html">branches_attr_by_labels</a> and <a href="branches_attr_by_lists.html">branches_attr_by_lists</a>
+</p>
+<p>The &quot;what&quot; parameter&quot; can accept the following options:
+</p>
+
+<ul>
+<li><p>labels - set the labels (<a href="labels-assign.html">labels&lt;-.dendrogram</a>)
+</p>
+</li>
+<li><p>labels_colors - set the labels' colors (<a href="color_labels.html">color_labels</a>)
+</p>
+</li>
+<li><p>labels_cex - set the labels' size (<a href="assign_values_to_leaves_nodePar.html">assign_values_to_leaves_nodePar</a>)
+</p>
+</li>
+<li><p>labels_to_character - set the labels' to be characters
+</p>
+</li>
+<li><p>leaves_pch - set the leaves' point type (<a href="assign_values_to_leaves_nodePar.html">assign_values_to_leaves_nodePar</a>). A leave is the terminal node of the tree.
+</p>
+</li>
+<li><p>leaves_cex - set the leaves' point size (<a href="assign_values_to_leaves_nodePar.html">assign_values_to_leaves_nodePar</a>). For using this you MUST also set leaves_pch, a good value to use is 19.
+</p>
+</li>
+<li><p>leaves_col - set the leaves' point color (<a href="assign_values_to_leaves_nodePar.html">assign_values_to_leaves_nodePar</a>). For using this you MUST also set leaves_pch, a good value to use is 19.
+</p>
+</li>
+<li><p>nodes_pch - set the nodes' point type (<a href="assign_values_to_nodes_nodePar.html">assign_values_to_nodes_nodePar</a>)
+</p>
+</li>
+<li><p>nodes_cex - set the nodes' point size (<a href="assign_values_to_nodes_nodePar.html">assign_values_to_nodes_nodePar</a>)
+</p>
+</li>
+<li><p>nodes_col - set the nodes' point color (<a href="assign_values_to_nodes_nodePar.html">assign_values_to_nodes_nodePar</a>)
+</p>
+</li>
+<li><p>hang_leaves - hang the leaves (<a href="hang.dendrogram.html">hang.dendrogram</a>)
+</p>
+</li>
+<li><p>branches_k_color - color the branches (<a href="color_branches.html">color_branches</a>), a <code>k</code> parameter needs to be supplied.
+</p>
+</li>
+<li><p>branches_k_lty - updates the lwd of the branches (similar to branches_k_color), a <code>k</code> parameter needs to be supplied.
+</p>
+</li>
+<li><p>branches_col - set the color of branches (<a href="assign_values_to_branches_edgePar.html">assign_values_to_branches_edgePar</a>) 
+</p>
+</li>
+<li><p>branches_lwd - set the line width of branches (<a href="assign_values_to_branches_edgePar.html">assign_values_to_branches_edgePar</a>) 
+</p>
+</li>
+<li><p>branches_lty - set the line type of branches (<a href="assign_values_to_branches_edgePar.html">assign_values_to_branches_edgePar</a>) 
+</p>
+</li>
+<li><p>by_labels_branches_col - set the color of branches with specific labels (<a href="branches_attr_by_labels.html">branches_attr_by_labels</a>) 
+</p>
+</li>
+<li><p>by_labels_branches_lwd - set the line width of branches with specific labels (<a href="branches_attr_by_labels.html">branches_attr_by_labels</a>) 
+</p>
+</li>
+<li><p>by_labels_branches_lty - set the line type of branches with specific labels (<a href="branches_attr_by_labels.html">branches_attr_by_labels</a>) 
+</p>
+</li>
+<li><p>by_lists_branches_col - set the color of branches from the root of the tree down to (possibly inner) nodes with specified members (<a href="branches_attr_by_lists.html">branches_attr_by_lists</a>) 
+</p>
+</li>
+<li><p>by_lists_branches_lwd - set the line width of branches from the root of the tree down to (possibly inner) nodes with specified members (<a href="branches_attr_by_lists.html">branches_attr_by_lists</a>) 
+</p>
+</li>
+<li><p>by_lists_branches_lty - set the line type of branches from the root of the tree down to (possibly inner) nodes with specified members (<a href="branches_attr_by_lists.html">branches_attr_by_lists</a>) 
+</p>
+</li>
+<li><p>highlight_branches_col - highlight branches color based on branches' heights (<a href="highlight_branches.html">highlight_branches_col</a>) 
+</p>
+</li>
+<li><p>highlight_branches_lwd - highlight branches line-width based on branches' heights (<a href="highlight_branches.html">highlight_branches_lwd</a>) 
+</p>
+</li>
+<li><p>clear_branches - clear branches' attributes (<a href="remove_branches_edgePar.html">remove_branches_edgePar</a>)
+</p>
+</li>
+<li><p>clear_leaves - clear leaves' attributes (<a href="remove_branches_edgePar.html">remove_branches_edgePar</a>)
+</p>
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p>An updated dendrogram (or dendlist), with some change to
+the parameters of it
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="labels-assign.html">labels&lt;-.dendrogram</a>, <a href="labels_colors.html">labels_colors&lt;-</a>,
+<a href="hang.dendrogram.html">hang.dendrogram</a>, <a href="color_branches.html">color_branches</a>,
+<a href="assign_values_to_leaves_nodePar.html">assign_values_to_leaves_nodePar</a>,
+<a href="assign_values_to_branches_edgePar.html">assign_values_to_branches_edgePar</a>,
+<a href="remove_branches_edgePar.html">remove_branches_edgePar</a>, <a href="remove_leaves_nodePar.html">remove_leaves_nodePar</a>,
+<a href="noded_with_condition.html">noded_with_condition</a>, <a href="branches_attr_by_labels.html">branches_attr_by_labels</a>, <a href="branches_attr_by_lists.html">branches_attr_by_lists</a>,
+<a href="../../stats/html/dendrogram.html">dendrogram</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+set.seed(23235)
+ss &lt;- sample(1:150, 10 )
+
+# Getting the dend object
+dend &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+dend %&gt;% plot
+
+dend %&gt;% labels
+dend %&gt;% set("labels", 1:10) %&gt;% labels
+dend %&gt;% set("labels", 1:10) %&gt;% plot 
+dend %&gt;% set("labels_color") %&gt;% plot 
+dend %&gt;% set("labels_col", c(1,2)) %&gt;% plot # Works also with partial matching :)
+dend %&gt;% set("labels_cex", c(1, 1.2)) %&gt;% plot 
+dend %&gt;% set("leaves_pch", NA) %&gt;% plot 
+dend %&gt;% set("leaves_pch", c(1:5)) %&gt;% plot    
+dend %&gt;% set("leaves_pch", c(19,19, NA)) %&gt;% 
+   set("leaves_cex", c(1,2)) %&gt;% plot 
+dend %&gt;% set("leaves_pch", c(19,19, NA)) %&gt;% 
+   set("leaves_cex", c(1,2)) %&gt;%
+   set("leaves_col", c(1,1,2,2)) %&gt;% 
+   plot 
+dend %&gt;% set("hang") %&gt;% plot 
+
+dend %&gt;% set("branches_k_col") %&gt;% plot 
+dend %&gt;% set("branches_k_col", c(1,2)) %&gt;% plot 
+dend %&gt;% set("branches_k_col", c(1,2,3), k=3) %&gt;% plot
+dend %&gt;% set("branches_k_col", k=3) %&gt;% plot 
+
+dend %&gt;% set("branches_k_lty", k=3) %&gt;% plot 
+dend %&gt;% set("branches_k_col", k=3) %&gt;% set("branches_k_lty", k=3) %&gt;% plot 
+
+dend %&gt;% set("branches_col", c(1,2, 1, 2, NA)) %&gt;% plot
+dend %&gt;% set("branches_lwd", c(2,1,2)) %&gt;% plot
+dend %&gt;% set("branches_lty", c(1,2,1)) %&gt;% plot
+
+#    clears all of the things added to the leaves
+dend %&gt;% 
+   set("labels_color", c(19,19, NA)) %&gt;% 
+   set("leaves_pch", c(19,19, NA))  %&gt;%  # plot  
+   set("clear_leaves") %&gt;% # remove all of what was done until this point
+   plot
+# Different order
+dend %&gt;% 
+   set("leaves_pch", c(19,19, NA)) %&gt;% 
+   set("labels_color", c(19,19, NA)) %&gt;% 
+   set("clear_leaves") %&gt;% plot
+
+
+# doing this without chaining (%&gt;%) will NOT be fun:
+dend %&gt;% 
+   set("labels", 1:10) %&gt;%
+   set("labels_color") %&gt;%
+   set("branches_col", c(1,2, 1, 2, NA)) %&gt;%
+   set("branches_lwd", c(2,1,2)) %&gt;%
+   set("branches_lty", c(1,2,1)) %&gt;%
+   set("hang") %&gt;%
+   plot 
+
+par(mfrow = c(1,3))
+dend %&gt;% set("highlight_branches_col") %&gt;% plot 
+dend %&gt;% set("highlight_branches_lwd") %&gt;% plot 
+dend %&gt;% set("highlight_branches_col") %&gt;% set("highlight_branches_lwd") %&gt;% plot 
+par(mfrow = c(1,1))
+
+#----------------------------
+# Examples for: by_labels_branches_col, by_labels_branches_lwd, by_labels_branches_lty
+
+old_labels &lt;- labels(dend)
+dend %&gt;% 
+   set("labels", seq_len(nleaves(dend))) %&gt;% 
+   set("by_labels_branches_col", c(1:4, 7)) %&gt;% 
+   set("by_labels_branches_lwd", c(1:4, 7)) %&gt;% 
+   set("by_labels_branches_lty", c(1:4, 7)) %&gt;% 
+   set("labels", old_labels) %&gt;% 
+   plot
+
+dend %&gt;% 
+   set("labels", seq_len(nleaves(dend))) %&gt;% 
+   set("by_labels_branches_col", c(1:4, 7), type = "any", TF_values = c(4,2)) %&gt;% 
+   set("by_labels_branches_lwd", c(1:4, 7), type = "all", TF_values = c(4,1)) %&gt;% 
+   set("by_labels_branches_lty", c(1:4, 7), TF_values = c(4,1)) %&gt;% 
+   plot
+
+#---- using order_value
+# This is probably not what you want, since cutree 
+# returns clusters in the order of the original data:
+dend %&gt;% set("labels_colors", cutree(dend, k = 3)) %&gt;% plot
+# The way to fix it, is to use order_value = TRUE
+# so that value is assumed to be in the order of the data:
+dend %&gt;% set("labels_colors", cutree(dend, k = 3), order_value = TRUE) %&gt;% plot
+
+
+#----------------------------
+# Example for: by_lists_branches_col, by_lists_branches_lwd, by_lists_branches_lty
+
+L &lt;- list(c("109", "123", "126", "145"), "29", c("59", "67", "97"))
+dend %&gt;% 
+   set("by_lists_branches_col", L, TF_value = "blue") %&gt;%
+   set("by_lists_branches_lwd", L, TF_value = 4) %&gt;%
+   set("by_lists_branches_lty", L, TF_value = 3) %&gt;%
+   plot
+
+
+#----------------------------
+# A few dendlist examples:
+dendlist(dend,dend) %&gt;% set("hang") %&gt;% plot
+dendlist(dend,dend) %&gt;% set("branches_k_col", k=3) %&gt;% plot
+dendlist(dend,dend) %&gt;% set("labels_col", c(1,2)) %&gt;% plot
+
+dendlist(dend,dend) %&gt;% 
+   set("hang") %&gt;%
+   set("labels_col", c(1,2), which = 1) %&gt;% 
+   set("branches_k_col", k=3, which = 2) %&gt;%
+   set("labels_cex", 1.2) %&gt;%
+   plot
+
+
+#----------------------------
+# example of modifying the dendrogram in a heatmap:
+
+library(gplots)
+data(mtcars)
+x  &lt;- as.matrix(mtcars)
+rc &lt;- rainbow(nrow(x), start=0, end=.3)
+cc &lt;- rainbow(ncol(x), start=0, end=.3)
+
+##
+##' demonstrate the effect of row and column dendrogram options
+##
+Rowv_dend &lt;- x %&gt;% dist %&gt;% hclust %&gt;% 
+   as.dendrogram %&gt;% 
+   set("branches_k", k = 3) %&gt;% 
+   set("branches_lwd", 2) %&gt;%  ladderize # rotate_DendSer
+Colv_dend &lt;- t(x) %&gt;% dist %&gt;% hclust %&gt;% 
+   as.dendrogram %&gt;% 
+   set("branches_k", k = 3) %&gt;% 
+   set("branches_lwd", 2) %&gt;%  ladderize # rotate_DendSer
+heatmap.2(x, Rowv = Rowv_dend, Colv = Colv_dend)  
+
+
+
+
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

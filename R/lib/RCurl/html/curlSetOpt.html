@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Set values for the CURL options</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for curlSetOpt {RCurl}"><tr><td>curlSetOpt {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Set values for the CURL options</h2>
+
+<h3>Description</h3>
+
+<p>This function allows us to set values for the
+possible options in the CURL data structure
+that defines the HTTP request.
+These options persist across calls in the
+<code>CURLHandle</code> object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+curlSetOpt(..., .opts = list(), curl = getCurlHandle(),
+            .encoding = integer(), .forceHeaderNames = FALSE,
+             .isProtected = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>a named list of curl options to set after the handle has
+been created.</p>
+</td></tr>
+<tr valign="top"><td><code>.opts</code></td>
+<td>
+<p>a named list or <code>CURLOptions</code> object identifying the
+curl options for the handle.</p>
+</td></tr>  
+<tr valign="top"><td><code>curl</code></td>
+<td>
+<p>the <code>CURLHandle</code> object created earlier via
+a call to <code><a href="getCurlHandle.html">getCurlHandle</a></code> or
+<code><a href="getCurlHandle.html">dupCurlHandle</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>.encoding</code></td>
+<td>
+<p>an integer or a string that explicitly identifies the
+encoding of the content that is returned by the HTTP server in its
+response to our query. The possible strings are
+&lsquo;UTF-8&rsquo; or &lsquo;ISO-8859-1&rsquo;
+and the integers should be specified symbolically
+as  <code>CE_UTF8</code> and <code>CE_LATIN1</code>.
+Note that, by default, the package attempts to process the header of
+the HTTP response to determine the encoding. This argument is used
+when such information is erroneous and the caller knows the correct
+encoding.
+</p>
+</td></tr>
+<tr valign="top"><td><code>.forceHeaderNames</code></td>
+<td>
+<p>a logical value which if <code>TRUE</code>
+allows the caller to explicitly indicate that the HTTPHEADER
+option needs to have the names prefixed to the strings.
+This removes any ambiguity caused by the presence of ':' in the
+values  appearing to be the separator between the name and the value
+of the <code>name: value</code> pairs of the HTTP header.</p>
+</td></tr>
+<tr valign="top"><td><code>.isProtected</code></td>
+<td>
+
+<p>a logical vector (or value that is repeated) specifying which 
+of the values in ... and <code>.opts</code> need to be explicitly
+protected from garbage collection or not.
+The basic idea is that we specify <code>FALSE</code> if
+the value being set for the curl option may be garbage collected
+before the <code>curl</code> handle is garbage collected.  This would leave 
+the <code>curl</code> object in an inconsistent state, referring to an R
+object (i.e. an R function), which may be used after the R object has been garbage collected. 
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An integer value giving the status of the return.
+This should be 0 as if there was an error in the libcurl
+mechiansim,   we will throw it there.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang &lt;duncan@wald.ucdavis.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Curl homepage <a href="http://curl.haxx.se">http://curl.haxx.se</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getCurlHandle.html">getCurlHandle</a></code>
+<code><a href="getCurlHandle.html">dupCurlHandle</a></code>  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+if(url.exists("http://www.omegahat.net")) {
+
+  curl = getCurlHandle()
+     # Note the header that extends across two lines with the second line
+     # prefixed with white space.
+   curlSetOpt( .opts = list(httpheader = c(Date = "Wed, 1/2/2000 10:01:01",
+                            foo="abc\n    extra line"), verbose = TRUE),
+               curl = curl)
+   ans = getURL("http://www.omegahat.net", curl = curl)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

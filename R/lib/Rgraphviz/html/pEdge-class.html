@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;pEdge&quot;: A class to represent an edge</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pEdge-class {Rgraphviz}"><tr><td>pEdge-class {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;pEdge&quot;: A class to represent an edge</h2>
+
+<h3>Description</h3>
+
+<p>This class is used to represent all necessary information
+to plot an edge in Graphviz</p>
+
+
+<h3>Details</h3>
+
+<p>The <code>attrs</code> slot is a named list, where the names correspond to
+attributes and the values in the list correspond to the value for that
+element's attribute.
+</p>
+<p>The <code>subG</code> slot describes which subgraph this edge is a part of.
+A value of <code>0</code> implies that the edge is not a member of any subgraph.
+</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("pEdge", ...)</code>.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>from</code>:</dt><dd><p>Object of class <code>"character"</code>: The name of
+the node on the tail of this edge.</p>
+</dd>
+<dt><code>to</code>:</dt><dd><p>Object of class <code>"character"</code>: The name of
+the node on the head of this edge.</p>
+</dd>
+<dt><code>attrs</code>:</dt><dd><p>Object of class <code>"list"</code>: A list of
+attributes specific to this edge.</p>
+</dd>
+<dt><code>subG</code>:</dt><dd><p>Object of class <code>"integer"</code>: Which subgraph
+this edge is a part of.</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>from</dt><dd><p><code>signature(object = "pEdge")</code>: Retrieves the
+<code>from</code> slot of this edge</p>
+</dd>
+<dt>to</dt><dd><p><code>signature(object = "pEdge")</code>: Retrieves the
+<code>to</code> slot of this edge</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>R. Gentleman and Jeff Gentry</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="pNode-class.html">pNode</a></code>, <code><a href="agopen.html">agopen</a></code>,
+<code><a href="buildNodeList.html">buildEdgeList</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+   set.seed(123)
+   V &lt;- letters[1:10]
+   M &lt;- 1:4
+   g1 &lt;- randomGraph(V, M, .2)
+
+   z &lt;- buildEdgeList(g1)
+   vv &lt;- z[[1]]   ## Object of type pEdge
+
+   vv
+   from(vv)
+   to(vv)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

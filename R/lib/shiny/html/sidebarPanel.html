@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a sidebar panel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sidebarPanel {shiny}"><tr><td>sidebarPanel {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a sidebar panel</h2>
+
+<h3>Description</h3>
+
+<p>Create a sidebar panel containing input controls that can in turn be passed
+to <code><a href="sidebarLayout.html">sidebarLayout</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sidebarPanel(..., width = 4)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>UI elements to include on the sidebar</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The width of the sidebar. For fluid layouts this is out of 12
+total units; for fixed layouts it is out of whatever the width of the
+sidebar's parent column is.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A sidebar that can be passed to <code><a href="sidebarLayout.html">sidebarLayout</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Sidebar with controls to select a dataset and specify
+# the number of observations to view
+sidebarPanel(
+  selectInput("dataset", "Choose a dataset:",
+              choices = c("rock", "pressure", "cars")),
+
+  numericInput("obs", "Observations:", 10)
+)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Highlight distint edges in a tree (compared to another one)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for highlight_distinct_edges {dendextend}"><tr><td>highlight_distinct_edges {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Highlight distint edges in a tree (compared to another one)</h2>
+
+<h3>Description</h3>
+
+<p>Highlight distint edges in a tree (compared to another one) by changing
+the branches' color, line width, or line type.
+</p>
+<p>This function enables this feature in <a href="dend_diff.html">dend_diff</a> and <a href="tanglegram.html">tanglegram</a>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+highlight_distinct_edges(dend, ...)
+
+## S3 method for class 'dendrogram'
+highlight_distinct_edges(dend, dend2, value = 2,
+  edgePar = c("col", "lty", "lwd"), ...)
+
+## S3 method for class 'dendlist'
+highlight_distinct_edges(dend, ..., which = c(1L, 2L))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram or <a href="dendlist.html">dendlist</a> to find unique edges in (to highlight)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>dend2</code></td>
+<td>
+<p>a dendrogram to compare with</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>a new value scalar for the edgePar attribute.</p>
+</td></tr>
+<tr valign="top"><td><code>edgePar</code></td>
+<td>
+<p>a character indicating the value inside edgePar to adjust.
+Can be either &quot;col&quot;, &quot;lty&quot;, or &quot;lwd&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>an integer vector indicating, in the case &quot;dend&quot; is a dendlist, 
+on which of the trees should the modification be performed. 
+If missing - the change will be performed on all of objects in the dendlist.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram with modified edges - the distinct ones are changed (color, line width, or line type)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="distinct_edges.html">distinct_edges</a>, <a href="highlight_distinct_edges.html">highlight_distinct_edges</a>,
+<a href="dist.dendlist.html">dist.dendlist</a>, <a href="tanglegram.html">tanglegram</a>
+<a href="assign_values_to_branches_edgePar.html">assign_values_to_branches_edgePar</a>,
+<a href="../../distory/html/distinct.edges.html">distinct.edges</a>,
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+x &lt;- 1:5 %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+y &lt;- set(x, "labels", 5:1)
+distinct_edges(x, y)
+distinct_edges(y, x)
+
+par(mfrow = c(1,2))
+plot(highlight_distinct_edges(x, y))
+plot(y)
+
+# tanglegram(highlight_distinct_edges(x, y),y)
+# dend_diff(x, y)
+
+## Not run: 
+
+# using  highlight_distinct_edges combined with dendlist and set
+# to clearly highlight "stable" branches.
+data(iris); ss &lt;- c(1:5, 51:55, 101:105)
+iris1 &lt;-iris[ss,-5] %&gt;% dist %&gt;% hclust(method = "single") %&gt;% as.dendrogram 
+iris2 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust(method = "complete") %&gt;% as.dendrogram
+iris12 &lt;- dendlist(iris1, iris2) %&gt;% set("branches_k_color",k=3) %&gt;% 
+   set("branches_lwd", 3) %&gt;%  highlight_distinct_edges(value = 1, edgePar = "lwd")
+iris12 %&gt;% untangle(method = "step2side")  %&gt;% 
+tanglegram(sub="Iris dataset", main_left = "'single' clustering", 
+				main_right = "'complete' clustering")
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

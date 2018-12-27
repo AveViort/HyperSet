@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: ICL Plot for Model-Based Clustering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plot.mclustICL {mclust}"><tr><td>plot.mclustICL {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>ICL Plot for Model-Based Clustering</h2>
+
+<h3>Description</h3>
+
+<p>Plots the ICL values returned by the <code><a href="mclustICL.html">mclustICL</a></code> function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'mclustICL'
+plot(x, ylab = "ICL", ...)     
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>Output from <code><a href="mclustICL.html">mclustICL</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+
+<p>Label for the vertical axis of the plot.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Further arguments passed to the <code><a href="plot.mclustBIC.html">plot.mclustBIC</a></code> function.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A plot of the ICL values.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mclustICL.html">mclustICL</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+data(faithful)
+faithful.ICL = mclustICL(faithful)
+plot(faithful.ICL)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

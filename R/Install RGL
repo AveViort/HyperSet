@@ -1,0 +1,20 @@
+1. Install Xorg
+
+2. Install framebuffer
+
+3. Create new display:
+[root@b4 ~]# Xvfb :2 -nolisten tcp -shmem
+
+4. In R Server:
+Sys.setenv(DISPLAY=":2.0")
+Check:
+> capabilities()
+       jpeg         png        tiff       tcltk         X11        aqua    http/ftp     sockets      libxml        fifo      cledit       iconv         NLS     profmem       cairo         ICU 
+       TRUE        TRUE        TRUE        TRUE        TRUE       FALSE        TRUE        TRUE        TRUE        TRUE        TRUE        TRUE        TRUE       FALSE        TRUE        TRUE 
+long.double     libcurl 
+       TRUE       FALSE 
+
+5. It also requires libpng:
+[root@b4 ~]# yum install libpng-devel
+and mesa-devel:
+[root@b4 ~]# yum install mesa-libGLU-devel

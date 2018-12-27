@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Spell Check</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for spell_check_files {spelling}"><tr><td>spell_check_files {spelling}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Spell Check</h2>
+
+<h3>Description</h3>
+
+<p>Perform a spell check on document files or plain text.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+spell_check_files(path, ignore = character(), lang = "en_US")
+
+spell_check_text(text, ignore = character(), lang = "en_US")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p>path to file or to spell check</p>
+</td></tr>
+<tr valign="top"><td><code>ignore</code></td>
+<td>
+<p>character vector with words which will be added to the <a href="../../hunspell/html/dictionary.html">hunspell::dictionary</a></p>
+</td></tr>
+<tr valign="top"><td><code>lang</code></td>
+<td>
+<p>set <code>Language</code> field in <code>DESCRIPTION</code> e.g. <code>"en-US"</code> or <code>"en-GB"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>text</code></td>
+<td>
+<p>character vector with plain text</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p>Other spelling: <code><a href="spell_check_package.html">spell_check_package</a></code>,
+<code><a href="wordlist.html">wordlist</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Example files
+files &lt;- list.files(system.file("examples", package = "knitr"),
+  pattern = "\\.(Rnw|Rmd|html)$", full.names = TRUE)
+spell_check_files(files)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>spelling</em> version 1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

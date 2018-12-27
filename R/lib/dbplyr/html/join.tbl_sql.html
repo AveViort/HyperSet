@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Join sql tbls.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for join.tbl_sql {dbplyr}"><tr><td>join.tbl_sql {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Join sql tbls.</h2>
+
+<h3>Description</h3>
+
+<p>See <a href="../../dplyr/html/join.html">join</a> for a description of the general purpose of the
+functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'tbl_lazy'
+inner_join(x, y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), auto_index = FALSE, ...)
+
+## S3 method for class 'tbl_lazy'
+left_join(x, y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), auto_index = FALSE, ...)
+
+## S3 method for class 'tbl_lazy'
+right_join(x, y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), auto_index = FALSE, ...)
+
+## S3 method for class 'tbl_lazy'
+full_join(x, y, by = NULL, copy = FALSE,
+  suffix = c(".x", ".y"), auto_index = FALSE, ...)
+
+## S3 method for class 'tbl_lazy'
+semi_join(x, y, by = NULL, copy = FALSE,
+  auto_index = FALSE, ...)
+
+## S3 method for class 'tbl_lazy'
+anti_join(x, y, by = NULL, copy = FALSE,
+  auto_index = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>tbls to join</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>tbls to join</p>
+</td></tr>
+<tr valign="top"><td><code>by</code></td>
+<td>
+<p>a character vector of variables to join by.  If <code>NULL</code>, the
+default, <code>*_join()</code> will do a natural join, using all variables with
+common names across the two tables. A message lists the variables so
+that you can check they're right (to suppress the message, simply
+explicitly list the variables that you want to join).
+</p>
+<p>To join by different variables on x and y use a named vector.
+For example, <code>by = c("a" = "b")</code> will match <code>x.a</code> to
+<code>y.b</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>copy</code></td>
+<td>
+<p>If <code>x</code> and <code>y</code> are not from the same data source,
+and <code>copy</code> is <code>TRUE</code>, then <code>y</code> will be copied into a
+temporary table in same database as <code>x</code>. <code>*_join()</code> will automatically
+run <code>ANALYZE</code> on the created table in the hope that this will make
+you queries as efficient as possible by giving more data to the query
+planner.
+</p>
+<p>This allows you to join tables across srcs, but it's potentially expensive
+operation so you must opt into it.</p>
+</td></tr>
+<tr valign="top"><td><code>suffix</code></td>
+<td>
+<p>If there are non-joined duplicate variables in <code>x</code> and
+<code>y</code>, these suffixes will be added to the output to disambiguate them.
+Should be a character vector of length 2.</p>
+</td></tr>
+<tr valign="top"><td><code>auto_index</code></td>
+<td>
+<p>if <code>copy</code> is <code>TRUE</code>, automatically create
+indices for the variables in <code>by</code>. This may speed up the join if
+there are matching indexes in <code>x</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other parameters passed onto methods, for instance, <code>na_matches</code>
+to control how <code>NA</code> values are matched.  See <a href="../../dplyr/html/join.tbl_df.html">join.tbl_df</a> for more.</p>
+</td></tr>
+</table>
+
+
+<h3>Implementation notes</h3>
+
+<p>Semi-joins are implemented using <code>WHERE EXISTS</code>, and anti-joins with
+<code>WHERE NOT EXISTS</code>. Support for semi-joins is somewhat partial: you
+can only create semi joins where the <code>x</code> and <code>y</code> columns are
+compared with <code>=</code> not with more general operators.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+library(dplyr)
+if (has_lahman("sqlite")) {
+
+# Left joins ----------------------------------------------------------------
+lahman_s &lt;- lahman_sqlite()
+batting &lt;- tbl(lahman_s, "Batting")
+team_info &lt;- select(tbl(lahman_s, "Teams"), yearID, lgID, teamID, G, R:H)
+
+# Combine player and whole team statistics
+first_stint &lt;- select(filter(batting, stint == 1), playerID:H)
+both &lt;- left_join(first_stint, team_info, type = "inner", by = c("yearID", "teamID", "lgID"))
+head(both)
+explain(both)
+
+# Join with a local data frame
+grid &lt;- expand.grid(
+  teamID = c("WAS", "ATL", "PHI", "NYA"),
+  yearID = 2010:2012)
+top4a &lt;- left_join(batting, grid, copy = TRUE)
+explain(top4a)
+
+# Indices don't really help here because there's no matching index on
+# batting
+top4b &lt;- left_join(batting, grid, copy = TRUE, auto_index = TRUE)
+explain(top4b)
+
+# Semi-joins ----------------------------------------------------------------
+
+people &lt;- tbl(lahman_s, "Master")
+
+# All people in half of fame
+hof &lt;- tbl(lahman_s, "HallOfFame")
+semi_join(people, hof)
+
+# All people not in the hall of fame
+anti_join(people, hof)
+
+# Find all managers
+manager &lt;- tbl(lahman_s, "Managers")
+semi_join(people, manager)
+
+# Find all managers in hall of fame
+famous_manager &lt;- semi_join(semi_join(people, manager), hof)
+famous_manager
+explain(famous_manager)
+
+# Anti-joins ----------------------------------------------------------------
+
+# batters without person covariates
+anti_join(batting, people)
+}
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

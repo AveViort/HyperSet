@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;inchol&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for inchol-class {kernlab}"><tr><td>inchol-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;inchol&quot; </h2>
+
+<h3>Description</h3>
+
+<p>The reduced Cholesky decomposition object</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("inchol", ...)</code>.
+or by calling the  <code>inchol</code> function.</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>.Data</code>:</dt><dd><p>Object of class <code>"matrix"</code> contains
+the decomposed matrix</p>
+</dd>
+<dt><code>pivots</code>:</dt><dd><p>Object of class <code>"vector"</code> contains
+the pivots performed</p>
+</dd>
+<dt><code>diagresidues</code>:</dt><dd><p>Object of class <code>"vector"</code> contains
+the diagonial residues</p>
+</dd>
+<dt><code>maxresiduals</code>:</dt><dd><p>Object of class <code>"vector"</code> contains
+the maximum residues</p>
+</dd>
+</dl>
+
+
+
+<h3>Extends</h3>
+
+<p>Class <code>"matrix"</code>, directly.
+</p>
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>diagresidues</dt><dd><p><code>signature(object = "inchol")</code>: returns
+the diagonial residues</p>
+</dd>
+<dt>maxresiduals</dt><dd><p><code>signature(object = "inchol")</code>: returns
+the maximum residues</p>
+</dd>
+<dt>pivots</dt><dd><p><code>signature(object = "inchol")</code>: returns
+the pivots performed</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="inchol.html">inchol</a></code>, <code><a href="csi-class.html">csi-class</a></code>, <code><a href="csi.html">csi</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(iris)
+datamatrix &lt;- as.matrix(iris[,-5])
+# initialize kernel function
+rbf &lt;- rbfdot(sigma=0.1)
+rbf
+Z &lt;- inchol(datamatrix,kernel=rbf)
+dim(Z)
+pivots(Z)
+diagresidues(Z)
+maxresiduals(Z)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

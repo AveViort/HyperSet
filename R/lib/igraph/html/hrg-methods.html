@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Hierarchical random graphs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hrg-methods {igraph}"><tr><td>hrg-methods {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Hierarchical random graphs</h2>
+
+<h3>Description</h3>
+
+<p>Fitting and sampling hierarchical random graph models.
+</p>
+
+
+<h3>Details</h3>
+
+<p>A hierarchical random graph is an ensemble of undirected graphs with <i>n</i>
+vertices. It is defined via a binary tree with <i>n</i> leaf and <i>n-1</i>
+internal vertices, where the internal vertices are labeled with
+probabilities.  The probability that two vertices are connected in the
+random graph is given by the probability label at their closest common
+ancestor.
+</p>
+<p>Please see references below for more about hierarchical random graphs.
+</p>
+<p>igraph contains functions for fitting HRG models to a given network
+(<code>fit_hrg</code>, for generating networks from a given HRG ensemble
+(<code>sample_hrg</code>), converting an igraph graph to a HRG and back
+(<code>hrg</code>, <code>hrg_tree</code>), for calculating a consensus tree from a set
+of sampled HRGs (<code>consensus_tree</code>) and for predicting missing edges in
+a network based on its HRG models (<code>predict_edges</code>).
+</p>
+<p>The igraph HRG implementation is heavily based on the code published by
+Aaron Clauset, at his website (not functional any more).
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other hierarchical random graph functions: <code><a href="consensus_tree.html">consensus_tree</a></code>,
+<code><a href="fit_hrg.html">fit_hrg</a></code>, <code><a href="hrg_tree.html">hrg_tree</a></code>,
+<code><a href="hrg.html">hrg</a></code>, <code><a href="predict_edges.html">predict_edges</a></code>,
+<code><a href="print.igraphHRGConsensus.html">print.igraphHRGConsensus</a></code>,
+<code><a href="print.igraphHRG.html">print.igraphHRG</a></code>, <code><a href="sample_hrg.html">sample_hrg</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

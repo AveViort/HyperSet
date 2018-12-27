@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add Loess Fit to Hexplot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hexMA.loess {hexbin}"><tr><td>hexMA.loess {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add Loess Fit to Hexplot </h2>
+
+<h3>Description</h3>
+
+<p>Fit a loess line using the hexagon centers of mass as the x and y
+coordinates and the cell counts as weights.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hexMA.loess(pMA, span = 0.4, col = "red", n = 200)
+hexVP.loess(hbin, hvp = NULL, span = 0.4, col = "red", n = 200)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>hbin</code></td>
+<td>
+<p>an object of class <code>hexbin</code>, see <code><a href="hexbin.html">hexbin</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>hvp</code></td>
+<td>
+<p>A <code>hexViewport</code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>pMA</code></td>
+<td>
+<p>the list returned by <code><a href="plotMAhex.html">plotMAhex</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>span</code></td>
+<td>
+<p>the parameter alpha which controls the degree of smoothing.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>line color for the loess fit.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>number of points at which the fit should be evaluated.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns invisibly the object associated with the loess fit.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Nicholas Lewin-Koh </p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="hexVP.abline.html">hexVP.abline</a></code>, <code><a href="plotMAhex.html">plotMAhex</a></code>,
+<code><a href="gplot.hexbin.html">gplot.hexbin</a></code>, <code><a href="hexViewport.html">hexViewport</a></code>;
+<code><a href="../../stats/html/loess.html">loess</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  if(require(marray)){
+    data(swirl)
+    
+    hb &lt;- plotMAhex(swirl[,1], main = "M vs A plot with hexagons", legend=0)
+    hexVP.abline(hb$plot, h=0, col= gray(.6))
+    hexMA.loess(hb)
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

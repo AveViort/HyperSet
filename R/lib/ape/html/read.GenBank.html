@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read DNA Sequences from GenBank via Internet</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for read.GenBank {ape}"><tr><td>read.GenBank {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read DNA Sequences from GenBank via Internet</h2>
+
+<h3>Description</h3>
+
+<p>This function connects to the GenBank database, and reads nucleotide
+sequences using accession numbers given as arguments.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
+             gene.names = FALSE, as.character = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>access.nb</code></td>
+<td>
+<p>a vector of mode character giving the accession numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>seq.names</code></td>
+<td>
+<p>the names to give to each sequence; by default the
+accession numbers are used.</p>
+</td></tr>
+<tr valign="top"><td><code>species.names</code></td>
+<td>
+<p>a logical indicating whether to attribute the
+species names to the returned object.</p>
+</td></tr>
+<tr valign="top"><td><code>gene.names</code></td>
+<td>
+<p>obsolete (will be removed soon).</p>
+</td></tr>
+<tr valign="top"><td><code>as.character</code></td>
+<td>
+<p>a logical controlling whether to return the
+sequences as an object of class <code>"DNAbin"</code> (the default).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function uses the site <a href="http://www.ncbi.nlm.nih.gov/">http://www.ncbi.nlm.nih.gov/</a> from
+where the sequences are retrieved.
+</p>
+<p>If <code>species.names = TRUE</code>, the returned list has an attribute
+<code>"species"</code> containing the names of the species taken from the
+field &ldquo;ORGANISM&rdquo; in GenBank.
+</p>
+<p>Since ape 3.6, this function retrieves the sequences in FASTA format:
+this is more efficient and more flexible (scaffolds and contigs can be
+read). The option <code>gene.names</code> is obsolete and will be removed;
+this information is also present in the description.
+</p>
+<p>Setting <code>species.names = FALSE</code> is quite faster (could be useful
+if you read a series of scaffolds or contigs, or if you already have
+the species names).
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of DNA sequences made of vectors of class <code>"DNAbin"</code>, or
+of single characters (if <code>as.character = TRUE</code>) with two
+attributes (species and description).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.dna.html">read.dna</a></code>, <code><a href="write.dna.html">write.dna</a></code>,
+<code><a href="dist.dna.html">dist.dna</a></code>, <code><a href="DNAbin.html">DNAbin</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## This won't work if your computer is not connected
+## to the Internet
+
+## Get the 8 sequences of tanagers (Ramphocelus)
+## as used in Paradis (1997)
+ref &lt;- c("U15717", "U15718", "U15719", "U15720",
+         "U15721", "U15722", "U15723", "U15724")
+## Copy/paste or type the following commands if you
+## want to try them.
+## Not run: 
+Rampho &lt;- read.GenBank(ref)
+## get the species names:
+attr(Rampho, "species")
+## build a matrix with the species names and the accession numbers:
+cbind(attr(Rampho, "species"), names(Rampho))
+## print the first sequence
+## (can be done with `Rampho$U15717' as well)
+Rampho[[1]]
+## the description from each FASTA sequence:
+attr(Rampho, "description")
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

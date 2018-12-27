@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Style definition generator</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for styler {highlight}"><tr><td>styler {highlight}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Style definition generator</h2>
+
+<h3>Description</h3>
+
+<p>This generates style definitions either by including a language
+specific style file (e.g. sty file for latex) or by parsing
+a css stylesheet
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+styler(stylesheet, extension = "css", assistant)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>stylesheet</code></td>
+<td>
+<p>name of the stylesheet</p>
+</td></tr>
+<tr valign="top"><td><code>extension</code></td>
+<td>
+<p>extension of the language specific format for the stylesheet.</p>
+</td></tr>
+<tr valign="top"><td><code>assistant</code></td>
+<td>
+<p>function to which the styler delegates understanding of the parser output</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>First, the function attempts to retrieve a language specific stylesheet
+using the <code><a href="getStyleFile.html">getStyleFile</a></code> function. If a language specific
+stylesheet is found, it returns the content of the file as a character
+vector.
+</p>
+<p>Second, the function attemps to find a css stylesheet using
+<code><a href="getStyleFile.html">getStyleFile</a></code>, parse the css declarations using the
+<code><a href="css.parser.html">css.parser</a></code> function, and delegates to the
+<span class="samp">assistant</span> which is responsible to translate the results
+of the css parser into language specific declarations.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a character vector containing style declarations in the target language
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="styler_assistant_latex.html">styler_assistant_latex</a></code> gives a concrete implementation
+of the assistant for the latex language
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+	styler( "default", "sty", styler_assistant_latex )
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>highlight</em> version 0.4.7.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

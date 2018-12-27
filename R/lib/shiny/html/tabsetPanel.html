@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a tabset panel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tabsetPanel {shiny}"><tr><td>tabsetPanel {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a tabset panel</h2>
+
+<h3>Description</h3>
+
+<p>Create a tabset that contains <code><a href="tabPanel.html">tabPanel</a></code> elements. Tabsets are
+useful for dividing output into multiple independently viewable sections.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tabsetPanel(..., id = NULL, selected = NULL, type = c("tabs",
+  "pills"), position = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p><code><a href="tabPanel.html">tabPanel</a></code> elements to include in the tabset</p>
+</td></tr>
+<tr valign="top"><td><code>id</code></td>
+<td>
+<p>If provided, you can use <code>input$</code><em><code>id</code></em> in your
+server logic to determine which of the current tabs is active. The value
+will correspond to the <code>value</code> argument that is passed to
+<code><a href="tabPanel.html">tabPanel</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>selected</code></td>
+<td>
+<p>The <code>value</code> (or, if none was supplied, the <code>title</code>)
+of the tab that should be selected by default. If <code>NULL</code>, the first
+tab will be selected.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Use &quot;tabs&quot; for the standard look; Use &quot;pills&quot; for a more plain
+look where tabs are selected using a background fill color.</p>
+</td></tr>
+<tr valign="top"><td><code>position</code></td>
+<td>
+<p>This argument is deprecated; it has been discontinued in
+Bootstrap 3.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A tabset that can be passed to <code><a href="mainPanel.html">mainPanel</a></code>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="tabPanel.html">tabPanel</a></code>, <code><a href="updateTabsetPanel.html">updateTabsetPanel</a></code>,
+<code><a href="insertTab.html">insertTab</a></code>, <code><a href="showTab.html">showTab</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Show a tabset that includes a plot, summary, and
+# table view of the generated distribution
+mainPanel(
+  tabsetPanel(
+    tabPanel("Plot", plotOutput("plot")),
+    tabPanel("Summary", verbatimTextOutput("summary")),
+    tabPanel("Table", tableOutput("table"))
+  )
+)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

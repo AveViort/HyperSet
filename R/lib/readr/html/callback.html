@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Callback classes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for callback {readr}"><tr><td>callback {readr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Callback classes</h2>
+
+<h3>Description</h3>
+
+<p>These classes are used to define callback behaviors.
+</p>
+
+
+<h3>Details</h3>
+
+
+<dl>
+<dt>ChunkCallback</dt><dd><p>Callback interface definition, all callback functions should inherit from this class.</p>
+</dd>
+<dt>SideEffectChunkCallback</dt><dd><p>Callback function that is used only for side effects, no results are returned.</p>
+</dd>
+<dt>DataFrameCallback</dt><dd><p>Callback function that combines each result together at the end.</p>
+</dd>
+</dl>
+
+
+
+<h3>See Also</h3>
+
+<p>Other chunked: <code><a href="read_delim_chunked.html">read_delim_chunked</a></code>,
+<code><a href="read_lines_chunked.html">read_lines_chunked</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## If given a regular function it is converted to a SideEffectChunkCallback
+
+# view structure of each chunk
+read_lines_chunked(readr_example("mtcars.csv"), str, chunk_size = 5)
+
+# Print starting line of each chunk
+f &lt;- function(x, pos) print(pos)
+read_lines_chunked(readr_example("mtcars.csv"), SideEffectChunkCallback$new(f), chunk_size = 5)
+
+# If combined results are desired you can use the DataFrameCallback
+
+# Cars with 3 gears
+f &lt;- function(x, pos) subset(x, gear == 3)
+read_csv_chunked(readr_example("mtcars.csv"), DataFrameCallback$new(f), chunk_size = 5)
+
+# The ListCallback can be used for more flexible output
+f &lt;- function(x, pos) x$mpg[x$hp &gt; 100]
+read_csv_chunked(readr_example("mtcars.csv"), ListCallback$new(f), chunk_size = 5)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>readr</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

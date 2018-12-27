@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Simulated Cross Data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cross {mclust}"><tr><td>cross {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Simulated Cross Data</h2>
+
+<h3>Description</h3>
+
+<p>A 500 by 3 matrix in which the first column is the classification and
+the remaining columns are two data from a simulation of two crossed
+elliptical Gaussians. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(cross)</pre>
+
+
+<h3>Examples</h3>
+
+<pre>
+# This dataset was created as follows
+## Not run: 
+n &lt;- 250 
+set.seed(0)
+cross &lt;- rbind(matrix(rnorm(n*2), n, 2) %*% diag(c(1,9)),
+               matrix(rnorm(n*2), n, 2) %*% diag(c(1,9))[,2:1])
+cross &lt;- cbind(c(rep(1,n),rep(2,n)), cross)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

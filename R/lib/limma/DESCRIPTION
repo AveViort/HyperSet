@@ -1,0 +1,30 @@
+Package: limma
+Version: 3.38.2
+Date: 2018-11-02
+Title: Linear Models for Microarray Data
+Description: Data analysis, linear models and differential expression for microarray data.
+Author: Gordon Smyth [cre,aut], Yifang Hu [ctb], Matthew Ritchie [ctb], Jeremy Silver [ctb], James Wettenhall [ctb], Davis McCarthy [ctb], Di Wu [ctb], Wei Shi [ctb], Belinda Phipson [ctb], Aaron Lun [ctb], Natalie Thorne [ctb], Alicia Oshlack [ctb], Carolyn de Graaf [ctb], Yunshun Chen [ctb], Mette Langaas [ctb], Egil Ferkingstad [ctb], Marcus Davy [ctb], Francois Pepin [ctb], Dongseok Choi [ctb]
+Maintainer: Gordon Smyth <smyth@wehi.edu.au>
+License: GPL (>=2)
+Depends: R (>= 2.3.0)
+Imports: grDevices, graphics, stats, utils, methods
+Suggests: affy, AnnotationDbi, BiasedUrn, Biobase, ellipse, GO.db,
+        gplots, illuminaio, locfit, MASS, org.Hs.eg.db, splines,
+        statmod (>= 1.2.2), vsn
+URL: http://bioinf.wehi.edu.au/limma
+biocViews: ExonArray, GeneExpression, Transcription,
+        AlternativeSplicing, DifferentialExpression,
+        DifferentialSplicing, GeneSetEnrichment, DataImport, Genetics,
+        Bayesian, Clustering, Regression, TimeCourse, Microarray,
+        MicroRNAArray, mRNAMicroarray, OneChannel,
+        ProprietaryPlatforms, TwoChannel, Sequencing, RNASeq,
+        BatchEffect, MultipleComparison, Normalization, Preprocessing,
+        QualityControl
+git_url: https://git.bioconductor.org/packages/limma
+git_branch: RELEASE_3_8
+git_last_commit: 2768c22
+git_last_commit_date: 2018-11-02
+Date/Publication: 2018-11-03
+NeedsCompilation: yes
+Packaged: 2018-11-03 22:51:11 UTC; biocbuild
+Built: R 3.5.1; x86_64-redhat-linux-gnu; 2018-11-15 16:26:06 UTC; unix

@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Partitioning around medoids with estimation of number of...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pamk {fpc}"><tr><td>pamk {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Partitioning around medoids with estimation of number of clusters</h2>
+
+<h3>Description</h3>
+
+<p>This calls the function <code><a href="../../cluster/html/pam.html">pam</a></code> or
+<code><a href="../../cluster/html/clara.html">clara</a></code> to perform a
+partitioning around medoids clustering with the number of clusters
+estimated by optimum average silhouette width (see
+<code><a href="../../cluster/html/pam.object.html">pam.object</a></code>) or Calinski-Harabasz
+index (<code><a href="calinhara.html">calinhara</a></code>). The Duda-Hart test
+(<code><a href="dudahart2.html">dudahart2</a></code>) is applied to decide whether there should be
+more than one cluster (unless 1 is excluded as number of clusters or
+data are dissimilarities).  
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pamk(data,krange=2:10,criterion="asw", usepam=TRUE,
+     scaling=FALSE, alpha=0.001, diss=inherits(data, "dist"),
+     critout=FALSE, ns=10, seed=NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>a data matrix or data frame or something that can be
+coerced into a matrix, or dissimilarity matrix or
+object. See <code><a href="../../cluster/html/pam.html">pam</a></code> for more information.</p>
+</td></tr>
+<tr valign="top"><td><code>krange</code></td>
+<td>
+<p>integer vector. Numbers of clusters which are to be
+compared by the average silhouette width criterion. Note: average
+silhouette width and Calinski-Harabasz can't estimate number of
+clusters <code>nc=1</code>. If 1 is included, a Duda-Hart test is applied
+and 1 is estimated if this is not significant.</p>
+</td></tr>
+<tr valign="top"><td><code>criterion</code></td>
+<td>
+<p>one of <code>"asw"</code>, <code>"multiasw"</code> or
+<code>"ch"</code>. Determines whether average silhouette width (as given
+out by  <code><a href="../../cluster/html/pam.html">pam</a></code>/<code><a href="../../cluster/html/clara.html">clara</a></code>, or
+as computed by <code><a href="distcritmulti.html">distcritmulti</a></code> if <code>"multiasw"</code> is
+specified; recommended for large data sets with <code>usepam=FALSE</code>)
+or Calinski-Harabasz is applied. Note that the original
+Calinski-Harabasz index is not defined for dissimilarities; if
+dissimilarity data is run with <code>criterion="ch"</code>, the
+dissimilarity-based generalisation in Hennig and Liao (2013) is
+used.</p>
+</td></tr>
+<tr valign="top"><td><code>usepam</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, <code><a href="../../cluster/html/pam.html">pam</a></code> is
+used, otherwise <code><a href="../../cluster/html/clara.html">clara</a></code> (recommended for large
+datasets with 2,000 or more observations; dissimilarity matrices can
+not be used with <code><a href="../../cluster/html/clara.html">clara</a></code>).</p>
+</td></tr>
+<tr valign="top"><td><code>scaling</code></td>
+<td>
+<p>either a logical value or a numeric vector of length
+equal to the number of variables. If <code>scaling</code> is a numeric
+vector with length equal to the number of variables, then each
+variable is divided by the corresponding value from <code>scaling</code>.
+If <code>scaling</code> is <code>TRUE</code> then scaling is done by dividing
+the (centered) variables by their root-mean-square, and if
+<code>scaling</code> is <code>FALSE</code>, no scaling is done.</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>numeric between 0 and 1, tuning constant for
+<code><a href="dudahart2.html">dudahart2</a></code> (only used for 1-cluster test).</p>
+</td></tr> 
+<tr valign="top"><td><code>diss</code></td>
+<td>
+<p>logical flag: if <code>TRUE</code> (default for <code>dist</code> or
+<code>dissimilarity</code>-objects), then <code>data</code> will be considered
+as a dissimilarity matrix (and the potential number of clusters 1
+will be ignored).  If <code>FALSE</code>, then <code>data</code> will
+be considered as a matrix of observations by variables.</p>
+</td></tr>
+<tr valign="top"><td><code>critout</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the criterion value is printed
+out for every number of clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>ns</code></td>
+<td>
+<p>passed on to <code><a href="distcritmulti.html">distcritmulti</a></code> if
+<code>criterion="multiasw"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+<p>passed on to <code><a href="distcritmulti.html">distcritmulti</a></code> if
+<code>criterion="multiasw"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be transferred to
+<code><a href="../../cluster/html/pam.html">pam</a></code> or <code><a href="../../cluster/html/clara.html">clara</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>pamobject</code></td>
+<td>
+<p>The output of the optimal run of the
+<code><a href="../../cluster/html/pam.html">pam</a></code>-function.</p>
+</td></tr>
+<tr valign="top"><td><code>nc</code></td>
+<td>
+<p>the optimal number of clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>crit</code></td>
+<td>
+<p>vector of criterion values for numbers of
+clusters. <code>crit[1]</code> is the p-value of the Duda-Hart test
+if 1 is in <code>krange</code> and <code>diss=FALSE</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p><code><a href="../../cluster/html/clara.html">clara</a></code> and <code><a href="../../cluster/html/pam.html">pam</a></code>
+can handle <code>NA</code>-entries (see their documentation) but
+<code><a href="dudahart2.html">dudahart2</a></code> cannot. Therefore <code>NA</code> should not occur
+if 1 is in <code>krange</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Calinski, R. B., and Harabasz, J. (1974) A Dendrite Method for Cluster 
+Analysis, <em>Communications in Statistics</em>, 3, 1-27.
+</p>
+<p>Duda, R. O. and Hart, P. E. (1973) <em>Pattern Classification and
+Scene Analysis</em>. Wiley, New York.
+</p>
+<p>Hennig, C. and Liao, T. (2013) How to find an appropriate clustering
+for mixed-type variables with application to socio-economic
+stratification, <em>Journal of the Royal Statistical Society, Series
+C Applied Statistics</em>, 62, 309-369.
+</p>
+<p>Kaufman, L. and Rousseeuw, P.J. (1990). &quot;Finding Groups in Data:
+An Introduction to Cluster Analysis&quot;. Wiley, New York.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../cluster/html/pam.html">pam</a></code>, <code><a href="../../cluster/html/clara.html">clara</a></code>
+<code><a href="distcritmulti.html">distcritmulti</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  set.seed(20000)
+  face &lt;- rFace(50,dMoNo=2,dNoEy=0,p=2)
+  pk1 &lt;- pamk(face,krange=1:5,criterion="asw",critout=TRUE)
+  pk2 &lt;- pamk(face,krange=1:5,criterion="multiasw",ns=2,critout=TRUE)
+# "multiasw" is better for larger data sets, use larger ns then.
+  pk3 &lt;- pamk(face,krange=1:5,criterion="ch",critout=TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Delete Alignment Gaps in DNA Sequences</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for del.gaps {ape}"><tr><td>del.gaps {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Delete Alignment Gaps in DNA Sequences</h2>
+
+<h3>Description</h3>
+
+<p>These functions remove gaps (<code>"-"</code>) in a sample of DNA sequences.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+del.gaps(x)
+del.colgapsonly(x, threshold = 1, freq.only = FALSE)
+del.rowgapsonly(x, threshold = 1, freq.only = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a matrix, a list, or a vector containing the DNA
+sequences; only matrices for <code>del.colgapsonly</code> and for
+<code>del.rowgapsonly</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p>the largest gap proportion to delete the column or row.</p>
+</td></tr>
+<tr valign="top"><td><code>freq.only</code></td>
+<td>
+<p>if <code>TRUE</code>, returns only the numbers of gaps for
+each column or row.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>del.gaps</code> remove all gaps, so the returned sequences may not
+have all the same lengths and are therefore returned in a list.
+</p>
+<p><code>del.colgapsonly</code> removes the columns with a proportion at least
+<code>threshold</code> of gaps. Thus by default, only the columns with gaps
+only are removed (useful when a small matrix is extracted from a large
+alignment). <code>del.rowgapsonly</code> does the same for the rows.
+</p>
+<p>The sequences can be either in <code>"DNAbin"</code> or in another format,
+but the returned object is always of class <code>"DNAbin"</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>del.gaps</code> returns a vector (if there is only one input sequence)
+or a list of class <code>"DNAbin"</code>; <code>del.colgapsonly</code> and
+<code>del.rowgapsonly</code> return a matrix of class <code>"DNAbin"</code> or a
+numeric vector (with names for the second function) if <code>freq.only
+  = TRUE</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="base.freq.html">base.freq</a></code>, <code><a href="seg.sites.html">seg.sites</a></code>,
+<code><a href="image.DNAbin.html">image.DNAbin</a></code>, <code><a href="checkAlignment.html">checkAlignment</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

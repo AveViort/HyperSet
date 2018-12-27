@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: ODBC Open Connections</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for odbcConnect {RODBC}"><tr><td>odbcConnect {RODBC}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>ODBC Open Connections</h2>
+
+<h3>Description</h3>
+
+<p>Open connections to ODBC databases.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+odbcConnect(dsn, uid = "", pwd = "", ...)
+
+odbcDriverConnect(connection = "", case, believeNRows = TRUE,
+                  colQuote, tabQuote = colQuote,
+                  interpretDot = TRUE, DBMSencoding = "",
+                  rows_at_time = 100, readOnlyOptimize = FALSE)
+
+odbcReConnect(channel, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dsn</code></td>
+<td>
+<p>character string. A registered data source name.</p>
+</td></tr>
+<tr valign="top"><td><code>uid, pwd</code></td>
+<td>
+<p>UID and password for authentication (if required).</p>
+</td></tr>
+<tr valign="top"><td><code>connection</code></td>
+<td>
+<p>character string. See your ODBC documentation for the
+format.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to <code>odbcDriverConnect</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>case</code></td>
+<td>
+<p>Controls case changes for different DBMS engines.  See
+&lsquo;Details&rsquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>channel</code></td>
+<td>
+<p>RODBC connection object returned by <code>odbcConnect</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>believeNRows</code></td>
+<td>
+<p>logical.  Is the number of rows returned by the
+ODBC connection believable?  Not true for some Oracle and Sybase drivers,
+apparently, nor for Actual Technologies' SQLite driver for Mac OS X.</p>
+</td></tr>
+<tr valign="top"><td><code>colQuote, tabQuote</code></td>
+<td>
+<p>how to quote column (table) names in SQL
+statements.  Can be of length 0 (no quoting), a length&ndash;1 character
+vector giving the quote character to be used at both ends, or a
+length&ndash;2 character vector giving the beginning and ending quotes.
+ANSI SQL uses double quotes, but the default mode for a MySQL server
+is to use backticks.
+</p>
+<p>The defaults are backtick (<span class="samp">`</span>) if the DBMS is identified
+as <code>"MySQL"</code> by the driver, and double quote otherwise.
+A user reported that the SAS ODBC driver required <code>colQuote = NULL</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>interpretDot</code></td>
+<td>
+<p>logical.  Should table names of the form
+<code><var>qualifier</var>.<var>table</var></code> be interpreted  as table
+<code><var>table</var></code> in schema <code><var>qualifier</var></code> (and for MySQL
+&lsquo;schema&rsquo; means database)?</p>
+</td></tr>
+<tr valign="top"><td><code>DBMSencoding</code></td>
+<td>
+<p>character string naming the encoding returned by
+the DBMS.  The default means the encoding of the locale <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> is running
+under.  Values other than the default require <code><a href="../../base/html/iconv.html">iconv</a></code> to 
+be available: it always is from <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> 2.10.0, otherwise see
+<code><a href="../../base/html/capabilities.html">capabilities</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>rows_at_time</code></td>
+<td>
+<p>The default number of rows to fetch at a time,
+between 1 and 1024.  Not all drivers work correctly with values &gt; 1: see
+<code><a href="sqlQuery.html">sqlQuery</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>readOnlyOptimize</code></td>
+<td>
+<p>logical: should the connection be optimized
+for read-only access?</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>odbcConnect</code> establishes a connection to the specified DSN, and
+<code>odbcDriverConnect</code> allows a more flexible specification <em>via</em> a
+connection string.  <code>odbcConnect</code> uses the connection string<br />
+<code>"DSN=<var>dsn</var>;UID=<var>uid</var>;PWD=<var>pwd</var>"</code>,<br />
+omitting the last two components if they are empty.
+</p>
+<p>For DBMSs that translate table and column names <code>case</code> must
+be set appropriately.  Allowable values are <code>"nochange"</code>,
+<code>"toupper"</code> and <code>"tolower"</code> as well as the names of
+databases where the behaviour is known to us (currently
+<code>"mysql"</code>, which maps to lower case on Windows but not on Linux,
+<code>"postgresql"</code> (lower), and <code>"msaccess"</code> (nochange)).  If
+<code>case</code> is not specified, the default is <code>"nochange"</code> unless
+the appropriate value can be figured out from the DBMS name reported
+by the ODBC driver.  It is likely that <code>"toupper"</code> is desirable
+on IBM's DB2, but this is not enforced.
+</p>
+<p>Note that <code>readOnlyOptimize</code> may do nothing, and is <strong>not</strong>
+guaranteed to enforce read-only access.  With drivers that support it,
+it is used to optimize locking strategies, transaction management and
+so on.  It does make access to Mimer read-only, and has no effect on
+MySQL.
+</p>
+<p>Function <code>odbcReConnect</code> re-connects to a database using the
+settings of an existing (and presumably now closed) channel object.
+Arguments given in the original call can be overridden as needed.
+</p>
+<p>Note that if a password is supplied (either as a <code>pwd</code> argument
+or as part of the DSN) it may be stored in the
+<code>connection.string</code> element of the return value, but the value is
+(from <span class="pkg">RODBC</span> 1.3-0) replaced by <code>******</code>.  (This will break
+<code>odbcReConnect</code>.)
+</p>
+<p>If it is possible to set the DBMS or ODBC driver to communicate in the
+character set of the <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> session then this should be done.  For
+example, MySQL can set the communication character set <em>via</em> SQL,
+e.g. <span class="samp">SET NAMES 'utf8'</span>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A non-negative integer which is used as handle if no error occurred,
+<code>-1</code> otherwise.  A successful return has class <code>"RODBC"</code>, and
+attributes including
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>connection.string</code></td>
+<td>
+<p>the full ODBC connection string.</p>
+</td></tr>
+<tr valign="top"><td><code>case</code></td>
+<td>
+<p>the value of <code>case</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>id</code></td>
+<td>
+<p>a numeric ID for the channel.</p>
+</td></tr>
+<tr valign="top"><td><code>believeNRows</code></td>
+<td>
+<p>the value of <code>believeNRows</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>rows_at_time</code></td>
+<td>
+<p>the value of <code>rows_at_time</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>Several errors which have been reported as bugs in <span class="pkg">RODBC</span> 1.3-0
+which were in fact ODBC driver errors that can be circumvented by
+setting <code>rows_at_time = 1</code> (and the warning under that argument has
+always been there).  The drivers involved have been third-party
+Oracle drivers and old SQL Server drivers.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Lapsley, Brian Ripley
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="odbcClose.html">odbcClose</a></code>, <code><a href="sqlQuery.html">sqlQuery</a></code>, <code><a href="odbcGetInfo.html">odbcGetInfo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>## Not run: 
+# MySQL
+channel &lt;- odbcConnect("test", uid="ripley", pwd="secret")
+# PostgreSQL: 'case' should be detected automatically
+channel &lt;- odbcConnect("pg", uid="ripley", pwd="secret", case="postgresql")
+
+# re-connection
+odbcCloseAll()
+channel &lt;- odbcReConnect(channel) # must re-assign as the data may change
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RODBC</em> version 1.3-15 <a href="00Index.html">Index</a>]</div>
+</body></html>

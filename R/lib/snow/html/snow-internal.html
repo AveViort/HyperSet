@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Internal SNOW Objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for snow-internal {snow}"><tr><td>snow-internal {snow}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Internal SNOW Objects</h2>
+
+<h3>Description</h3>
+
+<p>Internal functions for the snow package.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## Default S3 method:
+stopCluster(cl)
+## S3 method for class 'MPIcluster'
+stopCluster(cl)
+## S3 method for class 'spawnedMPIcluster'
+stopCluster(cl)
+## S3 method for class 'NWScluster'
+stopCluster(cl)
+defaultClusterOptions
+addClusterOptions(options, new)
+initDefaultClusterOptions(libname)
+
+docall(fun, args)
+slaveLoop(master)
+sinkWorkerOutput(outfile)
+
+newSOCKnode(machine = "localhost", ..., options = defaultClusterOptions, rank)
+makeSOCKmaster(master = Sys.getenv("MASTER"), port = Sys.getenv("PORT"))
+## S3 method for class 'SOCKnode'
+closeNode(node)
+## S3 method for class 'SOCKnode'
+sendData(node, data)
+## S3 method for class 'SOCKnode'
+recvData(node)
+
+
+
+
+
+
+setMPIcluster(new)
+runMPIslave()
+newMPInode(rank, comm)
+makeMPImaster(comm)
+## S3 method for class 'MPInode'
+sendData(node, data)
+## S3 method for class 'MPInode'
+recvData(node)
+
+closeNode(node)
+## Default S3 method:
+closeNode(node)
+sendData(node, data)
+recvData(node)
+
+postNode(con, type, value = NULL, tag = NULL)
+stopNode(n)
+
+sendCall(con, fun, args, return = TRUE, tag = NULL)
+recvResult(con)
+
+
+initRNGstreamNode(stream)
+
+splitIndices(nx, ncl)
+splitList(x, ncl)
+splitRows(x, ncl)
+splitCols(x, ncl)
+
+findRecvOneTag(cl, anytag)
+recvOneData(cl)
+recvOneResult(cl)
+## S3 method for class 'MPIcluster'
+recvOneData(cl)
+
+## S3 method for class 'SOCKcluster'
+recvOneData(cl)
+## S3 method for class 'NWScluster'
+recvOneData(cl)
+getClusterOption(name, options = defaultClusterOptions)
+
+checkCluster(cl)
+checkForRemoteErrors(val)
+staticClusterApply(cl, fun, n, argfun)
+dynamicClusterApply(cl, fun, n, argfun)
+
+shQuoteIfNeeded(p)
+</pre>
+
+
+<h3>Details</h3>
+
+<p>These are not to be called by the user.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>snow</em> version 0.4-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Search the NCBI databases using EUtils</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for entrez_search {rentrez}"><tr><td>entrez_search {rentrez}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Search the NCBI databases using EUtils</h2>
+
+<h3>Description</h3>
+
+<p>Search a given NCBI database with a particular query.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+entrez_search(db, term, config = NULL, retmode = "xml",
+  use_history = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>db</code></td>
+<td>
+<p>character, name of the database to search for.</p>
+</td></tr>
+<tr valign="top"><td><code>term</code></td>
+<td>
+<p>character, the search term. The syntax used in making these
+searches is described in the Details of this help message, the package
+vignette and reference given below.</p>
+</td></tr>
+<tr valign="top"><td><code>config</code></td>
+<td>
+<p>vector configuration options passed to httr::GET</p>
+</td></tr>
+<tr valign="top"><td><code>retmode</code></td>
+<td>
+<p>character, one of json (default) or xml. This will make no
+difference in most cases.</p>
+</td></tr>
+<tr valign="top"><td><code>use_history</code></td>
+<td>
+<p>logical. If TRUE return a web_history object for use in 
+later calls to the NCBI</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>character, additional terms to add to the request, see NCBI
+documentation linked to in references for a complete list</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The NCBI uses a search term syntax where search terms can be associated with 
+a specific search field with square brackets. So, for instance &ldquo;Homo[ORGN]&rdquo;
+denotes a search for Homo in the &ldquo;Organism&rdquo; field. The names and
+definitions of these fields can be identified using
+<code><a href="entrez_db_searchable.html">entrez_db_searchable</a></code>.
+</p>
+<p>Searches can make use of several fields by combining them via the boolean
+operators AND, OR and NOT. So, using the search term&ldquo;((Homo[ORGN] AND APP[GENE]) NOT
+Review[PTYP])&rdquo; in PubMed would identify articles matching the gene APP in
+humans, and exclude review articles. More examples of the use of these search
+terms, and the more specific MeSH terms for precise searching, 
+is given in the package vignette. <code>rentrez</code> handles special characters
+and URL encoding (e.g. replacing spaces with plus signs) on the client side,
+so there is no need to include these in search term
+</p>
+<p>The<code>rentrez</code> tutorial provides some tips on how to make the most of 
+searches to the NCBI. In particular, the sections on uses of the &quot;Filter&quot;
+field and MeSH terms may in formulating precise searches.
+</p>
+
+
+<h3>Value</h3>
+
+<p>ids integer Unique IDS returned by the search
+</p>
+<p>count integer Total number of hits for the search
+</p>
+<p>retmax integer Maximum number of hits returned by the search
+</p>
+<p>web_history A web_history object for use in subsequent calls to NCBI
+</p>
+<p>QueryTranslation character, search term as the NCBI interpreted it
+</p>
+<p>file either and XMLInternalDocument xml file resulting from search, parsed with
+<code><a href="../../XML/html/xmlTreeParse.html">xmlTreeParse</a></code> or, if <code>retmode</code> was set to json a list
+resulting from the returned JSON file being parsed with
+<code><a href="../../jsonlite/html/fromJSON.html">fromJSON</a></code>.
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_ESearch_">http://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_ESearch_</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../httr/html/config.html">config</a></code> for available httr configurations
+</p>
+<p><code><a href="entrez_db_searchable.html">entrez_db_searchable</a></code> to get a set of search fields that
+can be used in <code>term</code> for any database
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+   query &lt;- "Gastropoda[Organism] AND COI[Gene]"
+   web_env_search &lt;- entrez_search(db="nuccore", query, use_history=TRUE)
+   cookie &lt;- web_env_search$WebEnv
+   qk &lt;- web_env_search$QueryKey 
+   snail_coi &lt;- entrez_fetch(db = "nuccore", WebEnv = cookie, query_key = qk,
+                             file_format = "fasta", retmax = 10)
+
+## End(Not run)
+
+
+fly_id &lt;- entrez_search(db="taxonomy", term="Drosophila")
+#Oh, right. There is a genus and a subgenus name Drosophila...
+#how can we limit this search
+(tax_fields &lt;- entrez_db_searchable("taxonomy"))
+#"RANK" loots promising
+tax_fields$RANK
+entrez_search(db="taxonomy", term="Drosophila &amp; Genus[RANK]")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rentrez</em> version 1.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

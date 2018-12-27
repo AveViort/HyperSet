@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Set control values for use with the EM algorithm.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for emControl {mclust}"><tr><td>emControl {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Set control values for use with the EM algorithm.
+</h2>
+
+<h3>Description</h3>
+
+<p>Supplies a list of values including tolerances for singularity and
+convergence assessment, for use functions involving EM within <em>MCLUST</em>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+emControl(eps, tol, itmax, equalPro) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>eps</code></td>
+<td>
+
+<p>A scalar tolerance associated with deciding when to terminate
+computations due to computational singularity in
+covariances. Smaller values of <code>eps</code> allow computations to
+proceed nearer to singularity. The default is the relative machine
+precision <code>.Machine$double.eps</code>, which is approximately
+<i>2e-16</i> on IEEE-compliant machines. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>tol</code></td>
+<td>
+
+<p>A vector of length two giving relative convergence tolerances for the 
+log-likelihood and for parameter convergence in the inner loop for models
+with iterative M-step (&quot;VEI&quot;, &quot;EVE&quot;, &quot;VEE&quot;, &quot;VVE&quot;, &quot;VEV&quot;), respectively.
+The default is <code>c(1.e-5,sqrt(.Machine$double.eps))</code>.
+If only one number is supplied, it is used as the tolerance 
+for the outer iterations and the tolerance for the inner
+iterations is as in the default.
+</p>
+</td></tr>
+<tr valign="top"><td><code>itmax</code></td>
+<td>
+
+<p>A vector of length two giving integer limits on the number of EM
+iterations and on the number of iterations in the inner loop for
+models with iterative M-step (&quot;VEI&quot;, &quot;EVE&quot;, &quot;VEE&quot;, &quot;VVE&quot;, &quot;VEV&quot;),
+respectively. The default is 
+<code>c(.Machine$integer.max, .Machine$integer.max)</code> 
+allowing termination to be completely governed by <code>tol</code>. 
+If only one number is supplied, it is used as the iteration
+limit for the outer iteration only.
+</p>
+</td></tr>
+<tr valign="top"><td><code>equalPro</code></td>
+<td>
+
+<p>Logical variable indicating whether or not the mixing proportions are
+equal in the model. Default: <code>equalPro = FALSE</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>emControl</code> is provided for assigning values and defaults
+for EM within <em>MCLUST</em>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A named list in which the names are the names of the arguments
+and the values are the values supplied to the arguments.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="em.html">em</a></code>, 
+<code><a href="estep.html">estep</a></code>, 
+<code><a href="me.html">me</a></code>, 
+<code><a href="mstep.html">mstep</a></code>, 
+<code><a href="mclustBIC.html">mclustBIC</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+irisBIC &lt;- mclustBIC(iris[,-5], control = emControl(tol = 1.e-6))
+summary(irisBIC, iris[,-5])
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

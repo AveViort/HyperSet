@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Query Column Structure in ODBC Tables</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sqlColumns {RODBC}"><tr><td>sqlColumns {RODBC}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Query Column Structure in ODBC Tables</h2>
+
+<h3>Description</h3>
+
+<p>Enquire about the column structure of tables on an ODBC database
+connection.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sqlColumns(channel, sqtable, errors = FALSE, as.is = TRUE,
+           special = FALSE, catalog = NULL, schema = NULL,
+           literal = FALSE)
+
+sqlPrimaryKeys(channel, sqtable, errors = FALSE, as.is = TRUE,
+               catalog = NULL, schema = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>channel</code></td>
+<td>
+<p>connection object as returned by <code><a href="odbcConnect.html">odbcConnect</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>sqtable</code></td>
+<td>
+<p>character string: a database table (or view or similar)
+name accessible from the connected DSN.  If wildcards are allowed
+(only for <code>sqlColumns(special=FALSE)</code>),
+results for all matching tables.</p>
+</td></tr>
+<tr valign="top"><td><code>errors</code></td>
+<td>
+<p>logical: if true halt and display error, else return <code>-1</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>as.is</code></td>
+<td>
+<p>see <code><a href="sqlQuery.html">sqlGetResults</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>special</code></td>
+<td>
+<p>logical.  If true, return only the column(s) needed to
+specify a row uniquely.  Depending on the database, there might be none.</p>
+</td></tr> 
+<tr valign="top"><td><code>catalog, schema</code></td>
+<td>
+<p><code>NULL</code> or character: additional
+information on where to locate the table: see
+<code><a href="sqlTables.html">sqlTables</a></code> for driver-specific details.  Wildcards may
+be supported in <code>schema</code> for <code>sqlColumns(special=FALSE)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>literal</code></td>
+<td>
+<p>logical: wildcards may be interpreted in
+<code>schema</code> and <code>sqtable</code>: if so this may
+suppress such interpretation.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The argument <code>special = TRUE</code> to <code>sqlColumns</code> returns the
+column(s) needed to specify a row uniquely.  This is intended to form
+the basis of an SQL <code>WHERE</code> clause for update queries (see
+<code><a href="sqlSave.html">sqlUpdate</a></code>), and what (if anything) it does is
+DBMS-specific.  On many DBMSs it will return the primary keys if
+present: on others it will return a pseudo-column such as <span class="samp">ROWID</span>
+(Oracle) or <span class="samp">_ROWID_</span> (SQLite), either always (Oracle) or if
+there is no primary key.
+</p>
+<p>Primary keys are implemented in some DBMSs and drivers.  A table can
+have a single column designated as a primary key or, in some cases,
+multiple columns.  Primary keys should not be nullable (that is,
+cannot contain missing values).  They can be specified as part of a
+<span class="samp">CREATE TABLE</span> statement or added by a <span class="samp">ALTER TABLE</span>
+statement.
+</p>
+<p>In principle specifying <code>catalog</code> should select an alternative
+database in MySQL or an attached database in SQLite, but neither works
+with current drivers.
+</p>
+<p>If <code>sqtable</code> contains <span class="samp">.</span> and neither <code>catalog</code> nor
+<code>schema</code> is supplied, an attempt is made to interpret
+<code><var>qualifier</var>.<var>table</var></code> as table <code><var>table</var></code> in
+schema <code><var>qualifier</var></code> (and for MySQL &lsquo;schema&rsquo; means
+&lsquo;database&rsquo;, but the current drivers fail to interpret
+<code>catalog=</code>, so this does not yet work). (This can be suppressed
+by opening the connection with <code>interpretDot = FALSE</code>.)  This has
+been tested successfully on PostgreSQL, SQL Server, Oracle, DB2 and
+Mimer.
+</p>
+<p>Whether wildcards are accepted for <code>sqtable</code> and <code>schema</code> in
+<code>sqlColumns(special = FALSE)</code> depends on the driver and may be
+changed by the value of <code>literal</code>.  For example, the PostgreSQL
+driver tested allowed wildcards in <code>schema</code> only if <code>literal
+  = FALSE</code> and never in <code>sqtable</code>, whereas two MySQL drivers both
+failed to match a database when <code>catalog</code> was supplied and always
+allowed wildcards in <code>sqtable</code> even if <code>literal = TRUE</code>.
+
+
+
+</p>
+
+
+<h3>Value</h3>
+
+  
+<p>A data frame on success.  If no data is returned, either a
+zero-row data frame or an error. (For example, if there are no primary
+keys or special column(s) in this table an empty data frame is
+returned, but if primary keys are not supported by the ODBC driver or
+DBMS, an error code results.)
+</p>
+<p>The column names are not constant across ODBC versions so the
+data should be accessed by column number.
+</p>
+<p>For <code>sqlPrimaryKeys</code> and <code>sqlColumns(special=FALSE)</code> the
+first four columns give the catalog, schema, table and column names
+(where applicable).  For <code>sqlPrimaryKeys</code> the next two columns
+are the column sequence number (starting with 1) and name of the
+primary key: drivers can define further columns.  For
+<code>sqlColumns(special=FALSE)</code> there are 18 columnns: see
+<a href="http://msdn.microsoft.com/en-us/library/ms711683(VS.85).aspx">http://msdn.microsoft.com/en-us/library/ms711683(VS.85).aspx</a>.
+Those beyond the first 6 shown in the examples give the
+&lsquo;ordinal position&rsquo; (column 17) and further characteristics of the
+column type: see <code><a href="sqlTypeInfo.html">sqlTypeInfo</a></code>.
+</p>
+<p>For the numeric values returned by <code>sqlColumns(special=TRUE)</code> see
+<a href="http://msdn.microsoft.com/en-us/library/ms714602(VS.85).aspx">http://msdn.microsoft.com/en-us/library/ms714602(VS.85).aspx</a>:
+the scope should always be <code>2</code> (the session) since that is the
+scope requested in the call. For the <code>PSEUDO_COLUMN</code> column, the
+possible values are <code>0</code> (unknown), <code>1</code> (no) and <code>2</code>
+(yes).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Lapsley and Brian Ripley
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="odbcConnect.html">odbcConnect</a></code>, <code><a href="sqlQuery.html">sqlQuery</a></code>, <code><a href="sqlFetch.html">sqlFetch</a></code>,
+<code><a href="sqlSave.html">sqlSave</a></code>, <code><a href="sqlTables.html">sqlTables</a></code>, <code><a href="odbcGetInfo.html">odbcGetInfo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: ## example results from MySQL
+&gt; channel &lt;- odbcConnect("test")
+&gt; sqlDrop(channel, "USArrests", errors = FALSE) # precautionary
+&gt; sqlSave(channel, USArrests, addPK = TRUE)
+&gt; sqlColumns(channel, "USArrests")
+  TABLE_CAT TABLE_SCHEM TABLE_NAME COLUMN_NAME DATA_TYPE TYPE_NAME
+1    ripley        &lt;NA&gt;  USArrests    rownames        12   varchar
+2    ripley        &lt;NA&gt;  USArrests      Murder         8    double
+3    ripley        &lt;NA&gt;  USArrests     Assault         4   integer
+4    ripley        &lt;NA&gt;  USArrests    UrbanPop         4   integer
+5    ripley        &lt;NA&gt;  USArrests        Rape         8    double
+... 12 more columns
+
+&gt; sqlColumns(channel, "USArrests", special = TRUE)
+  SCOPE COLUMN_NAME DATA_TYPE TYPE_NAME COLUMN_SIZE BUFFER_LENGTH
+1     2    rownames        12   varchar         255           255
+  DECIMAL_DIGITS PSEUDO_COLUMN
+1             NA             1
+
+&gt; sqlPrimaryKeys(channel, "USArrests")
+  TABLE_CAT TABLE_SCHEM TABLE_NAME COLUMN_NAME KEY_SEQ PK_NAME
+1      &lt;NA&gt;        &lt;NA&gt;  USArrests    rownames       1 PRIMARY
+&gt; sqlDrop(channel, "USArrests")
+&gt; close(channel)
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RODBC</em> version 1.3-15 <a href="00Index.html">Index</a>]</div>
+</body></html>

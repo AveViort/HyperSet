@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: plot method for support vector object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plot {kernlab}"><tr><td>plot {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>plot method for support vector object</h2>
+
+<h3>Description</h3>
+
+<p>Plot a binary classification support vector machine object.
+The <code>plot</code> function returns a contour plot of the decision values. </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'ksvm'
+plot(object, data=NULL, grid = 50, slice = list())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>a <code>ksvm</code> classification object created by the
+<code>ksvm</code> function</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>a data frame or matrix containing data to be plotted</p>
+</td></tr>
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>granularity for the contour plot.</p>
+</td></tr>
+<tr valign="top"><td><code>slice</code></td>
+<td>
+<p>a list of named numeric values for the dimensions held
+constant (only needed if more than two variables are
+used). Dimensions not specified are fixed at 0. </p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="ksvm.html">ksvm</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Demo of the plot function
+x &lt;- rbind(matrix(rnorm(120),,2),matrix(rnorm(120,mean=3),,2))
+y &lt;- matrix(c(rep(1,60),rep(-1,60)))
+
+svp &lt;- ksvm(x,y,type="C-svc")
+plot(svp,data=x)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

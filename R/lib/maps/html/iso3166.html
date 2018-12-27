@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: ISO 3166 country codes (2 or 3 letters) and sovereignty.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for iso3166 {maps}"><tr><td>iso3166 {maps}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+ISO 3166 country codes (2 or 3 letters) and sovereignty.
+</h2>
+
+<h3>Description</h3>
+
+<p>This data set lists all ISO3166 country codes and the sovereignty for each country in the list. Some entries are regular expressions.
+</p>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 5 columns: &quot;a2&quot;, &quot;a3&quot;, &quot;name&quot;, &quot;mapname&quot;, &quot;sovereignty&quot;. These contain the 2- and 3-letter ISO code, the official name,  the (possibly shorter) name used in the map data base, and the sovereign country.
+</p>
+
+
+<h3>Details</h3>
+
+<p>The ISO 3166-1 standard identifies countries by a 2 and 3 letter codes. This table listst these for all countries on the world map. This data set also serves as basis for the function iso.expand() and its siblings.</p>
+
+
+<h3>NOTE</h3>
+
+<p>Some countries have different ISO codes for some regions. To deal with such particular cases, the &quot;mapname&quot; column may sometimes contain (perl-style) regular expressions rather than simply a country name. For instance, &quot;FI&quot; has mapname &quot;Finland(?!:Aland)&quot;, because the Aland islands have a different ISO code. Other codes may appear in two rows if certain parts of countries are not written with the main country as base name. Usually, that is for compatibility with the legacy world data base. 
+</p>
+
+
+<h3>References</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="iso.expand.html">iso.expand</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>maps</em> version 3.3.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

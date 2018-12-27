@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;kqr&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kmmd-class {kernlab}"><tr><td>kmmd-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;kqr&quot;</h2>
+
+<h3>Description</h3>
+
+<p>The Kernel Maximum Mean Discrepancy object class</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("kmmd", ...)</code>.
+or by calling the <code>kmmd</code> function 
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>kernelf</code>:</dt><dd><p>Object of class <code>"kfunction"</code> contains
+the kernel function used</p>
+</dd>
+<dt><code>xmatrix</code>:</dt><dd><p>Object of class <code>"kernelMatrix"</code> containing the
+data used </p>
+</dd>
+<dt>H0</dt><dd><p>Object of class <code>"logical"</code> contains value of : is H0 rejected (logical)</p>
+</dd>
+<dt><code>AsympH0</code></dt><dd><p>Object of class <code>"logical"</code> contains
+value : is H0 rejected according to the asymptotic bound (logical)</p>
+</dd>
+<dt><code>mmdstats</code></dt><dd><p>Object of class <code>"vector"</code> contains the test statistics (vector of two)</p>
+</dd>
+<dt><code>Radbound</code></dt><dd><p>Object of class <code>"numeric"</code> contains the Rademacher bound</p>
+</dd>
+<dt><code>Asymbound</code></dt><dd><p>Object of class <code>"numeric"</code> contains the asymptotic bound</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+ 
+<dl>
+<dt>kernelf</dt><dd><p><code>signature(object = "kmmd")</code>: returns the
+kernel function used</p>
+</dd>
+<dt>H0</dt><dd><p><code>signature(object = "kmmd")</code>: returns the value of H0
+being rejected</p>
+</dd>
+<dt>AsympH0</dt><dd><p><code>signature(object = "kmmd")</code>: returns the value of H0
+being rejected according to the asymptotic bound</p>
+</dd>
+<dt>mmdstats</dt><dd><p><code>signature(object = "kmmd")</code>: returns the values
+of the mmd statistics</p>
+</dd>
+<dt>Radbound</dt><dd><p><code>signature(object = "kmmd")</code>: returns the
+value of the Rademacher bound</p>
+</dd>
+<dt>Asymbound</dt><dd><p><code>signature(object = "kmmd")</code>: returns the
+value of the asymptotic bound</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="kmmd.html">kmmd</a></code>, 
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# create data
+x &lt;- matrix(runif(300),100)
+y &lt;- matrix(runif(300)+1,100)
+
+
+mmdo &lt;- kmmd(x, y)
+
+H0(mmdo)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

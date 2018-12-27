@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Patched brew</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for brew {pander}"><tr><td>brew {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Patched brew</h2>
+
+<h3>Description</h3>
+
+<p>This is a forked/patched version of 'brew' package made by Jeffrey Horner (c) 2007. See: <code>References</code> about the original version.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+brew(text = NULL, envir = parent.frame())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>text</code></td>
+<td>
+<p>character vector</p>
+</td></tr>
+<tr valign="top"><td><code>envir</code></td>
+<td>
+<p>environment</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This custom function can do more and also less compared to the original <code>brew</code> package. First of all the internal caching mechanism (and other, from <code>pander</code> package POV needless features) of 'brew' is removed for some extra profits:
+</p>
+
+<ul>
+<li><p> multiple R expressions can be passed between <code>&lt;%= ... %&gt;</code> tags,
+</p>
+</li>
+<li><p> the text of the file and also the evaluated R objects are (invisibly) returned in a structured list, which can be really useful while post-processing the results of 'brew'.
+</p>
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p><code>brew</code>ed document to <code>stdout</code> and raw results while evaluating the <code>text</code> in a structured list.
+</p>
+
+
+<h3>Note</h3>
+
+<p>This function should be never called directly (use <code>brew::brew</code> instead) as being a helper function of <code>Pandoc.brew</code>.
+</p>
+
+
+<h3>References</h3>
+
+<p>Jeffrey Horner (2011). _brew: Templating Framework for Report Generation._ <a href="https://cran.r-project.org/package=brew">https://cran.r-project.org/package=brew</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Pandoc.brew.html">Pandoc.brew</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

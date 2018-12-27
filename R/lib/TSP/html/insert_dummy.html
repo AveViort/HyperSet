@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Insert dummy cities into a distance matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for insert_dummy {TSP}"><tr><td>insert_dummy {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Insert dummy cities into a distance matrix</h2>
+
+<h3>Description</h3>
+
+<p>Inserts dummy cities into objects of class <code>TSP</code> or <code>ATSP</code>.  A
+dummy city has the same, constant distance (0) to all other cities and is
+infinitely far from other dummy cities. A dummy city can be used to transform
+a shortest Hamiltonian path problem (i.e., finding an optimal linear order)
+into a shortest Hamiltonian cycle problem which can be solved by a TSP
+solvers (Garfinkel 1985).
+</p>
+<p>Several dummy cities can be used together with a TSP solvers to perform
+rearrangement clustering (Climer and Zhang 2006).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+insert_dummy(x, n = 1, const = 0, inf = Inf, label =  "dummy")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>TSP</code> or <code>ATSP</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>number of dummy cities.</p>
+</td></tr>
+<tr valign="top"><td><code>const</code></td>
+<td>
+<p>distance of the dummy cities to all other cities.</p>
+</td></tr>
+<tr valign="top"><td><code>inf</code></td>
+<td>
+<p>distance between dummy cities.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p> labels for the dummy cities. If only one label is given, it is
+reused for all dummy cities.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The dummy cities are inserted after the other cities in <code>x</code>. 
+</p>
+<p>A <code>const</code> of 0 is guaranteed to work if the TSP finds the optimal
+solution. For heuristics returning suboptimal solutions, a higher
+<code>const</code> (e.g., <code>2 * max{x}</code>) might provide better results.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Sharlee Climer, Weixiong Zhang (2006): Rearrangement Clustering: Pitfalls,
+Remedies, and Applications, <em>Journal of Machine Learning Research</em>
+<b>7</b>(Jun), pp. 919&ndash;943.
+</p>
+<p>R.S. Garfinkel (1985): Motivation and modelling (chapter 2). In: E. L. Lawler,
+J. K. Lenstra, A.H.G. Rinnooy Kan, D.  B. Shmoys (eds.) The traveling salesman
+problem - A guided tour of combinatorial optimization, Wiley \&amp; Sons.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="TSP.html">TSP</a></code>,
+<code><a href="ATSP.html">ATSP</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## make runs comparable
+set.seed(4444)
+
+data("iris")
+tsp &lt;- TSP(dist(iris[-5]))
+
+## insert 2 dummy cities
+tsp_dummy &lt;- insert_dummy(tsp, n = 2, label = "boundary")
+
+## get a solution for the TSP
+tour &lt;- solve_TSP(tsp_dummy)
+
+## plot the distance matrix
+image(tsp_dummy, tour)
+
+## draw lines where the dummy cities are located
+abline(h = which(labels(tour)=="boundary"), col = "red")
+abline(v = which(labels(tour)=="boundary"), col = "red")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

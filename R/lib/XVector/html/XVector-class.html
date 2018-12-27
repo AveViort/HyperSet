@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: XVector objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for XVector-class {XVector}"><tr><td>XVector-class {XVector}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>XVector objects</h2>
+
+<h3>Description</h3>
+
+<p>The XVector virtual class is a general container for storing
+an &quot;external vector&quot;. It inherits from the <a href="../../S4Vectors/html/Vector.html">Vector</a>
+class, which has a rich interface.
+</p>
+<p>The following classes derive directly from the XVector class:
+</p>
+<p>The XRaw class is a container for storing an &quot;external raw vector&quot;
+i.e. an external sequence of bytes (stored as char values at the
+C level).
+</p>
+<p>The XInteger class is a container for storing an &quot;external integer
+vector&quot; i.e. an external sequence of integer values (stored as
+int values at the C level).
+</p>
+<p>The XDouble class is a container for storing an &quot;external double
+vector&quot; i.e. an external sequence of numeric values (stored as
+double values at the C level).
+</p>
+<p>Also the <a href="../../Biostrings/html/XString.html">XString</a> class defined in the Biostrings
+package.
+</p>
+<p>The purpose of the X* containers is to provide a &quot;pass by address&quot;
+semantic and also to avoid the overhead of copying the sequence
+data when a linear subsequence needs to be extracted.
+</p>
+
+
+<h3>Additional Subsetting operations on XVector objects</h3>
+
+<p>In the code snippets below, <code>x</code> is an XVector object.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>subseq(x, start=NA, end=NA, width=NA)</code>:
+Extract the subsequence from <code>x</code> specified by <code>start</code>,
+<code>end</code> and <code>width</code>.
+The supplied start/end/width values are solved by a call to
+<code>solveUserSEW(length(x), start=start, end=end, width=width)</code>
+and therefore must be compliant with the rules of the SEW
+(Start/End/Width) interface (see <code>?solveUserSEW</code> for the
+details).
+</p>
+<p>A note about performance: <code>subseq</code> does NOT copy the sequence data
+of an XVector object. Hence it's very efficient and is therefore the
+recommended way to extract a linear subsequence (i.e. a set of consecutive
+elements) from an XVector object. For example, extracting a 100Mb
+subsequence from Human chromosome 1 (a 250Mb
+<a href="../../Biostrings/html/DNAString-class.html">DNAString</a> object) with <code>subseq</code>
+is (almost) instantaneous and has (almost) no memory footprint (the cost
+in time and memory does not depend on the length of the original sequence
+or on the length of the subsequence to extract).
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>subseq(x, start=NA, end=NA, width=NA) &lt;- value</code>:
+Replace the subsequence specified on the left (i.e. the subsequence
+in <code>x</code> specified by <code>start</code>, <code>end</code> and <code>width</code>)
+by <code>value</code>.
+<code>value</code> must belong to the same class as <code>x</code>, or to one of
+its subclasses, or must be <code>NULL</code>.
+This replacement method can modify the length of <code>x</code>, depending
+on how the length of the left subsequence compares to the length of
+<code>value</code>.
+It can be used for inserting elements in <code>x</code> (specify an empty
+left subsequence for this) or deleting elements from <code>x</code> (use
+a <code>NULL</code> right value for this).
+Unlike the extraction method above, this replacement method always
+copies the sequence data of <code>x</code> (even for XVector objects).
+NOTE: Only works for XRaw (and derived) objects for now.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pagès</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../S4Vectors/html/Vector-class.html">Vector-class</a>,
+<a href="../../Biostrings/html/DNAString-class.html">DNAString-class</a>,
+<a href="XVectorList-class.html">XVectorList-class</a>,
+<a href="../../IRanges/html/Views-class.html">Views-class</a>,
+<code><a href="../../IRanges/html/solveUserSEW.html">solveUserSEW</a></code>,
+<code><a href="compact-methods.html">compact</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## ---------------------------------------------------------------------
+  ## A. XRaw OBJECTS
+  ## ---------------------------------------------------------------------
+
+  x1 &lt;- XRaw(4)  # values are not initialized
+  x1
+  x2 &lt;- as(c(255, 255, 199), "XRaw")
+  x2
+  y &lt;- c(x1, x2, NULL, x1)  # NULLs are ignored
+  y
+  subseq(y, start=-4)
+  subseq(y, start=-4) &lt;- x2
+  y
+
+  ## ---------------------------------------------------------------------
+  ## B. XInteger OBJECTS
+  ## ---------------------------------------------------------------------
+
+  x3 &lt;- XInteger(12, val=c(-1:10))
+  x3
+  length(x3)
+
+  ## Subsetting
+  x4 &lt;- XInteger(99999, val=sample(99, 99999, replace=TRUE) - 50)
+  x4
+  subseq(x4, start=10)
+  subseq(x4, start=-10)
+  subseq(x4, start=-20, end=-10)
+  subseq(x4, start=10, width=5)
+  subseq(x4, end=10, width=5)
+  subseq(x4, end=10, width=0)
+
+  x3[length(x3):1]
+  x3[length(x3):1, drop=FALSE]
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XVector</em> version 0.22.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

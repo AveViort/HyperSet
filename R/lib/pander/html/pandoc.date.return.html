@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dates</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pandoc.date.return {pander}"><tr><td>pandoc.date.return {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Dates</h2>
+
+<h3>Description</h3>
+
+<p>Pandoc's mardown date.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pandoc.date.return(x, inline = TRUE, simplified = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>date or vector of dates</p>
+</td></tr>
+<tr valign="top"><td><code>inline</code></td>
+<td>
+<p>if to render vector of dates as inline paragraph or not (as list)</p>
+</td></tr>
+<tr valign="top"><td><code>simplified</code></td>
+<td>
+<p>if just add date formatting to vector of dates</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>extra arguments passed by from parent call, disregarded</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>By default this function outputs (see: <code>cat</code>) the result. If you would want to catch the result instead, then call the function ending in <code>.return</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+pandoc.date(Sys.Date())
+pandoc.date(Sys.Date() - 1:10)
+pandoc.date(Sys.Date() - 1:10, inline = FALSE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

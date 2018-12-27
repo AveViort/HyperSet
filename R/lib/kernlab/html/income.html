@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Income Data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for income {kernlab}"><tr><td>income {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Income Data</h2>
+
+<h3>Description</h3>
+
+<p>Customer Income Data from a marketing survey.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(income)</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 14 categorical variables (8993 observations).
+</p>
+<p>Explanation of the variable names:
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 1 </td><td style="text-align: left;"> <code>INCOME</code> </td><td style="text-align: left;"> annual income of household </td><td style="text-align: left;"> </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;">   </td><td style="text-align: left;">               </td><td style="text-align: left;"> (Personal income if single) </td><td style="text-align: left;"> ordinal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 2 </td><td style="text-align: left;"> <code>SEX</code> </td><td style="text-align: left;"> sex </td><td style="text-align: left;"> nominal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 3 </td><td style="text-align: left;"> <code>MARITAL.STATUS</code> </td><td style="text-align: left;"> marital status </td><td style="text-align: left;"> nominal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 4 </td><td style="text-align: left;"> <code>AGE</code> </td><td style="text-align: left;"> age </td><td style="text-align: left;"> ordinal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 5 </td><td style="text-align: left;"> <code>EDUCATION</code> </td><td style="text-align: left;"> educational grade </td><td style="text-align: left;"> ordinal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 6 </td><td style="text-align: left;"> <code>OCCUPATION</code> </td><td style="text-align: left;"> type of work </td><td style="text-align: left;"> nominal </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 7 </td><td style="text-align: left;"> <code>AREA</code> </td><td style="text-align: left;"> how long the interviewed person has lived</td><td style="text-align: left;">
+    </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;">   </td><td style="text-align: left;">             </td><td style="text-align: left;"> in the San Francisco/Oakland/San Jose area </td><td style="text-align: left;"> ordinal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 8 </td><td style="text-align: left;"> <code>DUAL.INCOMES</code> </td><td style="text-align: left;"> dual incomes (if married) </td><td style="text-align: left;"> nominal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 9 </td><td style="text-align: left;"> <code>HOUSEHOLD.SIZE</code> </td><td style="text-align: left;"> persons living in the
+    household </td><td style="text-align: left;"> ordinal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 10 </td><td style="text-align: left;"> <code>UNDER18</code> </td><td style="text-align: left;"> persons in household under 18 </td><td style="text-align: left;"> ordinal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 11 </td><td style="text-align: left;"> <code>HOUSEHOLDER</code> </td><td style="text-align: left;"> householder status </td><td style="text-align: left;"> nominal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 12 </td><td style="text-align: left;"> <code>HOME.TYPE</code> </td><td style="text-align: left;"> type of home </td><td style="text-align: left;"> nominal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 13 </td><td style="text-align: left;"> <code>ETHNIC.CLASS</code> </td><td style="text-align: left;"> ethnic classification </td><td style="text-align: left;"> nominal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> 14 </td><td style="text-align: left;"> <code>LANGUAGE</code> </td><td style="text-align: left;"> language most often spoken at
+    home </td><td style="text-align: left;"> nominal</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+  </td>
+</tr>
+
+</table>
+
+
+
+<h3>Details</h3>
+
+<p>A total of N=9409 questionnaires containing 502 questions were 
+filled out by shopping mall customers in the San Francisco Bay area. 
+The dataset is an extract from this survey. It consists of 
+14 demographic attributes. The dataset is a mixture of nominal and
+ordinal variables with a lot of missing data.
+The goal is to predict the Anual Income of Household from the other 13
+demographics attributes.
+</p>
+
+
+<h3>Source</h3>
+
+<p>Impact Resources, Inc., Columbus, OH (1987).
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

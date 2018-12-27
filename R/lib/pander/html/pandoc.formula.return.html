@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Formulas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pandoc.formula.return {pander}"><tr><td>pandoc.formula.return {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Formulas</h2>
+
+<h3>Description</h3>
+
+<p>Pandoc's mardown formula.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pandoc.formula.return(x, text = NULL, max.width = 80, caption,
+  add.line.breaks = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>formula</p>
+</td></tr>
+<tr valign="top"><td><code>text</code></td>
+<td>
+<p>text to be written before result in the same line. Typically used by calls from other functions in the package</p>
+</td></tr>
+<tr valign="top"><td><code>max.width</code></td>
+<td>
+<p>maximum width in characters per line</p>
+</td></tr>
+<tr valign="top"><td><code>caption</code></td>
+<td>
+<p>caption (string) to be shown under the formula</p>
+</td></tr>
+<tr valign="top"><td><code>add.line.breaks</code></td>
+<td>
+<p>if to add 2 line breaks after formula</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>extra arguments passed by from parent call, disregarded</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>By default this function outputs (see: <code>cat</code>) the result. If you would want to catch the result instead, then call the function ending in <code>.return</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+pandoc.formula(y ~ x)
+pandoc.formula(formula(paste('y ~ ', paste0('x', 1:12, collapse = ' + '))))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

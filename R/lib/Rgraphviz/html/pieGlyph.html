@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A function to plot pie graphs as a glyph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pieGlyph {Rgraphviz}"><tr><td>pieGlyph {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>A function to plot pie graphs as a glyph</h2>
+
+<h3>Description</h3>
+
+<p>This function allows the user to plot a pie graph at a specified x/y
+location in a plotting region.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pieGlyph(x, xpos, ypos, labels = names(x), edges = 200, radius = 0.8, density = NULL, angle = 45, col = NULL, border = NULL, lty = NULL, main = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>xpos</code></td>
+<td>
+<p>The x location of the glyph</p>
+</td></tr>
+<tr valign="top"><td><code>ypos</code></td>
+<td>
+<p>The Y location of the glyph</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a vector of positive quantities.
+The values in <code>x</code> are displayed as the areas of pie slices.</p>
+</td></tr>
+<tr valign="top"><td><code>labels</code></td>
+<td>
+<p>a vector of character strings giving names for the
+slices.  For empty or NA labels, no pointing line is drawn either.</p>
+</td></tr>
+<tr valign="top"><td><code>edges</code></td>
+<td>
+<p>the circular outline of the pie is approximated by a
+polygon with this many edges.</p>
+</td></tr>
+<tr valign="top"><td><code>radius</code></td>
+<td>
+<p>the pie is drawn centered in a square box whose sides
+range from <i>-1</i> to <i>1</i>.  If the character strings labeling
+the slices are long it may be necessary to use a smaller radius.</p>
+</td></tr>
+<tr valign="top"><td><code>density</code></td>
+<td>
+<p>the density of shading lines, in lines per inch.
+The default value of <code>NULL</code> means that no shading lines
+are drawn. Non-positive values of <code>density</code> also inhibit the
+drawing of shading lines.</p>
+</td></tr>
+<tr valign="top"><td><code>angle</code></td>
+<td>
+<p>the slope of shading lines, given as an angle in
+degrees (counter-clockwise).</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>a vector of colors to be used in filling or shading
+the slices. If missing a set of 6 pastel colours is used,
+unless <code>density</code> is specified when <code>par("fg")</code> is used.</p>
+</td></tr>
+<tr valign="top"><td><code>border, lty</code></td>
+<td>
+<p>(possibly vectors) arguments passed to
+<code><a href="../../graphics/html/polygon.html">polygon</a></code> which draws each slice.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>an overall title for the plot.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>graphical parameters can be given as arguments to
+<code>pie</code>.  They will affect the main title and labels only.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>R. Gentleman, F. Sim</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../graphics/html/pie.html">pie</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+   plot(1:10, col="white")
+   pieGlyph(1:20, 5, 5)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Correlation matrix between a list of trees.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cor.dendlist {dendextend}"><tr><td>cor.dendlist {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Correlation matrix between a list of trees.</h2>
+
+<h3>Description</h3>
+
+<p>A correlation matrix between a list of trees.
+</p>
+<p>Assumes the labels in the two trees fully match. If they do not
+please first use <a href="intersect_trees.html">intersect_trees</a> to have them matched.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cor.dendlist(dend, method = c("cophenetic", "baker", "common_nodes",
+  "FM_index"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a <a href="dendlist.html">dendlist</a> of trees</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>a character string indicating which correlation coefficient 
+is to be computed. One of &quot;cophenetic&quot; (default),  &quot;baker&quot;, 
+&quot;common_nodes&quot;, or &quot;FM_index&quot;.
+It can be abbreviated.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to cor functions.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A correlation matrix between the different trees
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../stats/html/cophenetic.html">cophenetic</a>, <a href="cor_cophenetic.html">cor_cophenetic</a>, <a href="cor_bakers_gamma.html">cor_bakers_gamma</a>,
+<a href="cor_common_nodes.html">cor_common_nodes</a>, <a href="cor_FM_index.html">cor_FM_index</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+set.seed(23235)
+ss &lt;- sample(1:150, 10 )
+dend1 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("com") %&gt;% as.dendrogram
+dend2 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("single") %&gt;% as.dendrogram
+dend3 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("ave") %&gt;% as.dendrogram
+dend4 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("centroid") %&gt;% as.dendrogram
+#    cutree(dend1)   
+cors &lt;- cor.dendlist(dendlist(d1 = dend1, d2 = dend2, d3 = dend3, d4 = dend4))
+
+cors
+
+# a nice plot for them:
+library(corrplot)
+corrplot(cor.dendlist(dend1234), "pie", "lower")
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

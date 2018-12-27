@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Interactively rotate a tree object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for click_rotate {dendextend}"><tr><td>click_rotate {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Interactively rotate a tree object</h2>
+
+<h3>Description</h3>
+
+<p>Lets te user click a plot of dendrogram
+and rotates the tree based on the location of the click.
+</p>
+<p>Code for mouse selection of (sub-)cluster to be rotated
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+click_rotate(x, ...)
+
+## Default S3 method:
+click_rotate(x, ...)
+
+## S3 method for class 'dendrogram'
+click_rotate(x, plot = TRUE, plot_after = plot,
+  horiz = FALSE, continue = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a tree object (either a <code>dendrogram</code> or <code>hclust</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>parameters passed to the plot</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>(logical) should the dendrogram first be plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_after</code></td>
+<td>
+<p>(logical) should the dendrogram be plotted after
+the rotation?</p>
+</td></tr>
+<tr valign="top"><td><code>horiz</code></td>
+<td>
+<p>logical. Should the plot be normal or horizontal?</p>
+</td></tr>
+<tr valign="top"><td><code>continue</code></td>
+<td>
+<p>logical. If TRUE, allows the user to keep
+clicking the plot until a click is made on the labels.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A rotated tree object
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Andrej-Nikolai Spiess, Tal Galili
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="rotate.html">rotate.dendrogram</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# create the dend:
+dend &lt;- USArrests %&gt;% dist %&gt;% hclust("ave") %&gt;%  
+as.dendrogram %&gt;% color_labels
+
+## Not run: 
+# play with the rotation once
+dend &lt;- click_rotate(dend)
+dend &lt;- click_rotate(dend, horiz = TRUE)
+# keep playing with the rotation:
+while(TRUE) dend &lt;- click_rotate(dend)
+# the same as
+dend &lt;- click_rotate(dend, continue = TRUE)
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

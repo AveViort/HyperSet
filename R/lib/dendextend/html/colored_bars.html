@@ -1,0 +1,242 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add colored bars to a dendrogram</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for colored_bars {dendextend}"><tr><td>colored_bars {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add colored bars to a dendrogram</h2>
+
+<h3>Description</h3>
+
+<p>Add colored bars to a dendrogram, usually
+corresponding to either clusters or some outside
+categorization.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+colored_bars(colors, dend, rowLabels = NULL, cex.rowLabels = 0.9,
+  add = TRUE, y_scale, y_shift, text_shift = 1,
+  sort_by_labels_order = TRUE, horiz = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>colors</code></td>
+<td>
+<p>Coloring of objects on the dendrogram. Either a vector (one color per object) 
+or a matrix (can also be an array or a data frame)
+with each column giving one group with color per object. 
+Each column will be plotted as a horizontal row of colors (when horiz = FALSE)
+under the dendrogram.
+As long as the sort_by_labels_order paramter is TRUE (default), the colors vector/matrix should
+be provided in the order of the original data order (and it will be re-ordered automaticall to 
+the order of the dendrogram)</p>
+</td></tr>
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object. If missing, the colors are plotted without and re-ordering
+(this assumes that the colors are already ordered based on the dend's labels)
+This is also important in order to get the correct height/location of the colored bars
+(i.e.: adjusting the y_scale and y_shift)</p>
+</td></tr>
+<tr valign="top"><td><code>rowLabels</code></td>
+<td>
+<p>Labels for the colorings given in <code>colors</code>. The labels will be printed to the
+left of the color rows in the plot. If the argument is given, it must be a vector of length
+equal to the number of columns in <code>colors</code>. If not given, <code>names(colors)</code>
+will be used if available. If not, sequential numbers
+starting from 1 will be used.</p>
+</td></tr>
+<tr valign="top"><td><code>cex.rowLabels</code></td>
+<td>
+<p>Font size scale factor for the row labels. See <code><a href="../../graphics/html/par.html">par</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>add</code></td>
+<td>
+<p>logical(TRUE), should the colored bars be added to an existing
+dendrogram plot?</p>
+</td></tr>
+<tr valign="top"><td><code>y_scale</code></td>
+<td>
+<p>how much should the bars be stretched on the y axis?
+If no dend is supplied - the default will be 1</p>
+</td></tr>
+<tr valign="top"><td><code>y_shift</code></td>
+<td>
+<p>where should the bars be plotted underneath the x axis?
+By default it will try to locate the bars underneath the labels (it may miss,
+in which case you would need to enter a number manually)
+If no dend is supplied - the default will be 0</p>
+</td></tr>
+<tr valign="top"><td><code>text_shift</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>sort_by_labels_order</code></td>
+<td>
+<p>logical(TRUE) - if TRUE (default), then the order of the 
+colored bars will be sorted based on the order needed to change the original
+order of the observations to the current order of the labels in the dendrogram.
+If FALSE the colored bars are plotted as-is, based on the order
+of the colors vector.</p>
+</td></tr>
+<tr valign="top"><td><code>horiz</code></td>
+<td>
+<p>logical (FALSE by default). Set to TRUE when using plot(dend, horiz = TRUE)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>ignored at this point.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>You will often needs to adjust the y_scale, y_shift and the text_shift
+parameters, in order to get the bars in the location you would want.
+</p>
+<p>(this can probably be done automatically, but will require more work. 
+since it has to do with the current mar settings,
+the number of groups, and each computer's specific graphic device.
+patches for smarter defaults will be appreciated)
+</p>
+
+
+<h3>Value</h3>
+
+<p>An invisible vector/matrix with the ordered colors.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Steve Horvath <a href="mailto:SHorvath@mednet.ucla.edu">SHorvath@mednet.ucla.edu</a>,
+Peter Langfelder <a href="mailto:Peter.Langfelder@gmail.com">Peter.Langfelder@gmail.com</a>,
+Tal Galili <a href="mailto:Tal.Galili@gmail.com">Tal.Galili@gmail.com</a>
+</p>
+
+
+<h3>Source</h3>
+
+<p>This function is based on the <a href="../../moduleColor/html/plotHclustColors.html">plotHclustColors</a> from the 
+moduleColor R package. It was modified so that it would
+work with dendrograms (and not just hclust objects), as well allow to
+add the colored bars on top of an existing plot (and not only as a seperate plot).
+</p>
+<p>See: <a href="https://cran.r-project.org/package=moduleColor">https://cran.r-project.org/package=moduleColor</a>
+For more details.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="branches_attr_by_clusters.html">branches_attr_by_clusters</a>,
+<a href="../../WGCNA/html/plotDendroAndColors.html">plotDendroAndColors</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+
+rows_picking &lt;- c(1:5, 25:30)
+dend &lt;- (iris[rows_picking,-5]*10) %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram 
+odd_numbers &lt;- rows_picking %% 2
+cols &lt;- c("gold", "grey")[odd_numbers+1]
+# scale is off
+plot(dend)
+colored_bars(cols, dend)
+# move and scale a bit
+plot(dend)
+colored_bars(cols, dend, y_shift = -1,
+             rowLabels = "Odd\n numbers")
+# Now let's cut the tree and add that info to the plot:
+k2 &lt;- cutree(dend, k = 2)
+cols2 &lt;- c("#0082CE", "#CC476B")[k2]
+plot(dend)
+colored_bars(cbind(cols2, cols), dend, 
+            rowLabels = c("2 clusters", "Odd numbers"))
+
+# The same, but with an horizontal plot!
+par(mar = c(6,2,2,4))
+plot(dend, horiz = TRUE)
+colored_bars(cbind(cols2, cols), dend, 
+             rowLabels = c("2 clusters", "Odd numbers"),
+              horiz = TRUE)
+
+
+
+# let's add clusters color
+# notice how we need to play with the colors a bit
+# this is because color_branches places colors from
+# left to right. Which means we need to give colored_bars
+# the colors of the items so that ofter sorting they would be
+# from left to right. Here is how it can be done:
+the_k &lt;- 3
+library(colorspace)
+cols3 &lt;- rainbow_hcl(the_k, c=90, l=50)
+dend %&gt;% set("branches_k_color", k = the_k, with = cols3) %&gt;% plot
+
+kx &lt;- cutree(dend, k = the_k)
+ord &lt;- order.dendrogram(dend)
+kx  &lt;- sort_levels_values(kx[ord])   
+kx  &lt;- kx[match(seq_along(ord), ord)]
+
+par(mar = c(5,5,2,2))
+plot(dend)
+colored_bars(cbind(cols3[kx], cols2, cols), dend,
+             rowLabels = c("3 clusters", "2 clusters", "Odd numbers")) 
+
+
+
+## mtcars example
+
+# Create the dend:
+dend &lt;- as.dendrogram(hclust(dist(mtcars)))
+
+# Create a vector giving a color for each car to which company it belongs to
+car_type &lt;- rep("Other", length(rownames(mtcars)))
+is_x &lt;- grepl("Merc", rownames(mtcars))
+car_type[is_x] &lt;- "Mercedes"
+is_x &lt;- grepl("Mazda", rownames(mtcars))
+car_type[is_x] &lt;- "Mazda"
+is_x &lt;- grepl("Toyota", rownames(mtcars))
+car_type[is_x] &lt;- "Toyota"
+car_type &lt;- factor(car_type)
+n_car_types &lt;- length(unique(car_type))
+col_car_type &lt;- colorspace::rainbow_hcl(n_car_types, c = 70, l  = 50)[car_type]
+
+# extra: showing the various clusters cuts 
+k234 &lt;- cutree(dend, k = 2:4)
+
+# color labels by car company:
+labels_colors(dend) &lt;- col_car_type[order.dendrogram(dend)]
+# color branches based on cutting the tree into 4 clusters:
+dend &lt;- color_branches(dend, k = 4)
+
+### plots
+par(mar = c(12,4,1,1))
+plot(dend)
+colored_bars(cbind(k234[,3:1], col_car_type), dend, 
+      rowLabels = c(paste0("k = ", 4:2), "Car Type"))
+
+# horiz version:
+par(mar = c(4,1,1,12))
+plot(dend, horiz = TRUE)
+colored_bars(cbind(k234[,3:1], col_car_type), dend, 
+      rowLabels = c(paste0("k = ", 4:2), "Car Type"), horiz = TRUE)
+
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

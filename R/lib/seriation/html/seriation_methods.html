@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Registry for Seriation Methods</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for seriation_methods {seriation}"><tr><td>seriation_methods {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Registry for Seriation Methods</h2>
+
+<h3>Description</h3>
+
+<p>A registry to manage methods for seriation.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+list_seriation_methods(kind)
+show_seriation_methods(kind)
+get_seriation_method(kind, name)
+set_seriation_method(kind, name, definition, description = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>kind</code></td>
+<td>
+<p>the data type the method works on. For example, <code>"dist"</code>,
+<code>"matrix"</code> or <code>"array"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>a short name for the method used to refer to the method in
+<code>seriate()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>definition</code></td>
+<td>
+<p>a function containing the method's code.</p>
+</td></tr> 
+<tr valign="top"><td><code>description</code></td>
+<td>
+<p>a description of the method. For example, a long name.</p>
+</td></tr> 
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further information that is stored for the method in the 
+registry.</p>
+</td></tr> 
+</table>
+
+
+<h3>Details</h3>
+
+<p>The functions below are convenience function for the registry 
+<code>registry_seriate</code>. 
+</p>
+<p><code>list_seriation_method()</code> lists all available methods for a given
+data type (<code>kind</code>). The result is a vector of character strings
+with the short names of the methods. 
+</p>
+<p><code>show_seriation_method()</code> shows all available methods including
+a description.
+</p>
+<p><code>get_seriation_method()</code> returns information (including the
+implementing function) about a given method in form of an object of
+class <code>"seriation_method"</code>.
+</p>
+<p>With <code>set_seriation_method()</code> new seriation methods can be added by the
+user. The implementing function (<code>definition</code>) needs to have the formal
+arguments <code>x, control</code>, where <code>x</code> is the data object and
+<code>control</code> contains a list with additional information for the method
+passed on from <code>seriate()</code>.  The implementation has to return 
+a list of objects which can be coerced into <code>ser_permutation_vector</code>
+objects (e.g., integer vectors). The elements in the list
+have to be in corresponding order to the dimensions of <code>x</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## registry
+registry_seriate
+
+## convenience functions
+show_seriation_methods("matrix")
+
+list_seriation_methods("matrix")
+
+get_seriation_method("matrix", "BEA")
+
+## define a new method
+
+## create a identity function which returns the identity order
+seriation_method_identity &lt;- function(x, control) {
+   lapply(dim(x), seq)
+}
+
+## set new method
+set_seriation_method("matrix", "identity", seriation_method_identity, 
+    "Identity order")
+
+set_seriation_method("array", "identity", seriation_method_identity, 
+    "Identity order")
+
+show_seriation_methods("matrix")
+
+##use all criterion methods (including the new one)
+seriate(matrix(1:12, ncol=3), "identity")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

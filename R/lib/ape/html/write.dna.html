@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Write DNA Sequences in a File</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for write.dna {ape}"><tr><td>write.dna {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Write DNA Sequences in a File</h2>
+
+<h3>Description</h3>
+
+<p>These functions write in a file a list of DNA sequences in sequential,
+interleaved, or FASTA format. <code>write.FASTA</code> can write either DNA
+or AA sequences.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+write.dna(x, file, format = "interleaved", append = FALSE,
+          nbcol = 6, colsep = " ", colw = 10, indent = NULL,
+          blocksep = 1)
+write.FASTA(x, file, header = NULL, append = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a list or a matrix of DNA sequences, or of AA sequences for
+<code>write.FASTA</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a file name specified by either a variable of mode character,
+or a double-quoted string.</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>a character string specifying the format of the DNA
+sequences. Three choices are possible: <code>"interleaved"</code>,
+<code>"sequential"</code>, or <code>"fasta"</code>, or any unambiguous
+abbreviation of these.</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+<p>a logical, if <code>TRUE</code> the data are appended to the
+file without erasing the data possibly existing in the file,
+otherwise the file (if it exists) is overwritten (<code>FALSE</code> the
+default).</p>
+</td></tr>
+<tr valign="top"><td><code>nbcol</code></td>
+<td>
+<p>a numeric specifying the number of columns per row (6 by
+default); may be negative implying that the nucleotides are printed
+on a single line.</p>
+</td></tr>
+<tr valign="top"><td><code>colsep</code></td>
+<td>
+<p>a character used to separate the columns (a single
+space by default).</p>
+</td></tr>
+<tr valign="top"><td><code>colw</code></td>
+<td>
+<p>a numeric specifying the number of nucleotides per column
+(10 by default).</p>
+</td></tr>
+<tr valign="top"><td><code>indent</code></td>
+<td>
+<p>a numeric or a character specifying how the blocks of
+nucleotides are indented (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>blocksep</code></td>
+<td>
+<p>a numeric specifying the number of lines between the
+blocks of nucleotides (this has an effect only if 'format =
+&quot;interleaved&quot;').</p>
+</td></tr>
+<tr valign="top"><td><code>header</code></td>
+<td>
+<p>a vector of mode character giving the header to be
+written in the FASTA file before the sequences. By default, there is
+no header.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Three formats are supported in the present function: see the help page
+of <code><a href="read.dna.html">read.dna</a></code> and the references below for a description.
+</p>
+<p>If the sequences have no names, then they are given &quot;1&quot;, &quot;2&quot;, ... as
+labels in the file.
+</p>
+<p>With the interleaved and sequential formats, the sequences must be all
+of the same length. The names of the sequences are not truncated.
+</p>
+<p>The argument <code>indent</code> specifies how the rows of nucleotides are
+indented. In the interleaved and sequential formats, the rows with
+the taxon names are never indented; the subsequent rows are indented
+with 10 spaces by default (i.e., if <code>indent = NULL</code>). In the FASTA
+format, the rows are not indented by default. This default behaviour
+can be modified by specifying a value to <code>indent</code>: the rows are then
+indented with &ldquo;indent&rdquo; (if it is a character) or &lsquo;indent&rsquo; spaces (if
+it is a numeric). For example, specifying <code>indent = "   "</code> or
+<code>indent = 3</code> will have the same effect (use <code>indent = "\t"</code>
+for a tabulation).
+</p>
+<p>The different options are intended to give flexibility in formatting
+the sequences. For instance, if the sequences are very long it may be
+judicious to remove all the spaces beween columns (colsep = &quot;&quot;), in
+the margins (indent = 0), and between the blocks (blocksep = 0) to
+produce a smaller file.
+</p>
+<p><code>write.dna(, format = "fasta")</code> can be very slow if the sequences
+are long (&gt; 10 kb). <code>write.FASTA</code> is much faster in this
+situation but the formatting is not flexible: each sequence is printed
+on a single line, which is OK for big files that are not intended to
+be open with a text editor.
+</p>
+
+
+<h3>Value</h3>
+
+<p>None (invisible &lsquo;NULL&rsquo;).
+</p>
+
+
+<h3>Note</h3>
+
+<p>Specifying a negative value for &lsquo;nbcol&rsquo; (meaning that the nucleotides
+are printed on a single line) gives the same output for the
+interleaved and sequential formats.
+</p>
+<p>The names of the sequences can be truncated with the function
+<code><a href="makeLabel.html">makeLabel</a></code>. In particular, Clustal is limited to 30
+characters, and PHYML seems limited to 99 characters.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Anonymous. FASTA format. <a href="http://en.wikipedia.org/wiki/FASTA_format">http://en.wikipedia.org/wiki/FASTA_format</a>
+</p>
+<p>Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version
+3.5c. Department of Genetics, University of Washington.
+<a href="http://evolution.genetics.washington.edu/phylip/phylip.html">http://evolution.genetics.washington.edu/phylip/phylip.html</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.dna.html">read.dna</a></code>, <code><a href="read.GenBank.html">read.GenBank</a></code>,
+<code><a href="makeLabel.html">makeLabel</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

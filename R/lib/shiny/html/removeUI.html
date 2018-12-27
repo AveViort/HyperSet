@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Remove UI objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for removeUI {shiny}"><tr><td>removeUI {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Remove UI objects</h2>
+
+<h3>Description</h3>
+
+<p>Remove a UI object from the app.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+removeUI(selector, multiple = FALSE, immediate = FALSE,
+  session = getDefaultReactiveDomain())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>selector</code></td>
+<td>
+<p>A string that is accepted by jQuery's selector (i.e. the
+string <code>s</code> to be placed in a <code>$(s)</code> jQuery call). This selector
+will determine the element(s) to be removed. If you want to remove a
+Shiny input or output, note that many of these are wrapped in <code>div</code>s,
+so you may need to use a somewhat complex selector &ndash; see the Examples below.
+(Alternatively, you could also wrap the inputs/outputs that you want to be
+able to remove easily in a <code>div</code> with an id.)</p>
+</td></tr>
+<tr valign="top"><td><code>multiple</code></td>
+<td>
+<p>In case your selector matches more than one element,
+<code>multiple</code> determines whether Shiny should remove all the matched
+elements or just the first matched element (default).</p>
+</td></tr>
+<tr valign="top"><td><code>immediate</code></td>
+<td>
+<p>Whether the element(s) should be immediately removed from
+the app when you call <code>removeUI</code>, or whether Shiny should wait until
+all outputs have been updated and all observers have been run (default).</p>
+</td></tr>
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The shiny session within which to call <code>removeUI</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function allows you to remove any part of your UI. Once <code>removeUI</code>
+is executed on some element, it is gone forever.
+</p>
+<p>While it may be a particularly useful pattern to pair this with
+<code><a href="insertUI.html">insertUI</a></code> (to remove some UI you had previously inserted),
+there is no restriction on what you can use <code>removeUI</code> on. Any
+element that can be selected through a jQuery selector can be removed
+through this function.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="insertUI.html">insertUI</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run this example in interactive R sessions
+if (interactive()) {
+# Define UI
+ui &lt;- fluidPage(
+  actionButton("rmv", "Remove UI"),
+  textInput("txt", "This is no longer useful")
+)
+
+# Server logic
+server &lt;- function(input, output, session) {
+  observeEvent(input$rmv, {
+    removeUI(
+      selector = "div:has(&gt; #txt)"
+    )
+  })
+}
+
+# Complete app with UI and server components
+shinyApp(ui, server)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

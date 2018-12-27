@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reformulate a ATSP as a symmetric TSP</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reformulate_ATSP_as_TSP {TSP}"><tr><td>reformulate_ATSP_as_TSP {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reformulate a ATSP as a symmetric TSP</h2>
+
+<h3>Description</h3>
+
+<p>A ATSP can be formulated as a symmetric TSP by doubling the number of
+cities (Jonker and Volgenant 1983). The solution of the TSP 
+also represents the solution of the original ATSP.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+reformulate_ATSP_as_TSP(x, infeasible = Inf, cheap = -Inf)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an ATSP.</p>
+</td></tr>
+<tr valign="top"><td><code>infeasible</code></td>
+<td>
+<p>value for infeasible connections.</p>
+</td></tr>
+<tr valign="top"><td><code>cheap</code></td>
+<td>
+<p>value for distance between a city and its corresponding 
+dummy city.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>To reformulate the ATSP as a TSP, for each city a dummy city (e.g, for 'New
+York' a dummy city 'New York*') is added. Between each city and its
+corresponding dummy city a negative or very small distance with value
+<code>cheap</code> is used.  This makes sure that each cities always occurs in the
+solution together with its dummy city.  The original distances are used between
+the cities and the dummy cities, where each city is responsible for the
+distance going to the city and the dummy city is responsible for the distance
+coming from the city. The distances between all cities and the distances
+between all dummy cities are set to <code>infeasible</code>, a very large value which
+makes the infeasible.
+</p>
+
+
+
+
+
+
+
+
+<h3>Value</h3>
+
+<p>a TSP object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Jonker, R. and Volgenant, T. (1983): Transforming asymmetric into symmetric
+traveling salesman problems, <em>Operations Research Letters, 2, 161&ndash;163.</em>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="ATSP.html">ATSP</a></code>,
+<code><a href="TSP.html">TSP</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("USCA50")
+
+## set the distances towards Austin to zero which makes it a ATSP
+austin &lt;- which(labels(USCA50) == "Austin, TX")
+atsp &lt;- as.ATSP(USCA50)
+atsp[, austin] &lt;- 0
+
+## reformulate as a TSP
+tsp &lt;- reformulate_ATSP_as_TSP(atsp)
+labels(tsp)
+
+## create tour (now you could use Concorde or LK)
+tour_atsp &lt;- solve_TSP(tsp, method="nn")
+head(labels(tour_atsp), n = 10)
+tour_atsp
+## Note that the tour has a lenght of -Inf since the reformulation created
+## some -Inf distances
+
+## filter out the dummy cities (we specify tsp so the tour lenght is 
+## recalculated)
+tour &lt;- TOUR(tour_atsp[tour_atsp &lt;= n_of_cities(atsp)], tsp = atsp)
+tour
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

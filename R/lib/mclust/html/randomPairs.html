@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Random hierarchical structure</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for randomPairs {mclust}"><tr><td>randomPairs {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Random hierarchical structure</h2>
+
+<h3>Description</h3>
+
+<p>Create a hierarchical structure using a random partition of the data.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+randomPairs(data, seed, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric matrix or data frame of observations.
+If a matrix or data frame, rows correspond to observations and
+columns correspond to variables.
+</p>
+</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+
+<p>Optional single value, interpreted as an integer, specifying the seed for random partition.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A numeric two-column matrix in which the <em>i</em>th row gives the minimum 
+index for observations in each of the two clusters merged at the
+<em>i</em>th stage of a random agglomerative hierarchical clustering.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hc.html">hc</a></code>,
+<code><a href="hclass.html">hclass</a></code>
+<code><a href="hcE.html">hcVVV</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data &lt;- iris[,1:4]
+randPairs &lt;- randomPairs(data)
+str(randPairs)
+# start model-based clustering from a random partition
+mod &lt;- Mclust(data, initialization = list(hcPairs = randPairs))
+summary(mod)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

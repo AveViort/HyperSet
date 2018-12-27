@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: FlexMix Interface to Zero Inflated Generalized Linear Models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for FLXMRziglm {flexmix}"><tr><td>FLXMRziglm {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>FlexMix Interface to Zero Inflated Generalized Linear Models</h2>
+
+<h3>Description</h3>
+
+<p>This is a driver which allows fitting of zero inflated poisson and
+binomial models.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+FLXMRziglm(formula = . ~ ., family = c("binomial", "poisson"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+<p>A formula which is interpreted relative to the formula
+specified in the call to <code>flexmix</code> using
+<code><a href="../../stats/html/update.formula.html">update.formula</a></code>. Default is to use the original
+<code>flexmix</code> model
+formula.</p>
+</td></tr>
+<tr valign="top"><td><code>family</code></td>
+<td>
+<p>A character string naming a <code><a href="../../stats/html/glm.html">glm</a></code>
+family function.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to <code>FLXMRglm</code></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns an object of class <code>FLXMRziglm</code>.
+</p>
+
+
+<h3>Note</h3>
+
+<p>In fact this only approximates zero inflated models by fixing the
+coefficient of the intercept at -Inf and the other coefficients at
+zero for the first component.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Friedrich Leisch and Bettina Gruen</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  data("dmft", package = "flexmix")
+  Model &lt;- FLXMRziglm(family = "poisson")
+  Fitted &lt;- flexmix(End ~ log(Begin + 0.5) + Gender + Ethnic + Treatment, 
+                    model = Model, k = 2 , data = dmft, 
+                    control = list(minprior = 0.01))
+  summary(refit(Fitted))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

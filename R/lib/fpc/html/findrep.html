@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Finding representatives for cluster border</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for findrep {fpc}"><tr><td>findrep {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Finding representatives for cluster border</h2>
+
+<h3>Description</h3>
+
+<p>Finds representative objects for the border of a cluster and the
+within-cluster variance as defined in the framework of the <code><a href="cdbw.html">cdbw</a></code>
+cluster validation index (and meant to be used in that context).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+findrep(x,xcen,clustering,cluster,r,p=ncol(x),n=nrow(x),
+                    nc=sum(clustering==cluster))
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>matrix. Euclidean dataset.</p>
+</td></tr>
+<tr valign="top"><td><code>xcen</code></td>
+<td>
+<p>mean vector of cluster.</p>
+</td></tr>
+<tr valign="top"><td><code>clustering</code></td>
+<td>
+<p>vector of integers with length <code>=nrow(x)</code>;
+indicating the cluster for each observation.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster</code></td>
+<td>
+<p>integer. Number of cluster to be treated.</p>
+</td></tr>
+<tr valign="top"><td><code>r</code></td>
+<td>
+<p>integer. Number of representatives.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>integer. Number of dimensions.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>integer. Number of observations.</p>
+</td></tr>
+<tr valign="top"><td><code>nc</code></td>
+<td>
+<p>integer. Number of observations in <code>cluster</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>List with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>repc</code></td>
+<td>
+<p>vector of index of representatives (out of all
+observations).</p>
+</td></tr>
+<tr valign="top"><td><code>repx</code></td>
+<td>
+<p>vector of index of representatives (out of only the
+observations in <code>cluster</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>maxr</code></td>
+<td>
+<p>number of representatives (this can be smaller than
+<code>r</code> if fewer pairwise different observations are in
+<code>cluster</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>wvar</code></td>
+<td>
+<p>estimated average within-cluster squared distance to mean.</p>
+</td></tr> 
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Halkidi, M. and Vazirgiannis, M. (2008) A density-based cluster
+validity approach using multi-representatives. <em>Pattern
+Recognition Letters</em> 29, 773-786.
+</p>
+<p>Halkidi, M., Vazirgiannis, M. and Hennig, C. (2015) Method-independent
+indices for cluster validation. In C. Hennig, M. Meila, F. Murtagh,
+R. Rocci (eds.) <em>Handbook of Cluster Analysis</em>, CRC
+Press/Taylor <code>&amp;</code> Francis, Boca Raton.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cdbw.html">cdbw</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  iriss &lt;- as.matrix(iris[c(1:5,51:55,101:105),-5])
+  irisc &lt;- as.numeric(iris[c(1:5,51:55,101:105),5])
+  findrep(iriss,colMeans(iriss),irisc,cluster=1,r=2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

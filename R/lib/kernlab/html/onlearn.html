@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Kernel Online Learning algorithms</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for onlearn {kernlab}"><tr><td>onlearn {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Kernel Online Learning algorithms</h2>
+
+<h3>Description</h3>
+
+<p>Online Kernel-based Learning algorithms for classification, novelty
+detection, and regression. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'onlearn'
+onlearn(obj, x, y = NULL, nu = 0.2, lambda = 1e-04)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p><code>obj</code> an object of class <code>onlearn</code> created by the
+initialization function <code>inlearn</code> containing the kernel to be
+used during learning and the parameters of the
+learned model</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>vector or matrix containing the data. Factors have
+to be numerically coded. If <code>x</code> is a matrix the code is
+run internally one sample at the time.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>the class label in case of classification. Only binary
+classification is supported and class labels have to be -1 or +1.
+</p>
+</td></tr>
+<tr valign="top"><td><code>nu</code></td>
+<td>
+<p>the parameter similarly to the <code>nu</code> parameter in SVM
+bounds the training error.</p>
+</td></tr>
+<tr valign="top"><td><code>lambda</code></td>
+<td>
+<p>the learning rate</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The online algorithms are based on a simple stochastic gradient descent
+method in feature space.
+The state of the algorithm is stored in an object of class
+<code>onlearn</code> and has to be passed to the function at each iteration.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The function returns an <code>S4</code> object of class <code>onlearn</code>
+containing the model parameters and the last fitted value which can be
+retrieved by the accessor method <code>fit</code>. The value returned in the
+classification and novelty detection problem is the decision function
+value phi.
+The accessor methods <code>alpha</code> returns the model parameters. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p> Kivinen J. Smola A.J. Williamson R.C. <br />
+<em>Online Learning with Kernels</em><br />
+IEEE Transactions on Signal Processing vol. 52, Issue 8, 2004<br />
+<a href="http://users.cecs.anu.edu.au/~williams/papers/P172.pdf">http://users.cecs.anu.edu.au/~williams/papers/P172.pdf</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="inlearn.html">inlearn</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## create toy data set
+x &lt;- rbind(matrix(rnorm(100),,2),matrix(rnorm(100)+3,,2))
+y &lt;- matrix(c(rep(1,50),rep(-1,50)),,1)
+
+## initialize onlearn object
+on &lt;- inlearn(2,kernel="rbfdot",kpar=list(sigma=0.2),
+              type="classification")
+
+ind &lt;- sample(1:100,100)
+## learn one data point at the time
+for(i in ind)
+on &lt;- onlearn(on,x[i,],y[i],nu=0.03,lambda=0.1)
+
+## or learn all the data 
+on &lt;- onlearn(on,x[ind,],y[ind],nu=0.03,lambda=0.1)
+
+sign(predict(on,x))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

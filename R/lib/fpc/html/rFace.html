@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: &quot;Face-shaped&quot; clustered benchmark datasets</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rFace {fpc}"><tr><td>rFace {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>&quot;Face-shaped&quot; clustered benchmark datasets</h2>
+
+<h3>Description</h3>
+
+<p>Generates &quot;face-shaped&quot; clustered benchmark datasets.
+This is based on a collaboration with Martin Maechler.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rFace(n, p = 6, nrep.top = 2, smile.coef = 0.6, dMoNo = 1.2, dNoEy = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>integer greater or equal to 10. Number of points.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>integer greater or equal to 2. Dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>nrep.top</code></td>
+<td>
+<p>integer. Number of repetitions of the hair-top point.</p>
+</td></tr>
+<tr valign="top"><td><code>smile.coef</code></td>
+<td>
+<p>numeric. Coefficient for quadratic term used for
+generation of mouth-points. Positive values=&gt;smile.</p>
+</td></tr>
+<tr valign="top"><td><code>dMoNo</code></td>
+<td>
+<p>number. Distance from mouth to nose.</p>
+</td></tr>
+<tr valign="top"><td><code>dNoEy</code></td>
+<td>
+<p>number. Minimum vertical distance from mouth to eyes.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function generates a nice benchmark example for cluster
+analysis. 
+There are six &quot;clusters&quot; in this data, of which the first five are
+clearly homogeneous patterns, but with different distributional
+shapes and different qualities of separation. The clusters are
+distinguished only in the first two dimensions. The attribute
+<code>grouping</code> is a factor giving the cluster numbers, see below.
+The sixth group of
+points corresponds to some hairs, and is rather a collection of
+outliers than a cluster in itself. This group contains
+<code>nrep.top+2</code> points. Of the remaining points, 20% belong to
+cluster 1, the chin (quadratic function plus noise).
+10% belong to cluster 2, the right eye (Gaussian). 30% belong to
+cluster 3, the mouth (Gaussian/squared Gaussian). 
+20% belong to cluster 4, the nose (Gaussian/gamma), and
+20% belong to cluster 5, the left eye (uniform).
+</p>
+<p>The distributions of the further
+variables are homogeneous over
+all points. The third dimension is exponentially distributed, the
+fourth dimension is Cauchy distributed, all further distributions are
+Gaussian.
+</p>
+<p>Please consider the source code for exact generation of the clusters.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An <code>n</code> times <code>p</code> numeric matrix with attributes
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>grouping</code></td>
+<td>
+<p>a factor giving the cluster memberships of the points.</p>
+</td></tr>
+<tr valign="top"><td><code>indexlist</code></td>
+<td>
+<p>a list of six vectors containing the indices of points
+belonging to the six groups.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  set.seed(4634)
+  face &lt;- rFace(600,dMoNo=2,dNoEy=0)
+  grface &lt;- as.integer(attr(face,"grouping"))
+  plot(face, col = grface)
+#  pairs(face, col = grface, main ="rFace(600,dMoNo=2,dNoEy=0)")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

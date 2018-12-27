@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Pairwise Distances from Genetic Data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dist.gene {ape}"><tr><td>dist.gene {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Pairwise Distances from Genetic Data</h2>
+
+<h3>Description</h3>
+
+<p>This function computes a matrix of distances between pairs of
+individuals from a matrix or a data frame of genetic data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dist.gene(x, method = "pairwise", pairwise.deletion = FALSE,
+          variance = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a matrix or a data frame (will be coerced as a matrix).</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>a character string specifying the method used to compute
+the distances; two choices are available: <code>"pairwise"</code> and
+<code>"percentage"</code>, or any unambiguous abbreviation of these.</p>
+</td></tr>
+<tr valign="top"><td><code>pairwise.deletion</code></td>
+<td>
+<p>a logical indicating whether to delete the
+columns with missing data on a pairwise basis. The default is to
+delete the columns with at least one missing observation.</p>
+</td></tr>
+<tr valign="top"><td><code>variance</code></td>
+<td>
+<p>a logical, indicates whether the variance of the
+distances should be returned (default to <code>FALSE</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function is meant to be very general and accepts different kinds
+of data (alleles, haplotypes, SNP, DNA sequences, ...). The rows of
+the data matrix represent the individuals, and the columns the loci.
+</p>
+<p>In the case of the pairwise method, the distance <i>d</i> between two
+individuals is the number of loci for which they differ, and the
+associated variance is <i>d(L - d)/L</i>, where <i>L</i> is the number
+of loci.
+</p>
+<p>In the case of the percentage method, this distance is divided by <i>L</i>,
+and the associated variance is <i>d(1 - d)/L</i>.
+</p>
+<p>For more elaborate distances with DNA sequences, see the function
+<code>dist.dna</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>dist</code>. If <code>variance = TRUE</code> an
+attribute called <code>"variance"</code> is given to the returned object.
+</p>
+
+
+<h3>Note</h3>
+
+<p>Missing data (<code>NA</code>) are coded and treated in R's usual way.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dist.dna.html">dist.dna</a></code>, <code><a href="cophenetic.phylo.html">cophenetic.phylo</a></code>,
+<code><a href="../../stats/html/dist.html">dist</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Zoom on a Portion of a Phylogeny</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for zoom {ape}"><tr><td>zoom {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Zoom on a Portion of a Phylogeny</h2>
+
+<h3>Description</h3>
+
+<p>This function plots simultaneously a whole phylogenetic tree
+(supposedly large) and a portion of it.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+zoom(phy, focus, subtree = FALSE, col = rainbow, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>focus</code></td>
+<td>
+<p>a vector, either numeric or character, or a list of
+vectors specifying the tips to be focused on.</p>
+</td></tr>
+<tr valign="top"><td><code>subtree</code></td>
+<td>
+<p>a logical indicating whether to show the context of the
+extracted subtrees.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>a vector of colours used to show where the subtrees are in
+the main tree, or a function .</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to <code>plot.phylo</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function aims at exploring very large trees. The main argument is
+a phylogenetic tree, and the second one is a vector or a list of
+vectors specifying the tips to be focused on. The vector(s) can be
+either numeric and thus taken as the indices of the tip labels, or
+character in which case it is taken as the corresponding tip labels.
+</p>
+<p>The whole tree is plotted on the left-hand side in a narrower
+sub-window (about a quarter of the device) without tip labels. The
+subtrees consisting of the tips in &lsquo;focus&rsquo; are extracted and plotted
+on the right-hand side starting from the top left corner and
+successively column-wise.
+</p>
+<p>If the argument &lsquo;col&rsquo; is a vector of colours, as many colours as the
+number of subtrees must be given. The alternative is to give a
+function that will create colours or grey levels from the number of
+subtrees: see <code><a href="../../grDevices/html/rainbow.html">rainbow</a></code> for some possibilities
+with colours.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code>, <code><a href="drop.tip.html">drop.tip</a></code>,
+<code><a href="../../graphics/html/layout.html">layout</a></code>, <code><a href="../../grDevices/html/rainbow.html">rainbow</a></code>,
+<code><a href="../../grDevices/html/grey.html">grey</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+data(chiroptera)
+zoom(chiroptera, 1:20, subtree = TRUE)
+zoom(chiroptera, grep("Plecotus", chiroptera$tip.label))
+zoom(chiroptera, list(grep("Plecotus", chiroptera$tip.label),
+                      grep("Pteropus", chiroptera$tip.label)))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

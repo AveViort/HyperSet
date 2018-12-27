@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Molecular Dating With Mean Path Lengths</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for chronoMPL {ape}"><tr><td>chronoMPL {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Molecular Dating With Mean Path Lengths</h2>
+
+<h3>Description</h3>
+
+<p>This function estimates the node ages of a tree using the mean path
+lengths method of Britton et al. (2002). The branch lengths of the
+input tree are interpreted as (mean) numbers of substitutions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+chronoMPL(phy, se = TRUE, test = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>se</code></td>
+<td>
+<p>a logical specifying whether to compute the standard-errors
+of the node ages (<code>TRUE</code> by default).</p>
+</td></tr>
+<tr valign="top"><td><code>test</code></td>
+<td>
+<p>a logical specifying whether to test the molecular clock
+at each node (<code>TRUE</code> by default).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The mean path lengths (MPL) method estimates the age of a node with
+the mean of the distances from this node to all tips descending from
+it. Under the assumption of a molecular clock, standard-errors of the
+estimates node ages can be computed (Britton et al. 2002).
+</p>
+<p>The tests performed if <code>test = TRUE</code> is a comparison of the MPL
+of the two subtrees originating from a node; the null hypothesis is
+that the rate of substitution was the same in both subtrees (Britton
+et al. 2002). The test statistic follows, under the null hypothesis, a
+standard normal distribution. The returned <em>P</em>-value is the
+probability of observing a greater absolute value (i.e., a two-sided
+test). No correction for multiple testing is applied: this is left to
+the user.
+</p>
+<p>Absolute dating can be done by multiplying the edge lengths found by
+calibrating one node age.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code> with branch lengths as estimated by
+the function. There are, by default, two attributes:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>stderr</code></td>
+<td>
+<p>the standard-errors of the node ages.</p>
+</td></tr>
+<tr valign="top"><td><code>Pval</code></td>
+<td>
+<p>the <em>P</em>-value of the test of the molecular clock for
+each node.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>The present version requires a dichotomous tree.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Britton, T., Oxelman, B., Vinnersten, A. and Bremer, K. (2002)
+Phylogenetic dating with confidence intervals using mean path
+lengths. <em>Molecular Phylogenetics and Evolution</em>, <b>24</b>,
+58&ndash;65.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="chronopl.html">chronopl</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tr &lt;- rtree(10)
+tr$edge.length &lt;- 5*tr$edge.length
+chr &lt;- chronoMPL(tr)
+layout(matrix(1:4, 2, 2, byrow = TRUE))
+plot(tr)
+title("The original tree")
+plot(chr)
+axisPhylo()
+title("The dated MPL tree")
+plot(chr)
+nodelabels(round(attr(chr, "stderr"), 3))
+title("The standard-errors")
+plot(tr)
+nodelabels(round(attr(chr, "Pval"), 3))
+title("The tests")
+layout(1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

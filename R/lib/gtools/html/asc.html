@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert between characters and ASCII codes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for asc {gtools}"><tr><td>asc {gtools}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Convert between characters and ASCII codes</h2>
+
+<h3>Description</h3>
+
+<p><code>asc</code> returns the ASCII codes for the specified characters.
+<code>chr</code> returns the characters corresponding to the specified ASCII codes.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  asc(char, simplify=TRUE)
+  chr(ascii)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>char</code></td>
+<td>
+<p>vector of character strings</p>
+</td></tr>
+<tr valign="top"><td><code>simplify</code></td>
+<td>
+<p>logical indicating whether to attempt to convert the
+result into a vector or matrix object. See <code><a href="../../base/html/sapply.html">sapply</a></code>
+for details.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ascii</code></td>
+<td>
+<p>vector or list of vectors containing integer ASCII codes</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>asc</code> returns the integer ASCII values for each character
+in the elements of <code>char</code>.  If <code>simplify=FALSE</code> the result
+will be a list contining one vector per element of <code>char</code>.  If
+<code>simplify=TRUE</code>, the code will attempt to convert the result into
+a vector or matrix.
+</p>
+<p><code>asc</code> returns the characters corresponding to the provided ASCII
+values.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Adapted by Gregory R. Warnes <a href="mailto:greg@warnes.net">greg@warnes.net</a> from code posted
+on the 'Data Debrief' blog on 2011-03-09 at
+<a href="http://datadebrief.blogspot.com/2011/03/ascii-code-table-in-r.html">http://datadebrief.blogspot.com/2011/03/ascii-code-table-in-r.html</a>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../base/html/strtoi.html">strtoi</a></code>,
+<code><a href="../../base/html/charToRaw.html">charToRaw</a></code>,
+<code><a href="../../base/html/rawToChar.html">rawToChar</a></code>,
+<code><a href="../../base/html/as.raw.html">as.raw</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## ascii codes for lowercase letters
+  asc(letters)
+
+  ## uppercase letters from ascii codes
+  chr(65:90)
+
+  ## works on muti-character strings
+  ( tmp &lt;- asc('hello!') )
+  chr(tmp)
+
+  ## Use 'simplify=FALSE' to return the result as a list
+  ( tmp &lt;- asc('hello!', simplify=FALSE) )
+  chr(tmp)
+
+  ## When simplify=FALSE the results can be...
+  asc( c('a', 'e', 'i', 'o', 'u', 'y' ) ) # a vector
+  asc( c('ae', 'io', 'uy' ) )             # or a matrix
+
+  ## When simplify=TRUE the results are always a list...
+  asc( c('a', 'e', 'i', 'o', 'u', 'y' ), simplify=FALSE )
+  asc( c('ae', 'io', 'uy' ), simplify=FALSE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gtools</em> version 3.8.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

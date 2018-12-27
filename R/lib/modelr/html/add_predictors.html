@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add predictors to a formula</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for add_predictors {modelr}"><tr><td>add_predictors {modelr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add predictors to a formula</h2>
+
+<h3>Description</h3>
+
+<p>This merges a one- or two-sided formula <code>f</code> with the
+right-hand sides of all formulas supplied in <code>...</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+add_predictors(f, ..., fun = "+")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>f</code></td>
+<td>
+<p>A formula.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Formulas whose right-hand sides will be merged to
+<code>f</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>A function name indicating how to merge the right-hand
+sides.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+f &lt;- lhs ~ rhs
+add_predictors(f, ~var1, ~var2)
+
+# Left-hand sides are ignored:
+add_predictors(f, lhs1 ~ var1, lhs2 ~ var2)
+
+# fun can also be set to a function like "*":
+add_predictors(f, ~var1, ~var2, fun = "*")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>modelr</em> version 0.1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

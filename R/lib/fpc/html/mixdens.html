@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Density of multivariate Gaussian mixture, mclust...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mixdens {fpc}"><tr><td>mixdens {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Density of multivariate Gaussian mixture, mclust parameterisation</h2>
+
+<h3>Description</h3>
+
+<p>Computes density values for data from a mixture of multivariate Gaussian
+distributions with parameters based on the way models are specified
+and parameters are stored in package mclust.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  mixdens(modelName,data,parameters)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+<p>an mclust model name.
+See <code><a href="../../mclust/html/mclustModelNames.html">mclustModelNames</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>data matrix; density values are computed for every
+observation (row).</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+<p>parameters of Gaussian mixture in the format used in
+the output of <code><a href="../../mclust/html/summary.mclustBIC.html">summary.mclustBIC</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Vector of density values for the observations.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  set.seed(98765)
+  require(mclust)
+  iriss &lt;- iris[sample(150,20),-5]
+  irisBIC &lt;- mclustBIC(iriss)
+  siris &lt;- summary(irisBIC,iriss)
+  round(mixdens(siris$modelName,iriss,siris$parameters),digits=2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Check DNA Alignments</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for checkAlignment {ape}"><tr><td>checkAlignment {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Check DNA Alignments</h2>
+
+<h3>Description</h3>
+
+<p>This function performs a series of diagnostics on a DNA alignement.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+checkAlignment(x, check.gaps = TRUE, plot = TRUE, what = 1:4)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>"DNAbin"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>check.gaps</code></td>
+<td>
+<p>a logical value specifying whether to check the
+distribution of alignment gaps.</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>a logical value specifying whether to do the plots.</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>an integer value giving the plot to be done. By default,
+four plots are done on the same figure.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function prints on the console a series of diagnostics on the
+set a aligned DNA sequences. If alignment gaps are present, their
+width distribution is analysed, as well as the width of contiguous
+base segments. The pattern of nucleotide diversity on each site is
+also analysed, and a relevant table is printed.
+</p>
+<p>If <code>plot = TRUE</code>, four plots are done: an image of the
+alignement, the distribution of gap widths (if present), the Shannon
+index of nucleotide diversity along the sequence, and the number of
+observed bases along the sequence.
+</p>
+<p>If the sequences contain many gaps, it might be better to set
+<code>check.gaps = FALSE</code> to skip the analysis of contiguous
+segments.
+</p>
+
+
+<h3>Value</h3>
+
+<p>NULL</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="alview.html">alview</a></code>, <code><a href="image.DNAbin.html">image.DNAbin</a></code>, <code><a href="all.equal.DNAbin.html">all.equal.DNAbin</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(woodmouse)
+checkAlignment(woodmouse)
+layout(1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

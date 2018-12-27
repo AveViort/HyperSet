@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: The type of an XML attribute for element from the DTD</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xmlAttributeType {XML}"><tr><td>xmlAttributeType {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>The type of an XML attribute for element from the DTD</h2>
+
+<h3>Description</h3>
+
+<p>This examines the definition of the 
+attribute, usually returned by parsing the DTD with
+<code><a href="parseDTD.html">parseDTD</a></code> and determines 
+its type from the possible values:
+Fixed, string data, implied, 
+required,  an identifier, 
+an identifier reference, a list of identifier references,
+an entity, a list of entities, 
+a name, a list of names, an element of enumerated set, 
+a notation entity.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xmlAttributeType(def, defaultType=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>def</code></td>
+<td>
+<p>the attribute definition object, usually retrieved from
+the DTD via <code><a href="parseDTD.html">parseDTD</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>defaultType</code></td>
+<td>
+<p>whether to return the default value
+if this attribute is defined as being a value from an enumerated set.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A string identifying the type for the sspecified attributed.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.w3.org/XML">http://www.w3.org/XML</a>, <a href="http://www.omegahat.net/RSXML">http://www.omegahat.net/RSXML</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="parseDTD.html">parseDTD</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

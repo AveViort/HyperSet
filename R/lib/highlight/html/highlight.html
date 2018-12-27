@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: syntax highlighting based on the R parser</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for highlight {highlight}"><tr><td>highlight {highlight}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>syntax highlighting based on the R parser</h2>
+
+<h3>Description</h3>
+
+<p>The <code>highlight</code> function performs syntax highlighting based on the
+results of the <code><a href="../../base/html/parse.html">parse</a></code> and the investigation
+of a detective.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+highlight(file, output = stdout(), detective = simple_detective, renderer,
+  encoding = "unknown", parse.output = parse(file, encoding = encoding,
+  keep.source = TRUE), styles = detective(parse.output), expr = NULL,
+  final.newline = FALSE, showPrompts = FALSE,
+  prompt = getOption("prompt"), continue = getOption("continue"),
+  initial.spaces = TRUE, size = c("normalsize", "tiny", "scriptsize",
+  "footnotesize", "small", "large", "Large", "LARGE", "huge", "Huge"),
+  show_line_numbers = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>code file to parse. This is only used if the <code>parse.output</code> is given</p>
+</td></tr>
+<tr valign="top"><td><code>output</code></td>
+<td>
+<p>where to write the rendered text. If this is anything else than the
+default (standard output), the <code><a href="../../base/html/sink.html">sink</a></code> function
+is used to redirect the standard output to the output.</p>
+</td></tr>
+<tr valign="top"><td><code>detective</code></td>
+<td>
+<p>the detective chooses the style to apply to each token, basing its
+investigation on the results of the <code><a href="../../base/html/parse.html">parse</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>renderer</code></td>
+<td>
+<p>highlight delegates rendering the information to the renderer. This
+package includes html and latex renderers. See <code><a href="renderer_html.html">renderer_html</a></code>
+and <code><a href="renderer_latex.html">renderer_latex</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>encoding</code></td>
+<td>
+<p>encoding to assume for the file. the argument is directly passed
+to the <code><a href="../../base/html/parse.html">parse</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>parse.output</code></td>
+<td>
+<p>output from the <code><a href="../../base/html/parse.html">parse</a></code>. If this is given, the
+arguments <code>file</code> and <code>encoding</code> are not used</p>
+</td></tr>
+<tr valign="top"><td><code>styles</code></td>
+<td>
+<p>result of the detective investigation. A character vector
+with as many elements as there are tokens in the parser output</p>
+</td></tr>
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>In case we want to render only one expression and not the full parse
+tree, this argument can be used to specify which expression
+to render. The default (NULL) means render all expressions. This
+feature is used by the sweave driver shipped with this package. See
+<code><a href="HighlightWeaveLatex.html">HighlightWeaveLatex</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>final.newline</code></td>
+<td>
+<p>logical. Indicates if a newline character is added after all tokens.</p>
+</td></tr>
+<tr valign="top"><td><code>showPrompts</code></td>
+<td>
+<p>if TRUE, the highlighted text will show standard and continue prompt</p>
+</td></tr>
+<tr valign="top"><td><code>prompt</code></td>
+<td>
+<p>standard prompt</p>
+</td></tr>
+<tr valign="top"><td><code>continue</code></td>
+<td>
+<p>continue prompt</p>
+</td></tr>
+<tr valign="top"><td><code>initial.spaces</code></td>
+<td>
+<p>should initial spaces be displayed or skipped.</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>font size. only respected by the latex renderer so far.</p>
+</td></tr>
+<tr valign="top"><td><code>show_line_numbers</code></td>
+<td>
+<p>logical. When TRUE, line numbers are shown in the output.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments, currently ignored.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The resulting formatted text is returned invisibly. It is also
+written to the output if the output is not <code>NULL</code>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="renderer_html.html">renderer_html</a></code> and <code><a href="renderer_latex.html">renderer_latex</a></code> are the
+two implementation of renderers currently available in this package.
+</p>
+<p><code><a href="simple_detective.html">simple_detective</a></code> is an example detective which does a very
+simple investigation.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+	tf &lt;- tempfile()
+	dump( "jitter", file = tf )
+	highlight( file = tf, detective = simple_detective,
+		renderer = renderer_html( document = TRUE ) )
+	highlight( file = tf, detective = simple_detective,
+		renderer = renderer_latex( document = TRUE ) )
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>highlight</em> version 0.4.7.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

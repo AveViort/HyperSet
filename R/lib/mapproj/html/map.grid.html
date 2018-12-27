@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Draw a latitude/longitude grid on a projected map</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for map.grid {mapproj}"><tr><td>map.grid {mapproj}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Draw a latitude/longitude grid on a projected map
+</h2>
+
+<h3>Description</h3>
+
+<p>Draws a grid on an existing map.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+map.grid(lim, nx=9, ny=9, labels=TRUE, pretty=TRUE, cex, col, lty,
+  font, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>lim</code></td>
+<td>
+<p>a vector of 4 numbers specifying
+limits: <code>c(lon.low, lon.high, lat.low, lat.high)</code>.
+<code>lim</code> can also be a list with a component named <code>range</code>, such
+as the result of <code>map</code>, from which limits are taken.
+</p>
+</td></tr>
+<tr valign="top"><td><code>nx, ny</code></td>
+<td>
+<p>the desired number of equally-spaced longitude and
+latitude lines</p>
+</td></tr>
+<tr valign="top"><td><code>labels</code></td>
+<td>
+<p>logical to indicate if grid lines should be labeled with
+longitude/latitude values.</p>
+</td></tr>
+<tr valign="top"><td><code>pretty</code></td>
+<td>
+<p>If <code>TRUE</code>, grid lines will be placed at round numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>cex, col, lty, font</code></td>
+<td>
+<p>passed to arguments to <code>par</code></p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments passed to <code>lines</code> and
+<code>text</code>, e.g.  <code>col</code> to change the color of the grid and
+<code>lty</code> to change the line type.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Equally-spaced lines of constant longitude and lines of constant
+latitude are superimposed on the current map, using the current projection.
+These lines will appear curved under most projections, and give an idea of
+how the projection works.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../maps/html/map.html">map</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(maps)
+m &lt;- map("usa", plot=FALSE)
+map("usa", project="albers", par=c(39, 45))
+map.grid(m)
+
+# get unprojected world limits
+m &lt;- map('world', plot=FALSE)
+
+# center on NYC
+map('world', proj='azequalarea', orient=c(41, -74, 0))
+map.grid(m, col=2)
+points(mapproject(list(y=41, x=-74)), col=3, pch="x", cex=2)
+
+map('world', proj='orth', orient=c(41, -74, 0))
+map.grid(m, col=2, nx=6, ny=5, label=FALSE, lty=2)
+points(mapproject(list(y=41, x=-74)), col=3, pch="x", cex=2)
+
+# center on Auckland
+map('world', proj='orth', orient=c(-36.92, 174.6, 0))
+map.grid(m, col=2, label=FALSE, lty=2)
+points(mapproject(list(y=-36.92, x=174.6)), col=3, pch="x", cex=2)
+
+m &lt;- map('nz')
+# center on Auckland
+map('nz', proj='azequalarea', orient=c(-36.92, 174.6, 0))
+points(mapproject(list(y=-36.92, x=174.6)), col=3, pch="x", cex=2)
+map.grid(m, col=2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mapproj</em> version 1.2.6 <a href="00Index.html">Index</a>]</div>
+</body></html>

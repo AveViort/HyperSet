@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plots two trees side by side, highlighting edges unique to...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dend_diff {dendextend}"><tr><td>dend_diff {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plots two trees side by side, highlighting edges unique to each tree in red.</h2>
+
+<h3>Description</h3>
+
+<p>Plots two trees side by side, highlighting edges unique to each tree in red.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dend_diff(dend, ...)
+
+## S3 method for class 'dendrogram'
+dend_diff(dend, dend2, horiz = TRUE, ...)
+
+## S3 method for class 'dendlist'
+dend_diff(dend, ..., which = c(1L, 2L))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram or <a href="dendlist.html">dendlist</a> to compre with</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to <a href="../../stats/html/dendrogram.html">plot.dendrogram</a></p>
+</td></tr>
+<tr valign="top"><td><code>dend2</code></td>
+<td>
+<p>a dendrogram to compare with</p>
+</td></tr>
+<tr valign="top"><td><code>horiz</code></td>
+<td>
+<p>logical (TRUE) indicating if the dendrogram should be drawn horizontally or not.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>an integer vector indicating, in the case &quot;dend&quot; is a dendlist, 
+on which of the trees should the modification be performed. 
+If missing - the change will be performed on all of objects in the dendlist.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Invisible <a href="dendlist.html">dendlist</a> of both trees.
+</p>
+
+
+<h3>Source</h3>
+
+<p>A <a href="../../stats/html/dendrogram.html">dendrogram</a> implementation for <a href="../../distory/html/phylo.diff.html">phylo.diff</a> from the distory package
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="distinct_edges.html">distinct_edges</a>, <a href="highlight_distinct_edges.html">highlight_distinct_edges</a>,
+<a href="dist.dendlist.html">dist.dendlist</a>, <a href="tanglegram.html">tanglegram</a>
+<a href="assign_values_to_branches_edgePar.html">assign_values_to_branches_edgePar</a>,
+<a href="../../distory/html/distinct.edges.html">distinct.edges</a>,
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+x &lt;- 1:5 %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+y &lt;- set(x, "labels", 5:1)
+
+dend_diff(x, y)
+dend_diff(dendlist(x, y))
+dend_diff(dendlist(y, x))
+
+dend1 &lt;- 1:10 %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+dend2 &lt;- dend1 %&gt;% set("labels", c(1,3,2,4, 5:10) )
+dend_diff(dend1, dend2)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

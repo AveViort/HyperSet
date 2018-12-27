@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Register a Genetic Algorithm Seriation Method</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for register_GA {seriation}"><tr><td>register_GA {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Register a Genetic Algorithm Seriation Method</h2>
+
+<h3>Description</h3>
+
+<p>Register a GA-based seriation metaheuristic.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+register_GA()
+</pre>
+
+
+<h3>Details</h3>
+
+<p>Registers the method <code>"GA"</code> for <code>seriate</code>. This method
+can be used to optimize any criterion in package <span class="pkg">seriation</span>.
+<code>control</code> for <code>seriate</code> with
+method <code>"GA"</code> accepts the following parameters:
+</p>
+
+<dl>
+<dt><code>"criterion"</code></dt><dd><p> criterion to optimize. Default: BAR</p>
+</dd>
+<dt><code>"suggestions"</code></dt><dd><p> suggestions to warm start the GA. <code>NA</code>
+means no warm start. Default: TSP, QAP_LS and Spectral. </p>
+</dd>
+<dt><code>"selection"</code></dt><dd><p> Selection operator (see <span class="pkg">GA</span>). Default: non-linear rank selection</p>
+</dd>
+<dt><code>"crossover"</code></dt><dd><p> Crossover operator (see <span class="pkg">GA</span>). Default: ordered crossover (OX)</p>
+</dd>
+<dt><code>"mutation"</code></dt><dd><p> Mutation operator (see <span class="pkg">GA</span>). Default:
+a mixture of the simple insertion (80% chance) and simple
+inversion (20% chance) operators.</p>
+</dd>
+<dt><code>"pmutation"</code></dt><dd><p> proability for permutations. Default: .5</p>
+</dd>
+<dt><code>"pcrossover"</code></dt><dd><p> probability for crossover. Default: .2</p>
+</dd>
+<dt><code>"popsize"</code></dt><dd><p> the population size. Default: 100</p>
+</dd>
+<dt><code>"maxiter"</code></dt><dd><p> maximum number of generations. Default: 1000 </p>
+</dd>
+<dt><code>"run"</code></dt><dd><p> stop after <code>run</code> generations without improvement. Default: 50 </p>
+</dd>
+<dt><code>"parallel"</code></dt><dd><p> use multiple cores? Default: TRUE</p>
+</dd>
+<dt><code>"verbose"</code></dt><dd><p> Report progress? Default: TRUE</p>
+</dd>
+</dl>
+
+<p>The GA uses by default the ordered cross-over (OX) operator.
+For mutation, the GA uses a mixture of simple insertion and simple inversion
+operators. This mixed operator is created using
+<code>seriation::gaperm_mixedMutation(ismProb = .8)</code>, where <code>ismProb</code> is
+the probability that the simple insertion mutation operator is used.
+See package <span class="pkg">GA</span> for a description of other available
+cross-over and mutation operators for permutaitons. The appropriate
+operator functions in <span class="pkg">GA</span> start with <code>gaperm_</code>.
+</p>
+<p>We warm start the GA using <code>"suggestions"</code> given by several
+heuristics. Set <code>"suggestions"</code> to <code>NA</code> to start with a purely
+random initial population.
+</p>
+<p><b>Note:</b> Package <span class="pkg">GA</span> needs to be installed.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler
+</p>
+
+
+<h3>References</h3>
+
+<p>Luca Scrucca (2013): GA: A Package for Genetic Algorithms in R.
+<em>Journal of Statistical Software,</em> <b>53</b>(4), 1&ndash;37.
+URL <a href="http://www.jstatsoft.org/v53/i04/">http://www.jstatsoft.org/v53/i04/</a>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="seriate.html">seriate</a></code>,
+<code><a href="../../GA/html/ga.html">ga</a></code> in <span class="pkg">GA</span>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+register_GA()
+list_seriation_methods("dist")
+
+d &lt;- dist(random.robinson(50, pre=TRUE, noise=.1))
+
+## use default settings: Banded AR form
+o &lt;- seriate(d, "GA")
+pimage(d, o)
+
+## optimize for linear sertiation criterion (LS)
+o &lt;- seriate(d, "GA", control = list(criterion = "LS"))
+pimage(d, o)
+
+## no warm start
+o &lt;- seriate(d, "GA", control = list(criterion = "LS", suggestions = NA))
+pimage(d, o)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

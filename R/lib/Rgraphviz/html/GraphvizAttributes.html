@@ -1,0 +1,648 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Graph Attributes for Rgraphviz</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for GraphvizAttributes {Rgraphviz}"><tr><td>GraphvizAttributes {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Graph Attributes for Rgraphviz</h2>
+
+<h3>Description</h3>
+
+<p>The following describes the allowable attributes to be used with
+Rgraphviz.  Most of these are sent directly to Graphviz and will
+influence the plot layout, some of these are only cosmetic and stay in
+R.  Users are referred to the Graphviz web documentation which
+contains some more detailed information on these attributes (and is
+our source).
+</p>
+
+
+<h3>Graph Attributes</h3>
+
+<p><b>General Graph Attributes:</b>
+</p>
+
+<dl>
+<dt><code>bgcolor</code>:</dt><dd><p>Color for the entire canvas.  The default is
+to use <code>transparent</code></p>
+</dd> 
+<dt><code>center</code>:</dt><dd><p>Drawing is centered in the output canvas.
+This is a boolean value with a default of <code>FALSE</code>.</p>
+</dd>
+<dt><code>fontcolor</code>:</dt><dd><p>Color used for text, defaulting to
+<code>black</code>.</p>
+</dd>
+<dt><code>fontname</code>:</dt><dd><p>Font used for text.  Default is Times Roman.</p>
+</dd>
+<dt><code>fontpath</code>:</dt><dd><p>Directory used to search for fonts</p>
+</dd>
+<dt><code>fontsize</code>:</dt><dd><p>Font size, in points, for text.  This
+attribute accepts doubles for values with a default of <code>14.0</code>
+and a minimum value of <code>1.0</code></p>
+</dd>
+<dt><code>label</code>:</dt><dd><p>Label for the graph.  This is a string with
+some extra escape sequences which can be used.  The substring
+<code>\N</code> is replaced by the name of the node, and the substring
+<code>\G</code> by the name of the graph.  For graph or cluster
+attributes, <code>\G</code> is replaced by the name of the graph or
+cluster.  For edge attributes, the substring <code>\N</code> is
+replaced by the name of the edge, and the substrings <code>\T</code>
+and <code>\H</code> by the names of the tail and head nodes.  The
+default value for nodes is <code>\N</code> with everything else
+defaulting to </p>
+</dd>
+<dt><code>labeljust</code>:</dt><dd><p>Subgraphs inherit cluster behavior for
+labeljust.  If <code>r</code>, the labels are right-justified within
+the bounding rectangle.  If <code>l</code> they are left-justified.
+Otherwise the labels are centered.  The default value is
+<code>c</code>.</p>
+</dd> 
+<dt><code>labelloc</code>:</dt><dd><p>Top/bottom placement for graph labels.  A
+value of <code>t</code> places the label at the top, <code>b</code> places
+them at the bottom.  By default root graph labels go on the bottom
+and cluster labels go on the top.</p>
+</dd>
+<dt><code>layers</code>:</dt><dd><p>Specifies a linearly ordered list of layer
+names attached to the graph.  Only those components belonging to
+the current layer appear.  This attribute accepts a
+<code>layerList</code>, which is list of strings separated by the
+characters defined with the <code>layersep</code> attribute which
+defines layer names and implicitly numbered 1,2,etc.  The default
+is  which only uses one layer.</p>
+</dd>
+<dt><code>layersep</code>:</dt><dd><p>Separator characters used to split the
+layers into a list of names.  The default is colons, tabs or
+spaces.</p>
+</dd> 
+<dt><code>margin</code>:</dt><dd><p>Set X&amp;Y margins of canvas in inches.
+Specified using the notation <code>val,val</code> where each val is a
+double.</p>
+</dd> 
+<dt><code>orientation</code>:</dt><dd><p>If &quot;[1L*]*&quot;, set graph orientation to
+landscape.  Used only if <code>rotate</code> is not defined.  Default is
+the empty string.</p>
+</dd>
+<dt><code>page</code>:</dt><dd><p>Width &amp; height of output pages, in inches.  If set
+and smaller then the size of the layout, a rectangular
+array of pages of the specified page size is overlaid on the
+layout, with origins aligned in the lower-left corner, thereby
+partitioning the layout into pages.  The pages are then produced
+one at a time in 'pagedir' order.  Specified using the notion
+<code>val,val</code> where each val is a double.</p>
+</dd>
+<dt><code>pagedir</code>:</dt><dd><p>If the <code>page</code> attribute is set and
+applicable, this attribute specifies the order in which the pages
+are emitted.  This is limited to one of the 8 row or column major
+orders.  One of <code>BL</code>, <code>BR</code>, <code>TR</code>, <code>RB</code>,
+<code>RT</code>, <code>LB</code>, or <code>LT</code> specifying the 8 row or column
+major orders for traversing a rectangular array (the first
+character corresponding to the major order and the second to the
+minor order).  The default value is <code>BL</code></p>
+</dd>
+<dt><code>quantum</code>:</dt><dd><p>If 'quantum' &gt; 0.0, node label dimensions
+will be rounded to integral multiples of the quantum.  This
+attribute is of type double, with a default and minimum value of
+<code>0.0</code></p>
+</dd> 
+<dt><code>ranksep</code>:</dt><dd><p>In dot, this gives the desired rank
+separation in inches.  If the value contains <code>equally</code>, the
+centers of all the ranks are spaced equally apart.  In twopi,
+specifies the separation of concentric circles.  This value is of
+type double, with a minimum value of <code>0.02</code>.  In dot, the
+default value is <code>0.5</code> and for twopi it is <code>1.0</code>.</p>
+</dd> 
+<dt><code>ratio</code>:</dt><dd><p>Sets the aspect ratio for the drawing.  If
+numeric, defines aspect ratio.  If it is 'fill' and 'size'
+has been set, node positions are scaled such that the final
+drawing fills exactly the specified size.  If 'compress' and the
+'size' attribute is set and the graph can not be drawn on a single
+page, then the drawing is compressed to fit in the given size.  If
+'auto', the 'page' attribute is set and the graph cannot be drawn
+on a single page, then 'size' is set to an &ldquo;ideal&rdquo; value.  The
+default for this attribute is &ldquo;fill&rdquo;</p>
+</dd>
+<dt><code>rotate</code>:</dt><dd><p>If 90, set drawing orientation to landscape.
+This attribute accepts integer values and defaults to <code>0</code></p>
+</dd>
+<dt><code>samplepoints</code>:</dt><dd><p>If the input graph defines the
+'vertices' attribute, and output is dot or xdot, this gives the
+number of points used to represent circles and ellipses.  It plays
+the same role in neato, when adjusting the layout to avoid
+overlapping nodes.  This attribute accepts integer values and
+defaults to <code>8</code></p>
+</dd> 
+<dt><code>size</code>:</dt><dd><p>Maximum width and height of drawing, in inches.
+Specified using the notation <code>val,val</code> where each val is a
+double.  If not specified and there is a current output device,
+the graph is scaled to fit into that device.  If <code>size</code> is
+not specified and there is no current output device, a plot region
+of the default size will be opened and the graph scaled to match that.</p>
+</dd> 
+<dt><code>start</code>:</dt><dd><p>Parameter used to determine the initial layout
+of nodes.  By default, nodes are randomly placed in a
+square whose sides have length (number of nodes).  The same seed
+is always
+used for the random number generator, so the initial placement is
+repeatable.  If 'start' converts to an integer, this is used as a
+seed value for the RNG.  If 'start' is &quot;regular&quot;, the nodes are
+placed regularly about a circle.  Finally if 'start' is defined,
+and not one of those cases, the current time is used to pick a
+seed.  The default is the empty string.</p>
+</dd>
+</dl>
+
+<p><b>Dot Only Attributes</b>
+</p>
+
+<dl>
+<dt><code>clusterrank</code>:</dt><dd><p>Mode used for handling
+clusters.  If &quot;local&quot;, a subgraph whose name begins with &quot;cluster&quot;
+is given special treatment.  The subgraph is laid out separately,
+and then  integrated as a unit into its parent graph.  If the cluster has
+a 'label' parameter, this label is displayed w/ the cluster.
+Acceptable values are <code>local</code>, <code>global</code> or <code>none</code> -
+with <code>local</code> being the default.</p>
+</dd> 
+<dt><code>compound</code>:</dt><dd><p>Allow edges between clusters.  This is a
+boolean value with a default of <code>FALSE</code></p>
+</dd>
+<dt><code>concentrate</code>:</dt><dd><p>Use edge concentrators.  This is a
+boolean value with a default of <code>FALSE</code></p>
+</dd>
+<dt><code>mclimit</code>:</dt><dd><p>Scale factor used to alter the 'MinQuit' and
+'MaxIter' parameters used during crossing minimization.  This is a
+double value with a default of <code>1.0</code></p>
+</dd>
+<dt><code>nodesep</code>:</dt><dd><p>Minimum space between two adjacent nodes of
+the same rank, in inches.  This is a double value with a default
+of <code>0.25</code> and a minimum of <code>0.02</code></p>
+</dd>
+<dt><code>ordering</code>:</dt><dd><p>If <code>out</code> for a graph and n is a node in
+G, then edges n-&gt;* appear left to right in the order that they
+were defined.</p>
+</dd>
+<dt><code>rankdir</code>:</dt><dd><p>Determines if the layout is left-to-right or
+top-to-bottom.  Acceptable values are <code>LR</code> and <code>TB</code> with
+the default being the latter.</p>
+</dd>
+<dt><code>remincross</code>:</dt><dd><p>If <code>TRUE</code> and there are multiple
+clusters, run cross minimization a second time.  Default is <code>FALSE</code></p>
+</dd>
+<dt><code>searchsize</code>:</dt><dd><p>During network simplex, maximum number of edges
+with negative cut values to search when looking for one with
+minimum cut value.  This is an integer value with a default of <code>30</code></p>
+</dd>
+<dt><code>showboxes</code>:</dt><dd><p>Debugging feature for postscript output, R
+only.  Not currently implemented.</p>
+</dd>
+</dl>
+
+<p><b>Neato Only Attributes</b>
+</p>
+
+<dl>
+<dt><code>Damping</code>:</dt><dd><p>Factor damping force motions.  On each
+iteration, a node's movement is limited to this factor of its
+potential motion.  This is a double value with a default of
+<code>0.99</code> and a minimum value of <code>0.0</code></p>
+</dd>
+<dt><code>defaultdist</code>:</dt><dd><p>Default distance between nodes in
+separate connected components.  Only applicable if
+<code>pack=FALSE</code>.  Defaults to <code>1+(avg. len)*sqrt(|V|)</code> and
+has a minimum value of <code>epsilon</code>.</p>
+</dd>
+<dt><code>dim</code>:</dt><dd><p>Set the number of dimensions used for the
+layout.  This is an integer value with a default and minimum value
+of <code>2</code>.</p>
+</dd>
+<dt><code>epsilon</code>:</dt><dd><p>Terminating condition.  If length squared of
+all energy gradients are less than epsilon, the algorithm stops.
+This is a double value with a default of <code>.0001 times the
+	number of nodes</code>.</p>
+</dd> 
+<dt><code>maxiter</code>:</dt><dd><p>Sets the number of iterations used.  This is
+an integer value with the default of <code>MAXINT</code>.</p>
+</dd>
+<dt><code>model</code>:</dt><dd><p>If <code>circuit</code>, use circuit resistance model
+to compute dissimilarity values, otherwise use shortest path.
+Defaults to the empty string.</p>
+</dd>
+</dl>
+
+<p><b>Twopi Only Attributes</b>
+</p>
+
+<dl>
+<dt><code>root</code>:</dt><dd><p>Name of the node to use as the center of the
+layout.  If not defined, will pick the most central node.</p>
+</dd>
+</dl>
+
+<p><b>Not Dot Attributes</b>
+</p>
+
+<dl>
+<dt><code>normalize</code>:</dt><dd><p>Normalize coordinates of final layout so
+that the first point is at the origin, then rotate so that the
+first edge is horizontal.  This is a boolean value with a default
+of <code>FALSE</code>.</p>
+</dd>
+<dt><code>overlap</code>:</dt><dd><p>If <code>scale</code>, remove node overlaps by
+scaling.  If <code>FALSE</code>, use Voronoi technique, otherwise leave
+overlaps.  Default is the empty string.</p>
+</dd>
+<dt><code>pack</code>:</dt><dd><p>If &quot;true&quot; or non-negative integer - each
+connected component is laid out separately and then the graphs
+are packed tightly.  If pack has an integral value, this is used
+as the size (in points) of a margin around each part; otherwise
+a default margin of 8 is used. If 'false', the entire graph is
+laid out together.  For twopi layouts, this just sets the
+margin.  Default is <code>FALSE</code></p>
+</dd>
+<dt><code>packmode</code>:</dt><dd><p>Indicates the granularity and method used
+for packing.  This will automatically turn on <code>pack</code>.
+Acceptable values are <code>node</code>, <code>clust</code> and <code>graph</code>,
+specifying the granularity of packing connected components when
+<code>pack=TRUE</code>.  The default is <code>node</code>.</p>
+</dd>
+<dt><code>sep</code>:</dt><dd><p>Fraction to increase polygons for purposes of
+determining overlap.  This is a double value with a default of <code>0.01</code>.</p>
+</dd>
+<dt><code>splines</code>:</dt><dd><p>Draw edges as splines.  This is a boolean
+value with a default of <code>TRUE</code>.</p>
+</dd>
+<dt><code>voro_margin</code>:</dt><dd><p>Factor to scale up drawing to allow
+margin for expansion in Voronoi technique.  This is a double value
+with a default of <code>0.05</code> and a minimum value of <code>0.0</code></p>
+</dd> 
+</dl>
+
+<p><b>Output Based</b>
+</p>
+
+<dl>
+<dt><code>resolution</code>:</dt><dd><p>Number of pixels per inch on a display,
+used for SVG output.  The default for this attribute is
+<code>0.96</code> and it accepts values of type double.</p>
+</dd>
+<dt><code>stylesheet</code>:</dt><dd><p>A URL or pathname specifying a XML style
+sheet, for SVG output.</p>
+</dd>
+<dt><code>truecolor</code>:</dt><dd><p>Output relies on a truecolor color model,
+used with bitmap outputs.  This is a boolean value with a default
+of <code>FALSE</code></p>
+</dd>
+</dl>
+
+<p><b>Misc</b>
+</p>
+
+<dl>
+<dt><code>URL</code>:</dt><dd><p>Hyperlink incorporated into the output.  For
+whole graphs, used as part of an image map.  Not currently implemented</p>
+</dd>
+<dt><code>comment</code>:</dt><dd><p>A device dependent commentary.  Not currently
+implemented.</p>
+</dd>
+<dt><code>nslimit</code>:</dt><dd><p>Number of iterations in network simplex
+applications.  Used in computing node x coordinates</p>
+</dd>
+<dt><code>nslimit1</code>:</dt><dd><p>Same as <code>nslimit</code> but for ranking
+nodes</p>
+</dd>
+<dt><code>outputorder</code>:</dt><dd><p>Specify order in which nodes and edges are
+drawn.  R only</p>
+</dd>
+</dl>
+
+
+
+<h3>Edge Attributes</h3>
+
+<p><b>General Edge Attributes</b>
+</p>
+
+<dl>
+<dt><code>arrowhead</code>:</dt><dd><p>Shape of the arrowhead.  Currently somewhat
+limited in what can be rendered in R as opposed to what is
+available via Graphviz in that only <code>open</code> and <code>none</code>
+are allowed.  The <code>open</code> is used by default for directed
+edges and <code>none</code> for undirected edges.  R only(?)</p>
+</dd>
+<dt><code>arrowsize</code>:</dt><dd><p>Multiplicative scale factor for arrowheads,
+type double.  R only (?).  This attribute accepts values of type
+double with a default of <code>1.0</code> and minimum of <code>1.0</code>.</p>
+</dd>
+<dt><code>arrowtail</code>:</dt><dd><p>Style of arrow on the tail node of an edge,
+see <code>arrowhead</code>.  For directed edges that with bidirectional
+arrows, <code>open</code> is used.  R only(?)</p>
+</dd>
+<dt><code>color</code>:</dt><dd><p>The color of the edge.  Defaults to
+<code>black</code>.</p>
+</dd> 
+<dt><code>decorate</code>:</dt><dd><p>If TRUE, attach edge label to edge by a
+2-segment polyline, underlining the label, then going to the
+closest point of the spline.  Default is <code>FALSE</code>.  Currently
+unimplemented.</p>
+</dd> 
+<dt><code>dir</code>:</dt><dd><p>Edge type drawing, which ends should get the
+arrowhead.  R only(?).  For directed graphs, this defaults to
+<code>forward</code> and undirected graphs default to <code>both</code>.
+Other possible values are <code>both</code> (arrows in both
+directions) and <code>back</code> (Arrow on the tail only)</p>
+</dd>
+<dt><code>fontcolor</code>:</dt><dd><p>The color used for text.  The
+default value is <code>black</code> in R</p>
+</dd>
+<dt><code>fontname</code>:</dt><dd><p>Font used for text.  Defaults to Times
+Roman.  Currently unimplemented.</p>
+</dd>
+<dt><code>fontsize</code>:</dt><dd><p>Font size, used for text.  Defaults to
+<code>14.0</code> with a minimum value of <code>1.0</code></p>
+</dd>
+<dt><code>headclip</code>:</dt><dd><p>Head of the edge is clipped to the boundary
+of the head node, otherwise it goes to the center of the node.
+This is a boolean value with the default of <code>TRUE</code>.
+Currently unimplemented</p>
+</dd>
+<dt><code>headlabel</code>:</dt><dd><p>Label for the head of the edge.  See
+<code>label</code> in <code>Graph Attributes</code> for a description of
+additional escape sequences.  Currently unimplemented.</p>
+</dd>
+<dt><code>headport</code>:</dt><dd><p>Where on the node to aim the edges, uses
+<code>center</code>,
+<code>n</code>, <code>s</code>, <code>e</code>, <code>nw</code>, <code>nw</code>, <code>se</code>, and
+<code>sw</code>.  The default is <code>center</code>.</p>
+</dd>
+<dt><code>label</code>:</dt><dd><p>The edge label.  See
+<code>label</code> in <code>Graph Attributes</code> for a description of
+additional escape sequences.</p>
+</dd>
+<dt><code>labelangle</code>:</dt><dd><p>Angle in degrees that the label is
+rotated, as a double.  Default is <code>-25.0</code> with a minimum
+value of <code>-180.0</code>.  Currently unimplemented.</p>
+</dd>
+<dt><code>labeldistance</code>:</dt><dd><p>Multiplicative scaling factor adjusting
+the distance that the label is from the node.  This is a double
+value with a default of <code>1.0</code> and a minimum value of <code>0.0</code>.</p>
+</dd>
+<dt><code>layer</code>:</dt><dd><p>Specifies the layers that this edge is present,
+type of <code>layerRange</code>.  This is specified as a string in the
+format <code>layerID</code> or <code>layerIDslayerIDslayerID...</code>, where
+<code>s</code> is a character from the <code>layersep</code> attribute.  The
+<code>layerID</code> attribute can be <code>all</code>, a decimal integer or a
+layer name.  Defaults to the empty string.</p>
+</dd> 
+<dt><code>style</code>:</dt><dd><p>Set line style for the edge.  R only.  Can be
+one of <code>dashed</code>, <code>dotted</code>, <code>solid</code>, <code>invis</code>
+and <code>bold</code>.  Defaults to <code>solid</code>.</p>
+</dd>
+<dt><code>tailclip</code>:</dt><dd><p>Same as <code>headclip</code> except for the tail
+of the edge.  Defaults to <code>TRUE</code>.  Currently unimplemented.</p>
+</dd>
+<dt><code>taillabel</code>:</dt><dd><p>Same as <code>headlabel</code> except for the
+tail of the edge.  Defaults to the empty string.  Currently
+unimplemented.</p>
+</dd> 
+<dt><code>weight</code>:</dt><dd><p>The weight of the edge.  This attribute is of
+type double with a default of <code>0.75</code> and a minimum value of
+<code>0.01</code>.</p>
+</dd> 
+</dl>
+
+<p><b>Dot Only Attributes</b>
+</p>
+
+<dl>
+<dt><code>constraint</code>:</dt><dd><p>If FALSE, edge is not used in ranking
+nodes.  Default is <code>TRUE</code>.</p>
+</dd>
+<dt><code>lhead</code>:</dt><dd><p>Logical head of an edge.  If <code>compound</code> is
+TRUE, if <code>lhead</code> is defined and is the name of a cluster
+containing the real head, then the edge is clipped to the boundary
+of the cluster.</p>
+</dd>
+<dt><code>ltail</code>:</dt><dd><p>Same as <code>lhead</code> but for the tail of the
+edge</p>
+</dd>
+<dt><code>minlen</code>:</dt><dd><p>Minimum edge length (rank difference between
+head and tail).  This is an integer value with a default of
+<code>1</code> and a minimum of <code>0</code>.</p>
+</dd>
+<dt><code>samehead</code>:</dt><dd><p>Edges with the same head and <code>samehead</code>
+value are aimed at the same point on the head node.</p>
+</dd>
+<dt><code>sametail</code>:</dt><dd><p>Same as <code>samehead</code> but for the tail of
+the edge.</p>
+</dd>
+</dl>
+
+<p><b>Neato Only Attributes</b>
+</p>
+
+<dl>
+<dt><code>len</code>:</dt><dd><p>Preferred edge length, in inches.  This attribute
+accepts double values with a default of <code>1.0</code>.</p>
+</dd>
+</dl>
+
+<p><b>Misc</b>
+</p>
+
+<dl>
+<dt><code>URL</code>:</dt><dd><p>Hyperlink incorporated into the output.  Not
+currently supported</p>
+</dd>
+<dt><code>headURL</code>:</dt><dd><p>URL for the head of the edge.  Not currently supported</p>
+</dd>
+<dt><code>headtooltip</code>:</dt><dd><p>If there's a headURL, annotation for a
+tooltip.  R only, not currently supported</p>
+</dd>
+<dt><code>tailURL</code>:</dt><dd><p>Same as <code>headURL</code> but for the tail of an
+edge</p>
+</dd>
+<dt><code>tailtooltip</code>:</dt><dd><p>Same as <code>headtooltip</code> but for the
+head of an edge</p>
+</dd>
+<dt><code>tooltip</code>:</dt><dd><p>Same as <code>headtooltip</code> but for the edge
+in general</p>
+</dd>
+<dt><code>showboxes</code>:</dt><dd><p>Debugging feature for postscript.  Not
+currently supported</p>
+</dd>
+<dt><code>comment</code>:</dt><dd><p>Device dependent comment inserted into the
+output.  Not currently supported</p>
+</dd>
+</dl>
+
+
+
+<h3>Node Attributes</h3>
+
+<p><b>General Node Attributes</b>
+</p>
+
+<dl>
+<dt><code>color</code>:</dt><dd><p>Basic drawing color for the node, corresponding
+to the outside edge of the node.  The interior of the node is
+specified with the <code>fillcolor</code> attribute. Defaults to
+<code>black</code>.</p>
+</dd> 
+<dt><code>distortion</code>:</dt><dd><p>Distortion factor for
+<code>shape=polygon</code>, positive values cause top to be larger then
+bottom, negative is opposite.  This is a double value with a
+default of <code>0.0</code> and a minimum value of <code>-100.0</code></p>
+</dd>
+<dt><code>fillcolor</code>:</dt><dd><p>Background color of the node.  This
+defaults to <code>black</code>.</p>
+</dd> 
+<dt><code>fixedsize</code>:</dt><dd><p>Use only <code>width</code> and <code>height</code>
+attributes, do not expand for the width of the label.  This
+defaults to <code>TRUE</code>.</p>
+</dd>
+<dt><code>fontcolor</code>:</dt><dd><p>Color used for text.  This
+defaults to <code>black</code>.</p>
+</dd>
+<dt><code>fontname</code>:</dt><dd><p>Font used for text.  The default of this is
+Times Roman.</p>
+</dd>
+<dt><code>fontsize</code>:</dt><dd><p>Size of font for the text.  This defaults to
+<code>14.0</code> with a minimum size of <code>1.0</code>.</p>
+</dd>
+<dt><code>height</code>:</dt><dd><p>Height of the node, in inches.  This attribute
+accepts values as doubles with a default of <code>0.5</code> and a minimum
+value of <code>0.02</code>.</p>
+</dd> 
+<dt><code>label</code>:</dt><dd><p>Label for the node.  See <code>label</code> in
+<code>Graph Attributes</code> for an explanation of extra escape sequences.</p>
+</dd>
+<dt><code>layer</code>:</dt><dd><p>Layers in which the node is present.  See
+<code>layer</code> in <code>Edge Attributes</code> for an explanation of
+acceptable inputs. </p>
+</dd>
+<dt><code>peripheries</code>:</dt><dd><p>Set number of peripheries used in
+polygonal shapes and cluster boundaries.  Note that user-defined
+shapes are treated as a form box shape, so the default peripheries
+value is 1 and the user-defined shape will be drawn in a bounding
+rectangle.  Setting peripheries=0 will turn this off.  Also, 1 is
+the maximum peripheries value for clusters.  Not currently
+implemented.</p>
+</dd>
+<dt><code>pos</code>:</dt><dd><p>Position of the node (For neato layouts, this is
+the initial position of the node).   Specified using the notion
+<code>val,val</code> where each val is a double.</p>
+</dd>
+<dt><code>regular</code>:</dt><dd><p>Force the polygon to be regular.  Defaults to
+<code>FALSE</code>.</p>
+</dd> 
+<dt><code>shape</code>:</dt><dd><p>The shape of the node.  Current acceptable
+values are <code>circle</code>, <code>rectangle</code>, <code>rect</code>,
+<code>box</code> and <code>ellipse</code>.  The <code>circle</code> shape is the
+default.  Note that <code>box</code>, <code>rect</code> and <code>rectangle</code>
+all correspond to the same actual shape.</p>
+</dd>
+<dt><code>sides</code>:</dt><dd><p>Number of sides if <code>shape=polygon</code>.  This
+is an integer value with a default value of <code>4</code> and a minimum
+value of <code>0</code>.</p>
+</dd>
+<dt><code>skew</code>:</dt><dd><p>Skew factor for <code>shape=polygon</code>.  Positive
+values skew the polygon to the right, negative to the left.  This
+is a double value with a default value of <code>0.0</code> and a minimum
+value of <code>-100.0</code>.</p>
+</dd>
+<dt><code>style</code>:</dt><dd><p>Set style for the node boundary.  R only.  Can be
+one of <code>dashed</code>, <code>dotted</code>, <code>solid</code>, <code>invis</code>
+and <code>bold</code>.  Defaults to <code>solid</code>.</p>
+</dd>
+<dt><code>width</code>:</dt><dd><p>Width of the node, in inches.  Default is
+<code>0.75</code> with a minimum value of <code>0.01</code></p>
+</dd>
+</dl>
+
+<p><b>Dot Only Attributes</b>
+</p>
+
+<dl>
+<dt><code>group</code>:</dt><dd><p>If the end points of an edge belong to the same
+group, ie they have the same group attributes, parameters are set
+to avoid crossings and keep the edges straight</p>
+</dd>
+</dl>
+
+<p><b>Neato Only Attributes</b>
+</p>
+
+<dl>
+<dt><code>pin</code>:</dt><dd><p>If TRUE and node has a <code>pos</code> attribute on
+input, neato prevents the node from moving from the input
+position.  The default for this attribute is <code>FALSE</code>.</p>
+</dd>
+</dl>
+
+<p><b>Misc</b>
+</p>
+
+<dl>
+<dt><code>tooltip</code>:</dt><dd><p>Annotated tooltip if URL exists.  R only.
+Currently unsupported</p>
+</dd>
+<dt><code>toplabel</code>:</dt><dd><p>Label near the top of nodes of shape M*.
+Currently unsupported</p>
+</dd>
+<dt><code>URL</code>:</dt><dd><p>Hyperlink incorporated into the output.  Not
+currently supported</p>
+</dd>
+<dt><code>bottomlabel</code>:</dt><dd><p>Same as <code>toplabel</code> but for the
+bottom of the node</p>
+</dd>
+<dt><code>comment</code>:</dt><dd><p>Device dependent comment inserted into the
+output.  Not currently supported</p>
+</dd>
+<dt><code>shapefill</code>:</dt><dd><p>If non-empty, if output is ps or svg and
+shape is 'espf', taken as a filename containing a device-dependent
+description of a node's shape.  If non-empty for bitmap output
+(gif, jpg, etc), and shape set to 'custom', taken as the URL for a
+file containing the bitmap image for the node.  For files on the
+local machine, the URL begins with &quot;file://&quot;.  For remote files,
+graphviz must have been configured to use a command such as curl
+to retrieve the files remotely.  Currently unsupported</p>
+</dd>
+<dt><code>z</code>:</dt><dd><p>Provides z coordinates for the node in a 3D system.
+Currently unsupported</p>
+</dd>
+</dl>
+
+
+
+<h3>details</h3>
+
+<p>Different attributes are appropriate for different specific graph
+layout algorithms. Graphviz supports three different layout
+algorithms, dot, neato and twopi.
+</p>
+<p>There is some tension between attributes that graphviz supports and
+those that we can support at the R level. Please let us know if there
+are situations that are not being handled appropriately.
+</p>
+<p>All attributes are passed down to graphviz. However they can be later
+modified for rendering in R.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.graphviz.org/pub/scm/graphviz2/doc/info/attrs.html">http://www.graphviz.org/pub/scm/graphviz2/doc/info/attrs.html</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot-methods.html">plot.graph</a></code>, <code><a href="agopen.html">agopen</a></code>, <code><a href="GraphvizLayouts.html">GraphvizLayouts</a></code></p>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

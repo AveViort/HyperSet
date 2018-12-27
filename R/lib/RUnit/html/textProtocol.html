@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Printing a plain text, HTML or JUnit-like XML version of an...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for textProtocol {RUnit}"><tr><td>textProtocol {RUnit}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Printing a plain text, HTML or JUnit-like XML version of an RUnit test run protocol.</h2>
+
+<h3>Description</h3>
+
+<p><code>printTextProtocol</code> prints a plain text protocol of a test run.
+The resulting test protocol can be configured through the function
+arguments.
+</p>
+<p><code>printHTMLProtocol</code> prints an HTML protocol of a test run.
+For long outputs this version of the test protocol is slightly more
+readable than the plain text version due to links in the document.
+The resulting test protocol can be configured through the function arguments.
+</p>
+<p><code>printJUnitProtocol</code> prints a JUnit-style XML protocol of a test run.
+This feature is especially useful when running your RUnit tests through
+a continuous integration server that understands JUnit (like Jenkins).
+This machine-parseable output allows you to track errors over time,
+sort by execution time and similar useful tricks. 
+To take advantage of this function, you have to have the XML package installed.
+</p>
+<p><code>print</code> prints the number of executed test functions and the
+number of failures and errors.
+</p>
+<p><code>summary</code> directly delegates the work to
+<code>printTextProtocol</code>.
+</p>
+<p><code>getErrors</code> returns a list containing the number of test
+functions, the number of deactivated functions (if there are any), the
+number of errors and the number of failures.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  printTextProtocol(testData, fileName = "",
+                    separateFailureList = TRUE,
+                    showDetails = TRUE, traceBackCutOff = 9)
+  printHTMLProtocol(testData, fileName = "",
+                    separateFailureList = TRUE,
+                    traceBackCutOff = 9,
+                    testFileToLinkMap = function(x) x )
+  printJUnitProtocol(testData, fileName = "")
+  ## S3 method for class 'RUnitTestData'
+print(x, ...)
+  ## S3 method for class 'RUnitTestData'
+summary(object, ...)
+  getErrors(testData)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>testData, x, object</code></td>
+<td>
+<p>objects of class <code>RUnitTestData</code>, typically
+obtained  as return value of a test run.</p>
+</td></tr>
+<tr valign="top"><td><code>fileName</code></td>
+<td>
+<p>Connection where to print the text protocol (printing
+is done by the <code>cat</code> command).</p>
+</td></tr>
+<tr valign="top"><td><code>separateFailureList</code></td>
+<td>
+<p>If <code>TRUE</code> a separate list of failures
+and errors is produced at the top of the protocol. Otherwise, the
+failures and errors are only listed in the details section.</p>
+</td></tr>
+<tr valign="top"><td><code>showDetails</code></td>
+<td>
+<p>If <code>TRUE</code> the protocol contains a detailed listing of
+all executed test functions.</p>
+</td></tr>
+<tr valign="top"><td><code>traceBackCutOff</code></td>
+<td>
+<p>The details section of the test protocol contains the call stack for
+all errors. The first few entries of the complete stack typically
+contain the internal RUnit function calls that execute the test cases and
+are irrelevant for debugging. This argument specifies how many calls
+are removed from the stack before it is written to the protocol. The
+default value is chosen such that all uninteresting RUnit calls are
+removed from the stack if <code>runTestSuite</code> has been called from
+the console. This argument takes effect only if
+<code>showDetails=TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>testFileToLinkMap</code></td>
+<td>
+<p>This function can be used to map the full name of the test file
+to a corresponding html link to be used in the html protocol. By default, 
+this is the identity map. See example below.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments to summary are passed on to the
+printTextProtocol() call.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The text protocol can roughly be divided into three sections with an
+increasing amount of information. The first section as an overview just reports the
+number of executed test functions and the number of failures and
+errors. The second section describes all test suites. Optionally, all
+errors and failures that occurred in some test suite are listed.
+In the optional third section details are given about all executed
+test functions in the order they were processed. For each test file
+all test functions executed are listed in the order they were executed. After the test
+function name the number of <code>check&lt;*&gt;</code> function calls inside the
+test case and the execution time in seconds are stated. In the
+case of an error or failure as much debug
+information as possible is provided.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Thomas König, Klaus Jünemann, Matthias Burger
+&amp; Roman Zenka</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="runit.html">runTestSuite</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## run some test suite
+myTestSuite &lt;- defineTestSuite("RUnit Example",
+                               system.file("examples", package = "RUnit"),
+                               testFileRegexp = "correctTestCase.r")
+testResult &lt;- runTestSuite(myTestSuite)
+
+
+## prints detailed text protocol
+## to standard out:
+printTextProtocol(testResult, showDetails = TRUE)
+## prints detailed html protocol
+## to standard out
+printHTMLProtocol(testResult)
+## prints JUnit-style XML protocol
+## to standard out. 
+## You need to have XML package installed for this
+if(require("XML")) {
+  printJUnitProtocol(testResult)
+}
+
+## Not run: 
+##  example function to add links to URL of the code files in a code
+##  repository, here the SourceForge repository
+testFileToSFLinkMap &lt;- function(testFileName, testDir = "tests") {
+    ##  get unit test file name
+    bname &lt;- basename(testFileName)
+    
+    ## figure out package name
+    regExp &lt;- paste("^.*/([\.a-zA-Z0-9]*)/", testDir,"/.*$", sep = "")
+    pack &lt;- sub(regExp, "\1", testFileName)
+    return(paste("http://runit.cvs.sourceforge.net/runit/",
+                 pack, testDir, bname, sep = "/"))
+  }
+
+
+##  example call for a test suite run on the RUnit package
+testSuite &lt;- defineTestSuite("RUnit", "&lt;path-to-source-folder&gt;/RUnit/tests",
+                             testFileRegexp = "^test.+")
+testResult &lt;- runTestSuite(testSuite)
+printHTMLProtocol(testResult, fileName = "RUnit-unit-test-log.html",
+                  testFileToLinkMap = testFileToSFLinkMap )
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RUnit</em> version 0.4.32 <a href="00Index.html">Index</a>]</div>
+</body></html>

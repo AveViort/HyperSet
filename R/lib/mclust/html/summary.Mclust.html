@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Summarizing Gaussian Finite Mixture Model Fits</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for summary.Mclust {mclust}"><tr><td>summary.Mclust {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Summarizing Gaussian Finite Mixture Model Fits</h2>
+
+<h3>Description</h3>
+
+<p>Summary method for class <code>"Mclust"</code>.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'Mclust'
+summary(object, parameters = FALSE, classification = FALSE, ...)
+## S3 method for class 'summary.Mclust'
+print(x, digits = getOption("digits"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>An object of class <code>'Mclust'</code> resulting of a call to <code><a href="Mclust.html">Mclust</a></code> or <code><a href="densityMclust.html">densityMclust</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object of class <code>'summary.Mclust'</code>, usually, a result of a call to <code>summary.Mclust</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+<p>Logical; if <code>TRUE</code>, the parameters of mixture components are printed.</p>
+</td></tr>
+<tr valign="top"><td><code>classification</code></td>
+<td>
+<p>Logical; if <code>TRUE</code>, the MAP classification/clustering of observations is printed.</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>The number of significant digits to use when printing.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Luca Scrucca</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Mclust.html">Mclust</a></code>, <code><a href="densityMclust.html">densityMclust</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+mod1 = Mclust(iris[,1:4])
+summary(mod1)
+summary(mod1, parameters = TRUE, classification = TRUE)
+
+mod2 = Mclust(iris[,1:4], G = 1)
+summary(mod2, parameters = TRUE, classification = TRUE)
+
+mod3 = Mclust(iris[,1:4], prior = priorControl())
+summary(mod3)
+
+mod4 = Mclust(iris[,1:4], prior = priorControl(functionName="defaultPrior", shrinkage=0.1))
+summary(mod4, parameters = TRUE, classification = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

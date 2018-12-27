@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A function to obtain a libgraph object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for agopen {Rgraphviz}"><tr><td>agopen {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>A function to obtain a libgraph object</h2>
+
+<h3>Description</h3>
+
+<p>This function will read in a <code>graph</code> object and create a
+<code>Ragraph</code> object, returning it for use in other functions.  The
+graph represented by the <code>Ragraph</code> can be laidout in various formats.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+agopen(graph, name, nodes, edges, kind = NULL, layout = TRUE,
+       layoutType = "dot",
+       attrs = list(), nodeAttrs = list(), edgeAttrs = list(),
+       subGList = list(), edgeMode = edgemode(graph),
+       recipEdges=c("combined", "distinct"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>An object of class <code>graphNEL</code></p>
+</td></tr>
+<tr valign="top"><td><code>nodes</code></td>
+<td>
+<p>A list of <code>pNode</code> objects</p>
+</td></tr>
+<tr valign="top"><td><code>edges</code></td>
+<td>
+<p>A list of <code>pEdge</code> objects</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>The name of the graph</p>
+</td></tr>
+<tr valign="top"><td><code>kind</code></td>
+<td>
+<p>The type of graph</p>
+</td></tr>
+<tr valign="top"><td><code>layout</code></td>
+<td>
+<p>Whether to layout the graph or not</p>
+</td></tr>
+<tr valign="top"><td><code>layoutType</code></td>
+<td>
+<p>Defines the layout engine.  Defaults to dot, and see
+<code>graphvizCapabilities()$layoutTypes</code> for possible values.</p>
+</td></tr>
+<tr valign="top"><td><code>attrs</code></td>
+<td>
+<p>A list of graphviz attributes</p>
+</td></tr>
+<tr valign="top"><td><code>nodeAttrs</code></td>
+<td>
+<p>A list of specific node attributes</p>
+</td></tr>
+<tr valign="top"><td><code>edgeAttrs</code></td>
+<td>
+<p>A list of specific edge attributes</p>
+</td></tr>
+<tr valign="top"><td><code>subGList</code></td>
+<td>
+<p>A list describing subgraphs for the graph parameter</p>
+</td></tr>
+<tr valign="top"><td><code>edgeMode</code></td>
+<td>
+<p>Whether the graph is directed or undirected</p>
+</td></tr>
+<tr valign="top"><td><code>recipEdges</code></td>
+<td>
+<p>How to handle reciprocated edges, defaults to
+<code>combined</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>graph</code> is from the package <code><a href="../../graph/html/graph-class.html">graph-class</a></code>.
+</p>
+<p>The user can specify either the <code>graph</code> parameter and/or a
+combination of <code>nodes</code> and <code>edges</code>.  If either of the latter
+parameters are not specified then <code>graph</code> must be passed in, and
+is used in the functions <code><a href="buildNodeList.html">buildNodeList</a></code> and
+<code><a href="buildNodeList.html">buildEdgeList</a></code> (as appropriate - if <code>nodes</code> is
+passed in but <code>edges</code> is not, only <code><a href="buildNodeList.html">buildEdgeList</a></code> is
+called) which are default transformer functions to
+generate the <code>pNode</code> and <code>pEdge</code> lists for layout.
+</p>
+<p>The <code>edgeMode</code> argument specifies whether the graph is to be laid
+out with directed or undirected edges.  This parameter defaults to the
+edgemode of the <code>graph</code> argument - note that if <code>graph</code> was
+not passed in then <code>edgeMode</code> must be supplied.
+</p>
+<p>The kind parameter works as follows:
+</p>
+
+<dl>
+<dt>NULL:</dt><dd><p>Determine the direction of the graph from the <code>graph</code>
+object.  This is the default and the recommended method.</p>
+</dd> 
+<dt>AGRAPH:</dt><dd><p>An undirected graph</p>
+</dd>
+<dt>AGDIGRAPH:</dt><dd><p>A directed graph</p>
+</dd>
+<dt>AGRAPHSTRICT:</dt><dd><p>A strict undirected graph</p>
+</dd>
+<dt>AGDIGRAPHSTRICT:</dt><dd><p>A strict directed graph</p>
+</dd>
+</dl>
+
+<p>Strict graphs do not allow self arcs or multi-edges.
+</p>
+<p>If <code>layout</code> is set to <code>TRUE</code>, then the <code>libgraph</code>
+routines are used to compute the layout locations for the graph.
+Otherwise the graph is returned without layout information.
+</p>
+<p>The <code>subGList</code> parameter is a list describing any subgraphs,
+where each element represents a subgraph and is itself a list with up
+to three elements.  The first element, <code>graph</code> is required and
+contains the actual <code>graph</code> object for the subgraph.  The second
+element, <code>cluster</code> is a logical value indicating if this is a
+<code>cluster</code> or a <code>subgraph</code> (a value of <code>TRUE</code> indicates
+a cluster, which is also the default value if this element is not
+specified).  In Graphviz, subgraphs are more of an organizational
+mechanism, whereas clusters are laid out separately from the main
+graph and then later inserted.  The last element of the list,
+<code>attrs</code> is used if there are any attributes for this subgraph.
+This is a named vector where the names are the attributes and the
+elements are the values for those attributes.
+</p>
+<p>For a description of <code>attrs</code>, <code>nodeAttrs</code> and
+<code>edgeAttrs</code>, see the <code><a href="Ragraph-class.html">Ragraph</a></code> man page.
+</p>
+<p>The <code>recipEdges</code> argument can be used to specify how to handle
+reciprocal edges.  The default value, <code>combined</code> will combine any
+reciprocated edges into a single edge (and if the graph is directed,
+will by default place an arrowhead on both ends of the edge), while
+the other option is <code>distinct</code> which will draw to separate
+edges.  Note that in the case of an undirected graph, every edge of a
+<code>graphNEL</code> is going to be reciprocal due to implementation issues.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>Ragraph</code>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>References</h3>
+
+<p>http://www.research.att.com/sw/tools/graphviz/</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="graphLayout.html">graphLayout</a></code>,
+<code><a href="Ragraph-class.html">Ragraph</a></code>, <code><a href="../../graphics/html/plot.html">plot</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(123)
+V &lt;- letters[1:10]
+M &lt;- 1:4
+g1 &lt;- randomGraph(V, M, .2)
+z &lt;- agopen(g1,name="foo")
+z
+z &lt;- agopen(g1,name="foo",layoutType="neato")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

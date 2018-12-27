@@ -1,0 +1,1294 @@
+ABL1	Dlg4	rat	X	 
+ABL1	Nfat5	rat	X	X
+ABL1	Prkcd	rat	X	 
+ABL1	Sorbs3	rat	X	X
+ABL2	Nfkbib	rat	 	X
+	Acta1	rat	 	X
+	Actb	rat	 	X
+	Actg1	rat	 	X
+	Actg2	rat	 	X
+	Actn1	rat	 	X
+	Actn4	rat	 	X
+	Actr3	rat	 	X
+ADRBK1	Oprm1	rat	 	X
+ADRBK1	Rplp2	rat	 	X
+ADRBK1	Sstr2	rat	X	 
+ADRBK1	Trhr	rat	 	X
+ADRBK1	Trhr	rat	X	X
+ADRBK1	Tubb5	rat	 	X
+ADRBK2	Sstr2	rat	X	 
+	Afm	rat	 	X
+	Ahnak	rat	 	X
+	Akap12	rat	 	X
+Akt1	Acin1	rat	X	 
+AKT1	Acin1	rat	 	X
+Akt1	Bad	rat	 	X
+Akt1	Bcl2l1	rat	X	 
+AKT1	Bex1	rat	X	X
+AKT1	Cacnb2	rat	X	 
+AKT1	Creb1	rat	X	X
+AKT1	Csnk1d	rat	 	X
+AKT1	Dlc1	rat	X	X
+AKT1	Dnajc5	rat	X	X
+Akt1	Foxo1	rat	 	X
+Akt1	Foxo3	rat	X	 
+AKT1	Foxo3	rat	 	X
+AKT1	Gabrb2	rat	X	X
+AKT1	Gja1	rat	 	X
+AKT1	Grin2c	rat	X	X
+AKT1	Gsk3a	rat	 	X
+Akt1	Gsk3b	rat	X	 
+Akt1	Irs1	rat	X	 
+Akt1	Irs2	rat	X	 
+AKT1	Itpr1	rat	X	X
+Akt1	Lmna	rat	X	 
+AKT1	Lmna	rat	 	X
+Akt1	Nos3	rat	X	 
+AKT1	Nos3	rat	X	 
+AKT1	Nr4a1	rat	X	X
+AKT1	Pawr	rat	X	X
+Akt1	Pln	rat	X	 
+AKT1	Pln	rat	 	X
+Akt1	Prkaa1	rat	X	 
+AKT1	Prkaa1	rat	 	X
+Akt1	Prkaa2	rat	X	 
+Akt1	Raf1	rat	X	 
+Akt1	Rps6	rat	X	 
+AKT1	Scnn1a	rat	X	 
+AKT1	Sh2b2	rat	X	X
+AKT1	Slc9a1	rat	X	X
+AKT1	Tsc2	rat	 	X
+Akt2	Rps6	rat	X	 
+Akt2	Srsf5	rat	X	 
+AKT2	Srsf5	rat	 	X
+Akt3	Gja1	rat	X	 
+	Aldoa	rat	 	X
+	Anxa1	rat	 	X
+ATM	Eif4ebp1	rat	X	X
+ATM	Tp53	rat	X	 
+	Atp5j	rat	 	X
+AURKB	Hist1h2ail	rat	X	 
+Bckdk	Bckdha	rat	 	X
+BCKDK	Bckdha	rat	 	X
+Bckdk	Bckdha	rat	X	X
+Bckdk	Bckdk	rat	 	X
+Braf	Map2k1	rat	 	X
+BRSK1	Mapt	rat	 	X
+BTK	Creb1	rat	X	 
+BTK	Plcg2	rat	X	X
+	Cacnb2	rat	 	X
+	Calm1	rat	 	X
+CAMK1	Arhgef7	rat	X	X
+Camk1	Camkk1	rat	 	X
+Camk1	Creb1	rat	 	X
+CAMK1	Dnm1l	rat	X	X
+Camk1	Hmgcr	rat	 	X
+CAMK1	Mark2	rat	X	 
+Camk1	Nos1	rat	X	X
+Camk1	Numbl	rat	X	X
+CAMK1	Numb	rat	 	X
+CAMK1	Pklr	rat	 	X
+CAMK1	Rps19	rat	 	X
+CAMK1	Sik1	rat	 	X
+CAMK1	Sik2	rat	X	X
+Camk1	Syn1	rat	 	X
+CAMK1	Th	rat	 	X
+Camk2a	Accn2	rat	 	X
+Camk2a	App	rat	 	X
+Camk2a	Atp2a2	rat	 	X
+CAMK2A	Brsk1	rat	X	X
+CAMK2A	Cacna1b	rat	 	X
+Camk2a	Cacnb2	rat	X	X
+Camk2a	Camk2a	rat	 	X
+CAMK2A	Camk2a	rat	 	X
+Camk2a	Camk2a	rat	X	X
+Camk2a	Camk2b	rat	 	X
+Camk2a	Camk4	rat	 	X
+CAMK2A	Cdk5r1	rat	 	X
+CAMK2A	Chrm4	rat	X	X
+Camk2a	Cpeb1	rat	X	X
+Camk2a	Creb1	rat	 	X
+CAMK2A	Creb1	rat	 	X
+Camk2a	Creb1	rat	X	X
+CAMK2A	Creb1	rat	X	X
+Camk2a	Dlg1	rat	X	 
+CAMK2A	Dlg1	rat	 	X
+Camk2a	Dlg1	rat	X	X
+CAMK2A	Dlg4	rat	X	X
+Camk2a	Dlgap1	rat	 	X
+Camk2a	Dlgap2	rat	 	X
+Camk2a	Dlgap3	rat	 	X
+CAMK2A	Drd3	rat	 	X
+CAMK2A	Gja1	rat	 	X
+CAMK2A	Gria1	rat	 	X
+Camk2a	Gria1	rat	X	X
+CAMK2A	Gria4	rat	 	X
+Camk2a	Grik5	rat	 	X
+CAMK2A	Grin2b	rat	 	X
+Camk2a	Grin2b	rat	X	X
+Camk2a	Grm1	rat	X	 
+CAMK2A	Grm1	rat	 	X
+CAMK2A	Itpr2	rat	 	X
+Camk2a	Kalrn	rat	X	X
+CAMK2A	Kcnd2	rat	X	X
+Camk2a	Kcnd3	rat	 	X
+CAMK2A	Lipe	rat	 	X
+CAMK2A	Lrp4	rat	 	X
+Camk2a	Lrrc7	rat	 	X
+Camk2a	Mecp2	rat	X	 
+CAMK2A	Mecp2	rat	 	X
+Camk2a	Myh9	rat	 	X
+CAMK2A	Myh9	rat	X	 
+Camk2a	Neurod1	rat	X	X
+CAMK2A	Nos1	rat	X	 
+Camk2a	Nos1	rat	X	X
+Camk2a	Numbl	rat	 	X
+Camk2a	Oprm1	rat	X	 
+CAMK2A	Oprm1	rat	 	X
+CAMK2A	Oprm1	rat	X	 
+Camk2a	Pdc	rat	 	X
+Camk2a	Ppp1r9b	rat	 	X
+Camk2a	Ppp1r9b	rat	X	X
+CAMK2A	Ppp3ca	rat	X	 
+Camk2a	Psmc5	rat	 	X
+CAMK2A	Psmc5	rat	X	 
+CAMK2A	Rims1	rat	 	X
+CAMK2A	Rph3a	rat	 	X
+Camk2a	Ryr2	rat	 	X
+CAMK2A	Ryr2	rat	 	X
+Camk2a	Ryr2	rat	X	X
+Camk2a	Shank1	rat	 	X
+Camk2a	Shank3	rat	 	X
+CAMK2A	Slc6a3	rat	 	X
+CAMK2A	Sln	rat	X	 
+CAMK2A	Spr	rat	 	X
+Camk2a	Stmn1	rat	X	 
+Camk2a	Syn1	rat	 	X
+Camk2a	Syngap1	rat	 	X
+CAMK2A	Syngap1	rat	X	 
+Camk2a	Syt1	rat	X	X
+Camk2a	Th	rat	 	X
+CAMK2A	Trpv1	rat	X	 
+CAMK2A	Vim	rat	 	X
+Camk2a	Ywhab	rat	X	 
+Camk2b	Camk2a	rat	 	X
+Camk2b	Camk2b	rat	 	X
+Camk2b	Camk2b	rat	X	X
+Camk2b	Dlgap1	rat	 	X
+Camk2b	Dlgap2	rat	 	X
+Camk2b	Dlgap3	rat	 	X
+Camk2b	Gsk3a	rat	X	 
+CAMK2B	Gsk3a	rat	 	X
+Camk2b	Gsk3b	rat	X	 
+CAMK2B	Gsk3b	rat	 	X
+Camk2b	Lrrc7	rat	 	X
+Camk2b	Ppp1r9b	rat	 	X
+Camk2b	Prkaa1	rat	X	 
+Camk2b	Shank1	rat	 	X
+Camk2b	Shank3	rat	 	X
+Camk2b	Syngap1	rat	 	X
+Camk2d	Cacnb1	rat	 	X
+Camk2d	Cacnb2	rat	X	X
+Camk2d	Camk2d	rat	X	X
+CAMK2D	Itpr2	rat	X	 
+Camk2d	Pln	rat	X	 
+Camk2d	Ryr2	rat	 	X
+Camk4	Calm1	rat	 	X
+Camk4	Camk4	rat	 	X
+CAMK4	Creb1	rat	X	 
+Camk4	Creb1	rat	X	X
+CAMK4	Crebbp	rat	X	X
+CAMK4	Myh9	rat	X	 
+Camk4	Numbl	rat	 	X
+Camk4	Sik2	rat	X	 
+CAMK4	Sik2	rat	 	X
+Camkk1	Camk1	rat	 	X
+Camkk1	Camk4	rat	 	X
+Camkk1	Camkk1	rat	 	X
+CAMKK1	Pacsin1	rat	X	 
+Camkk1	Prkaa1	rat	 	X
+	Camkk1	rat	 	X
+Camkk2	Camk4	rat	 	X
+CAMKK2	Pacsin1	rat	X	 
+Camkk2	Prkaa1	rat	 	X
+Camkk2	Prkaa1	rat	X	 
+CAMKK2	Prkaa1	rat	 	X
+	Canx	rat	 	X
+Cdc42bpa	Limk2	rat	 	X
+CDK1	Aak1	rat	 	X
+Cdk1	App	rat	 	X
+Cdk1	Bad	rat	X	X
+Cdk1	Cald1	rat	 	X
+CDK1	Canx	rat	 	X
+Cdk1	Cebpb	rat	 	X
+CDK1	Dnm1l	rat	 	X
+CDK1	Efhd2	rat	 	X
+CDK1	Gorasp1	rat	 	X
+CDK1	Gorasp1	rat	X	 
+CDK1	Hmga1	rat	 	X
+CDK1	Hnrnpk	rat	 	X
+CDK1	Junb	rat	X	X
+CDK1	Jun	rat	 	X
+CDK1	Lmna	rat	 	X
+CDK1	LOC690372	rat	 	X
+CDK1	Map2k1	rat	 	X
+CDK1	Map7	rat	 	X
+CDK1	Nme1	rat	 	X
+CDK1	Nme2	rat	 	X
+CDK1	Nolc1	rat	 	X
+CDK1	Npm1	rat	 	X
+CDK1	Nucks1	rat	 	X
+CDK1	Numa1	rat	 	X
+CDK1	Pdia3	rat	 	X
+Cdk1	Plec1	rat	 	X
+CDK1	Polr2a	rat	 	X
+CDK1	Pom210	rat	 	X
+CDK1	Ppp1ca	rat	 	X
+CDK1	Ppp1r12a	rat	 	X
+CDK1	Ranbp2	rat	 	X
+CDK1	Rps6kb1	rat	 	X
+CDK1	Rsn	rat	X	X
+CDK1	Rtn4	rat	 	X
+CDK1	Stmn1	rat	 	X
+Cdk1	Stmn2	rat	 	X
+CDK1	Ugdh	rat	 	X
+Cdk1	Vcpip1	rat	X	X
+CDK2	Cebpb	rat	 	X
+Cdk2	Ctnnb1	rat	 	X
+CDK2	Ctnnb1	rat	X	 
+Cdk2	Gorasp1	rat	 	X
+CDK2	Kcnab2	rat	 	X
+CDK2	Map2	rat	 	X
+CDK2	Nr3c1	rat	 	X
+CDK2	Rtn4	rat	 	X
+CDK3	Cebpb	rat	 	X
+CDK4	Rb1	rat	X	 
+Cdk5	App	rat	X	X
+Cdk5	Cacna1b	rat	X	 
+CDK5	Cacna1b	rat	 	X
+CDK5	Cacna1g	rat	 	X
+CDK5	Cdk5r1	rat	X	 
+CDK5	Crmp1	rat	X	 
+CDK5	Dab1	rat	X	 
+Cdk5	Dbn1	rat	X	 
+CDK5	Dnm1l	rat	 	X
+Cdk5	Dnm1	rat	X	X
+CDK5	Dnm1	rat	X	X
+CDK5	Dpysl2	rat	X	X
+Cdk5	Erbb2	rat	X	X
+Cdk5	Erbb3	rat	X	X
+CDK5	Gphn	rat	X	 
+Cdk5	Grin2a	rat	X	X
+Cdk5	Htt	rat	X	 
+CDK5	Htt	rat	 	X
+CDK5	Kcnab2	rat	 	X
+CDK5	Kcnb1	rat	 	X
+CDK5	Kcnb1	rat	X	X
+CDK5	kif13B	rat	X	 
+Cdk5	Map2	rat	 	X
+Cdk5	Mapk10	rat	X	X
+CDK5	Mef2d	rat	 	X
+Cdk5	Nes	rat	 	X
+Cdk5	Nes	rat	X	X
+Cdk5	Ntrk2	rat	X	 
+CDK5	Odf1	rat	 	X
+CDK5	Oprd1	rat	X	X
+Cdk5	Pak1	rat	X	 
+Cdk5	Ppp1ca	rat	X	 
+Cdk5	Ppp1r1a	rat	X	 
+CDK5	Ppp1r1a	rat	 	X
+CDK5	Rasgrf1	rat	 	X
+CDK5	Rps6kb1	rat	 	X
+CDK5	Rps6kb1	rat	X	X
+Cdk5	Sept5	rat	X	 
+CDK5	Sept5	rat	 	X
+CDK5	Sipa1l1	rat	X	 
+CDK5	Stmn1	rat	 	X
+Cdk5	Syn1	rat	X	 
+Cdk5	Synj1	rat	 	X
+Cdk5	Th	rat	X	 
+Cdk5	Trpv1	rat	X	X
+CDK5	Wasf1	rat	X	 
+Cdk5	Wasf2	rat	X	 
+CDK5	Wasf2	rat	 	X
+Cdk9	Polr2a	rat	X	 
+CHEK1	Csnk1d	rat	 	X
+CHEK1	Errfi1	rat	 	X
+CIT	Myl9	rat	X	 
+	Ckb	rat	 	X
+CLK2	Csnk1d	rat	 	X
+	Coro1c	rat	 	X
+	Cp	rat	 	X
+Csk	Fgr	rat	 	X
+CSK	P2rx3	rat	X	X
+Csk	Src	rat	 	X
+CSNK1A1	Ctnnb1	rat	 	X
+CSNK1A1	Eif2b5	rat	 	X
+CSNK1A1	Gja1	rat	X	X
+CSNK1A1	Ppp1r1b	rat	 	X
+CSNK1A1	Slc18a2	rat	 	X
+CSNK1A1	Stx1a	rat	 	X
+CSNK1D	Foxo1	rat	X	X
+Csnk2a1	Acaca	rat	 	X
+CSNK2A1	Aqp4	rat	 	X
+CSNK2A1	Cadps	rat	 	X
+Csnk2a1	Calm1	rat	 	X
+CSNK2A1	Calm1	rat	 	X
+CSNK2A1	Calm1	rat	X	 
+Csnk2a1	Calm1	rat	X	X
+CSNK2A1	Cdc37	rat	 	X
+Csnk2a1	Cdc37	rat	X	X
+CSNK2A1	Clph	rat	 	X
+Csnk2a1	Cpt1a	rat	 	X
+CSNK2A1	Creb1	rat	 	X
+CSNK2A1	Creb1	rat	X	 
+Csnk2a1	Eif2b5	rat	 	X
+CSNK2A1	Eif4ebp1	rat	 	X
+Csnk2a1	Gap43	rat	 	X
+Csnk2a1	Grin2b	rat	X	 
+CSNK2A1	Grin2b	rat	 	X
+CSNK2A1	Ibsp	rat	 	X
+CSNK2A1	Irs1	rat	 	X
+Csnk2a1	Jun	rat	 	X
+Csnk2a1	L1cam	rat	 	X
+Csnk2a1	Max	rat	 	X
+CSNK2A1	Ncl	rat	 	X
+Csnk2a1	Nol3	rat	X	 
+CSNK2A1	Nol3	rat	 	X
+CSNK2A1	Odc1	rat	 	X
+Csnk2a1	Pam	rat	 	X
+CSNK2A1	Pawr	rat	X	 
+CSNK2A1	Pdcl	rat	 	X
+CSNK2A1	Polr2f	rat	 	X
+CSNK2A1	Ppp1r1b	rat	 	X
+Csnk2a1	Psma3	rat	 	X
+CSNK2A1	Psma3	rat	 	X
+CSNK2A1	Rfc1	rat	 	X
+Csnk2a1	Rps6kb1	rat	X	 
+CSNK2A1	Rps6kb1	rat	 	X
+CSNK2A1	Scn2a	rat	 	X
+CSNK2A1	Slc18a2	rat	 	X
+CSNK2A1	Slc28a2	rat	X	 
+Csnk2a1	Sp1	rat	 	X
+CSNK2A1	Stx1a	rat	 	X
+Csnk2a1	Stx1a	rat	X	X
+CSNK2A1	Stx1b	rat	 	X
+Csnk2a1	Syt1	rat	 	X
+Csnk2a1	Tagln	rat	X	 
+CSNK2A1	Trhr	rat	 	X
+Csnk2a1	Tubb3	rat	 	X
+CSNK2A1	Wasl	rat	X	X
+CSNK2A2	Cdc37	rat	 	X
+DAPK1	Stx1a	rat	X	X
+Dapk3	Myl2	rat	X	 
+DAPK3	Myl9	rat	X	 
+	Des	rat	 	X
+	Dstn	rat	 	X
+Dyrk1a	Dnm1	rat	 	X
+Dyrk1a	Dyrk1a	rat	 	X
+Dyrk1a	Dyrk1a	rat	X	X
+DYRK1A	Eif2b5	rat	 	X
+DYRK1A	Sfrs1	rat	 	X
+Dyrk1a	Wasl	rat	 	X
+DYRK2	Eif2b5	rat	 	X
+	Eef1b2	rat	 	X
+	Eef1g	rat	 	X
+Eef2k	Eef2	rat	X	X
+EGFR	Calm1	rat	 	X
+EGFR	Crk	rat	 	X
+EGFR	Plcg1	rat	 	X
+EGFR	Prkcd	rat	 	X
+EGFR	Rasa1	rat	X	X
+EIF2AK1	Eif2s1	rat	 	X
+EIF2AK2	Eif2s1	rat	 	X
+	Eif4ebp1	rat	 	X
+	Eif5	rat	 	X
+Enpp1	Enpp1	rat	 	X
+EPHB1	Caskin1	rat	X	 
+EPHB1	Sdc3	rat	 	X
+EPHB2	Sdc2	rat	X	X
+Erbb2	Erbb2	rat	X	 
+FAM20C	Scg5	rat	X	 
+FES	Dpysl2	rat	X	 
+	Fetub	rat	 	X
+Fgfr1	Fgfr1	rat	 	X
+FGR	Aco2	rat	 	X
+Fgr	Fgr	rat	 	X
+FGR	Sdha	rat	 	X
+	Fkbp9	rat	 	X
+	Flna	rat	 	X
+	Flnc	rat	 	X
+Fyn	Add2	rat	X	 
+Fyn	Cdk5	rat	X	 
+FYN	Cnn1	rat	 	X
+FYN	Cnn3	rat	 	X
+FYN	Dcc	rat	 	X
+FYN	Dpysl2	rat	 	X
+FYN	Dpysl3	rat	 	X
+Fyn	Igf2bp1	rat	X	 
+Fyn	Irs1	rat	 	X
+FYN	Kirrel	rat	X	X
+FYN	Nphs1	rat	 	X
+FYN	Trio	rat	 	X
+	Ganab	rat	 	X
+	Gbf1	rat	 	X
+GENE	SUB_GENE	SUB_ORGANISM	IN_VIVO_RXN	IN_VITRO_RXN
+	Gjb1	rat	X	X
+	Glud1	rat	 	X
+	Gria2	rat	 	X
+	Grin1	rat	 	X
+GRK4	Drd1	rat	X	 
+Gsk3a	Acly	rat	 	X
+Gsk3a	Creb1	rat	 	X
+GSK3A	Dpysl2	rat	X	 
+Gsk3a	Eif2b5	rat	 	X
+Gsk3a	Map2	rat	 	X
+Gsk3a	Map2	rat	X	 
+GSK3A	Nefm	rat	 	X
+GSK3A	Nr3c1	rat	 	X
+Gsk3a	Pxn	rat	X	 
+Gsk3b	Add2	rat	X	 
+GSK3B	App	rat	 	X
+GSK3B	Cebpb	rat	X	X
+Gsk3b	Creb1	rat	 	X
+GSK3B	Creb1	rat	X	 
+Gsk3b	Ctnnb1	rat	 	X
+Gsk3b	Ctnnb1	rat	X	X
+Gsk3b	Dcx	rat	X	 
+GSK3B	Dlg4	rat	X	 
+GSK3B	Dnm1	rat	X	X
+GSK3B	Dpysl2	rat	 	X
+GSK3B	Dpysl2	rat	X	X
+GSK3B	Dpysl3	rat	 	X
+GSK3B	Eif2b5	rat	 	X
+Gsk3b	Eif2b5	rat	X	X
+GSK3B	Irs1	rat	X	X
+GSK3B	Map2	rat	X	 
+GSK3B	Mark2	rat	 	X
+GSK3B	Mef2d	rat	X	X
+Gsk3b	Nefh	rat	X	 
+GSK3B	Nefh	rat	X	 
+GSK3B	Pdx1	rat	 	X
+GSK3B	Pdx1	rat	X	X
+Gsk3b	Pxn	rat	X	 
+	Gsk3b	rat	 	X
+Gsk3b	Sik1	rat	 	X
+GSK3B	Sik1	rat	 	X
+Gsk3b	Sik1	rat	X	X
+GSK3B	Tsc2	rat	X	X
+GSK3B	Zc3hav1	rat	 	X
+GSK3B	Zc3hav1	rat	X	X
+	Hsp90aa1	rat	 	X
+	Hsp90ab1	rat	 	X
+	Hspb1	rat	 	X
+Ikbkb	Nfkbia	rat	 	X
+ILK	Cfl1	rat	 	X
+Insr	Anxa1	rat	 	X
+INSR	Calm1	rat	 	X
+Insr	Cav2	rat	X	X
+INSR	Ceacam1	rat	 	X
+Insr	Insr	rat	 	X
+Insr	Irs1	rat	X	X
+Insr	Sh2b2	rat	X	 
+	Itih4	rat	 	X
+Jak1	Sh2b1	rat	X	 
+Jak2	Ghr	rat	 	X
+Jak2	Sh2b1	rat	X	X
+Jak2	Stat5a	rat	X	 
+Jak2	Stat5b	rat	X	 
+Kdr	Kdr	rat	X	 
+Lck	Prkcd	rat	 	X
+LCK	Sptan1	rat	 	X
+Limk1	Cfl1	rat	X	X
+	Lipe	rat	 	X
+	Lpp	rat	 	X
+	Lrpap1	rat	 	X
+Lyn	Pag1	rat	X	 
+Lyn	Pdia3	rat	 	X
+Lyn	Ptk2	rat	X	 
+Lyn	Syk	rat	X	 
+Map2k1	Bcl2	rat	X	 
+Map2k1	Map2k1	rat	X	X
+MAP2K1	Mapk1	rat	 	X
+Map2k1	Mapk1	rat	X	X
+MAP2K1	Mapk3	rat	 	X
+Map2k1	Mapk3	rat	X	X
+Map2k1	Th	rat	X	 
+MAP2K3	Mapk14	rat	X	 
+MAP2K6	Mapk14	rat	X	 
+MAP3K12	Hist1h2ail	rat	X	X
+MAP3K14	Ezr	rat	X	X
+MAP3K14	Msn	rat	 	X
+Map3k1	Map2k1	rat	 	X
+MAP3K7	Rcan1	rat	X	X
+MAPK10	Nr3c1	rat	 	X
+Mapk10	Stmn2	rat	 	X
+MAPK11	Pias2	rat	X	X
+MAPK12	Dlg4	rat	 	X
+MAPK12	Sh3bp5	rat	 	X
+MAPK13	Dlg4	rat	 	X
+MAPK13	Stmn1	rat	 	X
+Mapk14	Bcl2l11	rat	X	 
+MAPK14	Bcl2l11	rat	X	X
+Mapk14	Bcl2	rat	X	 
+MAPK14	Cacng2	rat	 	X
+MAPK14	Cebpa	rat	X	 
+Mapk14	Kcnb1	rat	X	 
+MAPK14	Kcnb1	rat	 	X
+MAPK14	Pxn	rat	X	 
+MAPK14	Scn10a	rat	X	X
+Mapk14	Scn8a	rat	 	X
+MAPK14	Stmn1	rat	 	X
+MAPK14	tao2 beta	rat	 	X
+MAPK1	Bcl2l11	rat	X	 
+MAPK1	Cacnb1	rat	 	X
+MAPK1	Cacng2	rat	 	X
+MAPK1	Cryab	rat	X	 
+Mapk1	Cspg4	rat	 	X
+MAPK1	Cspg4	rat	X	 
+MAPK1	Dcc	rat	 	X
+MAPK1	Dlg2	rat	X	 
+MAPK1	Dlg4	rat	 	X
+MAPK1	Eif2b5	rat	 	X
+MAPK1	Eif4ebp1	rat	 	X
+Mapk1	Fos	rat	X	 
+MAPK1	Fos	rat	 	X
+Mapk1	Gata4	rat	 	X
+MAPK1	Gata4	rat	X	 
+Mapk1	Gja1	rat	 	X
+Mapk1	Gja1	rat	X	 
+Mapk1	Gorasp1	rat	 	X
+MAPK1	Gorasp1	rat	 	X
+MAPK1	Gphn	rat	X	 
+Mapk1	Jund	rat	X	 
+MAPK1	Jund	rat	X	 
+MAPK1	Jun	rat	 	X
+MAPK1	Kcnd2	rat	 	X
+MAPK1	Klc1	rat	X	 
+Mapk1	Mapk1	rat	 	X
+Mapk1	Nr3c1	rat	 	X
+Mapk1	Nr4a1	rat	 	X
+Mapk1	Pak1	rat	X	X
+Mapk1	Pard3	rat	 	X
+Mapk1	Pcyt1a	rat	X	 
+MAPK1	Prdx6	rat	 	X
+MAPK1	Pxn	rat	X	X
+MAPK1	Rims1	rat	 	X
+MAPK1	Rps6ka1	rat	 	X
+MAPK1	Rps6kb1	rat	 	X
+Mapk1	Scnn1b	rat	 	X
+Mapk1	Scnn1g	rat	 	X
+MAPK1	Slc9a1	rat	X	 
+Mapk1	Sorbs3	rat	 	X
+Mapk1	Syn1	rat	X	 
+Mapk1	Th	rat	 	X
+MAPK1	Th	rat	 	X
+Mapk1	Th	rat	X	X
+Mapk1	Ubtf	rat	X	X
+Mapk3	Atp1a1	rat	X	X
+MAPK3	Bcl2l11	rat	X	X
+Mapk3	Bcl2	rat	X	 
+MAPK3	Cacnb1	rat	 	X
+Mapk3	Cald1	rat	X	 
+MAPK3	Cryab	rat	X	 
+MAPK3	Cspg4	rat	X	 
+Mapk3	Ddx47	rat	 	X
+MAPK3	Dlg2	rat	X	 
+Mapk3	Fos	rat	X	 
+MAPK3	Fos	rat	 	X
+MAPK3	Gabra1	rat	X	 
+MAPK3	Gata4	rat	X	 
+Mapk3	Gja1	rat	 	X
+Mapk3	Gja1	rat	X	X
+Mapk3	Gorasp1	rat	 	X
+MAPK3	Gorasp1	rat	 	X
+MAPK3	Gphn	rat	X	 
+Mapk3	Hmg20a	rat	 	X
+Mapk3	Junb	rat	 	X
+Mapk3	Jund	rat	X	 
+MAPK3	Jund	rat	X	 
+Mapk3	Jun	rat	 	X
+MAPK3	Kcnd2	rat	 	X
+MAPK3	Klc1	rat	X	 
+Mapk3	Lipe	rat	 	X
+Mapk3	Map2k2	rat	 	X
+Mapk3	Map2	rat	 	X
+Mapk3	Map2	rat	X	 
+MAPK3	Mfn1	rat	X	X
+Mapk3	Nsmf	rat	X	 
+MAPK3	Nsmf	rat	 	X
+Mapk3	Numa1	rat	 	X
+Mapk3	Pcyt1a	rat	X	 
+MAPK3	Pxn	rat	X	X
+MAPK3	Rps6ka1	rat	 	X
+Mapk3	Scnn1b	rat	 	X
+Mapk3	Scnn1g	rat	 	X
+MAPK3	Slc6a3	rat	 	X
+MAPK3	Slc9a1	rat	X	 
+Mapk3	Stmn2	rat	 	X
+Mapk3	Syn1	rat	X	 
+MAPK3	Syn1	rat	 	X
+Mapk3	Th	rat	 	X
+Mapk3	Th	rat	X	X
+Mapk3	Tjp1	rat	 	X
+Mapk3	Ubtf	rat	X	X
+MAPK7	Gja1	rat	X	X
+MAPK7	Neurog1	rat	X	X
+MAPK8	App	rat	X	X
+MAPK8	Bcl2l11	rat	 	X
+MAPK8	Bcl2l11	rat	X	X
+Mapk8	Ctnnd2	rat	X	 
+Mapk8	Dlg4	rat	X	 
+MAPK8	Dlg4	rat	 	X
+MAPK8	Hes1	rat	X	X
+Mapk8	Irs1	rat	X	 
+Mapk8	Irs2	rat	X	 
+Mapk8	Jun	rat	 	X
+Mapk8	Map2	rat	X	 
+MAPK8	Map2	rat	 	X
+Mapk8	Nr3c1	rat	X	X
+MAPK8	Nr3c1	rat	X	X
+MAPK8	Stmn1	rat	X	 
+MAPK8	Stmn2	rat	X	 
+Mapk9	Ctnnd2	rat	X	 
+MAPK9	Gorasp1	rat	 	X
+MAPK9	Hes1	rat	 	X
+MAPK9	Nr3c1	rat	 	X
+MAPK9	Sh3bp5	rat	 	X
+MAPKAPK2	Creb1	rat	 	X
+Mapkapk2	Mylk2	rat	 	X
+MAPKAPK2	Pde4a	rat	X	X
+Mark1	Mapt	rat	X	 
+Mark2	Mapt	rat	X	 
+	Mcam	rat	 	X
+	Mdh1	rat	 	X
+Mtor	Eif4ebp1	rat	 	X
+MTOR	Irs1	rat	 	X
+MTOR	Rps6kb1	rat	 	X
+Musk	Musk	rat	 	X
+	Myh11	rat	 	X
+	Myl12b	rat	 	X
+	Myl9	rat	 	X
+Mylk2	Mylk2	rat	 	X
+MYLK3	Ppp1r2	rat	X	 
+MYLK	Myl12b	rat	 	X
+MYLK	Myl9	rat	 	X
+	Mylk	rat	 	X
+	Ndufs3	rat	 	X
+NEK6	Rps6kb1	rat	X	X
+NME1	Acly	rat	 	X
+Nme1	Aldoc	rat	 	X
+	Nolc1	rat	 	X
+Ntrk2	Ncam1	rat	X	 
+Ntrk2	Ntrk2	rat	X	 
+Ntrk2	Ntrk2	rat	X	X
+Ntrk2	Plcg1	rat	X	 
+OXSR1	Pak1	rat	 	X
+Oxsr1	Slc12a3	rat	 	X
+PAK1	Arhgef7	rat	 	X
+PAK1	Ctbp1	rat	X	 
+Pak1	Map2k1	rat	X	 
+Pak1	Nf2	rat	X	 
+Pak1	Pak1	rat	 	X
+Pak1	Pak1	rat	X	X
+PAK1	Ppp1r12a	rat	 	X
+PAK1	Ppp1r14a	rat	 	X
+PAK1	RGD1311558	rat	 	X
+Pak1	Syn1	rat	 	X
+Pak1	Syn1	rat	X	 
+PAK2	Arhgdia	rat	X	X
+Pak2	Map2k1	rat	 	X
+Pak2	Prl	rat	 	X
+Pak3	Map2k1	rat	 	X
+PAK3	Map2k1	rat	 	X
+Pak3	Pak3	rat	 	X
+	Park7	rat	 	X
+	Pdc	rat	X	 
+Pdgfrb	Sh2b1	rat	X	 
+	Pdia6	rat	 	X
+	Pdlim4	rat	 	X
+Pdpk1	Kidins220	rat	X	 
+PDPK1	Prkcd	rat	X	X
+Pdpk1	Prkcz	rat	X	X
+PDPK1	Prkcz	rat	X	X
+Pdpk1	Rps6kb1	rat	X	 
+Pdpk1	Sgk1	rat	 	X
+PDPK1	Sgk1	rat	X	 
+	Pfkfb1	rat	 	X
+	Pgm5	rat	 	X
+PIM2	Eif4b	rat	 	X
+PKMYT1	Cdk1	rat	 	X
+Pkn1	Pkn1	rat	 	X
+Pkn1	Ppp1r14a	rat	 	X
+	Ppp1r1b	rat	 	X
+Prkaa1	Acaca	rat	 	X
+Prkaa1	Acaca	rat	X	X
+PRKAA1	Gabbr1	rat	 	X
+PRKAA1	Gabbr2	rat	X	X
+PRKAA1	Kcnb1	rat	 	X
+PRKAA1	Kcnj11	rat	X	 
+PRKAA1	Lipe	rat	 	X
+PRKAA1	Mlxipl	rat	 	X
+Prkaa1	Nos3	rat	X	X
+Prkaa1	Pfkfb2	rat	X	X
+Prkaa1	Prkaa1	rat	 	X
+Prkaa1	Prkaa1	rat	X	X
+Prkaa1	Prkab1	rat	 	X
+PRKAA1	Tsc2	rat	 	X
+PRKAA1	Tsc2	rat	X	X
+Prkaa2	Acaca	rat	 	X
+PRKAA2	Kcnb1	rat	X	 
+PRKACA	Abcc9	rat	 	X
+Prkaca	Acaca	rat	 	X
+PRKACA	Acaca	rat	 	X
+PRKACA	Aqp2	rat	 	X
+Prkaca	Aqp2	rat	X	X
+PRKACA	Arhgef7	rat	X	X
+PRKACA	Arpp19	rat	 	X
+Prkaca	Atp1a1	rat	 	X
+PRKACA	Atp1a1	rat	 	X
+Prkaca	Bad	rat	 	X
+Prkaca	Bad	rat	X	 
+PRKACA	Cacna1b	rat	 	X
+Prkaca	Cacna1c	rat	X	 
+PRKACA	Cacna1c	rat	X	X
+PRKACA	Cacna1d	rat	 	X
+PRKACA	Cacna1d	rat	X	X
+PRKACA	Cacnb2	rat	X	X
+PRKACA	Cacng2	rat	 	X
+Prkaca	Cacng2	rat	X	X
+Prkaca	Camkk1	rat	X	 
+PRKACA	Camkk1	rat	 	X
+PRKACA	Cask	rat	 	X
+PRKACA	Cask	rat	X	X
+PRKACA	Chrna4	rat	 	X
+Prkaca	Chrna7	rat	 	X
+PRKACA	Cldn16	rat	X	X
+PRKACA	Creb1	rat	 	X
+Prkaca	Creb1	rat	X	X
+PRKACA	Creb1	rat	X	X
+PRKACA	Csnk1d	rat	X	X
+PRKACA	Cyp2b1	rat	 	X
+Prkaca	Cyp3a1	rat	 	X
+Prkaca	Dctn1	rat	X	X
+Prkaca	Dnajc5	rat	X	X
+PRKACA	Dnm1l	rat	X	X
+Prkaca	Eef2k	rat	 	X
+Prkaca	Fbp1	rat	 	X
+PRKACA	Fbp1	rat	 	X
+Prkaca	Fxyd1	rat	 	X
+PRKACA	Fxyd1	rat	X	 
+PRKACA	Fxyd1	rat	X	X
+PRKACA	Gabbr2	rat	 	X
+Prkaca	Gata4	rat	 	X
+Prkaca	Gata4	rat	X	 
+PRKACA	Gja1	rat	X	X
+PRKACA	Gnmt	rat	 	X
+Prkaca	Gria1	rat	X	 
+PRKACA	Gria1	rat	X	X
+Prkaca	Gria4	rat	X	 
+PRKACA	Gria4	rat	X	X
+Prkaca	Grik2	rat	 	X
+PRKACA	Grik2	rat	X	 
+PRKACA	Grin2c	rat	 	X
+Prkaca	Grm2	rat	 	X
+Prkaca	Grm2	rat	X	X
+Prkaca	Grm3	rat	 	X
+PRKACA	Grm7	rat	 	X
+Prkaca	Gsk3a	rat	X	 
+PRKACA	Gsk3a	rat	X	X
+Prkaca	Gsk3b	rat	X	 
+PRKACA	Gsk3b	rat	 	X
+Prkaca	Hist1h2ail	rat	X	X
+Prkaca	Hmgcr	rat	 	X
+PRKACA	Hnf4a	rat	 	X
+Prkaca	Hspb6	rat	X	 
+PRKACA	Itpr1	rat	 	X
+Prkaca	Kcna4	rat	 	X
+PRKACA	Kcnd2	rat	X	 
+PRKACA	Kcnj10	rat	X	 
+PRKACA	Kcnj12	rat	 	X
+Prkaca	Kcnj16	rat	X	 
+PRKACA	Kcnj1	rat	X	 
+PRKACA	Kcnj1	rat	X	X
+PRKACA	Kcnj3	rat	 	X
+PRKACA	Kcnj4	rat	 	X
+PRKACA	Kcnj8	rat	 	X
+Prkaca	Kcnn4	rat	 	X
+PRKACA	Kcnn4	rat	X	 
+PRKACA	Krt8	rat	 	X
+Prkaca	Lipe	rat	 	X
+PRKACA	Lipe	rat	 	X
+PRKACA	Map1lc3a	rat	 	X
+PRKACA	Map2	rat	 	X
+Prkaca	Mybpc3	rat	X	X
+Prkaca	Myf6	rat	 	X
+Prkaca	Nefl	rat	 	X
+Prkaca	Nefm	rat	 	X
+Prkaca	Nf2	rat	X	 
+PRKACA	Nfkb1	rat	X	 
+Prkaca	Nkx2-1	rat	 	X
+PRKACA	Nkx2-1	rat	X	 
+PRKACA	Nolc1	rat	X	 
+PRKACA	Nos3	rat	 	X
+Prkaca	Npr3	rat	X	 
+Prkaca	Nr4a1	rat	 	X
+PRKACA	Pah	rat	 	X
+Prkaca	Pak1	rat	X	 
+PRKACA	Pawr	rat	X	X
+Prkaca	Pdc	rat	 	X
+PRKACA	Pdc	rat	 	X
+Prkaca	Pde3b	rat	 	X
+PRKACA	Pde4a	rat	X	 
+Prkaca	Pde4b	rat	X	 
+PRKACA	Pdzk1	rat	X	X
+PRKACA	Pfkfb1	rat	 	X
+PRKACA	Pfkl	rat	 	X
+Prkaca	Plcb3	rat	 	X
+Prkaca	Plin1	rat	X	 
+Prkaca	Pln	rat	X	 
+Prkaca	Pou1f1	rat	 	X
+PRKACA	Ppara	rat	 	X
+PRKACA	Ppp1r12a	rat	X	 
+Prkaca	Ppp1r1a	rat	X	 
+Prkaca	Ppp1r1b	rat	 	X
+Prkaca	Ppp1r9a	rat	X	X
+PRKACA	Ppp1r9b	rat	 	X
+PRKACA	Ppp1r9b	rat	X	X
+Prkaca	Prkaa1	rat	X	 
+PRKACA	Prkaa1	rat	 	X
+Prkaca	Prl	rat	 	X
+Prkaca	Ptpn5	rat	X	X
+PRKACA	Rasgrf1	rat	X	X
+PRKACA	Rasgrp2	rat	X	 
+	Prkaca	rat	 	X
+PRKACA		rat	 	X
+Prkaca	Rela	rat	X	 
+PRKACA	Rela	rat	X	 
+PRKACA	Rfc1	rat	X	X
+PRKACA	Rgs14	rat	 	X
+Prkaca	Rims1	rat	X	 
+Prkaca	Rph3a	rat	 	X
+PRKACA	Rph3a	rat	 	X
+PRKACA	Rps19	rat	 	X
+PRKACA	Rps6	rat	 	X
+Prkaca	Rsn	rat	 	X
+Prkaca	Rsn	rat	X	 
+Prkaca	Ryr2	rat	 	X
+Prkaca	Ryr2	rat	X	 
+PRKACA	Ryr2	rat	 	X
+Prkaca	Scn2a	rat	X	 
+Prkaca	Scn5a	rat	X	X
+Prkaca	Sik1	rat	X	 
+PRKACA	Sik1	rat	X	 
+Prkaca	Slc2a2	rat	X	X
+Prkaca	Slc38a3	rat	X	 
+PRKACA	Slc6a3	rat	 	X
+PRKACA	Slc8a1	rat	 	X
+Prkaca	Slc9a3	rat	 	X
+Prkaca	Snap25	rat	X	 
+Prkaca	Snapap	rat	 	X
+PRKACA	Srebf1	rat	 	X
+PRKACA	Star	rat	 	X
+PRKACA	Stmn1	rat	X	 
+Prkaca	Stmn2	rat	 	X
+PRKACA	Stmn2	rat	 	X
+PRKACA	Stxbp5	rat	 	X
+Prkaca	Syn1	rat	 	X
+Prkaca	Syn2	rat	 	X
+Prkaca	Syn3	rat	 	X
+PRKACA	Syt12	rat	 	X
+Prkaca	Syt7	rat	X	 
+PRKACA	Thop1	rat	 	X
+Prkaca	Thop1	rat	X	X
+PRKACA	Th	rat	 	X
+Prkaca	Th	rat	X	X
+PRKACA	Tnni3	rat	 	X
+Prkaca	Tnp2	rat	 	X
+PRKACA	Tph1	rat	 	X
+PRKACA	Trpc6	rat	X	 
+Prkacb	Nkx2-1	rat	X	X
+PRKCA	Aanat	rat	 	X
+PRKCA	Accn3	rat	X	 
+PRKCA	Aco1	rat	 	X
+PRKCA	Adcy2	rat	X	 
+Prkca	Adcy6	rat	 	X
+PRKCA	Adcy6	rat	 	X
+Prkca	Add1	rat	 	X
+PRKCA	Add1	rat	 	X
+PRKCA	Add2	rat	 	X
+Prkca	Add3	rat	 	X
+Prkca	Adrbk1	rat	X	 
+PRKCA	Agtr2	rat	X	 
+PRKCA	Akap12	rat	 	X
+Prkca	Akt1	rat	X	 
+PRKCA	Akt1	rat	 	X
+Prkca	App	rat	 	X
+PRKCA	Atp1a1	rat	 	X
+Prkca	Atp1a1	rat	X	X
+Prkca	Cacna1b	rat	X	 
+PRKCA	Cacna1b	rat	 	X
+PRKCA	Cacna1c	rat	X	X
+PRKCA	Caly	rat	X	 
+Prkca	Camk2a	rat	 	X
+Prkca	Ceacam1	rat	X	 
+Prkca	Cebpa	rat	X	 
+Prkca	Cnr1	rat	X	 
+PRKCA	Csnk1d	rat	 	X
+PRKCA	Cspg4	rat	X	X
+Prkca	Cttn	rat	X	 
+PRKCA	Cttn	rat	 	X
+PRKCA	Dab2	rat	X	 
+Prkca	Dnm1	rat	 	X
+PRKCA	Eif4ebp1	rat	 	X
+Prkca	Fshr	rat	X	 
+Prkca	Fxyd1	rat	 	X
+PRKCA	Fxyd1	rat	X	 
+Prkca	Gabrb1	rat	 	X
+Prkca	Gabrg2	rat	X	 
+PRKCA	Gap43	rat	 	X
+Prkca	Gap43	rat	X	X
+Prkca	Gja1	rat	X	 
+PRKCA	Gja1	rat	 	X
+Prkca	Gja1	rat	X	X
+PRKCA	Gjb1	rat	X	X
+Prkca	Glp1r	rat	 	X
+Prkca	Gpm6a	rat	X	 
+PRKCA	Gria1	rat	 	X
+PRKCA	Gria1	rat	X	X
+Prkca	Gria2	rat	 	X
+Prkca	Gria2	rat	X	 
+PRKCA	Gria2	rat	X	 
+Prkca	Gria2	rat	X	X
+PRKCA	Gria4	rat	 	X
+PRKCA	Grik1	rat	 	X
+PRKCA	Grik2	rat	X	 
+Prkca	Grin1	rat	 	X
+Prkca	Grin1	rat	X	 
+PRKCA	Grin1	rat	 	X
+Prkca	Grin1	rat	X	X
+Prkca	Grin2a	rat	 	X
+PRKCA	Grin2c	rat	X	X
+Prkca	Grm1	rat	 	X
+Prkca	Grm5	rat	 	X
+PRKCA	Grm5	rat	 	X
+PRKCA	Grm7	rat	 	X
+PRKCA	Hmga1	rat	 	X
+Prkca	Hmgcr	rat	 	X
+PRKCA	Hnf4a	rat	 	X
+PRKCA	Hnrnpa1	rat	 	X
+Prkca	Insr	rat	 	X
+Prkca	Irs1	rat	 	X
+Prkca	Irs1	rat	X	 
+PRKCA	Irs1	rat	 	X
+Prkca	Kcnc1	rat	X	 
+PRKCA	Kcnd2	rat	 	X
+PRKCA	Kcnd2	rat	X	X
+Prkca	Kcne1	rat	X	 
+Prkca	Kcnj3	rat	X	 
+Prkca	Kcnj5	rat	X	 
+PRKCA	Kcnj8	rat	 	X
+Prkca	Kcnk10	rat	X	 
+PRKCA	Kcnq2	rat	X	 
+Prkca	Marcks	rat	 	X
+Prkca	Marcks	rat	X	X
+Prkca	Mat1a	rat	 	X
+PRKCA	Mt1	rat	 	X
+Prkca	Myf6	rat	 	X
+Prkca	Nfe2l2	rat	 	X
+PRKCA	Oprm1	rat	 	X
+Prkca	Pam	rat	X	 
+Prkca	Pebp1	rat	X	X
+PRKCA	Pick1	rat	 	X
+Prkca	Pitpna	rat	 	X
+PRKCA	Pitpnb	rat	X	 
+PRKCA	Plcb1	rat	X	X
+Prkca	Plcb3	rat	X	 
+PRKCA	Plcd1	rat	 	X
+Prkca	Pld1	rat	X	X
+PRKCA	Podxl	rat	X	 
+Prkca	Polb	rat	 	X
+PRKCA	Ppara	rat	 	X
+PRKCA	Ppp1r1a	rat	 	X
+PRKCA	Ppp1r1a	rat	X	X
+Prkca	Prkca	rat	X	 
+PRKCA	Rph3a	rat	 	X
+PRKCA	Rps6	rat	 	X
+PRKCA	Scn2a	rat	 	X
+Prkca	Sdc2	rat	 	X
+PRKCA	Sdc4	rat	 	X
+PRKCA	Slc12a5	rat	X	X
+Prkca	Slc18a3	rat	X	X
+PRKCA	Slc1a1	rat	X	 
+PRKCA	Slc22a1	rat	X	 
+PRKCA	Slc38a3	rat	 	X
+PRKCA	Slc6a3	rat	 	X
+Prkca	Snap23	rat	X	 
+Prkca	Snap25	rat	X	 
+PRKCA	Sstr2	rat	X	 
+Prkca	Stxbp1	rat	 	X
+PRKCA	Stxbp1	rat	 	X
+PRKCA	Stxbp1	rat	X	 
+Prkca	Stxbp1	rat	X	X
+Prkca	Syt1	rat	X	X
+PRKCA	Thop1	rat	X	 
+PRKCA	Th	rat	 	X
+Prkca	Tnni3	rat	X	 
+PRKCA	Tnni3	rat	 	X
+Prkca	Trpc6	rat	X	 
+PRKCA	Trpv1	rat	 	X
+PRKCA	Trpv1	rat	X	X
+Prkca	Vasp	rat	X	X
+PRKCB	Atp1a1	rat	X	 
+PRKCB	Cacna1b	rat	X	 
+PRKCB	Cacna1d	rat	 	X
+PRKCB	Ckm	rat	 	X
+Prkcb	Gabrb1	rat	 	X
+Prkcb	Gabrb3	rat	 	X
+PRKCB	Gja1	rat	 	X
+PRKCB	Grm5	rat	 	X
+Prkcb	Gsk3a	rat	X	 
+PRKCB	Hmga1	rat	 	X
+PRKCB	Hnf4a	rat	 	X
+Prkcb	Kcnc1	rat	X	 
+PRKCB	Myh9	rat	X	X
+Prkcb	Pebp1	rat	 	X
+Prkcb	Plcb3	rat	X	 
+Prkcb	Prkcb	rat	 	X
+PRKCB	Rbck1	rat	 	X
+Prkcb	Slc2a1	rat	X	 
+PRKCB	Slc2a1	rat	 	X
+PRKCB	Snap25	rat	 	X
+Prkcb	Th	rat	X	 
+PRKCB	Tnni3	rat	 	X
+Prkcd	Ckm	rat	 	X
+PRKCD	Dnm1l	rat	X	X
+PRKCD	Hmga1	rat	 	X
+Prkcd	Irs1	rat	X	 
+PRKCD	Irs1	rat	 	X
+Prkcd	Pa2g4	rat	X	 
+PRKCD	Pa2g4	rat	 	X
+Prkcd	Plcb3	rat	X	 
+PRKCD	Ppara	rat	 	X
+Prkcd	Prkcd	rat	X	 
+Prkcd	Prkd1	rat	X	 
+PRKCD	Sdc4	rat	X	X
+Prkcd	Tnni3	rat	 	X
+Prkce	Akt1	rat	X	 
+PRKCE	Cacna1b	rat	X	 
+PRKCE	Cacna1d	rat	 	X
+PRKCE	Gabrg2	rat	 	X
+PRKCE	Gja1	rat	 	X
+Prkce	Kcnc1	rat	X	 
+Prkce	Plcb3	rat	X	 
+Prkce	Prkcd	rat	X	 
+Prkce	Prkd1	rat	X	 
+PRKCE	Scn10a	rat	X	 
+PRKCE	Slc24a2	rat	X	 
+Prkce	Trpv1	rat	 	X
+Prkcg	Dgkg	rat	 	X
+PRKCG	Gja1	rat	 	X
+Prkcg	Gria4	rat	 	X
+PRKCG	Gria4	rat	X	 
+Prkcg	Grin1	rat	X	 
+PRKCG	Grm5	rat	 	X
+PRKCG	Hmga1	rat	 	X
+PRKCG	Hnf4a	rat	 	X
+Prkcg	Kcnc1	rat	X	 
+Prkcg	Pebp1	rat	 	X
+PRKCG	Slc38a3	rat	 	X
+PRKCG	Stk17b	rat	X	X
+PRKCH	Grm5	rat	 	X
+Prkch	Prkd1	rat	X	 
+PRKCI	Gria1	rat	X	 
+Prkci	Mark2	rat	X	 
+PRKCQ	Grm5	rat	 	X
+Prkcq	Ndrg2	rat	 	X
+Prkcz	Akt1	rat	 	X
+PRKCZ	Atp1a1	rat	X	 
+PRKCZ	Irs1	rat	 	X
+Prkcz	Irs1	rat	X	X
+PRKCZ	Lnpep	rat	 	X
+Prkcz	Pard3	rat	 	X
+PRKCZ	Pard3	rat	X	 
+Prkcz	Prkcz	rat	 	X
+PRKD1	Drd1	rat	X	 
+PRKD1	Kidins220	rat	X	X
+Prkd1	Prkd1	rat	X	X
+PRKD1	Tnni3	rat	 	X
+Prkd1	Tnni3	rat	X	X
+Prkd1	Trpv1	rat	 	X
+PRKDC	Foxa2	rat	 	X
+PRKDC	Nr3c1	rat	 	X
+PRKG1	Crip2	rat	X	 
+PRKG1	Grm7	rat	 	X
+Prkg1	Gsbs	rat	 	X
+PRKG1	Gsk3b	rat	 	X
+PRKG1	Gucy1a3	rat	X	 
+PRKG1	Itpr1	rat	 	X
+PRKG1	Ppp1r12a	rat	X	 
+PRKG1	Sf1	rat	X	 
+Prkg2	Plcb3	rat	X	X
+Prkg2	Prkg2	rat	 	X
+PRKG2	Star	rat	 	X
+	Prkn	rat	 	X
+	Pth1r	rat	 	X
+Ptk2	Bcar1	rat	X	X
+Ptk2b	Jak2	rat	X	 
+Ptk2b	Ptk2b	rat	 	X
+Ptk2b	Pxn	rat	X	 
+Ptk2b	Src	rat	X	 
+PTK2	Ptk2	rat	X	 
+Ptk2	Ptk2	rat	X	X
+PTK2	Pxn	rat	X	 
+	Ptrf	rat	 	X
+RAF1	Adcy6	rat	X	 
+RAF1	Tnnt2	rat	 	X
+	Rcn2	rat	 	X
+	Rcn3	rat	 	X
+Ret	Ret	rat	X	 
+Rock1	Irs1	rat	X	 
+Rock1	Limk2	rat	X	 
+ROCK1	Myl9	rat	 	X
+ROCK1	Myl9	rat	X	X
+ROCK1	Pard3	rat	 	X
+Rock1	Ppp1r12a	rat	X	 
+ROCK1	Tsc2	rat	X	 
+Rock2	Ppp1r12a	rat	X	 
+ROCK2	Ppp1r12a	rat	 	X
+Rock2	Rock2	rat	 	X
+	Rpn1	rat	 	X
+Rps6ka1	Cebpb	rat	 	X
+Rps6ka1	Creb1	rat	 	X
+RPS6KA1	Dlc1	rat	 	X
+Rps6ka1	Fos	rat	X	 
+RPS6KA1	Kcnd3	rat	X	X
+Rps6ka1	L1cam	rat	 	X
+Rps6ka1	Mybpc3	rat	X	 
+Rps6ka1	Nfkbia	rat	 	X
+Rps6ka1	Nfkbib	rat	X	X
+Rps6ka1	Nos1	rat	X	X
+RPS6KA1	Rps6ka1	rat	X	 
+Rps6ka1	Slc9a1	rat	X	 
+RPS6KA1	Tsc2	rat	 	X
+Rps6ka2	Cebpb	rat	 	X
+Rps6ka3	Cebpb	rat	 	X
+RPS6KA3	Cebpb	rat	X	 
+RPS6KA3	Creb1	rat	X	 
+RPS6KA3	Gata4	rat	X	 
+RPS6KA3	Htr2a	rat	X	X
+Rps6ka3	Mef2a	rat	X	X
+Rps6ka3	Mybpc3	rat	X	 
+RPS6KA3	Mybpc3	rat	 	X
+Rps6ka3	Nos1	rat	X	X
+Rps6ka3	Pld1	rat	X	 
+RPS6KA3	Rps6	rat	 	X
+RPS6KA5	Creb1	rat	 	X
+Rps6kb1	Bad	rat	X	 
+RPS6KB1	Bad	rat	 	X
+Rps6kb1	Gsk3b	rat	 	X
+Rps6kb1	Irs1	rat	 	X
+Rps6kb1	Rps6	rat	 	X
+	Rps6	rat	 	X
+	Scn2a	rat	 	X
+	Sdpr	rat	 	X
+	Sept3	rat	 	X
+	Serpina1	rat	 	X
+	Serpina3k	rat	 	X
+	Serpinf1	rat	 	X
+	Sf1	rat	 	X
+SGK1	Apbb1	rat	 	X
+SGK1	Creb1	rat	X	X
+SGK1	Elk1	rat	X	X
+SGK1	Gdi1	rat	 	X
+Sgk1	Kcnj1	rat	X	 
+SGK1	Mapt	rat	X	 
+Sgk1		rat	X	 
+SGK1		rat	 	X
+SGK1	Scnn1a	rat	X	 
+SGK1	Slc1a6	rat	X	 
+Sgk1	Srf	rat	X	 
+SGK1	Srf	rat	 	X
+Sik1	Sik1	rat	 	X
+SIK2	Irs1	rat	 	X
+Sik2	Irs1	rat	X	X
+Sik2	Sik2	rat	 	X
+	Slc2a4	rat	 	X
+	Snap25	rat	X	 
+SRC	Adam17	rat	X	 
+SRC	Arrb1	rat	X	X
+Src	Bcar1	rat	X	 
+SRC	Bcar1	rat	 	X
+SRC	Cacna1c	rat	X	X
+SRC	Calm1	rat	 	X
+Src	Cav1	rat	X	 
+SRC	Celf2	rat	X	X
+Src	Dnm1	rat	X	 
+SRC	Dnm1	rat	 	X
+Src	Dnm2	rat	X	 
+Src	Egfr	rat	X	 
+SRC	Flot2	rat	X	 
+Src	Gabrg2	rat	 	X
+Src	Git1	rat	X	 
+SRC	Gja1	rat	 	X
+Src	Gja1	rat	X	X
+Src	Gria2	rat	X	 
+SRC	Gria2	rat	 	X
+SRC	Igf2bp1	rat	X	 
+SRC	Kcnb1	rat	 	X
+SRC	Kcnb1	rat	X	 
+Src	Kcnq3	rat	X	 
+Src	L1cam	rat	X	 
+SRC	Ntrk2	rat	 	X
+Src	Pag1	rat	X	X
+Src	Pdpk1	rat	 	X
+SRC	Plcg1	rat	 	X
+Src	Prkcd	rat	 	X
+SRC	Prkcd	rat	 	X
+SRC	Prkcd	rat	X	 
+Src	Prkcd	rat	X	X
+SRC	Prkcd	rat	X	X
+SRC	Prkci	rat	 	X
+SRC	Prkci	rat	X	X
+SRC	Ptk2	rat	X	 
+SRC		rat	X	 
+SRC	Rps6kb1	rat	 	X
+Src	Sptan1	rat	 	X
+Src	Src	rat	 	X
+SRC	Src	rat	 	X
+Src	Syn1	rat	X	 
+SRC	Trpv6	rat	X	 
+Stk11	Prkaa1	rat	 	X
+STK11	Prkaa1	rat	 	X
+Stk11	Prkaa2	rat	 	X
+STK11	Sik1	rat	X	 
+Stk3	Stk3	rat	X	 
+STK4	Foxo1	rat	X	X
+Syk	Lat	rat	X	 
+Syk	Lcp2	rat	X	 
+SYK	Syk	rat	 	X
+	Synm	rat	 	X
+Taok1	Mark2	rat	X	X
+Tbk1	Insr	rat	X	 
+TBK1	Insr	rat	 	X
+Tesk1	Tesk1	rat	 	X
+Tesk2	Cfl1	rat	X	X
+TNK2	Wasl	rat	 	X
+TNK2	Wasl	rat	X	X
+Tnni3k	Tnni3	rat	X	 
+TNNI3K	Tnni3	rat	 	X
+	Trpv1	rat	 	X
+	Ttn	rat	 	X
+Uhmk1	Pam	rat	X	X
+ULK1	Prkaa1	rat	 	X
+ULK1	Prkab2	rat	 	X
+ULK1	Prkag1	rat	 	X
+	Vim	rat	 	X
+WEE1	Cdk1	rat	 	X
+Wnk1	Wnk1	rat	 	X
+Wnk1	Wnk4	rat	 	X
+WNK3	Slc12a1	rat	X	 
+WNK3	Slc12a3	rat	X	 
+Yes1	Yes1	rat	 	X
+ZAP70	Plcg1	rat	 	X
+	Zyx	rat	 	X

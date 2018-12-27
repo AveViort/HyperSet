@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Branch Lengths Computation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for compute.brlen {ape}"><tr><td>compute.brlen {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Branch Lengths Computation</h2>
+
+<h3>Description</h3>
+
+<p>This function computes branch lengths of a tree using different
+methods.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+compute.brlen(phy, method = "Grafen", power = 1, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>phylo</code> representing the tree.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>the method to be used to compute the branch lengths;
+this must be one of the followings: (i) <code>"Grafen"</code> (the
+default), (ii) a numeric vector, or (iii) a function.</p>
+</td></tr>
+<tr valign="top"><td><code>power</code></td>
+<td>
+<p>The power at which heights must be raised (see below).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further argument(s) to be passed to <code>method</code> if it is
+a function.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Grafen's (1989) computation of branch lengths: each node is given a
+&lsquo;height&rsquo;, namely the number of leaves of the subtree minus one, 0 for
+leaves. Each height is scaled so that root height is 1, and then
+raised at power 'rho' (&gt; 0). Branch lengths are then computed as the
+difference between height of lower node and height of upper node.
+</p>
+<p>If one or several numeric values are provided as <code>method</code>, they
+are recycled if necessary. If a function is given instead, further
+arguments are given in place of <code>...</code> (they must be named, see
+examples).
+</p>
+<p>Zero-length branches are not treated as multichotomies, and thus may
+need to be collapsed (see <code><a href="multi2di.html">di2multi</a></code>).
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>phylo</code> with branch lengths.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:julien.dutheil@univ-montp2.fr">julien.dutheil@univ-montp2.fr</a> and
+Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Grafen, A. (1989) The phylogenetic regression. <em>Philosophical
+Transactions of the Royal society of London. Series B. Biological
+Sciences</em>, <b>326</b>, 119&ndash;157.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.tree.html">read.tree</a></code> for a description of <code>phylo</code> objects,
+<code><a href="multi2di.html">di2multi</a></code>, <code><a href="multi2di.html">multi2di</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(bird.orders)
+plot(compute.brlen(bird.orders, 1))
+plot(compute.brlen(bird.orders, runif, min = 0, max = 5))
+layout(matrix(1:4, 2, 2))
+plot(compute.brlen(bird.orders, power=1), main=expression(rho==1))
+plot(compute.brlen(bird.orders, power=3), main=expression(rho==3))
+plot(compute.brlen(bird.orders, power=0.5), main=expression(rho==0.5))
+plot(compute.brlen(bird.orders, power=0.1), main=expression(rho==0.1))
+layout(1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

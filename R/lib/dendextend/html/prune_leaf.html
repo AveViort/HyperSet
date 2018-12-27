@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Trims one leaf from a dendrogram</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for prune_leaf {dendextend}"><tr><td>prune_leaf {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Trims one leaf from a dendrogram</h2>
+
+<h3>Description</h3>
+
+<p>Trims (prunes) one leaf from a dendrogram.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+prune_leaf(dend, leaf_name, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>leaf_name</code></td>
+<td>
+<p>a character string as the label of the tip we wish to prune</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed on</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Used through <a href="prune.html">prune</a>
+</p>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram with a leaf pruned
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hc &lt;- hclust(dist(USArrests[1:5,]), "ave")
+dend &lt;- as.dendrogram(hc)
+
+par(mfrow = c(1,2))
+plot(dend, main = "original tree")
+plot(prune_leaf(dend , "Alaska"), main = "tree without Alaska")
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

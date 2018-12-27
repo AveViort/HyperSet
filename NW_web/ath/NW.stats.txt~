@@ -1,0 +1,8 @@
+Network	Filename	No.of links	No. of genes
+FC2.athaliana.ath_4.0	384558		10000
+FunCoup 3.0 	FC3_ref	1000000	8039
+FunCoup 2.0 	FC2.athaliana	1943408	15280
+merged_high_quality	Mouse.merged4_and_tf	1022236	18144
+KEGG pathways	kgml.LNK.Genes	28639	4100
+KINASE2SUBSTRATE 	Kinase_Substrate.2015.mouse	1808	346 kinases, 865 substrates
+Protein complexes 	CORUM_and_KEGG_complexes.Genes	21417	1345

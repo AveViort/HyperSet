@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Blomberg et al.'s Correlation Structure</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for corBlomberg {ape}"><tr><td>corBlomberg {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Blomberg et al.'s Correlation Structure</h2>
+
+<h3>Description</h3>
+
+<p>The &ldquo;ACDC&rdquo; (accelerated/decelerated) model assumes that continuous
+traits evolve under a Brownian motion model which rates accelerates
+(if <i>g</i> &lt; 1) or decelerates (if <i>g</i> &gt; 1) through
+time. If <i>g</i> = 1, then the model reduces to a Brownian motion
+model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+corBlomberg(value, phy, form = ~1, fixed = FALSE)
+## S3 method for class 'corBlomberg'
+corMatrix(object, covariate = getCovariate(object),
+                   corr = TRUE, ...)
+## S3 method for class 'corBlomberg'
+coef(object, unconstrained = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>the (initial) value of the parameter <i>g</i>.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>form</code></td>
+<td>
+<p>(ignored).</p>
+</td></tr>
+<tr valign="top"><td><code>fixed</code></td>
+<td>
+<p>a logical specifying whether <code>gls</code> should
+estimate <i>gamma</i> (the default) or keep it fixed.</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>an (initialized) object of class <code>"corBlomberg"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>covariate</code></td>
+<td>
+<p>(ignored).</p>
+</td></tr>
+<tr valign="top"><td><code>corr</code></td>
+<td>
+<p>a logical value specifying whether to return the
+correlation matrix (the default) or the variance-covariance matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>unconstrained</code></td>
+<td>
+<p>a logical value. If <code>TRUE</code> (the default),
+the coefficients are returned in unconstrained form (the same used
+in the optimization algorithm). If <code>FALSE</code> the coefficients are
+returned in &ldquo;natural&rdquo;, possibly constrained, form.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"corBlomberg"</code>, the coefficients from an
+object of this class, or the correlation matrix of an initialized
+object of this class. In most situations, only <code>corBlomberg</code> will
+be called by the user.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Blomberg, S. P., Garland, Jr, T., and Ives, A. R. (2003) Testing for
+phylogenetic signal in comparative data: behavioral traits are more
+labile. <em>Evolution</em>, <b>57</b>, 717&ndash;745.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

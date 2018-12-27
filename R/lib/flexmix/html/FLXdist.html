@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Finite Mixtures of Distributions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for FLXdist {flexmix}"><tr><td>FLXdist {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Finite Mixtures of Distributions</h2>
+
+<h3>Description</h3>
+
+<p>Constructs objects of class <code>FLXdist</code> which represent unfitted finite mixture
+models.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ FLXdist(formula, k = NULL, model = FLXMRglm(), components,
+         concomitant = FLXPconstant())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+<p>A symbolic description of the model to be fit. The
+general form is <code>~x|g</code> where <code>x</code> is the set of predictors
+and <code>g</code> an optional grouping factor for repeated measurements.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>Integer specifying the number of cluster or a numeric vector of
+length equal to the length of components, specifying the prior
+probabilities of clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>Object of class <code>FLXM</code> or a list of <code>FLXM</code>
+objects. Default is the object returned by calling
+<code>FLXMRglm()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>components</code></td>
+<td>
+<p>A list of length equal to the number of components
+containing a list of length equal to the number of models which
+again contains a list of named elements for defining the parameters
+of the component-specific model.</p>
+</td></tr>
+<tr valign="top"><td><code>concomitant</code></td>
+<td>
+<p>Object of class <code>FLXconcomitant</code> specifying
+the model for concomitant variables.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns an object of class <code>FLXdist</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Bettina Gruen</p>
+
+
+<h3>See Also</h3>
+
+<p><code>FLXdist-class</code></p>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get information about EUtils databases</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for entrez_info {rentrez}"><tr><td>entrez_info {rentrez}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get information about EUtils databases</h2>
+
+<h3>Description</h3>
+
+<p>Gather information about EUtils generally, or a given Eutils database.
+Note: The most common uses-cases for the einfo util are finding the list of
+search fields available for a given database or the other NCBI databases to
+which records in a given database might be linked. Both these use cases
+are implemented in higher-level functions that return just this information
+(<code>entrez_db_searchable</code> and <code>entrez_db_links</code> respectively).
+Consequently most users will not have a reason to use this function (though
+it is exported by <code>rentrez</code> for the sake of completeness.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+entrez_info(db = NULL, config = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>db</code></td>
+<td>
+<p>character database about which to retrieve information (optional)</p>
+</td></tr>
+<tr valign="top"><td><code>config</code></td>
+<td>
+<p>config vector passed on to <code>httr::GET</code></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>XMLInternalDocument with information describing either all the
+databases available in Eutils (if db is not set) or one particular database
+(set by 'db')
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../httr/html/config.html">config</a></code> for available httr configurations
+</p>
+<p>Other einfo: <code><a href="entrez_db_links.html">entrez_db_links</a></code>,
+<code><a href="entrez_db_searchable.html">entrez_db_searchable</a></code>,
+<code><a href="entrez_db_summary.html">entrez_db_summary</a></code>, <code><a href="entrez_dbs.html">entrez_dbs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+all_the_data &lt;- entrez_info()
+XML::xpathSApply(all_the_data, "//DbName", xmlValue)
+entrez_dbs()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rentrez</em> version 1.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

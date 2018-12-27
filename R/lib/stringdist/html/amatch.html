@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Approximate string matching</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for amatch {stringdist}"><tr><td>amatch {stringdist}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Approximate string matching</h2>
+
+<h3>Description</h3>
+
+<p>Approximate string matching equivalents of <code>R</code>'s native
+<code><a href="../../base/html/match.html">match</a></code> and <code>%in%</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+amatch(x, table, nomatch = NA_integer_, matchNA = TRUE, method = c("osa",
+  "lv", "dl", "hamming", "lcs", "qgram", "cosine", "jaccard", "jw", "soundex"),
+  useBytes = FALSE, weight = c(d = 1, i = 1, s = 1, t = 1), maxDist = 0.1,
+  q = 1, p = 0, bt = 0, nthread = getOption("sd_num_thread"))
+
+ain(x, table, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>elements to be approximately matched: will be coerced to 
+<code>character</code> unless it is a list consisting of <code>integer</code> vectors.</p>
+</td></tr>
+<tr valign="top"><td><code>table</code></td>
+<td>
+<p>lookup table for matching. Will be coerced to <code>character</code>
+unless it is a list consting of <code>integer</code> vectors.</p>
+</td></tr>
+<tr valign="top"><td><code>nomatch</code></td>
+<td>
+<p>The value to be returned when no match is found. This is
+coerced to integer.</p>
+</td></tr>
+<tr valign="top"><td><code>matchNA</code></td>
+<td>
+<p>Should <code>NA</code>'s be matched? Default behaviour mimics the 
+behaviour of base <code><a href="../../base/html/match.html">match</a></code>, meaning that <code>NA</code> matches
+<code>NA</code> (see also the note on <code>NA</code> handling below).</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>Matching algorithm to use. See <code><a href="stringdist-metrics.html">stringdist-metrics</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>useBytes</code></td>
+<td>
+<p>Perform byte-wise comparison. See <code><a href="stringdist-encoding.html">stringdist-encoding</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>weight</code></td>
+<td>
+<p>For <code>method='osa'</code> or <code>'dl'</code>, the penalty for
+deletion, insertion, substitution and transposition, in that order. When
+<code>method='lv'</code>, the penalty for transposition is ignored. When
+<code>method='jw'</code>, the weights associated with characters of <code>a</code>,
+characters from <code>b</code> and the transposition weight, in that order. 
+Weights must be positive and not exceed 1. <code>weight</code> is ignored
+completely when <code>method='hamming'</code>, <code>'qgram'</code>, <code>'cosine'</code>,
+<code>'Jaccard'</code>, <code>'lcs'</code>, or <code>'soundex'</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>maxDist</code></td>
+<td>
+<p>Elements in <code>x</code> will not be matched with elements of 
+<code>table</code> if their distance is larger than <code>maxDist</code>. Note that the
+maximum distance between strings depends on the method: it should always be
+specified.</p>
+</td></tr>
+<tr valign="top"><td><code>q</code></td>
+<td>
+<p>q-gram size, only when method is <code>'qgram'</code>, <code>'jaccard'</code>,
+or <code>'cosine'</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>Winklers penalty parameter for Jaro-Winkler distance, with
+<i>0&le;q p&le;q0.25</i>. Only when method is <code>'jw'</code></p>
+</td></tr>
+<tr valign="top"><td><code>bt</code></td>
+<td>
+<p>Winkler's boost threshold. Winkler's penalty factor is
+only applied when the Jaro distance is larger than <code>bt</code>.
+Applies only to <code>method='jw'</code> and <code>p&gt;0</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>nthread</code></td>
+<td>
+<p>Number of threads used by the underlying C-code. A sensible
+default is chosen, see <code><a href="stringdist-parallelization.html">stringdist-parallelization</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>parameters to pass to <code>amatch</code> (except <code>nomatch</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>ain</code> is currently defined as
+</p>
+<p><code>ain(x,table,...) &lt;- function(x,table,...) amatch(x, table, nomatch=0,...) &gt; 0</code>
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>amatch</code> returns the position of the closest match of <code>x</code>
+in <code>table</code>. When multiple matches with the same smallest distance
+metric exist, the first one is returned. <code>ain</code> returns a
+<code>logical</code> vector of length <code>length(x)</code> indicating wether an
+element of <code>x</code> approximately matches an element in <code>table</code>.
+</p>
+
+
+<h3>Note on <code>NA</code> handling</h3>
+
+<p><code>R</code>'s native <code><a href="../../base/html/match.html">match</a></code> function matches <code>NA</code> with
+<code>NA</code>. This may feel inconsistent with <code>R</code>'s usual <code>NA</code>
+handling, since for example <code>NA==NA</code> yields
+<code>NA</code> rather than <code>TRUE</code>. In most cases, one may reason about the
+behaviour under <code>NA</code> along the lines of &ldquo;if one of the arguments is
+<code>NA</code>, the result shall be <code>NA</code>&rdquo;, simply because not all
+information necessary to execute the function is available. One uses special 
+functions such as <code>is.na</code>, <code>is.null</code> <em>etc.</em> to handle special
+values.
+</p>
+<p>The <code>amatch</code> function mimics the behaviour of <code><a href="../../base/html/match.html">match</a></code>
+by default: <code>NA</code> is matched with <code>NA</code> and with nothing else. Note
+that this is inconsistent with the behaviour of <code><a href="stringdist.html">stringdist</a></code> 
+since <code>stringdist</code> yields <code>NA</code> when at least one of the arguments
+is <code>NA</code>. The same inconsistency exists between <code><a href="../../base/html/match.html">match</a></code>
+and <code><a href="../../utils/html/adist.html">adist</a></code>. In <code>amatch</code> this behaviour can be
+controlled by setting <code>matchNA=FALSE</code>. In that case, if any of the
+arguments in <code>x</code> is <code>NA</code>, the <code>nomatch</code> value is returned,
+regardless of whether <code>NA</code> is present in <code>table</code>. In
+<code><a href="../../base/html/match.html">match</a></code> the behaviour can be controlled by setting the
+<code>incomparables</code> option.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+# lets see which sci-fi heroes are stringdistantly nearest
+amatch("leia",c("uhura","leela"),maxDist=5)
+
+# we can restrict the search
+amatch("leia",c("uhura","leela"),maxDist=1)
+
+# we can match each value in the find vector against values in the lookup table:
+amatch(c("leia","uhura"),c("ripley","leela","scully","trinity"),maxDist=2)
+
+# setting nomatch returns a different value when no match is found
+amatch("leia",c("uhura","leela"),maxDist=1,nomatch=0)
+
+# this is always true if maxDist is Inf
+ain("leia",c("uhura","leela"),maxDist=Inf)
+
+# Let's look in a neighbourhood of maximum 2 typo's (by default, the OSA algorithm is used)
+ain("leia",c("uhura","leela"), maxDist=2)
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>stringdist</em> version 0.9.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

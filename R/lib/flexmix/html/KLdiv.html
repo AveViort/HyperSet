@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Kullback-Leibler Divergence</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for KLdiv {flexmix}"><tr><td>KLdiv {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Kullback-Leibler Divergence</h2>
+
+<h3>Description</h3>
+
+<p>Estimate the Kullback-Leibler divergence of several distributions.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'matrix'
+KLdiv(object, eps = 10^-4, overlap = TRUE,...)
+## S4 method for signature 'flexmix'
+KLdiv(object, method = c("continuous", "discrete"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>See Methods section below.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>The method to be used; &quot;continuous&quot; determines
+the Kullback-Leibler divergence between the unweighted theoretical
+component distributions and the unweighted posterior probabilities
+at the observed points are used by &quot;discrete&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>eps</code></td>
+<td>
+<p>Probabilities below this threshold are replaced by this
+threshold for numerical stability.</p>
+</td></tr>
+<tr valign="top"><td><code>overlap</code></td>
+<td>
+<p>Logical, do not determine the KL divergence for
+those pairs where for each point at least one of the densities has a
+value smaller than <code>eps</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Passed to the matrix method.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Estimates </p>
+<p style="text-align: center;"><i>\int f(x) (\log f(x) - \log g(x)) dx</i></p>
+
+<p>for distributions with densities <i>f()</i> and <i>g()</i>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A matrix of KL divergences where the rows correspond to using the
+respective distribution as <i>f()</i> in the formula above.
+</p>
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>object = &quot;matrix&quot;:</dt><dd><p>Takes as input a matrix of
+density values with one row per observation and one column per
+distribution.</p>
+</dd>
+<dt>object = &quot;flexmix&quot;:</dt><dd><p>Returns the Kullback-Leibler divergence
+of the mixture components.</p>
+</dd>
+</dl>
+
+
+<h3>Note</h3>
+
+<p>The density functions are modified to have equal support.
+A weight of at least <code>eps</code> is given to each
+observation point for the modified densities.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Friedrich Leisch and Bettina Gruen</p>
+
+
+<h3>References</h3>
+
+<p>S. Kullback and R. A. Leibler. On information and sufficiency.<em>The
+Annals of Mathematical Statistics</em>, <b>22</b>(1), 79&ndash;86, 1951.
+</p>
+<p>Friedrich Leisch. Exploring the structure of mixture model
+components. In Jaromir Antoch, editor, Compstat 2004&ndash;Proceedings in
+Computational Statistics, 1405&ndash;1412. Physika Verlag, Heidelberg,
+Germany, 2004. ISBN 3-7908-1554-3.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Gaussian and Student t are much closer to each other than
+## to the uniform:
+
+x &lt;- seq(-3, 3, length = 200)
+y &lt;- cbind(u = dunif(x), n = dnorm(x), t = dt(x, df = 10))
+
+matplot(x, y, type = "l")
+KLdiv(y)
+
+if (require("mlbench")) {
+set.seed(2606)
+x &lt;-  mlbench.smiley()$x
+model1 &lt;- flexmix(x ~ 1, k = 9, model = FLXmclust(diag = FALSE),
+                  control  =  list(minprior = 0))
+plotEll(model1, x)
+KLdiv(model1)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

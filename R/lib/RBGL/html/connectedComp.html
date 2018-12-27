@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Identify Connected Components in an Undirected Graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for connectedComp {RBGL}"><tr><td>connectedComp {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Identify Connected Components in an Undirected Graph  </h2>
+
+<h3>Description</h3>
+
+<p>The connected components in an undirected graph are identified. 
+If the graph is directed then the weakly connected components are identified. </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+connectedComp(g)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p> graph with <code>edgemode</code> &ldquo;undirected&rdquo;</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Uses a depth first search approach to identifying all the connected
+components of an undirected graph. If the input, <code>g</code>, is a directed
+graph it is first transformed to an undirected graph (using
+<code><a href="../../graph/html/ugraph.html">ugraph</a></code>).
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of length equal to the number of connected components in
+<code>g</code>. Each element of the list contains a vector of the node
+labels for the nodes that are connected.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Vince Carey &lt;stvjc@channing.harvard.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../graph/html/graph-class.html">connComp</a></code>,<code><a href="strongComp.html">strongComp</a></code>, <code><a href="../../graph/html/ugraph.html">ugraph</a></code>, <code><a href="incrConnComp.html">same.component</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("GXL/kmstEx.gxl",package="graph"), open="r")
+km &lt;- fromGXL(con)
+close(con)
+km &lt;- graph::addNode(c("F","G","H"), km)
+km &lt;- addEdge("G", "H", km, 1)
+km &lt;- addEdge("H", "G", km, 1)
+ukm &lt;- ugraph(km)
+ukm
+edges(ukm)
+connectedComp(ukm)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

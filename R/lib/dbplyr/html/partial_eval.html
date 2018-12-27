@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Partially evaluate an expression.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for partial_eval {dbplyr}"><tr><td>partial_eval {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Partially evaluate an expression.</h2>
+
+<h3>Description</h3>
+
+<p>This function partially evaluates an expression, using information from
+the tbl to determine whether names refer to local expressions
+or remote variables. This simplifies SQL translation because expressions
+don't need to carry around their environment - all revelant information
+is incorporated into the expression.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+partial_eval(call, vars = character(), env = caller_env())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>call</code></td>
+<td>
+<p>an unevaluated expression, as produced by <code><a href="../../base/html/substitute.html">quote()</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>vars</code></td>
+<td>
+<p>character vector of variable names.</p>
+</td></tr>
+<tr valign="top"><td><code>env</code></td>
+<td>
+<p>environment in which to search for local values</p>
+</td></tr>
+</table>
+
+
+<h3>Symbol substitution</h3>
+
+<p><code>partial_eval()</code> needs to guess if you're referring to a variable on the
+server (remote), or in the current environment (local). It's not possible to
+do this 100
+</p>
+
+<ul>
+<li><p> If the tbl variables are known, and the symbol matches a tbl
+variable, then remote.
+</p>
+</li>
+<li><p> If the symbol is defined locally, local.
+</p>
+</li>
+<li><p> Otherwise, remote.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+vars &lt;- c("year", "id")
+partial_eval(quote(year &gt; 1980), vars = vars)
+
+ids &lt;- c("ansonca01", "forceda01", "mathebo01")
+partial_eval(quote(id %in% ids), vars = vars)
+
+# You can use local to disambiguate between local and remote
+# variables: otherwise remote is always preferred
+year &lt;- 1980
+partial_eval(quote(year &gt; year), vars = vars)
+partial_eval(quote(year &gt; local(year)), vars = vars)
+
+# Functions are always assumed to be remote. Use local to force evaluation
+# in R.
+f &lt;- function(x) x + 1
+partial_eval(quote(year &gt; f(1980)), vars = vars)
+partial_eval(quote(year &gt; local(f(1980))), vars = vars)
+
+# For testing you can also use it with the tbl omitted
+partial_eval(quote(1 + 2 * 3))
+x &lt;- 1
+partial_eval(quote(x ^ y))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: String metrics in 'stringdist'</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for stringdist-encoding {stringdist}"><tr><td>stringdist-encoding {stringdist}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>String metrics in <span class="pkg">stringdist</span></h2>
+
+<h3>Description</h3>
+
+<p>This page gives an overview of encoding handling in <span class="pkg">stringst</span>.
+</p>
+
+
+<h3>Encoding in <span class="pkg">stringdist</span></h3>
+
+<p>All character strings are stored as a sequence of bytes. An encoding
+system relates a byte, or a short sequence of bytes to a symbol. Over the years, many 
+encoding systems have been developed, and not all OS's and softwares use the same encoding 
+as default. Similarly, depending on the system R is running on, R may use a
+different encoding for storing strings internally.
+</p>
+<p>The <span class="pkg">stringdist</span> package is designed so users in principle need not
+worry about this. Strings are converted to <code>UTF-32</code> (unsigned integer)
+by default prior to any further computation. This means that results are
+encoding-independent and that strings are interpreted as a sequence of
+symbols, not as a sequence of pure bytes. In functions where this is
+relevant, this may be switched by setting the <code>useBytes</code> option to
+<code>TRUE</code>. However, keep in mind that results will then likely depend on the
+system R is running on, except when your strings are pure ASCII.
+Also, for multi-byte encodings, results for byte-wise computations
+will usually differ from results using encoded computations.
+</p>
+<p>Prior to <span class="pkg">stringdist</span> version 0.9, setting <code>useBytes=TRUE</code> could 
+give a significant performance enhancement. Since version 0.9, translation
+to integer is done by C code internal to <span class="pkg">stringdist</span> and the difference in
+performance is now negligible.
+</p>
+
+
+<h3>Unicode normalisation</h3>
+
+<p>In <code>utf-8</code>, the same (accented) character may be represented as several byte sequences. For example, an u-umlaut
+can be represented with a single byte code or as a byte code representing <code>'u'</code> followed by a modifier byte code
+that adds the umlaut. The <a href="https://cran.r-project.org/package=stringi">stringi</a> package 
+of Gagolevski and Tartanus offers unicode normalisation tools.
+</p>
+
+
+<h3>Some tips on character encoding and transliteration</h3>
+
+<p>Some algorithms (like soundex) are defined only on the printable ASCII character set. This excludes any character
+with accents for example. Translating accented characters to the non-accented ones is a form of transliteration. On
+many systems running R (but not all!) you can achieve this with 
+</p>
+<p><code>iconv(x,to="ASCII//TRANSLIT")</code>, 
+</p>
+<p>where <code>x</code> is your character vector. See the documentation of <code><a href="../../base/html/iconv.html">iconv</a></code> for details.
+</p>
+<p>The <code>stringi</code> package (Gagolewski and Tartanus) should work on any system. The command 
+<code>stringi::stri_trans_general(x,"Latin-ASCII")</code> transliterates character vector <code>x</code> to ASCII.
+</p>
+
+
+<h3>References</h3>
+
+
+<ul>
+<li><p>The help page of <code><a href="../../base/html/Encoding.html">Encoding</a></code> describes how R handles encoding.
+</p>
+</li>
+<li><p>The help page of <code><a href="../../base/html/iconv.html">iconv</a></code> has a good overview of base R's 
+encoding conversion options. The capabilities of <code>iconv</code> depend on the system R is running on.
+The <span class="pkg">stringi</span> package offers platform-independent encoding and normalization tools.
+</p>
+</li></ul>
+
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li><p>Functions using re-encoding: <code><a href="stringdist.html">stringdist</a></code>, <code><a href="stringdist.html">stringdistmatrix</a></code>, <code><a href="amatch.html">amatch</a></code>, <code><a href="amatch.html">ain</a></code>, <code><a href="qgrams.html">qgrams</a></code>
+</p>
+</li>
+<li><p>Encoding related: <code><a href="printable_ascii.html">printable_ascii</a></code>
+</p>
+</li></ul>
+
+
+<hr /><div style="text-align: center;">[Package <em>stringdist</em> version 0.9.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

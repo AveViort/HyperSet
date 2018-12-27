@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find Most Recent Common Ancestors Between Pairs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mrca {ape}"><tr><td>mrca {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find Most Recent Common Ancestors Between Pairs</h2>
+
+<h3>Description</h3>
+
+<p><code>mrca</code> returns for each pair of tips (and nodes) its most
+recent common ancestor (MRCA).
+</p>
+<p><code>getMRCA</code> returns the MRCA of two or more tips.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mrca(phy, full = FALSE)
+getMRCA(phy, tip)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>full</code></td>
+<td>
+<p>a logical indicating whether to return the MRCAs among
+all tips and nodes (if <code>TRUE</code>); the default is to return only
+the MRCAs among tips.</p>
+</td></tr>
+<tr valign="top"><td><code>tip</code></td>
+<td>
+<p>a vector of mode numeric or character specifying the tips;
+can also be node numbers.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For <code>mrca</code>, the diagonal is set to the number of the tips (and
+nodes if <code>full = TRUE</code>). If <code>full = FALSE</code>, the colnames and
+rownames are set with the tip labels of the tree; otherwise the
+numbers are given as names.
+</p>
+<p>For <code>getMRCA</code>, if <code>tip</code> is of length one or zero then
+<code>NULL</code> is returned.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a matrix of mode numeric (<code>mrca</code>) or a single numeric value
+(<code>getMRCA</code>).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis, Klaus Schliep, Joseph W. Brown</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: untangle dendrograms</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for untangle {dendextend}"><tr><td>untangle {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>untangle dendrograms</h2>
+
+<h3>Description</h3>
+
+<p>One untangle function to rule them all.
+</p>
+<p>This function untangles dendrogram lists (dendlist),
+Using various heuristics.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+untangle(dend1, ...)
+
+## Default S3 method:
+untangle(dend1, ...)
+
+untangle_labels(dend1, dend2, ...)
+
+## S3 method for class 'dendrogram'
+untangle(dend1, dend2, method = c("labels", "ladderize",
+  "random", "step1side", "step2side", "DendSer"), ...)
+
+## S3 method for class 'dendlist'
+untangle(dend1, method = c("labels", "ladderize", "random",
+  "step1side", "step2side", "DendSer"), which = c(1L, 2L), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend1</code></td>
+<td>
+<p>a dednrogram or a dendlist object</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to the releavnt untangle function</p>
+</td></tr>
+<tr valign="top"><td><code>dend2</code></td>
+<td>
+<p>A second dednrogram (to untangle against)</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>a character indicating the type of untangle
+heuristic to use.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>an integer vector of length 2, indicating
+which of the trees in the dendlist object should be plotted</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function wraps all of the untagnle functions,
+in order to make it easier to find our about (and use) them.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <a href="dendlist.html">dendlist</a>, with two trees after 
+they have been untangled.
+</p>
+<p>If the dendlist was originally larger than 2, it will return the original dendlist
+but with the relevant trees properly rotate.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tal Galili
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="tanglegram.html">tanglegram</a>, <a href="untangle_random_search.html">untangle_random_search</a>, 
+<a href="untangle_step_rotate_1side.html">untangle_step_rotate_1side</a>, <a href="untangle_step_rotate_2side.html">untangle_step_rotate_2side</a>,
+<a href="untangle_DendSer.html">untangle_DendSer</a>,
+<a href="entanglement.html">entanglement</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+set.seed(23235)
+ss &lt;- sample(1:150, 10 )
+dend1 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("com") %&gt;% as.dendrogram
+dend2 &lt;- iris[ss,-5] %&gt;% dist %&gt;% hclust("sin") %&gt;% as.dendrogram
+dend12 &lt;- dendlist(dend1, dend2)
+
+dend12 %&gt;% tanglegram
+
+untangle(dend1, dend2, method="random", R = 5) %&gt;% tanglegram
+
+# it works, and we get something different:
+set.seed(1234)
+dend12 %&gt;% untangle(method="random", R = 5) %&gt;% tanglegram
+
+set.seed(1234)
+# fixes it completely:
+dend12 %&gt;% untangle(method="random", R = 5) %&gt;% untangle(method="step1") %&gt;% tanglegram
+# not good enough
+dend12 %&gt;% untangle(method="step1") %&gt;% tanglegram
+# not good enough
+dend12 %&gt;% untangle(method="step2") %&gt;% tanglegram
+# How we might wish to use it:
+set.seed(12777)
+dend12 %&gt;% 
+   untangle(method="random", R = 1) %&gt;%
+   untangle(method="step2") %&gt;% 
+   tanglegram
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

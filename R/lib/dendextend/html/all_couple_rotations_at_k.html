@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Rotate tree branches for k</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for all_couple_rotations_at_k {dendextend}"><tr><td>all_couple_rotations_at_k {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Rotate tree branches for k</h2>
+
+<h3>Description</h3>
+
+<p>Given a tree and a k number of clusters, the tree is rotated so that the
+extra clusters added from k-1 to k clusters are flipped.
+</p>
+<p>This is useful for finding good trees for a <a href="tanglegram.html">tanglegram</a>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+all_couple_rotations_at_k(dend, k, dend_heights_per_k, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>integer scalar with the number of clusters the tree should be cut into.</p>
+</td></tr>
+<tr valign="top"><td><code>dend_heights_per_k</code></td>
+<td>
+<p>a named vector that resulted from running
+<a href="heights_per_k.dendrogram.html">heights_per_k.dendrogram</a>. When running the function many times, 
+supplying this object will help improve the running time if using the
+<a href="cutree-methods.html">cutree.dendrogram</a> method..</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with dendrogram objects with all the possible rotations
+for k clusters (beyond the k-1 clusters!).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="tanglegram.html">tanglegram</a>, <a href="match_order_by_labels.html">match_order_by_labels</a>,
+<a href="entanglement.html">entanglement</a>, <a href="flip_leaves.html">flip_leaves</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+dend1 &lt;- USArrests[1:5,] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+dend2 &lt;- all_couple_rotations_at_k(dend1, k=2)[[2]]
+tanglegram(dend1,dend2)
+entanglement(dend1,dend2, L = 2) # 0.5
+
+dend2 &lt;- all_couple_rotations_at_k(dend1, k=3)[[2]]
+tanglegram(dend1,dend2)
+entanglement(dend1,dend2, L = 2) # 0.4
+
+dend2 &lt;- all_couple_rotations_at_k(dend1, k=4)[[2]]
+tanglegram(dend1,dend2)
+entanglement(dend1,dend2, L = 2) # 0.05
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Graphical Identification of Nodes and Tips</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for identify.phylo {ape}"><tr><td>identify.phylo {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Graphical Identification of Nodes and Tips</h2>
+
+<h3>Description</h3>
+
+<p>This function allows to identify a clade on a plotted tree by clicking
+on the plot with the mouse. The tree, specified in the argument
+<code>x</code>, must be plotted beforehand.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'phylo'
+identify(x, nodes = TRUE, tips = FALSE,
+                  labels = FALSE, quiet = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>nodes</code></td>
+<td>
+<p>a logical specifying whether to identify the node.</p>
+</td></tr>
+<tr valign="top"><td><code>tips</code></td>
+<td>
+<p>a logical specifying whether to return the tip
+information.</p>
+</td></tr>
+<tr valign="top"><td><code>labels</code></td>
+<td>
+<p>a logical specifying whether to return the labels; by
+default only the numbers are returned.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>a logical controlling whether to print a message inviting
+the user to click on the tree.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>By default, the clade is identified by its number as found in the
+&lsquo;edge&rsquo; matrix of the tree. If <code>tips = TRUE</code>, the tips descending
+from the identified node are returned, possibly together with the
+node. If <code>labels = TRUE</code>, the labels are returned (if the tree
+has no node labels, then the node numbered is returned).
+</p>
+<p>The node is identified by the shortest distance where the click
+occurs. If the click occurs close to a tip, the function returns its
+information.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with one or two vectors named <code>"tips"</code> and/or
+<code>"nodes"</code> with the identification of the tips and/or of the
+nodes.
+</p>
+
+
+<h3>Note</h3>
+
+<p>This function does not add anything on the plot, but it can be wrapped
+with, e.g., <code><a href="nodelabels.html">nodelabels</a></code> (see example), or its results can
+be sent to, e.g., <code><a href="drop.tip.html">drop.tip</a></code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code>, <code><a href="nodelabels.html">nodelabels</a></code>,
+<code><a href="../../graphics/html/identify.html">identify</a></code> for the generic function
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+tr &lt;- rtree(20)
+f &lt;- function(col) {
+    o &lt;- identify(tr)
+    nodelabels(node=o$nodes, pch = 19, col = col)
+}
+plot(tr)
+f("red") # click close to a node
+f("green")
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

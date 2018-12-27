@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find lowest common branch were the two items are shared</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lowest_common_branch {dendextend}"><tr><td>lowest_common_branch {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find lowest common branch were the two items are shared</h2>
+
+<h3>Description</h3>
+
+<p>Given two vectors, for two items, of cluster belonging - the function finds
+the lowest branch (e.g: largest number of k clusters) for which the two
+items are in the same cluster for the two trees.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+lowest_common_branch(item1, item2, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>item1</code></td>
+<td>
+<p>a named numeric vector (of cluster group with names of k level)</p>
+</td></tr>
+<tr valign="top"><td><code>item2</code></td>
+<td>
+<p>a named numeric vector (of cluster group with names of k level)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The first location (from left) where the two vectors have the same A dendrogram, after adjusting the members attr in all of its nodes.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="cor_bakers_gamma.html">cor_bakers_gamma</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+item1 &lt;- structure(c(1L, 1L, 1L, 1L), .Names = c("1", "2", "3", "4"))
+item2 &lt;- structure(c(1L, 1L, 2L, 2L), .Names = c("1", "2", "3", "4"))
+lowest_common_branch(item1, item2)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

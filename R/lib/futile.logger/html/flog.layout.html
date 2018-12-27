@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Manage layouts within the 'futile.logger' sub-system</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for flog.layout {futile.logger}"><tr><td>flog.layout {futile.logger}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Manage layouts within the 'futile.logger' sub-system</h2>
+
+<h3>Description</h3>
+
+<p>Provides functions for managing layouts. Typically 'flog.layout' is only
+used when manually creating a logging configuration.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Used internally by lambda.r</p>
+</td></tr>
+</table>
+
+
+<h3>Usage</h3>
+
+<p># Get the layout function for the given logger<br />
+flog.layout(name) %::% character : Function<br />
+flog.layout(name='ROOT')
+</p>
+<p># Set the layout function for the given logger<br />
+flog.layout(fn, name='ROOT')
+</p>
+<p># Decorate log messages with a standard format<br />
+layout.simple(level, msg, ...)
+</p>
+<p># Generate log messages as JSON<br />
+layout.json(level, msg, ...)
+</p>
+<p># Decorate log messages using a custom format<br />
+layout.format(format, datetime.fmt=&quot;
+</p>
+<p># Show the value of a single variable
+layout.tracearg(level, msg, ...)
+</p>
+
+
+<h3>Details</h3>
+
+<p>Layouts are responsible for formatting messages so they are human-readable.
+Similar to an appender, a layout is assigned to a logger by calling 
+<code>flog.layout</code>. The <code>flog.layout</code> function is used internally
+to get the registered layout function. It is kept visible so 
+user-level introspection is possible.
+</p>
+<p><code>layout.simple</code> is a pre-defined layout function that 
+prints messages in the following format:<br />
+LEVEL [timestamp] message
+</p>
+<p>This is the default layout for the ROOT logger.
+</p>
+<p><code>layout.format</code> allows you to specify the format string to use 
+in printing a message. The following tokens are available.
+</p>
+
+<dl>
+<dt>~l</dt><dd><p>Log level</p>
+</dd>
+<dt>~t</dt><dd><p>Timestamp</p>
+</dd>
+<dt>~n</dt><dd><p>Namespace</p>
+</dd>
+<dt>~f</dt><dd><p>The calling function</p>
+</dd>
+<dt>~m</dt><dd><p>The message</p>
+</dd>
+</dl>
+
+<p><code>layout.json</code> converts the message and any additional objects provided
+to a JSON structure. E.g.:
+</p>
+<p>flog.info(&quot;Hello, world&quot;, cat='asdf')
+</p>
+<p>yields something like
+</p>
+<p>{&quot;level&quot;:&quot;INFO&quot;,&quot;timestamp&quot;:&quot;2015-03-06 19:16:02 EST&quot;,&quot;message&quot;:&quot;Hello, world&quot;,&quot;func&quot;:&quot;(shell)&quot;,&quot;cat&quot;:[&quot;asdf&quot;]}
+</p>
+<p><code>layout.tracearg</code> is a special layout that takes a variable
+and prints its name and contents.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Brian Lee Yung Rowe
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="flog.logger.html">flog.logger</a></code> <code><a href="flog.appender.html">flog.appender</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Set the layout for 'my.package'
+flog.layout(layout.simple, name='my.package')
+
+# Update the ROOT logger to use a custom layout
+layout &lt;- layout.format('[~l] [~t] [~n.~f] ~m')
+flog.layout(layout)
+
+# Create a custom logger to trace variables
+flog.layout(layout.tracearg, name='tracer')
+x &lt;- 5
+flog.info(x, name='tracer')
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>futile.logger</em> version 1.4.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Pairwise Distances from a Phylogenetic Tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cophenetic.phylo {ape}"><tr><td>cophenetic.phylo {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Pairwise Distances from a Phylogenetic Tree</h2>
+
+<h3>Description</h3>
+
+<p><code>cophenetic.phylo</code> computes the pairwise distances between the
+pairs of tips from a phylogenetic tree using its branch lengths.
+</p>
+<p><code>dist.nodes</code> does the same but between all nodes, internal and
+terminal, of the tree.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'phylo'
+cophenetic(x)
+dist.nodes(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a numeric matrix with colnames and rownames set to the names of the
+tips (as given by the element <code>tip.label</code> of the argument
+<code>phy</code>), or, in the case of <code>dist.nodes</code>, the numbers of the
+tips and the nodes (as given by the element <code>edge</code>).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.tree.html">read.tree</a></code> to read tree files in Newick format,
+<code><a href="../../stats/html/cophenetic.html">cophenetic</a></code> for the generic function
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

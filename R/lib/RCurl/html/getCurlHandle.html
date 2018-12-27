@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create libcurl handles</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getCurlHandle {RCurl}"><tr><td>getCurlHandle {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create libcurl handles</h2>
+
+<h3>Description</h3>
+
+<p>These functions create and duplicate curl handles
+for use in calls to the HTTP facilities provided by
+that low-level language and this R-level interface.
+A curl handle is an opaque data type that contains a
+reference to the internal C-level data structure
+of libcurl for performing HTTP requests.
+</p>
+<p>The <code>getCurlMutliHandle</code> returns an object
+that can be used for concurrent, multiple requests.
+It is quite different from the regular curl handle
+and again, should be treated as an opaque data type.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getCurlHandle(..., .opts = NULL, .encoding = integer(),
+              .defaults = getOption("RCurlOptions"))
+dupCurlHandle(curl, ..., .opts = NULL, .encoding = integer())
+getCurlMultiHandle(..., .handles = list(...))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>curl</code></td>
+<td>
+<p>the existing curl handle that is to be duplicated</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>a named list of curl options to set after the handle has
+been created. For <code>getCurlMultiHandle</code>, these values are
+invidivual curl handle objects, created via <code>getCurlHandle</code> or <code>dupCurlHandle</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>.opts</code></td>
+<td>
+<p>a named list or <code>CURLOptions</code> object identifying the
+curl options for the handle. These and the <code>...</code> arguments are
+used after the handle has been created.</p>
+</td></tr>
+<tr valign="top"><td><code>.encoding</code></td>
+<td>
+<p>an integer or a string that explicitly identifies the
+encoding of the content that is returned by the HTTP server in its
+response to our query. The possible strings are
+&lsquo;UTF-8&rsquo; or &lsquo;ISO-8859-1&rsquo;
+and the integers should be specified symbolically
+as  <code>CE_UTF8</code> and <code>CE_LATIN1</code>.
+Note that, by default, the package attempts to process the header of
+the HTTP response to determine the encoding. This argument is used
+when such information is erroneous and the caller knows the correct
+encoding.
+</p>
+</td></tr>
+<tr valign="top"><td><code>.defaults</code></td>
+<td>
+<p>a collection of default values taken from R's
+global/session options. This is a parameter so that one can override
+it if necessary.</p>
+</td></tr>
+<tr valign="top"><td><code>.handles</code></td>
+<td>
+<p>a list of curl handle objects that are used as the
+individual request handles within the multi-asynchronous requests</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions create C-level data structures.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>CURLHandle</code>
+which is simply a pointer to the memory for the C
+structure.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang &lt;duncan@wald.ucdavis.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Curl homepage <a href="http://curl.haxx.se">http://curl.haxx.se</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getURL.html">getURL</a></code>
+<code><a href="curlPerform.html">curlPerform</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+  options(RCurlOptions = list(verbose = TRUE,
+                              followlocation = TRUE,
+                              autoreferer = TRUE,
+                              nosignal = TRUE))
+  if(url.exists("http://www.omegahat.net/RCurl")) {
+     x = getURL("http://www.omegahat.net/RCurl")
+        # here we override one of these.
+     x = getURL("http://www.omegahat.net/RCurl", verbose = FALSE)
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

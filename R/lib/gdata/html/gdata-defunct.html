@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Defunct Functions in Package 'gdata'</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for gdata-defunct {gdata}"><tr><td>gdata-defunct {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Defunct Functions in Package 'gdata'</h2>
+
+<h3>Description</h3>
+
+<p>The functions or variables listed here are no longer part of 'gdata'.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+aggregate.table(x, by1, by2, FUN=mean, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> data to be summarized </p>
+</td></tr>
+<tr valign="top"><td><code>by1</code></td>
+<td>
+<p> first grouping factor.  </p>
+</td></tr>
+<tr valign="top"><td><code>by2</code></td>
+<td>
+<p> second grouping factor. </p>
+</td></tr>
+<tr valign="top"><td><code>FUN</code></td>
+<td>
+<p> a scalar function to compute the summary statistics which can
+be applied to all data subsets. Defaults to <code>mean</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> Optional arguments for <code>FUN</code>. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>aggregate.table(x, by1, by2, FUN=mean, ...)</code> should be replacede
+by <code>tapply(X=x, INDEX=list(by1, by2), FUN=FUN, ...)</code>.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

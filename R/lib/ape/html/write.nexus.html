@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Write Tree File in Nexus Format</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for write.nexus {ape}"><tr><td>write.nexus {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Write Tree File in Nexus Format</h2>
+
+<h3>Description</h3>
+
+<p>This function writes trees in a file with the NEXUS format.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+write.nexus(..., file = "", translate = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>either (i) a single object of class <code>"phylo"</code>, (ii) a
+series of such objects separated by commas, or (iii) a list
+containing such objects.</p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a file name specified by either a variable of mode character,
+or a double-quoted string; if <code>file = ""</code> (the default) then the
+tree is written on the standard output connection.</p>
+</td></tr>
+<tr valign="top"><td><code>translate</code></td>
+<td>
+<p>a logical, if <code>TRUE</code> (the default) a translation
+of the tip labels is done which are replaced in the parenthetic
+representation with tokens.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If several trees are given, they must all have the same tip labels.
+</p>
+<p>If among the objects given some are not trees of class <code>"phylo"</code>,
+they are simply skipped and not written in the file.
+</p>
+<p>See <code><a href="write.tree.html">write.tree</a></code> for details on how tip (and node) labels
+are checked before being printed.
+</p>
+
+
+<h3>Value</h3>
+
+<p>None (invisible &lsquo;NULL&rsquo;).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Maddison, D. R., Swofford, D. L. and Maddison, W. P. (1997) NEXUS: an
+extensible file format for systematic information. <em>Systematic
+Biology</em>, <b>46</b>, 590&ndash;621.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.nexus.html">read.nexus</a></code>, <code><a href="read.tree.html">read.tree</a></code>,
+<code><a href="write.tree.html">write.tree</a></code>, <code><a href="read.nexus.data.html">read.nexus.data</a></code>,
+<code><a href="write.nexus.data.html">write.nexus.data</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

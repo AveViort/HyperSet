@@ -1,0 +1,83 @@
+/*<style type='text/css'>*/
+
+
+
+body{
+  font-family:Tahoma,Helvetica,sans-serif;
+  background-color:#FAFAFA;
+  text-align:left;
+  vertical-align:middle;
+  color:#000;
+  width:50em;
+  min-width:1280px;
+  margin-left: 40px;
+  margin-right: 50px;
+  /*padding: 50px;*/
+}
+  
+p.naught {
+    font-family: "Monotype Corsiva";
+    font-style: italic;
+}
+
+.clickable {
+color: #2779AA;
+text-decoration: underline;
+cursor: pointer;
+}
+
+.clickable:hover {
+color: #2779ff;
+font-style: italic;
+text-decoration: underline;
+}
+
+
+.headr1 {
+   font-family: 'Times New Roman';
+   font-size: 38px;
+   /*background: #ffffff;*/
+   color: maroon;
+}
+
+.headr2 {
+   font-family: arial,verdana,sans-serif;
+   font-size: 22px;
+   text-decoration: underline;
+   /*background: #ffffff;*/
+   color: navy;
+}
+
+.headr3 {
+   font-family: arial,verdana,sans-serif;
+   font-size: 18px;
+   font-style: bold;
+   /*background: #ffffff;*/
+   color: navy;
+   text-decoration: underline;
+}
+
+p {
+   font-family: arial,verdana,sans-serif;
+   font-size: 16px;
+   /*background: #ffffff;*/
+   color: black;
+}
+
+span.hlight {
+   font-style: italic;
+   background: #ffffff;
+   color: #585858;
+
+}
+
+span.hcolor{
+   font-style: bold;
+   font-size: 14px;
+   /*background: #ffffff;*/
+   color: #B40404;	
+}
+
+
+
+/*</style>*/

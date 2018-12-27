@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Assing kernelMatrix class to matrix objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for as.kernelMatrix {kernlab}"><tr><td>as.kernelMatrix {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Assing kernelMatrix class to matrix objects</h2>
+
+<h3>Description</h3>
+
+<p><code>as.kernelMatrix</code> in package <span class="pkg">kernlab</span> can be used 
+to coerce the kernelMatrix class to matrix objects representing a
+kernel matrix.  These matrices can then be used with the kernelMatrix
+interfaces which most of the functions in <span class="pkg">kernlab</span> support.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'matrix'
+as.kernelMatrix(x, center = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>matrix to be assigned the <code>kernelMatrix</code> class </p>
+</td></tr>
+<tr valign="top"><td><code>center</code></td>
+<td>
+<p>center the kernel matrix in feature space (default: FALSE) </p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou <br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="kernelMatrix.html">kernelMatrix</a></code>, <code><a href="dots.html">dots</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Create toy data
+x &lt;- rbind(matrix(rnorm(10),,2),matrix(rnorm(10,mean=3),,2))
+y &lt;- matrix(c(rep(1,5),rep(-1,5)))
+
+### Use as.kernelMatrix to label the cov. matrix as a kernel matrix
+### which is eq. to using a linear kernel 
+
+K &lt;- as.kernelMatrix(crossprod(t(x)))
+
+K
+
+svp2 &lt;- ksvm(K, y, type="C-svc")
+
+svp2
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

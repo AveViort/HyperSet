@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tracking the results of the inspect process.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tracker {RUnit}"><tr><td>tracker {RUnit}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Tracking the results of the inspect process.</h2>
+
+<h3>Description</h3>
+
+<p>The current implementation uses the 'closure trick' to hide all details from
+the user and only allows to retrieve the results of the code inspection.
+<code>tracker</code> is used to create a new environment to manage and store the results
+of the tracking process. The <code>inspect</code> function requires such an
+environment with the name &quot;track&quot; (currently mandatory). The tracker records how often each
+and every function was called by <code>inspect</code> and summarizes the results of
+all calls.
+<code>tracker$init</code> initializes the tracker environment.
+<code>tracker$getTrackInfo</code> returns a list with the tracked results of the
+inspection process.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>tracker()
+</pre>
+
+
+<h3>Details</h3>
+
+<p>The 'trackInfo' S3 class object (list) has one entry for each
+function on the inspect list with the following elements:
+</p>
+
+<dl>
+<dt>src</dt><dd><p>The source code of the function.</p>
+</dd>
+<dt>run</dt><dd><p>The number of executions for each line of code.</p>
+</dd>
+<dt>graph</dt><dd><p>A matrix. Each element in the matrix counts how often a
+code line was called from the previous code line in the execution flow.</p>
+</dd>
+<dt>nrRuns</dt><dd><p>Counts how often the function was called.</p>
+</dd>
+<dt>funcCall</dt><dd><p>The declaration of the function.</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> <code>init</code> </td><td style="text-align: left;"> initializes the tracker environment</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> <code>addFunc</code> </td><td style="text-align: left;"> add function to the inspect tracking list
+    (internal use)</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> <code>getSource</code> </td><td style="text-align: left;"> return the modified source code used for during inspection 
+    the specified index (internal use)</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> <code>bp</code> </td><td style="text-align: left;"> update tracking info for specified function
+    index (internal use)</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> <code>getTrackInfo</code> </td><td style="text-align: left;"> return 'trackInfo' object</td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+    </td><td style="text-align: left;"> <code>isValid</code> </td><td style="text-align: left;"> check 'trackInfo' object for conformance to
+    class contract </td>
+</tr>
+<tr>
+ <td style="text-align: right;">
+  </td>
+</tr>
+
+</table>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Thomas König, Klaus Jünemann 
+&amp; Matthias Burger</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="inspect.html">inspect</a></code> for the registration of functions \&amp; methods to
+be on the tracking list, and 
+<code><a href="printHTML.trackinfo.html">printHTML.trackInfo</a></code> for displaying results
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## example functions
+foo &lt;- function(x){
+   y &lt;- 0
+   for(i in 1:100)
+   {
+      y &lt;- y + i
+   }
+   return(y)
+}
+
+bar &lt;- function(x){
+   y &lt;- 0
+   for(i in 1:100)
+   {
+      y &lt;- y - i
+   }
+   return(y)
+}
+
+
+
+##  the object name track is 'fixed' (current implementation)
+track &lt;- tracker()
+
+##  initialize the tracker
+track$init()
+
+##  inspect the function
+##  resFoo1 will contain the result of calling foo(50)
+resFoo1 &lt;- inspect(foo(50), track = track)
+
+resFoo2 &lt;- inspect(foo(20), track = track)
+
+resBar1 &lt;- inspect(bar(30), track = track)
+
+##  get the tracked function call info for all inspect calls
+resTrack &lt;- track$getTrackInfo()
+
+##  create HTML sites in folder ./results for all inspect calls
+printHTML.trackInfo(resTrack)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RUnit</em> version 0.4.32 <a href="00Index.html">Index</a>]</div>
+</body></html>

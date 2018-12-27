@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A function to layout graph locations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for graphLayout {Rgraphviz}"><tr><td>graphLayout {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>A function to layout graph locations</h2>
+
+<h3>Description</h3>
+
+<p>This function will take an object of class <code>Ragraph</code> and will
+perform a libgraph layout on the graph locations.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+graphLayout(graph, layoutType=graph@layoutType)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>An object of type <code>Ragraph</code></p>
+</td></tr>
+<tr valign="top"><td><code>layoutType</code></td>
+<td>
+<p>layout algorithm to use</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If the graph has already been laid out, this function merely returns
+its parameter.  Otherwise, it will perform a libgraph layout and
+retrieve the appropriate location information.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A laid out object of type <code>Ragraph</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="agopen.html">agopen</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+V &lt;- letters[1:10]
+M &lt;- 1:4
+g1 &lt;- randomGraph(V, M, .2)
+z &lt;- agopen(g1,"foo",layout=FALSE)
+x &lt;- z
+a &lt;- graphLayout(z)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

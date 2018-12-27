@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Take a snapshot of an R Markdown document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rmdshot {webshot}"><tr><td>rmdshot {webshot}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Take a snapshot of an R Markdown document</h2>
+
+<h3>Description</h3>
+
+<p>This function can handle both static Rmd documents and Rmd documents with
+<code>runtime: shiny</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rmdshot(doc, file = "webshot.png", ..., delay = NULL,
+  rmd_args = list(), port = getOption("shiny.port"), envvars = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>doc</code></td>
+<td>
+<p>The path to a Rmd document.</p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>A vector of names of output files. Should end with <code>.png</code>,
+<code>.pdf</code>, or <code>.jpeg</code>. If several screenshots have to be taken and
+only one filename is provided, then the function appends the index number
+of the screenshot to the file name.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Other arguments to pass on to <code><a href="webshot.html">webshot</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>delay</code></td>
+<td>
+<p>Time to wait before taking screenshot, in seconds. Sometimes a
+longer delay is needed for all assets to display properly. If NULL (the
+default), then it will use 0.2 seconds for static Rmd documents, and 3
+seconds for Rmd documents with runtime:shiny.</p>
+</td></tr>
+<tr valign="top"><td><code>rmd_args</code></td>
+<td>
+<p>A list of additional arguments to pass to either
+<code><a href="../../rmarkdown/html/render.html">render</a></code> (for static Rmd documents) or
+<code><a href="../../rmarkdown/html/run.html">run</a></code> (for Rmd documents with runtime:shiny).</p>
+</td></tr>
+<tr valign="top"><td><code>port</code></td>
+<td>
+<p>Port that Shiny will listen on.</p>
+</td></tr>
+<tr valign="top"><td><code>envvars</code></td>
+<td>
+<p>A named character vector or named list of environment
+variables and values to set for the Shiny app's R process. These will be
+unset after the process exits. This can be used to pass configuration
+information to a Shiny app.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+if (interactive()) {
+  # rmdshot("rmarkdown_file.Rmd", "snapshot.png")
+
+  # R Markdown file
+  input_file &lt;- system.file("examples/knitr-minimal.Rmd", package = "knitr")
+  rmdshot(input_file, "minimal_rmd.png")
+
+  # Shiny R Markdown file
+  input_file &lt;- system.file("examples/shiny.Rmd", package = "webshot")
+  rmdshot(input_file, "shiny_rmd.png", delay = 5)
+}
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>webshot</em> version 0.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

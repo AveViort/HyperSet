@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Shrink file size of a PNG</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for shrink {webshot}"><tr><td>shrink {webshot}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Shrink file size of a PNG</h2>
+
+<h3>Description</h3>
+
+<p>This does not change size of the image in pixels, nor does it affect
+appearance &ndash; it is lossless compression. This requires the program
+<code>optipng</code> to be installed.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+shrink(filename)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>Character vector containing the path of images to resize.
+Must be PNG files.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If other operations like resizing are performed, shrinking should occur as
+the last step. Otherwise, if the resizing happens after file shrinking, it
+will be as if the shrinking didn't happen at all.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+if (interactive()) {
+  webshot("https://www.r-project.org/", "r-shrink.png") %&gt;%
+    shrink()
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>webshot</em> version 0.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

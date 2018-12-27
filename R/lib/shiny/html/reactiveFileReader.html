@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reactive file reader</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reactiveFileReader {shiny}"><tr><td>reactiveFileReader {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reactive file reader</h2>
+
+<h3>Description</h3>
+
+<p>Given a file path and read function, returns a reactive data source for the
+contents of the file.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+reactiveFileReader(intervalMillis, session, filePath, readFunc, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>intervalMillis</code></td>
+<td>
+<p>Approximate number of milliseconds to wait between
+checks of the file's last modified time. This can be a numeric value, or a
+function that returns a numeric value.</p>
+</td></tr>
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The user session to associate this file reader with, or
+<code>NULL</code> if none. If non-null, the reader will automatically stop when
+the session ends.</p>
+</td></tr>
+<tr valign="top"><td><code>filePath</code></td>
+<td>
+<p>The file path to poll against and to pass to <code>readFunc</code>.
+This can either be a single-element character vector, or a function that
+returns one.</p>
+</td></tr>
+<tr valign="top"><td><code>readFunc</code></td>
+<td>
+<p>The function to use to read the file; must expect the first
+argument to be the file path to read. The return value of this function is
+used as the value of the reactive file reader.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Any additional arguments to pass to <code>readFunc</code> whenever it is
+invoked.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>reactiveFileReader</code> works by periodically checking the file's last
+modified time; if it has changed, then the file is re-read and any reactive
+dependents are invalidated.
+</p>
+<p>The <code>intervalMillis</code>, <code>filePath</code>, and <code>readFunc</code> functions
+will each be executed in a reactive context; therefore, they may read
+reactive values and reactive expressions.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A reactive expression that returns the contents of the file, and
+automatically invalidates when the file changes on disk (as determined by
+last modified time).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="reactivePoll.html">reactivePoll</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Per-session reactive file reader
+function(input, output, session) {
+  fileData &lt;- reactiveFileReader(1000, session, 'data.csv', read.csv)
+
+  output$data &lt;- renderTable({
+    fileData()
+  })
+}
+
+# Cross-session reactive file reader. In this example, all sessions share
+# the same reader, so read.csv only gets executed once no matter how many
+# user sessions are connected.
+fileData &lt;- reactiveFileReader(1000, NULL, 'data.csv', read.csv)
+function(input, output, session) {
+  output$data &lt;- renderTable({
+    fileData()
+  })
+}
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

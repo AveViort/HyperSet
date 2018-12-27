@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Replace letters in a sequence or set of sequences</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for chartr {Biostrings}"><tr><td>chartr {Biostrings}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Replace letters in a sequence or set of sequences</h2>
+
+<h3>Description</h3>
+
+<p>Replace letters in a sequence or set of sequences.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'ANY,ANY,XString'
+chartr(old, new, x)
+
+replaceAmbiguities(x, new="N")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>old</code></td>
+<td>
+
+<p>A character string specifying the characters to be replaced.
+</p>
+</td></tr>
+<tr valign="top"><td><code>new</code></td>
+<td>
+
+<p>A character string specifying the replacements. It must be a single
+letter for <code>replaceAmbiguities</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>The sequence or set of sequences to translate.
+If <code>x</code> is an <a href="XString-class.html">XString</a>, <a href="XStringSet-class.html">XStringSet</a>, <a href="XStringViews-class.html">XStringViews</a>
+or <a href="MaskedXString-class.html">MaskedXString</a> object, then the appropriate <code>chartr</code> method
+is called, otherwise the standard <code><a href="../../base/html/chartr.html">chartr</a></code> R function
+is called.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>See <code>?<a href="../../base/html/chartr.html">chartr</a></code> for the details.
+</p>
+<p>Note that, unlike the standard <code><a href="../../base/html/chartr.html">chartr</a></code> R function,
+the methods for <a href="XString-class.html">XString</a>, <a href="XStringSet-class.html">XStringSet</a>, <a href="XStringViews-class.html">XStringViews</a>
+and <a href="MaskedXString-class.html">MaskedXString</a> objects do NOT support character ranges in the
+specifications.
+</p>
+<p><code>replaceAmbiguities()</code> is a simple wrapper around <code>chartr()</code>
+that replaces all IUPAC ambiguities with N.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of the same class and length as the original object.
+</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><code><a href="../../base/html/chartr.html">chartr</a></code> in the <span class="pkg">base</span> package.
+</p>
+</li>
+<li><p> The <code><a href="replaceAt.html">replaceAt</a></code> function for extracting or replacing
+arbitrary subsequences from/in a sequence or set of sequences.
+</p>
+</li>
+<li><p> The <code><a href="replaceLetterAt.html">replaceLetterAt</a></code> function for a DNA-specific
+single-letter replacement functions useful for SNP injections.
+</p>
+</li>
+<li> <p><code><a href="IUPAC_CODE_MAP.html">IUPAC_CODE_MAP</a></code> for the mapping between IUPAC
+nucleotide ambiguity codes and their meaning.
+</p>
+</li>
+<li> <p><code><a href="letterFrequency.html">alphabetFrequency</a></code> (and <code><a href="letterFrequency.html">uniqueLetters</a></code>)
+for tabulating letters in (and extracting the unique letters from)
+a sequence or set of sequences.
+</p>
+</li>
+<li><p> The <a href="XString-class.html">XString</a>, <a href="XStringSet-class.html">XStringSet</a>, <a href="XStringViews-class.html">XStringViews</a>,
+and <a href="MaskedXString-class.html">MaskedXString</a> classes.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## A BASIC chartr() EXAMPLE
+## ---------------------------------------------------------------------
+
+x &lt;- BString("MiXeD cAsE 123")
+chartr("iXs", "why", x)
+
+## ---------------------------------------------------------------------
+## TRANSFORMING DNA WITH BISULFITE (AND SEARCHING IT...)
+## ---------------------------------------------------------------------
+
+library(BSgenome.Celegans.UCSC.ce2)
+chrII &lt;- Celegans[["chrII"]]
+alphabetFrequency(chrII)
+pattern &lt;- DNAString("TGGGTGTATTTA")
+
+## Transforming and searching the + strand
+plus_strand &lt;- chartr("C", "T", chrII)
+alphabetFrequency(plus_strand)
+matchPattern(pattern, plus_strand)
+matchPattern(pattern, chrII)
+
+## Transforming and searching the - strand
+minus_strand &lt;- chartr("G", "A", chrII)
+alphabetFrequency(minus_strand)
+matchPattern(reverseComplement(pattern), minus_strand)
+matchPattern(reverseComplement(pattern), chrII)
+
+## ---------------------------------------------------------------------
+## replaceAmbiguities()
+## ---------------------------------------------------------------------
+
+dna &lt;- DNAStringSet(c("TTTKYTT-GR", "", "NAASACVT"))
+dna
+replaceAmbiguities(dna)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Biostrings</em> version 2.50.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

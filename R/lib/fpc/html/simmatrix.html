@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extracting intersections between clusters from fpc-object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for simmatrix {fpc}"><tr><td>simmatrix {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extracting intersections between clusters from fpc-object</h2>
+
+<h3>Description</h3>
+
+<p>Extracts the information about the size of the intersections
+between representative
+Fixed Point Clusters (FPCs) of stable groups from the output of
+the FPC-functions <code><a href="fixreg.html">fixreg</a></code> and <code><a href="fixmahal.html">fixmahal</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+simmatrix(fpcobj)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>fpcobj</code></td>
+<td>
+<p>an object of class <code>rfpc</code> or <code>mfpc</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A non-negative real-valued vector giving the number of points in
+the intersections of the representative FPCs of stable groups.
+</p>
+
+
+<h3>Note</h3>
+
+<p>The intersection between representative FPCs no. <code>i</code> and
+<code>j</code> is at position <code><a href="sseg.html">sseg</a>(i,j)</code>.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fixmahal.html">fixmahal</a></code>,
+<code><a href="fixreg.html">fixreg</a></code>,
+<code><a href="sseg.html">sseg</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(190000)
+data(tonedata)
+# Note: If you do not use the installed package, replace this by
+# tonedata &lt;- read.table("(path/)tonedata.txt", header=TRUE)
+attach(tonedata)
+tonefix &lt;- fixreg(stretchratio,tuned,mtf=1,ir=20)
+simmatrix(tonefix)[sseg(2,3)]
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

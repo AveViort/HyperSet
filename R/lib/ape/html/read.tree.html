@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read Tree File in Parenthetic Format</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for read.tree {ape}"><tr><td>read.tree {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read Tree File in Parenthetic Format</h2>
+
+<h3>Description</h3>
+
+<p>This function reads a file which contains one or several trees in
+parenthetic format known as the Newick or New Hampshire format.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
+    comment.char = "", keep.multi = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a file name specified by either a variable of mode character,
+or a double-quoted string; if <code>file = ""</code> (the default) then the
+tree is input on the keyboard, the entry being terminated with a
+blank line.</p>
+</td></tr>
+<tr valign="top"><td><code>text</code></td>
+<td>
+<p>alternatively, the name of a variable of mode character
+which contains the tree(s) in parenthetic format. By default, this
+is ignored (set to <code>NULL</code>, meaning that the tree is read in a
+file); if <code>text</code> is not <code>NULL</code>, then the argument
+<code>file</code> is ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>tree.names</code></td>
+<td>
+<p>if there are several trees to be read, a vector of
+mode character that gives names to the individual trees; if
+<code>NULL</code> (the default), the trees are named <code>"tree1"</code>,
+<code>"tree2"</code>, ...</p>
+</td></tr>
+<tr valign="top"><td><code>skip</code></td>
+<td>
+<p>the number of lines of the input file to skip before
+beginning to read data (this is passed directly to<code> scan()</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>comment.char</code></td>
+<td>
+<p>a single character, the remaining of the line
+after this character is ignored (this is passed directly to
+<code>scan()</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>keep.multi</code></td>
+<td>
+<p>if <code>TRUE</code> and <code>tree.names = NULL</code> then
+single trees are returned in <code>"multiPhylo"</code> format, with any
+name that is present (see details). Default is <code>FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to <code>scan()</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The default option for <code>file</code> allows to type directly the tree on
+the keyboard (or possibly to copy from an editor and paste in R's
+console) with, e.g., <code>mytree &lt;- read.tree()</code>.
+</p>
+<p>&lsquo;read.tree&rsquo; tries to represent correctly trees with a badly
+represented root edge (i.e. with an extra pair of parentheses). For
+instance, the tree &quot;((A:1,B:1):10);&quot; will be read like &quot;(A:1,B:1):10;&quot;
+but a warning message will be issued in the former case as this is
+apparently not a valid Newick format. If there are two root edges
+(e.g., &quot;(((A:1,B:1):10):10);&quot;), then the tree is not read and an error
+message is issued.
+</p>
+<p>If there are any characters preceding the first &quot;(&quot; in a line then
+this is assigned to the name. This is returned when a &quot;multiPhylo&quot;
+object is returned and <code>tree.names = NULL</code>.
+</p>
+<p>Until <span class="pkg">ape</span> 4.1, the default of <code>comment.char</code> was <code>"#"</code>
+(as in <code>scan</code>). This has been changed so that extended Newick
+files can be read.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code> with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>edge</code></td>
+<td>
+<p>a two-column matrix of mode numeric where each row
+represents an edge of the tree; the nodes and the tips are
+symbolized with numbers; the tips are numbered 1, 2, ..., and the
+nodes are numbered after the tips. For each row, the first column
+gives the ancestor.</p>
+</td></tr>
+<tr valign="top"><td><code>edge.length</code></td>
+<td>
+<p>(optional) a numeric vector giving the lengths of the
+branches given by <code>edge</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>tip.label</code></td>
+<td>
+<p>a vector of mode character giving the names of the
+tips; the order of the names in this vector corresponds to the
+(positive) number in <code>edge</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>Nnode</code></td>
+<td>
+<p>the number of (internal) nodes.</p>
+</td></tr>
+<tr valign="top"><td><code>node.label</code></td>
+<td>
+<p>(optional) a vector of mode character giving the
+names of the nodes.</p>
+</td></tr>
+<tr valign="top"><td><code>root.edge</code></td>
+<td>
+<p>(optional) a numeric value giving the length of the
+branch at the root if it exists.</p>
+</td></tr>
+</table>
+<p>If several trees are read in the file, the returned object is of class
+<code>"multiPhylo"</code>, and is a list of objects of class <code>"phylo"</code>.
+The name of each tree can be specified by <code>tree.names</code>, or can be
+read from the file (see details).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis and Daniel Lawson <a href="mailto:dan.lawson@bristol.ac.uk">dan.lawson@bristol.ac.uk</a></p>
+
+
+<h3>References</h3>
+
+<p>Felsenstein, J. The Newick tree format.
+<a href="http://evolution.genetics.washington.edu/phylip/newicktree.html">http://evolution.genetics.washington.edu/phylip/newicktree.html</a>
+</p>
+<p>Olsen, G. Interpretation of the &quot;Newick's 8:45&quot; tree format standard.
+<a href="http://evolution.genetics.washington.edu/phylip/newick_doc.html">http://evolution.genetics.washington.edu/phylip/newick_doc.html</a>
+</p>
+<p>Paradis, E. (2008) Definition of Formats for Coding Phylogenetic Trees
+in R. <a href="http://ape-package.ird.fr/misc/FormatTreeR_24Oct2012.pdf">http://ape-package.ird.fr/misc/FormatTreeR_24Oct2012.pdf</a>
+</p>
+<p>Paradis, E. (2012) <em>Analysis of Phylogenetics and Evolution with
+R (Second Edition).</em> New York: Springer.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="write.tree.html">write.tree</a></code>, <code><a href="read.nexus.html">read.nexus</a></code>,
+<code><a href="write.nexus.html">write.nexus</a></code>, <code><a href="../../base/html/scan.html">scan</a></code> for the basic R
+function to read data in a file
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### An extract from Sibley and Ahlquist (1990)
+s &lt;- "owls(((Strix_aluco:4.2,Asio_otus:4.2):3.1,Athene_noctua:7.3):6.3,Tyto_alba:13.5);"
+cat(s, file = "ex.tre", sep = "\n")
+tree.owls &lt;- read.tree("ex.tre")
+str(tree.owls)
+tree.owls
+tree.owls &lt;- read.tree("ex.tre", keep.multi = TRUE)
+tree.owls
+names(tree.owls)
+unlink("ex.tre") # delete the file "ex.tre"
+### Only the first three species using the option `text'
+TREE &lt;- "((Strix_aluco:4.2,Asio_otus:4.2):3.1,Athene_noctua:7.3);"
+TREE
+tree.owls.bis &lt;- read.tree(text = TREE)
+str(tree.owls.bis)
+tree.owls.bis
+
+## tree with singleton nodes:
+ts &lt;- read.tree(text="((((a))),d);")
+plot(ts, node.depth = 2) # the default will overlap the singleton node with the tip
+nodelabels()
+
+## skeleton tree with a singleton node:
+tx &lt;- read.tree(text = "(((,)),);")
+plot(tx, node.depth = 2)
+nodelabels()
+
+## a tree with single quoted labels (the 2nd label is not quoted):
+z &lt;- "(('a: France, Spain (Europe)',b),'c: Australia [Outgroup]');"
+tz &lt;- read.tree(text = z)
+plot(tz, font = 1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

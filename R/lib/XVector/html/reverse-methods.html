@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reverse an XVector or XVectorList object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reverse-methods {XVector}"><tr><td>reverse-methods {XVector}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reverse an XVector or XVectorList object</h2>
+
+<h3>Description</h3>
+
+<p>Methods for reversing an <a href="XVector-class.html">XVector</a> or <a href="XVectorList-class.html">XVectorList</a> object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'XVector'
+reverse(x, ...)
+## S4 method for signature 'XVectorList'
+reverse(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>An <a href="XVector-class.html">XVector</a> or <a href="XVectorList-class.html">XVectorList</a> object.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Additional arguments. Currently ignored.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>On an <a href="XVector-class.html">XVector</a> object, <code>reverse</code> and <code><a href="../../base/html/rev.html">rev</a></code>
+are equivalent, i.e. they both reverse the order of their elements.
+</p>
+<p>On an <a href="XVectorList-class.html">XVectorList</a> object, <code>reverse</code> reverses each element
+individually, without modifying the top-level order of the elements.
+It's equivalent to, but more efficient than, doing <code>endoapply(x, rev)</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of the same class and length as the original object.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="XVector-class.html">XVector-class</a>,
+<a href="XVectorList-class.html">XVectorList-class</a>,
+<code><a href="../../S4Vectors/html/endoapply.html">endoapply</a></code>,
+<code><a href="../../base/html/rev.html">rev</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## On an XInteger object:
+x &lt;- as(12:-2, "XInteger")
+reverse(x)
+
+## On an XIntegerViews object:
+v &lt;- successiveViews(x, 1:5)
+v
+reverse(v)
+
+## On an XVectorList object:
+if (require(Biostrings) &amp;&amp; require(drosophila2probe)) {
+  library(Biostrings)
+  library(drosophila2probe)
+  probes &lt;- DNAStringSet(drosophila2probe)
+  reverse(probes)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XVector</em> version 0.22.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

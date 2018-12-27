@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tree Simulation Under the Time-Dependent Birth-Death Models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rlineage {ape}"><tr><td>rlineage {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Tree Simulation Under the Time-Dependent Birth&ndash;Death Models</h2>
+
+<h3>Description</h3>
+
+<p>These three functions simulate phylogenies under any time-dependent
+birth&ndash;death model: <code>rlineage</code> generates a complete tree including
+the species going extinct before present; <code>rbdtree</code> generates a
+tree with only the species living at present (thus the tree is
+ultrametric); <code>rphylo</code> generates a tree with a fixed number of
+species at present time. <code>drop.fossil</code> is a utility function to
+remove the extinct species.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rlineage(birth, death, Tmax = 50, BIRTH = NULL,
+         DEATH = NULL, eps = 1e-6)
+rbdtree(birth, death, Tmax = 50, BIRTH = NULL,
+        DEATH = NULL, eps = 1e-6)
+rphylo(n, birth, death, BIRTH = NULL, DEATH = NULL,
+       T0 = 50, fossils = FALSE, eps = 1e-06)
+drop.fossil(phy, tol = 1e-8)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>birth, death</code></td>
+<td>
+<p>a numeric value or a (vectorized) function
+specifying how speciation and extinction rates vary through time.</p>
+</td></tr>
+<tr valign="top"><td><code>Tmax</code></td>
+<td>
+<p>a numeric value giving the length of the simulation.</p>
+</td></tr>
+<tr valign="top"><td><code>BIRTH, DEATH</code></td>
+<td>
+<p>a (vectorized) function which is the primitive
+of <code>birth</code> or <code>death</code>. This can be used to speed-up the
+computation. By default, a numerical integration is done.</p>
+</td></tr>
+<tr valign="top"><td><code>eps</code></td>
+<td>
+<p>a numeric value giving the time resolution of the
+simulation; this may be increased (e.g., 0.001) to shorten
+computation times.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>the number of species living at present time.</p>
+</td></tr>
+<tr valign="top"><td><code>T0</code></td>
+<td>
+<p>the time at present (for the backward-in-time algorithm).</p>
+</td></tr>
+<tr valign="top"><td><code>fossils</code></td>
+<td>
+<p>a logical value specifying whether to output the
+lineages going extinct.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>tol</code></td>
+<td>
+<p>a numeric value giving the tolerance to consider a species
+as extinct.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These three functions use continuous-time algorithms: <code>rlineage</code>
+and <code>rbdtree</code> use the forward-in-time algorithms described in
+Paradis (2011), whereas <code>rphylo</code> uses a backward-in-time
+algorithm from Stadler (2011). The models are time-dependent
+birth&ndash;death models as  described in Kendall (1948). Speciation
+(birth) and extinction (death) rates may be constant or vary through
+time according to an <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> function specified by the user. In the latter
+case, <code>BIRTH</code> and/or <code>DEATH</code> may be used if the primitives
+of <code>birth</code> and <code>death</code> are known. In these functions time is
+the formal argument and must be named <code>t</code>.
+</p>
+<p>Note that <code>rphylo</code> simulates trees in a way similar to what
+the package <span class="pkg">TreeSim</span> does, the difference is in the
+parameterization of the time-dependent models which is here the same
+than used in the two other functions. In this parameterization scheme,
+time is measured from past to present (see details in Paradis 2015
+which includes a comparison of these algorithms).
+</p>
+<p>The difference between <code>rphylo</code> and <code>rphylo(... fossils
+    = TRUE)</code> is the same than between <code>rbdtree</code> and <code>rlineage</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>"phylo"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Kendall, D. G. (1948) On the generalized &ldquo;birth-and-death&rdquo;
+process. <em>Annals of Mathematical Statistics</em>, <b>19</b>, 1&ndash;15.
+</p>
+<p>Paradis, E. (2011) Time-dependent speciation and extinction from
+phylogenies: a least squares approach. <em>Evolution</em>, <b>65</b>,
+661&ndash;672.
+</p>
+<p>Paradis, E. (2015) Random phylogenies and the distribution of
+branching times. <em>Journal of Theoretical Biology</em>, <b>387</b>,
+39&ndash;45.
+</p>
+<p>Stadler, T. (2011) Simulating trees with a fixed number of extant
+species. <em>Systematic Biology</em>, <b>60</b>, 676&ndash;684.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="yule.html">yule</a></code>, <code><a href="yule.time.html">yule.time</a></code>, <code><a href="birthdeath.html">birthdeath</a></code>,
+<code><a href="rtree.html">rtree</a></code>, <code><a href="stree.html">stree</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(10)
+plot(rlineage(0.1, 0)) # Yule process with lambda = 0.1
+plot(rlineage(0.1, 0.05)) # simple birth-death process
+b &lt;- function(t) 1/(1 + exp(0.2*t - 1)) # logistic
+layout(matrix(0:3, 2, byrow = TRUE))
+curve(b, 0, 50, xlab = "Time", ylab = "")
+mu &lt;- 0.07
+segments(0, mu, 50, mu, lty = 2)
+legend("topright", c(expression(lambda), expression(mu)),
+       lty = 1:2, bty = "n")
+plot(rlineage(b, mu), show.tip.label = FALSE)
+title("Simulated with 'rlineage'")
+plot(rbdtree(b, mu), show.tip.label = FALSE)
+title("Simulated with 'rbdtree'")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

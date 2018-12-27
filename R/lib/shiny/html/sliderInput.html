@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Slider Input Widget</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sliderInput {shiny}"><tr><td>sliderInput {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Slider Input Widget</h2>
+
+<h3>Description</h3>
+
+<p>Constructs a slider widget to select a numeric value from a range.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sliderInput(inputId, label, min, max, value, step = NULL,
+  round = FALSE, format = NULL, locale = NULL, ticks = TRUE,
+  animate = FALSE, width = NULL, sep = ",", pre = NULL,
+  post = NULL, timeFormat = NULL, timezone = NULL,
+  dragRange = TRUE)
+
+animationOptions(interval = 1000, loop = FALSE, playButton = NULL,
+  pauseButton = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>inputId</code></td>
+<td>
+<p>The <code>input</code> slot that will be used to access the value.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>Display label for the control, or <code>NULL</code> for no label.</p>
+</td></tr>
+<tr valign="top"><td><code>min</code></td>
+<td>
+<p>The minimum value (inclusive) that can be selected.</p>
+</td></tr>
+<tr valign="top"><td><code>max</code></td>
+<td>
+<p>The maximum value (inclusive) that can be selected.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>The initial value of the slider. A numeric vector of length one
+will create a regular slider; a numeric vector of length two will create a
+double-ended range slider. A warning will be issued if the value doesn't
+fit between <code>min</code> and <code>max</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>step</code></td>
+<td>
+<p>Specifies the interval between each selectable value on the
+slider (if <code>NULL</code>, a heuristic is used to determine the step size). If
+the values are dates, <code>step</code> is in days; if the values are times
+(POSIXt), <code>step</code> is in seconds.</p>
+</td></tr>
+<tr valign="top"><td><code>round</code></td>
+<td>
+<p><code>TRUE</code> to round all values to the nearest integer;
+<code>FALSE</code> if no rounding is desired; or an integer to round to that
+number of digits (for example, 1 will round to the nearest 10, and -2 will
+round to the nearest .01). Any rounding will be applied after snapping to
+the nearest step.</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>Deprecated.</p>
+</td></tr>
+<tr valign="top"><td><code>locale</code></td>
+<td>
+<p>Deprecated.</p>
+</td></tr>
+<tr valign="top"><td><code>ticks</code></td>
+<td>
+<p><code>FALSE</code> to hide tick marks, <code>TRUE</code> to show them
+according to some simple heuristics.</p>
+</td></tr>
+<tr valign="top"><td><code>animate</code></td>
+<td>
+<p><code>TRUE</code> to show simple animation controls with default
+settings; <code>FALSE</code> not to; or a custom settings list, such as those
+created using <code><a href="sliderInput.html">animationOptions</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The width of the input, e.g. <code>'400px'</code>, or <code>'100%'</code>;
+see <code><a href="validateCssUnit.html">validateCssUnit</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>sep</code></td>
+<td>
+<p>Separator between thousands places in numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>pre</code></td>
+<td>
+<p>A prefix string to put in front of the value.</p>
+</td></tr>
+<tr valign="top"><td><code>post</code></td>
+<td>
+<p>A suffix string to put after the value.</p>
+</td></tr>
+<tr valign="top"><td><code>timeFormat</code></td>
+<td>
+<p>Only used if the values are Date or POSIXt objects. A time
+format string, to be passed to the Javascript strftime library. See
+<a href="https://github.com/samsonjs/strftime">https://github.com/samsonjs/strftime</a> for more details. The allowed
+format specifications are very similar, but not identical, to those for R's
+<code><a href="../../base/html/strftime.html">strftime</a></code> function. For Dates, the default is <code>"%F"</code>
+(like <code>"2015-07-01"</code>), and for POSIXt, the default is <code>"%F %T"</code>
+(like <code>"2015-07-01 15:32:10"</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>timezone</code></td>
+<td>
+<p>Only used if the values are POSIXt objects. A string
+specifying the time zone offset for the displayed times, in the format
+<code>"+HHMM"</code> or <code>"-HHMM"</code>. If <code>NULL</code> (the default), times will
+be displayed in the browser's time zone. The value <code>"+0000"</code> will
+result in UTC time.</p>
+</td></tr>
+<tr valign="top"><td><code>dragRange</code></td>
+<td>
+<p>This option is used only if it is a range slider (with two
+values). If <code>TRUE</code> (the default), the range can be dragged. In other
+words, the min and max can be dragged together. If <code>FALSE</code>, the range
+cannot be dragged.</p>
+</td></tr>
+<tr valign="top"><td><code>interval</code></td>
+<td>
+<p>The interval, in milliseconds, between each animation step.</p>
+</td></tr>
+<tr valign="top"><td><code>loop</code></td>
+<td>
+<p><code>TRUE</code> to automatically restart the animation when it
+reaches the end.</p>
+</td></tr>
+<tr valign="top"><td><code>playButton</code></td>
+<td>
+<p>Specifies the appearance of the play button. Valid values
+are a one-element character vector (for a simple text label), an HTML tag
+or list of tags (using <code><a href="tag.html">tag</a></code> and friends), or raw HTML (using
+<code><a href="HTML.html">HTML</a></code>).</p>
+</td></tr>
+<tr valign="top"><td><code>pauseButton</code></td>
+<td>
+<p>Similar to <code>playButton</code>, but for the pause button.</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="updateSliderInput.html">updateSliderInput</a></code>
+</p>
+<p>Other input elements: <code><a href="actionButton.html">actionButton</a></code>,
+<code><a href="checkboxGroupInput.html">checkboxGroupInput</a></code>,
+<code><a href="checkboxInput.html">checkboxInput</a></code>, <code><a href="dateInput.html">dateInput</a></code>,
+<code><a href="dateRangeInput.html">dateRangeInput</a></code>, <code><a href="fileInput.html">fileInput</a></code>,
+<code><a href="numericInput.html">numericInput</a></code>, <code><a href="passwordInput.html">passwordInput</a></code>,
+<code><a href="radioButtons.html">radioButtons</a></code>, <code><a href="selectInput.html">selectInput</a></code>,
+<code><a href="submitButton.html">submitButton</a></code>, <code><a href="textAreaInput.html">textAreaInput</a></code>,
+<code><a href="textInput.html">textInput</a></code>, <code><a href="varSelectInput.html">varSelectInput</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+options(device.ask.default = FALSE)
+
+ui &lt;- fluidPage(
+  sliderInput("obs", "Number of observations:",
+    min = 0, max = 1000, value = 500
+  ),
+  plotOutput("distPlot")
+)
+
+# Server logic
+server &lt;- function(input, output) {
+  output$distPlot &lt;- renderPlot({
+    hist(rnorm(input$obs))
+  })
+}
+
+# Complete app with UI and server components
+shinyApp(ui, server)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

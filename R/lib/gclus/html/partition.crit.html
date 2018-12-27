@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Combines the results of appplying an index to each group of...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for partition.crit {gclus}"><tr><td>partition.crit {gclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Combines the results of appplying an index to each group of 
+observations </h2>
+
+<h3>Description</h3>
+
+<p>Applies the function <code>gfun</code>  to each group of x and y values
+and combines the results using the function <code>cfun</code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+partition.crit(x, y, groups, gfun = gave, cfun = sum, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>is a numeric vector. </p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>is a numeric vector. </p>
+</td></tr>
+<tr valign="top"><td><code>groups</code></td>
+<td>
+<p> is a vector of group memberships. </p>
+</td></tr>
+<tr valign="top"><td><code>gfun</code></td>
+<td>
+<p> is applied to the <code>x</code>  and <code>y</code> data in each group. </p>
+</td></tr>
+<tr valign="top"><td><code>cfun</code></td>
+<td>
+<p> combines the values returned by <code>gfun</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> arguements are passed to  <code>gfun</code>. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function <code>gfun</code> is applied to each group of <code>x</code>  and <code>y</code>
+values. The function <code>cfun</code> is applied to the vector or matrix of
+<code>gfun</code> results.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The result of applying <code>cfun</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Catherine B. Hurley</p>
+
+
+<h3>References</h3>
+
+<p> See Gordon, A. D. (1999). <em>Classification</em>. Second Edition. London:
+Chapman and Hall / CRC </p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="diameter.html">gave</a></code>, <code><a href="colpairs.html">colpairs</a></code>, 
+<code><a href="order.html">order.single</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- runif(20)
+y &lt;- runif(20)
+g &lt;- rep(c("a","b"),10)
+
+partition.crit(x,y,g)
+
+
+data(bank)
+# m is a homogeneity measure of each pairwise variable plot
+m &lt;- -colpairs(scale(bank[,-1]), partition.crit,gfun=gave,groups=bank[,1])
+
+# Color panels by level of m and reorder variables so that
+# pairs with high m are near the diagonal. Panels shown
+# in pink have the highest amount of group homogeneity, as measured by 
+# gave.
+cpairs(bank[,-1],order=order.single(m), panel.colors=dmat.color(m),
+gap=.3,col=c("purple","black")[bank[,"Status"]+1],
+pch=c(5,3)[bank[,"Status"]+1])
+
+# Try  a different measure
+m &lt;- -colpairs(scale(bank[,-1]), partition.crit,gfun=diameter,groups=bank[,1])
+
+cpairs(bank[,-1],order=order.single(m), panel.colors=dmat.color(m),
+gap=.3,col=c("purple","black")[bank[,"Status"]+1],
+pch=c(5,3)[bank[,"Status"]+1])
+
+
+# Result is the same, in this case.
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gclus</em> version 1.3.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

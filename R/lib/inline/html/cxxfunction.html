@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: inline C++ function</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cxxfunction {inline}"><tr><td>cxxfunction {inline}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+inline C++ function
+</h2>
+
+<h3>Description</h3>
+
+<p>Functionality to dynamically define an R function with inlined C++ code
+using the <code><a href="../../base/html/CallExternal.html">.Call</a></code> calling convention.
+</p>
+<p>The <code>rcpp()</code> wrapper sets the plugin to the &ldquo;Rcpp&rdquo; value
+suitable for using <span class="pkg">Rcpp</span>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cxxfunction(sig = character(), body = character(), 
+	plugin = "default", includes = "", 
+	settings = getPlugin(plugin), ..., verbose = FALSE)
+rcpp(..., plugin="Rcpp")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>sig</code></td>
+<td>
+<p>Signature of the function. A named character vector</p>
+</td></tr>
+<tr valign="top"><td><code>body</code></td>
+<td>
+<p>A character vector with C++ code to include in the body of the compiled C++ function</p>
+</td></tr>
+<tr valign="top"><td><code>plugin</code></td>
+<td>
+<p>Name of the plugin to use. See <code><a href="plugins.html">getPlugin</a></code> for details about plugins. </p>
+</td></tr>
+<tr valign="top"><td><code>includes</code></td>
+<td>
+<p>User includes, inserted after the includes provided by the plugin. </p>
+</td></tr>
+<tr valign="top"><td><code>settings</code></td>
+<td>
+<p>Result of the call to the plugin</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments to the plugin</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>verbose output</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A function
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cfunction.html">cfunction</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+# default plugin
+fx &lt;- cxxfunction( signature(x = "integer", y = "numeric" ) , '
+	return ScalarReal( INTEGER(x)[0] * REAL(y)[0] ) ;
+' )
+fx( 2L, 5 )
+
+# Rcpp plugin
+if( require( Rcpp ) ){
+
+	fx &lt;- cxxfunction( signature(x = "integer", y = "numeric" ) , '
+		return wrap( as&lt;int&gt;(x) * as&lt;double&gt;(y) ) ;
+	', plugin = "Rcpp" )
+	fx( 2L, 5 )
+
+        ## equivalent shorter form using rcpp()
+	fx &lt;- rcpp(signature(x = "integer", y = "numeric"),
+                   ' return wrap( as&lt;int&gt;(x) * as&lt;double&gt;(y) ) ; ')
+
+}
+
+# RcppArmadillo plugin
+if( require( RcppArmadillo ) ){
+	
+	fx &lt;- cxxfunction( signature(x = "integer", y = "numeric" ) , '
+		int dim = as&lt;int&gt;( x ) ;
+		arma::mat z = as&lt;double&gt;(y) * arma::eye&lt;arma::mat&gt;( dim, dim ) ;
+		return wrap( arma::accu(z) ) ;
+	', plugin = "RcppArmadillo" )
+	fx( 2L, 5 )
+	
+	
+}
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>inline</em> version 0.3.15 <a href="00Index.html">Index</a>]</div>
+</body></html>

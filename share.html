@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/project.js" type="text/javascript"></script>
+<script type="text/javascript">
+function show()
+{
+	var hash = location.hash;
+	var url = get_full_project_link(hash.substr(1));
+	document.getElementById("result").height=window.innerHeight;
+	document.getElementById("result").width=window.innerWidth;
+	document.getElementById("result").src=url;
+}
+
+window.onresize = function()
+{
+	document.getElementById("result").height=window.innerHeight;
+	document.getElementById("result").width=window.innerWidth;
+}
+</script>
+</head>
+<body onload=show()>
+<iframe id="result"></div>
+</body>
+</html> 

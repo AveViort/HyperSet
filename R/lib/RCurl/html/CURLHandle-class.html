@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;CURLHandle&quot; for synchronous HTTP requests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for CURLHandle-class {RCurl}"><tr><td>CURLHandle-class {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;CURLHandle&quot; for synchronous HTTP requests</h2>
+
+<h3>Description</h3>
+
+<p>This is the basic class used for  performing HTTP requests
+in the RCurl package.
+In R, this is a reference to a C-level data structure
+so we treat it as an opaque data type. However,
+essentially we can think of this as an with
+a set of options that persists across calls, i.e. HTTP requests.
+The numerous options that one can set can be see via
+<code><a href="curlOptions.html">getCurlOptionsConstants</a></code>.
+The object can keep a connection to a Web server open for a period of time
+across calls.
+</p>
+<p>This class differs from <code><a href="MultiCURLHandle-class.html">MultiCURLHandle-class</a></code> as it
+can handle only one request at a time and blocks until the request
+is completed (normally or abnormally).
+The other class can handle asynchronous, multiple connections.
+</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>A virtual Class: No objects may be created from it.</p>
+
+
+<h3>Extends</h3>
+
+<p>Class <code>"oldClass"</code>, directly.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://curl.haxx.se">http://curl.haxx.se</a>, the libcurl web site.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getURL.html">getURL</a></code>,   <code><a href="postForm.html">getForm</a></code>,   <code><a href="postForm.html">postForm</a></code>
+<code><a href="getCurlHandle.html">dupCurlHandle</a></code>,
+<code><a href="getCurlHandle.html">getCurlHandle</a></code>,
+<code><a href="MultiCURLHandle-class.html">MultiCURLHandle-class</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

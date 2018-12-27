@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Zoo Data Set</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Zoo {seriation}"><tr><td>Zoo {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Zoo Data Set</h2>
+
+<h3>Description</h3>
+
+<p>A database containing characteristics of different animals.
+The database was created and donated by Richard S. Forsyth
+and is available from the UCI Machine Learning Repository 
+(Newman et al, 1998).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("Zoo")</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 101 observations on the following 17 variables.
+</p>
+
+<dl>
+<dt><code>hair</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>feathers</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>eggs</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>milk</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>airborne</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>aquatic</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>predator</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>toothed</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>backbone</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>breathes</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>venomous</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>fins</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>legs</code></dt><dd><p>Numeric (set of values: {0, 2, 4, 5, 6, 8})</p>
+</dd>
+<dt><code>tail</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>domestic</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>catsize</code></dt><dd><p>{0, 1}</p>
+</dd>
+<dt><code>class</code></dt><dd><p>a factor with levels <code>amphibian</code> <code>bird</code> <code>fish</code> <code>insect</code> <code>invertebrate</code> <code>mammal</code> <code>reptile</code></p>
+</dd>
+</dl>
+
+
+
+<h3>Source</h3>
+
+<p>D.J. Newman, S. Hettich, C.L. Blake and C.J. Merz (1998):
+UCI Repository of machine learning databases,
+<a href="http://www.ics.uci.edu/~mlearn/MLRepository.html">http://www.ics.uci.edu/~mlearn/MLRepository.html</a>,
+University of California, Irvine, Dept. of Information and Computer Sciences.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("Zoo")
+x &lt;- scale(Zoo[, -17])
+
+
+d &lt;- dist(x)
+pimage(d)
+
+order &lt;- seriate(d, method = "tsp")
+pimage(d, order)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Neighboring (adjacent) vertices in a graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for neighbors {igraph}"><tr><td>neighbors {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Neighboring (adjacent) vertices in a graph</h2>
+
+<h3>Description</h3>
+
+<p>A vertex is a neighbor of another one (in other words, the two
+vertices are adjacent), if they are incident to the same edge.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+neighbors(graph, v, mode = c("out", "in", "all", "total"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>v</code></td>
+<td>
+<p>The vertex of which the adjacent vertices are queried.</p>
+</td></tr>
+<tr valign="top"><td><code>mode</code></td>
+<td>
+<p>Whether to query outgoing (&lsquo;out&rsquo;), incoming
+(&lsquo;in&rsquo;) edges, or both types (&lsquo;all&rsquo;). This is
+ignored for undirected graphs.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A vertex sequence containing the neighbors of the input vertex.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other structural queries: <code><a href="sub-.igraph.html">[.igraph</a></code>,
+<code><a href="sub-sub-.igraph.html">[[.igraph</a></code>, <code><a href="adjacent_vertices.html">adjacent_vertices</a></code>,
+<code><a href="are_adjacent.html">are_adjacent</a></code>, <code><a href="ends.html">ends</a></code>,
+<code><a href="get.edge.ids.html">get.edge.ids</a></code>, <code><a href="gorder.html">gorder</a></code>,
+<code><a href="gsize.html">gsize</a></code>, <code><a href="head_of.html">head_of</a></code>,
+<code><a href="incident_edges.html">incident_edges</a></code>, <code><a href="incident.html">incident</a></code>,
+<code><a href="is_directed.html">is_directed</a></code>, <code><a href="tail_of.html">tail_of</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+g &lt;- make_graph("Zachary")
+n1 &lt;- neighbors(g, 1)
+n34 &lt;- neighbors(g, 34)
+intersection(n1, n34)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

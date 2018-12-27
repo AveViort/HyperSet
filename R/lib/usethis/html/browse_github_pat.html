@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a GitHub personal access token</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for browse_github_pat {usethis}"><tr><td>browse_github_pat {usethis}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a GitHub personal access token</h2>
+
+<h3>Description</h3>
+
+<p>Opens a browser window to the GitHub page where you can generate a <a href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line">Personal Access Token</a>.
+Make sure you have signed up for a free <a href="https://github.com/">GitHub.com</a>
+account and that you are signed in. Click &quot;Generate token&quot; after you have
+verified the scopes. Copy the token right away! You probably want to store it
+in <code>.Renviron</code> as the <code>GITHUB_PAT</code> environment variable. <code><a href="edit.html">edit_r_environ()</a></code>
+can help you do that. Use <code><a href="../../gh/html/gh_whoami.html">gh::gh_whoami()</a></code> to get information on an existing
+token.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+browse_github_pat(scopes = c("repo", "gist"),
+  description = "R:GITHUB_PAT", host = "https://github.com")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>scopes</code></td>
+<td>
+<p>Character vector of token permissions. These are just defaults
+that will be pre-selected in the web form. You can select the final values
+on the GitHub page. Read more about GitHub API scopes at
+<a href="https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/">https://developer.github.com/apps/building-oauth-apps/scopes-for-oauth-apps/</a>.</p>
+</td></tr>
+<tr valign="top"><td><code>description</code></td>
+<td>
+<p>Short description or nickname for the token. It helps you
+distinguish various tokens on GitHub.</p>
+</td></tr>
+<tr valign="top"><td><code>host</code></td>
+<td>
+<p>GitHub API host to use. Override with the endpoint-root for your
+GitHub enterprise instance, for example,
+&quot;https://github.hostname.com/api/v3&quot;</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+browse_github_pat()
+## COPY THE PAT!!!
+## almost certainly to be followed by ...
+edit_r_environ()
+## which helps you store the PAT as an env var
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>usethis</em> version 1.4.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

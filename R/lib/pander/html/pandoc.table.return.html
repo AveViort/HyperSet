@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a table</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pandoc.table.return {pander}"><tr><td>pandoc.table.return {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a table</h2>
+
+<h3>Description</h3>
+
+<p>Creates a Pandoc's markdown style table with optional caption and some other tweaks. See 'Details' below.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pandoc.table.return(t, caption, digits = panderOptions("digits"),
+  decimal.mark = panderOptions("decimal.mark"),
+  big.mark = panderOptions("big.mark"), round = panderOptions("round"),
+  missing = panderOptions("missing"), justify, style = c("multiline",
+  "grid", "simple", "rmarkdown", "jira"),
+  split.tables = panderOptions("table.split.table"),
+  split.cells = panderOptions("table.split.cells"),
+  keep.trailing.zeros = panderOptions("keep.trailing.zeros"),
+  keep.line.breaks = panderOptions("keep.line.breaks"),
+  plain.ascii = panderOptions("plain.ascii"),
+  use.hyphening = panderOptions("use.hyphening"), row.names, col.names,
+  emphasize.rownames = panderOptions("table.emphasize.rownames"),
+  emphasize.rows, emphasize.cols, emphasize.cells, emphasize.strong.rows,
+  emphasize.strong.cols, emphasize.strong.cells, emphasize.italics.rows,
+  emphasize.italics.cols, emphasize.italics.cells, emphasize.verbatim.rows,
+  emphasize.verbatim.cols, emphasize.verbatim.cells, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>t</code></td>
+<td>
+<p>data frame, matrix or table</p>
+</td></tr>
+<tr valign="top"><td><code>caption</code></td>
+<td>
+<p>caption (string) to be shown under the table</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>passed to <code>format</code>. Can be a vector specifying values for each column (has to be the same length as number of columns).</p>
+</td></tr>
+<tr valign="top"><td><code>decimal.mark</code></td>
+<td>
+<p>passed to <code>format</code></p>
+</td></tr>
+<tr valign="top"><td><code>big.mark</code></td>
+<td>
+<p>passed to <code>format</code></p>
+</td></tr>
+<tr valign="top"><td><code>round</code></td>
+<td>
+<p>passed to <code>round</code>. Can be a vector specifying values for each column (has to be the same length as number of columns). Values for non-numeric columns will be disregarded.</p>
+</td></tr>
+<tr valign="top"><td><code>missing</code></td>
+<td>
+<p>string to replace missing values</p>
+</td></tr>
+<tr valign="top"><td><code>justify</code></td>
+<td>
+<p>defines alignment in cells passed to <code>format</code>. Can be <code>left</code>, <code>right</code> or <code>centre</code>, which latter can be also spelled as <code>center</code>. Defaults to <code>centre</code>. Can be abbreviated to a string consisting of the letters <code>l</code>, <code>c</code> and <code>r</code> (e.g. 'lcr' instead of c('left', 'centre', 'right').</p>
+</td></tr>
+<tr valign="top"><td><code>style</code></td>
+<td>
+<p>which Pandoc style to use: <code>simple</code>, <code>multiline</code>, <code>grid</code> or <code>rmarkdown</code></p>
+</td></tr>
+<tr valign="top"><td><code>split.tables</code></td>
+<td>
+<p>where to split wide tables to separate tables. The default value (<code>80</code>) suggests the conventional number of characters used in a line, feel free to change (e.g. to <code>Inf</code> to disable this feature) if you are not using a VT100 terminal any more :)</p>
+</td></tr>
+<tr valign="top"><td><code>split.cells</code></td>
+<td>
+<p>where to split cells' text with line breaks. Default to <code>30</code>, to disable set to <code>Inf</code>. Can be also supplied as a vector, for each cell separately (if length(split.cells) == number of columns + 1, then first value in split.cells if for row names, and others are for columns). Supports relative (percentage) parameters in combination with split.tables.</p>
+</td></tr>
+<tr valign="top"><td><code>keep.trailing.zeros</code></td>
+<td>
+<p>to show or remove trailing zeros in numbers on a column basis width</p>
+</td></tr>
+<tr valign="top"><td><code>keep.line.breaks</code></td>
+<td>
+<p>(default: <code>FALSE</code>) if to keep or remove line breaks from cells in a table</p>
+</td></tr>
+<tr valign="top"><td><code>plain.ascii</code></td>
+<td>
+<p>(default: <code>FALSE</code>) if output should be in plain ascii (without markdown markup) or not</p>
+</td></tr>
+<tr valign="top"><td><code>use.hyphening</code></td>
+<td>
+<p>boolean (default: <code>FALSE</code>) if try to use hyphening when splitting large cells according to table.split.cells. Requires <span class="pkg">sylly</span>.</p>
+</td></tr>
+<tr valign="top"><td><code>row.names</code></td>
+<td>
+<p>if <code>FALSE</code>, row names are suppressed. A character vector of row names can also be specified here. By default, row names are included if <code>rownames(t)</code> is neither
+<code>NULL</code> nor identical to <code>1:nrow(x)</code></p>
+</td></tr>
+<tr valign="top"><td><code>col.names</code></td>
+<td>
+<p>a character vector of column names to be used in the table</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.rownames</code></td>
+<td>
+<p>boolean (default: <code>TRUE</code>) if row names should be highlighted</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.rows</code></td>
+<td>
+<p>deprecated for <code>emphasize.italics.rows</code> argument</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.cols</code></td>
+<td>
+<p>deprecated for <code>emphasize.italics.cols</code> argument</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.cells</code></td>
+<td>
+<p>deprecated for <code>emphasize.italics.cells</code> argument</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.strong.rows</code></td>
+<td>
+<p>see <code>emphasize.italics.rows</code> but in bold</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.strong.cols</code></td>
+<td>
+<p>see <code>emphasize.italics.cols</code> but in bold</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.strong.cells</code></td>
+<td>
+<p>see <code>emphasize.italics.cells</code> but in bold</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.italics.rows</code></td>
+<td>
+<p>a vector for a two dimensional table specifying which rows to emphasize</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.italics.cols</code></td>
+<td>
+<p>a vector for a two dimensional table specifying which cols to emphasize</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.italics.cells</code></td>
+<td>
+<p>a vector for one-dimensional tables or a matrix like structure with two columns for row and column indexes to be emphasized in two dimensional tables. See e.g. <code>which(..., arr.ind = TRUE)</code></p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.verbatim.rows</code></td>
+<td>
+<p>see <code>emphasize.italics.rows</code> but in verbatim</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.verbatim.cols</code></td>
+<td>
+<p>see <code>emphasize.italics.cols</code> but in verbatim</p>
+</td></tr>
+<tr valign="top"><td><code>emphasize.verbatim.cells</code></td>
+<td>
+<p>see <code>emphasize.italics.cells</code> but in verbatim</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>unsupported extra arguments directly placed into <code>/dev/null</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function takes any tabular data as its first argument and will try to make it pretty like: rounding and applying <code>digits</code> and custom <code>decimal.mark</code> to numbers, auto-recognizing if row names should be included, setting alignment of cells and dropping trailing zeros by default.
+</p>
+<p><code>pandoc.table</code> also tries to split large cells with line breaks or even the whole table to separate parts on demand. Other arguments lets the use to highlight some rows/cells/cells in the table with italic or bold text style.
+</p>
+<p>For more details please see the parameters above and passed arguments of <code><a href="panderOptions.html">panderOptions</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>By default this function outputs (see: <code>cat</code>) the result. If you would want to catch the result instead, then call <code>pandoc.table.return</code> instead.
+</p>
+
+
+<h3>Note</h3>
+
+<p>If <code>caption</code> is missing, then the value is first checked in <code>t</code> object's <code>caption</code> attribute and if not found in an internal buffer set by <code>link{set.caption}</code>. <code>justify</code> parameter works similarly, see <code><a href="set.alignment.html">set.alignment</a></code> for details.
+</p>
+
+
+<h3>References</h3>
+
+<p>John MacFarlane (2012): _Pandoc User's Guide_. <a href="http://johnmacfarlane.net/pandoc/README.html">http://johnmacfarlane.net/pandoc/README.html</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="set.caption.html">set.caption</a></code>, <code><a href="set.alignment.html">set.alignment</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+pandoc.table(mtcars)
+
+# caption
+pandoc.table(mtcars, 'Motor Trend Car Road Tests')
+
+# other input/output formats
+pandoc.table(mtcars[, 1:3], decimal.mark = ',')
+pandoc.table(mtcars[, 1:3], decimal.mark = ',', justify = 'right')
+pandoc.table(matrix(sample(1:1000, 25), 5, 5))
+pandoc.table(matrix(runif(25), 5, 5))
+pandoc.table(matrix(runif(25), 5, 5), digits = 5)
+pandoc.table(matrix(runif(25),5,5), round = 1)
+pandoc.table(table(mtcars$am))
+pandoc.table(table(mtcars$am, mtcars$gear))
+pandoc.table(table(state.division, state.region))
+pandoc.table(table(state.division, state.region), justify = 'centre')
+
+m &lt;- data.frame(a = c(1, -500, 10320, 23, 77),
+  b = runif(5),
+  c = c('a', 'bb', 'ccc', 'dddd', 'eeeee'))
+pandoc.table(m)
+pandoc.table(m, justify = c('right', 'left', 'centre'))
+pandoc.table(m, justify = 'rlc') # Same as upper statement
+
+## splitting up too wide tables
+pandoc.table(mtcars)
+pandoc.table(mtcars, caption = 'Only once after the first part!')
+
+## tables with line breaks in cells
+## NOTE: line breaks are removed from table content in case keep.line.breaks is set to FALSE
+## and added automatically based on "split.cells" parameter!
+t &lt;- data.frame(a = c('hundreds\nof\nmouses', '3 cats'), b=c('FOO is nice', 'BAR\nBAR2'))
+pandoc.table(t)
+pandoc.table(t, split.cells = 5)
+
+## exporting tables in other Pandoc styles
+pandoc.table(m)
+pandoc.table(m, style = "grid")
+pandoc.table(m, style = "simple")
+pandoc.table(t, style = "grid")
+pandoc.table(t, style = "grid", split.cells = 5)
+tryCatch(pandoc.table(t, style = "simple", split.cells = 5),
+  error = function(e) 'Yeah, no newline support in simple tables')
+
+## highlight cells
+t &lt;- mtcars[1:3, 1:5]
+pandoc.table(t$mpg, emphasize.italics.cells = 1)
+pandoc.table(t$mpg, emphasize.strong.cells = 1)
+pandoc.table(t$mpg, emphasize.italics.cells = 1, emphasize.strong.cells = 1)
+pandoc.table(t$mpg, emphasize.italics.cells = 1:2)
+pandoc.table(t$mpg, emphasize.strong.cells = 1:2)
+pandoc.table(t, emphasize.italics.cells = which(t &gt; 20, arr.ind = TRUE))
+pandoc.table(t, emphasize.italics.cells = which(t == 6, arr.ind = TRUE))
+pandoc.table(t, emphasize.verbatim.cells = which(t == 6, arr.ind = TRUE))
+pandoc.table(t, emphasize.verbatim.cells = which(t == 6, arr.ind = TRUE),
+ emphasize.italics.rows = 1)
+## with helpers
+emphasize.cols(1)
+emphasize.rows(1)
+pandoc.table(t)
+
+emphasize.strong.cells(which(t &gt; 20, arr.ind = TRUE))
+pandoc.table(t)
+
+### plain.ascii
+pandoc.table(mtcars[1:3, 1:3], plain.ascii = TRUE)
+
+### keep.line.breaks
+x &lt;- data.frame(a="Pandoc\nPackage")
+pandoc.table(x)
+pandoc.table(x, keep.line.breaks = TRUE)
+
+## split.cells
+x &lt;- data.frame(a = "foo bar", b = "foo bar")
+pandoc.table(x, split.cells = 4)
+pandoc.table(x, split.cells = 7)
+pandoc.table(x, split.cells = c(4, 7))
+pandoc.table(x, split.cells = c("20%", "80%"), split.tables = 30)
+
+y &lt;- c("aa aa aa", "aaa aaa", "a a a a a", "aaaaa", "bbbb bbbb bbbb", "bb bbb bbbb")
+y &lt;- matrix(y, ncol = 3, nrow = 2)
+rownames(y) &lt;- c("rowname one", "rowname two")
+colnames(y) &lt;- c("colname one", "colname two", "colname three")
+pandoc.table(y, split.cells = 2)
+pandoc.table(y, split.cells = 6)
+pandoc.table(y, split.cells = c(2, 6, 10))
+pandoc.table(y, split.cells = c(2, Inf, Inf))
+
+## first value used for rownames
+pander(y, split.cells = c(5, 2, Inf, Inf))
+pandoc.table(y, split.cells = c(5, 2, Inf, 5, 3, 10))
+
+## when not enough reverting to default values
+pandoc.table(y, split.cells = c(5, 2))
+
+## split.cells with hyphenation
+x &lt;- data.frame(a = "Can be also supplied as a vector, for each cell separately",
+       b = "Can be also supplied as a vector, for each cell separately")
+pandoc.table(x, split.cells = 10, use.hyphening = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

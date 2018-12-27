@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cluster validation based on nearest neighbours</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cvnn {fpc}"><tr><td>cvnn {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cluster validation based on nearest neighbours</h2>
+
+<h3>Description</h3>
+
+<p>Cluster validity index based on nearest neighbours as defined in Liu
+et al. (2013) with a correction explained in Halkidi et al. (2015).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cvnn(d=NULL,clusterings,k=5)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>d</code></td>
+<td>
+<p>dissimilarity matrix or <code>dist</code>-object.</p>
+</td></tr>
+<tr valign="top"><td><code>clusterings</code></td>
+<td>
+<p>list of vectors of integers with length <code>=nrow(d)</code>;
+indicating the cluster for each observation for several clusterings
+(list elements) to be compared.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>integer. Number of nearest neighbours.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>List with components (see Liu et al. (2013), Halkidi et al. (2015) for
+details)
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>cvnnindex</code></td>
+<td>
+<p>vector of index values for the various clusterings,
+see Liu et al. (2013), the lower the better.</p>
+</td></tr>
+<tr valign="top"><td><code>sep</code></td>
+<td>
+<p>vector of separation values.</p>
+</td></tr>
+<tr valign="top"><td><code>comp</code></td>
+<td>
+<p>vector of compactness values.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Halkidi, M., Vazirgiannis, M. and Hennig, C. (2015) Method-independent
+indices for cluster validation. In C. Hennig, M. Meila, F. Murtagh,
+R. Rocci (eds.) <em>Handbook of Cluster Analysis</em>, CRC
+Press/Taylor <code>&amp;</code> Francis, Boca Raton.
+</p>
+<p>Liu, Y, Li, Z., Xiong, H., Gao, X., Wu, J. and Wu, S. (2013)
+Understanding and enhancement of internal clustering validation
+measures. <em>IEEE Transactions on Cybernetics</em> 43, 982-994.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  iriss &lt;- as.matrix(iris[c(1:10,51:55,101:105),-5])
+  irisc &lt;- as.numeric(iris[c(1:10,51:55,101:105),5])
+  print(cvnn(dist(iriss),list(irisc,rep(1:4,5))))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

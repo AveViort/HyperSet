@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert a reactivevalues object to a list</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reactiveValuesToList {shiny}"><tr><td>reactiveValuesToList {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Convert a reactivevalues object to a list</h2>
+
+<h3>Description</h3>
+
+<p>This function does something similar to what you might <code><a href="../../base/html/as.list.html">as.list</a></code>
+to do. The difference is that the calling context will take dependencies on
+every object in the reactivevalues object. To avoid taking dependencies on
+all the objects, you can wrap the call with <code><a href="isolate.html">isolate</a>()</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+reactiveValuesToList(x, all.names = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A reactivevalues object.</p>
+</td></tr>
+<tr valign="top"><td><code>all.names</code></td>
+<td>
+<p>If <code>TRUE</code>, include objects with a leading dot. If
+<code>FALSE</code> (the default) don't include those objects.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+values &lt;- reactiveValues(a = 1)
+## Not run: 
+reactiveValuesToList(values)
+
+## End(Not run)
+
+# To get the objects without taking dependencies on them, use isolate().
+# isolate() can also be used when calling from outside a reactive context (e.g.
+# at the console)
+isolate(reactiveValuesToList(values))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

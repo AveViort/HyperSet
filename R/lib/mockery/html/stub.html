@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Replace a function with a stub.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for stub {mockery}"><tr><td>stub {mockery}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Replace a function with a stub.</h2>
+
+<h3>Description</h3>
+
+<p>The result of calling <code>stub</code> is that, when <code>where</code>
+is invoked and when it internally makes a call to <code>what</code>,
+<code>how</code> is going to be called instead.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+stub(where, what, how, depth = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>where</code></td>
+<td>
+<p>Function to be called that will in turn call
+<code>what</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>Name of the function you want to stub out (a
+<code>character</code> string).</p>
+</td></tr>
+<tr valign="top"><td><code>how</code></td>
+<td>
+<p>Replacement function (also a <code><a href="mock.html">mock</a></code> function)
+or a return value for which a function will be created
+automatically.</p>
+</td></tr>
+<tr valign="top"><td><code>depth</code></td>
+<td>
+<p>Specifies the depth to which the function should be stubbed</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is much more limited in scope in comparison to
+<code><a href="../../testthat/html/with_mock.html">with_mock</a></code> which effectively replaces
+<code>what</code> everywhere. In other words, when using <code>with_mock</code>
+and regardless of the number of intermediate calls, <code>how</code> is
+always called instead of <code>what</code>. However, using this API,
+the replacement takes place only for a single function <code>where</code>
+and only for calls originating in that function.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+f &lt;- function() TRUE
+g &lt;- function() f()
+stub(g, 'f', FALSE)
+
+# now g() returns FALSE because f() has been stubbed out
+g()
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mockery</em> version 0.4.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: convert a dijkstra.sp predecessor structure into the path...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for extractPath {RBGL}"><tr><td>extractPath {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>convert a dijkstra.sp predecessor structure into the path joining two nodes   </h2>
+
+<h3>Description</h3>
+
+<p>determine a path between two nodes in a graph,
+using output of <code><a href="dijkstra.sp.html">dijkstra.sp</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+extractPath(s, f, pens)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>s</code></td>
+<td>
+<p> index of starting node in nodes vector
+of the graph from which <code>pens</code> was derived</p>
+</td></tr>
+<tr valign="top"><td><code>f</code></td>
+<td>
+<p> index of ending node in nodes vector </p>
+</td></tr>
+<tr valign="top"><td><code>pens</code></td>
+<td>
+<p> predecessor index vector as returned
+in the <code>preds</code> component of <code><a href="dijkstra.sp.html">dijkstra.sp</a></code> output</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>numeric vector of indices of nodes along shortest path</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Vince Carey &lt;stvjc@channing.harvard.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>See Also</h3>
+
+  <p><code><a href="../../e1071/html/shortestPaths.html">allShortestPaths</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(FileDep)
+dd &lt;- dijkstra.sp(FileDep)
+extractPath(1,9,dd$pen)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

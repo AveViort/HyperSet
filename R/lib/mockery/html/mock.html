@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create and query a mocked function.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mock {mockery}"><tr><td>mock {mockery}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create and query a mocked function.</h2>
+
+<h3>Description</h3>
+
+<p>Mock object's primary use is to record calls that are made on the
+mocked function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mock(..., cycle = FALSE, envir = parent.frame())
+
+mock_args(m)
+
+mock_calls(m)
+
+## S3 method for class 'mock'
+length(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Values returned upon subsequent calls.</p>
+</td></tr>
+<tr valign="top"><td><code>cycle</code></td>
+<td>
+<p>Whether to cycle over the return values. If <code>FALSE</code>,
+will fail if called too many times.</p>
+</td></tr>
+<tr valign="top"><td><code>envir</code></td>
+<td>
+<p>Where to evaluate the expressions being returned.</p>
+</td></tr>
+<tr valign="top"><td><code>m</code></td>
+<td>
+<p>A <code><a href="mock.html">mock</a></code>ed function.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A <code><a href="mock.html">mock</a></code>ed function.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Optionally values/expressions can be passed via <code>...</code> for the
+mock object to return them upon subsequent calls. Expressions are
+evaluated in environment <code>envir</code> before being returned. If no
+value is passed in <code>...</code> then <code>NULL</code> is returned.
+</p>
+<p>Passing an expression or a function call via <code>...</code> is also a
+way to implement side effects: keep track of the state of code
+under testing, throw an exception when a condition is met, etc.
+</p>
+<p><code>mock_calls</code> and <code>mock_args</code> can be used to access the
+list of calls made on a mocked function and a respective list of
+values of arguments passed to each of these calls.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>mock()</code> returns a mocked function which can be then used
+with <code><a href="../../testthat/html/with_mock.html">with_mock</a></code>.
+</p>
+<p><code>mock_args()</code> returns a <code>list</code> of <code>list</code>s
+of argument values.
+</p>
+<p><code>mock_calls()</code> returns a <code>list</code> of <code>call</code>s.
+</p>
+<p><code>length.mock()</code> returns the number of calls invoked on <code>m</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(testthat)
+
+m &lt;- mock(1)
+with_mock(summary = m, {
+  expect_equal(summary(iris), 1)
+  expect_called(m, 1)
+  expect_call(m, 1, summary(iris))
+  expect_args(m, 1, iris)
+})
+
+# multiple return values
+m &lt;- mock(1, "a", sqrt(3))
+with_mock(summary = m, {
+  expect_equal(summary(iris), 1)
+  expect_equal(summary(iris), "a")
+  expect_equal(summary(iris), 1.73, tolerance = .01)
+})
+
+# side effects
+m &lt;- mock(1, 2, stop("error"))
+with_mock(summary = m, {
+  expect_equal(summary(iris), 1)
+  expect_equal(summary(iris), 2)
+  expect_error(summary(iris), "error")
+})
+
+# accessing call expressions
+m &lt;- mock()
+m(x = 1)
+m(y = 2)
+expect_equal(length(m), 2)
+calls &lt;- mock_calls(m)
+expect_equal(calls[[1]], quote(m(x = 1)))
+expect_equal(calls[[2]], quote(m(y = 2)))
+
+# accessing values of arguments
+m &lt;- mock()
+m(x = 1)
+m(y = 2)
+expect_equal(length(m), 2)
+args &lt;- mock_args(m)
+expect_equal(args[[1]], list(x = 1))
+expect_equal(args[[2]], list(y = 2))
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mockery</em> version 0.4.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Identifies Edges of a Tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for which.edge {ape}"><tr><td>which.edge {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Identifies Edges of a Tree</h2>
+
+<h3>Description</h3>
+
+<p>This function identifies the edges that belong to a group (possibly
+non-monophyletic) specified as a set of tips.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+which.edge(phy, group)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>group</code></td>
+<td>
+<p>a vector of mode numeric or character specifying the tips
+for which the edges are to be identified.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The group of tips specified in &lsquo;group&rsquo; may be non-monophyletic
+(paraphyletic or polyphyletic), in which case all edges from the tips
+to their most recent common ancestor are identified.
+</p>
+<p>The identification is made with the indices of the rows of the matrix
+&lsquo;edge&rsquo; of the tree.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a numeric vector.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bind.tree.html">bind.tree</a></code>, <code><a href="drop.tip.html">drop.tip</a></code>, <code><a href="root.html">root</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

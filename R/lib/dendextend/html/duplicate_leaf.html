@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Duplicate a leaf X times</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for duplicate_leaf {dendextend}"><tr><td>duplicate_leaf {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Duplicate a leaf X times</h2>
+
+<h3>Description</h3>
+
+<p>Duplicates a leaf in a tree. Useful for non-parametric bootstraping trees
+since it emulates what would have happened if the tree was constructed based
+on a row-sample with replacments from the original data matrix.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+duplicate_leaf(dend, leaf_label, times, fix_members = TRUE,
+  fix_order = TRUE, fix_midpoint = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>leaf_label</code></td>
+<td>
+<p>the label of the laef to replicate.</p>
+</td></tr>
+<tr valign="top"><td><code>times</code></td>
+<td>
+<p>the number of times we will have this leaf after replication</p>
+</td></tr>
+<tr valign="top"><td><code>fix_members</code></td>
+<td>
+<p>logical (TRUE). Fix the number of members in attr
+using <a href="fix_members_attr.dendrogram.html">fix_members_attr.dendrogram</a></p>
+</td></tr>
+<tr valign="top"><td><code>fix_order</code></td>
+<td>
+<p>logical (TRUE). Fix the leaves order</p>
+</td></tr>
+<tr valign="top"><td><code>fix_midpoint</code></td>
+<td>
+<p>logical (TRUE). Fix the midpoint value.
+If TRUE, it overrides &quot;fix_members&quot; and turns it into TRUE (since it must
+have a correct number of members in order to work).
+values using <a href="rank_order.dendrogram.html">rank_order.dendrogram</a></p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram, after duplicating one of its leaves.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+# define dendrogram object to play with:
+dend &lt;- USArrests[1:3,] %&gt;% dist %&gt;% hclust(method = "ave") %&gt;% as.dendrogram
+plot(dend)
+duplicate_leaf(dend, "Alaska", 3)
+duplicate_leaf(dend, "Arizona", 2, fix_members =FALSE, fix_order = FALSE)
+plot(duplicate_leaf(dend, "Alaska", 2))
+plot(duplicate_leaf(dend, "Alaska", 4))
+plot(duplicate_leaf(dend, "Arizona", 2))
+plot(duplicate_leaf(dend, "Arizona", 4))
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

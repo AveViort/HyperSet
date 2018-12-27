@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: World lakes database</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lakes {maps}"><tr><td>lakes {maps}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+World lakes database
+</h2>
+
+<h3>Description</h3>
+
+<p>This database contains a selection of large lakes (and islands within) taken from the Natural Earth 1:50m map, the same data source as the (v3.0) world map. The lake boundaries are consistent with the 'world' database.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(lakesMapEnv)</pre>
+
+
+<h3>Format</h3>
+
+<p>The data file is merely a character string which
+specifies the name of an environment variable which contains the
+base location of the binary files used by the map drawing functions.
+This environment variable (<code>R_MAP_DATA_DIR</code> for the datasets in the
+maps package) is set at package load time <em>if it does not
+already exist</em>.  Hence setting the environment variable before loading
+the package can override the default location of the binary datasets.
+</p>
+
+
+<h3>Source</h3>
+
+<p>The data in this data base is derived from the public domain GIS project Natural Earth, the file &quot;ne_50m_lakes&quot;. The Natural Earth data set is available from <a href="http://www.naturalearthdata.com">http://www.naturalearthdata.com</a>.</p>
+
+
+<h3>References</h3>
+
+<p><em>Natural Earth project</em>
+<a href="http://www.naturalearthdata.com">http://www.naturalearthdata.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="map.html">map</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+map('world')
+map('lakes', add=TRUE, fill=TRUE, col='white', boundary='black')
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>maps</em> version 3.3.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

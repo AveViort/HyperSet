@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Remove Red-Green or Green-Blue Contrasts from Colors</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dichromat {dichromat}"><tr><td>dichromat {dichromat}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Remove Red-Green or Green-Blue Contrasts from Colors</h2>
+
+<h3>Description</h3>
+
+<p>Collapses red-green or green-blue color distinctions to approximate the effect of
+the three forms of dichromacy: protanopia and deuteranopia (red-green color blindness),
+and tritanopia (green-blue color blindness).
+deuteranopia. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dichromat(colours, type = c("deutan", "protan", "tritan"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>colours</code></td>
+<td>
+<p>A vector of R colors, either color names or color hex strings.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Type of color-blindness to simulate,</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Someone with the specified form of color blindness will
+find that the transformation has little effect on the appearance of
+colors.  Colors that are indistinguishable after transformation were
+likely indistinguishable to them before transformation.  About 10% of
+men (and almost no women) have some degree of red-green color blindness.
+Tritanopia is much less common but occurs in both males and females.
+</p>
+<p>The mapping from the original color vector to the dichromatic counterpart
+is based on a sequence of papers by Brettel, Mollon, and Viénot. For more
+details, see the references and also the underlying data set <code><a href="dalton.html">dalton</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A vector of R colors.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Thomas Lumley</p>
+
+
+<h3>References</h3>
+
+<p>Brettel H, Viénot F, Mollon, JD (1997).
+Computerized Simulation of Color Appearance for Dichromats.
+<em>Journal of the Optical Society of America A</em>, <b>14</b>, 2647&ndash;2655.
+</p>
+<p>Lumley T (2006). Color-Coding and Color Blindness in Statistical Graphics.
+<em>ASA Statistical Computing &amp; Graphics Newsletter</em>, <b>17</b>(2), 4&ndash;7.
+<a href="http://www.amstat-online.org/sections/graphics/newsletter/Volumes/v172.pdf">http://www.amstat-online.org/sections/graphics/newsletter/Volumes/v172.pdf</a>
+</p>
+<p>Viénot F, Brettel H, Ott L, M'Barek AB, Mollon JD (1995).
+What Do Colour-Blind People See?
+<em>Nature</em>, <b>376</b>, 127&ndash;128.
+</p>
+<p>Viénot F, Brettel H, Mollon JD (1999).
+Digital Video Colourmaps for Checking the Legibility of Displays by Dichromats.
+<em>Color Research and Application</em>, <b>24</b>(4), 243&ndash;252.
+</p>
+<p>Wikipedia (2013). <em>Color Blindness &ndash; Wikipedia, The Free Encyclopedia</em>.
+<a href="http://en.wikipedia.org/wiki/Color_blindness">http://en.wikipedia.org/wiki/Color_blindness</a>, accessed 2013-01-16.
+</p>
+<p>Wikipedia (2013). <em>Dichromacy &ndash; Wikipedia, The Free Encyclopedia</em>.
+<a href="http://en.wikipedia.org/wiki/Dichromacy">http://en.wikipedia.org/wiki/Dichromacy</a>, accessed 2013-01-16.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dalton.html">dalton</a></code>, <code><a href="../../grDevices/html/rgb.html">rgb</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## from example(pie)
+ par(mfrow = c(2, 2))
+ pie.sales &lt;- c(0.12, 0.3, 0.26, 0.16, 0.04, 0.12)
+ names(pie.sales) &lt;- c("Blueberry", "Cherry",
+   "Apple", "Boston Cream", "Other", "Vanilla Cream")
+ pie(pie.sales, # default colors
+   col = c("white", "lightblue", "mistyrose", "lightcyan", "lavender", "cornsilk"))
+ pie(pie.sales,
+   col = c("purple", "violetred1", "green3", "cornsilk", "cyan", "white"))
+ pie(pie.sales, col = dichromat(
+   c("white", "lightblue", "mistyrose", "lightcyan", "lavender", "cornsilk")))
+ pie(pie.sales, col = dichromat(
+   c("purple", "violetred1", "green3", "cornsilk", "cyan", "white")))
+
+
+## standard color schemes
+pie(rep(1,10), col = heat.colors(10))
+pie(rep(1,10), col = dichromat(heat.colors(10)))
+pie(rep(1,8),  col = palette())
+pie(rep(1,8),  col = dichromat(palette()))
+
+pie(rep(1,15), col = topo.colors(15))
+pie(rep(1,15), col = dichromat(topo.colors(15)))
+pie(rep(1,15), col = terrain.colors(15))
+pie(rep(1,15), col = dichromat(terrain.colors(15)))
+
+pie(rep(1,15), col = cm.colors(15))
+pie(rep(1,15), col = dichromat(cm.colors(15)))
+
+## color ramp schemes
+bluescale &lt;- colorRampPalette(c("#FFFFCC", "#C7E9B4", "#7FCDBB",
+  "#40B6C4", "#2C7FB8" , "#253494"))
+redgreen &lt;- colorRampPalette(c("red", "green3"))
+pie(rep(1,15), col = bluescale(15))
+pie(rep(1,15), col = dichromat(bluescale(15)))
+
+par(mfrow = c(2, 4))
+x &lt;- matrix(rnorm(10 * 10), 10)
+image(1:10, 1:10, x, col = bluescale(10), main = "blue-yellow scale")
+image(1:10, 1:10, x, col = dichromat(bluescale(10), "deutan"), main = "deutan")
+image(1:10, 1:10, x, col = dichromat(bluescale(10), "protan"), main = "protan")
+image(1:10, 1:10, x, col = dichromat(bluescale(10), "tritan"), main = "tritan")
+
+image(1:10, 1:10, x, col = redgreen(10), main = "red-green scale")
+image(1:10, 1:10, x, col = dichromat(redgreen(10), "deutan"), main = "deutan")
+image(1:10, 1:10, x, col = dichromat(redgreen(10), "protan"), main = "protan")
+image(1:10, 1:10, x, col = dichromat(redgreen(10), "tritan"), main = "tritan")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dichromat</em> version 2.0-0 <a href="00Index.html">Index</a>]</div>
+</body></html>

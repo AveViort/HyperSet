@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Upload content via FTP</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ftpUpload {RCurl}"><tr><td>ftpUpload {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Upload content via FTP</h2>
+
+<h3>Description</h3>
+
+<p>This function is a relatively simple wrapper for <code><a href="curlPerform.html">curlPerform</a></code>
+which allows the caller to upload a file to an FTP server.
+One can upload the contents of a file from the local file system or 
+the contents already in memory. 
+One specifies the FTP server and the fully-qualified file name and path where the contents are 
+to be stored.
+One can specify the user login and password via the <code>userpwd</code> option
+for  <code><a href="curlPerform.html">curlPerform</a></code> via the ... parameter, or
+one can put this information directly in the target URL (i.e. <code>to</code>)
+in the form <code>ftp://login:password@machine.name/path/to/file</code>.
+</p>
+<p>This function can handle binary or text content.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ftpUpload(what, to, asText = inherits(what, "AsIs") || is.raw(what),
+          ..., curl = getCurlHandle())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>the name of a local file or the contents to be uploaded. This can 
+can be text or binary content. This can also be an open connection.
+If this value is <code>raw</code> or has class <code>AsIs</code> by being enclosed within <code>I()</code>,
+it is treated as literal content.</p>
+</td></tr>
+<tr valign="top"><td><code>to</code></td>
+<td>
+<p>the URL to which the content is to be uploaded. This should be the ftp server
+with the prefix <code>ftp://</code> and optionally the
+user login and password, and then the path to the file in which the 
+content is to be stored.</p>
+</td></tr>
+<tr valign="top"><td><code>asText</code></td>
+<td>
+<p>a logical value indicating whether to treat the value of <code>what</code>
+as content, be it text or raw/binary vector.  Otherwise, <code>what</code> is 
+treated as the name of a file.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments passed on to <code><a href="curlPerform.html">curlPerform</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>curl</code></td>
+<td>
+<p>the curl handle to use for the <code><a href="curlPerform.html">curlPerform</a></code></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The result of the <code><a href="curlPerform.html">curlPerform</a></code> call.
+</p>
+
+
+<h3>Note</h3>
+
+<p>One can also provide additional FTP commands that are executed
+before and after the upload as part of the request.
+Use the prequote, quote, and postquote options in <code><a href="curlPerform.html">curlPerform</a></code> for these.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p>FTP, libcurl</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="curlPerform.html">curlPerform</a></code>
+<code><a href="getCurlHandle.html">getCurlHandle</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ ## Not run: 
+
+  ftpUpload(I("Some text to be uploaded into a file\nwith several lines"),
+            "ftp://login:password@laptop17/ftp/zoe",
+            )
+
+  ftpUpload(I("Some text to be uploaded into a file\nwith several lines"),
+            "ftp://laptop17/ftp/zoe",
+            userpwd = "login:password"
+            )
+
+  ftpUpload(system.file("examples", "system.png", package = "RCurl"), 
+            "ftp://login:password@laptop17/ftp/Election.rda",
+            postquote = c("CWD subdir", "RNFR Election.rda", "RNTO ElectionPolls.rda")
+            )
+ 
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

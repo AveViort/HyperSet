@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Formatted dates and times.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for date_format {scales}"><tr><td>date_format {scales}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Formatted dates and times.</h2>
+
+<h3>Description</h3>
+
+<p>Formatted dates and times.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+date_format(format = "%Y-%m-%d", tz = "UTC")
+
+time_format(format = "%H:%M:%S", tz = "UTC")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>Date/time format using standard POSIX specification.  See
+<code><a href="../../base/html/strptime.html">strptime()</a></code> for possible formats.</p>
+</td></tr>
+<tr valign="top"><td><code>tz</code></td>
+<td>
+<p>a time zone name, see <code><a href="../../base/html/timezones.html">timezones()</a></code>. Defaults
+to UTC</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+a_time &lt;- ISOdatetime(2012, 1, 1, 11, 30, 0, tz = "UTC")
+a_date &lt;- as.Date(a_time)
+
+date_format()(a_date)
+date_format(format = "%A")(a_date)
+
+time_format()(a_time)
+time_format(tz = "Europe/Berlin")(a_time)
+
+a_hms &lt;- hms::as.hms(a_time, tz = "UTC")
+time_format(format = "%H:%M")(a_hms)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>scales</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

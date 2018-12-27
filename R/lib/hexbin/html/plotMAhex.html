@@ -1,0 +1,257 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: MA-plot using hexagon bins</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plotMAhex {hexbin}"><tr><td>plotMAhex {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>MA-plot using hexagon bins</h2>
+
+<h3>Description</h3>
+
+<p>Creates an MA-plot using hexagons with color/glyph coding for control spots.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plotMAhex(MA, array = 1, xlab = "A", ylab = "M",
+          main = colnames(MA)[array], xlim = NULL, ylim = NULL,
+          status = NULL, values, pch, col, cex, nbin = 40,
+          zero.weights = FALSE, style = "colorscale", legend = 1.2,
+          lcex = 1, minarea = 0.04, maxarea = 0.8, mincnt = 2,
+          maxcnt = NULL, trans = NULL, inv = NULL, colorcut = NULL,
+          border = NULL, density = NULL, pen = NULL,
+          colramp = function(n) { LinGray(n, beg = 90, end = 15) },
+          newpage = TRUE, type = c("p", "l", "n"),
+          xaxt = c("s", "n"), yaxt = c("s", "n"),
+          verbose = getOption("verbose"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>MA</code></td>
+<td>
+<p>an <code>RGList</code>, <code>MAList</code> or <code>MArrayLM</code> object,
+or any list with components <code>M</code> containing log-ratios and
+<code>A</code> containing average intensities. Alternatively a
+<code>matrix</code>, <code>Affybatch</code> or <code>ExpressionSet</code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>array</code></td>
+<td>
+<p>integer giving the array to be plotted. Corresponds to
+columns of <code>M</code> and <code>A</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>xlab, ylab, main</code></td>
+<td>
+<p>character strings giving label for x-axis,
+y-axis or main tile of the plot.</p>
+</td></tr>
+<tr valign="top"><td><code>xlim, ylim</code></td>
+<td>
+<p>numeric vectors of length 2 giving limits for x-axis
+(or y-axis respectively), defaulting to min and max of the data.</p>
+</td></tr>
+<tr valign="top"><td><code>status</code></td>
+<td>
+<p>character vector giving the control status of each spot
+on the array, of same length as the number of rows of <code>MA$M</code>.
+If omitted, all points are plotted in the default color, symbol and size.</p>
+</td></tr>
+<tr valign="top"><td><code>values</code></td>
+<td>
+<p>character vector giving values of <code>status</code> to be
+highlighted on the plot. Defaults to unique values of <code>status</code>.
+Ignored if there is no <code>status</code> vector.</p>
+</td></tr>
+<tr valign="top"><td><code>pch</code></td>
+<td>
+<p>vector or list of plotting characters. Default to integer code 16.
+Ignored is there is no <code>status</code> vector.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>numeric or character vector of colors, of the same length
+as <code>values</code>. Defaults to <code>1:length(values)</code>.  Ignored if
+there is no <code>status</code> vector.</p>
+</td></tr>
+<tr valign="top"><td><code>cex</code></td>
+<td>
+<p>numeric vector of plot symbol expansions, of the the same
+length as <code>values</code>.  Defaults to 0.2 for the most common status
+value and 1 for the others. Ignored if there is no <code>status</code> vector.</p>
+</td></tr>
+<tr valign="top"><td><code>nbin</code></td>
+<td>
+<p> Number of bins </p>
+</td></tr>  </table>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>zero.weights</code></td>
+<td>
+<p>logical, should spots with zero or negative
+weights be plotted?</p>
+</td></tr>
+<tr valign="top"><td><code>style</code></td>
+<td>
+<p>string specifying the style of hexagon plot,
+see <code><a href="grid.hexagons.html">grid.hexagons</a></code> for the possibilities.</p>
+</td></tr>
+<tr valign="top"><td><code>legend</code></td>
+<td>
+<p>numeric width of the legend in inches of <code>FALSE</code>.
+In the latter case, or when <code>0</code>, no legend is not produced.</p>
+</td></tr>
+<tr valign="top"><td><code>lcex</code></td>
+<td>
+<p>characters  expansion size for the text in the legend.</p>
+</td></tr>
+<tr valign="top"><td><code>minarea</code></td>
+<td>
+<p>fraction of cell area for the lowest count.</p>
+</td></tr>
+<tr valign="top"><td><code>maxarea</code></td>
+<td>
+<p>fraction of the cell area for the largest count.</p>
+</td></tr>
+<tr valign="top"><td><code>mincnt</code></td>
+<td>
+<p>cells with fewer counts are ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>maxcnt</code></td>
+<td>
+<p>cells with more counts are ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>trans</code></td>
+<td>
+<p><code><a href="../../base/html/function.html">function</a></code> specifying a transformation for
+the counts such as <code>sqrt</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>inv</code></td>
+<td>
+<p>the inverse transformation of <code>trans</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>colorcut</code></td>
+<td>
+<p>vector of values covering [0, 1] that determine
+hexagon color class boundaries and hexagon legend size boundaries.
+Alternatively, an integer (<code>&lt;= maxcnt</code>) specifying the
+<em>number</em> of equispaced colorcut values in [0,1].</p>
+</td></tr>
+<tr valign="top"><td><code>border, density, pen</code></td>
+<td>
+<p>color for polygon borders and filling of
+each hexagon drawn, passed to <code><a href="grid.hexagons.html">grid.hexagons</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>colramp</code></td>
+<td>
+<p>function accepting an integer <code>n</code> as an argument and
+returning n colors.</p>
+</td></tr>
+<tr valign="top"><td><code>newpage</code></td>
+<td>
+<p>should a new page start?</p>
+</td></tr>
+<tr valign="top"><td><code>type, xaxt, yaxt</code></td>
+<td>
+<p>strings to be used (when set to <code>"n"</code>) for
+suppressing the plotting of hexagon symbols, or the x- or y-axis,
+respectively.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>logical indicating if some diagnostic output should happen.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>An MA-plot is a plot of log-intensity ratios (M-values) versus
+log-intensity averages (A-values). If <code>MA</code> is an <code>RGList</code> or
+<code>MAList</code> then this function produces an ordinary within-array
+MA-plot. If <code>MA</code> is an <code>MArrayLM</code> object, then the plot is an
+fitted model MA-plot in which the estimated coefficient is on the y-axis
+and the average A-value is on the x-axis.
+</p>
+<p>If <code>MA</code> is a <code>matrix</code> or <code>ExpressionSet</code> object, then this
+function produces a between-array MA-plot. In this case the A-values in
+the plot are the average log-intensities across the arrays and the
+M-values are the deviations of the log-intensities for the specified
+array from the average. If there are more than five arrays, then the
+average is computed robustly using medians. With five or fewer arrays,
+it is computed by means.
+</p>
+<p>The <code>status</code> vector is intended to specify the control status of
+each spot, for example &quot;gene&quot;, &quot;ratio control&quot;, &quot;house keeping gene&quot;,
+&quot;buffer&quot; and so on. The vector is usually computed using the function
+<code><a href="../../limma/html/controlStatus.html">controlStatus</a></code> from package <span class="pkg">limma</span> and a
+spot-types file.  However the function may be used to highlight any
+subset of spots.
+</p>
+<p>The arguments <code>values</code>, <code>pch</code>, <code>col</code> and <code>cex</code>
+can be included as attributes to <code>status</code> instead of being
+passed as arguments to <code>plotMA</code>.
+</p>
+<p>See <code><a href="../../graphics/html/points.html">points</a></code> for possible values for <code>pch</code>,
+<code>col</code> and <code>cex</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A plot is created on the current graphics device.
+and a list with the following items is returned invisibly:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>plot.vp</code></td>
+<td>
+<p>the <code><a href="hexViewport.html">hexViewport</a></code> constructed and used.</p>
+</td></tr>
+<tr valign="top"><td><code>legend.vp</code></td>
+<td>
+<p>if a legend has been produced, its
+<code><a href="../../grid/html/viewport.html">viewport</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>hbin</code></td>
+<td>
+<p>a <code>hexbin</code> object built with A as the x coordinate
+and M as the y coordinate.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Nicholas Lewin-Koh, adapted from code by Gordon Smyth</p>
+
+
+<h3>References</h3>
+
+<p>See <a href="http://www.statsci.org/micrarra/refs/maplots.html">http://www.statsci.org/micrarra/refs/maplots.html</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../limma/html/plotma.html">plotMA</a></code> from package <span class="pkg">limma</span>,
+and <code><a href="gplot.hexbin.html">gplot.hexbin</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  if(require(marray)){ 
+    data(swirl)
+    hb &lt;- plotMAhex(swirl[,1],newpage=FALSE,
+                    main = "M vs A plot with hexagons", legend=0)
+    hexVP.abline(hb$plot.vp,h=0,col=gray(.6))
+    hexMA.loess(hb)
+  }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

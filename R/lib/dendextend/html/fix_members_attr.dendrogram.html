@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fix members attr in a dendrogram</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fix_members_attr.dendrogram {dendextend}"><tr><td>fix_members_attr.dendrogram {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Fix members attr in a dendrogram</h2>
+
+<h3>Description</h3>
+
+<p>Fix members attr in a dendrogram after (for example), the tree was pruned 
+or manipulated.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fix_members_attr.dendrogram(dend, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram, after adjusting the members attr in all of its nodes.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+# define dendrogram object to play with:
+hc &lt;- hclust(dist(USArrests[1:3,]), "ave")
+dend &lt;- as.dendrogram(hc)
+# plot(dend)
+# prune one leaf
+dend[[2]] &lt;- dend[[2]][[1]]
+# plot(dend)
+dend # but it is NO LONGER true that it has 3 members total!
+fix_members_attr.dendrogram(dend) # it now knows it has only 2 members :)
+
+hc &lt;- hclust(dist(USArrests[1:3,]), "ave")
+dend &lt;- as.dendrogram(hc)
+
+identical(prune_leaf(dend , "Alaska"), fix_members_attr.dendrogram(prune_leaf(dend , "Alaska")))
+str(unclass(prune_leaf(dend , "Alaska")))
+str(unclass(fix_members_attr.dendrogram(prune_leaf(dend , "Alaska"))))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

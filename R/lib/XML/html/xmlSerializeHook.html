@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Functions that help serialize and deserialize XML internal...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xmlSerializeHook {XML}"><tr><td>xmlSerializeHook {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Functions that help serialize and deserialize XML internal objects</h2>
+
+<h3>Description</h3>
+
+<p>These functions can be used to control
+how the C-level data structures associated with XML documents, nodes,
+XPath queries, etc. are serialized to a a file or connection
+and deserialized back into an R session.
+Since these C-level data structures are represented
+in R as external pointers, they would normally be serialized
+and deserialized in a way that loses all the information about
+the contents of the memory being referenced.
+<code>xmlSerializeHook</code> arranges to serialize these pointers
+by saving the corresponding XML content as a string
+and also the class of the object.
+The deserialize function converts such objects back to their
+original form.
+</p>
+<p>These functions are used in calls to <code><a href="../../base/html/saveRDS.html">saveRDS</a></code>
+and <code><a href="../../base/html/readRDS.html">readRDS</a></code> via the
+<code>refhook</code> argument.
+<code>
+saveRDS(obj, filename, refhook = xmlSerializeHook)
+readRDS(filename, refhook = xmlDeserializeHook)
+</code>  
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xmlSerializeHook(x)
+xmlDeserializeHook(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the object to be deserialized, and the character vector to be
+deserialized.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>xmlSerializeHook</code> returns a character version of the XML
+document or node, along with the basic class.
+If it is called with an object that is not an native/internal XML
+object, it returns <code>NULL</code>
+</p>
+<p><code>xmlDeserializeHook</code> returns the parsed XML object, either a
+document or a node.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>References</h3>
+
+<p>The R Internals Manual.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../base/html/saveRDS.html">saveRDS</a></code>  and <code><a href="../../base/html/readRDS.html">readRDS</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+z = newXMLNode("foo")
+f = system.file("exampleData", "tides.xml", package = "XML")
+doc = xmlParse(f)
+hdoc = as(doc, "XMLHashTree")
+
+nodes = getNodeSet(doc, "//pred")
+
+saveRDS(list(a = 1:10, z = z, doc = doc, hdoc = hdoc, nodes = nodes), "tmp.rda",
+          refhook = xmlSerializeHook)
+
+v = readRDS("tmp.rda", refhook = xmlDeserializeHook)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

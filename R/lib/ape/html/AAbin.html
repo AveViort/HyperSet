@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Amino Acid Sequences</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for AAbin {ape}"><tr><td>AAbin {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Amino Acid Sequences</h2>
+
+<h3>Description</h3>
+
+<p>These functions help to create and manipulate AA sequences.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'AAbin'
+print(x, ...)
+
+## S3 method for class 'AAbin'
+x[i, j, drop = FALSE]
+
+## S3 method for class 'AAbin'
+c(..., recursive = FALSE)
+
+## S3 method for class 'AAbin'
+as.character(x, ...)
+
+## S3 method for class 'AAbin'
+labels(object, ...)
+
+## S3 method for class 'AAbin'
+image(x, what, col, bg = "white", xlab = "", ylab = "",
+      show.labels = TRUE, cex.lab = 1, legend = TRUE, grid = FALSE,
+      show.aa = FALSE, aa.cex = 1, aa.font = 1, aa.col = "black",...)
+
+as.AAbin(x, ...)
+## S3 method for class 'character'
+as.AAbin(x, ...)
+
+## S3 method for class 'list'
+as.AAbin(x, ...)
+
+## S3 method for class 'AAString'
+as.AAbin(x, ...)
+
+## S3 method for class 'AAStringSet'
+as.AAbin(x, ...)
+
+## S3 method for class 'AAMultipleAlignment'
+as.AAbin(x, ...)
+
+## S3 method for class 'AAbin'
+as.list(x, ...)
+
+## S3 method for class 'AAbin'
+as.matrix(x, ...)
+
+## S3 method for class 'AAbin'
+as.phyDat(x, ...)
+
+dist.aa(x, pairwise.deletion = FALSE, scaled = FALSE)
+AAsubst(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x, object</code></td>
+<td>
+<p>an object of class <code>"AAbin"</code> (or else depending on
+the function).</p>
+</td></tr>
+<tr valign="top"><td><code>i, j</code></td>
+<td>
+<p>indices of the rows and/or columns to select or to
+drop. They may be numeric, logical, or character (in the same way than
+for standard <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> objects).</p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>logical; if <code>TRUE</code>, the returned object is of the
+lowest possible dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>recursive</code></td>
+<td>
+<p>logical; whether to go down lists and concatenate its
+elements.</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+<p>a vector of characters specifying the amino acids to
+visualize. Currently, the only possible choice is to show the three
+categories hydrophobic, small, and hydrophilic.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>a vector of colours. If missing, this is set to &ldquo;red&rdquo;,
+&ldquo;yellow&rdquo; and &ldquo;blue&rdquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>bg</code></td>
+<td>
+<p>the colour used for AA codes not among <code>what</code> (typically
+X and *).</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>the label for the <em>x</em>-axis; none by default.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>Idem for the <em>y</em>-axis. Note that by default, the labels
+of the sequences are printed on the <em>y</em>-axis (see next option).</p>
+</td></tr>
+<tr valign="top"><td><code>show.labels</code></td>
+<td>
+<p>a logical controlling whether the sequence labels are
+printed (<code>TRUE</code> by default).</p>
+</td></tr>
+<tr valign="top"><td><code>cex.lab</code></td>
+<td>
+<p>a single numeric controlling the size of the sequence
+labels. Use <code>cex.axis</code> to control the size of the annotations on
+the <em>x</em>-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>legend</code></td>
+<td>
+<p>a logical controlling whether the legend is plotted
+(<code>TRUE</code> by default).</p>
+</td></tr>
+<tr valign="top"><td><code>grid</code></td>
+<td>
+<p>a logical controlling whether to draw a grid (<code>FALSE</code> by
+default).</p>
+</td></tr>
+<tr valign="top"><td><code>show.aa</code></td>
+<td>
+<p>a logical controlling whether to show the AA symbols (<code>FALSE</code> by
+default).</p>
+</td></tr>
+<tr valign="top"><td><code>aa.cex, aa.font, aa.col</code></td>
+<td>
+<p>control the aspect of the AA symbols
+(ignored if the previous is <code>FALSE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>pairwise.deletion</code></td>
+<td>
+<p>a logical indicating whether to delete the
+sites with missing data in a pairwise way. The default is to delete the
+sites with at least one missing data for all sequences.</p>
+</td></tr>
+<tr valign="top"><td><code>scaled</code></td>
+<td>
+<p>a logical value specifying whether to scale the number of
+AA differences by the sequence length.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions help to manipulate amino acid sequences of class
+<code>"AAbin"</code>. These objects are stored in vectors, matrices, or lists
+which can be manipulated with the usual <code>[</code> operator.
+</p>
+<p>There is a conversion function to and from characters.
+</p>
+<p>The function <code>dist.aa</code> computes the number of AA differences
+between each pair of sequences in a matrix; this can be scaled by the
+sequence length. See the function <code><a href="../../phangorn/html/dist.ml.html">dist.ml</a></code> in
+<span class="pkg">phangorn</span> for evolutionary distances with AA sequences.
+</p>
+<p>The function <code>AAsubst</code> returns the indices of the polymorphic sites
+(similar to <code><a href="seg.sites.html">seg.sites</a></code> for DNA sequences; see examples below).
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"AAbin"</code>, <code>"character"</code>,
+<code>"dist"</code>, or <code>"numeric"</code>, depending on the function.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis, Franz Krah</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.dna.html">read.FASTA</a></code>, <code><a href="trans.html">trans</a></code>, <code><a href="alview.html">alview</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(woodmouse)
+AA &lt;- trans(woodmouse, 2)
+seg.sites(woodmouse)
+AAsubst(AA)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

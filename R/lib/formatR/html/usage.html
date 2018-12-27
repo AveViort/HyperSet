@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Show the usage of a function</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for usage {formatR}"><tr><td>usage {formatR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Show the usage of a function</h2>
+
+<h3>Description</h3>
+
+<p>Print the reformatted usage of a function. The arguments of the function are
+searched by <code><a href="../../utils/html/getAnywhere.html">argsAnywhere</a></code>, so the function can be either
+exported or non-exported in a package. S3 methods will be marked.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+usage(FUN, width = getOption("width"), tidy = TRUE, output = TRUE, 
+    indent.by.FUN = FALSE, fail = c("warn", "stop", "none"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>FUN</code></td>
+<td>
+<p>the function name</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>the width of output</p>
+</td></tr>
+<tr valign="top"><td><code>tidy</code></td>
+<td>
+<p>whether to reformat the usage code</p>
+</td></tr>
+<tr valign="top"><td><code>output</code></td>
+<td>
+<p>whether to write the output to the console (via
+<code><a href="../../base/html/cat.html">cat</a></code>)</p>
+</td></tr>
+<tr valign="top"><td><code>indent.by.FUN</code></td>
+<td>
+<p>whether to indent subsequent lines by the width of the
+function name (see &ldquo;Details&rdquo;)</p>
+</td></tr>
+<tr valign="top"><td><code>fail</code></td>
+<td>
+<p>a character string that determines whether to generate a warning,
+stop, or do neither, if the width constraint is unfulfillable (default is
+<code>"warn"</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Line breaks in the output occur between arguments. In particular,
+default values of arguments will not be split across lines.
+</p>
+<p>When <code>indent.by.FUN</code> is <code>FALSE</code>, indentation is set by the option
+<code><a href="../../base/html/options.html">getOption</a>("formatR.indent", 4L)</code>, the default value of the
+<code>indent</code> argument of <code><a href="tidy_source.html">tidy_source</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The R code for the usage is returned as a character string
+(invisibly).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="tidy_source.html">tidy_source</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(formatR)
+usage(var)
+
+usage(plot)
+
+usage(plot.default)  # default method
+usage("plot.lm")  # on the 'lm' class
+
+usage(usage)
+
+usage(barplot.default, width = 60)  # output lines have 60 characters or less
+
+# indent by width of 'barplot('
+usage(barplot.default, width = 60, indent.by.FUN = TRUE)
+
+## Not run: 
+# a warning is raised because the width constraint is unfulfillable
+usage(barplot.default, width = 30)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>formatR</em> version 1.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

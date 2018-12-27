@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: The Standard Genetic Code and its known variants</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for GENETIC_CODE {Biostrings}"><tr><td>GENETIC_CODE {Biostrings}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>The Standard Genetic Code and its known variants</h2>
+
+<h3>Description</h3>
+
+<p>Two predefined objects (<code>GENETIC_CODE</code> and <code>RNA_GENETIC_CODE</code>)
+that represent The Standard Genetic Code.
+</p>
+<p>Other genetic codes are stored in predefined table <code>GENETIC_CODE_TABLE</code>
+from which they can conveniently be extracted with <code>getGeneticCode</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## The Standard Genetic Code:
+GENETIC_CODE
+RNA_GENETIC_CODE
+
+## All the known genetic codes:
+GENETIC_CODE_TABLE
+getGeneticCode(id_or_name2="1", full.search=FALSE, as.data.frame=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>id_or_name2</code></td>
+<td>
+
+<p>A single string that uniquely identifies the genetic code to extract.
+Should be one of the values in the <code>id</code> or <code>name2</code> columns
+of <code>GENETIC_CODE_TABLE</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>full.search</code></td>
+<td>
+
+<p>By default, only the <code>id</code> and <code>name2</code> columns of
+<code>GENETIC_CODE_TABLE</code> are searched for an exact match with
+<code>id_or_name2</code>.
+If <code>full.search</code> is TRUE, then the search is extended to
+the <code>name</code> column of <code>GENETIC_CODE_TABLE</code> and
+<code>id_or_name2</code> only needs to be a substring of one of the
+names in that column (also case is ignored).
+</p>
+</td></tr>
+<tr valign="top"><td><code>as.data.frame</code></td>
+<td>
+
+<p>Should the genetic code be returned as a data frame instead of a named
+character vector?
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Formally, a <em>genetic code</em> is a mapping between the 64 tri-nucleotide
+sequences (called codons) and amino acids.
+</p>
+<p>The Standard Genetic Code (a.k.a. The Canonical Genetic Code, or simply
+The Genetic Code) is the particular mapping that encodes the vast majority
+of genes in nature.
+</p>
+<p><code>GENETIC_CODE</code> and <code>RNA_GENETIC_CODE</code> are predefined named
+character vectors that represent this mapping.
+</p>
+<p>All the known genetic codes are summarized in <code>GENETIC_CODE_TABLE</code>,
+which is a predefined data frame with one row per known genetic code.
+Use <code>getGeneticCode</code> to extract one genetic code at a time from
+this object.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>GENETIC_CODE</code> and <code>RNA_GENETIC_CODE</code> are both named character
+vectors of length 64 (the number of all possible tri-nucleotide sequences)
+where each element is a single letter representing either an amino acid
+or the stop codon <code>"*"</code> (aka termination codon).
+</p>
+<p>The names of the <code>GENETIC_CODE</code> vector are the DNA codons i.e. the
+tri-nucleotide sequences (directed 5' to 3') that are assumed to belong
+to the &quot;coding DNA strand&quot; (aka &quot;sense DNA strand&quot; or &quot;non-template DNA
+strand&quot;) of the gene.
+</p>
+<p>The names of the <code>RNA_GENETIC_CODE</code> are the RNA codons i.e. the
+tri-nucleotide sequences (directed 5' to 3') that are assumed to belong
+to the mRNA of the gene.
+</p>
+<p>Note that the values in the <code>GENETIC_CODE</code> and <code>RNA_GENETIC_CODE</code>
+vectors are the same, only their names are different. The names of the
+latter are those of the former where all occurrences of T (thymine) have
+been replaced by U (uracil).
+</p>
+<p>Finally, both vectors have an <code>alt_init_codons</code> attribute on them,
+that lists the <em>alternative initiation codons</em>. Note that codons that
+always translate to <code>M</code> (Methionine) (e.g. ATG in <code>GENETIC_CODE</code>
+or AUG in <code>RNA_GENETIC_CODE</code>) are omitted from the
+<code>alt_init_codons</code> attribute.
+</p>
+<p><code>GENETIC_CODE_TABLE</code> is a data frame that contains all the known
+genetic codes listed at <a href="ftp://ftp.ncbi.nih.gov/entrez/misc/data/gc.prt">ftp://ftp.ncbi.nih.gov/entrez/misc/data/gc.prt</a>.
+The data frame has one row per known genetic code and the 5 following
+columns:
+</p>
+
+<ul>
+<li> <p><code>name</code>: The long and very descriptive name of the genetic code.
+</p>
+</li>
+<li> <p><code>name2</code>: The short name of the genetic code (not all genetic
+codes have one).
+</p>
+</li>
+<li> <p><code>id</code>: The id of the genetic code.
+</p>
+</li>
+<li> <p><code>AAs</code>: A 64-character string representing the genetic code
+itself in a compact form (i.e. one letter per codon, the codons
+are assumed to be ordered like in <code>GENETIC_CODE</code>).
+</p>
+</li>
+<li> <p><code>Starts</code>: A 64-character string indicating the Initiation
+Codons.
+</p>
+</li></ul>
+
+<p>By default (i.e. when <code>as.data.frame</code> is set to FALSE),
+<code>getGeneticCode</code> returns a named character vector of length 64
+similar to <code>GENETIC_CODE</code> i.e. it contains 1-letter strings from
+the Amino Acid alphabet (see <code>?<a href="AAString-class.html">AA_ALPHABET</a></code>) and its names
+are identical to <code>names(GENETIC_CODE)</code>. In addition it has an attribute
+on it, the <code>alt_init_codons</code> attribute, that lists the <em>alternative
+initiation codons</em>. Note that codons that always translate to <code>M</code>
+(Methionine) (e.g. ATG) are omitted from the <code>alt_init_codons</code>
+attribute.
+</p>
+<p>When <code>as.data.frame</code> is set to TRUE, <code>getGeneticCode</code> returns a
+data frame with 64 rows (one per codon), rownames (3-letter strings
+representing the codons), and the 2 following columns:
+</p>
+
+<ul>
+<li> <p><code>AA</code>: A 1-letter string from the Amino Acid alphabet (see
+<code>?<a href="AAString-class.html">AA_ALPHABET</a></code>) representing the amino acid mapped to
+the codon (<code>"*"</code> is used to mark the stop codon).
+</p>
+</li>
+<li> <p><code>Start</code>: A 1-letter string indicating an alternative mapping
+for the codon i.e. what amino acid the codon is mapped to when it's
+the first tranlated codon.
+</p>
+</li></ul>
+
+<p>The rownames of the data frame are identical to <code>names(GENETIC_CODE)</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>H. Pagès</p>
+
+
+<h3>References</h3>
+
+<p>All the known genetic codes are described here:
+</p>
+<p><a href="http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi">http://www.ncbi.nlm.nih.gov/Taxonomy/Utils/wprintgc.cgi</a>
+</p>
+<p>The &quot;official names&quot; of the various codes (&quot;Standard&quot;, &quot;SGC0&quot;,
+&quot;Vertebrate Mitochondrial&quot;, &quot;SGC1&quot;, etc..) and their ids (1, 2, etc...)
+were taken from the print-form ASN.1 version of the above document
+(version 4.0 at the time of this writing):
+</p>
+<p><a href="ftp://ftp.ncbi.nih.gov/entrez/misc/data/gc.prt">ftp://ftp.ncbi.nih.gov/entrez/misc/data/gc.prt</a>
+</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><code><a href="AAString-class.html">AA_ALPHABET</a></code> and <code><a href="AMINO_ACID_CODE.html">AMINO_ACID_CODE</a></code>.
+</p>
+</li>
+<li><p> The <code><a href="translate.html">translate</a></code> and <code><a href="nucleotideFrequency.html">trinucleotideFrequency</a></code>
+functions.
+</p>
+</li>
+<li> <p><a href="DNAString-class.html">DNAString</a>, <a href="RNAString-class.html">RNAString</a>, and <a href="AAString-class.html">AAString</a> objects.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## THE STANDARD GENETIC CODE
+## ---------------------------------------------------------------------
+
+GENETIC_CODE
+
+## Codon ATG is *always* translated to M (Methionine)
+GENETIC_CODE[["ATG"]]
+
+## Codons TTG and CTG are "normally" translated to L except when they are
+## the first translated codon (a.k.a. start codon or initiation codon),
+## in which case they are translated to M:
+attr(GENETIC_CODE, "alt_init_codons")
+GENETIC_CODE[["TTG"]]
+GENETIC_CODE[["CTG"]]
+
+sort(table(GENETIC_CODE))  # the same amino acid can be encoded by 1
+                           # to 6 different codons
+
+RNA_GENETIC_CODE
+all(GENETIC_CODE == RNA_GENETIC_CODE)  # TRUE
+
+## ---------------------------------------------------------------------
+## ALL THE KNOWN GENETIC CODES
+## ---------------------------------------------------------------------
+
+GENETIC_CODE_TABLE[1:3 , ]
+
+getGeneticCode("SGC0")  # The Standard Genetic Code, again
+stopifnot(identical(getGeneticCode("SGC0"), GENETIC_CODE))
+
+getGeneticCode("SGC1")  # Vertebrate Mitochondrial
+
+getGeneticCode("ascidian", full.search=TRUE)  # Ascidian Mitochondrial
+
+## ---------------------------------------------------------------------
+## EXAMINE THE DIFFERENCES BETWEEN THE STANDARD CODE AND A NON-STANDARD
+## ONE
+## ---------------------------------------------------------------------
+
+idx &lt;- which(GENETIC_CODE != getGeneticCode("SGC1"))
+rbind(Standard=GENETIC_CODE[idx], SGC1=getGeneticCode("SGC1")[idx])
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Biostrings</em> version 2.50.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

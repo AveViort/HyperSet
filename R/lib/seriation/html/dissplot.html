@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dissimilarity Plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dissplot {seriation}"><tr><td>dissplot {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Dissimilarity Plot</h2>
+
+<h3>Description</h3>
+
+<p>Visualizes a dissimilarity matrix using seriation and matrix shading
+using the method developed by Hahsler and Hornik (2011).
+Entries with lower dissimilarities (higher similarity) are plotted darker.
+Such a plot can be used to uncover hidden structure in the data.
+</p>
+<p>The plot can also be used to visualize cluster quality (see Ling 1973).
+Objects belonging to the same cluster are displayed in consecutive order. The
+placement of clusters and the within cluster order is obtained by a seriation
+algorithm which tries to place large similarities/small dissimilarities close to
+the diagonal. Compact clusters are visible as dark squares (low dissimilarity)
+on the diagonal of the plot. Additionally, a Silhouette plot (Rousseeuw 1987)
+is added. This visualization is similar to CLUSION (see Strehl and Ghosh 2002),
+however, allows for using arbitrary seriating algorithms.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dissplot(x, labels = NULL, method = "Spectral",
+  control = NULL, options = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> an object of class <code>dist</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>labels</code></td>
+<td>
+ <p><code>NULL</code> or an integer vector of the same length as
+rows/columns in <code>x</code> indicating the cluster membership for each
+object in <code>x</code> as consecutive integers starting with one. The labels
+are used to reorder the matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p> a list with up to three elements or a single character string.
+Use a single character string to apply the same algorithm to reorder
+the clusters (inter cluster seriation) as well as the objects within each
+cluster (intra cluster seriation).
+</p>
+<p>If separate algorithms for inter and intra cluster seriation are
+required, <code>method</code> can be a <code>list</code> of two named elements
+(<code>inter_cluster</code> and <code>intra_cluster</code> each containing the name
+of the respective seriation method. See <code>seriate.dist</code> for available
+algorithms.
+</p>
+<p>Set method to <code>NA</code> to plot the matrix as is (no or only coarse
+seriation). For intra cluster reordering the special
+method <code>"silhouette width"</code> is available. Objects in clusters are
+then ordered by silhouette width (from silhouette plots).
+If no <code>method</code> is given, the default method of <code>seriate.dist</code>
+is used.
+</p>
+<p>The third list element (named <code>aggregation</code>)
+controls how inter cluster dissimilarities are computed from from
+the given dissimilarity matrix. The choices are
+<code>"avg"</code> (average pairwise dissimilarities; average-link),
+<code>"min"</code> (minimal pairwise dissimilarities; single-link),
+<code>"max"</code> (maximal pairwise dissimilarities; complete-link), and
+<code>"Hausdorff"</code> (pairs up each point from one cluster with the most
+similar point from the other cluster and then uses the largest
+dissimilarity of paired up points).
+</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p> a list of control options passed on to the seriation
+algorithm.
+In case of two different seriation algorithms, <code>control</code> can
+contain a list of two named elements (<code>inter_cluster</code>
+and <code>intra_cluster</code>) containing each a list with the control options
+for the respective algorithm.</p>
+</td></tr>
+<tr valign="top"><td><code>options</code></td>
+<td>
+<p>a list with options for plotting the matrix. The
+list can contain the following elements:
+</p>
+
+<dl>
+<dt><code>plot</code></dt><dd><p>a logical indicating  if a plot should be produced.  if
+<code>FALSE</code>, the returned object can be plotted later using the function
+<code>plot</code> which takes as the second argument a list of plotting options
+(see <code>options</code> below).</p>
+</dd>
+<dt><code>cluster_labels</code></dt><dd><p> a logical indicating whether to display cluster
+labels in the plot.</p>
+</dd>
+<dt><code>averages</code></dt><dd><p> a logical vector of length two.
+The first element controls the upper triangle and the second element
+the lower triangle of the plot. <code>FALSE</code> displays the original
+dissimilarity between objects, <code>TRUE</code> displays cluster-wise
+average dissimilarities, and <code>NA</code> leaves the triangle white
+(default: <code>c(FALSE, TRUE)</code>, i.e., the lower triangle displays
+averages)</p>
+</dd>
+<dt><code>lines</code></dt><dd><p> a logical indicating  whether to draw lines to separate
+clusters.</p>
+</dd>
+<dt><code>flip</code></dt><dd><p> a logical indicating if the clusters are displayed
+on the diagonal from
+north-west to south-east (<code>FALSE</code>; default) or from
+north-east to south-west (<code>TRUE</code>).</p>
+</dd>
+<dt><code>silhouettes</code></dt><dd><p> a logical indicating  whether to include a
+silhouette plot (see Rousseeuw, 1987).</p>
+</dd>
+<dt><code>threshold</code></dt><dd><p> a numeric. If used, only plot distances below the
+threshold are displayed. Consider also using <code>zlim</code> for this purpose.</p>
+</dd>
+<dt><code>col</code></dt><dd><p> colors used for the image plot.</p>
+</dd>
+<dt><code>key</code></dt><dd><p> a logical indicating  whether to place a color key
+below the plot. </p>
+</dd>
+<dt><code>zlim</code></dt><dd><p> range of values to display (defaults to range <code>x</code>).</p>
+</dd>
+<dt><code>axes</code></dt><dd> <p><code>"auto"</code> (default; enabled for less than
+25 objects), <code>"y"</code> or <code>"none"</code>.</p>
+</dd>
+<dt><code>main</code></dt><dd><p> title for the plot.</p>
+</dd>
+<dt><code>newpage</code></dt><dd><p> a logical indicating  whether to start plot on a new
+page (see <code>grid.newpage</code> in package <span class="pkg">grid</span>). </p>
+</dd>
+<dt><code>pop</code></dt><dd><p>a logical indicating  whether to pop the created viewports
+(see package <span class="pkg">grid</span>)?  </p>
+</dd>
+<dt><code>gp</code>, <code>gp_lines</code>, <code>gp_labels</code></dt><dd>
+<p>objects of class <code>gpar</code>
+containing graphical
+parameters (see <code>gpar</code> in package <span class="pkg">grid</span>). </p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments are added to <code>options</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An invisible object of class <code>cluster_proximity_matrix</code> with the following
+elements:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>order</code></td>
+<td>
+ <p><code>NULL</code> or integer vector giving the order used to plot
+<code>x</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>cluster_order</code></td>
+<td>
+ <p><code>NULL</code> or integer vector giving the order
+of the clusters as plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p> vector of character strings indicating the seriation methods
+used for plotting  <code>x</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+ <p><code>NULL</code> or integer scalar giving the number of clusters
+generated.</p>
+</td></tr>
+<tr valign="top"><td><code>description</code></td>
+<td>
+<p> a <code>data.frame</code>  containing information (label, size,
+average intra-cluster dissimilarity and the average silhouette) for the
+clusters as displayed in the plot (from top/left to bottom/right).</p>
+</td></tr>
+</table>
+<p>This object can be used for plotting via
+<code>plot(x, options = NULL, ...)</code>, where <code>x</code> is the
+object and <code>options</code> contains a list with plotting options (see above).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Hahsler, M. and Hornik, K. (2011):
+Dissimilarity plots: A visual exploration tool for partitional clustering. <em>Journal of Computational and Graphical Statistics,</em> <b>10</b>(2):335&ndash;354.
+</p>
+<p>Ling, R.F. (1973):
+A computer generated aid for cluster analysis.
+<em>Communications of the ACM,</em>
+<b>16</b>(6), 355&ndash;361.
+</p>
+<p>Rousseeuw, P.J. (1987):
+Silhouettes: A graphical aid to the interpretation and
+validation of cluster analysis.
+<em>Journal of Computational and Applied Mathematics,</em>
+<b>20</b>(1), 53&ndash;65.
+</p>
+<p>Strehl, A. and Ghosh, J. (2003):
+Relationship-based clustering and
+visualization for high-dimensional data mining.
+<em>INFORMS Journal on Computing,</em>
+<b>15</b>(2), 208&ndash;230.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../stats/html/dist.html">dist</a></code>,
+<code><a href="seriate.html">seriate</a></code>,
+<code><a href="pimage.html">pimage</a></code> and
+<code><a href="hmap.html">hmap</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("iris")
+d &lt;- dist(iris[-5])
+
+## plot original matrix
+res &lt;- dissplot(d, method = NA)
+
+## plot reordered matrix using the nearest insertion algorithm (from tsp)
+res &lt;- dissplot(d, method = "TSP",
+    options = list(main = "Seriation (TSP)"))
+
+## cluster with pam (we know iris has 3 clusters)
+library("cluster")
+l &lt;- pam(d, 3, cluster.only = TRUE)
+
+## we use a grid layout to place several plots on a page
+library("grid")
+grid.newpage()
+pushViewport(viewport(layout=grid.layout(nrow = 2, ncol = 2),
+    gp = gpar(fontsize = 8)))
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+
+## visualize the clustering (using Spectral between clusters and MDS within)
+res &lt;- dissplot(d, l, method = list(inter = "Spectral", intra = "MDS"),
+    options = list(main = "PAM + Seriation - standard",
+    newpage = FALSE))
+
+popViewport()
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+
+## more visualization options. Note that we reuse the reordered object res!
+## color: use 10 shades red-blue
+plot(res, options = list(main = "PAM + Seriation",
+    col= bluered(10, bias=.5), newpage = FALSE))
+
+popViewport()
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 1))
+
+## threshold (using zlim) and cubic scale to highlight differences
+plot(res, options = list(main = "PAM + Seriation - threshold",
+    zlim = c(0, 1.5), col = greys(100, power = 2), newpage = FALSE))
+
+popViewport()
+pushViewport(viewport(layout.pos.row = 2, layout.pos.col = 2))
+
+## use custom (logistic) scale
+plot(res, options = list(main = "PAM + Seriation - logistic scale",
+    col= hcl(c = 0, l = (plogis(seq(10, 0, length=100),
+	location = 2, scale = 1/2, log = FALSE))*100),
+	newpage = FALSE))
+
+popViewport(2)
+
+## the reordered_cluster_dissimilarity_matrix object
+res
+names(res)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

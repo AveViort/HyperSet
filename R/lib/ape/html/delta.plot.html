@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Delta Plots</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for delta.plot {ape}"><tr><td>delta.plot {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Delta Plots</h2>
+
+<h3>Description</h3>
+
+<p>This function makes a <i>delta</i> plot following Holland et
+al. (2002).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+delta.plot(X, k = 20, plot = TRUE, which = 1:2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>X</code></td>
+<td>
+<p>a distance matrix, may be an object of class &ldquo;dist&rdquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>an integer giving the number of intervals in the plot.</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>a logical specifying whether to draw the
+<i>delta</i> plot (the default).</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>a numeric vector indicating which plots are done; 1: the
+histogram of the <i>delta_q</i> values, 2: the plot of the
+individual <i>delta.bar</i> values. By default, both
+plots are done.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>See Holland et al. (2002) for details and interpretation.
+</p>
+<p>The computing time of this function is proportional to the fourth
+power of the number of observations (<i>O(n^4)</i>), so calculations
+may be very long with only a slight increase in sample size.
+</p>
+
+
+<h3>Value</h3>
+
+<p>This function returns invisibly a named list with two components:
+</p>
+
+<ul>
+<li><p>countsthe counts for the histogram of
+<i>delta_q</i> values
+</p>
+</li>
+<li><p>delta.barthe mean <i>delta</i> value for each
+observation
+</p>
+</li></ul>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Holland, B. R., Huber, K. T., Dress, A. and Moulton, V. (2002) Delta
+plots: a tool for analyzing phylogenetic distance data.
+<em>Molecular Biology and Evolution</em>, <b>12</b>, 2051&ndash;2059.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dist.dna.html">dist.dna</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(woodmouse)
+d &lt;- dist.dna(woodmouse)
+delta.plot(d)
+layout(1)
+delta.plot(d, 40, which = 1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

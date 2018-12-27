@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Depth and Heights of Nodes and Tips</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for node.depth {ape}"><tr><td>node.depth {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Depth and Heights of Nodes and Tips</h2>
+
+<h3>Description</h3>
+
+<p>These functions return the depths or heights of nodes and tips.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+node.depth(phy, method = 1)
+node.depth.edgelength(phy)
+node.height(phy, clado.style = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class &quot;phylo&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>an integer value (1 or 2); 1: the node depths are
+proportional to the number of tips descending from each node, 2:
+they are evenly spaced.</p>
+</td></tr>
+<tr valign="top"><td><code>clado.style</code></td>
+<td>
+<p>a logical value; if <code>TRUE</code>, the node heights
+are calculated for a cladogram.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>node.depth</code> computes the depth of a node depending on the value
+of <code>method</code> (see the option <code>node.depth</code> in
+<code><a href="plot.phylo.html">plot.phylo</a></code>). The value of 1 is given to the tips.
+</p>
+<p><code>node.depth.edgelength</code> does the same but using branch lengths.
+</p>
+<p><code>node.height</code> computes the heights of nodes and tips as plotted
+by a phylogram or a cladogram.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A numeric vector indexed with the node numbers of the matrix &lsquo;edge&rsquo; of
+<code>phy</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code></p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

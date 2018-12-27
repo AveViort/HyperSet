@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Change the value of a radio input on the client</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for updateRadioButtons {shiny}"><tr><td>updateRadioButtons {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Change the value of a radio input on the client</h2>
+
+<h3>Description</h3>
+
+<p>Change the value of a radio input on the client
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+updateRadioButtons(session, inputId, label = NULL, choices = NULL,
+  selected = NULL, inline = FALSE, choiceNames = NULL,
+  choiceValues = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The <code>session</code> object passed to function given to
+<code>shinyServer</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>inputId</code></td>
+<td>
+<p>The id of the input object.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>The label to set for the input object.</p>
+</td></tr>
+<tr valign="top"><td><code>choices</code></td>
+<td>
+<p>List of values to select from (if elements of the list are
+named then that name rather than the value is displayed to the user). If
+this argument is provided, then <code>choiceNames</code> and <code>choiceValues</code>
+must not be provided, and vice-versa. The values should be strings; other
+types (such as logicals and numbers) will be coerced to strings.</p>
+</td></tr>
+<tr valign="top"><td><code>selected</code></td>
+<td>
+<p>The initially selected value (if not specified then defaults
+to the first value)</p>
+</td></tr>
+<tr valign="top"><td><code>inline</code></td>
+<td>
+<p>If <code>TRUE</code>, render the choices inline (i.e. horizontally)</p>
+</td></tr>
+<tr valign="top"><td><code>choiceNames</code></td>
+<td>
+<p>List of names and values, respectively, that
+are displayed to the user in the app and correspond to the each choice (for
+this reason, <code>choiceNames</code> and <code>choiceValues</code> must have the same
+length). If either of these arguments is provided, then the other
+<em>must</em> be provided and <code>choices</code> <em>must not</em> be provided. The
+advantage of using both of these over a named list for <code>choices</code> is
+that <code>choiceNames</code> allows any type of UI object to be passed through
+(tag objects, icons, HTML code, ...), instead of just simple text. See
+Examples.</p>
+</td></tr>
+<tr valign="top"><td><code>choiceValues</code></td>
+<td>
+<p>List of names and values, respectively, that
+are displayed to the user in the app and correspond to the each choice (for
+this reason, <code>choiceNames</code> and <code>choiceValues</code> must have the same
+length). If either of these arguments is provided, then the other
+<em>must</em> be provided and <code>choices</code> <em>must not</em> be provided. The
+advantage of using both of these over a named list for <code>choices</code> is
+that <code>choiceNames</code> allows any type of UI object to be passed through
+(tag objects, icons, HTML code, ...), instead of just simple text. See
+Examples.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The input updater functions send a message to the client, telling it to
+change the settings of an input object. The messages are collected and sent
+after all the observers (including outputs) have finished running.
+</p>
+<p>The syntax of these functions is similar to the functions that created the
+inputs in the first place. For example, <code><a href="numericInput.html">numericInput</a>()</code> and
+<code>updateNumericInput()</code> take a similar set of arguments.
+</p>
+<p>Any arguments with NULL values will be ignored; they will not result in any
+changes to the input object on the client.
+</p>
+<p>For <code><a href="radioButtons.html">radioButtons</a>()</code>, <code><a href="checkboxGroupInput.html">checkboxGroupInput</a>()</code> and
+<code><a href="selectInput.html">selectInput</a>()</code>, the set of choices can be cleared by using
+<code>choices=character(0)</code>. Similarly, for these inputs, the selected item
+can be cleared by using <code>selected=character(0)</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="radioButtons.html">radioButtons</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  p("The first radio button group controls the second"),
+  radioButtons("inRadioButtons", "Input radio buttons",
+    c("Item A", "Item B", "Item C")),
+  radioButtons("inRadioButtons2", "Input radio buttons 2",
+    c("Item A", "Item B", "Item C"))
+)
+
+server &lt;- function(input, output, session) {
+  observe({
+    x &lt;- input$inRadioButtons
+
+    # Can also set the label and select items
+    updateRadioButtons(session, "inRadioButtons2",
+      label = paste("radioButtons label", x),
+      choices = x,
+      selected = x
+    )
+  })
+}
+
+shinyApp(ui, server)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

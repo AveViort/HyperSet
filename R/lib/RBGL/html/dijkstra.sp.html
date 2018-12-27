@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dijkstra's shortest paths using boost C++</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dijkstra.sp {RBGL}"><tr><td>dijkstra.sp {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Dijkstra's shortest paths using boost C++ </h2>
+
+<h3>Description</h3>
+
+<p> dijkstra's shortest paths </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dijkstra.sp(g,start=nodes(g)[1], eW=unlist(edgeWeights(g)))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p> instance of class graph </p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p> character: node name for start of path </p>
+</td></tr>
+<tr valign="top"><td><code>eW</code></td>
+<td>
+<p> numeric: edge weights.  </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions are interfaces to the Boost graph library C++
+routines for Dijkstra's shortest paths.
+</p>
+<p>For some graph subclasses, computing the edge weights can be expensive.
+If you are calling <code>dijkstra.sp</code> in a loop, you can pass the edge
+weights explicitly to avoid the edge weight creation cost.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with elements:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>distance</code></td>
+<td>
+<p>The vector of distances from <code>start</code> to each node
+of <code>g</code>; includes <code>Inf</code> when there is no path from <code>start</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>penult</code></td>
+<td>
+<p>A vector of indices 
+(in <code>nodes(g)</code>) of predecessors corresponding to each node
+on the path from that node back to <code>start</code></p>
+</td></tr></table>
+<p>. For example, if the
+element one of this vector has value <code>10</code>, that means that the
+predecessor of node <code>1</code> is node <code>10</code>. The next predecessor is
+found by examining <code>penult[10]</code>.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>The start node that was supplied in the call to
+<code>dijkstra.sp</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p> VJ Carey &lt;stvjc@channing.harvard.edu&gt; </p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bellman.ford.sp.html">bellman.ford.sp</a></code>, <code><a href="dag.sp.html">dag.sp</a></code>, <code><a href="johnson.all.pairs.sp.html">johnson.all.pairs.sp</a></code>, <code><a href="sp.between.html">sp.between</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con1 &lt;- file(system.file("XML/dijkex.gxl",package="RBGL"), open="r")
+dd &lt;- fromGXL(con1)
+close(con1)
+dijkstra.sp(dd)
+dijkstra.sp(dd,nodes(dd)[2])
+
+con2 &lt;- file(system.file("XML/ospf.gxl",package="RBGL"), open="r")
+ospf &lt;- fromGXL(con2)
+close(con2)
+dijkstra.sp(ospf,nodes(ospf)[6])
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

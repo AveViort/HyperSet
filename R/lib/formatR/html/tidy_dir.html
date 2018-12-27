@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Format all R scripts under a directory, or specified R...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tidy_dir {formatR}"><tr><td>tidy_dir {formatR}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Format all R scripts under a directory, or specified R scripts</h2>
+
+<h3>Description</h3>
+
+<p><code>tidy_dir()</code> first looks for all the R scripts under a directory (using
+the pattern <code>"[.][RrSsQq]$"</code>), then uses <code><a href="tidy_source.html">tidy_source</a></code> to
+tidy these scripts. The original scripts will be overwritten with reformatted
+code if reformatting was successful. You may need to back up the original
+directory first if you do not fully understand the tricks used by
+<code><a href="tidy_source.html">tidy_source</a></code>. <code>tidy_file()</code> formats specified R scripts.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tidy_dir(path = ".", recursive = FALSE, ...)
+
+tidy_file(file, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p>the directory</p>
+</td></tr>
+<tr valign="top"><td><code>recursive</code></td>
+<td>
+<p>whether to recursively look for R scripts under <code>path</code></p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other arguments to be passed to <code><a href="tidy_source.html">tidy_source</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a vector of filenames</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Invisible <code>NULL</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Yihui Xie (<code>tidy_dir</code>) and Ed Lee (<code>tidy_file</code>)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="tidy_source.html">tidy_source</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(formatR)
+
+path = tempdir()
+file.copy(system.file("demo", package = "base"), path, recursive = TRUE)
+tidy_dir(path, recursive = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>formatR</em> version 1.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a TAB-delimited text file from AGS or FGS</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for save_gs_list {NEArender}"><tr><td>save_gs_list {NEArender}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a TAB-delimited text file from AGS or FGS</h2>
+
+<h3>Description</h3>
+
+<p>Each line in this file represents one gene/protein from an AGS/FGS and is accompanied with respective AGS/FGS ID. This format can be used e.g. as input at web site <a href="https://www.evinet.org/">EviNet</a>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+save_gs_list(gs.list, File = "gs.list.groups")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>gs.list</code></td>
+<td>
+<p>a list created with <code><a href="samples2ags.html">samples2ags</a></code>, <code><a href="mutations2ags.html">mutations2ags</a></code>, <code><a href="as_genes_fgs.html">as_genes_fgs</a></code>, or <code><a href="import.gs.html">import.gs</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>File</code></td>
+<td>
+<p>output file name.</p>
+</td></tr>
+</table>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.biomedcentral.com/1471-2105/13/226">http://www.biomedcentral.com/1471-2105/13/226</a>
+</p>
+<p><a href="https://www.evinet.org/">https://www.evinet.org/</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="samples2ags.html">samples2ags</a></code>, <code><a href="mutations2ags.html">mutations2ags</a></code>, <code><a href="as_genes_fgs.html">as_genes_fgs</a></code>, <code><a href="import.gs.html">import.gs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(net.kegg)
+netpath &lt;- net.kegg
+net &lt;- import.net(netpath);
+fgs.genes &lt;- as_genes_fgs(net);
+save_gs_list(fgs.genes, File = "single_gene_ags.groups.tsv");
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NEArender</em> version 1.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

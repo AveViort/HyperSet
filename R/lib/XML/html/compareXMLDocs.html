@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Indicate differences between two XML documents</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for compareXMLDocs {XML}"><tr><td>compareXMLDocs {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Indicate differences between two XML documents</h2>
+
+<h3>Description</h3>
+
+<p>This function is an attempt to provide some assistance
+in determining if two XML documents are the same and if
+not, how they differ.  Rather than comparing
+the tree structure, this function compares
+the frequency distributions of the names of the
+node. It omits position, attributes, simple content
+from the comparison. Those are left to the functions
+that have more contextual information to compare two documents.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+compareXMLDocs(a, b, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>a,b</code></td>
+<td>
+<p>two parsed XML documents that must be internal documents, i.e. created with
+<code><a href="xmlTreeParse.html">xmlParse</a></code> or created with <code><a href="newXMLDoc.html">newXMLNode</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters that are passed on to the <code>summary</code> method for an internal document.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with elements
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>inA</code></td>
+<td>
+<p>the names and counts of the XML elements that only appear in the first document</p>
+</td></tr>
+<tr valign="top"><td><code>inB</code></td>
+<td>
+<p>the names and counts of the XML elements that only appear in the second document</p>
+</td></tr>
+<tr valign="top"><td><code>countDiffs</code></td>
+<td>
+<p>a vector giving the difference in number of nodes with a particular name.</p>
+</td></tr>
+</table>
+<p>These give a description of what is missing from one document relative to the other.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getNodeSet.html">getNodeSet</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+tt = 
+ '&lt;x&gt;
+     &lt;a&gt;text&lt;/a&gt;
+     &lt;b foo="1"/&gt;
+     &lt;c bar="me"&gt;
+        &lt;d&gt;a phrase&lt;/d&gt;
+     &lt;/c&gt;
+  &lt;/x&gt;'
+
+  a = xmlParse(tt, asText = TRUE)
+  b = xmlParse(tt, asText = TRUE)
+  d = getNodeSet(b, "//d")[[1]]
+  xmlName(d) = "bob"
+  addSibling(xmlParent(d), newXMLNode("c"))
+  
+  compareXMLDocs(a, b)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

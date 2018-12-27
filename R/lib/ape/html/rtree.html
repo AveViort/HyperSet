@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generates Random Trees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rtree {ape}"><tr><td>rtree {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generates Random Trees</h2>
+
+<h3>Description</h3>
+
+<p>These functions generate trees by splitting randomly the edges
+(<code>rtree</code>) or randomly clustering the tips (<code>rcoal</code>).
+<code>rtree</code> generates general trees, and <code>rcoal</code> generates
+coalescent trees. The algorithms are described in Paradis (2012).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rtree(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
+rcoal(n, tip.label = NULL, br = "coalescent", ...)
+rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>an integer giving the number of tips in the tree.</p>
+</td></tr>
+<tr valign="top"><td><code>rooted</code></td>
+<td>
+<p>a logical indicating whether the tree should be rooted
+(the default).</p>
+</td></tr>
+<tr valign="top"><td><code>tip.label</code></td>
+<td>
+<p>a character vector giving the tip labels; if not
+specified, the tips &quot;t1&quot;, &quot;t2&quot;, ..., are given.</p>
+</td></tr>
+<tr valign="top"><td><code>br</code></td>
+<td>
+<p>one of the following: (i) an <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> function used to generate the
+branch lengths (<code>rtree</code>; use <code>NULL</code> to simulate only a
+topology), or the coalescence times (<code>rcoal</code>); (ii) a character
+to simulate a genuine coalescent tree for <code>rcoal</code> (the
+default); or (iii) a numeric vector for the branch lengths or the
+coalescence times.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further argument(s) to be passed to <code>br</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>N</code></td>
+<td>
+<p>an integer giving the number of trees to generate.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The trees generated are bifurcating. If <code>rooted = FALSE</code> in
+(<code>rtree</code>), the tree is trifurcating at its root.
+</p>
+<p>The default function to generate branch lengths in <code>rtree</code> is
+<code>runif</code>. If further arguments are passed to <code>br</code>, they need
+to be tagged (e.g., <code>min = 0, max = 10</code>).
+</p>
+<p><code>rmtree</code> calls successively <code>rtree</code> and set the class of
+the returned object appropriately.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>"phylo"</code> or of class <code>"multiPhylo"</code> in
+the case of <code>rmtree</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Paradis, E. (2012) <em>Analysis of Phylogenetics and Evolution with
+R (Second Edition).</em> New York: Springer.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="stree.html">stree</a></code>, <code><a href="rlineage.html">rlineage</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+layout(matrix(1:9, 3, 3))
+### Nine random trees:
+for (i in 1:9) plot(rtree(20))
+### Nine random cladograms:
+for (i in 1:9) plot(rtree(20, FALSE), type = "c")
+### generate 4 random trees of bird orders:
+data(bird.orders)
+layout(matrix(1:4, 2, 2))
+for (i in 1:4)
+  plot(rcoal(23, tip.label = bird.orders$tip.label), no.margin = TRUE)
+layout(1)
+par(mar = c(5, 4, 4, 2))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

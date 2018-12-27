@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Integrated Completed Likelihood Criterion</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ICL {flexmix}"><tr><td>ICL {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Integrated Completed Likelihood Criterion</h2>
+
+<h3>Description</h3>
+
+<p>Compute the Integrated Completed Likelihood criterion for model selection.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'flexmix'
+ICL(object, ...)
+## S4 method for signature 'stepFlexmix'
+ICL(object, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>see Methods section below</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Some methods for this generic function may take additional,
+optional arguments. At present none do.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a numeric vector with the corresponding ICL value(s). 
+</p>
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>object = &quot;flexmix&quot;:</dt><dd><p>Compute the ICL of a <code>flexmix</code> object.</p>
+</dd>
+<dt>object = &quot;stepFlexmix&quot;:</dt><dd><p>Compute the ICL of all
+models contained in the <code>stepFlexmix</code> object.</p>
+</dd>
+</dl>
+
+
+<h3>Author(s)</h3>
+
+<p>Friedrich Leisch and Bettina Gruen</p>
+
+
+<h3>References</h3>
+
+<p>C. Biernacki, G. Celeux, and G. Govaert. Assessing a mixture model
+for clustering with the integrated completed likelihood. <em>IEEE
+Transactions on Pattern Analysis and Machine Intelligence</em>,
+<em>22</em>(7), 719&ndash;725, 2000.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("NPreg", package = "flexmix")
+ex1 &lt;- flexmix(yn ~ x + I(x^2), data = NPreg, k = 2)
+ICL(ex1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

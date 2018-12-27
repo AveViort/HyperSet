@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: remove self loops in a graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for removeSelfLoops {RBGL}"><tr><td>removeSelfLoops {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>remove self loops in a graph</h2>
+
+<h3>Description</h3>
+
+<p>remove self loops in a graph</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+removeSelfLoops(g)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>one instance of the <code>graph</code> class </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If a given graph contains self-loop(s), <code>removeSelfLoops</code> removes them.
+This is for those functions that cannot handle graphs with self-loops.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A new graph without self loops.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/dijkex.gxl",package="RBGL"))
+g1 &lt;- fromGXL(con)
+close(con)
+
+g2 &lt;- ugraph(g1)
+removeSelfLoops(g2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

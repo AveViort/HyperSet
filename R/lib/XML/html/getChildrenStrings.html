@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get the individual</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getChildrenStrings {XML}"><tr><td>getChildrenStrings {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get the individual </h2>
+
+<h3>Description</h3>
+
+<p>This is different from <code>xmlValue</code> applied to the node.
+That concatenates all of the text in the child nodes (and their descendants)
+This is a faster version of <code>xmlSApply(node, xmlValue)</code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getChildrenStrings(node, encoding = getEncoding(node),
+                    asVector = TRUE, len = xmlSize(node), addNames = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>the parent node whose child nodes we want to process</p>
+</td></tr>
+<tr valign="top"><td><code>encoding</code></td>
+<td>
+<p>the encoding to use for the text. This should come
+from the document itself. However, it can be useful to specify it if
+the encoding has not been set for the document (e.g. if we are
+constructing it node-by-node).</p>
+</td></tr>
+<tr valign="top"><td><code>asVector</code></td>
+<td>
+<p>a logical value that controls whether the result is
+returned as a character vector or as a list (<code>FALSE</code>).
+</p>
+</td></tr>
+<tr valign="top"><td><code>len</code></td>
+<td>
+<p>an integer giving the number of elements we expect
+returned. This is best left unspecified but can be provided if the
+caller already knows the number of child nodes. This avoids
+recomputing this and so provides a marginal speedup.</p>
+</td></tr>
+<tr valign="top"><td><code>addNames</code></td>
+<td>
+<p>a logical value that controls whether we add the
+element names to each element of the resulting vector. This makes it
+easier to identify from which element each string came.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A character vector.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlValue.html">xmlValue</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+doc = xmlParse("&lt;doc&gt;&lt;a&gt;a string&lt;/a&gt; some text &lt;b&gt;another&lt;/b&gt;&lt;/doc&gt;")
+getChildrenStrings(xmlRoot(doc))
+
+doc = xmlParse("&lt;doc&gt;&lt;a&gt;a string&lt;/a&gt; some text &lt;b&gt;another&lt;/b&gt;&lt;c/&gt;&lt;d&gt;abc&lt;e&gt;xyz&lt;/e&gt;&lt;/d&gt;&lt;/doc&gt;")
+getChildrenStrings(xmlRoot(doc))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

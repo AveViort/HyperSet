@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Is a fitted denisity unimodal or not?</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for unimodal.ind {fpc}"><tr><td>unimodal.ind {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Is a fitted denisity unimodal or not?</h2>
+
+<h3>Description</h3>
+
+<p>Checks whether a series of fitted density values (such as given out as
+<code>y</code>-component of  <code><a href="../../stats/html/density.html">density</a></code>) is unimodal.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  unimodal.ind(y)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>numeric vector of fitted density values in order of
+increasing x-values such as given out as
+<code>y</code>-component of  <code><a href="../../stats/html/density.html">density</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Logical. <code>TRUE</code> if unimodal.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+unimodal.ind(c(1,3,3,4,2,1,0,0))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

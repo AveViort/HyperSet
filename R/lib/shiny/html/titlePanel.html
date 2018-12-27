@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a panel containing an application title.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for titlePanel {shiny}"><tr><td>titlePanel {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a panel containing an application title.</h2>
+
+<h3>Description</h3>
+
+<p>Create a panel containing an application title.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+titlePanel(title, windowTitle = title)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>title</code></td>
+<td>
+<p>An application title to display</p>
+</td></tr>
+<tr valign="top"><td><code>windowTitle</code></td>
+<td>
+<p>The title that should be displayed by the browser window.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Calling this function has the side effect of including a
+<code>title</code> tag within the head. You can also specify a page title
+explicitly using the 'title' parameter of the top-level page function.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  titlePanel("Hello Shiny!")
+)
+shinyApp(ui, server = function(input, output) { })
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

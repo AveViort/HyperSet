@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create single-gene FGS</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for as_genes_fgs {NEArender}"><tr><td>as_genes_fgs {NEArender}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create single-gene FGS</h2>
+
+<h3>Description</h3>
+
+<p>Each network node X becomes an FGS itself, so that e.g. each ID 'X' generates a list entry named 'X', the content of which is c('X'), i.e. this same gene/protein. The total length of the FGS list then equals the number of nodes in the network. This is a way to create single-gene &quot;quasi-pathways&quot; for a more specific network enrichment analysis.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+as_genes_fgs(Net.list, Lowercase = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>Net.list</code></td>
+<td>
+<p>the global network object, pre-created using <code><a href="import.net.html">import.net</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>Lowercase</code></td>
+<td>
+<p>render gene/protein IDs lower-case (Default:1)</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="import.net.html">import.net</a></code>, <code><a href="import.gs.html">import.gs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(net.kegg)
+net &lt;- import.net(net.kegg)
+fgs.genes &lt;- as_genes_fgs(net)
+print(fgs.genes[1:10])
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NEArender</em> version 1.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

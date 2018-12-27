@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Print Math Array</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for print.xtableMatharray {xtable}"><tr><td>print.xtableMatharray {xtable}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Print Math Array</h2>
+
+<h3>Description</h3>
+
+<p>For an object of class <code>"xtableMatharray"</code>, returns the LaTeX
+commands to produce an array.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'xtableMatharray'
+print(x,
+  print.results = TRUE,
+  format.args = getOption("xtable.format.args", NULL),
+  scalebox = getOption("xtable.scalebox", NULL),
+  comment = FALSE,
+  timestamp = NULL,
+  ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object of class <code>"xtableMatharray"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>print.results</code></td>
+<td>
+<p>If <code>TRUE</code>, the generated table is printed to
+standard output.  Set this to <code>FALSE</code> if you will just be using
+the character vector that is returned invisibly.
+Default value is <code>TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>format.args</code></td>
+<td>
+<p>List of arguments for the <code>formatC</code> function.
+For example, standard German number separators can be specified as
+<code>format.args=list(big.mark = "'", decimal.mark = ",")</code>. The
+arguments <code>digits</code> and <code>format</code> should not be included in
+this list. See details for function <code><a href="print.xtable.html">print.xtable</a></code>.
+Default value is <code>NULL</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>scalebox</code></td>
+<td>
+<p>If not <code>NULL</code>, a <code>scalebox</code> clause will be
+added around the tabular environment with the specified value used
+as the scaling factor.
+Default value is <code>NULL</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>comment</code></td>
+<td>
+<p>If <code>TRUE</code>, the version and timestamp comment is
+included.  Default value is <code>FALSE</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>timestamp</code></td>
+<td>
+<p>Timestamp to include in LaTeX comment.  Set this
+to <code>NULL</code> to exclude the timestamp. Default value is <code>NULL</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments.  (Currently ignored.) </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This command prints an array of numbers which may be included in a
+mathematical expression in a LaTeX document created using <span class="pkg">Sweave</span>
+or <span class="pkg">knitr</span>. Internally it calls <code>print.data.frame</code> but with
+special values for the arguments, namely that the tabular environment
+is <code>array</code>, row names and column names are not included, and there
+are no horizontal lines. Note that the default values for the arguments
+<code>comment</code> and <code>timestamp</code> are different to the default values
+for <code>print.xtable</code>, the justification being that comments would
+make the resulting LaTeX harder to read.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector containing the LaTeX code for incorporating an
+array in a mathematical expression.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>David Scott <a href="mailto:d.scott@auckland.ac.nz">d.scott@auckland.ac.nz</a>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="print.xtable.html">print.xtable</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+V &lt;- matrix(c(1.140380e-03,  3.010497e-05,  7.334879e-05,
+              3.010497e-05,  3.320683e-04, -5.284854e-05,
+              7.334879e-05, -5.284854e-05,  3.520928e-04), nrow = 3)
+### Simple test of print.xtableMatharray
+print.xtableMatharray(xtable(V, display = rep("E", 4)))
+
+class(V) &lt;- c("xtableMatharray")
+class(V)
+
+### Test without any additional arguments
+mth &lt;- xtableMatharray(V)
+str(mth)
+print(mth)
+
+### Test with arguments to xtable
+mth &lt;- xtableMatharray(V, display = rep("E", 4))
+str(mth)
+print(mth)
+
+mth &lt;- xtableMatharray(V, digits = 6)
+str(mth)
+print(mth)
+
+### Test with additional print.xtableMatharray arguments
+mth &lt;- xtableMatharray(V, digits = 6)
+str(mth)
+print(mth, format.args = list(decimal.mark = ","))
+print(mth, scalebox = 0.5)
+print(mth, comment = TRUE)
+print(mth, timestamp = "2000-01-01")
+print(mth, comment = TRUE, timestamp = "2000-01-01")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xtable</em> version 1.8-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

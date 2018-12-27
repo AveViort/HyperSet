@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read Character Data In NEXUS Format</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for read.nexus.data {ape}"><tr><td>read.nexus.data {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Read Character Data In NEXUS Format
+</h2>
+
+<h3>Description</h3>
+
+<p>This function reads a file with sequences in the NEXUS format.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+read.nexus.data(file)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a file name specified by either a variable of mode
+character, or a double-quoted string.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This parser tries to read data from a file written in a
+<em>restricted</em> NEXUS format (see examples below).
+</p>
+<p>Please see files &lsquo;<span class="file">data.nex</span>&rsquo; and &lsquo;<span class="file">taxacharacters.nex</span>&rsquo; for
+examples of formats that will work.
+</p>
+<p>Some noticeable exceptions from the NEXUS standard (non-exhaustive
+list):
+</p>
+
+<ul>
+<li><p><b>I</b>Comments must be either on separate lines or at the
+end of lines. Examples:<br />
+<code>[Comment]</code> <b>&mdash; OK</b><br />
+<code>Taxon ACGTACG [Comment]</code> <b>&mdash; OK</b><br />
+<code>[Comment line 1</code>
+</p>
+<p><code>Comment line 2]</code> <b>&mdash; NOT OK!</b><br />
+<code>Tax[Comment]on ACG[Comment]T</code> <b>&mdash; NOT OK!</b>
+</p>
+</li>
+<li><p><b>II</b>No spaces (or comments) are allowed in the
+sequences. Examples:<br />
+<code>name ACGT</code> <b>&mdash; OK</b><br />
+<code>name AC GT</code> <b>&mdash; NOT OK!</b>
+</p>
+</li>
+<li><p><b>III</b>No spaces are allowed in taxon names, not even if
+names are in single quotes. That is, single-quoted names are not
+treated as such by the parser. Examples:<br />
+<code>Genus_species</code> <b>&mdash; OK</b><br />
+<code>'Genus_species'</code> <b>&mdash; OK</b><br />
+<code>'Genus species'</code> <b>&mdash; NOT OK!</b>
+</p>
+</li>
+<li><p><b>IV</b>The trailing <code>end</code> that closes the
+<code>matrix</code> must be on a separate line. Examples:<br />
+<code>taxon AACCGGT</code>
+</p>
+<p><code>end;</code> <b>&mdash; OK</b><br />
+<code>taxon AACCGGT;</code>
+</p>
+<p><code>end;</code> <b>&mdash; OK</b><br />
+<code>taxon AACCCGT; end;</code> <b>&mdash; NOT OK!</b>
+</p>
+</li>
+<li><p><b>V</b>Multistate characters are not allowed. That is,
+NEXUS allows you to specify multiple character states at a
+character position either as an uncertainty, <code>(XY)</code>, or as an
+actual appearance of multiple states, <code>{XY}</code>. This is
+information is not handled by the parser. Examples:<br />
+<code>taxon 0011?110</code> <b>&mdash; OK</b><br />
+<code>taxon 0011{01}110</code> <b>&mdash; NOT OK!</b><br />
+<code>taxon 0011(01)110</code> <b>&mdash; NOT OK!</b>
+</p>
+</li>
+<li><p><b>VI</b>The number of taxa must be on the same line as
+<code>ntax</code>. The same applies to <code>nchar</code>. Examples:<br />
+<code>ntax = 12</code> <b>&mdash; OK</b><br />
+<code>ntax =</code>
+</p>
+<p><code>12</code> <b>&mdash; NOT OK!</b>
+</p>
+</li>
+<li><p><b>VII</b>The word &ldquo;matrix&rdquo; can not occur anywhere in
+the file before the actual <code>matrix</code> command, unless it is in
+a comment. Examples:<br />
+<code>BEGIN CHARACTERS;</code>
+</p>
+<p><code>TITLE 'Data in file "03a-cytochromeB.nex"';</code>
+</p>
+<p><code>DIMENSIONS  NCHAR=382;</code>
+</p>
+<p><code>FORMAT DATATYPE=Protein GAP=- MISSING=?;</code>
+</p>
+<p><code>["This is The Matrix"]</code> <b>&mdash; OK</b>
+</p>
+<p><code>MATRIX</code><br />
+</p>
+<p><code>BEGIN CHARACTERS;</code>
+</p>
+<p><code>TITLE 'Matrix in file "03a-cytochromeB.nex"';</code> <b>&mdash; NOT OK!</b>
+</p>
+<p><code>DIMENSIONS  NCHAR=382;</code>
+</p>
+<p><code>FORMAT DATATYPE=Protein GAP=- MISSING=?;</code>
+</p>
+<p><code>MATRIX</code>
+</p>
+</li></ul>
+
+
+
+<h3>Value</h3>
+
+<p>A list of sequences each made of a single vector of mode character
+where each element is a (phylogenetic) character state.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Johan Nylander <a href="mailto:nylander@scs.fsu.edu">nylander@scs.fsu.edu</a></p>
+
+
+<h3>References</h3>
+
+<p>Maddison, D. R., Swofford, D. L. and Maddison, W. P. (1997) NEXUS: an
+extensible file format for systematic information. <em>Systematic
+Biology</em>, <b>46</b>, 590&ndash;621.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.nexus.html">read.nexus</a></code>, <code><a href="write.nexus.html">write.nexus</a></code>,
+<code><a href="write.nexus.data.html">write.nexus.data</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Use read.nexus.data to read a file in NEXUS format into object x
+## Not run: x &lt;- read.nexus.data("file.nex")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

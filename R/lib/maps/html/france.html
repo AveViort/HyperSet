@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: France Map</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for france {maps}"><tr><td>france {maps}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+France Map
+</h2>
+
+<h3>Description</h3>
+
+<p>This france database comes from the NUTS III (Tertiary Administrative
+Units of the European Community) database of the United Nations
+Environment Programme (UNEP) GRID-Geneva data sets. These were prepared
+around 1989, and so may be somewhat out of date.
+</p>
+<p>Users of data sets supplied through UNEP/GRID are requested to
+incorporate in output products and reports acknowledgements to the
+originator of the data and to the fact that they were acquired through
+UNEP/GRID. Appropriate wording may be &quot;UNESCO (1987) through
+UNEP/GRID-Geneva&quot;. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(franceMapEnv)</pre>
+
+
+<h3>Format</h3>
+
+<p>The data file is merely a character string which
+specifies the name of an environment variable which contains the
+base location of the binary files used by the map drawing functions.
+This environment variable (<code>R_MAP_DATA_DIR</code> for the datasets in the
+maps package) is set at package load time <em>if it does not
+already exist</em>. Hence setting the environment variable before loading
+the package can override the default location of the binary datasets.
+</p>
+
+
+<h3>References</h3>
+
+<p>Richard A. Becker, and Allan R. Wilks,
+&quot;Maps in S&quot;,
+<em>AT\&amp;T Bell Laboratories Statistics Research Report [93.2], 1993.</em>
+</p>
+<p>Richard A. Becker, and Allan R. Wilks,
+&quot;Constructing a Geographical Database&quot;,
+<em>AT\&amp;T Bell Laboratories Statistics Research Report [95.2], 1995.</em>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="map.html">map</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+map('france', fill = TRUE, col = 1:10)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>maps</em> version 3.3.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

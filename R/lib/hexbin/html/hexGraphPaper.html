@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a Hexgon Grid</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hexGraphPaper {hexbin}"><tr><td>hexGraphPaper {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a Hexgon Grid</h2>
+
+<h3>Description</h3>
+
+<p>Creates a hexagon grid that can be added to a plot created with grid
+graphics.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hexGraphPaper(hb, xbnds = NULL, ybnds = NULL, xbins = 30, shape = 1,
+              add = TRUE, fill.edges = 1, fill = 0, border = 1)
+
+hgridcent(xbins, xbnds, ybnds, shape, edge.add = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>hb</code></td>
+<td>
+<p>a object of class <code>"hexbin"</code>, typically produced by
+<code><a href="hexbin.html">hexbin</a>(*)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>xbnds, ybnds</code></td>
+<td>
+<p>horizontal and vertical limits of the binning
+region in x or y units respectively; must be numeric vector of
+length 2.</p>
+</td></tr>
+<tr valign="top"><td><code>xbins</code></td>
+<td>
+<p>the number of bins partitioning the range of xbnds.</p>
+</td></tr>
+<tr valign="top"><td><code>shape</code></td>
+<td>
+<p>the <em>shape</em> = yheight/xwidth of the plotting regions.</p>
+</td></tr>
+<tr valign="top"><td><code>add</code></td>
+<td>
+<p>a logical value indicating whether or not to add the grid
+to the current plot.</p>
+</td></tr>
+<tr valign="top"><td><code>fill.edges</code></td>
+<td>
+<p>integer number of hexagons to add around the border</p>
+</td></tr>
+<tr valign="top"><td><code>fill</code></td>
+<td>
+<p>the fill color for the hexagons</p>
+</td></tr>
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p>the color of the border of the hexagons</p>
+</td></tr>
+<tr valign="top"><td><code>edge.add</code></td>
+<td>
+<p>offset (typically <code>fill.edges</code> above) used in
+<code>hgridcent</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If a hexbin object is given then the parameters xbins and shape are
+ignored. Different bounds can still be specified. The <code>fill.edges</code>
+parameter should be an integer. <code>fill.edges</code> takes the current
+grid and adds a layer of hexagons around the grid for each level of
+fill. So for example if <code>fill.edges= 2</code> than the dimensions of
+the grid would be <code>(i,j)+4</code>.
+</p>
+<p><code>hgridcent()</code> is the utility function computing the resulting
+list (see section &ldquo;Value&rdquo;).
+</p>
+<p><strong>WARNING! If using a hexVP be sure to set clip to &quot;on&quot;, otherwise the
+hexagon grid will bleed over the plot edges.</strong>
+</p>
+
+
+<h3>Value</h3>
+
+<p>Invisibly returns a list with th following components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>The x coordinates of the grid</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>the y coordinates of the grid</p>
+</td></tr>
+<tr valign="top"><td><code>dimen</code></td>
+<td>
+<p>a vector of length 2 gining the rows and columns of the grid</p>
+</td></tr>
+<tr valign="top"><td><code>dx</code></td>
+<td>
+<p>the horizontal diameter of the hexagons</p>
+</td></tr>
+<tr valign="top"><td><code>dy</code></td>
+<td>
+<p>the vertical diameter of the hexagons</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Nicholas Lewin-Koh</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hcell2xy.html">hcell2xy</a></code>, <code><a href="hexpolygon.html">hexpolygon</a></code>,
+<code><a href="grid.hexagons.html">grid.hexagons</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ x &lt;- rnorm(10000)
+ y &lt;- rnorm(10000,x,x)
+ hbin &lt;- hexbin(x,y)
+ hvp &lt;- plot(hbin,type="n")
+ pushHexport(hvp$plot,clip="on")
+ hexGraphPaper(hbin,border=grey(.8))
+ grid.hexagons(hbin)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

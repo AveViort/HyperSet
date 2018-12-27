@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: All subtrees of a Phylogenetic Tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for subtrees {ape}"><tr><td>subtrees {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>All subtrees of a Phylogenetic Tree</h2>
+
+<h3>Description</h3>
+
+<p>This function returns a list of all the subtrees of a phylogenetic tree.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+subtrees(tree, wait=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>tree</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>wait</code></td>
+<td>
+<p>a logical indicating whether the node beeing processed should be printed (useful for big phylogenies).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>subtrees</code> returns a list of trees of class <code>"phylo"</code> and
+returns invisibly for each subtree a list with the following
+components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>tip.label</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>node.label</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>Ntip</code></td>
+<td>
+</td></tr>
+<tr valign="top"><td><code>Nnode</code></td>
+<td>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Damien de Vienne <a href="mailto:damien.de-vienne@u-psud.fr">damien.de-vienne@u-psud.fr</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="zoom.html">zoom</a></code>, <code><a href="subtreeplot.html">subtreeplot</a></code> for functions extracting particular subtrees.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### Random tree with 12 leaves
+phy&lt;-rtree(12)
+par(mfrow=c(4,3))
+plot(phy, sub="Complete tree")
+
+### Extract the subtrees
+l&lt;-subtrees(phy)
+
+### plot all the subtrees
+for (i in 1:11) plot(l[[i]], sub=paste("Node", l[[i]]$node.label[1]))
+par(mfrow=c(1,1))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create or populate an environment with parametrized active...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for create_env {bindr}"><tr><td>create_env {bindr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create or populate an environment with parametrized active bindings</h2>
+
+<h3>Description</h3>
+
+<p>Leverages <a href="../../base/html/bindenv.html">makeActiveBinding()</a>
+by allowing parametrized functions
+that take the name of the binding and an arbitrary number of additional arguments.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+create_env(names, fun, ..., .envir = parent.frame(),
+  .enclos = parent.frame())
+
+populate_env(env, names, fun, ..., .envir = parent.frame())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>names</code></td>
+<td>
+<p>A <a href="../../base/html/name.html">name</a>, or a list of names, or a character vector; in the latter case
+the names are mangled if they are not representable in the native encoding</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>A <a href="../../base/html/function.html">function</a> with at least one argument, which will be called
+to compute the value of a binding.  The function will be called with the
+binding name as first argument (unnamed), and <code>...</code> as additional arguments</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments to <code>fun</code></p>
+</td></tr>
+<tr valign="top"><td><code>.envir</code></td>
+<td>
+<p>The <a href="../../base/html/environment.html">environment</a> in which <code>fun</code> will be executed,
+important if <code>fun</code> calls other functions that are not globally visible</p>
+</td></tr>
+<tr valign="top"><td><code>.enclos</code></td>
+<td>
+<p>The enclosing environment (<code>parent.env</code>) for the newly created environment</p>
+</td></tr>
+<tr valign="top"><td><code>env</code></td>
+<td>
+<p>An environment</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+env &lt;- create_env(letters, paste0, "-lowercase")
+env$a
+env$c
+env$Z
+populate_env(env, LETTERS, paste0, "-uppercase")
+env$a
+env$Z
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>bindr</em> version 0.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

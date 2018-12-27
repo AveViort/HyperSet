@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Register an Input Handler</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for registerInputHandler {shiny}"><tr><td>registerInputHandler {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Register an Input Handler</h2>
+
+<h3>Description</h3>
+
+<p>Adds an input handler for data of this type. When called, Shiny will use the
+function provided to refine the data passed back from the client (after being
+deserialized by jsonlite) before making it available in the <code>input</code>
+variable of the <code>server.R</code> file.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+registerInputHandler(type, fun, force = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>The type for which the handler should be added &ndash; should be a
+single-element character vector.</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>The handler function. This is the function that will be used to
+parse the data delivered from the client before it is available in the
+<code>input</code> variable. The function will be called with the following three
+parameters:
+</p>
+
+<ol>
+<li><p>The value of this input as provided by the client, deserialized
+using jsonlite.
+</p>
+</li>
+<li><p>The <code>shinysession</code> in which the input exists.
+</p>
+</li>
+<li><p>The name of the input.
+</p>
+</li></ol>
+</td></tr>
+<tr valign="top"><td><code>force</code></td>
+<td>
+<p>If <code>TRUE</code>, will overwrite any existing handler without
+warning. If <code>FALSE</code>, will throw an error if this class already has
+a handler defined.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function will register the handler for the duration of the R process
+(unless Shiny is explicitly reloaded). For that reason, the <code>type</code> used
+should be very specific to this package to minimize the risk of colliding
+with another Shiny package which might use this data type name. We recommend
+the format of &quot;packageName.widgetName&quot;.
+</p>
+<p>Currently Shiny registers the following handlers: <code>shiny.matrix</code>,
+<code>shiny.number</code>, and <code>shiny.date</code>.
+</p>
+<p>The <code>type</code> of a custom Shiny Input widget will be deduced using the
+<code>getType()</code> JavaScript function on the registered Shiny inputBinding.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="removeInputHandler.html">removeInputHandler</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Register an input handler which rounds a input number to the nearest integer
+registerInputHandler("mypackage.validint", function(x, shinysession, name) {
+  if (is.null(x)) return(NA)
+  round(x)
+})
+
+## On the Javascript side, the associated input binding must have a corresponding getType method:
+getType: function(el) {
+  return "mypackage.validint";
+}
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

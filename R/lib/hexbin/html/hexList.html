@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Conditional Bivariate Binning into Hexagon Cells</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hexList {hexbin}"><tr><td>hexList {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Conditional Bivariate Binning into Hexagon Cells </h2>
+
+<h3>Description</h3>
+
+<p>Creates a list of <code><a href="hexbin.html">hexbin</a></code> objects.  Basic components are
+a cell id and a count of points falling in each occupied cell.
+Basic methods are <code><a href="../../methods/html/show.html">show</a>()</code>, <code>plot()</code> 
+and <code><a href="../../base/html/summary.html">summary</a>()</code>, but also <code><a href="erode.hexbin.html">erode</a></code>.
+
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hexList(x, y = NULL, given = NULL, xbins = 30, shape = 1,
+        xbnds = NULL, ybnds = NULL, xlab = NULL, ylab = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> x coordinate to be binned </p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p> y coordinate to be binned </p>
+</td></tr>
+<tr valign="top"><td><code>given</code></td>
+<td>
+<p> ..</p>
+</td></tr>
+<tr valign="top"><td><code>xbins</code></td>
+<td>
+<p> number of bins partitioning the range of xbnds</p>
+</td></tr>
+<tr valign="top"><td><code>shape</code></td>
+<td>
+<p> the <em>shape</em> = yheight/xwidth of the plotting regions </p>
+</td></tr>
+<tr valign="top"><td><code>xbnds</code></td>
+<td>
+<p> horizontal limits of binning </p>
+</td></tr>
+<tr valign="top"><td><code>ybnds</code></td>
+<td>
+<p> vertical limits of binning </p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p> character strings used as labels for <code>x</code> </p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p> character strings used as labels for <code>y</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>There is also a <code><a href="../../methods/html/as.html">coerce</a></code> method to produce
+<code>hexbinList</code> objects from <code><a href="../../base/html/list.html">list</a></code>s.
+
+</p>
+
+
+<h3>Value</h3>
+
+<p>If it is a LIST, use
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>comp1 </code></td>
+<td>
+<p>Description of 'comp1'</p>
+</td></tr>
+<tr valign="top"><td><code>comp2 </code></td>
+<td>
+<p>Description of 'comp2'</p>
+</td></tr>
+</table>
+<p>...
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Nicholas Lewin-Koh</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hexbin.html">hexbin</a></code>, <code><a href="hdiffplot.html">hdiffplot</a></code> </p>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

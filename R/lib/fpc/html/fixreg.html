@@ -1,0 +1,562 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Linear Regression Fixed Point Clusters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fixreg {fpc}"><tr><td>fixreg {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Linear Regression Fixed Point Clusters</h2>
+
+<h3>Description</h3>
+
+<p>Computes linear regression fixed point clusters (FPCs), i.e.,
+subsets of the data, which consist exactly of the
+non-outliers w.r.t. themselves, and may be interpreted
+as generated from a homogeneous linear regression relation
+between independent and dependent variable.  FPCs may
+overlap, are not necessarily exhausting and
+do not need a specification of the number of clusters.
+</p>
+<p>Note that while <code>fixreg</code> has lots of parameters, only one (or
+few) of them have usually to be specified, cf. the examples. The
+philosophy is to allow much flexibility, but to always provide 
+sensible defaults.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fixreg(indep=rep(1,n), dep, n=length(dep),
+                    p=ncol(as.matrix(indep)),
+                    ca=NA, mnc=NA, mtf=3, ir=NA, irnc=NA,
+                    irprob=0.95, mncprob=0.5, maxir=20000, maxit=5*n,
+                    distcut=0.85, init.group=list(), 
+                    ind.storage=FALSE, countmode=100, 
+                    plot=FALSE)
+
+## S3 method for class 'rfpc'
+summary(object, ...)
+
+## S3 method for class 'summary.rfpc'
+print(x, maxnc=30, ...)
+
+## S3 method for class 'rfpc'
+plot(x, indep=rep(1,n), dep, no, bw=TRUE,
+                      main=c("Representative FPC No. ",no),
+                      xlab="Linear combination of independents",
+                      ylab=deparse(substitute(indep)),
+                      xlim=NULL, ylim=range(dep), 
+                      pch=NULL, col=NULL,...)
+
+## S3 method for class 'rfpc'
+fpclusters(object, indep=NA, dep=NA, ca=object$ca, ...)
+
+rfpi(indep, dep, p, gv, ca, maxit, plot) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>indep</code></td>
+<td>
+<p>numerical matrix or vector. Independent
+variables.
+Leave out for clustering one-dimensional data.
+<code>fpclusters.rfpc</code>
+does not need specification of <code>indep</code> if <code>fixreg</code>
+was run with <code>ind.storage=TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>dep</code></td>
+<td>
+<p>numerical vector. Dependent variable.
+<code>fpclusters.rfpc</code>
+does not need specification of <code>dep</code> if <code>fixreg</code>
+was run with <code>ind.storage=TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>optional positive integer.
+Number of cases.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>optional positive integer.
+Number of independent variables.</p>
+</td></tr>
+<tr valign="top"><td><code>ca</code></td>
+<td>
+<p>optional positive number. Tuning constant, specifying
+required cluster
+separation. By default determined automatically as a
+function of <code>n</code> and <code>p</code>, see function <code><a href="can.html">can</a></code>,
+Hennig (2002a).</p>
+</td></tr>
+<tr valign="top"><td><code>mnc</code></td>
+<td>
+<p>optional positive integer. Minimum size of clusters
+to be reported.
+By default determined automatically as a function of
+<code>mncprob</code>. See Hennig (2002a).</p>
+</td></tr>
+<tr valign="top"><td><code>mtf</code></td>
+<td>
+<p>optional positive integer. FPCs must be found at
+least <code>mtf</code> times to be reported by <code>summary.rfpc</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ir</code></td>
+<td>
+<p>optional positive integer. Number of algorithm runs.
+By default determined
+automatically as a function of <code>n</code>, <code>p</code>, <code>irnc</code>,
+<code>irprob</code>, <code>mtf</code>,
+<code>maxir</code>. See function <code><a href="itnumber.html">itnumber</a></code> and Hennig (2002a).</p>
+</td></tr>
+<tr valign="top"><td><code>irnc</code></td>
+<td>
+<p>optional positive integer. Size of the smallest
+cluster to be found with
+approximated probability <code>irprob</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>irprob</code></td>
+<td>
+<p>optional value between 0 and 1. Approximated
+probability for a cluster of size <code>irnc</code> to be found.</p>
+</td></tr>
+<tr valign="top"><td><code>mncprob</code></td>
+<td>
+<p>optional value between 0 amd 1. Approximated
+probability for a cluster of size <code>mnc</code> to be found.</p>
+</td></tr>
+<tr valign="top"><td><code>maxir</code></td>
+<td>
+<p>optional integer. Maximum number of algorithm runs.</p>
+</td></tr>
+<tr valign="top"><td><code>maxit</code></td>
+<td>
+<p>optional integer. Maximum number of iterations
+per algorithm run (usually an FPC is found much earlier).</p>
+</td></tr>
+<tr valign="top"><td><code>distcut</code></td>
+<td>
+<p>optional value between 0 and 1. A similarity
+measure between FPCs, given in Hennig (2002a), and the corresponding
+Single Linkage groups of FPCs with similarity larger
+than <code>distcut</code> are computed.
+A single representative FPC is selected for each group.</p>
+</td></tr>
+<tr valign="top"><td><code>init.group</code></td>
+<td>
+<p>optional list of logical vectors of length
+<code>n</code>.
+Every vector indicates a starting configuration for the fixed
+point algorithm. This can be used for datasets with high
+dimension, where the vectors of <code>init.group</code> indicate cluster
+candidates found by graphical inspection or background
+knowledge.</p>
+</td></tr>
+<tr valign="top"><td><code>ind.storage</code></td>
+<td>
+<p>optional logical. If <code>TRUE</code>,
+then all indicator
+vectors of found FPCs are given in the value of <code>fixreg</code>.
+May need lots of memory, but is a bit faster.</p>
+</td></tr>
+<tr valign="top"><td><code>countmode</code></td>
+<td>
+<p>optional positive integer. Every <code>countmode</code>
+algorithm runs <code>fixreg</code> shows a message.</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>optional logical. If <code>TRUE</code>, you get a scatterplot
+of first independent vs. dependent variable at each iteration.</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>object of class <code>rfpc</code>, output of <code>fixreg</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>object of class <code>rfpc</code>, output of <code>fixreg</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>maxnc</code></td>
+<td>
+<p>positive integer. Maximum number of FPCs
+to be reported.</p>
+</td></tr>
+<tr valign="top"><td><code>no</code></td>
+<td>
+<p>positive integer. Number of the representative FPC to
+be plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>bw</code></td>
+<td>
+<p>optional logical. If <code>TRUE</code>, plot is black/white,
+FPC is
+indicated by different symbol. Else FPC is indicated red.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>plot title.</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>label for x-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>label for y-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>xlim</code></td>
+<td>
+<p>plotted range of x-axis. If <code>NULL</code>, the range of the
+plotted linear combination of independent variables is used.</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+<p>plotted range of y-axis.</p>
+</td></tr>
+<tr valign="top"><td><code>pch</code></td>
+<td>
+<p>plotting symbol, see <code><a href="../../graphics/html/par.html">par</a></code>.
+If <code>NULL</code>, the default is used.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>plotting color, see <code><a href="../../graphics/html/par.html">par</a></code>.
+If <code>NULL</code>, the default is used.</p>
+</td></tr>
+<tr valign="top"><td><code>gv</code></td>
+<td>
+<p>logical vector of length <code>n</code>. Indicates the initial
+configuration for the fixed point algorithm.</p>
+</td></tr> 
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters to be passed to <code>plot</code>
+(no effects elsewhere).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A linear regression FPC is a data subset 
+that reproduces itself under the following operation: <br />
+Compute linear regression and error variance estimator for the data
+subset, and compute all points of the dataset for which the squared
+residual is smaller than <code>ca</code> times the error variance.<br />
+Fixed points of this operation can be considered as clusters,
+because they contain only
+non-outliers (as defined by the above mentioned procedure) and all other
+points are outliers w.r.t. the subset. <br />
+<code>fixreg</code> performs <code>ir</code> fixed point algorithms started from
+random subsets of size <code>p+2</code> to look for
+FPCs. Additionally an algorithm is started from the whole dataset,
+and algorithms are started from the subsets specified in
+<code>init.group</code>. <br />
+Usually some of the FPCs are unstable, and more than one FPC may
+correspond to the same significant pattern in the data. Therefore the
+number of FPCs is reduced: FPCs with less than <code>mnc</code> points are
+ignored. Then a similarity matrix is computed between the remaining
+FPCs. Similarity between sets is defined as the ratio between
+2 times size of
+intersection and the sum of sizes of both sets. The Single Linkage
+clusters (groups)
+of level <code>distcut</code> are computed, i.e. the connectivity
+components of the graph where edges are drawn between FPCs with
+similarity larger than <code>distcut</code>. Groups of FPCs whose members
+are found <code>mtf</code> times or more are considered as stable enough.
+A representative FPC is
+chosen for every Single Linkage cluster of FPCs according to the
+maximum expectation ratio <code>ser</code>. <code>ser</code> is the ratio between
+the number of findings of an FPC and the estimated
+expectation of the number of findings of an FPC of this size,
+called <em>expectation ratio</em> and
+computed by <code><a href="clusexpect.html">clusexpect</a></code>.<br />
+Usually only the representative FPCs of stable groups
+are of interest. <br />
+The choice of the involved tuning constants such as <code>ca</code> and
+<code>ir</code> is discussed in detail in Hennig (2002a). Statistical theory
+is presented in Hennig (2003).<br />
+Generally, the default settings are recommended for
+<code>fixreg</code>. In cases where they lead to a too large number of
+algorithm runs (e.g., always for <code>p&gt;4</code>), the use of
+<code>init.group</code> together with <code>mtf=1</code> and <code>ir=0</code>
+is useful. Occasionally, <code>irnc</code> may be chosen
+smaller than the default,
+if smaller clusters are of interest, but this may lead to too many
+clusters and too many algorithm runs. Decrease of
+<code>ca</code> will often lead to too many clusters, even for homogeneous
+data. Increase of <code>ca</code> will produce only very strongly
+separated clusters. Both may be of interest occasionally.
+</p>
+<p><code>rfpi</code> is called by <code>fixreg</code> for a single fixed point
+algorithm and will usually not be executed alone.
+</p>
+<p><code>summary.rfpc</code> gives a summary about the representative FPCs of
+stable groups.
+</p>
+<p><code>plot.rfpc</code> is a plot method for the representative FPC of stable
+group 
+no. <code>no</code>. It produces a scatterplot of the linear combination of
+independent variables determined by the regression coefficients of the
+FPC vs. the dependent variable. The regression line and the region
+of non-outliers determined by <code>ca</code> are plotted as well.
+</p>
+<p><code>fpclusters.rfpc</code> produces a list of indicator vectors for the
+representative FPCs of stable groups.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>fixreg</code> returns an object of class <code>rfpc</code>. This is a list
+containing the components <code>nc, g, coefs, vars, nfound, er, tsc,
+    ncoll, grto, imatrix, smatrix, stn, stfound, sfpc, ssig, sto, struc,
+    n, p, ca, ir, mnc, mtf, distcut</code>.
+</p>
+<p><code>summary.rfpc</code> returns an object of class <code>summary.rfpc</code>.
+This is a list containing the components <code>coefs, vars, stfound,
+    stn, sn, ser, tsc, sim, ca, ir, mnc, mtf</code>.
+</p>
+<p><code>fpclusters.rfpc</code> returns a list of indicator vectors for the
+representative FPCs of stable groups.
+</p>
+<p><code>rfpi</code> returns a list with the components <code>coef, var, g,
+    coll, ca</code>.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>nc</code></td>
+<td>
+<p>integer. Number of FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>list of logical vectors. Indicator vectors of FPCs. <code>FALSE</code>
+if <code>ind.storage=FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>coefs</code></td>
+<td>
+<p>list of numerical vectors. Regression coefficients of
+FPCs. In <code>summary.rfpc</code>, only for representative
+FPCs of stable groups and sorted according to
+<code>stfound</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>vars</code></td>
+<td>
+<p>list of numbers. Error variances of FPCs. In
+<code>summary.rfpc</code>, only for representative
+FPCs of stable groups and sorted according to
+<code>stfound</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>nfound</code></td>
+<td>
+<p>vector of integers. Number of findings for the FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>er</code></td>
+<td>
+<p>numerical vector. Expectation ratios of FPCs. Can be
+taken as a stability measure.</p>
+</td></tr>
+<tr valign="top"><td><code>tsc</code></td>
+<td>
+<p>integer. Number of algorithm runs leading to too small or
+too seldom found FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>ncoll</code></td>
+<td>
+<p>integer. Number of algorithm runs where collinear
+regressor matrices occurred.</p>
+</td></tr>
+<tr valign="top"><td><code>grto</code></td>
+<td>
+<p>vector of integers. Numbers of FPCs to which algorithm
+runs led, which were started by <code>init.group</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>imatrix</code></td>
+<td>
+<p>vector of integers. Size of intersection between
+FPCs. See <code><a href="sseg.html">sseg</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>smatrix</code></td>
+<td>
+<p>numerical vector. Similarities between
+FPCs. See <code><a href="sseg.html">sseg</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>stn</code></td>
+<td>
+<p>integer. Number of representative FPCs of stable groups. In
+<code>summary.rfpc</code> sorted according to <code>stfound</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>stfound</code></td>
+<td>
+<p>vector of integers. Number of findings of members of
+all groups of FPCs. In
+<code>summary.rfpc</code> sorted according to <code>stfound</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>sfpc</code></td>
+<td>
+<p>vector of integers. Numbers of representative FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>ssig</code></td>
+<td>
+<p>vector of integers. As <code>sfpc</code>, but only for stable
+groups.</p>
+</td></tr>
+<tr valign="top"><td><code>sto</code></td>
+<td>
+<p>vector of integers. Number of representative FPC of most,
+2nd most, ..., often found group of FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>struc</code></td>
+<td>
+<p>vector of integers. Number of group an FPC belongs to.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>ca</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>ir</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>mnc</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>mtf</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>distcut</code></td>
+<td>
+<p>see arguments.</p>
+</td></tr>
+<tr valign="top"><td><code>sn</code></td>
+<td>
+<p>vector of integers. Number of points of representative
+FPCs.</p>
+</td></tr>
+<tr valign="top"><td><code>ser</code></td>
+<td>
+<p>numerical vector. Expectation ratio for stable groups.</p>
+</td></tr>
+<tr valign="top"><td><code>sim</code></td>
+<td>
+<p>vector of integers. Size of intersections between
+representative FPCs of stable groups. See <code><a href="sseg.html">sseg</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>coef</code></td>
+<td>
+<p>vector of regression coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>var</code></td>
+<td>
+<p>error variance.</p>
+</td></tr>
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>logical indicator vector of iterated FPC.</p>
+</td></tr>
+<tr valign="top"><td><code>coll</code></td>
+<td>
+<p>logical. <code>TRUE</code> means that singular covariance
+matrices occurred during the iterations.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a></p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. (2002) Fixed point clusters for linear regression:
+computation and comparison, <em>Journal of
+Classification</em> 19, 249-276.
+</p>
+<p>Hennig, C. (2003) Clusters, outliers and regression:
+fixed point clusters, <em>Journal of
+Multivariate Analysis</em> 86, 183-212.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fixmahal.html">fixmahal</a></code> for fixed point clusters in the usual setup
+(non-regression).
+</p>
+<p><code><a href="regmix.html">regmix</a></code> for clusterwiese linear regression by mixture
+modeling ML.
+</p>
+<p><code><a href="can.html">can</a></code>, <code><a href="itnumber.html">itnumber</a></code> for computation of the default
+settings.  
+</p>
+<p><code><a href="clusexpect.html">clusexpect</a></code> for estimation of the expected number of
+findings of an FPC of given size.
+</p>
+<p><code><a href="itnumber.html">itnumber</a></code> for the generation of the number of fixed point
+algorithms.
+</p>
+<p><code><a href="minsize.html">minsize</a></code> for the smallest FPC size to be found with a given
+probability..
+</p>
+<p><code><a href="sseg.html">sseg</a></code> for indexing the similarity/intersection vectors
+computed by <code>fixreg</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(190000)
+options(digits=3)
+data(tonedata)
+attach(tonedata)
+tonefix &lt;- fixreg(stretchratio,tuned,mtf=1,ir=20)
+summary(tonefix)
+# This is designed to have a fast example; default setting would be better.
+# If you want to see more (and you have a bit more time),
+# try out the following:
+## Not run: 
+ set.seed(1000)
+ tonefix &lt;- fixreg(stretchratio,tuned)
+# Default - good for these data
+ summary(tonefix)
+ plot(tonefix,stretchratio,tuned,1)
+ plot(tonefix,stretchratio,tuned,2)
+ plot(tonefix,stretchratio,tuned,3,bw=FALSE,pch=5) 
+ toneclus &lt;- fpclusters(tonefix,stretchratio,tuned)
+ plot(stretchratio,tuned,col=1+toneclus[[2]])
+ tonefix2 &lt;- fixreg(stretchratio,tuned,distcut=1,mtf=1,countmode=50)
+# Every found fixed point cluster is reported,
+# no matter how instable it may be.
+ summary(tonefix2)
+ tonefix3 &lt;- fixreg(stretchratio,tuned,ca=7)
+# ca defaults to 10.07 for these data.
+ summary(tonefix3)
+ subset &lt;- c(rep(FALSE,5),rep(TRUE,24),rep(FALSE,121))
+ tonefix4 &lt;- fixreg(stretchratio,tuned,
+                    mtf=1,ir=0,init.group=list(subset))
+ summary(tonefix4)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

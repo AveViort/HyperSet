@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tests of Constant Diversification Rates</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for diversi.gof {ape}"><tr><td>diversi.gof {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Tests of Constant Diversification Rates</h2>
+
+<h3>Description</h3>
+
+<p>This function computes two tests of the distribution of branching
+times using the Cramér&ndash;von Mises and Anderson&ndash;Darling
+goodness-of-fit tests. By default, it is assumed that the
+diversification rate is constant, and an exponential distribution is
+assumed for the branching times. In this case, the expected
+distribution under this model is computed with a rate estimated from
+the data. Alternatively, the user may specify an expected cumulative
+density function (<code>z</code>): in this case, <code>x</code> and <code>z</code> must
+be of the same length. See the examples for how to compute the latter
+from a sample of expected branching times.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+diversi.gof(x, null = "exponential", z = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a numeric vector with the branching times.</p>
+</td></tr>
+<tr valign="top"><td><code>null</code></td>
+<td>
+<p>a character string specifying the null distribution for
+the branching times. Only two choices are possible: either
+<code>"exponential"</code>, or <code>"user"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p>used if <code>null = "user"</code>; gives the expected distribution
+under the model.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The Cramér&ndash;von Mises and Anderson&ndash;Darling tests
+compare the empirical density function (EDF) of the observations to an
+expected cumulative density function. By contrast to the
+Kolmogorov&ndash;Smirnov test where the greatest difference between these
+two functions is used, in both tests all differences are taken into
+account.
+</p>
+<p>The distributions of both test statistics depend on the null
+hypothesis, and on whether or not some parameters were estimated from
+the data. However, these distributions are not known precisely and
+critical values were determined by Stephens (1974) using
+simulations. These critical values were used for the present function.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A NULL value is returned, the results are simply printed.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Paradis, E. (1998) Testing for constant diversification rates using
+molecular phylogenies: a general approach based on statistical tests
+for goodness of fit. <em>Molecular Biology and Evolution</em>,
+<b>15</b>, 476&ndash;479.
+</p>
+<p>Stephens, M. A. (1974) EDF statistics for goodness of fit and some
+comparisons. <em>Journal of the American Statistical Association</em>,
+<b>69</b>, 730&ndash;737.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="branching.times.html">branching.times</a></code>, <code><a href="diversi.time.html">diversi.time</a></code>
+<code><a href="ltt.plot.html">ltt.plot</a></code>, <code><a href="birthdeath.html">birthdeath</a></code>, <code><a href="yule.html">yule</a></code>,
+<code><a href="yule.cov.html">yule.cov</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(bird.families)
+x &lt;- branching.times(bird.families)
+### suppose we have a sample of expected branching times `y';
+### for simplicity, take them from a uniform distribution:
+y &lt;- runif(500, 0, max(x) + 1) # + 1 to avoid A2 = Inf
+### now compute the expected cumulative distribution:
+x &lt;- sort(x)
+N &lt;- length(x)
+ecdf &lt;- numeric(N)
+for (i in 1:N) ecdf[i] &lt;- sum(y &lt;= x[i])/500
+### finally do the test:
+diversi.gof(x, "user", z = ecdf)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

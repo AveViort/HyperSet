@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Intersect trees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for intersect_trees {dendextend}"><tr><td>intersect_trees {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Intersect trees</h2>
+
+<h3>Description</h3>
+
+<p>Return two trees after pruning them so that the only leaves left are the intersection of their labels.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+intersect_trees(dend1, dend2, warn = dendextend_options("warn"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend1</code></td>
+<td>
+<p>tree object (dendrogram/hclust/phylo)</p>
+</td></tr>
+<tr valign="top"><td><code>dend2</code></td>
+<td>
+<p>tree object (dendrogram/hclust/phylo)</p>
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+<p>logical (default from dendextend_options(&quot;warn&quot;) is FALSE).
+Set if warning are to be issued, it is safer to keep this at TRUE,
+but for keeping the noise down, the default is FALSE.
+Should a warning be issued if there was a need to perform intersaction.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed on</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <a href="dendlist.html">dendlist</a> with two pruned trees
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="prune.html">prune</a>, <a href="../../base/html/sets.html">intersect</a>, <a href="../../base/html/labels.html">labels</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hc &lt;- hclust(dist(USArrests[1:5,]), "ave")
+dend &lt;- as.dendrogram(hc)
+labels(dend) &lt;- 1:5
+dend1 &lt;- prune(dend, 1)
+dend2 &lt;- prune(dend, 5)
+intersect_dend &lt;- intersect_trees(dend1, dend2)
+
+layout(matrix(c(1,1,2,3,4,5), 3,2, byrow=TRUE))
+plot(dend, main = "Original tree")
+plot(dend1, main = "Tree 1:\n original with label 1 pruned");
+   plot(dend2, main = "Tree 2:\n original with label 2 pruned")
+plot(intersect_dend[[1]], 
+      main = "Tree 1 pruned
+      with the labels that intersected with those of Tree 2")
+   plot(intersect_dend[[2]],
+      main = "Tree 2 pruned
+      with the labels that intersected with those of Tree 1")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

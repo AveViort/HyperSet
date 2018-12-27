@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: topological sort of vertices of a digraph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tsort {RBGL}"><tr><td>tsort {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> topological sort of vertices of a digraph </h2>
+
+<h3>Description</h3>
+
+<p> returns vector of zero-based indices of vertices
+of a DAG in topological sort order </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tsort(x) # now x assumed to be Bioconductor graph graphNEL
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> instance of class graphNEL from Bioconductor graph class</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>calls to the topological\_sort algorithm of BGL.  will check in BGL
+whether the input is a DAG and return a vector of zeroes (of length 
+length(nodes(x))) if it is not.  Thus this function can be used to check for
+cycles in a digraph.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector of vertices in the topological sort sequence.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> VJ Carey &lt;stvjc@channing.harvard.edu&gt; </p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ data(FileDep)
+ tsind &lt;- tsort(FileDep)
+ tsind
+ FD2 &lt;- FileDep
+ # now introduce a cycle
+ FD2 &lt;- addEdge("bar_o", "dax_h", FD2, 1)
+ tsort(FD2)
+ </pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

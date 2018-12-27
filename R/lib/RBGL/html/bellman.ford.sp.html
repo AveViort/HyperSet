@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Bellman-Ford shortest paths using boost C++</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bellman.ford.sp {RBGL}"><tr><td>bellman.ford.sp {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Bellman-Ford shortest paths using boost C++ </h2>
+
+<h3>Description</h3>
+
+<p>Algorithm for the single-source shortest paths problem for a graph with both positive and negative edge weights. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bellman.ford.sp(g,start=nodes(g)[1])
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p> instance of class graph </p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p> character: node name for start of path </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function interfaces to the Boost graph library C++
+routines for Bellman-Ford shortest paths.  
+Choose the appropriate algorithm to calculate the shortest path 
+carefully based on the properties of the given graph.
+See documentation on Bellman-Ford algorithm in Boost Graph Library 
+for more details.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with elements:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>all edges minimized</code></td>
+<td>
+<p>true if all edges are minimized, false otherwise. </p>
+</td></tr>
+<tr valign="top"><td><code>distance</code></td>
+<td>
+<p>The vector of distances from <code>start</code> to each node
+of <code>g</code>; includes <code>Inf</code> when there is no path from <code>start</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>penult</code></td>
+<td>
+<p>A vector of indices 
+(in <code>nodes(g)</code>) of predecessors corresponding to each node
+on the path from that node back to <code>start</code></p>
+</td></tr></table>
+<p>. For example, if the
+element one of this vector has value <code>10</code>, that means that the
+predecessor of node <code>1</code> is node <code>10</code>. The next predecessor is
+found by examining <code>penult[10]</code>.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>The start node that was supplied in the call to
+<code>bellman.ford.sp</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p> Li Long &lt;li.long@isb-sib.ch&gt; </p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dag.sp.html">dag.sp</a></code>, <code><a href="dijkstra.sp.html">dijkstra.sp</a></code>, <code><a href="johnson.all.pairs.sp.html">johnson.all.pairs.sp</a></code>, <code><a href="sp.between.html">sp.between</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/conn2.gxl",package="RBGL"), open="r")
+dd &lt;- fromGXL(con)
+close(con)
+bellman.ford.sp(dd)
+bellman.ford.sp(dd,nodes(dd)[2])
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Internal: create allele list out of character matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for unbuild.charmatrix {prabclus}"><tr><td>unbuild.charmatrix {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Internal: create allele list out of character matrix</h2>
+
+<h3>Description</h3>
+
+<p>Creates a list of lists, such as required by <code><a href="alleledist.html">alleledist</a></code>,
+from the <code>charmatrix</code> component of an
+<code><a href="alleleinit.html">alleleobject</a></code>. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+   unbuild.charmatrix(charmatrix,n.individuals,n.variables)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>charmatrix</code></td>
+<td>
+<p>matrix of characters in which there are two rows for
+every individual corresponding to the two alleles in every locus
+(column). Entries are allele codes but missing values are coded as
+<code>NA</code>.</p>
+</td></tr>  
+<tr valign="top"><td><code>n.individuals</code></td>
+<td>
+<p>integer. Number of individuals.</p>
+</td></tr>
+<tr valign="top"><td><code>n.variables</code></td>
+<td>
+<p>integer. Number of loci.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list of lists. In the &quot;outer&quot; list, there are
+<code>n.variables</code> lists, one for each locus. In the &quot;inner&quot; list, for every
+individual there is a vector of two codes (typically characters, see
+<code><a href="alleleinit.html">alleleinit</a></code>) for the two alleles in that locus.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="alleleinit.html">alleleinit</a></code>, <code><a href="build.charmatrix.html">build.charmatrix</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  data(tetragonula)
+  tnb &lt;-
+  coord2dist(coordmatrix=tetragonula.coord[1:50,],cut=50,file.format="decimal2",neighbors=TRUE)
+  ta &lt;- alleleconvert(strmatrix=tetragonula[1:50,])
+  tai &lt;- alleleinit(allelematrix=ta,neighborhood=tnb$nblist,distance="none")
+  str(unbuild.charmatrix(tai$charmatrix,50,13)) 
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

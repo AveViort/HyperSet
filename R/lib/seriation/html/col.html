@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Different Useful Color Palettes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for color_palettes {seriation}"><tr><td>color_palettes {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Different Useful Color Palettes</h2>
+
+<h3>Description</h3>
+
+<p>Defines several color palettes for <code>pimage</code>, <code>dissplot</code>
+and <code>hmap</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bluered(n, bias = 1)
+greenred(n, bias = 1)
+grays(n, power = 1)
+greys(n, power = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p> number of different colors produces. </p>
+</td></tr>
+<tr valign="top"><td><code>bias</code></td>
+<td>
+<p>a positive number. Higher values give more widely 
+spaced colors at the high end.</p>
+</td></tr>
+<tr valign="top"><td><code>power</code></td>
+<td>
+<p> control parameter determining how luminance should be 
+increased (1 = linear, 2 = quadratic, etc.).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>bluered</code> creates a blue-red color palette.
+</p>
+<p><code>greenred</code> creates a green-red color palette.
+</p>
+<p><code>greys</code> and <code>grays</code> creates gray scales.
+</p>
+<p>See <code>colorRampPalette</code> to create your own color palettes.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A vector with <code>n</code> colors.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../grDevices/html/colorRampPalette.html">colorRampPalette</a></code>,
+<code><a href="pimage.html">pimage</a></code>,
+<code><a href="dissplot.html">dissplot</a></code>,
+<code><a href="hmap.html">hmap</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+pimage(rbind(1:100))
+pimage(rbind(1:100), col = greys(100, power=2))
+pimage(rbind(1:100), col = bluered(100))
+pimage(rbind(1:100), col = bluered(100, bias = 2))
+pimage(rbind(-100:100), col = greenred(10))
+
+## create your own color palettes 
+## red to green (with 10 colors)
+pimage(rbind(1:100), 
+  col = colorRampPalette(colors = c("red", "yellow", "green"))(10))
+## white to blue (with 100 colors)
+pimage(rbind(1:100), 
+  col = colorRampPalette(colors = c("white", "blue"))(100))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Default values for use with MCLUST package</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mclust.options {mclust}"><tr><td>mclust.options {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Default values for use with MCLUST package</h2>
+
+<h3>Description</h3>
+
+<p>Set or retrieve default values for use with MCLUST package.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mclust.options(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>one or more arguments provided in the <code>name = value</code> form, or no argument at all may be given. <br />
+Available arguments are described in the Details section below.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>mclust.options</code> is provided for assigning or retrieving default values used by various functions in <code>MCLUST</code>.<br />
+</p>
+<p>Available options are:
+</p>
+
+<dl>
+<dt><code>emModelNames</code></dt><dd>
+<p>A vector of 3-character strings that are associated with multivariate 
+models for which EM estimation is available in MCLUST. <br />
+The current default is all of the multivariate mixture models
+supported in MCLUST.
+The help file for <code><a href="mclustModelNames.html">mclustModelNames</a></code> describes the 
+available models.
+</p>
+</dd>
+<dt><code>hcModelName</code></dt><dd>
+<p>A string associated with multivariate models for which model-based 
+hierarchical clustering is available in MCLUST. <br />
+The available models are the following:
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+    <code>"EII"</code> </td><td style="text-align: left;"> spherical, equal volume </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"EEE"</code> </td><td style="text-align: left;"> ellipsoidal, equal volume, shape, and orientation </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VII"</code> </td><td style="text-align: left;"> spherical, unequal volume </td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"VVV"</code> </td><td style="text-align: left;"> ellipsoidal, varying volume, shape, and orientation.
+    </td>
+</tr>
+
+</table>
+
+<p>The <code>"VVV"</code> is used as default for initialization of EM algorithm.
+</p>
+</dd>
+<dt><code>hcUse</code></dt><dd>
+<p>A string or a vector of character strings specifying the type of input 
+variables to be used in model-based hierarchical clustering to start 
+the EM algorithm.
+Possible values are:
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+    <code>"VARS"</code> </td><td style="text-align: left;"> original variables;</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"STD"</code> </td><td style="text-align: left;"> standardized variables;</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"SPH"</code> </td><td style="text-align: left;"> sphered variables (centered, scaled, uncorrelated)  
+    computed using SVD;</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"PCS"</code> </td><td style="text-align: left;"> principal components computed using SVD on centered 
+    variables (i.e. using the covariance matrix);</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"PCR"</code> </td><td style="text-align: left;"> principal components computed using SVD on standardized 
+    (center and scaled) variables (i.e. using the correlation matrix);</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"SVD"</code> </td><td style="text-align: left;"> scaled SVD transformation;</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    <code>"RND"</code> </td><td style="text-align: left;"> no transformation is applied but a random hierarchical
+    structure is returned (see <code><a href="randomPairs.html">randomPairs</a></code>).
+    </td>
+</tr>
+
+</table>
+
+<p>For further details see Scrucca and Raftery (2015), Scrucca et al. (2016).
+</p>
+</dd>
+<dt><code>subset</code></dt><dd>
+<p>A value specifying the maximal sample size to be used in the model-based 
+hierarchical clustering to start the EM algorithm. 
+If data sample size exceeds this value, a random sample is drawn of size
+specified by <code>subset</code>.
+</p>
+</dd>
+<dt><code>bicPlotSymbols</code></dt><dd>
+<p>A vector whose entries correspond to graphics symbols for plotting the 
+BIC values output from <code><a href="Mclust.html">Mclust</a></code> and <code><a href="mclustBIC.html">mclustBIC</a></code>. 
+These are displayed in the legend which appears at the lower right
+of the BIC plots.
+</p>
+</dd>
+<dt><code>bicPlotColors</code></dt><dd>
+<p>A vector whose entries correspond to colors for plotting the 
+BIC curves from output from <code><a href="Mclust.html">Mclust</a></code> and
+<code><a href="mclustBIC.html">mclustBIC</a></code>. 
+These are displayed in the legend which appears at the lower right
+of the BIC plots.
+</p>
+</dd>
+<dt><code>classPlotSymbols</code></dt><dd>
+<p>A vector whose entries are either integers corresponding to graphics 
+symbols or single characters for indicating classifications when
+plotting data. Classes are assigned symbols in the given order. 
+</p>
+</dd>
+<dt><code>classPlotColors</code></dt><dd>
+<p>A vector whose entries correspond to colors for indicating 
+classifications when plotting data. Classes are assigned colors 
+in the given order. 
+</p>
+</dd>
+<dt><code>warn</code></dt><dd>
+<p>A logical value indicating whether or not to issue certain warnings.
+Most of these warnings have to do with situations in which 
+singularities are encountered. 
+The default is <code>warn = FALSE</code>. 
+</p>
+</dd>
+</dl>
+
+<p>The parameter values set via a call to this function will remain in effect for the rest of the session, affecting the subsequent behaviour of the functions for which the given parameters are relevant.
+</p>
+
+
+<h3>Value</h3>
+
+<p>If the argument list is empty the function returns the current list of values.  
+If the argument list is not empty, the returned list is invisible.
+</p>
+
+
+<h3>References</h3>
+
+<p>Scrucca L. and Raftery A. E. (2015) Improved initialisation of model-based clustering using Gaussian hierarchical partitions. <em>Advances in Data Analysis and Classification</em>, 9/4, pp. 447-460.
+</p>
+<p>Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and density estimation using Gaussian finite mixture models, <em>The R Journal</em>, 8/1, pp. 205-233.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Mclust.html">Mclust</a></code>, 
+<code><a href="MclustDA.html">MclustDA</a></code>, 
+<code><a href="densityMclust.html">densityMclust</a></code>, 
+<code><a href="emControl.html">emControl</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+opt &lt;- mclust.options() # save default values
+irisBIC &lt;- mclustBIC(iris[,-5])
+summary(irisBIC, iris[,-5])
+
+mclust.options(emModelNames = c("EII", "EEI", "EEE"))
+irisBIC &lt;- mclustBIC(iris[,-5])
+summary(irisBIC, iris[,-5])
+
+mclust.options(opt)    # restore default values
+mclust.options()
+
+oldpar &lt;- par(mfrow = c(2,1), no.readonly = TRUE)
+n &lt;- with(mclust.options(), 
+          max(sapply(list(bicPlotSymbols, bicPlotColors),length)))
+plot(seq(n), rep(1,n), ylab = "", xlab = "", yaxt = "n", 
+     pch = mclust.options("bicPlotSymbols"), 
+     col = mclust.options("bicPlotColors"))
+title("mclust.options(\"bicPlotSymbols\") \n mclust.options(\"bicPlotColors\")")
+n &lt;- with(mclust.options(), 
+          max(sapply(list(classPlotSymbols, classPlotColors),length)))
+plot(seq(n), rep(1,n), ylab = "", xlab = "", yaxt = "n", 
+     pch = mclust.options("classPlotSymbols"), 
+     col = mclust.options("classPlotColors"))
+title("mclust.options(\"classPlotSymbols\") \n mclust.options(\"classPlotColors\")")
+par(oldpar)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

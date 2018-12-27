@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cluster-Level SNOW Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for snow-cluster {snow}"><tr><td>snow-cluster {snow}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cluster-Level SNOW Functions</h2>
+
+<h3>Description</h3>
+
+<p>Functions for computing on a SNOW cluster.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+clusterSplit(cl, seq)
+clusterCall(cl, fun, ...)
+clusterApply(cl, x, fun, ...)
+clusterApplyLB(cl, x, fun, ...)
+clusterEvalQ(cl, expr)
+clusterExport(cl, list, envir = .GlobalEnv)
+clusterMap(cl, fun, ..., MoreArgs = NULL, RECYCLE = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>cl</code></td>
+<td>
+<p>cluster object</p>
+</td></tr>
+<tr valign="top"><td><code>fun</code></td>
+<td>
+<p>function or character string naming a function</p>
+</td></tr>
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>expression to evaluate</p>
+</td></tr>
+<tr valign="top"><td><code>seq</code></td>
+<td>
+<p>vector to split</p>
+</td></tr>
+<tr valign="top"><td><code>list</code></td>
+<td>
+<p>character vector of variables to export</p>
+</td></tr>
+<tr valign="top"><td><code>envir</code></td>
+<td>
+<p>environment from which t export variables</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>array</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments to pass to standard function</p>
+</td></tr>
+<tr valign="top"><td><code>MoreArgs</code></td>
+<td>
+<p>additional argument for <code>fun</code></p>
+</td></tr>
+<tr valign="top"><td><code>RECYCLE</code></td>
+<td>
+<p>logical; if true shorter arguments are recycled</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These are the basic functions for computing on a cluster.  All
+evaluations on the slave nodes are done using <code>tryCatch</code>.
+Currently an error is signaled on the master if any one of the nodes
+produces an error.  More sophisticated approaches will be considered
+in the future.
+</p>
+<p><code>clusterCall</code> calls a function <code>fun</code> with identical arguments 
+<code>...</code> on each node in the cluster <code>cl</code> and returns a list
+of the results.
+</p>
+<p><code>clusterEvalQ</code> evaluates a literal expression on each cluster node.
+It a cluster version of <code>evalq</code>, and is a convenience function
+defined in terms of <code>clusterCall</code>.
+</p>
+<p><code>clusterApply</code> calls <code>fun</code> on the first cluster node with
+arguments <code>seq[[1]]</code> and <code>...</code>, on the second node with
+<code>seq[[2]]</code> and <code>...</code>, and so on.  If the length of
+<code>seq</code> is greater than the number of nodes in the cluster then
+cluster nodes are recycled. A list of the results is returned; the
+length of the result list will equal the length of <code>seq</code>.
+</p>
+<p><code>clusterApplyLB</code> is a load balancing version of <code>clusterApply</code>.
+if the length <code>p</code> of <code>seq</code> is greater than the number of
+cluster nodes <code>n</code>, then the first <code>n</code> jobs are placed in
+order on the <code>n</code> nodes.  When the first job completes, the next
+job is placed on the available node; this continues until all jobs
+are complete.  Using <code>clusterApplyLB</code> can result in better
+cluster utilization than using <code>clusterApply</code>.  However,
+increased communication can reduce performance.  Furthermore, the
+node that executes a particular job is nondeterministic, which can
+complicate ensuring reproducibility in simulations.
+</p>
+<p><code>clusterMap</code> is a multi-argument version of <code>clusterApply</code>,
+analogous to <code>mapply</code>.  If <code>RECYCLE</code> is true shorter
+arguments are recycled; otherwise, the result length is the length of
+the shortest argument.  Cluster nodes are recycled if the length of
+the result is greater than the number of nodes.
+</p>
+<p><code>clusterExport</code> assigns the values on the master of the variables
+named in <code>list</code> to variables of the same names in the global
+environments of each node.  The environment on the master from which
+variables are exported defaults to the global environment.
+</p>
+<p><code>clusterSplit</code> splits <code>seq</code> into one consecutive piece for
+each cluster and returns the result as a list with length equal to the
+number of cluster nodes.  Currently the pieces are chosen to be close
+to equal in length.  Future releases may attempt to use relative
+performance information about nodes to choose split proportional to
+performance.
+</p>
+<p>For more details see
+<a href="http://www.stat.uiowa.edu/~luke/R/cluster/cluster.html">http://www.stat.uiowa.edu/~luke/R/cluster/cluster.html</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## Not run: 
+cl &lt;- makeSOCKcluster(c("localhost","localhost"))
+
+clusterApply(cl, 1:2, get("+"), 3)
+
+clusterEvalQ(cl, library(boot))
+
+x&lt;-1
+clusterExport(cl, "x")
+clusterCall(cl, function(y) x + y, 2)
+
+  
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>snow</em> version 0.4-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

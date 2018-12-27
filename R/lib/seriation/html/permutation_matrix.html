@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Conversion Between Permutation Vector and Permutation Matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for permutation_matrix {seriation}"><tr><td>permutation_matrix {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Conversion Between Permutation Vector and Permutation Matrix</h2>
+
+<h3>Description</h3>
+
+<p>Converts between permutation vectors and matrices.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+permutation_matrix2vector(x)
+permutation_vector2matrix(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A permutation vector (any object that can be converted into a 
+permutation vector, e.g., a integer vector or a <code>hclust</code> object) or a 
+matrix representing a permutation. Arguments are checked.</p>
+</td></tr> 
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="permutation.html">ser_permutation</a></code>,
+<code><a href="permute.html">permute</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## create a random permutation vector
+pv &lt;- sample(1:5)
+pv
+  
+## convert into a permutation matrix
+pm &lt;- permutation_vector2matrix(pv)
+pm
+  
+## convert back  
+permutation_matrix2vector(pm)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

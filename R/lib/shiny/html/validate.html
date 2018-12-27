@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Validate input values and other conditions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for validate {shiny}"><tr><td>validate {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Validate input values and other conditions</h2>
+
+<h3>Description</h3>
+
+<p>For an output rendering function (e.g. <code><a href="renderPlot.html">renderPlot</a>()</code>), you may
+need to check that certain input values are available and valid before you
+can render the output. <code>validate</code> gives you a convenient mechanism for
+doing so.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+validate(..., errorClass = character(0))
+
+need(expr, message = paste(label, "must be provided"), label)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>A list of tests. Each test should equal <code>NULL</code> for success,
+<code>FALSE</code> for silent failure, or a string for failure with an error
+message.</p>
+</td></tr>
+<tr valign="top"><td><code>errorClass</code></td>
+<td>
+<p>A CSS class to apply. The actual CSS string will have
+<code>shiny-output-error-</code> prepended to this value.</p>
+</td></tr>
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>An expression to test. The condition will pass if the expression
+meets the conditions spelled out in Details.</p>
+</td></tr>
+<tr valign="top"><td><code>message</code></td>
+<td>
+<p>A message to convey to the user if the validation condition is
+not met. If no message is provided, one will be created using <code>label</code>.
+To fail with no message, use <code>FALSE</code> for the message.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>A human-readable name for the field that may be missing. This
+parameter is not needed if <code>message</code> is provided, but must be provided
+otherwise.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>validate</code> function takes any number of (unnamed) arguments, each of
+which represents a condition to test. If any of the conditions represent
+failure, then a special type of error is signaled which stops execution. If
+this error is not handled by application-specific code, it is displayed to
+the user by Shiny.
+</p>
+<p>An easy way to provide arguments to <code>validate</code> is to use the <code>need</code>
+function, which takes an expression and a string; if the expression is
+considered a failure, then the string will be used as the error message. The
+<code>need</code> function considers its expression to be a failure if it is any of
+the following:
+</p>
+
+<ul>
+<li><p><code>FALSE</code>
+</p>
+</li>
+<li><p><code>NULL</code>
+</p>
+</li>
+<li><p><code>""</code>
+</p>
+</li>
+<li><p>An empty atomic vector
+</p>
+</li>
+<li><p>An atomic vector that contains only missing values
+</p>
+</li>
+<li><p>A logical vector that contains all <code>FALSE</code> or missing values
+</p>
+</li>
+<li><p>An object of class <code>"try-error"</code>
+</p>
+</li>
+<li><p>A value that represents an unclicked <code><a href="actionButton.html">actionButton</a></code>
+</p>
+</li></ul>
+
+<p>If any of these values happen to be valid, you can explicitly turn them to
+logical values. For example, if you allow <code>NA</code> but not <code>NULL</code>, you
+can use the condition <code>!is.null(input$foo)</code>, because <code>!is.null(NA)
+== TRUE</code>.
+</p>
+<p>If you need validation logic that differs significantly from <code>need</code>, you
+can create other validation test functions. A passing test should return
+<code>NULL</code>. A failing test should return an error message as a
+single-element character vector, or if the failure should happen silently,
+<code>FALSE</code>.
+</p>
+<p>Because validation failure is signaled as an error, you can use
+<code>validate</code> in reactive expressions, and validation failures will
+automatically propagate to outputs that use the reactive expression. In
+other words, if reactive expression <code>a</code> needs <code>input$x</code>, and two
+outputs use <code>a</code> (and thus depend indirectly on <code>input$x</code>), it's
+not necessary for the outputs to validate <code>input$x</code> explicitly, as long
+as <code>a</code> does validate it.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+options(device.ask.default = FALSE)
+
+ui &lt;- fluidPage(
+  checkboxGroupInput('in1', 'Check some letters', choices = head(LETTERS)),
+  selectizeInput('in2', 'Select a state', choices = state.name),
+  plotOutput('plot')
+)
+
+server &lt;- function(input, output) {
+  output$plot &lt;- renderPlot({
+    validate(
+      need(input$in1, 'Check at least one letter!'),
+      need(input$in2 != '', 'Please choose a state.')
+    )
+    plot(1:10, main = paste(c(input$in1, input$in2), collapse = ', '))
+  })
+}
+
+shinyApp(ui, server)
+
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

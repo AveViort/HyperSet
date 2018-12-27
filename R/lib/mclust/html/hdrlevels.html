@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Highest Density Region (HDR) Levels</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hdrlevels {mclust}"><tr><td>hdrlevels {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Highest Density Region (HDR) Levels</h2>
+
+<h3>Description</h3>
+
+<p>Compute the levels of Highest Density Regions (HDRs) for any density and probability levels.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hdrlevels(density, prob)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>density</code></td>
+<td>
+<p>A vector of density values computed on a set of (observed) evaluation points.</p>
+</td></tr>
+<tr valign="top"><td><code>prob</code></td>
+<td>
+<p>A vector of probability levels in the range <i>[0,1]</i>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>From Hyndman (1996), let <i>f(x)</i> be the density function of a random 
+variable <i>X</i>. Then the <i>100(1-&alpha;)\%</i> HDR is the subset 
+<i>R(f_&alpha;)</i> of the sample space of <i>X</i> such that
+</p>
+<p style="text-align: center;"><i>
+R(f_&alpha;) = {x : f(x) &ge; f_&alpha; }
+</i></p>
+
+<p>where <i>f_&alpha;</i> is the largest constant such that 
+<i>
+Pr( X \in R(f_&alpha;)) &ge; 1-&alpha;
+</i>
+</p>
+
+
+<h3>Value</h3>
+
+<p>The function returns a vector of density values corresponding to HDRs at given probability levels.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>L. Scrucca</p>
+
+
+<h3>References</h3>
+
+<p>Rob J. Hyndman (1996) Computing and Graphing Highest Density Regions. <em>The American Statistician</em>, 50(2):120-126.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.densityMclust.html">plot.densityMclust</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Example: univariate Gaussian
+x &lt;- rnorm(1000)
+f &lt;- dnorm(x)
+a &lt;- c(0.5, 0.25, 0.1)
+(f_a &lt;- hdrlevels(f, prob = 1-a))
+
+plot(x, f)
+abline(h = f_a, lty = 2)
+text(max(x), f_a, labels = paste0("f_", a), pos = 3)
+
+mean(f &gt; f_a[1])
+range(x[which(f &gt; f_a[1])])
+qnorm(1-a[1]/2)
+
+mean(f &gt; f_a[2])
+range(x[which(f &gt; f_a[2])])
+qnorm(1-a[2]/2)
+
+mean(f &gt; f_a[3])
+range(x[which(f &gt; f_a[3])])
+qnorm(1-a[3]/2)
+
+# Example 2: univariate Gaussian mixture
+set.seed(1)
+cl &lt;- sample(1:2, size = 1000, prob = c(0.7, 0.3), replace = TRUE)
+x &lt;- ifelse(cl == 1, 
+            rnorm(1000, mean = 0, sd = 1),
+            rnorm(1000, mean = 4, sd = 1))
+f &lt;- 0.7*dnorm(x, mean = 0, sd = 1) + 0.3*dnorm(x, mean = 4, sd = 1)
+
+a &lt;- 0.25
+(f_a &lt;- hdrlevels(f, prob = 1-a))
+
+plot(x, f)
+abline(h = f_a, lty = 2)
+text(max(x), f_a, labels = paste0("f_", a), pos = 3)
+
+mean(f &gt; f_a)
+
+# find the regions of HDR
+ord &lt;- order(x)
+f &lt;- f[ord]
+x &lt;- x[ord]
+x_a &lt;- x[f &gt; f_a]
+j &lt;- which.max(diff(x_a))
+region1 &lt;- x_a[c(1,j)]
+region2 &lt;- x_a[c(j+1,length(x_a))]
+plot(x, f, type = "l")
+abline(h = f_a, lty = 2)
+abline(v = region1, lty = 3, col = 2)
+abline(v = region2, lty = 3, col = 3)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a page with a sidebar</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pageWithSidebar {shiny}"><tr><td>pageWithSidebar {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a page with a sidebar</h2>
+
+<h3>Description</h3>
+
+<p>Create a Shiny UI that contains a header with the application title, a
+sidebar for input controls, and a main area for output.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pageWithSidebar(headerPanel, sidebarPanel, mainPanel)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>headerPanel</code></td>
+<td>
+<p>The <a href="headerPanel.html">headerPanel</a> with the application title</p>
+</td></tr>
+<tr valign="top"><td><code>sidebarPanel</code></td>
+<td>
+<p>The <a href="sidebarPanel.html">sidebarPanel</a> containing input controls</p>
+</td></tr>
+<tr valign="top"><td><code>mainPanel</code></td>
+<td>
+<p>The <a href="mainPanel.html">mainPanel</a> containing outputs</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A UI defintion that can be passed to the <a href="shinyUI.html">shinyUI</a> function
+</p>
+
+
+<h3>Note</h3>
+
+<p>This function is deprecated. You should use <code><a href="fluidPage.html">fluidPage</a></code>
+along with <code><a href="sidebarLayout.html">sidebarLayout</a></code> to implement a page with a sidebar.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Define UI
+pageWithSidebar(
+
+  # Application title
+  headerPanel("Hello Shiny!"),
+
+  # Sidebar with a slider input
+  sidebarPanel(
+    sliderInput("obs",
+                "Number of observations:",
+                min = 0,
+                max = 1000,
+                value = 500)
+  ),
+
+  # Show a plot of the generated distribution
+  mainPanel(
+    plotOutput("distPlot")
+  )
+)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

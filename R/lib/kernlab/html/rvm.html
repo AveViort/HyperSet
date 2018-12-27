@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Relevance Vector Machine</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rvm {kernlab}"><tr><td>rvm {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Relevance Vector Machine</h2>
+
+<h3>Description</h3>
+
+<p>The Relevance Vector Machine is a Bayesian model for regression and
+classification of identical functional form to the support vector
+machine.
+The <code>rvm</code> function currently supports only regression.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'formula'
+rvm(x, data=NULL, ..., subset, na.action = na.omit)
+
+## S4 method for signature 'vector'
+rvm(x, ...)
+
+## S4 method for signature 'matrix'
+rvm(x, y, type="regression",
+    kernel="rbfdot", kpar="automatic",
+    alpha= ncol(as.matrix(x)), var=0.1, var.fix=FALSE, iterations=100,
+    verbosity = 0, tol = .Machine$double.eps, minmaxdiff = 1e-3,
+    cross = 0, fit = TRUE, ... , subset, na.action = na.omit) 
+
+## S4 method for signature 'list'
+rvm(x, y, type = "regression",
+    kernel = "stringdot", kpar = list(length = 4, lambda = 0.5),
+    alpha = 5, var = 0.1, var.fix = FALSE, iterations = 100,
+    verbosity = 0, tol = .Machine$double.eps, minmaxdiff = 1e-3,
+    cross = 0, fit = TRUE, ..., subset, na.action = na.omit)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a symbolic description of the model to be fit.
+When not using a formula x can be a matrix or vector containing the training
+data or a kernel matrix of class <code>kernelMatrix</code> of the training data
+or a list of character vectors (for use with the string
+kernel). Note, that the intercept is always excluded, whether
+given in the formula or not.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>an optional data frame containing the variables in the model.
+By default the variables are taken from the environment which
+&lsquo;rvm&rsquo; is called from.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>a response vector with one label for each row/component of <code>x</code>. Can be either
+a factor (for classification tasks) or a numeric vector (for
+regression).</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p><code>rvm</code> can only be used for regression at the moment.</p>
+</td></tr>
+<tr valign="top"><td><code>kernel</code></td>
+<td>
+<p>the kernel function used in training and predicting.
+This parameter can be set to any function, of class kernel, which computes a dot product between two
+vector arguments. kernlab provides the most popular kernel functions
+which can be used by setting the kernel parameter to the following
+strings:
+</p>
+
+<ul>
+<li> <p><code>rbfdot</code> Radial Basis kernel &quot;Gaussian&quot;
+</p>
+</li>
+<li> <p><code>polydot</code> Polynomial kernel
+</p>
+</li>
+<li> <p><code>vanilladot</code> Linear kernel 
+</p>
+</li>
+<li> <p><code>tanhdot</code> Hyperbolic tangent kernel 
+</p>
+</li>
+<li> <p><code>laplacedot</code> Laplacian kernel 
+</p>
+</li>
+<li> <p><code>besseldot</code> Bessel kernel 
+</p>
+</li>
+<li> <p><code>anovadot</code> ANOVA RBF kernel 
+</p>
+</li>
+<li> <p><code>splinedot</code> Spline kernel 
+</p>
+</li>
+<li> <p><code>stringdot</code> String kernel 
+</p>
+</li></ul>
+
+<p>The kernel parameter can also be set to a user defined function of
+class kernel by passing the function name as an argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>the list of hyper-parameters (kernel parameters).
+This is a list which contains the parameters to be used with the
+kernel function. For valid parameters for existing kernels are :
+</p>
+
+<ul>
+<li> <p><code>sigma</code> inverse kernel width for the Radial Basis
+kernel function &quot;rbfdot&quot; and the Laplacian kernel &quot;laplacedot&quot;.
+</p>
+</li>
+<li> <p><code>degree, scale, offset</code> for the Polynomial kernel &quot;polydot&quot;
+</p>
+</li>
+<li> <p><code>scale, offset</code> for the Hyperbolic tangent kernel
+function &quot;tanhdot&quot;
+</p>
+</li>
+<li> <p><code>sigma, order, degree</code> for the Bessel kernel &quot;besseldot&quot;. 
+</p>
+</li>
+<li> <p><code>sigma, degree</code> for the ANOVA kernel &quot;anovadot&quot;.
+</p>
+</li>
+<li> <p><code>length, lambda, normalized</code> for the &quot;stringdot&quot; kernel
+where length is the length of the strings considered, lambda the
+decay factor and normalized a logical parameter determining if the
+kernel evaluations should be normalized.
+</p>
+</li></ul>
+
+<p>Hyper-parameters for user defined kernels can be passed through the
+kpar parameter as well. In the case of a Radial Basis kernel function (Gaussian)
+kpar can also be set to the string &quot;automatic&quot; which uses the heuristics in 
+<code><a href="sigest.html">sigest</a></code> to calculate a good <code>sigma</code> value for the
+Gaussian RBF or Laplace kernel, from the data.
+(default = &quot;automatic&quot;).</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>The initial alpha vector. Can be either a vector of
+length equal to the number of data points or a single number.</p>
+</td></tr>
+<tr valign="top"><td><code>var</code></td>
+<td>
+<p>the initial noise variance</p>
+</td></tr>
+<tr valign="top"><td><code>var.fix</code></td>
+<td>
+<p>Keep noise variance fix during iterations (default: FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>iterations</code></td>
+<td>
+<p>Number of iterations allowed (default: 100)</p>
+</td></tr> 
+<tr valign="top"><td><code>tol</code></td>
+<td>
+<p>tolerance of termination criterion</p>
+</td></tr>
+<tr valign="top"><td><code>minmaxdiff</code></td>
+<td>
+<p>termination criteria. Stop when max difference is
+equal to this parameter (default:1e-3) </p>
+</td></tr>
+<tr valign="top"><td><code>verbosity</code></td>
+<td>
+<p>print information on algorithm convergence (default
+= FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>fit</code></td>
+<td>
+<p>indicates whether the fitted values should be computed and
+included in the model or not (default: TRUE)</p>
+</td></tr>
+<tr valign="top"><td><code>cross</code></td>
+<td>
+<p>if a integer value k&gt;0 is specified, a k-fold cross
+validation on the training data is performed to assess the
+quality of the model: the Mean Squared Error for regression</p>
+</td></tr>
+<tr valign="top"><td><code>subset</code></td>
+<td>
+<p>An index vector specifying the cases to be used in the
+training sample.  (NOTE: If given, this argument must be
+named.)</p>
+</td></tr>
+<tr valign="top"><td><code>na.action</code></td>
+<td>
+<p>A function to specify the action to be taken if <code>NA</code>s are
+found. The default action is <code>na.omit</code>, which leads to rejection of cases
+with missing values on any required variable. An alternative
+is <code>na.fail</code>, which causes an error if <code>NA</code> cases
+are found. (NOTE: If given, this argument must be named.)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> additional parameters</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The Relevance Vector Machine typically leads to sparser models
+then the SVM. It also performs better in many cases (specially in
+regression). 
+</p>
+
+
+<h3>Value</h3>
+
+<p>An S4 object of class &quot;rvm&quot; containing the fitted model.
+Accessor functions can be used to access the slots of the
+object which include :
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>The resulting relevance vectors</p>
+</td></tr>
+<tr valign="top"><td><code>alphaindex</code></td>
+<td>
+<p> The index of the resulting relevance vectors in the data
+matrix</p>
+</td></tr>
+<tr valign="top"><td><code>nRV</code></td>
+<td>
+<p>Number of relevance vectors</p>
+</td></tr>
+<tr valign="top"><td><code>RVindex</code></td>
+<td>
+<p>The indexes of the relevance vectors</p>
+</td></tr>
+<tr valign="top"><td><code>error</code></td>
+<td>
+<p>Training error (if <code>fit = TRUE</code>)</p>
+</td></tr>
+</table>
+<p>...
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Alexandros Karatzoglou <br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p>Tipping, M. E.<br />
+<em>Sparse Bayesian learning and the relevance vector machine</em><br />
+Journal of Machine Learning Research  1, 211-244<br />
+<a href="http://www.jmlr.org/papers/volume1/tipping01a/tipping01a.pdf">http://www.jmlr.org/papers/volume1/tipping01a/tipping01a.pdf</a>
+</p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="ksvm.html">ksvm</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# create data
+x &lt;- seq(-20,20,0.1)
+y &lt;- sin(x)/x + rnorm(401,sd=0.05)
+
+# train relevance vector machine
+foo &lt;- rvm(x, y)
+foo
+# print relevance vectors
+alpha(foo)
+RVindex(foo)
+
+# predict and plot
+ytest &lt;- predict(foo, x)
+plot(x, y, type ="l")
+lines(x, ytest, col="red")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

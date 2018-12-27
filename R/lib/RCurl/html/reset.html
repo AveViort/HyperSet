@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generic function for resetting an object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reset {RCurl}"><tr><td>reset {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generic function for resetting an object</h2>
+
+<h3>Description</h3>
+
+<p>This generic and the associated method for a CURLHandle
+allows one to reset the state of the Curl object
+to its default state.  This is convenient if we want
+to reuse the same connection, but want to ensure
+that it is in a particular state.
+</p>
+<p>Unfortunately, we cannot query the state of different
+fields in an existing Curl handle and so we need
+to be able to reset the state and then update it with
+any particular settings we would have liked to keep.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+reset(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the object to be reset. For our method, this is an object of
+class  <code>CURLHandle</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments for methods</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This calls the C routine <code>curl_easy_reset</code> in libcurl.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Methods typically return the updated version of the
+object passed to it. This allows the caller to assign
+the new result to the same variable rather than
+relying on mutating the content of the object in place.
+In other words, the object should not be treated as a reference
+but a new object with the updated contents should be returned.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p>Curl homepage <a href="http://curl.haxx.se">http://curl.haxx.se</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getCurlHandle.html">getCurlHandle</a></code>
+<code><a href="getCurlHandle.html">dupCurlHandle</a></code>  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ h = getCurlHandle()
+ curlSetOpt(customrequest = "DELETE")
+ reset(h)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

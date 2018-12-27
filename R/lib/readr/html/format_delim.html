@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert a data frame to a delimited string</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for format_delim {readr}"><tr><td>format_delim {readr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Convert a data frame to a delimited string</h2>
+
+<h3>Description</h3>
+
+<p>These functions are equivalent to <code><a href="write_delim.html">write_csv()</a></code> etc., but instead
+of writing to disk, they return a string.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+format_delim(x, delim, na = "NA", append = FALSE, col_names = !append)
+
+format_csv(x, na = "NA", append = FALSE, col_names = !append)
+
+format_tsv(x, na = "NA", append = FALSE, col_names = !append)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A data frame to write to disk</p>
+</td></tr>
+<tr valign="top"><td><code>delim</code></td>
+<td>
+<p>Delimiter used to separate values. Defaults to <code>" "</code>. Must be
+a single character.</p>
+</td></tr>
+<tr valign="top"><td><code>na</code></td>
+<td>
+<p>String used for missing values. Defaults to NA. Missing values
+will never be quoted; strings with the same value as <code>na</code> will
+always be quoted.</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+<p>If <code>FALSE</code>, will overwrite existing file. If <code>TRUE</code>,
+will append to existing file. In both cases, if file does not exist a new
+file is created.</p>
+</td></tr>
+<tr valign="top"><td><code>col_names</code></td>
+<td>
+<p>Write columns names at the top of the file?</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A string.
+</p>
+
+
+<h3>Output</h3>
+
+<p>Factors are coerced to character. Doubles are formatted using the grisu3
+algorithm. POSIXct's are formatted as ISO8601.
+</p>
+<p>All columns are encoded as UTF-8. <code>write_excel_csv()</code> also includes a
+<a href="https://en.wikipedia.org/wiki/Byte_order_mark">UTF-8 Byte order mark</a>
+which indicates to Excel the csv is UTF-8 encoded.
+</p>
+<p>Values are only quoted if needed: if they contain a comma, quote or newline.
+</p>
+
+
+<h3>References</h3>
+
+<p>Florian Loitsch, Printing Floating-Point Numbers Quickly and
+Accurately with Integers, PLDI '10,
+<a href="http://www.cs.tufts.edu/~nr/cs257/archive/florian-loitsch/printf.pdf">http://www.cs.tufts.edu/~nr/cs257/archive/florian-loitsch/printf.pdf</a>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>readr</em> version 1.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

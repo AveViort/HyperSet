@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find all the k-cliques in an undirected graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kCliques {RBGL}"><tr><td>kCliques {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find all the k-cliques in an undirected graph</h2>
+
+<h3>Description</h3>
+
+<p>Find all the k-cliques in an undirected graph </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+kCliques(g)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>an instance of the <code>graph</code> class </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Notice that there are different definitions of k-clique in different context.
+</p>
+<p>In computer science, a k-clique of a graph is a clique, i.e., a complete subgraph, of k nodes. 
+</p>
+<p>In Social Network Analysis, a k-clique in a graph is a subgraph where the distance between any two nodes is no greater than k.
+</p>
+<p>Here we take the definition in Social Network Analysis.
+</p>
+<p>Let D be a matrix, D[i][j] is the shortest path from node i to node j.  Algorithm is outlined as following: 
+(1) use Johnson's algorithm to fill D; let N = max(D[i][j]) for all i, j; 
+(2) each edge is a 1-clique by itself; 
+(3) for k = 2, ..., N, try to expand each (k-1)-clique to k-clique: 
+(3.1) consider a (k-1)-clique the current k-clique KC;
+(3.2) repeat the following:
+if for all nodes j in KC, D[v][j] &lt;= k, add node v to KC;
+(3.3) eliminate duplicates;
+(4) the whole graph is N-clique.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of length N; k-th entry (k = 1, ..., N) is a list of all the k-cliques in graph <code>g</code>. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Social Network Analysis: Methods and Applications.  By S. Wasserman and K. Faust, pp. 258. 
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/snacliqueex.gxl",package="RBGL"))
+coex &lt;- fromGXL(con)
+close(con)
+
+kCliques(coex)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

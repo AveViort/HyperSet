@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Indicator Variables given Classification</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for unmap {mclust}"><tr><td>unmap {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Indicator Variables given Classification
+</h2>
+
+<h3>Description</h3>
+
+<p>Converts a classification into a matrix of indicator variables.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  unmap(classification, groups=NULL, noise=NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>classification</code></td>
+<td>
+
+<p>A numeric or character vector. Typically the distinct entries of this
+vector would represent a classification of observations in a data set.
+</p>
+</td></tr>
+<tr valign="top"><td><code>groups</code></td>
+<td>
+
+<p>A numeric or character vector indicating the groups from which
+<code>classification</code> is drawn. If not supplied, the default
+is to assumed to be the unique entries of classification.
+</p>
+</td></tr>
+<tr valign="top"><td><code>noise</code></td>
+<td>
+
+<p>A single numeric or character value used to indicate the value of
+<code>groups</code> corresponding to noise.
+</p>
+</td></tr>
+<tr valign="top"><td><code>... </code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An <em>n</em> by <em>m</em> matrix of <em>(0,1)</em> indicator variables,
+where <em>n</em> is the length of <code>classification</code> and <em>m</em> is
+the number of unique values or symbols in  <code>classification</code>. 
+Columns are labeled by the unique values in <code>classification</code>, 
+and the <code>[i,j]</code>th entry is <em>1</em> if <code>classification[i]</code> 
+is the <em>j</em>th unique value or symbol in sorted order 
+<code>classification</code>. 
+If a <code>noise</code> value of symbol is designated, the corresponding indicator 
+variables are relocated to the last column of the matrix. 
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="map.html">map</a></code>,
+<code><a href="estep.html">estep</a></code>,
+<code><a href="me.html">me</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+z &lt;- unmap(iris[,5])
+z[1:5, ]
+  
+emEst &lt;- me(modelName = "VVV", data = iris[,-5], z = z)
+emEst$z[1:5,]
+  
+map(emEst$z)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

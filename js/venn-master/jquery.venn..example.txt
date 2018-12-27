@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Venn</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link type="text/css" rel="stylesheet" media="screen" href="./css/main.css" />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="./js/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.ba-hashchange.min.js"></script>
+    <script type="text/javascript" src="./js/main.js"></script>
+    <script type="text/javascript" src="./js/raphael-min.js"></script>
+    <script type="text/javascript" src="./js/jquery.venn.js"></script>
+</head>
+<body onload="vennLoad()">
+
+  <div id="venn-demo" style="margin: 0 auto; width: 430px; height: 300px"></div>
+
+  <div style="text-align: center;">Active Regions: <span id="region-list"></span></div>
+
+  <script type="text/javascript">
+    ( function($) {
+
+      $(function() {
+
+        $('#venn-demo').on('regionClicked.venn', function(e) {
+          var activeRegions = $('#venn-demo').venn('activeRegions'), arNames = [];
+
+          for ( var i in activeRegions ) {
+            arNames.push( activeRegions[i].getId() == "" ? "U" : activeRegions[i].getId() );
+                        console.log(arNames);
+          }
+          $('#region-list').html( arNames.join(', ') );
+          $('#venn-demo').find("svg").remove();
+          var regionVal = $('#region-list').text();
+          vennLoad(regionVal);
+        });
+
+      });
+    })(jQuery);
+
+        function vennLoad(regionVal){
+
+            $('#venn-demo').venn({ numSets: 3, setLabels:['AA: 60 ', 'BB: 70', 'CC: 30'] });
+
+        }
+  </script>
+
+ 

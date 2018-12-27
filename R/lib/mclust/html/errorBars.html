@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Draw error bars on a plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for errorBars {mclust}"><tr><td>errorBars {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Draw error bars on a plot</h2>
+
+<h3>Description</h3>
+
+<p>Draw error bars at x from upper to lower. If <code>horizontal = FALSE</code> (default)
+bars are drawn vertically, otherwise horizontally.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+errorBars(x, upper, lower, width = 0.1, code = 3, angle = 90, horizontal = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A vector of values where the bars must be drawn.</p>
+</td></tr>
+<tr valign="top"><td><code>upper</code></td>
+<td>
+<p>A vector of upper values where the bars must end.</p>
+</td></tr>
+<tr valign="top"><td><code>lower</code></td>
+<td>
+<p>A vector of lower values where the bars must start.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>A value specifying the width of the end-point segment.</p>
+</td></tr>
+<tr valign="top"><td><code>code</code></td>
+<td>
+<p>An integer code specifying the kind of arrows to be drawn. For details see <code><a href="../../graphics/html/arrows.html">arrows</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>angle</code></td>
+<td>
+<p>A value specifying the angle at the arrow edge. For details see <code><a href="../../graphics/html/arrows.html">arrows</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>horizontal</code></td>
+<td>
+<p>A logical specifying if bars should be drawn vertically (default) or horizontally.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments are passed to <code><a href="../../graphics/html/arrows.html">arrows</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+par(mfrow=c(2,2))
+# Create a simple example dataset
+x &lt;- 1:5
+n &lt;- c(10, 15, 12, 6, 3)
+se &lt;- c(1, 1.2, 2, 1, .5)
+# upper and lower bars
+b &lt;- barplot(n, ylim = c(0, max(n)*1.5))
+errorBars(b, lower = n-se, upper = n+se, lwd = 2, col = "red3")
+# one side bars
+b &lt;- barplot(n, ylim = c(0, max(n)*1.5))
+errorBars(b, lower = n, upper = n+se, lwd = 2, col = "red3", code = 1)
+# 
+plot(x, n, ylim = c(0, max(n)*1.5), pch = 0)
+errorBars(x, lower = n-se, upper = n+se, lwd = 2, col = "red3")
+#
+dotchart(n, labels = x, pch = 19, xlim = c(0, max(n)*1.5))
+errorBars(x, lower = n-se, upper = n+se, col = "red3", horizontal = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Unidimensional Scaling from Seriation Results</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for uniscale {seriation}"><tr><td>uniscale {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Unidimensional Scaling from Seriation Results</h2>
+
+<h3>Description</h3>
+
+<p>Performs (approximate) unidimensional scaling by first performin seriation
+to obtain a permutation and the using the permutation to calulate the
+configuration.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+uniscale(d, order = NULL, method = "QAP_LS", rep = 10, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>d</code></td>
+<td>
+<p>a dissimilarity matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>a precomputed permutation (configuration) order.
+If <code>NULL</code>, then seriation is performed using the method
+specified in <code>method</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>seriation method used if <code>o</code> is <code>NULL</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>rep</code></td>
+<td>
+<p>Number of repetitions of the seriation heuristic.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments are passed on to the seriation method.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Uses the method describes in Maier and De Leeuw (2015) to calculate the
+minimum stress configuration for either a given configuration/permutation/order
+or for a permutation computed via a seriation method.
+</p>
+<p>The code is similar to <code>uniscale</code> in <span class="pkg">smacof</span>, but scales to larger
+datasets since it does not check all permutations.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A vector with the fitted configuration.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler with code from Patrick Mair (from <span class="pkg">smacof</span>).
+</p>
+
+
+<h3>References</h3>
+
+<p>Mair P., De Leeuw J. (2015). Unidimensional scaling. In <em>Wiley StatsRef: Statistics Reference Online,</em> Wiley, New York.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../smacof/html/uniscale.html">uniscale</a></code> in <span class="pkg">smacof</span>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(SupremeCourt)
+
+d &lt;- as.dist(SupremeCourt)
+
+sc &lt;- uniscale(d)
+sc
+
+orderplot(sc)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

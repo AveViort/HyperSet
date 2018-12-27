@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: HTML Builder Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for builder {shiny}"><tr><td>builder {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>HTML Builder Functions</h2>
+
+<h3>Description</h3>
+
+<p>Simple functions for constructing HTML documents.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tags
+
+p(...)
+
+h1(...)
+
+h2(...)
+
+h3(...)
+
+h4(...)
+
+h5(...)
+
+h6(...)
+
+a(...)
+
+br(...)
+
+div(...)
+
+span(...)
+
+pre(...)
+
+code(...)
+
+img(...)
+
+strong(...)
+
+em(...)
+
+hr(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Attributes and children of the element. Named arguments become
+attributes, and positional arguments become children. Valid children are
+tags, single-character character vectors (which become text nodes), and raw
+HTML (see <code><a href="HTML.html">HTML</a></code>). You can also pass lists that contain tags,
+text nodes, and HTML.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>tags</code> environment contains convenience functions for all valid
+HTML5 tags. To generate tags that are not part of the HTML5 specification,
+you can use the <code><a href="tag.html">tag</a>()</code> function.
+</p>
+<p>Dedicated functions are available for the most common HTML tags that do not
+conflict with common R functions.
+</p>
+<p>The result from these functions is a tag object, which can be converted using
+<code><a href="../../base/html/as.character.html">as.character</a>()</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+doc &lt;- tags$html(
+  tags$head(
+    tags$title('My first page')
+  ),
+  tags$body(
+    h1('My first heading'),
+    p('My first paragraph, with some ',
+      strong('bold'),
+      ' text.'),
+    div(id='myDiv', class='simpleDiv',
+        'Here is a div with some attributes.')
+  )
+)
+cat(as.character(doc))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

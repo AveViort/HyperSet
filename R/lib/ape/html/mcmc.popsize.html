@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reversible Jump MCMC to Infer Demographic History</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mcmc.popsize {ape}"><tr><td>mcmc.popsize {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reversible Jump MCMC to Infer Demographic History</h2>
+
+<h3>Description</h3>
+
+<p>These functions implement a reversible jump MCMC framework to infer the demographic history,
+as well as corresponding confidence bands,
+from a genealogical tree. The computed demographic history is a continous
+and smooth function in time.
+<code>mcmc.popsize</code> runs the actual MCMC chain and outputs information about the
+sampling steps, <code>extract.popsize</code> generates from this MCMC
+output a table of population size in time, and  <code>plot.popsize</code> and <code>lines.popsize</code>
+provide utility functions to plot the corresponding demographic functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mcmc.popsize(tree,nstep, thinning=1, burn.in=0,progress.bar=TRUE,
+    method.prior.changepoints=c("hierarchical", "fixed.lambda"), max.nodes=30,
+   lambda=0.5, gamma.shape=0.5, gamma.scale=2,
+    method.prior.heights=c("skyline", "constant", "custom"),
+    prior.height.mean,
+    prior.height.var)
+extract.popsize(mcmc.out, credible.interval=0.95, time.points=200, thinning=1, burn.in=0)
+## S3 method for class 'popsize'
+plot(x, show.median=TRUE, show.years=FALSE, subst.rate, present.year, ...)
+## S3 method for class 'popsize'
+lines(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ...)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>tree</code></td>
+<td>
+<p>Either an ultrametric tree (i.e. an object of class <code>"phylo"</code>),
+or coalescent intervals (i.e. an object of class <code>"coalescentIntervals"</code>). </p>
+</td></tr>
+<tr valign="top"><td><code>nstep</code></td>
+<td>
+<p>Number of MCMC steps, i.e. length of the Markov chain (suggested value: 10,000-50,000).</p>
+</td></tr>
+<tr valign="top"><td><code>thinning</code></td>
+<td>
+<p>Thinning factor (suggest value: 10-100).</p>
+</td></tr>
+<tr valign="top"><td><code>burn.in</code></td>
+<td>
+<p>Number of steps dropped from the chain to allow for a burn-in phase (suggest value: 1000).</p>
+</td></tr>
+<tr valign="top"><td><code>progress.bar</code></td>
+<td>
+<p>Show progress bar during the MCMC run.</p>
+</td></tr>
+<tr valign="top"><td><code>method.prior.changepoints</code></td>
+<td>
+<p>If <code>hierarchical</code>is chosen (the default) then the smoothing parameter lambda is drawn from
+a gamma distribution with some specified shape and scale parameters.
+Alternatively, for <code>fixed.lambda</code> the value of lambda is   a given constant.
+</p>
+</td></tr>
+<tr valign="top"><td><code>max.nodes</code></td>
+<td>
+<p>Upper limit for the number of internal nodes of the approximating spline (default: 30).</p>
+</td></tr>
+<tr valign="top"><td><code>lambda</code></td>
+<td>
+<p>Smoothing parameter. For <code>method="fixed.lambda"</code> the specifed value of lambda determines
+the mean of the prior distribution   for the number of internal nodes of the approximating
+spline for the demographic function (suggested value: 0.1-1.0).</p>
+</td></tr>
+<tr valign="top"><td><code>gamma.shape</code></td>
+<td>
+<p>Shape parameter of the gamma function from which <code>lambda</code> is drawn for
+<code>method="hierarchical"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>gamma.scale</code></td>
+<td>
+<p>Scale parameter of the gamma function from which <code>lambda</code> is drawn for
+<code>method="hierarchical"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>method.prior.heights</code></td>
+<td>
+<p>Determines the prior for the heights of the change points.
+If <code>custom</code> is chosen then two functions describing the mean and variance
+of the heigths in depence of time have to be specified (via <code>prior.height.mean</code>
+and <code>prior.height.var</code> options).  Alternatively, two built-in priors are available:
+<code>constant</code> assumes constant population size and variance determined by Felsenstein
+(1992), and <code>skyline</code> assumes a skyline plot (see Opgen-Rhein et al. 2004 for
+more details).</p>
+</td></tr>
+<tr valign="top"><td><code>prior.height.mean</code></td>
+<td>
+<p>Function describing the mean of the prior distribution for the heights
+(only used if <code>method.prior.heights = custom</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>prior.height.var</code></td>
+<td>
+<p>Function describing the variance of the prior distribution for the heights
+(only used if <code>method.prior.heights = custom</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>mcmc.out</code></td>
+<td>
+<p>Output from <code>mcmc.popsize</code> - this is needed as input for <code>extract.popsize</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>credible.interval</code></td>
+<td>
+<p>Probability mass of the confidence band (default: 0.95).</p>
+</td></tr>
+<tr valign="top"><td><code>time.points</code></td>
+<td>
+<p>Number of discrete time points in the table output by <code>extract.popsize</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Table with population size versus time, as computed by <code>extract.popsize</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>show.median</code></td>
+<td>
+<p>Plot median rather than mean as point estimate for demographic function (default: TRUE).</p>
+</td></tr>
+<tr valign="top"><td><code>show.years</code></td>
+<td>
+<p>Option that determines whether the time is plotted in units of
+of substitutions (default) or in years (requires specification of substution rate
+and year of present).</p>
+</td></tr>
+<tr valign="top"><td><code>subst.rate</code></td>
+<td>
+<p>Substitution rate (see option show.years).</p>
+</td></tr>
+<tr valign="top"><td><code>present.year</code></td>
+<td>
+<p>Present year (see option show.years).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments to be passed on  to <code>plot</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Please refer to Opgen-Rhein et al. (2005) for methodological details, and the help page of
+<code><a href="skyline.html">skyline</a></code> for information on a related approach.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Rainer Opgen-Rhein and Korbinian Strimmer
+(<a href="http://strimmerlab.org">http://strimmerlab.org</a>). Parts of the rjMCMC sampling procedure
+are adapted from <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> code by Karl Browman (<a href="http://kbroman.org/">http://kbroman.org/</a>)</p>
+
+
+<h3>References</h3>
+
+<p>Opgen-Rhein, R., Fahrmeir, L. and Strimmer, K. 2005. Inference of
+demographic history from genealogical trees using reversible jump
+Markov chain Monte Carlo. <em>BMC Evolutionary Biology</em>, <b>5</b>,
+6.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="skyline.html">skyline</a></code> and <code><a href="skylineplot.html">skylineplot</a></code>. </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# get tree
+data("hivtree.newick") # example tree in NH format
+tree.hiv &lt;- read.tree(text = hivtree.newick) # load tree
+
+# run mcmc chain
+mcmc.out &lt;- mcmc.popsize(tree.hiv, nstep=100, thinning=1, burn.in=0,progress.bar=FALSE) # toy run
+#mcmc.out &lt;- mcmc.popsize(tree.hiv, nstep=10000, thinning=5, burn.in=500) # remove comments!!
+
+# make list of population size versus time
+popsize  &lt;- extract.popsize(mcmc.out)
+
+# plot and compare with skyline plot
+sk &lt;- skyline(tree.hiv)
+plot(sk, lwd=1, lty=3, show.years=TRUE, subst.rate=0.0023, present.year = 1997)
+lines(popsize, show.years=TRUE, subst.rate=0.0023, present.year = 1997)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

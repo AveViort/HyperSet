@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: ICL Criterion for Model-Based Clustering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mclustICL {mclust}"><tr><td>mclustICL {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>ICL Criterion for Model-Based Clustering</h2>
+
+<h3>Description</h3>
+
+<p>ICL (Integrated Complete-data Likelihood) for parameterized Gaussian mixture models fitted by EM algorithm initialized by model-based hierarchical clustering.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mclustICL(data, G = NULL, modelNames = NULL, 
+          initialization = list(hcPairs = NULL, 
+                                subset = NULL, 
+                                noise = NULL), 
+          x = NULL, ...)
+
+## S3 method for class 'mclustICL'
+summary(object, G, modelNames, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations. Categorical
+variables are not allowed. If a matrix or data frame, rows
+correspond to observations and columns correspond to variables. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>An integer vector specifying the numbers of mixture components
+(clusters) for which the criteria should be calculated. 
+The default is <code>G = 1:9</code>. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>modelNames</code></td>
+<td>
+
+<p>A vector of character strings indicating the models to be fitted 
+in the EM phase of clustering. The help file for 
+<code><a href="mclustModelNames.html">mclustModelNames</a></code> describes the available models.
+The default is:
+</p>
+
+<dl>
+<dt><code>c("E", "V")</code></dt><dd><p>for univariate data</p>
+</dd>
+<dt><code>mclust.options("emModelNames")</code></dt><dd><p>for multivariate data (n &gt; d)</p>
+</dd>
+<dt><code>c("EII", "VII", "EEI", "EVI", "VEI", "VVI")</code></dt><dd><p>the spherical and diagonal models for multivariate data (n &lt;= d)</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>initialization</code></td>
+<td>
+
+<p>A list containing zero or more of the following components:
+</p>
+
+<dl>
+<dt><code>hcPairs</code></dt><dd>
+<p>A matrix of merge pairs for hierarchical clustering such as produced
+by function <code>hc</code>. For multivariate data, the default is to compute
+a hierarchical clustering tree by applying function <code>hc</code> with
+<code>modelName = "VVV"</code> to the data or a subset as indicated by the
+<code>subset</code> argument.
+The hierarchical clustering results are to start EM.
+For univariate data, the default is to use quantiles to start EM.
+</p>
+</dd>
+<dt><code>subset</code></dt><dd>
+<p>A logical or numeric vector specifying a subset of the data
+to be used in the initial hierarchical clustering phase.
+</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>An object of class <code>'mclustICL'</code>. If supplied, <code>mclustICL</code>
+will use the settings in <code>x</code> to produce another object of
+class <code>'mclustICL'</code>, but with <code>G</code> and <code>modelNames</code>
+as specified in the arguments. Models that have already been computed
+in <code>x</code> are not recomputed. All arguments to <code>mclustICL</code> 
+except <code>data</code>, <code>G</code> and <code>modelName</code> are
+ignored and their values are set as specified in the attributes of
+<code>x</code>. 
+Defaults for <code>G</code> and <code>modelNames</code> are taken from <code>x</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Futher arguments used in the call to <code><a href="Mclust.html">Mclust</a></code>. 
+See also <code><a href="mclustBIC.html">mclustBIC</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+
+<p>An integer vector specifying the numbers of mixture components
+(clusters) for which the criteria should be calculated. 
+The default is <code>G = 1:9</code>. 
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns an object of class <code>'mclustICL'</code> containing the the ICL criterion 
+for the specified mixture models and numbers of clusters.
+</p>
+<p>The corresponding <code>print</code> method shows the matrix of values and the top models according to the ICL criterion. The <code>summary</code> method shows only the top models.
+</p>
+
+
+<h3>References</h3>
+
+<p>Biernacki, C., Celeux, G., Govaert, G. (2000). 
+Assessing a mixture model for clustering with the integrated completed likelihood.
+<em>IEEE Trans. Pattern Analysis and Machine Intelligence</em>, 22 (7), 719-725.
+</p>
+<p>Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and density estimation using Gaussian finite mixture models, <em>The R Journal</em>, 8/1, pp. 205-233. 
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.mclustICL.html">plot.mclustICL</a></code>, 
+<code><a href="Mclust.html">Mclust</a></code>, 
+<code><a href="mclustBIC.html">mclustBIC</a></code>, 
+<code><a href="mclustBootstrapLRT.html">mclustBootstrapLRT</a></code>, 
+<code><a href="bic.html">bic</a></code>,
+<code><a href="icl.html">icl</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(faithful)
+faithful.ICL &lt;- mclustICL(faithful)
+faithful.ICL
+summary(faithful.ICL)
+plot(faithful.ICL)
+## Not run: 
+# compare with
+faithful.BIC &lt;- mclustBIC(faithful)
+faithful.BIC
+plot(faithful.BIC)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

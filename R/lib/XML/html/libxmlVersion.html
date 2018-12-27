@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Query the version and available features of the libxml...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for libxmlVersion {XML}"><tr><td>libxmlVersion {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Query the version and available features of the libxml library.</h2>
+
+<h3>Description</h3>
+
+<p><code>libxmlVersion</code> retrieves the version of the libxml
+library used when installing this XML package.
+<code>libxmlFeatures</code> returns a named logical vector
+indicating which features are enabled.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+libxmlVersion(runTime = FALSE)
+libxmlFeatures()
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>runTime</code></td>
+<td>
+<p>a logical value indicating whether to retrieve the version information
+describing libxml  when the R package was compiled or the run-time version.
+These may be different if a) a new version of libxml2 is installed after the package is installed,
+b) if the package was installed as a binary package built on a different machine.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>libxmlVersion</code> returns a named list with
+fields
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>major</code></td>
+<td>
+<p>the major version number, either 1 or 2
+indicating the old or new-style library.</p>
+</td></tr>
+<tr valign="top"><td><code>minor</code></td>
+<td>
+<p>the within version release number.</p>
+</td></tr>
+<tr valign="top"><td><code>patch</code></td>
+<td>
+<p>the within minor release version number</p>
+</td></tr>
+</table>
+<p><code>libxmlFeatures</code> returns a logical vector with names given by:
+<code>
+ [1] "THREAD"     "TREE"       "OUTPUT"     "PUSH"       "READER"    
+ [6] "PATTERN"    "WRITER"     "SAX1"       "FTP"        "HTTP"      
+[11] "VALID"      "HTML"       "LEGACY"     "C14N"       "CATALOG"   
+[16] "XPATH"      "XPTR"       "XINCLUDE"   "ICONV"      "ISO8859X"  
+[21] "UNICODE"    "REGEXP"     "AUTOMATA"   "EXPR"       "SCHEMAS"   
+[26] "SCHEMATRON" "MODULES"    "DEBUG"      "DEBUG_MEM"  "DEBUG_RUN" 
+[31] "ZLIB"      
+</code>
+Elements are either <code>TRUE</code> or <code>FALSE</code> indicating whether support
+was activatd for that feature, or <code>NA</code> if that feature is not
+part of the particular version of libcurl.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Duncan Temple Lang </p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.w3.org/XML">http://www.w3.org/XML</a>, <a href="http://www.xmlsoft.org">http://www.xmlsoft.org</a>,
+<a href="http://www.omegahat.net">http://www.omegahat.net</a>  </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ ver &lt;- libxmlVersion()
+ if(is.null(ver)) {
+   cat("Relly old version of libxml\n")
+ } else {
+   if(ver$major &gt; 1) {
+     cat("Using libxml2\n")
+   }
+ }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

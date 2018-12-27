@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Salmonella Reverse Mutagenicity Assay</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for salmonellaTA98 {flexmix}"><tr><td>salmonellaTA98 {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Salmonella Reverse Mutagenicity Assay</h2>
+
+<h3>Description</h3>
+
+<p>Data on Ames Salmonella reverse mutagenicity assay.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("salmonellaTA98")</pre>
+
+
+<h3>Format</h3>
+
+<p>This data frame contains the following columns:
+</p>
+
+<dl>
+<dt>x</dt><dd><p>Dose levels of quinoline.</p>
+</dd>
+<dt>y</dt><dd><p>Numbers of revertant colonies of TA98 Salmonella observed on
+each of three replicate plates tested at each of six dose levels of
+quinoline diameter.</p>
+</dd>
+</dl>
+
+
+
+<h3>Details</h3>
+
+<p>This data set is taken from package <span class="pkg">dispmod</span> provided by Luca
+Scrucca.
+</p>
+
+
+<h3>Source</h3>
+
+<p>Margolin, B.J., Kaplan, N. and Zeiger, E. Statistical
+analysis of the Ames Salmonella/microsome test,
+<em>Proc. Natl. Acad. Sci. USA</em>, <b>76</b>, 3779&ndash;3783, 1981.
+</p>
+
+
+<h3>References</h3>
+
+<p>Breslow, N.E. Extra-Poisson variation in log-linear
+models, <em>Applied Statistics</em>, <b>33</b>, 38&ndash;44, 1984.
+</p>
+<p>Wang, P., Puterman, M.L., Cockburn, I.M., and Le, N.D. Mixed
+Poisson regression models with covariate dependent rates,
+<em>Biometrics</em>, <b>52</b>, 381&ndash;400, 1996.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("salmonellaTA98", package = "flexmix")
+salmonMix &lt;- initFlexmix(y ~ 1,
+                         data = salmonellaTA98, 
+                         model = FLXMRglmfix(family = "poisson", 
+                           fixed = ~ x + log(x + 10)),                        
+                         k = 2, nrep = 5)
+salmonMix.pr &lt;- predict(salmonMix, newdata = salmonellaTA98)
+plot(y ~ x, data = salmonellaTA98, 
+     pch = as.character(clusters(salmonMix)), 
+     ylim = range(c(salmonellaTA98$y, unlist(salmonMix.pr))))
+for (i in 1:2) lines(salmonellaTA98$x, salmonMix.pr[[i]], lty = i)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

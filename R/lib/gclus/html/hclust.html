@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reorders object order of hclust, keeping objects within a...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reorder.hclust {gclus}"><tr><td>reorder.hclust {gclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reorders object order of hclust, keeping objects within a cluster
+contiguous to each other. </h2>
+
+<h3>Description</h3>
+
+<p>Reorders objects so that  nearby object pairs are adjacent.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+
+## S3 method for class 'hclust'
+reorder(x,dis,...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>is the result of <code>hclust</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>dis</code></td>
+<td>
+<p>is a distance matrix or <code>dist</code>.</p>
+</td></tr>  
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments.</p>
+</td></tr>  
+</table>
+
+
+<h3>Details</h3>
+
+ 
+<p>In hierarchical cluster displays, a decision is needed at 
+each merge to specify which subtree should go on the left 
+and which on the right. 
+This algorithm uses the order suggested by Gruvaeus and Wainer (1972).
+At a merge of clusters A and B, the new cluster is one of
+(A,B), (A',B), (A,B'),(A',B'), where A' denotes A in reverse order.
+The new cluster is chosen to minimize the distance between
+the object in A placed adjacent to an object from B.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A permutation of the objects represented by <code>dis</code> is returned.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Catherine B. Hurley </p>
+
+
+<h3>References</h3>
+
+<p>Hurley, Catherine B.  &ldquo;Clustering Visualisations of Multidimensional 
+Data&rdquo;, Journal of Computational and Graphical Statistics,
+vol. 13, (4), pp 788-806, 2004.
+</p>
+<p>Gruvaeus, G. and Wainer, H. (1972),
+&ldquo;Two Additions to Hierarchical Cluster Analysis&rdquo;,
+British Journal of Mathematical and Statistical Psychology, 25, 200-206.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../stats/html/hclust.html">hclust</a></code>, 
+<code><a href="order.html">order.hclust</a></code> .</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+data(eurodist)
+dis &lt;- as.dist(eurodist)
+hc &lt;- hclust(dis, "ave")
+
+
+layout(matrix(1:2,nrow=2,ncol=1))
+op &lt;- par(mar=c(1,1,1,1))
+plot(hc)
+hc1 &lt;- reorder.hclust(hc, dis)
+plot(hc1)
+par(op)
+layout(matrix(1,1))
+
+# Both dedrograms correspond to the same tree structure,
+# but the second one shows that
+# Paris is closer to Cherbourg than Munich, and
+# Rome is closer to Gibralter than to Barcelona.
+
+
+# We can also compare both orderings with an
+# image plot of the colors.
+# The second ordering seems to place nearby cities
+# closer to each other.
+
+
+layout(matrix(1:2,nrow=2,ncol=1))
+op &lt;- par(mar=c(1,6,1,1))
+cmat &lt;- dmat.color(eurodist, rev(cm.colors(5)))
+plotcolors(cmat[hc$order,hc$order], rlabels=labels(eurodist)[hc$order])
+
+plotcolors(cmat[hc1$order,hc1$order], rlabels=labels(eurodist)[hc1$order])
+
+layout(matrix(1,1))
+par(op)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gclus</em> version 1.3.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

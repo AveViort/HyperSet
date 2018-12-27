@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Push a Hexagon Viewport (&quot;hexVP&quot;)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pushHexport {hexbin}"><tr><td>pushHexport {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Push a Hexagon Viewport (&quot;hexVP&quot;)</h2>
+
+<h3>Description</h3>
+
+<p>Push a Hexagon Viewport (<code>"hexVP"</code>, see <a href="hexVP-class.html">hexVP-class</a>) on to
+the tree of (grid) viewports, calling
+<code><a href="../../grid/html/viewports.html">pushViewport</a></code>. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pushHexport(hvp, clip = "off")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>hvp</code></td>
+<td>
+<p>a hexagon viewport, i.e., an object of class
+<code>"hexVP"</code>, see <a href="hexVP-class.html">hexVP-class</a>, typically produced by
+<code><a href="hexViewport.html">hexViewport</a>(..)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>clip</code></td>
+<td>
+<p>which viewport to push, either 'on' or 'off' are the
+allowed arguments, see details.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A hexagon viewport (<code>"hexVP"</code>) object has slots for two replicate
+viewports one with clipping turned on and one with clipping off.  This
+allows toggling the clipping option.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>the underlying <code><a href="../../grid/html/viewports.html">pushViewport</a></code> from the
+<span class="pkg">grid</span> package.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

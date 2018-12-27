@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Component Density for a Parameterized MVN Mixture Model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cdensE {mclust}"><tr><td>cdensE {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Component Density for a Parameterized MVN Mixture Model
+</h2>
+
+<h3>Description</h3>
+
+<p>Computes component densities for points in a parameterized MVN mixture model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cdensE(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensV(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensX(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensEII(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensVII(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensEEI(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensVEI(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensEVI(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensVVI(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensEEE(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensEEV(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensVEV(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensVVV(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensEVE(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensEVV(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensVEE(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensVVE(data, logarithm = FALSE, parameters, warn = NULL, ...) 
+cdensXII(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensXXI(data, logarithm = FALSE, parameters, warn = NULL, ...)
+cdensXXX(data, logarithm = FALSE, parameters, warn = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations.
+Categorical variables are not allowed.
+If a matrix or data frame, rows correspond to observations and
+columns correspond to variables.
+</p>
+</td></tr>
+<tr valign="top"><td><code>logarithm</code></td>
+<td>
+
+<p>A logical value indicating whether or not the logarithm of the
+component densities should be returned.
+The default is to return the component densities,
+obtained from the log component densities by exponentiation.
+</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+<p>The parameters of the model:
+</p>
+
+<dl>
+<dt><code>mean</code></dt><dd>
+<p>The mean for each component. If there is more than one component,
+this is a matrix whose kth column is the mean of the <em>k</em>th
+component of the mixture model.
+</p>
+</dd>
+<dt><code>variance</code></dt><dd>
+<p>A list of variance parameters for the model.
+The components of this list depend on the model
+specification. See the help file for <code><a href="mclustVariance.html">mclustVariance</a></code>
+for details.
+</p>
+</dd>
+<dt><code>pro</code></dt><dd>
+<p>Mixing proportions for the components of the mixture. 
+If the model includes a Poisson term for noise, there 
+should be one more mixing proportion than the number 
+of Gaussian components.
+</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+
+<p>A logical value indicating whether or not a warning should be issued
+when computations fail. The default is <code>warn=FALSE</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A numeric matrix whose <code>[i,j]</code>th 
+entry is the density of observation <em>i</em> in component <em>j</em>. 
+The densities are not scaled by mixing proportions.
+</p>
+
+
+<h3>Note</h3>
+
+<p>When one or more component densities are very large in magnitude,
+then it may be possible to compute the logarithm of the component
+densities but not the component densities themselves due to overflow.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cdens.html">cdens</a></code>,
+<code><a href="dens.html">dens</a></code>,
+<code><a href="mclustVariance.html">mclustVariance</a></code>,
+<code><a href="mstep.html">mstep</a></code>,
+<code><a href="mclust.options.html">mclust.options</a></code>,
+<code><a href="../../base/html/do.call.html">do.call</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+z2 &lt;- unmap(hclass(hcVVV(faithful),2)) # initial value for 2 class case
+
+model &lt;- meVVV(data=faithful, z=z2)
+cdensVVV(data=faithful, logarithm = TRUE, parameters = model$parameters)
+
+data(cross)
+z2 &lt;- unmap(cross[,1])
+
+model &lt;- meEEV(data = cross[,-1], z = z2)
+
+EEVdensities &lt;- cdensEEV( data = cross[,-1], parameters = model$parameters)
+
+cbind(cross[,-1],map(EEVdensities))
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Value of Last Evaluated Expression</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ans {gdata}"><tr><td>ans {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Value of Last Evaluated Expression</h2>
+
+<h3>Description</h3>
+
+<p>The functon returns the value of the last evaluated <em>top-level</em>
+expression, which is always assigned to <code>.Last.value</code> (in
+<code>package:base</code>).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ans()
+</pre>
+
+
+<h3>Details</h3>
+
+<p>This function retrieves <code>.Last.value</code>. For more details see 
+<code><a href="../../base/html/.Last.value.html">.Last.value</a></code>.  
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>.Last.value</code>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Liviu Andronic</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../base/html/.Last.value.html">.Last.value</a></code>, <code><a href="../../base/html/eval.html">eval</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  2+2                  # Trivial calculation...
+  ans()                # See the answer again
+
+  gamma(1:15)          # Some intensive calculation...
+  fac14 &lt;- ans()       # store the results into a variable
+
+  rnorm(20)            # Generate some standard normal values
+  ans()^2              # Convert to Chi-square(1) values...
+  stem(ans())          # Now show a stem-and-leaf table
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

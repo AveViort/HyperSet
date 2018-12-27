@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: BIC for Parameterized Gaussian Mixture Models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bic {mclust}"><tr><td>bic {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+BIC for Parameterized Gaussian Mixture Models
+</h2>
+
+<h3>Description</h3>
+
+<p>Computes the BIC (Bayesian Information Criterion) for parameterized
+mixture models given the loglikelihood, the dimension of the data,
+and number of mixture components in the model. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bic(modelName, loglik, n, d, G, noise=FALSE, equalPro=FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string indicating the model. The help file for
+<code><a href="mclustModelNames.html">mclustModelNames</a></code> describes the available models.
+</p>
+</td></tr>
+<tr valign="top"><td><code>loglik</code></td>
+<td>
+
+<p>The log-likelihood for a data set with respect to the Gaussian mixture model
+specified in the <code>modelName</code> argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+
+<p>The number of observations in the data used to compute <code>loglik</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>d</code></td>
+<td>
+
+<p>The dimension of the data used to compute <code>loglik</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>The number of components in the Gaussian mixture model used to compute
+<code>loglik</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>noise</code></td>
+<td>
+
+<p>A logical variable indicating whether or not the model includes an
+optional Poisson noise component. The default is to assume no noise
+component.
+</p>
+</td></tr>
+<tr valign="top"><td><code>equalPro</code></td>
+<td>
+
+<p>A logical variable indicating whether or not the components in the
+model are assumed to be present in equal proportion. The default is
+to assume unequal mixing proportions.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Catches unused arguments in an indirect or list call via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The BIC or Bayesian Information Criterion for the given input arguments.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mclustBIC.html">mclustBIC</a></code>,
+<code><a href="nVarParams.html">nVarParams</a></code>,
+<code><a href="mclustModelNames.html">mclustModelNames</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+n &lt;- nrow(iris)
+d &lt;- ncol(iris)-1
+G &lt;- 3
+
+emEst &lt;- me(modelName="VVI", data=iris[,-5], unmap(iris[,5]))
+names(emEst)
+
+args(bic)
+bic(modelName="VVI", loglik=emEst$loglik, n=n, d=d, G=G)
+# do.call("bic", emEst)    ## alternative call
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

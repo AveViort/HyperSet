@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Missing data imputation via the 'mix' package</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for imputeData {mclust}"><tr><td>imputeData {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Missing data imputation via the <span class="pkg">mix</span> package</h2>
+
+<h3>Description</h3>
+
+<p>Imputes missing data using the <span class="pkg">mix</span> package.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+imputeData(data, categorical = NULL, seed = NULL, verbose = interactive())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations containing
+missing values. Categorical variables are allowed. If a matrix
+or data frame, rows correspond to observations and columns
+correspond to variables. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>categorical</code></td>
+<td>
+
+<p>A logical vectors whose <em>i</em>th entry is <code>TRUE</code> if the
+<em>i</em>th variable or column of <code>data</code> is to be interpreted as
+categorical and <code>FALSE</code> otherwise. The default is to assume that a
+variable is to be interpreted as categorical only if it is a factor.
+</p>
+</td></tr>
+<tr valign="top"><td><code>seed</code></td>
+<td>
+
+<p>A seed for the function <code>rngseed</code> that is used to initialize
+the random number generator in <span class="pkg">mix</span>. By default, a seed is
+chosen uniformly in the interval <code>(.Machine$integer.max/1024,
+    .Machine$integer.max)</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+
+<p>A logical, if <code>TRUE</code> reports info about iterations of the algorithm.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dataset of the same dimensions as <code>data</code> with missing values
+filled in.
+</p>
+
+
+<h3>References</h3>
+
+<p>Schafer J. L. (1997). Analysis of Imcomplete Multivariate Data, Chapman and Hall.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="imputePairs.html">imputePairs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Note that package 'mix' must be installed
+data(stlouis, package = "mix")
+ 
+# impute the continuos variables in the stlouis data
+stlimp &lt;- imputeData(stlouis[,-(1:3)])
+
+# plot imputed values
+imputePairs(stlouis[,-(1:3)], stlimp)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

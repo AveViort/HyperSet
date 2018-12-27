@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Change the start and end values of a date range input on the...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for updateDateRangeInput {shiny}"><tr><td>updateDateRangeInput {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Change the start and end values of a date range input on the client</h2>
+
+<h3>Description</h3>
+
+<p>Change the start and end values of a date range input on the client
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+updateDateRangeInput(session, inputId, label = NULL, start = NULL,
+  end = NULL, min = NULL, max = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The <code>session</code> object passed to function given to
+<code>shinyServer</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>inputId</code></td>
+<td>
+<p>The id of the input object.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>The label to set for the input object.</p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p>The start date. Either a Date object, or a string in
+<code>yyyy-mm-dd</code> format. Supplying <code>NA</code> clears the start date.</p>
+</td></tr>
+<tr valign="top"><td><code>end</code></td>
+<td>
+<p>The end date. Either a Date object, or a string in
+<code>yyyy-mm-dd</code> format. Supplying <code>NA</code> clears the end date.</p>
+</td></tr>
+<tr valign="top"><td><code>min</code></td>
+<td>
+<p>The minimum allowed date. Either a Date object, or a string in
+<code>yyyy-mm-dd</code> format.</p>
+</td></tr>
+<tr valign="top"><td><code>max</code></td>
+<td>
+<p>The maximum allowed date. Either a Date object, or a string in
+<code>yyyy-mm-dd</code> format.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The input updater functions send a message to the client, telling it to
+change the settings of an input object. The messages are collected and sent
+after all the observers (including outputs) have finished running.
+</p>
+<p>The syntax of these functions is similar to the functions that created the
+inputs in the first place. For example, <code><a href="numericInput.html">numericInput</a>()</code> and
+<code>updateNumericInput()</code> take a similar set of arguments.
+</p>
+<p>Any arguments with NULL values will be ignored; they will not result in any
+changes to the input object on the client.
+</p>
+<p>For <code><a href="radioButtons.html">radioButtons</a>()</code>, <code><a href="checkboxGroupInput.html">checkboxGroupInput</a>()</code> and
+<code><a href="selectInput.html">selectInput</a>()</code>, the set of choices can be cleared by using
+<code>choices=character(0)</code>. Similarly, for these inputs, the selected item
+can be cleared by using <code>selected=character(0)</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dateRangeInput.html">dateRangeInput</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  sliderInput("n", "Day of month", 1, 30, 10),
+  dateRangeInput("inDateRange", "Input date range")
+)
+
+server &lt;- function(input, output, session) {
+  observe({
+    date &lt;- as.Date(paste0("2013-04-", input$n))
+
+    updateDateRangeInput(session, "inDateRange",
+      label = paste("Date range label", input$n),
+      start = date - 1,
+      end = date + 1,
+      min = date - 5,
+      max = date + 5
+    )
+  })
+}
+
+shinyApp(ui, server)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

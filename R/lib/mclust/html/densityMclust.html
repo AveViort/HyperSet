@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Density Estimation via Model-Based Clustering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for densityMclust {mclust}"><tr><td>densityMclust {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Density Estimation via Model-Based Clustering</h2>
+
+<h3>Description</h3>
+
+<p>Produces a density estimate for each data point using a Gaussian finite 
+mixture model from <code>Mclust</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+densityMclust(data, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations. Categorical
+variables are not allowed. If a matrix or data frame, rows
+correspond to observations and columns correspond to variables. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>... </code></td>
+<td>
+
+<p>Additional arguments for the <code><a href="Mclust.html">Mclust</a></code> function. 
+In particular, setting the arguments <code>G</code> and <code>modelNames</code> 
+allow to specify the number of mixture components and the type of
+model to be fitted. By default an &quot;optimal&quot; model is selected based
+on the BIC criterion. 
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>densityMclust</code>, which inherits from 
+<code>Mclust</code>, is returned with the following slot added:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>density</code></td>
+<td>
+<p>The density evaluated at the input <code>data</code>
+computed from the estimated model.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Revised version by Luca Scrucca based on 
+the original code by C. Fraley and A.E. Raftery.</p>
+
+
+<h3>References</h3>
+
+<p>Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5: clustering, classification and density estimation using Gaussian finite mixture models, <em>The R Journal</em>, 8/1, pp. 205-233. 
+</p>
+<p>Fraley C. and Raftery A. E. (2002) Model-based clustering, discriminant analysis and density estimation, <em>Journal of the American Statistical Association</em>, 97/458, pp. 611-631.
+</p>
+<p>Fraley C., Raftery A. E., Murphy T. B. and Scrucca L. (2012) mclust Version 4 for R: Normal Mixture Modeling for Model-Based Clustering, Classification, and Density Estimation. <em>Technical Report</em> No. 597, Department of Statistics, University of Washington.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.densityMclust.html">plot.densityMclust</a></code>, 
+<code><a href="Mclust.html">Mclust</a></code>, 
+<code><a href="summary.Mclust.html">summary.Mclust</a></code>,
+<code><a href="predict.densityMclust.html">predict.densityMclust</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+dens &lt;- densityMclust(faithful$waiting)
+summary(dens)
+summary(dens, parameters = TRUE)
+plot(dens, what = "BIC", legendArgs = list(x = "topright"))
+plot(dens, what = "density", data = faithful$waiting)
+
+dens &lt;- densityMclust(faithful, modelNames = "EEE", G = 3)
+summary(dens)
+summary(dens, parameters = TRUE)
+plot(dens, what = "density", data = faithful, 
+     drawlabels = FALSE, points.pch = 20)
+plot(dens, what = "density", type = "level")
+plot(dens, what = "density", type = "level", prob = c(0.1, 0.9))
+plot(dens, what = "density", type = "level", data = faithful)
+plot(dens, what = "density", type = "persp")
+
+dens &lt;- densityMclust(iris[,1:4], G = 2)
+summary(dens, parameters = TRUE)
+plot(dens, what = "density", data = iris[,1:4], 
+     col = "slategrey", drawlabels = FALSE, nlevels = 7)
+plot(dens, what = "density", type = "level", data = iris[,1:4])
+## Not run: 
+plot(dens, what = "density", type = "persp", col = grey(0.9))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

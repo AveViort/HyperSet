@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Timing SNOW Clusters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for snow-timing {snow}"><tr><td>snow-timing {snow}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Timing SNOW Clusters</h2>
+
+<h3>Description</h3>
+
+<p>Experimental functions to collect and display timing data for cluster
+computations.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+snow.time(expr)
+## S3 method for class 'snowTimingData'
+print(x, ...)
+## S3 method for class 'snowTimingData'
+plot(x, xlab = "Elapsed Time", ylab = "Node",
+                              title = "Cluster Usage", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>expression to evaluate</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>timing data object to plot or print</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>x axis label</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>y axis label</p>
+</td></tr>
+<tr valign="top"><td><code>title</code></td>
+<td>
+<p>plot main title</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>snow.time</code> collects and returns and returns timing information
+for cluster usage in evaluating <code>expr</code>. The return value is an
+object of class <code>snowTimingData</code>; details of the return
+value are subject to change.  The <code>print</code> method for
+<code>snowTimingData</code> objects shows the total elapsed time, the total
+communication time between master and worker nodes, and the compute
+time on each worker node.  The <code>plot</code>, motivated by the display
+produced by <code>xpvm</code>, produces a Gantt chart of the computation, with
+green rectangles representing active computation, blue horizontal lines
+representing a worker waiting to return a result, and red lines
+representing master/worker communications.  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ## Not run: 
+cl &lt;- makeCluster(2,type="SOCK")
+x &lt;- rnorm(1000000)
+tm &lt;- snow.time(clusterCall(cl, function(x) for (i in 1:100) sum(x), x))
+print(tm)
+plot(tm)
+stopCluster(cl)
+  
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>snow</em> version 0.4-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

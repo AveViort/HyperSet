@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Compute connected components for an undirected graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for incremental.components {RBGL}"><tr><td>incremental.components {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Compute connected components for an undirected graph</h2>
+
+<h3>Description</h3>
+
+<p>Compute connected components for an undirected graph</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+init.incremental.components(g)
+incremental.components(g)
+same.component(g, node1, node2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>an instance of the <code>graph</code> class </p>
+</td></tr>
+<tr valign="top"><td><code>node1</code></td>
+<td>
+<p>one vertex of the given graph </p>
+</td></tr>
+<tr valign="top"><td><code>node2</code></td>
+<td>
+<p>another vertex of the given graph </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This family of functions work together to calculate the connected 
+components of an undirected graph. The algorithm is based on the 
+disjoint-sets.  It works where the graph is growing by adding new edges.
+Call &quot;init.incremental.components&quot; to initialize the calculation on a new graph.
+Call &quot;incremental.components&quot; to re-calculate connected components after 
+growing the graph.  Call &quot;same.component&quot; to learn if two given vertices 
+are in the same connected components. 
+Currently, the codes can only handle ONE incremental graph at a time.  When you
+start working on another graph by calling &quot;init.incremental.components&quot;, the
+disjoint-sets info on the previous graph is lost. 
+See documentation on Incremental Connected Components in Boost Graph Library 
+for more details.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Output from <code>init.incremental.components</code> is a list of component numbers for each vertex in the graph.
+</p>
+<p>Output from <code>incremental.components</code> is a list of component numbers for each vertex in the graph.
+</p>
+<p>Output from <code>same.component</code> is true if both nodes are in the same connected component, otherwise it's false. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../graph/html/graph-class.html">connComp</a></code>, <code><a href="connectedComp.html">connectedComp</a></code>, <code><a href="strongComp.html">strongComp</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/conn2.gxl",package="RBGL"), open="r")
+coex &lt;- fromGXL(con)
+close(con)
+
+init.incremental.components(coex)
+incremental.components(coex)
+v1 &lt;- 1
+v2 &lt;- 5
+same.component(coex, v1, v2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

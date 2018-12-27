@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Manipulate DNA Sequences in Bit-Level Format</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for DNAbin {ape}"><tr><td>DNAbin {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Manipulate DNA Sequences in Bit-Level Format</h2>
+
+<h3>Description</h3>
+
+<p>These functions help to manipulate DNA sequences coded in the
+bit-level coding scheme.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'DNAbin'
+print(x, printlen = 6, digits = 3, ...)
+## S3 method for class 'DNAbin'
+rbind(...)
+## S3 method for class 'DNAbin'
+cbind(..., check.names = TRUE, fill.with.gaps = FALSE,
+             quiet = FALSE)
+## S3 method for class 'DNAbin'
+x[i, j, drop = FALSE]
+## S3 method for class 'DNAbin'
+as.matrix(x, ...)
+## S3 method for class 'DNAbin'
+c(..., recursive = FALSE)
+## S3 method for class 'DNAbin'
+as.list(x, ...)
+## S3 method for class 'DNAbin'
+labels(object, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x, object</code></td>
+<td>
+<p>an object of class <code>"DNAbin"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>either further arguments to be passed to or from other
+methods in the case of <code>print</code>, <code>as.matrix</code>, and
+<code>labels</code>, or a series of objects of class <code>"DNAbin"</code> in the
+case of <code>rbind</code>, <code>cbind</code>, and <code>c</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>printlen</code></td>
+<td>
+<p>the number of labels to print (6 by default).</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>the number of digits to print (3 by default).</p>
+</td></tr>
+<tr valign="top"><td><code>check.names</code></td>
+<td>
+<p>a logical specifying whether to check the rownames
+before binding the columns (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>fill.with.gaps</code></td>
+<td>
+<p>a logical indicating whether to keep all
+possible individuals as indicating by the rownames, and eventually
+filling the missing data with insertion gaps (ignored if
+<code>check.names = FALSE</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>a logical to switch off warning messages when some rows
+are dropped.</p>
+</td></tr>
+<tr valign="top"><td><code>i, j</code></td>
+<td>
+<p>indices of the rows and/or columns to select or to drop.
+They may be numeric, logical, or character (in the same way than for
+standard <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> objects).</p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>logical; if <code>TRUE</code>, the returned object is of the
+lowest possible dimension.</p>
+</td></tr>
+<tr valign="top"><td><code>recursive</code></td>
+<td>
+<p>for compatibility with the generic (unused).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These are all &lsquo;methods&rsquo; of generic functions which are here applied to
+DNA sequences stored as objects of class <code>"DNAbin"</code>. They are
+used in the same way than the standard <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> functions to manipulate
+vectors, matrices, and lists. Additionally, the operators <code>[[</code>
+and <code>$</code> may be used to extract a vector from a list. Note that
+the default of <code>drop</code> is not the same than the generic operator:
+this is to avoid dropping rownames when selecting a single sequence.
+</p>
+<p>These functions are provided to manipulate easily DNA sequences coded
+with the bit-level coding scheme. The latter allows much faster
+comparisons of sequences, as well as storing them in less memory
+compared to the format used before <span class="pkg">ape</span> 1.10.
+</p>
+<p>For <code>cbind</code>, the default behaviour is to keep only individuals
+(as indicated by the rownames) for which there are no missing data. If
+<code>fill.with.gaps = TRUE</code>, a &lsquo;complete&rsquo; matrix is returned,
+enventually with insertion gaps as missing data. If <code>check.names
+  = TRUE</code> (the default), the rownames of each matrix are checked, and
+the rows are reordered if necessary (if some rownames are duplicated,
+an error is returned). If <code>check.names = FALSE</code>, the matrices
+must all have the same number of rows, and are simply binded; the
+rownames of the first matrix are used. See the examples.
+</p>
+<p><code>as.matrix</code> may be used to convert DNA sequences (of the same
+length) stored in a list into a matrix while keeping the names and the
+class. <code>as.list</code> does the reverse operation.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"DNAbin"</code> in the case of <code>rbind</code>,
+<code>cbind</code>, and <code>[</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Paradis, E. (2007) A Bit-Level Coding Scheme for Nucleotides.
+<a href="http://ape-package.ird.fr/misc/BitLevelCodingScheme_20April2007.pdf">http://ape-package.ird.fr/misc/BitLevelCodingScheme_20April2007.pdf</a>
+</p>
+<p>Paradis, E. (2012) <em>Analysis of Phylogenetics and Evolution with
+R (Second Edition).</em> New York: Springer.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="as.alignment.html">as.DNAbin</a></code>, <code><a href="read.dna.html">read.dna</a></code>,
+<code><a href="read.GenBank.html">read.GenBank</a></code>, <code><a href="write.dna.html">write.dna</a></code>,
+<code><a href="image.DNAbin.html">image.DNAbin</a></code>,<code><a href="AAbin.html">AAbin</a></code>
+</p>
+<p>The corresponding generic functions are documented in the package
+<span class="pkg">base</span>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(woodmouse)
+woodmouse
+print(woodmouse, 15, 6)
+print(woodmouse[1:5, 1:300], 15, 6)
+### Just to show how distances could be influenced by sampling:
+dist.dna(woodmouse[1:2, ])
+dist.dna(woodmouse[1:3, ])
+### cbind and its options:
+x &lt;- woodmouse[1:2, 1:5]
+y &lt;- woodmouse[2:4, 6:10]
+as.character(cbind(x, y)) # gives warning
+as.character(cbind(x, y, fill.with.gaps = TRUE))
+## Not run: 
+as.character(cbind(x, y, check.names = FALSE)) # gives an error
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

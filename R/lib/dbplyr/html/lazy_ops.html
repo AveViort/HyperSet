@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Lazy operations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lazy_ops {dbplyr}"><tr><td>lazy_ops {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Lazy operations</h2>
+
+<h3>Description</h3>
+
+<p>This set of S3 classes describe the action of dplyr verbs. These are
+currently used for SQL sources to separate the description of operations
+in R from their computation in SQL. This API is very new so is likely
+to evolve in the future.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+op_base(x, vars, class = character())
+
+op_single(name, x, dots = list(), args = list())
+
+add_op_single(name, .data, dots = list(), args = list())
+
+op_double(name, x, y, args = list())
+
+op_grps(op)
+
+op_vars(op)
+
+op_sort(op)
+
+op_frame(op)
+</pre>
+
+
+<h3>Details</h3>
+
+<p><code>op_vars()</code> and <code>op_grps()</code> compute the variables and groups from
+a sequence of lazy operations. <code>op_sort()</code> tracks the order of the
+data for use in window functions.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

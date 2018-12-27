@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Kernel k-means</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kkmeans {kernlab}"><tr><td>kkmeans {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Kernel k-means</h2>
+
+<h3>Description</h3>
+
+<p>A weighted kernel version of the famous k-means algorithm.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+
+## S4 method for signature 'formula'
+kkmeans(x, data = NULL, na.action = na.omit, ...)
+
+## S4 method for signature 'matrix'
+kkmeans(x, centers, kernel = "rbfdot", kpar = "automatic",
+        alg="kkmeans", p=1, na.action = na.omit, ...)
+
+## S4 method for signature 'kernelMatrix'
+kkmeans(x, centers, ...)
+
+## S4 method for signature 'list'
+kkmeans(x, centers, kernel = "stringdot",
+        kpar = list(length=4, lambda=0.5),
+        alg ="kkmeans", p = 1, na.action = na.omit, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the matrix of data to be clustered, or a symbolic
+description of the model to be fit, or a kernel Matrix of class
+<code>kernelMatrix</code>, or a list of character vectors.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>an optional data frame containing the variables in the model.
+By default the variables are taken from the environment which
+&lsquo;kkmeans&rsquo; is called from.</p>
+</td></tr>
+<tr valign="top"><td><code>centers</code></td>
+<td>
+<p>Either the number of clusters or a matrix of initial cluster
+centers. If the first a random initial partitioning is used.</p>
+</td></tr>
+<tr valign="top"><td><code>kernel</code></td>
+<td>
+<p>the kernel function used in training and predicting.
+This parameter can be set to any function, of class kernel, which
+computes a inner product in feature space between two
+vector arguments (see <code>link{kernels}</code>). <span class="pkg">kernlab</span> provides the most popular kernel functions
+which can be used by setting the kernel parameter to the following
+strings:
+</p>
+
+<ul>
+<li> <p><code>rbfdot</code> Radial Basis kernel  &quot;Gaussian&quot;
+</p>
+</li>
+<li> <p><code>polydot</code> Polynomial kernel 
+</p>
+</li>
+<li> <p><code>vanilladot</code> Linear kernel 
+</p>
+</li>
+<li> <p><code>tanhdot</code> Hyperbolic tangent kernel 
+</p>
+</li>
+<li> <p><code>laplacedot</code> Laplacian kernel 
+</p>
+</li>
+<li> <p><code>besseldot</code> Bessel kernel 
+</p>
+</li>
+<li> <p><code>anovadot</code> ANOVA RBF kernel 
+</p>
+</li>
+<li> <p><code>splinedot</code> Spline kernel
+</p>
+</li>
+<li> <p><code>stringdot</code> String kernel
+</p>
+</li></ul>
+
+<p>Setting the kernel parameter to &quot;matrix&quot; treats <code>x</code> as a kernel
+matrix calling the <code>kernelMatrix</code> interface.<br />
+</p>
+<p>The kernel parameter can also be set to a user defined function of
+class kernel by passing the function name as an argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>a character string or the list of hyper-parameters (kernel parameters).
+The default character string <code>"automatic"</code> uses a heuristic the determine a
+suitable value for the width parameter of the RBF kernel.<br />
+</p>
+<p>A list can also be used containing the parameters to be used with the
+kernel function. Valid parameters for existing kernels are :
+</p>
+
+<ul>
+<li> <p><code>sigma</code> inverse kernel width for the Radial Basis
+kernel function &quot;rbfdot&quot; and the Laplacian kernel &quot;laplacedot&quot;.
+</p>
+</li>
+<li> <p><code>degree, scale, offset</code> for the Polynomial kernel &quot;polydot&quot;
+</p>
+</li>
+<li> <p><code>scale, offset</code> for the Hyperbolic tangent kernel
+function &quot;tanhdot&quot;
+</p>
+</li>
+<li> <p><code>sigma, order, degree</code> for the Bessel kernel &quot;besseldot&quot;. 
+</p>
+</li>
+<li> <p><code>sigma, degree</code> for the ANOVA kernel &quot;anovadot&quot;.
+</p>
+</li>
+<li> <p><code>length, lambda, normalized</code> for the &quot;stringdot&quot; kernel
+where length is the length of the strings considered, lambda the
+decay factor and normalized a logical parameter determining if the
+kernel evaluations should be normalized.
+</p>
+</li></ul>
+
+<p>Hyper-parameters for user defined kernels can be passed through the
+kpar parameter as well.</p>
+</td></tr>
+<tr valign="top"><td><code>alg</code></td>
+<td>
+<p>the algorithm to use. Options currently include
+<code>kkmeans</code> and <code>kerninghan</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>a parameter used to keep the affinity matrix positive semidefinite</p>
+</td></tr>
+<tr valign="top"><td><code>na.action</code></td>
+<td>
+<p>The action to perform on NA</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>kernel k-means</code> uses the 'kernel trick' (i.e. implicitly projecting all data
+into a non-linear feature space with the use of a kernel) in order to
+deal with one of the major drawbacks of <code>k-means</code> that is that it cannot
+capture clusters that are not linearly separable in input space.  <br />
+The algorithm is implemented using the triangle inequality to avoid
+unnecessary and computational expensive distance calculations.
+This leads to significant speedup particularly on large data sets with
+a high number of clusters. <br />
+With a particular choice of weights this algorithm becomes
+equivalent to Kernighan-Lin, and the norm-cut graph partitioning
+algorithms. <br />
+The function also support input in the form of a kernel matrix
+or a list of characters for text clustering.<br />
+The data can be passed to the <code>kkmeans</code> function in a <code>matrix</code> or a
+<code>data.frame</code>, in addition <code>kkmeans</code> also supports input in the form of a
+kernel matrix of class <code>kernelMatrix</code> or as a list of character
+vectors where a string kernel has to be used.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An S4 object of class <code>specc</code> which extends the class <code>vector</code>
+containing integers indicating the cluster to which
+each point is allocated. The following slots contain useful information
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>centers</code></td>
+<td>
+<p>A matrix of cluster centers.</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>The number of point in each cluster</p>
+</td></tr>
+<tr valign="top"><td><code>withinss</code></td>
+<td>
+<p>The within-cluster sum of squares for each cluster</p>
+</td></tr>
+<tr valign="top"><td><code>kernelf</code></td>
+<td>
+<p>The kernel function used</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p> Alexandros Karatzoglou <br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p>Inderjit Dhillon, Yuqiang Guan, Brian Kulis<br />
+A Unified view of Kernel k-means, Spectral Clustering and Graph
+Partitioning<br />
+UTCS Technical Report<br />
+<a href="http://people.bu.edu/bkulis/pubs/spectral_techreport.pdf">http://people.bu.edu/bkulis/pubs/spectral_techreport.pdf</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="specc.html">specc</a></code>, <code><a href="kpca.html">kpca</a></code>, <code><a href="kcca.html">kcca</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Cluster the iris data set.
+data(iris)
+
+sc &lt;- kkmeans(as.matrix(iris[,-5]), centers=3)
+
+sc
+centers(sc)
+size(sc)
+withinss(sc)
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

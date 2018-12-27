@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extra Fuctions to Plot and Annotate Phylogenies</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plot.phylo.extra {ape}"><tr><td>plot.phylo.extra {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extra Fuctions to Plot and Annotate Phylogenies</h2>
+
+<h3>Description</h3>
+
+<p>These are extra functions to plot and annotate phylogenies, mostly
+calling basic graphical functions in <span class="pkg">ape</span>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plotBreakLongEdges(phy, n = 1, ...)
+drawSupportOnEdges(value, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>the numner of long branches to be broken.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>the values to be printed on the internal branches of the tree.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to <code>plot.phylo</code> or to
+<code>edgelabels</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>drawSupportOnEdges</code> assumes the tree is unrooted, so the vector
+<code>value</code> should have as many values than the number of internal
+branches (= number of nodes - 1). If there is one additional value, it
+is assumed that it relates to the root node and is dropped (see examples).
+</p>
+
+
+<h3>Value</h3>
+
+<p>NULL</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code>, <code><a href="nodelabels.html">edgelabels</a></code>,
+<code><a href="boot.phylo.html">boot.phylo</a></code>, <code><a href="plotTreeTime.html">plotTreeTime</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tr &lt;- rtree(10)
+tr$edge.length[c(1, 18)] &lt;- 100
+op &lt;- par(mfcol = 1:2)
+plot(tr); axisPhylo()
+plotBreakLongEdges(tr, 2); axisPhylo()
+
+## from ?boot.phylo:
+f &lt;- function(x) nj(dist.dna(x))
+data(woodmouse)
+tw &lt;- f(woodmouse) # NJ tree with K80 distance
+set.seed(1)
+## bootstrap with 100 replications:
+(bp &lt;- boot.phylo(tw, woodmouse, f, quiet = TRUE))
+## the first value relates to the root node and is always 100
+## it is ignored below:
+plot(tw, "u")
+drawSupportOnEdges(bp)
+## more readable but the tree is really unrooted:
+plot(tw)
+drawSupportOnEdges(bp)
+par(op)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

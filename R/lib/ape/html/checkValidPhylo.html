@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Check the Structure of a &quot;phylo&quot; Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for checkValidPhylo {ape}"><tr><td>checkValidPhylo {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Check the Structure of a &quot;phylo&quot; Object</h2>
+
+<h3>Description</h3>
+
+<p>This function takes as single argument an object (phy), checks its
+elements, and prints a diagnostic. All problems are printed with a
+label: FATAL (will likely cause an error or a crash) or MODERATE (may
+cause some problems).
+</p>
+<p>This function is mainly intended for developers creating
+<code>"phylo"</code> objects from scratch.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+checkValidPhylo(phy)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>NULL.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tr &lt;- rtree(3)
+checkValidPhylo(tr)
+tr$edge[1] &lt;- 0
+checkValidPhylo(tr)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

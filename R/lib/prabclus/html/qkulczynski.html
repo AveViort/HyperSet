@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Quantitative Kulczynski distance matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for qkulczynski {prabclus}"><tr><td>qkulczynski {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Quantitative Kulczynski distance matrix</h2>
+
+<h3>Description</h3>
+
+<p>Computes quantitative Kulczynski distances between the columns of an
+abundance matrix.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+qkulczynski(regmat, log.distance=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>regmat</code></td>
+<td>
+<p>(non-negative) abundance matrix. Columns are species,
+rows are regions.</p>
+</td></tr>
+<tr valign="top"><td><code>log.distance</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, 1 is added to the
+abundance matrix and then the logs of the values are taken in order
+to compute the distance.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The quantitative Kulczynski distance between two species
+is 1-(mean of (mean of over regions minimum abundance of both
+species)/(sum of abundances of species 1) and (mean of over regions
+minimum abundance of both species)/(sum of abundances of species 2)).
+If the abundance matrix is a 0-1-matrix, this gives the standard
+Kulczynski distance.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A symmetrical matrix of quantitative Kulczynski distances.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>D. P. Faith, P. R. Minchin and L. Belbin (1987) Compositional
+dissimilarity as a robust measure of ecological distance.
+<em>Vegetation</em> 69, 57-68.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="kulczynski.html">kulczynski</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+options(digits=4)
+data(kykladspecreg)
+qkulczynski(t(kykladspecreg))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

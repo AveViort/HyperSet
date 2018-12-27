@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Check if URL exists</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for url.exists {RCurl}"><tr><td>url.exists {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Check if URL exists</h2>
+
+<h3>Description</h3>
+
+<p>This functions is analogous to <code><a href="../../base/html/file.exists.html">file.exists</a></code>
+and determines whether a request for a specific URL responds
+without error. We make the request but ask the server
+not to return the body. We just process the header.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+url.exists(url, ..., .opts = list(...),
+            curl = getCurlHandle(.opts = .opts),
+             .header = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>url</code></td>
+<td>
+<p>the URL whose existence we are to test</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>name = value pairs of Curl options.</p>
+</td></tr>
+<tr valign="top"><td><code>.opts</code></td>
+<td>
+<p>a list of name = value pairs of Curl options.</p>
+</td></tr>
+<tr valign="top"><td><code>curl</code></td>
+<td>
+<p>a Curl handle that the caller can specify if she wants to
+reuse an existing handle, e.g. with different options already
+specified or that has previously established a connection to the Web
+server</p>
+</td></tr>
+<tr valign="top"><td><code>.header</code></td>
+<td>
+<p>a logical value that if <code>TRUE</code> causes the header
+information to be returned.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This makes an HTTP request but with the nobody option set to
+<code>FALSE</code> so that we don't actually retrieve the contents of the URL.
+</p>
+
+
+<h3>Value</h3>
+
+<p>If <code>.header</code> is <code>FALSE</code>, this returns
+<code>TRUE</code> or <code>FALSE</code> indicating whether
+the request was successful (had a status with a value
+in the 200 range).
+</p>
+<p>If <code>.header</code> is <code>TRUE</code>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>References</h3>
+
+<p>HTTP specification
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="curlPerform.html">curlPerform</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ url.exists("http://www.omegahat.net/RCurl")
+ try(url.exists("http://www.omegahat.net/RCurl-xxx"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

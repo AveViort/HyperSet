@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;FLXdist&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for FLXdist-class {flexmix}"><tr><td>FLXdist-class {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;FLXdist&quot;</h2>
+
+<h3>Description</h3>
+
+<p>Objects of class <code>FLXdist</code> represent unfitted finite mixture
+models. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'FLXdist'
+parameters(object, component = NULL, model = NULL, which = c("model",
+    "concomitant"), simplify = TRUE, drop = TRUE)
+## S4 method for signature 'FLXdist'
+predict(object, newdata = list(), aggregate = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>An object of class &quot;FLXdist&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>component</code></td>
+<td>
+<p>Number of component(s), if <code>NULL</code> all components
+are returned.</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>Number of model(s), if <code>NULL</code> all models are
+returned.</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>Specifies if the parameters of the component specific model or the
+concomitant variable model are returned.</p>
+</td></tr>
+<tr valign="top"><td><code>simplify</code></td>
+<td>
+<p>Logical, if <code>TRUE</code> the returned values are
+simplified to a vector or matrix if possible.</p>
+</td></tr>
+<tr valign="top"><td><code>drop</code></td>
+<td>
+<p>Logical, if <code>TRUE</code> the function tries to simplify the
+return object by omitting lists of length one.</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>Dataframe containing new data.</p>
+</td></tr>
+<tr valign="top"><td><code>aggregate</code></td>
+<td>
+<p>Logical, if <code>TRUE</code> then the predicted values for
+each model aggregated over the components are returned.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Passed to the method of the model class.</p>
+</td></tr>
+</table>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt>model</dt><dd><p>List of <code>FLXM</code> objects.</p>
+</dd>
+<dt>prior</dt><dd><p>Numeric vector with prior probabilities of clusters.</p>
+</dd>
+<dt>components</dt><dd><p>List describing the components using 
+<code>FLXcomponent</code> objects.</p>
+</dd>
+<dt><code>concomitant</code>:</dt><dd><p>Object of class <code>"FLXP"</code>.</p>
+</dd>
+<dt>formula</dt><dd><p>Object of class <code>"formula"</code>.</p>
+</dd>
+<dt>call</dt><dd><p>The function call used to create the object.</p>
+</dd>
+<dt>k</dt><dd><p>Number of clusters.</p>
+</dd>
+</dl>
+  
+
+
+<h3>Accessor Functions</h3>
+
+<p>The following functions should be used for accessing the corresponding
+slots:
+</p>
+
+<dl>
+<dt><code>parameters</code>:</dt><dd><p>The parameters for each model and component,
+return value depends on the model.</p>
+</dd>
+<dt><code>prior</code>:</dt><dd><p>Numeric vector of prior class probabilities/component weights</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Friedrich Leisch and Bettina Gruen</p>
+
+
+<h3>See Also</h3>
+
+<p><code>FLXdist</code></p>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

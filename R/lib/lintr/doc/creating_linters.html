@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Jim Hester" />
+
+<meta name="date" content="2018-11-08" />
+
+<title>Creating new linters</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating new linters</h1>
+<h4 class="author"><em>Jim Hester</em></h4>
+<h4 class="date"><em>2018-11-08</em></h4>
+
+
+
+<p>This vignette describes the steps necessary to create a new linter.</p>
+<p>A good example of a simple linter is the <code>assignment_linter</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co">#' @describeIn linters checks that '&lt;-' is always used for assignment</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="co">#' @export</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">assignment_linter &lt;-<span class="st"> </span><span class="cf">function</span>(source_file) {</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">  <span class="kw">lapply</span>(<span class="kw">ids_with_token</span>(source_file, <span class="st">&quot;EQ_ASSIGN&quot;</span>),</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">    <span class="cf">function</span>(id) {</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">      parsed &lt;-<span class="st"> </span>source_file<span class="op">$</span>parsed_content[id, ]</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">      <span class="kw">Lint</span>(</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">        <span class="dt">filename =</span> source_file<span class="op">$</span>filename,</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">        <span class="dt">line_number =</span> parsed<span class="op">$</span>line1,</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">        <span class="dt">column_number =</span> parsed<span class="op">$</span>col1,</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">        <span class="dt">type =</span> <span class="st">&quot;style&quot;</span>,</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">        <span class="dt">message =</span> <span class="st">&quot;Use &lt;-, not =, for assignment.&quot;</span>,</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">        <span class="dt">line =</span> source_file<span class="op">$</span>lines[parsed<span class="op">$</span>line1]</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">        )</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">    })</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">}</a></code></pre></div>
+<p>Lets walk through the parts of the linter individually.</p>
+<div id="writing-the-linter" class="section level2">
+<h2>Writing the linter</h2>
+<p>The first two lines add the linter to the <code>linters</code> documentation and export it for use outside the package.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">#' @describeIn linters checks that '&lt;-' is always used for assignment</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#' @export</span></a></code></pre></div>
+<p>Next we define the name of the new linter. The convention is that all linter names are suffixed by <code>_linter</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">assignment_linter &lt;-<span class="st"> </span><span class="cf">function</span>(source_file) {</a></code></pre></div>
+<p>Your linter will be called by each top level expression in the file to be linted.</p>
+<p>The raw text of the expression is available from <code>source_file$content</code>. However it is recommended to work with the tokens from <code>source_file$parsed_content</code> if possible, as they are tokenzied from the <code>R</code> parser. These tokens are obtained from <code>parse()</code> and <code>getParseData()</code> calls done prior to calling the new linter. <code>getParseData()</code> returns a <code>data.frame</code> with information from the source parse tree of the file being linted. A list of tokens available from <a href="https://github.com/wch/r-source/blob/ff1bca2f21aba271d428474f00494eece5c36dd3/src/main/gram.y#L293-L307">r-source/src/main/gram.y</a>.</p>
+<p><code>ids_with_token()</code> can be used to search for a specific token and return the associated id. Note that the <code>rownames</code> for <code>parsed_content</code> are set to the <code>id</code>, so you can retrieve the rows for a given id with <code>source_file$parsed_content[id, ]</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">lapply</span>(<span class="kw">ids_with_token</span>(source_file, <span class="st">&quot;EQ_ASSIGN&quot;</span>),</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="cf">function</span>(id) {</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">    parsed &lt;-<span class="st"> </span>source_file<span class="op">$</span>parsed_content[id, ]</a></code></pre></div>
+<p>Lastly build a <code>Lint</code> object which describes the issue. See <code>?Lint</code> for a description of the arguments.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">Lint</span>(</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  <span class="dt">filename =</span> source_file<span class="op">$</span>filename,</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  <span class="dt">line_number =</span> parsed<span class="op">$</span>line1,</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  <span class="dt">column_number =</span> parsed<span class="op">$</span>col1,</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="dt">type =</span> <span class="st">&quot;style&quot;</span>,</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">  <span class="dt">message =</span> <span class="st">&quot;Use &lt;-, not =, for assignment.&quot;</span>,</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">  <span class="dt">line =</span> source_file<span class="op">$</span>lines[parsed<span class="op">$</span>line1]</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">  )</a></code></pre></div>
+<p>You do not have to return a Lint for every iteration of your loop. Feel free to return <code>NULL</code> or empty lists() for tokens which do not need to be linted. You can even return a <code>list</code> of <code>Lint</code> objects if more than one Lint was found.</p>
+</div>
+<div id="writing-linter-tests" class="section level2">
+<h2>Writing linter tests</h2>
+<p>The <code>linter</code> package uses <a href="https://github.com/hadley/testthat">testthat</a> for testing. You can run all of the currently available tests using <code>devtools::test()</code>. If you want to run only the tests in a given file use the <code>filter</code> argument to <code>devtools::test()</code>.</p>
+<p>Linter tests should be put in the <a href="https://github.com/jimhester/lintr/tree/master/tests/testthat">tests/testthat/</a> folder. The test filename should be the linter name prefixed by <code>test-</code>, e.g. <code>test-assignment_linter.R</code>.</p>
+<p>The first line in the test file should be a line which defines the context of the text (the linter name).</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">context</span>(<span class="st">&quot;assignment_linter&quot;</span>)</a></code></pre></div>
+<p>You can then specify one or more <code>test_that</code> functions. Most of the linters use the same default form.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">test_that</span>(<span class="st">&quot;returns the correct linting&quot;</span>, {</a></code></pre></div>
+<p>You then test a series of expectations for the linter using <code>expect_lint</code>. Please see <code>?expect_lint</code> for a full description of the parameters.</p>
+<p>I try to test 3 main things.</p>
+<ol style="list-style-type: decimal">
+<li>Linter returns no lints when there is nothing to lint. e.g.</li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">expect_lint</span>(<span class="st">&quot;blah&quot;</span>, <span class="ot">NULL</span>, assignment_linter)</a></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Linter returns a lint when there is something to lint. e.g.</li>
+</ol>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">expect_lint</span>(<span class="st">&quot;blah=1&quot;</span>,</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  <span class="kw">rex</span>(<span class="st">&quot;Use &lt;-, not =, for assignment.&quot;</span>),</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">    assignment_linter)</a></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>As many edge cases as you can think of that might break it. e.g.</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">expect_lint</span>(<span class="st">&quot;fun((blah = fun(1)))&quot;</span>,</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">  <span class="kw">rex</span>(<span class="st">&quot;Use &lt;-, not =, for assignment.&quot;</span>),</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">  assignment_linter)</a></code></pre></div>
+<p>It is always better to write too many tests rather than too few.</p>
+</div>
+<div id="adding-your-linter-to-the-default_linters" class="section level2">
+<h2>Adding your linter to the default_linters</h2>
+<p>If your linter is non-project specific you can add it to <code>default_linters</code>. This object is created in the file <code>zzz.R</code>. The name ensures that it will always run after all the linters are defined. Simply add your linter name to the <code>default_linters</code> list before the <code>NULL</code> at the end.</p>
+</div>
+<div id="submit-pull-request" class="section level2">
+<h2>Submit pull request</h2>
+<p>Push your changes to a branch of your fork of the <a href="https://github.com/jimhester/lintr">lintr</a> repository, and submit a pull request to get your linter merged into lintr!</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Functions for the Dirichlet Distribution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rdirichlet {gtools}"><tr><td>rdirichlet {gtools}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Functions for the Dirichlet Distribution</h2>
+
+<h3>Description</h3>
+
+<p>Functions to compute the density of or generate random deviates from
+the Dirichlet distribution.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rdirichlet(n, alpha)
+ddirichlet(x, alpha)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A vector containing a single random deviate or matrix
+containg one random deviate per row.</p>
+</td></tr> 
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>Number of random vectors to generate. </p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>Vector or (for <code>ddirichlet</code>) matrix containing shape
+parameters. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The Dirichlet distribution is the multidimensional generalization of
+the beta distribution.  It is the canonical Bayesian distribution for
+the parameter estimates of a multinomial distribution.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>ddirichlet</code> returns a vector containing the Dirichlet density for the
+corresponding rows of <code>x</code>.
+</p>
+<p><code>rdirichlet</code> returns a matrix with <code>n</code> rows, each containing
+a single Dirichlet random deviate.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Code original posted by Ben Bolker to R-News on Fri Dec 15 2000. See
+<a href="https://stat.ethz.ch/pipermail/r-help/2000-December/009561.html">https://stat.ethz.ch/pipermail/r-help/2000-December/009561.html</a>.
+Ben attributed the code to Ian Wilson <a href="mailto:i.wilson@maths.abdn.ac.uk">i.wilson@maths.abdn.ac.uk</a>.
+Subsequent modifications by Gregory R. Warnes
+<a href="mailto:greg@warnes.net">greg@warnes.net</a>.
+</p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="../../stats/html/Beta.html">dbeta</a></code>, <code><a href="../../stats/html/Beta.html">rbeta</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+  x &lt;- rdirichlet(20, c(1,1,1) )
+
+  ddirichlet(x, c(1,1,1) )
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gtools</em> version 3.8.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

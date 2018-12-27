@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Bk permutation - Calculating Fowlkes-Mallows Index for two...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Bk_permutations {dendextend}"><tr><td>Bk_permutations {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Bk permutation - Calculating Fowlkes-Mallows Index for two dendrogram</h2>
+
+<h3>Description</h3>
+
+<p>Bk is the calculation of Fowlkes-Mallows index for a series of k cuts 
+for two dendrograms.
+</p>
+<p>Bk permutation calculates the Bk under the null hypothesis of no similarirty
+between the two trees by randomally shuffling the labels of the two trees
+and calculating their Bk.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+Bk_permutations(tree1, tree2, k, R = 1000,
+  warn = dendextend_options("warn"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>tree1</code></td>
+<td>
+<p>a dendrogram/hclust/phylo object.</p>
+</td></tr>
+<tr valign="top"><td><code>tree2</code></td>
+<td>
+<p>a dendrogram/hclust/phylo object.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>an integer scalar or vector with the desired number 
+of cluster groups.
+If missing - the Bk will be calculated for a default k range of
+2:(nleaves-1).
+No point in checking k=1/k=n, since both will give Bk=1.</p>
+</td></tr>
+<tr valign="top"><td><code>R</code></td>
+<td>
+<p>integer (Default is 1000). The number of Bk permutation to perform for each k.</p>
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+<p>logical (default from dendextend_options(&quot;warn&quot;) is FALSE).
+Set if warning are to be issued, it is safer to keep this at TRUE,
+but for keeping the noise down, the default is FALSE.
+If set to TRUE, extra checks are made to varify that the two clusters have
+the same size and the same labels.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Ignored (passed to FM_index_R/FM_index_profdpm).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>From Wikipedia:
+</p>
+<p>Fowlkes-Mallows index (see references) is an external evaluation method 
+that is used to determine the similarity between two clusterings
+(clusters obtained after a clustering algorithm). This measure of similarity
+could be either between two hierarchical clusterings or a clustering and
+a benchmark classification. A higher the value for the Fowlkes-Mallows index
+indicates a greater similarity between the clusters and the benchmark 
+classifications.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list (of the length of k's), where each element of the list has
+R (number of permutations) calculations of Fowlkes-Mallows index 
+between two dendrogram after having their labels shuffled.
+</p>
+<p>The names of the lists' items is the k for which it was calculated.
+</p>
+
+
+<h3>References</h3>
+
+<p>Fowlkes, E. B.; Mallows, C. L. (1 September 1983).
+&quot;A Method for Comparing Two Hierarchical Clusterings&quot;.
+Journal of the American Statistical Association 78 (383): 553.
+</p>
+<p><a href="http://en.wikipedia.org/wiki/Fowlkes-Mallows_index">http://en.wikipedia.org/wiki/Fowlkes-Mallows_index</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="FM_index.html">FM_index</a></code>, <a href="Bk.html">Bk</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+set.seed(23235)
+ss &lt;- TRUE # sample(1:150, 10 )
+hc1 &lt;- hclust(dist(iris[ss,-5]), "com")
+hc2 &lt;- hclust(dist(iris[ss,-5]), "single")
+# tree1 &lt;- as.treerogram(hc1)
+# tree2 &lt;- as.treerogram(hc2)
+#    cutree(tree1)   
+
+some_Bk &lt;- Bk(hc1, hc2, k = 20)
+some_Bk_permu &lt;- Bk_permutations(hc1, hc2, k = 20)
+
+# we can see that the Bk is much higher than the permutation Bks: 
+plot(x=rep(1,1000), y= some_Bk_permu[[1]], 
+        main = "Bk distribution under H0",
+        ylim = c(0,1))
+points(1, y= some_Bk, pch = 19, col = 2 )
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

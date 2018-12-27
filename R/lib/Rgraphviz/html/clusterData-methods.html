@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get and set attributes for a cluster of an Ragraph object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for clusterData-methods {Rgraphviz}"><tr><td>clusterData-methods {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get and set attributes for a cluster of an Ragraph object</h2>
+
+<h3>Description</h3>
+
+<p>Attributes of a graph can be accessed using <code>clusterData</code>.  
+There's no default attributes for clusters.
+The attributes must be defined using <code><a href="graphDataDefaults-methods.html">graphDataDefaults</a></code>.  
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+clusterData(self, cluster, attr)
+clusterData(self, cluster, attr) &lt;- value
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>self</code></td>
+<td>
+<p>A <code>Ragraph-class</code> instance</p>
+</td></tr>
+<tr valign="top"><td><code>cluster</code></td>
+<td>
+<p>cluster number</p>
+</td></tr>
+<tr valign="top"><td><code>attr</code></td>
+<td>
+<p>A <code>character</code> vector of length one specifying the
+name of a cluster attribute</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>A <code>character</code> vector to store as the attribute value</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+g1_gz &lt;- gzfile(system.file("GXL/graphExample-01.gxl.gz",
+                            package="graph"))
+g11_gz &lt;- gzfile(system.file("GXL/graphExample-11.gxl.gz",
+                             package="graph"))
+if(require(XML)) {
+  g1 &lt;- fromGXL(g1_gz)
+  g11 &lt;- fromGXL(g11_gz)
+  g1_11 &lt;- join(g1, g11)
+  sgl &lt;- vector(mode="list", length=2)
+  sgl[[1]] &lt;- list(graph=g1, cluster=TRUE)
+  sgl[[2]] &lt;- list(graph=g11, cluster=TRUE)
+  ng &lt;- agopenSimple(g1_11, "tmpsg", subGList=sgl)
+  clusterData(ng, 1, c("bgcolor")) &lt;- c("blue")
+  clusterData(ng, 2, c("bgcolor")) &lt;- c("red")
+  toFile(ng, layoutType="dot", filename="g1_11_dot.ps", fileType="ps")
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

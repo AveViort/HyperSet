@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Sanitization Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sanitize {xtable}"><tr><td>sanitize {xtable}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Sanitization Functions
+</h2>
+
+<h3>Description</h3>
+
+<p>Functions for sanitizing elements of a table produced by
+<span class="pkg">xtable</span>. Used for dealing with characters which have special
+meaning in the output format.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sanitize(str, type = "latex")
+sanitize.numbers(str, type, math.style.negative = FALSE,
+                 math.style.exponents = FALSE)
+sanitize.final(str, type)
+as.is(str)
+as.math(str, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>str</code></td>
+<td>
+<p>A character object to be sanitized.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Type of table to produce. Possible values for <code>type</code>
+are <code>"latex"</code> or <code>"html"</code>.
+Default value is <code>"latex"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>math.style.negative</code></td>
+<td>
+<p>In a LaTeX table, if <code>TRUE</code>, then use
+$-$ for the negative sign (as was the behavior prior to version 1.5-3).
+Default value is <code>FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>math.style.exponents</code></td>
+<td>
+<p>In a LaTeX table, if <code>TRUE</code> or
+<code>"$$"</code>, then use <code style="white-space: pre;">$5 \times 10^{5}$</code> for 5e5. If
+<code>"ensuremath"</code>, then use <code style="white-space: pre;">\ensuremath{5 \times 10^{5}}</code>
+for 5e5. If <code>"UTF-8"</code> or <code>"UTF-8"</code>, then use UTF-8 to
+approximate the LaTeX typsetting for 5e5.
+Default value is <code>FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments. Character strings or character
+vectors.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If <code>type</code> is <code>"latex"</code>, <code>sanitize()</code> will replace
+special characters such as <code style="white-space: pre;">&amp;</code> and the like by strings which will
+reproduce the actual character, e.g. <code style="white-space: pre;">&amp;</code> is replaced by
+<code style="white-space: pre;">\&amp;</code>.
+</p>
+<p>If <code>type</code> is <code>"html"</code>, <code>sanitize()</code> will replace
+special characters such as <code style="white-space: pre;">&lt;</code> and the like by strings which will
+reproduce the actual character, e.g. <code style="white-space: pre;">&lt;</code> is replaced by
+<code style="white-space: pre;">&amp;lt;</code>.
+</p>
+<p>When <code>math.style.negative</code> is <code>TRUE</code>, and <code>type</code> is
+<code>"latex"</code>, $-$ is used for the negative sign rather than a
+simple hyphen (-). No effect when <code>type</code> is <code>"html"</code>.
+</p>
+<p>When <code>type</code> is <code>"latex"</code>, and <code>math.style.exponents</code>
+is <code>TRUE</code> or <code style="white-space: pre;">"$$"</code>, then use <code style="white-space: pre;">$5 \times 10^{5}$</code> for
+5e5. If <code>"ensuremath"</code>, then use <code style="white-space: pre;">\ensuremath{5 \times
+  10^{5}}</code> for 5e5. If <code>"UTF-8"</code> or <code>"UTF-8"</code>, then use UTF-8
+to approximate the LaTeX typsetting for 5e5.
+</p>
+<p>When <code>type</code> is <code>"latex"</code> <code>sanitize.final</code> has no
+effect. When <code>type</code> is <code>"html"</code>, multiple spaces are
+replaced by a single space and occurrences of <code>' align="left"'</code>
+are eliminated.
+</p>
+<p><code>as.is</code> and <code>as.math</code> are trivial helper functions to
+disable sanitizing and to insert a some mathematics in a string
+respectively.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns the sanitized character object.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Code was extracted from <code>print.xtable()</code>, in version 1.8.0 of
+<span class="pkg">xtable</span>. Various authors contributed the original code: Jonathan
+Swinton &lt;jonathan@swintons.net&gt;, Uwe Ligges
+&lt;ligges@statistik.uni-dortmund.de&gt;, and probably David B. Dahl
+&lt;dahl@stat.byu.edu&gt;.
+<code>as.is</code> and <code>as.math</code> suggested and provided by Stefan
+Edwards &lt;sme@iysik.com&gt;.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+insane &lt;- c("&amp;","&gt;", "&gt;","_","%","$","\\","#","^","~","{","}")
+names(insane) &lt;- c("Ampersand","Greater than","Less than",
+                   "Underscore","Percent","Dollar",
+                   "Backslash","Hash","Caret","Tilde",
+                   "Left brace","Right brace")
+sanitize(insane, type = "latex")
+insane &lt;- c("&amp;","&gt;","&lt;")
+names(insane) &lt;- c("Ampersand","Greater than","Less than")
+sanitize(insane, type = "html")
+x &lt;- rnorm(10)
+sanitize.numbers(x, "latex", TRUE)
+sanitize.numbers(x*10^(10), "latex", TRUE, TRUE)
+sanitize.numbers(x, "html", TRUE, TRUE)
+as.is(insane)
+as.math("x10^10", ": mathematical expression")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xtable</em> version 1.8-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

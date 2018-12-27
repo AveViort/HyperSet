@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dijkstra's shortest paths using boost C++</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sp.between {RBGL}"><tr><td>sp.between {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Dijkstra's shortest paths using boost C++ </h2>
+
+<h3>Description</h3>
+
+<p> dijkstra's shortest paths </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sp.between(g,start,finish, detail=TRUE) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p> instance of class graph </p>
+</td></tr>
+<tr valign="top"><td><code>start</code></td>
+<td>
+<p> node name(s) for start of path(s)  </p>
+</td></tr>
+<tr valign="top"><td><code>finish</code></td>
+<td>
+<p> node name(s) for end of path(s) </p>
+</td></tr>
+<tr valign="top"><td><code>detail</code></td>
+<td>
+<p> if TRUE, output additional info on the shortest path </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions are interfaces to the Boost graph library C++
+routines for Dijkstra's shortest paths.
+</p>
+<p>Function <code>sp.between.scalar</code> is obsolete.  
+</p>
+
+
+<h3>Value</h3>
+
+<p>When <code>start</code> and/or <code>finish</code> are vectors, we use the normal cycling 
+rule in R to match both vectors and try to find the shortest path for each 
+pair.  
+</p>
+<p>Function <code>sp.between</code> returns a list of info on the shortest paths.  Each
+such shortest path is designated by its starting node and its ending node.  
+Each element in the returned list contains:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>length</code></td>
+<td>
+<p>total length (using edge weights) of this shortest path</p>
+</td></tr></table>
+<p>,
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>path_detail</code></td>
+<td>
+<p>if requested, a vector of names of the nodes on the shortest path</p>
+</td></tr></table>
+<p>,
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>length_detail</code></td>
+<td>
+<p>if requested, a list of edge weights of this shortest path</p>
+</td></tr></table>
+<p>.
+</p>
+<p>See <code><a href="../../graph/html/edgeMatrix.html">pathWeights</a></code> for caveats about undirected graph representation.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> VJ Carey &lt;stvjc@channing.harvard.edu&gt;, Li Long &lt;li.long@isb-sib.ch&gt; </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bellman.ford.sp.html">bellman.ford.sp</a></code>, <code><a href="dag.sp.html">dag.sp</a></code>, <code><a href="dijkstra.sp.html">dijkstra.sp</a></code>, <code><a href="johnson.all.pairs.sp.html">johnson.all.pairs.sp</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+con &lt;- file(system.file("XML/ospf.gxl",package="RBGL"), open="r")
+ospf &lt;- fromGXL(con)
+close(con)
+
+dijkstra.sp(ospf,nodes(ospf)[6])
+
+sp.between(ospf, "RT6", "RT1")
+
+sp.between(ospf, c("RT6", "RT2"), "RT1", detail=FALSE)
+
+sp.between(ospf, c("RT6", "RT2"), c("RT1","RT5"))
+
+# see NAs for query on nonexistent path
+sp.between(ospf,"N10", "N13")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

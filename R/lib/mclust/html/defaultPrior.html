@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Default conjugate prior for Gaussian mixtures.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for defaultPrior {mclust}"><tr><td>defaultPrior {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Default conjugate prior for Gaussian mixtures.
+</h2>
+
+<h3>Description</h3>
+
+<p>Default conjugate prior specification for Gaussian mixtures.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+defaultPrior(data, G, modelName, ...) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations. Categorical
+variables are not allowed. If a matrix or data frame, rows
+correspond to observations and columns correspond to variables. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>The number of mixture components.
+</p>
+</td></tr>
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string indicating the model: <br /><br />
+<code>"E"</code>: equal variance  (univariate) <br />
+<code>"V"</code>: variable variance (univariate)<br /> 
+<code>"EII"</code>: spherical, equal volume <br />
+<code>"VII"</code>: spherical, unequal volume <br />
+<code>"EEI"</code>: diagonal, equal volume and shape<br /> 
+<code>"VEI"</code>: diagonal, varying volume, equal shape<br /> 
+<code>"EVI"</code>: diagonal, equal volume, varying shape <br />
+<code>"VVI"</code>: diagonal, varying volume and shape <br />
+<code>"EEE"</code>: ellipsoidal, equal volume, shape, and orientation <br />
+<code>"EEV"</code>: ellipsoidal, equal volume and equal shape<br />
+<code>"VEV"</code>: ellipsoidal, equal shape <br />
+<code>"VVV"</code>: ellipsoidal, varying volume, shape, and orientation. <br /><br />
+A description of the models above is provided in the help of 
+<code><a href="mclustModelNames.html">mclustModelNames</a></code>. Note that in the multivariate case 
+only 10 out of 14 models may be used in conjunction with a prior, i.e.
+those available in <em>MCLUST</em> up to version 4.4.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>One or more of the following:
+</p>
+
+<dl>
+<dt><code>dof</code></dt><dd>
+<p>The degrees of freedom for the prior on the variance. 
+The default is <code>d + 2</code>, where <code>d</code> is
+the dimension of the data.
+</p>
+</dd>
+<dt><code>scale</code></dt><dd>
+<p>The scale parameter for the prior on the variance. 
+The default is <code>var(data)/G^(2/d)</code>,
+where <code>d</code> is the dimension of the data.
+</p>
+</dd>
+<dt><code>shrinkage</code></dt><dd>
+<p>The shrinkage parameter for the prior on the mean. 
+The default value is 0.01. 
+If 0 or NA, no prior is assumed for the mean.
+</p>
+</dd>
+<dt><code>mean</code></dt><dd>
+<p>The mean parameter for the prior. 
+The default value is <code>colMeans(data)</code>.
+</p>
+</dd>                   
+</dl>
+
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>defaultPrior</code> is a function whose default is to output the
+default prior specification for EM within <em>MCLUST</em>.<br />
+Furthermore, <code>defaultPrior</code> can be used as a template to specify 
+alternative parameters for a conjugate prior.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list giving the prior degrees of freedom, scale, shrinkage, and mean.
+</p>
+
+
+<h3>References</h3>
+
+<p>C. Fraley and A. E. Raftery (2002).
+Model-based clustering, discriminant analysis, and density estimation.
+<em>Journal of the American Statistical Association</em> 97:611-631. 
+</p>
+<p>C. Fraley and A. E. Raftery (2005, revised 2009).
+Bayesian regularization for normal mixture estimation and model-based
+clustering.
+Technical Report, Department of Statistics, University of Washington.
+</p>
+<p>C. Fraley and A. E. Raftery (2007).
+Bayesian regularization for normal mixture estimation and model-based
+clustering. <em>Journal of Classification</em> 24:155-181.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mclustBIC.html">mclustBIC</a></code>,
+<code><a href="me.html">me</a></code>,
+<code><a href="mstep.html">mstep</a></code>,
+<code><a href="priorControl.html">priorControl</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# default prior
+irisBIC &lt;- mclustBIC(iris[,-5], prior = priorControl())
+summary(irisBIC, iris[,-5])
+
+# equivalent to previous example
+irisBIC &lt;- mclustBIC(iris[,-5], 
+                     prior = priorControl(functionName = "defaultPrior"))
+summary(irisBIC, iris[,-5])
+
+# no prior on the mean; default prior on variance
+irisBIC &lt;- mclustBIC(iris[,-5], prior = priorControl(shrinkage = 0))
+summary(irisBIC, iris[,-5])
+
+# equivalent to previous example
+irisBIC &lt;- mclustBIC(iris[,-5], prior =
+                     priorControl(functionName="defaultPrior", shrinkage=0))
+summary(irisBIC, iris[,-5])
+
+defaultPrior( iris[-5], G = 3, modelName = "VVV")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

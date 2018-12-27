@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find the typical value</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for typical {modelr}"><tr><td>typical {modelr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find the typical value</h2>
+
+<h3>Description</h3>
+
+<p>For numeric, integer, and ordered factor vectors, it returns the median.
+For factors, characters, and logical vectors, it returns the most
+frequent value. If multiple values are tied for most frequent, it returns
+them all. <code>NA</code> missing values are always silently dropped.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+typical(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A vector</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Arguments used by methods</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+# median of numeric vector
+typical(rpois(100, lambda = 10))
+
+# most frequent value of character or factor
+x &lt;- sample(c("a", "b", "c"), 100, prob = c(0.6, 0.2, 0.2), replace = TRUE)
+typical(x)
+typical(factor(x))
+
+# if tied, returns them all
+x &lt;- c("a", "a", "b", "b", "c")
+typical(x)
+
+# median of an ordered factor
+typical(ordered(c("a", "a", "b", "c", "d")))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>modelr</em> version 0.1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

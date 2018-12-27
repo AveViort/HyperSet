@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Local shape matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for localshape {fpc}"><tr><td>localshape {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Local shape matrix</h2>
+
+<h3>Description</h3>
+
+<p>This computes a matrix formalising 'local shape', i.e., aggregated
+standardised variance/covariance in a Mahalanobis neighbourhood of the data
+points. This can be used for finding clusters when used as one of the
+covariance matrices in 
+Invariant Coordinate Selection (function <code>ics</code> in package
+<code>ICS</code>), see Hennig's
+discussion and rejoinder of Tyler et al. (2009).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  localshape(xdata,proportion=0.1,mscatter="mcd",mcdalpha=0.8,
+                       covstandard="det")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>xdata</code></td>
+<td>
+<p>objects times variables data matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>proportion</code></td>
+<td>
+<p>proportion of points to be considered as neighbourhood.</p>
+</td></tr>
+<tr valign="top"><td><code>mscatter</code></td>
+<td>
+<p>&quot;mcd&quot; or &quot;cov&quot;; specified minimum covariance
+determinant or
+classical covariance matrix to be used for Mahalanobis distance
+computation.</p>
+</td></tr>
+<tr valign="top"><td><code>mcdalpha</code></td>
+<td>
+<p>if <code>mscatter="mcd"</code>, this is the alpha parameter
+to be used by the MCD covariance matrix, i.e. one minus the
+asymptotic breakdown point, see <code><a href="../../robustbase/html/covMcd.html">covMcd</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>covstandard</code></td>
+<td>
+<p>one of &quot;trace&quot;, &quot;det&quot; or &quot;none&quot;, determining by
+what constant the pointwise neighbourhood covariance matrices are
+standardised. &quot;det&quot; makes the affine equivariant, as noted in the
+discussion rejoinder of Tyler et al. (2009).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The local shape matrix.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Tyler, D. E., Critchley, F., Duembgen, L., Oja, H. (2009)
+Invariant coordinate selection (with discussion).
+<em>Journal of the Royal Statistical Society, Series B</em>, 549-592.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  data(iris)
+  localshape(iris[,-5],mscatter="cov")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

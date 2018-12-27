@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Remove Tips in a Phylogenetic Tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for drop.tip {ape}"><tr><td>drop.tip {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Remove Tips in a Phylogenetic Tree</h2>
+
+<h3>Description</h3>
+
+<p><code>drop.tip</code> removes the terminal branches of a phylogenetic tree,
+possibly removing the corresponding internal branches. <code>keep.tip</code>
+does the opposite operation (i.e., returns the induced tree).
+</p>
+<p><code>extract.clade</code> does the inverse operation: it keeps all the tips
+from a given node, and deletes all the other tips.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
+         root.edge = 0, rooted = is.rooted(phy), collapse.singles = TRUE,
+         interactive = FALSE)
+keep.tip(phy, tip)
+extract.clade(phy, node, root.edge = 0, collapse.singles = TRUE,
+              interactive = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>tip</code></td>
+<td>
+<p>a vector of mode numeric or character specifying the tips
+to delete.</p>
+</td></tr>
+<tr valign="top"><td><code>trim.internal</code></td>
+<td>
+<p>a logical specifying whether to delete the
+corresponding internal branches.</p>
+</td></tr>
+<tr valign="top"><td><code>subtree</code></td>
+<td>
+<p>a logical specifying whether to output in the tree how
+many tips have been deleted and where.</p>
+</td></tr>
+<tr valign="top"><td><code>root.edge</code></td>
+<td>
+<p>an integer giving the number of internal branches to
+be used to build the new root edge. This has no effect if
+<code>trim.internal = FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>rooted</code></td>
+<td>
+<p>a logical indicating whether the tree must be treated as
+rooted or not. This allows to force the tree to be considered as
+unrooted (see examples).</p>
+</td></tr>
+<tr valign="top"><td><code>collapse.singles</code></td>
+<td>
+<p>a logical specifying whether to delete the
+internal nodes of degree 2.</p>
+</td></tr>
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>a node number or label.</p>
+</td></tr>
+<tr valign="top"><td><code>interactive</code></td>
+<td>
+<p>if <code>TRUE</code> the user is asked to select the tips
+or the node by clicking on the tree which must be plotted.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The argument <code>tip</code> can be either character or numeric. In the
+first case, it gives the labels of the tips to be deleted; in the
+second case the numbers of these labels in the vector
+<code>phy$tip.label</code> are given.
+</p>
+<p>This also applies to <code>node</code>, but if this argument is character
+and the tree has no node label, this results in an error. If more than
+one value is given with <code>node</code> (i.e., a vector of length two or
+more), only the first one is used with a warning.
+</p>
+<p>If <code>trim.internal = FALSE</code>, the new tips are given <code>"NA"</code> as
+labels, unless there are node labels in the tree in which case they
+are used.
+</p>
+<p>If <code>subtree = TRUE</code>, the returned tree has one or several
+terminal branches indicating how many tips have been removed (with a
+label <code>"[x_tips]"</code>). This is done for as many monophyletic groups
+that have been deleted.
+</p>
+<p>Note that <code>subtree = TRUE</code> implies <code>trim.internal = TRUE</code>.
+</p>
+<p>To undestand how the option <code>root.edge</code> works, see the examples
+below.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis, Klaus Schliep, Joseph Brown</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bind.tree.html">bind.tree</a></code>, <code><a href="root.html">root</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(bird.families)
+tip &lt;- c(
+"Eopsaltriidae", "Acanthisittidae", "Pittidae", "Eurylaimidae",
+"Philepittidae", "Tyrannidae", "Thamnophilidae", "Furnariidae",
+"Formicariidae", "Conopophagidae", "Rhinocryptidae", "Climacteridae",
+"Menuridae", "Ptilonorhynchidae", "Maluridae", "Meliphagidae",
+"Pardalotidae", "Petroicidae", "Irenidae", "Orthonychidae",
+"Pomatostomidae", "Laniidae", "Vireonidae", "Corvidae",
+"Callaeatidae", "Picathartidae", "Bombycillidae", "Cinclidae",
+"Muscicapidae", "Sturnidae", "Sittidae", "Certhiidae",
+"Paridae", "Aegithalidae", "Hirundinidae", "Regulidae",
+"Pycnonotidae", "Hypocoliidae", "Cisticolidae", "Zosteropidae",
+"Sylviidae", "Alaudidae", "Nectariniidae", "Melanocharitidae",
+"Paramythiidae","Passeridae", "Fringillidae")
+plot(drop.tip(bird.families, tip))
+plot(drop.tip(bird.families, tip, trim.internal = FALSE))
+data(bird.orders)
+plot(drop.tip(bird.orders, 6:23, subtree = TRUE))
+plot(drop.tip(bird.orders, c(1:5, 20:23), subtree = TRUE))
+plot(drop.tip(bird.orders, c(1:20, 23), subtree = TRUE))
+plot(drop.tip(bird.orders, c(1:20, 23), subtree = TRUE, rooted = FALSE))
+### Examples of the use of `root.edge'
+tr &lt;- read.tree(text = "(A:1,(B:1,(C:1,(D:1,E:1):1):1):1):1;")
+drop.tip(tr, c("A", "B"), root.edge = 0) # = (C:1,(D:1,E:1):1);
+drop.tip(tr, c("A", "B"), root.edge = 1) # = (C:1,(D:1,E:1):1):1;
+drop.tip(tr, c("A", "B"), root.edge = 2) # = (C:1,(D:1,E:1):1):2;
+drop.tip(tr, c("A", "B"), root.edge = 3) # = (C:1,(D:1,E:1):1):3;
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

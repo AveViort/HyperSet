@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Data from an ELISA assay</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ELISA {gtools}"><tr><td>ELISA {gtools}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Data from an ELISA assay</h2>
+
+<h3>Description</h3>
+
+<p>Observed signals and (for some observations) nominal
+concentrations for samples that were aliquoted to multiple assay plates,
+which were read multiple times on multiple days.   
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+data(ELISA)
+</pre>
+
+
+<h3>Format</h3>
+
+<p>a data frame with the following columns:
+</p>
+
+<ul>
+<li><p>PlateDayfactor. Specifies one of four physically disctinct
+96 well plates
+</p>
+</li>
+<li><p>Readfactor. The signal was read 3 times for each plate.
+</p>
+</li>
+<li><p>Descriptioncharacter. Indicates contents of sample.
+</p>
+</li>
+<li><p>Concentrationnumeric. Nominal concentration of standards (NA
+for all other samples).
+</p>
+</li>
+<li><p>Signalnumeric. Assay signal. Specifically, optical density
+(a colorimetric assay).
+</p>
+</li></ul>
+
+
+
+<h3>Source</h3>
+
+<p>Anonymized data.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>gtools</em> version 3.8.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

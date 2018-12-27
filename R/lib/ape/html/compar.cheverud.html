@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cheverud's Comparative Method</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for compar.cheverud {ape}"><tr><td>compar.cheverud {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cheverud's Comparative Method</h2>
+
+<h3>Description</h3>
+
+<p>This function computes the phylogenetic variance component and the
+residual deviation for continous characters, taking into account the
+phylogenetic relationships among species, following the comparative
+method described in Cheverud et al. (1985). The correction proposed by
+Rholf (2001) is used.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>A vector containing the data to analyse.</p>
+</td></tr>
+<tr valign="top"><td><code>W</code></td>
+<td>
+<p>The phylogenetic connectivity matrix. All diagonal elements
+will be ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>tolerance</code></td>
+<td>
+<p>Minimum difference allowed to consider eigenvalues as
+distinct.</p>
+</td></tr>
+<tr valign="top"><td><code>gold.tol</code></td>
+<td>
+<p>Precision to use in golden section search alogrithm.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Model: </p>
+<p style="text-align: center;"><i>y = rho.W.y + e</i></p>
+
+<p>where <i>e</i> is the error term, assumed to be normally distributed.
+<i>rho</i> is estimated by the maximum likelihood procedure given
+in Rohlf (2001), using a golden section search algorithm. The code of
+this function is indeed adapted from a MatLab code given in appendix
+in Rohlf's article, to correct a mistake in Cheverud's original paper.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>rhohat</code></td>
+<td>
+<p>The maximum likelihood estimate of <i>rho</i></p>
+</td></tr>
+<tr valign="top"><td><code>Wnorm</code></td>
+<td>
+<p>The normalized version of <code>W</code></p>
+</td></tr>
+<tr valign="top"><td><code>residuals</code></td>
+<td>
+<p>Error terms (<i>e</i>)</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:julien.dutheil@univ-montp2.fr">julien.dutheil@univ-montp2.fr</a></p>
+
+
+<h3>References</h3>
+
+<p>Cheverud, J. M., Dow, M. M. and Leutenegger, W. (1985) The quantitative
+assessment of phylogenetic constraints in comparative analyses: sexual
+dimorphism in body weight among primates. <em>Evolution</em>,
+<b>39</b>, 1335&ndash;1351.
+</p>
+<p>Rohlf, F. J. (2001) Comparative methods for the analysis of continuous
+variables: geometric interpretations. <em>Evolution</em>, <b>55</b>,
+2143&ndash;2160.
+</p>
+<p>Harvey, P. H. and Pagel, M. D. (1991) <em>The Comparative Method in
+Evolutionary Biology</em>. Oxford University Press.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="compar.lynch.html">compar.lynch</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### Example from Harvey and Pagel's book:
+y&lt;-c(10,8,3,4)
+W &lt;- matrix(c(1,1/6,1/6,1/6,1/6,1,1/2,1/2,1/6,1/2,1,1,1/6,1/2,1,1), 4)
+compar.cheverud(y,W)
+### Example from Rohlf's 2001 article:
+W&lt;- matrix(c(
+  0,1,1,2,0,0,0,0,
+  1,0,1,2,0,0,0,0,
+  1,1,0,2,0,0,0,0,
+  2,2,2,0,0,0,0,0,
+  0,0,0,0,0,1,1,2,
+  0,0,0,0,1,0,1,2,
+  0,0,0,0,1,1,0,2,
+  0,0,0,0,2,2,2,0
+),8)
+W &lt;- 1/W
+W[W == Inf] &lt;- 0
+y&lt;-c(-0.12,0.36,-0.1,0.04,-0.15,0.29,-0.11,-0.06)
+compar.cheverud(y,W)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

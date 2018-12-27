@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: ClientValue object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ClientValue {crosstalk}"><tr><td>ClientValue {crosstalk}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>ClientValue object</h2>
+
+<h3>Description</h3>
+
+<p>An object that can be used in a <a href="http://shiny.rstudio.com">Shiny</a> server
+function to get or set a crosstalk variable that exists on the client. The
+client copy of the variable is the canonical copy, so there is no direct
+&quot;set&quot; method that immediately changes the value; instead, there is a
+<code>sendUpdate</code> method that sends a request to the browser to change the
+value, which will then cause the new value to be relayed back to the server.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ClientValue
+</pre>
+
+
+<h3>Format</h3>
+
+<p>An <code><a href="../../R6/html/R6Class.html">R6Class</a></code> generator object</p>
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt><code>initialize(name, group = "default", session = shiny::getDefaultReactiveDomain())</code></dt><dd>
+<p>Create a new ClientValue object to reflect the crosstalk variable
+specified by <code>group</code> and <code>name</code>. The <code>session</code> indicates
+which Shiny session to connect to, and defaults to the current session.
+</p>
+</dd>
+<dt><code>get()</code></dt><dd>
+<p>Read the value. This is a reactive operation akin to reading a reactive
+value, and so can only be done in a reactive context (e.g. in a
+<code><a href="../../shiny/html/reactive.html">reactive</a></code>, <code><a href="../../shiny/html/observe.html">observe</a></code>, or
+<code><a href="../../shiny/html/isolate.html">isolate</a></code> block).
+</p>
+</dd>
+<dt><code>sendUpdate(value)</code></dt><dd>
+<p>Send a message to the browser asking it to update the crosstalk var to
+the given value. This update does not happen synchronously, that is, a
+call to <code>get()</code> immediately following <code>sendUpdate(value)</code> will
+not reflect the new value. The value must be serializable as JSON using
+jsonlite.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+library(shiny)
+
+server &lt;- function(input, output, session) {
+  cv &lt;- ClientValue$new("var1", "group1")
+
+  r &lt;- reactive({
+    # Don't proceed unless cv$get() is a non-NULL value
+    validate(need(cv$get(), message = FALSE))
+
+    runif(cv$get())
+  })
+
+  observeEvent(input$click, {
+    cv$sendUpdate(NULL)
+  })
+}
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>crosstalk</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

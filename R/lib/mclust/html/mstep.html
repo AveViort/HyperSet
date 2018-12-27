@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: M-step for parameterized Gaussian mixture models.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mstep {mclust}"><tr><td>mstep {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+M-step for parameterized Gaussian mixture models.
+</h2>
+
+<h3>Description</h3>
+
+<p>Maximization step in the EM algorithm for parameterized Gaussian
+mixture models.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mstep(modelName, data, z, prior = NULL, warn = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string indicating the model. The help file for
+<code><a href="mclustModelNames.html">mclustModelNames</a></code> describes the available models.
+</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations.
+Categorical variables are not allowed.
+If a matrix or data frame, rows correspond to observations and
+columns correspond to variables.
+</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+
+<p>A matrix whose <code>[i,k]</code>th entry is the
+conditional probability of the ith observation belonging to
+the <em>k</em>th component of the mixture.  
+In analyses involving noise, this should not include the
+conditional probabilities for the noise component. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>prior</code></td>
+<td>
+                                                      
+<p>Specification of a conjugate prior on the means and variances.
+The default assumes no prior.
+</p>
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+
+<p>A logical value indicating whether or not certain warnings
+(usually related to singularity) should be issued when the
+estimation fails. The default is given by <code>mclust.options("warn")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list including the following components: 
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string identifying the model (same as the input argument).
+</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+
+<dl>
+<dt><code>pro</code></dt><dd>
+<p>A vector whose <em>k</em>th component is the mixing proportion for 
+the <em>k</em>th component of the mixture model.
+If the model includes a Poisson term for noise, there 
+should be one more mixing proportion than the number 
+of Gaussian components.
+</p>
+</dd>
+<dt><code>mean</code></dt><dd>
+<p>The mean for each component. If there is more than one component,
+this is a matrix whose kth column is the mean of the <em>k</em>th 
+component of the mixture model. 
+</p>
+</dd>
+<dt><code>variance</code></dt><dd>
+<p>A list of variance parameters for the model.
+The components of this list depend on the model
+specification. See the help file for <code><a href="mclustVariance.html">mclustVariance</a></code> 
+for details.  
+</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>Attributes:</code></td>
+<td>
+
+<p><code>"info"</code> For those models with iterative M-steps
+(<code>"VEI"</code> and <code>"VEV"</code>), information  on the iteration.<br />
+<code>"WARNING"</code> An appropriate warning if problems are
+encountered in the computations.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>This function computes the M-step only for MVN mixtures, so in 
+analyses involving noise, the conditional probabilities input should 
+exclude those for the noise component. <br />
+</p>
+<p>In contrast to <code>me</code> for the EM algorithm, computations in <code>mstep</code>
+are carried out unless failure due to overflow would occur. To impose
+stricter tolerances on a single <code>mstep</code>, use <code>me</code> with the
+<em>itmax</em> component of the <code>control</code> argument set to 1.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mstepE.html">mstepE</a></code>, ...,
+<code><a href="mstepE.html">mstepVVV</a></code>,
+<code><a href="emControl.html">emControl</a></code>,
+<code><a href="me.html">me</a></code>,
+<code><a href="estep.html">estep</a></code>,
+<code><a href="mclust.options.html">mclust.options</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+mstep(modelName = "VII", data = iris[,-5], z = unmap(iris[,5]))
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

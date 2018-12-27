@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Sets alignment for tables</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for set.alignment {pander}"><tr><td>set.alignment {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Sets alignment for tables</h2>
+
+<h3>Description</h3>
+
+<p>This is a helper function to update the alignment (<code>justify</code> parameter in <code>pandoc.table</code>) of the next returning table. Possible values are: <code>centre</code> or <code>center</code>, <code>right</code>, <code>left</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+set.alignment(default = panderOptions("table.alignment.default"),
+  row.names = panderOptions("table.alignment.rownames"),
+  permanent = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>default</code></td>
+<td>
+<p>character vector which length equals to one (would be repeated <code>n</code> times) ot <code>n</code> - where <code>n</code> equals to the number of columns in the following table</p>
+</td></tr>
+<tr valign="top"><td><code>row.names</code></td>
+<td>
+<p>string holding the alignment of the (optional) row names</p>
+</td></tr>
+<tr valign="top"><td><code>permanent</code></td>
+<td>
+<p>(default <code>FALSE</code>) if alignment is permanent (for all future tables) or not. It's cleaner to use <code>panderOptions</code> instead.</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

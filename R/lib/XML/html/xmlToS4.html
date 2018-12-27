@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: General mechanism for mapping an XML node to an S4 object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xmlToS4 {XML}"><tr><td>xmlToS4 {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>General mechanism for mapping an XML node to an S4 object</h2>
+
+<h3>Description</h3>
+
+<p>This generic function  and its methods recursively process
+an XML node and its child nodes ( and theirs and so on)
+to map the nodes to S4 objects.
+</p>
+<p>This is the run-time function that corresponds to the
+<code><a href="makeClassTemplate.html">makeClassTemplate</a></code> function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xmlToS4(node, obj = new(xmlName(node)), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>the top-level XML node to convert to an S4 object</p>
+</td></tr>
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>the object whose slots are to be filled from the
+information in the XML node</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters for methods</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The object <code>obj</code> whose slots have been modified.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="makeClassTemplate.html">makeClassTemplate</a></code>  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ txt =
+ "&lt;doc&gt;&lt;part&gt;&lt;name&gt;ABC&lt;/name&gt;&lt;type&gt;XYZ&lt;/type&gt;&lt;cost&gt;3.54&lt;/cost&gt;&lt;status&gt;available&lt;/status&gt;&lt;/part&gt;&lt;/doc&gt;"
+ doc = xmlParse(txt)
+
+ setClass("part", representation(name = "character",
+                                 type = "character",
+                                 cost = "numeric",
+                                 status= "character"))
+ xmlToS4(xmlRoot(doc)[["part"]])
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

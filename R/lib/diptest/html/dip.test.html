@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Hartigans' Dip Test for Unimodality</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dip.test {diptest}"><tr><td>dip.test {diptest}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Hartigans' Dip Test for Unimodality</h2>
+
+<h3>Description</h3>
+
+<p>Compute Hartigans' dip statistic <i>Dn</i>, and
+its p-value for the test for unimodality, by interpolating
+tabulated quantiles of <i>sqrt(n) * Dn</i>.
+</p>
+<p>For <i>X_i ~ F, i.i.d</i>,
+the null hypothesis is that <i>F</i> is a unimodal distribution.
+Consequently, the test alternative is non-unimodal, i.e., at least
+bimodal.  Using the language of medical testing, you would call the
+test &ldquo;Test for <b>Multi</b>modality&rdquo;.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dip.test(x, simulate.p.value = FALSE, B = 2000)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>numeric vector; sample to be tested for unimodality.</p>
+</td></tr>
+<tr valign="top"><td><code>simulate.p.value</code></td>
+<td>
+<p>a logical indicating whether to compute
+p-values by Monte Carlo simulation.</p>
+</td></tr>
+<tr valign="top"><td><code>B</code></td>
+<td>
+<p>an integer specifying the number of replicates used in the
+Monte Carlo test.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If <code>simulate.p.value</code> is <code>FALSE</code>, the p-value is computed
+via linear interpolation (of <i>sqrt(n) * Dn</i>) in the
+<code><a href="qDiptab.html">qDiptab</a></code> table.
+Otherwise the p-value is computed from a Monte Carlo simulation of a
+uniform distribution (<code><a href="../../stats/html/Uniform.html">runif</a>(n)</code>) with <code>B</code>
+replicates.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with class <code>"htest"</code> containing the following
+components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>statistic</code></td>
+<td>
+<p>the dip statistic <i>Dn</i>, i.e.,
+<code><a href="dip.html">dip</a>(x)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>p.value</code></td>
+<td>
+<p>the p-value for the test, see details.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>character string describing the test, and whether Monte
+Carlo simulation was used.</p>
+</td></tr>
+<tr valign="top"><td><code>data.name</code></td>
+<td>
+<p>a character string giving the name(s) of the data.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>see also the package vignette, which describes the procedure in more details.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Martin Maechler</p>
+
+
+<h3>References</h3>
+
+<p>see those in <code><a href="dip.html">dip</a></code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>For goodness-of-fit testing, notably of continuous distributions,
+<code><a href="../../stats/html/ks.test.html">ks.test</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## a first non-trivial case
+(d.t &lt;- dip.test(c(0,0, 1,1))) # "perfect bi-modal for n=4" --&gt; p-value = 0
+stopifnot(d.t$p.value == 0)
+
+data(statfaculty)
+plot(density(statfaculty)); rug(statfaculty)
+(d.t &lt;- dip.test(statfaculty))
+
+x &lt;- c(rnorm(50), rnorm(50) + 3)
+plot(density(x)); rug(x)
+## border-line bi-modal ...  BUT (most of the times) not significantly:
+dip.test(x)
+dip.test(x, simulate=TRUE, B=5000)
+
+## really large n -- get a message
+dip.test(runif(4e5))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>diptest</em> version 0.75-7 <a href="00Index.html">Index</a>]</div>
+</body></html>

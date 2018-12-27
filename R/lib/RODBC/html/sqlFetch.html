@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reading Tables from ODBC Databases</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sqlFetch {RODBC}"><tr><td>sqlFetch {RODBC}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reading Tables from ODBC Databases</h2>
+
+<h3>Description</h3>
+
+<p>Read some or all of a table from an ODBC database into a data frame.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sqlFetch(channel, sqtable, ..., colnames = FALSE, rownames = TRUE)
+
+sqlFetchMore(channel, ..., colnames = FALSE, rownames = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>channel</code></td>
+<td>
+<p>connection handle returned by <code><a href="odbcConnect.html">odbcConnect</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>sqtable</code></td>
+<td>
+<p>a database table name accessible from the connected DSN.
+This should be either a literal character string or a character vector of
+length 1.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments to be passed to
+<code><a href="sqlQuery.html">sqlQuery</a></code> or <code><a href="sqlQuery.html">sqlGetResults</a></code>.  See
+&lsquo;Details&rsquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>colnames</code></td>
+<td>
+<p>logical: retrieve column names from first row of table?
+(For use when <code><a href="sqlSave.html">sqlSave</a>(colnames = TRUE)</code> was used.)</p>
+</td></tr>
+<tr valign="top"><td><code>rownames</code></td>
+<td>
+<p>either logical or character.
+If logical, retrieve row names from the first column
+(<code>rownames</code>) in the table?  If character, the column name to
+retrieve them from.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Note the &lsquo;table&rsquo; includes whatever table-like objects are
+provided by the DBMS, in particular views and system tables.
+</p>
+<p><code>sqlFetch</code> by default retrieves the the entire contents of the table
+<code>sqtable</code>.  Rownames and column names are restored as indicated
+(assuming that they have been placed in the table by the corresponding
+arguments to <code><a href="sqlSave.html">sqlSave</a></code>).
+</p>
+<p>Alternatively, <code>sqlFetch</code> can fetch the first <code>max</code> rows, in
+which case <code>sqlFetchMore</code> will retrieve further result rows,
+provided there has been no other ODBC query on that channel in the
+meantime.
+</p>
+<p>These functions try to cope with the peculiar way the Excel ODBC
+driver handles table names, and to quote Access table names which
+contain spaces.  Dotted table names, e.g. <code>myschema.mytable</code>, are
+allowed on systems that support them, unless the connection was opened
+with <code>interpretDot = FALSE</code>.
+</p>
+<p>Useful additional parameters to pass to <code><a href="sqlQuery.html">sqlQuery</a></code> or
+<code><a href="sqlQuery.html">sqlGetResults</a></code> include
+</p>
+
+<dl>
+<dt><code>max</code>:</dt><dd><p>limit on the number of rows to fetch, with
+<code>0</code> (the default) indicating no limit.</p>
+</dd>
+<dt><code>nullstring</code>:</dt><dd><p>character string to be used when reading
+<code>SQL_NULL_DATA</code> character items from the database:
+default <code>NA_character_</code>.</p>
+</dd>
+<dt><code>na.strings</code>:</dt><dd><p>character string(s) to be mapped to
+<code>NA</code> when reading character data: default <code>"NA"</code>.</p>
+</dd>
+<dt><code>as.is</code>:</dt><dd><p>as in <code><a href="sqlQuery.html">sqlGetResults</a></code>.</p>
+</dd>
+<dt><code>dec</code>:</dt><dd><p>The character for the decimal place to be assumed
+when converting character columns to numeric.</p>
+</dd>
+<dt><code>rows_at_time</code>:</dt><dd><p>Allow for multiple rows to be retrieved at
+once.  See <code><a href="sqlQuery.html">sqlQuery</a></code>.</p>
+</dd>
+</dl>
+
+
+
+<h3>Value</h3>
+
+<p>A data frame on success, or a character or numeric error code (see
+<code><a href="sqlQuery.html">sqlQuery</a></code>).
+</p>
+
+
+<h3>Note</h3>
+
+<p>If the table name desired is not a valid SQL name (alphanumeric plus
+<code>_</code>) and these functions are not able to interpret the name, you
+can use <code><a href="sqlQuery.html">sqlQuery</a></code> with whatever quoting mechanism
+your DBMS vendor provides (e.g. <code>[ ]</code> on some Microsoft
+products and backticks on MySQL).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Lapsley and Brian Ripley
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="sqlSave.html">sqlSave</a></code>, <code><a href="sqlQuery.html">sqlQuery</a></code>,
+<code><a href="odbcConnect.html">odbcConnect</a></code>, <code><a href="odbcGetInfo.html">odbcGetInfo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+channel &lt;- odbcConnect("test")
+sqlSave(channel, USArrests)
+sqlFetch(channel, "USArrests") # get the lot
+sqlFetch(channel, "USArrests", max = 20, rows_at_time = 10)
+sqlFetchMore(channel, max = 20)
+sqlFetchMore(channel) # get the rest
+sqlDrop(channel, "USArrests") 
+close(channel)
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RODBC</em> version 1.3-15 <a href="00Index.html">Index</a>]</div>
+</body></html>

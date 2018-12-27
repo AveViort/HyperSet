@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cumulative Distribution and Quantiles for a univariate...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cdfMclust {mclust}"><tr><td>cdfMclust {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Cumulative Distribution and Quantiles for a univariate Gaussian mixture 
+distribution
+</h2>
+
+<h3>Description</h3>
+
+<p>Compute the cumulative density function (cdf) or quantiles from an estimated one-dimensional Gaussian mixture fitted using <code><a href="densityMclust.html">densityMclust</a></code>.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cdfMclust(object, data, ngrid = 100, ...)
+quantileMclust(object, p, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>a <code>densityMclust</code> model object.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>a numeric vector of evaluation points.</p>
+</td></tr>
+<tr valign="top"><td><code>ngrid</code></td>
+<td>
+<p>the number of points in a regular grid to be used as evaluation points if no <code>data</code> are provided.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>a numeric vector of probabilities.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The cdf is evaluated at points given by the optional argument  <code>data</code>. If not provided, a regular grid of length <code>ngrid</code> for the evaluation points is used. 
+</p>
+<p>The quantiles are computed using interpolating splines on an adaptive finer grid.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>cdfMclust</code> returns a list of <code>x</code> and <code>y</code> values providing, respectively, the evaluation points and the estimated cdf. 
+</p>
+<p><code>quantileMclust</code> returns a vector of quantiles.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Luca Scrucca</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="densityMclust.html">densityMclust</a></code>, 
+<code><a href="plot.densityMclust.html">plot.densityMclust</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- c(rnorm(100), rnorm(100, 3, 2))
+dens &lt;- densityMclust(x)
+summary(dens, parameters = TRUE)
+cdf &lt;- cdfMclust(dens)
+str(cdf)
+q &lt;- quantileMclust(dens, p = c(0.01, 0.1, 0.5, 0.9, 0.99))
+cbind(quantile = q, cdf = cdfMclust(dens, q)$y)
+plot(cdf, type = "l", xlab = "x", ylab = "CDF")
+points(q, cdfMclust(dens, q)$y, pch = 20, col = "red3")
+
+par(mfrow = c(2,2))
+dens.waiting &lt;- densityMclust(faithful$waiting)
+plot(dens.waiting)
+plot(cdfMclust(dens.waiting), type = "l", 
+     xlab = dens.waiting$varname, ylab = "CDF")
+dens.eruptions &lt;- densityMclust(faithful$eruptions)
+plot(dens.eruptions)
+plot(cdfMclust(dens.eruptions), type = "l", 
+     xlab = dens.eruptions$varname, ylab = "CDF")
+par(mfrow = c(1,1))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

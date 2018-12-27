@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Converting atomic vectors to data frames, and vice versa</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for enframe {tibble}"><tr><td>enframe {tibble}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Converting atomic vectors to data frames, and vice versa</h2>
+
+<h3>Description</h3>
+
+<p><code>enframe()</code> converts named atomic vectors or lists to two-column
+data frames.
+For unnamed vectors, the natural sequence is used as name column.
+</p>
+<p><code>deframe()</code> converts two-column data frames to a named vector or list,
+using the first column as name and the second column as value.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+enframe(x, name = "name", value = "value")
+
+deframe(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An atomic vector (for <code>enframe()</code>) or a data frame (for <code>deframe()</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>name, value</code></td>
+<td>
+<p>Names of the columns that store the names and values</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <a href="tibble.html">tibble</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+enframe(1:3)
+enframe(c(a = 5, b = 7))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>tibble</em> version 1.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

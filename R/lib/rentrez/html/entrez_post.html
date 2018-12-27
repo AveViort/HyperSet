@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Post IDs to Eutils for later use</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for entrez_post {rentrez}"><tr><td>entrez_post {rentrez}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Post IDs to Eutils for later use</h2>
+
+<h3>Description</h3>
+
+<p>Post IDs to Eutils for later use
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+entrez_post(db, id = NULL, web_history = NULL, config = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>db</code></td>
+<td>
+<p>character Name of the database from which the IDs were taken</p>
+</td></tr>
+<tr valign="top"><td><code>id</code></td>
+<td>
+<p>vector with unique ID(s) for records in database <code>db</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>web_history</code></td>
+<td>
+<p>A web_history object. Can be used to add to additional
+identifiers to an existing web environment on the NCBI</p>
+</td></tr>
+<tr valign="top"><td><code>config</code></td>
+<td>
+<p>vector of configuration options passed to httr::GET</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>character Additional terms to add to the request, see NCBI
+documentation linked to in references for a complete list</p>
+</td></tr>
+</table>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_EPost_">http://www.ncbi.nlm.nih.gov/books/NBK25499/#_chapter4_EPost_</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../httr/html/config.html">config</a></code> for available httr configurations
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run:   
+so_many_snails &lt;- entrez_search(db="nuccore", 
+                      "Gastropoda[Organism] AND COI[Gene]", retmax=200)
+upload &lt;- entrez_post(db="nuccore", id=so_many_snails$ids)
+first &lt;- entrez_fetch(db="nuccore", rettype="fasta", web_history=upload,
+                      retmax=10)
+second &lt;- entrez_fetch(db="nuccore", file_format="fasta", web_history=upload,
+                       retstart=10, retmax=10)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rentrez</em> version 1.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

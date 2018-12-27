@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<HTML lang="en-US">
+<HEAD>
+<base id="myBase" href="https://www.evinet.org/" target="_blank">
+<LINK href="hyperset.css" type="text/css" rel="stylesheet">
+<LINK href="pics/favicon.ico" rel="shortcut icon">
+<!-- <LINK href="js/jquery-ui-1.12.1.custom/jquery-ui.theme.min.css" type="text/css" rel="stylesheet"> -->
+<LINK href="js/jquery-ui-themes-1.11.2/themes/redmond/jquery-ui.min.css" type="text/css" rel="stylesheet">
+<LINK href="js/jquery-ui-themes-1.11.2/themes/redmond/jquery-ui-1.11.icon-font.min.css" type="text/css" rel="stylesheet"><!--https://mkkeck.github.io/jquery-ui-iconfont/-->
+<LINK href="js/qTip/jquery.qtip.css" type="text/css" rel="stylesheet">
+<!--link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
+<link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" /-->
+<link href="js/cytoscape.js-panzoom-master/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
+<link href="js/cytoscape.js-panzoom-master/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="js/colorpicker-master/css/evol.colorpicker.css" rel="stylesheet" type="text/css">
+<!--link href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"-->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.12/af-2.1.2/b-1.2.2/b-colvis-1.2.2/b-flash-1.2.2/b-html5-1.2.2/b-print-1.2.2/cr-1.3.2/fc-3.2.2/fh-3.1.2/r-2.1.0/rr-1.1.2/sc-1.4.2/se-1.2.0/datatables.min.css"/>
+<link href="js/cytoscape-context-menus.css" rel="stylesheet" type="text/css" />
+<!--link rel="stylesheet" type="text/css" href="../shiny/assets/shiny.css"/--> 
+<link rel="stylesheet" href="js/vakata-jstree-9770c67/dist/themes/default/style.min.css" />
+
+<script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui-1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+<!-- <script src="js/jquery-ui-1.12.1.custom/jquery-ui.min.js" type="text/javascript"></script> -->
+<script src="js/jquery-ui-contextmenu-master/jquery.ui-contextmenu.min.js" type="text/javascript"></script>  
+<script src="js/jquery.form.js" type="text/javascript"></script>  
+<script src="js/vakata-jstree-9770c67/dist/jstree.min.js" type="text/javascript"></script>  
+<!--script src="js/Cytoscape.js-2.6.10/cytoscape.min.js" type="text/javascript"></script-->  
+<!--script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script-->
+<!--script src="http://marvl.infotech.monash.edu/webcola/cola.v3.min.js"></script>
+<script src="js/cola.v3.min.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-cola/1.1.1/cytoscape-cola.js"></script-->
+<script src="js/overlib.js" type="text/javascript"></script>
+<!--script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js" type="text/javascript"></script-->
+<script type="text/javascript" src="https://cdn.datatables.net/v/ju/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.12/af-2.1.2/b-1.2.2/b-colvis-1.2.2/b-flash-1.2.2/b-html5-1.2.2/b-print-1.2.2/cr-1.3.2/fc-3.2.2/fh-3.1.2/r-2.1.0/rr-1.1.2/sc-1.4.2/se-1.2.0/datatables.min.js"></script>
+
+<script src="js/qTip/jquery.qtip.js" type="text/javascript"></script>
+<!--script src="js/Cytoscape.js-2.4.5/arbor.js" type="text/javascript"></script-->
+<!--script src="js/cytoscape.js-arbor-master/arbor.js" type="text/javascript"></script-->
+<!--script src="js/Cytoscape.js/cytoscape.js-edgehandles.js" type="text/javascript"></script-->
+
+<script src="js/jquery.ba-hashchange.js" type="text/javascript"></script>
+<!--script src="js/raphael-min.js" type="text/javascript"></script>
+<script src="js/jquery.venn.HS.js" type="text/javascript"></script>
+<script src="js/springy-master/springy.js" type="text/javascript"></script-->
+
+<script src="js/Cytoscape.js-2.7.8/cytoscape.min.js" type="text/javascript"></script>
+<script src="js/cytoscape.js-panzoom-master/cytoscape-panzoom.js" type="text/javascript"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-cose-bilkent/1.0.5/cytoscape-cose-bilkent.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-spread/1.0.9/cytoscape-spread.js"></script>
+<script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.1.2/cytoscape-dagre.js"></script>
+<script src="js/cytoscape.js-arbor-1.2.1/arbor.js" type="text/javascript"></script>
+<script src="js/cytoscape.js-arbor-1.2.1/cytoscape-arbor.Line266off.js" type="text/javascript"></script>
+<script src="js/colorpicker-master/js/evol.colorpicker.js" type="text/javascript" charset="utf-8"></script>  
+<script src="js/cytoscape-context-menus.js"></script> <!-- https://github.com/iVis-at-Bilkent/cytoscape.js-context-menus -->
+<script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script>
+
+<!--script src="js/jquery.maphilight.js" type="text/javascript"></script-->
+<script src="js/map_hilight/jquery_1.6.2.min.js"></script>
+<script type="text/javascript"> var jq_mp =  $.noConflict(); </script>
+<script src="js/jquery.imagemapster.js" type="text/javascript"></script>
+
+<script src="js/HS.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/Blob.js" type="text/javascript"></script>
+<script src="js/FileSaver.js" type="text/javascript"></script>
+
+<script src="js/cookies.js" type="text/javascript"></script>
+<script src="js/session.js" type="text/javascript"></script>
+<script src="js/account.js" type="text/javascript"></script>
+<script src="js/project.js" type="text/javascript"></script>
+
+<script src="js/HS_demo.js" type="text/javascript" charset="utf-8" async></script>
+<script src="js/HS_jstree.js" type="text/javascript" charset="utf-8" async></script>
+  </HEAD>
+  <BODY >
+
+
+
+ 
+		  <H1 class="main_header ui-widget-header ui-corner-all">EviNet: evidence-based network enrichment analysis</H1>
+<div id="archive-dialog-ajax" ></div>
+
+
+<FORM id="form_ne"  action="cgi/i.cgi" method="POST" enctype="multipart/form-data" autocomplete="on" onsubmit="setJID()"  >
+
+<input type="hidden" id="username" name="username" value="">
+<input type="hidden" id="sid" name="sid" value="">
+<input type="hidden" id="signature" name="signature" value="">
+<input type="hidden" name="neafile" id="neafile" value="default">
+<input type="hidden" name="step" id="step" value="default">
+<input type="hidden" name="subneturlbox" id="subneturlbox" value="">
+<input type="hidden" name="action" id="action"  value="default">	
+<input type="hidden" name="selectradio-table-ags-ele" id="selectradio-table-ags-ele"  value="">	
+<INPUT type="hidden" name="gene_column_id1" value="" id="genecolumnid1-table-ags-ele">
+<INPUT type="hidden" name="gene_column_id2" value="" id="genecolumnid2-table-ags-ele">
+<INPUT type="hidden" name="gene_column_id" value="" id="genecolumnid-table-ags-ele">
+<INPUT type="hidden" name="group_column_id" value="" id="groupcolumnid-table-ags-ele">
+<INPUT type="hidden" name="delimiter" value="" id="delimiter-table-ags-ele">
+
+
+<div id="table-help-menu" style="display: inline-block;">
+<table><tr>
+<td>
+<span style="float: left; margin-right: 0.5em; margin-left: 0.5em;  font-size: 200%; color: #e17009;" class="ui-icon ui-icon-circle-help" title="Help, FAQ, download" onclick="openDialog('help-dialog-static');">icon</span>
+</td><td>
+
+<ul id="help-menu-static">
+<li><span style="float: left; margin-right: 0.5em; margin-left: 0.5em;  font-size: 120%; color: #e17009;" class="ui-icon ui-icon-circle-help" title="Help, FAQ, download" >icon</span>
+	<ul>
+	<li>FAQ
+		<ul>
+			<li ><a href="help/faq-evi/evi-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a></li>
+		</ul>
+	</li>
+	</ul>
+</li>
+</ul>
+
+
+</td><td>
+<span id="top-menu" class="top_menu"></span>
+</td></tr></table>
+</div>
+<div id="table-settings-menu" style="display: inline-block; float: right; margin: 16px;">
+<table><tr><td>
+<a class="clickable" onclick="showProjectSettingsForm();">
+<span id="project_settings_button" class="ui-icon ui-icon-gear settings_tip" style="display: none;" title="Project list and settings"></span>
+</a>
+</td><td>
+	<!--span id="login_button" class="clickable" onclick="showLoginForm();">Log in</span-->
+<a class="clickable " onclick="showLoginForm();">
+	<span id="login_button"  class="ui-icon ui-icon-login settings_tip" title="Log in"></span>
+</a>
+</td><td>
+<span id="user_name" class="display_user settings_tip"></span>
+</td><td>
+<a class="clickable " onclick="logout();">
+	<span id="logout_button" class="ui-icon ui-icon-logout settings_tip" style="display: none;" title="Log out"></span>
+</a>
+</td><td>
+<a class="clickable" onclick="showProfileSettingsForm();">
+	<span id="profile_settings_button" class="ui-icon ui-icon-person settings_tip" style="display: none;"  title="Profile settings"></span>
+</a>
+</td>
+</tr></table>
+</div>
+		
+
+<div class="main_nea" id="main-nea"></div>
+
+
+</FORM>
+
+<div id="error-dialog-static"></div>
+
+<div id="help-dialog-static">
+<div id="help-tabs">
+  <ul>
+    <li><a href="https://www.evinet.org/#help-tab-faq">FAQ</a></li>
+    <li><a href="https://www.evinet.org/#help-tab-demo">Demo</a></li>
+    <li><a href="https://www.evinet.org/#help-tab-file">Scenarios</a></li>
+    <li><a href="https://www.evinet.org/#help-tab-download">Download</a></li>
+    <li><a href="https://www.evinet.org/#help-tab-example">Example files</a></li>
+    <li><a href="https://www.evinet.org/#help-tab-comp">Compatibility</a></li>
+  </ul>
+	<div id="help-tab-faq">
+		<a href="help/faq-evi/evi-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
+	</div>
+	<div id="help-tab-demo">
+<table><tr><td>
+				<div id="help-7" class="showme clickable demo_button sbm-controls" onclick="$('#help-dialog-static').dialog('close'); demo1(
+'myveryfirstproject', 'mmu', 'KXD1 MKX NKX1-1 NKX1-2 NKX2-1 NKX2-2 NKX2-2AS  NKX2-3 NKX2-4 NKX2-5 PRKX','', 'fc_lim','KEGG.SIG.mmu','', '', '', '')" 
+ title="A quick demo<br>Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
+<img src="pics/_showme.png" class="showme" ></div>
+ 
+		<div id="help-8" class="showme clickable demo_button sbm-controls" onclick="$('#help-dialog-static').dialog('close'); demo3(
+'myveryfirstproject',
+'mmu',
+'ags-file-h3',
+'fc_lim',
+'KEGG.SIG.mmu'
+)" 
+ title="Demo for Venn diagrams.Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
+<img src="pics/venn627483358680368.png" class="showme"></div>
+
+<!--div id="help-9" class="showme clickable demo_button" onclick="demo 2(
+'venn',
+'mmu',
+'ags-file-h3',
+'fc_lim',
+'KEGG.SIG.mmu'
+)" 
+ title="Venn diagram demo.Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
+<img src="pics/venn627483358680368.png"  class="showme"></div-->
+</td></tr></table>
+	</div>
+	<div id="help-tab-file">
+<div style="display: inline; float: right;"><a href="https://get.adobe.com/se/reader/"><img src='pics/pdf.jpg' style="width:  24px; height: 24px; margin-right: 1em;" title="Download PDF reader"></a></div>
+<table>
+<tr>
+<td>How to begin?</td>
+<td><a href="help/HyperSet.Demo1.pdf"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-pdf" title="PDF">icon</span></a></td>
+<td><a href="help/part1.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Identification of driver genes</td>
+<td><a href="help/HyperSet.Demo.Drivers.pdf"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-pdf" title="PDF">icon</span></a></td>
+<td><a href="help/drivers.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Exploration of molecular landscapes</td>
+<td><a href="help/HyperSet.Demo.Expl.pdf"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-pdf" title="PDF">icon</span></a></td>
+<td><a href="help/molecular.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Using Venn diagrams</td>
+<td><a href="help/HyperSet.Demo.Venn.pdf"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-pdf" title="PDF">icon</span></a></td>
+<td><a href="help/venn_help.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Using stand-alone software</td>
+<td><a href="help/HyperSet.Demo.Soft.pdf"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-pdf" title="PDF">icon</span></a></td>
+<td><a href="help/nea_standalone.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+</table>
+	</div>
+	<div id="help-tab-download">
+<p >Potentially, you can obtain much more useful output by running the perl script NEA.pl off-line.<br>NEA.pl is the script that executes network enrichment analysis at this web site.<br> Please note that while running analysis online, on this web-site, you can both look up the command line and <span style="color: red">download specific input and output files</span>.<br>Watch the text and links that appear after the current analysis finished. <br>You can to use them either as a reference or as input to a modified analysis off-line. _tmpAGS, _tmpFGS, and _tmpNET contain your submitted gene list(s), the collection of functional gene sets, and the network.</p>
+
+<a href="https://cran.r-project.org/web/packages/NEArender/index.html">R package NEArender on CRAN</a>
+<br>
+<a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/NEArender/NEArender_1.4.tar.gz">R package NEArender on local site</a>
+<br>
+<a href='http://research.scilifelab.se/andrej_alexeyenko/downloads/NEA.pl'>perl script NEA.pl </a> from <a href='https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308' target='_blank'> Merid et al. (2014) </a>
+		
+	</div>
+	<div id="help-tab-example">
+TAB-delimited file with pre-compliled AGSs, gene IDS accompanied with AGS ID:
+<br>
+<a href=='http://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/SomaticMutations.GBM_OV.example'>SomaticMutations.TCGA-2008</a>
+<br>
+TAB-delimited file with results of a differential expression analysis, gene IDs followed by fold change, p, and FDR values in multiple contrasts:
+<br>
+<a href='http://research.scilifelab.se/andrej_alexeyenko/downloads/P.matrix.NoModNodiff_wESC.VENN.txt'> P.matrix.NoModNodiff_wESC.VENN.txt</a>
+		
+	</div>
+	<div id="help-tab-comp">
+Known compatibility issues:
+<br>
+This site best works with Google Chrome and Mozilla Firefox. Some functions do not work with IE 11 (opening pre-compliled lists from previously uploaded files).
+	</div>
+	
+<!--a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/PEA/heatmap.PEA.All.v6.html">heatmap</a-->
+</div>
+</div>
+
+<script type="text/javascript">
+$(function() {
+$("#help-tabs").tabs({heightStyle: "auto"});
+});
+
+$(function() {
+//$("#'.$dialogID.'").html("'.$text.'");
+$("#help-menu-static").menu();
+$("#help-dialog-static").dialog({
+		resizable: false,
+        modal: false,
+        title: "Help, FAQ, downloads", 
+        width:  1000,
+        height: "auto",
+		position: { 		my: "center", at: "center", 		of: window 		}, 
+autoOpen: false,
+show: {
+//effect: "blind", duration: 380
+},
+close: function() {
+//$("#help-dialog-static").css({"visibility": hidden});
+//$("#help-dialog-static").html("");
+//$("[id*='qtip-'][aria-hidden='false']" ).remove(); //span:nth-child(3)
+//$( this ).dialog( "destroy" );
+}
+});
+//$('[aria-describedby="help-dialog-static"]').css({"z-index": 1001});
+//$(".nea_loading").removeClass("nea_loading");
+//$("#usable-url").html("");
+//openTab( "analysis_type_ne", HSTabs.subtab.indices["'.$backTab.'"]);
+// $( "#rocOpener" ).click(function() {$( "#showError" ).dialog( "open" );});
+});
+function showDialogStatic (title, message) {
+$("#error-dialog-static").html(message);
+$("#error-dialog-static").dialog({
+		resizable: false,
+        modal: true,
+        title: title, 
+        width:  400,
+        height: "auto",
+		position: { 		my: "center", at: "center", 		of: window 		}, 
+autoOpen: true,
+show: {
+//effect: "blind", duration: 380
+},
+close: function() {}
+});
+}
+</script>
+
+
+<div id="login" style="display: none; visibility: hidden">
+<div id="ltabs">
+  <ul>
+    <li><a href="https://www.evinet.org#signup_tab">Sign up</a></li>
+    <li><a href="https://www.evinet.org#login_tab">Log in</a></li>
+   </ul>
+   
+<div id="signup_tab">
+  Sign up with your email address
+  <!--br><button id="google-button" class="authent ui-widget-header ui-corner-all"> Sign up with <img src="pics/Google.png" width="95" height="35"></button-->
+ <table>	
+	<tr class="smaller_font"><td>Username</td><td><input type="text" name="signup_userid" value="" id="signup-userid-box" autocomplete="on" title="Username is your mail adress. Please use the valid address." class="ui-corner-all"> 
+	<span id="signup-userid-tips"></span></td></tr>
+	<tr class="smaller_font"><td>Password</td><td><input type="password" name="signup_user_password" value="" id="signup-password-box" autocomplete="off"  class="ui-corner-all" onpaste="return false;" title="Password should containt letters in both upper and lower cases, digits, special symbols">
+	<span id="signup-password-tips"></span></td></tr>
+	<tr class="smaller_font"><td>Confirm password</td><td><input type="password" name="signup_user_password2" value="" id="signup-password-box2" autocomplete="off"  class="ui-corner-all" onpaste="return false;" title="Repeat your password"> 
+	<span id="signup-password-tips2"></span></td></tr>
+ </table>	
+  <button id="signup_button-login_form" class="ui-widget-header ui-corner-all" onclick="signup()"><span class="authent">Sign up</span></button>
+  <p class="smaller_font">
+  By signing up, you agree to EviNet's privacy policy and terms of use 
+  </p>
+</div>
+<!--/////////////////////////////////////-->
+  <div id="login_tab">
+  Log into your account with email address 
+  <!--br><button id="google-button" class="authent ui-widget-header ui-corner-all"> Log in with <img src="pics/Google.png" width="95" height="35"></button-->
+ <table>	
+	<tr><td class="smaller_font">Username</td><td><input type="text" name="login_userid" value="" id="login-userid-box" class="ui-corner-all"></td></tr>
+	<tr><td class="smaller_font">Password</td><td><input type="password" name="login_user_password" value="" id="login-password-box" class="ui-corner-all"><span id="login-password-tips"></span></td></tr>
+	<tr><td class="smaller_font">Keep me logged in</td><td><input type="checkbox" name="keep_me" id="keepme-check"  class="ui-corner-all"></td></tr>
+	<tr><td></td><td><span id="forgot" style="position: relative; left: 0px; top: 0px; float: right; margin: 20;" class="clickable" onclick="forgot();">Forgot password?</span></td></tr>
+	<tr><td><button id="login_button-login_form" class="ui-widget-header ui-corner-all" onclick="authenticate(); location.reload(true);"><span class="authent">Log in</span></button></td><td></td></tr>
+</table>
+</div>
+</div>
+</div>
+
+<div id="project_settings_tab" style="display: none; visibility: hidden">
+<p id="projects_title" class="ui-state-default"></p>
+<table id = "projects_table" class="redmond_ui_table" >
+</table>
+<br>
+<p id="received_title" class="ui-state-default"></p>
+<table id="received_table" class="redmond_ui_table">
+</table>
+<p id="sent_title" class="ui-state-default"></p>
+<table id="sent_table"  class="redmond_ui_table">
+</table>
+</div>
+
+<div id="profile_settings_tab" title="Profile settings" style="display: none; visibility: hidden">
+
+<table>	
+<tr><td class="smaller_font" style="width: 42em;"><span id="notification_area"></span></td><td><span id="notification_status"></span></td></tr>
+<tr><td>Change your password:</td><td></td></tr>
+<tr><td class="smaller_font">Old password</td><td><input type="password" value="" id="old_password_box" autocomplete="off" onpaste="return false;"></input></td></tr>
+<tr><td class="smaller_font">New password</td><td><input type="password" value="" id="change_password_box1" autocomplete="off" onpaste="return false;" title="Password should containt letters in both upper and lower cases, digits, special symbols"></input>
+<span id="change_password_tips1"></span></td></tr>
+<tr><td class="smaller_font">Confirm password</td><td><input type="password" value="" id="change_password_box2" autocomplete="off" onpaste="return false;" title="Password in this field should be the same as in the previous one"></input>
+<span id="change_password_tips2"></span></td></tr>
+<tr><td class="smaller_font">
+<button id="change_password_request" onclick="confirm_changepassword()">Change password</button></td><td></td></tr>
+</table>	
+</div>
+
+<style>
+.ui-tooltip {
+    width: 210px;
+  }
+ </style>
+ 
+<script  type="text/javascript">
+window.onload = function init()
+{
+	combobox_init();
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("cookies_accepted", "true", accepted_time);
+		var usercookie = (getCookie("username").split("|"))[0];
+		var loggedin = (usercookie != "Anonymous") & (usercookie != "");
+		//console.log("Loggedin: " + loggedin);
+		if (loggedin) {
+			// we guess that if user have a "username" cookie, then he also has to have a "session_id" cookie
+			var sid, username, sessionlength, oldsignature, newsignature;
+			[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+			var sessionstatus = verify_prolong_session(username, oldsignature, sid, newsignature, sessionlength);
+			if ((sessionstatus != "Nonexisting_session") && (sessionstatus != "Session_expired")) {
+				set_sid(sessionstatus, sessionlength);
+				fill_projects(username, newsignature, sessionstatus);
+				// open the previous project
+				var project_id = (getCookie("project_id").split("|"))[0];
+				if (project_id) {
+					reload_project(project_id, sessionlength, username, newsignature, sessionstatus);
+				}
+				display_login(username);
+			}
+			else {
+				erase_user_cookies();
+				alert(sessionstatus);}
+		}
+		else {
+			usetCookie("username", "Anonymous", 168);
+			var project_id = (getCookie("project_id").split("|"))[0];
+				if (project_id) {
+					reload_project(project_id, 168, "Anonymous", "", "");
+				}
+		}
+	}
+}
+
+function combobox_init()
+{
+	if ((document.getElementById("analysis_type_ne") == null)) {
+		console.log("Waiting to initialize combobox...");
+		setTimeout(combobox_init, 100);}
+	else {
+		$.widget( "custom.combobox", {
+			_create: function() {
+				this.wrapper = $( "<span>" )
+				.addClass( "custom-combobox" )
+				.insertAfter( this.element );
+				this.element.hide();
+				this._createAutocomplete();
+				this._createShowAllButton();
+			},
+ 
+			_createAutocomplete: function() {
+				var selected = this.element.children( ":selected" ),
+				value = selected.val() ? selected.text() : "";
+				this.input = $( "<input id=\'project_id_ne\' type=\'text\' name=\'project_id\' placeholder=\' [ --  project ID -- ] \'>" )
+				.appendTo( this.wrapper )
+				.val( value )
+				.attr("title", "Find existing project or type in an ID to create a new one")
+				.addClass( "custom-combobox-input ui-widget ui-widget-content ui-state-default ui-corner-left" )
+				.autocomplete({
+					delay: 0,
+					minLength: 0,
+					source: $.proxy( this, "_source" )
+				})
+				//.tooltip({			classes: {				"ui-tooltip": "ui-state-highlight"            }        })
+				;
+				this._on( this.input, {
+					autocompleteselect: function( event, ui ) {
+						ui.item.option.selected = true;
+						this._trigger( "select", event, {
+							item: ui.item.option
+						});
+						var P = $("#project_id_tracker");
+						var ProjectID = ui.item.option.value;
+						//alert( "Project " + ProjectID + " chosen");
+						if ((P.val() != ProjectID) & (ProjectID != "")) {
+							reset_project(ProjectID);
+							//this.autocomplete("close");
+							P.val(ProjectID);
+						}
+						event.stopImmediatePropagation();
+					}
+					//, $( ".selector" ).on( "autocompletechange", function( event, ui ) {} );
+					, autocompletechange: "_removeIfInvalid"
+				});
+			},
+			_createShowAllButton: function() {
+				var input = this.input,
+				wasOpen = false;
+				$( "<a id=\'project_list\'>" )
+				.attr( "tabIndex", -1 )
+				.attr( "title", "Show All Items" )
+				//.tooltip()
+				.appendTo( this.wrapper ) //this.wrapper
+				.button({
+					icons: {
+						primary: "ui-icon-triangle-1-s"
+					},
+					text: false
+				})
+				.removeClass( "ui-corner-all" )
+				.addClass( "custom-combobox-toggle ui-corner-right" )
+				.on( "mousedown", function() {
+					wasOpen = input.autocomplete( "widget" ).is( ":visible" );
+				})
+				.on( "click", function() {
+					input.trigger( "focus" );
+					if ( wasOpen ) {return;}// Close if already visible
+					input.autocomplete( "search", "" );// Pass empty string as value to search for, displaying all results
+				});
+			},
+			_source: function( request, response ) {
+				var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+				response( this.element.children( "option" ).map(function() {
+				var text = $( this ).text();
+				if ( this.value && ( !request.term || matcher.test(text) ) )
+				return {
+					label: text,
+					value: text,
+					option: this
+				};
+				}) );
+			},
+			_removeIfInvalid: function( event, ui ) {
+				if ( ui.item ) {return;}// Selected an item, nothing to do
+				// Search for a match (case-insensitive)
+				var value = this.input.val(),
+				valueLowerCase = value.toLowerCase(),
+				valid = false;
+				this.element.children( "option" ).each(function() {
+				if ( $( this ).text().toLowerCase() === valueLowerCase ) { 
+					this.selected = valid = true;
+					return false;
+				}
+				});
+				// Found a match, nothing to do
+				if ( valid ) {
+					return;
+				}
+				//$("#project-new").removeClass("icon-static");
+				//$("#project-new").addClass("checkboxhighlight")
+				//setTimeout(function(){$("#project-new").removeClass("checkboxhighlight");}, 500);
+			},
+			_destroy: function() {
+				this.wrapper.remove();
+				this.element.show();
+			}
+		});
+		$( "#project_id_select" ).combobox();
+		if ((document.getElementById("project_id_ne") == null) || (document.getElementById("display-archive") == null) || (document.getElementById("project_combobox") == null)) { 
+			setTimeout(combobox_init, 100);
+		}
+		else {
+			$("#project_id_ne").attr("title", null);
+			$("#display-archive").css("display", "none");
+			$("#project_combobox").parent().css("width", String(Number(String( $("#species-ele").selectmenu("option", "width").replace("em", ""))) + 5 ) + "em");
+		}
+	}
+}
+		
+function display_login (username)
+{
+	var loginButton = document.getElementById("login_button");
+	loginButton.style.display = 'none';
+	$("#username").val(username);
+	$("#user_name" ).html(username);
+	$("#user_name" ).attr("title", "Logged in as");
+	$("#logout_button" ).css({"display": "inline-block"});
+/*	$('[class="login_info"]').qtip({							
+	position: {
+		my: "bottom right",
+		at: "bottom left",
+		adjust: {
+			screen: true,
+			method: "shift flip"
+		}
+	}
+	});*/
+	$("#profile_settings_button" ).css({"display": "block"});
+	$("#project_settings_button" ).css({"display": "inline-block"});
+}
+
+function reload_project(project_id, sessionlength, username, signature, sid)
+{
+$("#project_id_ne").removeClass("inputareahighlight");
+
+	if((document.getElementById("project_id_ne") == null) || (document.getElementById("username") == null) || (document.getElementById("sid") == null) || (document.getElementById("signature") == null) || (document.getElementById("listbutton-table-ags-ele") == null) || (document.getElementById("area-table-ags-ele") == null)) {
+		setTimeout(reload_project, 100, project_id, sessionlength, username, signature, sid);
+	}
+	else {
+		usetCookie("project_id", project_id, sessionlength);
+		document.getElementById("project_id_ne").value=project_id;
+		$("#username").val(username);
+		$("#sid").val(sid);
+		$("#signature").val(signature);
+		restoreSpecies();
+		if (project_id) {
+		$("#listbutton-table-ags-ele").click();
+		} 
+		else {
+		$('#list_ags_files').html("No project selected...");
+		}
+		writeHref();
+		$("#display-archive").css("display", "inline-block");
+	}
+}
+
+function reset_project (ProjectID) {
+	$("#project_id_ne").removeClass("inputareahighlight");
+	$("#project_id_ne").removeClass("demohighlight");
+	// if (ProjectID != "") {
+	var usercookie = getCookie("username");
+	var username = (usercookie.split("|"))[0];
+	var sid=0;
+	var oldsignature = '';
+	var newsignature = '';
+	var sessionlength = 168;
+	if (username != 'Anonymous') {
+		// use get_name_sid... instead
+		[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+	}
+	var access_status = check_permission(username, oldsignature, sid, newsignature, sessionlength, ProjectID);
+	var permission = (access_status.split(":"))[0];
+	var newkey = (access_status.split(":"))[1];
+	usetCookie("session_id", newkey, sessionlength);
+	// NOTE: we should not check permission anymore. Or should we?
+	if (permission == "Allowed") {
+		usetCookie("project_id", ProjectID, sessionlength);
+		$("#project_id_ne").removeClass("ui-state-default").addClass("projecthighlight");
+		setTimeout(function () {
+			$("#project_id_ne").removeClass("projecthighlight", 1000, "swing"); 
+			$("#project_id_ne").addClass("ui-state-default");
+			}, 500);
+		$("#list_ags_files").html("");
+		$("#ags_select").html("");
+		$("#venn-controls").html("");
+		$("#venn-diagram").html("");
+		$("#venn-progressbar").css("visibility", "hidden");
+		$("#useVennFileReminder").css({"display": "block"});
+		//$(".cols-ags-controls").css("visibility", "hidden");
+		$("#file-table-ags-ele").val("");
+		$("#username").val(username);
+		$("#sid").val(newkey);
+		$("#signature").val(((getCookie("username")).split("|"))[1]);
+		$("#project_id_ne").val(ProjectID);
+		restoreSpecies();
+		$("#listbutton-table-ags-ele").click();
+		$("#display-archive").css("display", "inline-block");
+		writeHref();
+		updatechecksbmAll();
+	}
+	else {
+		alert("Permission denied or project does not exist. Verify your login status. \nNOTE: it is not possible to use more than one login in the same browser.");
+		$("#display-archive").css("display", "none"); 
+	}
+}
+
+
+function showLoginForm() {
+	$("#login" ).css({"display": "block", "visibility": "visible"});
+	var defaultTab = 0;
+	if (getCookie("cookies_accepted")) {defaultTab = 1};
+	{$("#ltabs" ).tabs({active: defaultTab});}
+	$("#login" ).dialog({
+	modal: true,
+	width: 480
+	});
+	$("[id*='button-login_form']").button();
+	$("#signup_button-login_form").button("disable");
+}
+
+function hideLoginForm() {
+	var loginForm = $("#login");
+	loginForm.dialog("close");
+}
+
+		var roleIcon = {
+			read: 		{code: 1, caption: "Read-only", 		icon: "document-b"}, 
+			readwrite: 	{code: 2, caption: "Read/write", 		icon: "pencil"}, 
+			admin: 		{code: 3, caption: "Administrator", 	icon: "wrench"}
+		}
+
+function decodeRole(role) {
+		switch (role) {
+			case "1":
+				return("read");
+			case "2":
+				return("readwrite");
+			case "3":
+				return("admin");
+		}
+		return(null);
+		}
+
+function js_id_fit (id) {
+		return(id.replace(/\.|\@/g, "_"));
+}
+		
+function displayInvitation (type, tableid, pid, uid, date, role, i) {
+	var row = document.getElementById(tableid).insertRow(i);
+	row.id = "rowid_" + type + "_" +  pid + "_" + js_id_fit(uid);
+	if (type == 'sent') {
+			invitationData = {
+	project:	{index: 0, title: "Project ID", content: pid, visibility: 'visible'}, 
+	user:		{index: 1, title: "Who is invited", 
+					content: '<a class="clickable" href="mailto:' + uid + '">' + uid + '</a>', visibility: 'visible'}, 
+	date:		{index: 2, title: "Invitation date", content: date, visibility: 'visible'}, 
+	role:		{index: 3, icon: roleIcon[role].icon, class: "icon-static", title: "Role in the project: "  + roleIcon[role].caption, content: '', visibility: 'visible'}, 
+	cancel:		{index: 4, icon: "closethick", title: "Cancel invitation", onclick: 'confirm_cancel_invitation("' + pid + '", "'+ uid +'", "' + i + '");', visibility: 'visible'} 
+//content: '<button id="cancel_invitation_'+pid+'" onclick=confirm_cancel_invitation("' + pid + '","'+ uid +'");>Cancel invitation</button>'
+	}
+	} else {
+							invitationData = {
+	project:	{index: 0, title: "Project ID", content: pid, visibility: 'visible'}, 
+	user:		{index: 1, title: "Who sent the invitation", 
+					content: '<a class="clickable" href="mailto:' + uid + '">' + uid + '</a>', visibility: 'visible'}, 
+	date:		{index: 2, title: "Invitation date", content: date, visibility: 'visible'}, 
+	role:		{index: 3, icon: roleIcon[role].icon, class: "icon-static", title: "Role in the project: "  + roleIcon[role].caption, content: '', visibility: 'visible'}, 
+	accept:		{index: 4, title: "Accept this invitation", icon: "heart", onclick: 'accept_p_invitation("' + pid + '", "' + row.id + '");', content: '', visibility: 'visible'}, 
+	reject:		{index: 5, title: "Reject this invitation", icon: "cancel", onclick: 'reject_p_invitation("' + pid + '", "'+ row.id + '");', content: '', visibility: 'visible'}
+	}
+
+	}
+	var cellList = Object.keys(invitationData);
+	for (var m = 0; m < cellList.length; m++) {
+	var cellName = cellList[m];
+	var nextCell = row.insertCell(invitationData[cellName].index);
+	nextCell.innerHTML = '<span ' + 
+' id="id_' + invitationData[cellName].index + '_' + pid + '"' + 
+' class="' + 
+	(invitationData[cellName].icon == null ? '' : ' ui-icon ui-icon-' + invitationData[cellName].icon) + 
+	(invitationData[cellName].class == null ? '' : (' ' + invitationData[cellName].class)) + 
+	(invitationData[cellName].classlabel == null ? '' : (' ' + invitationData[cellName].classlabel + pid)) + 
+	'" title="' + invitationData[cellName].title + '" ' + 
+	(invitationData[cellName].onclick == null ? '' : ' onclick=\'' + invitationData[cellName].onclick) + '\'' + 
+	' style="visibility: ' + invitationData[cellName].visibility + '"' + 
+'>' + invitationData[cellName].content + '</span>';
+	}
+}
+
+function displayProjectSettings(tableid, project, username, session_status_or_sid, newsignature, rowindex) {
+
+	var record = project.split(",");
+	var project_id = record[0].substr(1);
+	var notifications = record[1];
+	//console.log("Project: " + project_id + " notifications: " + notifications);
+	var role = decodeRole(record[2][0]);
+	//console.log(role);
+	if (role == null) {return;}
+	//console.log(project + ' ' + rowindex)
+	var row = document.getElementById(tableid).insertRow((rowindex != null) ? rowindex : 0);
+	row.id = "project_id_" + project_id;
+	var roleList = Object.keys(roleIcon);
+	var roleSelector = '<select id="newmember_select_' + project_id + '" class="project_settings_list">';
+	for (var k = 0; k < roleList.length; k++) {
+		var roleName = roleList[k];
+		roleSelector = roleSelector + '<option value="' + roleIcon[roleName].code + '" data-class="ui-icon-' + roleIcon[roleName].icon + '">' + roleIcon[roleName].caption + '</option>';
+	}
+	roleSelector = roleSelector + '</select>';
+	var members = project_members(username, session_status_or_sid, newsignature, project_id).split("|");
+	var session_status = members.shift();
+	//console.log(session_status);
+	members.pop();
+	var openProject = false;
+	var memberSelector = '<select id="members_project_' + project_id + '" class="project_settings_list">';
+	for (var j = 0; j < members.length; j++) {
+		var membername = members[j].substr(1, members[j].indexOf(",") - 1);
+		var memberrole = decodeRole(members[j][members[j].length - 2]);
+		if (memberrole != null) {
+		//console.log(members[j])
+		//console.log(j + ' ' + memberrole)
+		memberSelector = memberSelector + '<option value="' + membername + '" data-class="ui-icon-' + roleIcon[memberrole].icon + ' icon-static">' + membername + " (" + roleIcon[memberrole].caption + ")" + '</option>'
+		if (membername == "Anonymous") {
+			openProject = true;
+		}
+		}				
+	}
+	memberSelector = memberSelector + '</select>';
+				var cellData = {
+	project:		{index: 0, adminonly: false, title: "Project ID", content: '<span id="project_id_' + project_id + '" >' + project_id + '</span>', visibility: 'visible'}, 
+	role: 			{index: 1, adminonly: false, icon: roleIcon[role].icon, class: "icon-static", title: "Your access level in the project: " + roleIcon[role].caption, visibility: 'visible'}, 
+	notify: 		{index: 2, adminonly: false, title: "Accept notifications", visibility: 'visible', content: '<span class="ui-icon ui-icon-mail-closed" id="notifications_project_' + project_id + '" onclick=confirm_project_notifications_change("' + project_id + '")></span>'},
+	makepublic: 	{index: 3, adminonly: true, 
+							icon: "locked", //openProject ? "unlocked" :  
+							class: null, //openProject ? "icon-static" : null, 
+							title: "Make project public", //openProject ? "The project is publicly accessible" : , 
+							onclick: null, //openProject ? 'return(null);' : 'confirm_makepublic("' + project_id + '");', 
+							visibility: 'visible'}, 
+	members: 		{index: 4, adminonly: true, title: "Already active project members", visibility: 'visible', content: memberSelector}, 	
+	deletemember: 	{index: 5, adminonly: true, icon: "trash", title: "Delete this member", onclick: 'confirm_delete_member("' + project_id + '");', visibility: 'visible'},
+	addmember: 		{index: 6, adminonly: true, icon: "plus", title: "Add a new member", onclick: '"if (this.classList.contains(\'ui-icon-plus\')) {showShareFields(\'' + project_id + '\', this.id);} else {hideShareFields(\'' + project_id + '\', this.id);}"', visibility: 'visible'},
+	memberemail: 	{index: 7, adminonly: true, title: "E-mail address", classlabel: "sharefield", visibility: 'hidden', content: '<input id="newmember_input_' + project_id + '"></input>'}, 
+	memberlevel: 	{index: 8, adminonly: true, title: "Access level for the new member", classlabel: "sharefield", visibility: 'hidden', content: roleSelector}, 
+	invitemember: 	{index: 9, adminonly: true, icon: "arrowreturnthick-1-n", title: "Send invitation", classlabel: "sharefield", onclick: 'confirm_invite_member("' + project_id + '");', visibility: 'hidden'},
+	destroyproject: {index: 10, adminonly: true, icon: "circle-close", title: "Destroy the whole project", onclick: 'destroy_project("' + project_id + '");', visibility: 'visible'}
+	};
+
+	var cellList = Object.keys(cellData);
+	for (var m = 0; m < cellList.length; m++) {
+	var cellName = cellList[m];
+	if (role == "admin" || !cellData[cellName].adminonly) {
+		var nextCell = row.insertCell(cellData[cellName].index);
+		nextCell.innerHTML = '<span ' + 
+		' id="id_' + cellData[cellName].index + '_' + project_id + '"' + 
+		' class="' + 
+		(cellData[cellName].icon == null ? '' : ' ui-icon ui-icon-' + cellData[cellName].icon) + 
+		(cellData[cellName].class == null ? '' : (' ' + cellData[cellName].class)) +  			
+		(cellData[cellName].classlabel == null ? '' : (' ' + cellData[cellName].classlabel + project_id)) + 
+		'" title="' + cellData[cellName].title + '" ' + 
+		(cellData[cellName].onclick == null ? '' : ' onclick=' + cellData[cellName].onclick) + 
+		' style="visibility: ' + cellData[cellName].visibility + '"' + 
+		'>' + cellData[cellName].content + '</span>';
+	}}
+	if (notifications == "t") {
+		$("#notifications_project_"+project_id).removeClass("ui-icon-mail-closed"); 
+		$("#notifications_project_"+project_id).addClass("ui-icon-mail-open"); 
+	}
+	toggleProjectStatus ("#id_3_" + project_id, openProject);
+}
+		
+function showProjectSettingsForm()
+{
+	$("#project_settings_tab").css({"display": "block", "visibility": "visible"});
+	$("#project_settings_tab" ).dialog({
+	title: "Project settings", 
+	modal: true
+	});
+	var sid, username, sessionlength, oldsignature, newsignature;
+	[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+	var projects = user_projects(username, oldsignature, sid, newsignature, sessionlength).split("|");
+	var session_status_or_sid = projects.shift();
+	projects.pop();
+	// first - table containing projects
+	// clear tables if exist
+	$("#projects_table").html("");
+	if ((session_status_or_sid != "Nonexisting_session") && (session_status_or_sid != "Session_expired")) {
+		set_sid(session_status_or_sid, sessionlength);
+		var record;
+		// show existing projects
+		$("#projects_title").html((projects.length > 0 ? "You can find here your projects and manage access to them": "You have no active projects"))
+		for (i=0; i < projects.length; i++) {
+			displayProjectSettings(
+			"projects_table", 
+			projects[i], // project record
+			username, 
+			session_status_or_sid, 
+			newsignature, 
+			i);
+		}
+		
+		// show project invitations sent by user
+		var sent_p_invitations = sent_invitations(username, newsignature, session_status_or_sid).split("|");
+		session_status = sent_p_invitations.shift();
+		sent_p_invitations.pop();
+		var datecell, usercell, acceptcell, rejectcell, cancelcell;
+		$("#sent_title").html((sent_p_invitations.length > 0 ? "Sent invitations": ""))
+		$("#sent_table").html("");
+		for (i = 0; i < sent_p_invitations.length; i++) {
+			record = sent_p_invitations[i].split(",");
+			displayInvitation ('sent', 
+			"sent_table", 
+			record[0].substr(1), //project id
+			record[1], //who sent
+			record[2], //date
+			decodeRole(record[3][0]),
+			i //row index
+			);
+		}
+		
+		var received_p_invitations = received_invitations(username, newsignature, session_status_or_sid).split("|");
+		session_status = received_p_invitations.shift();
+		received_p_invitations.pop();
+		$("#received_title").html((received_p_invitations.length > 0 ? "Received invitations": ""));
+		$("#received_table").html("");
+		for (i = 0; i < received_p_invitations.length; i++) {
+			record = received_p_invitations[i].split(",");
+						displayInvitation ('received', 
+			"received_table", 
+			record[0].substr(1), //project id
+			record[1], //who sent
+			record[2], //date
+			decodeRole(record[3][0]),
+			i
+			);
+		}
+	}
+	else {		erase_user_cookies();}
+	/////////////////////////////////////////////////////////
+		  $( function() {
+    $.widget("custom.iconselectmenu", $.ui.selectmenu, {
+      _renderItem: function( ul, item ) {
+        var li = $( "<li>" ),
+          wrapper = $( "<div>", { text: item.label } );
+ 
+        if ( item.disabled ) {
+          li.addClass( "ui-state-disabled" );
+        }
+ 
+        $( "<span>", {
+          style: item.element.attr( "data-style" ),
+          "class": "ui-icon " + item.element.attr( "data-class" )
+        })
+          .appendTo( wrapper );
+ 
+        return li.append( wrapper ).appendTo( ul );
+      }
+    });
+$(".project_settings_list").iconselectmenu().iconselectmenu("menuWidget").addClass("ui-menu-icons");
+ });
+ 
+var oldWidth = $("#projects_table").css("width");
+if (oldWidth == '0px') {oldWidth = "400px";}
+var newWidth = Number(oldWidth.replace("px", "")) + 40;
+//console.log($("#projects_table").css("width"));
+ 	$("#project_settings_tab" ).dialog({
+	width: newWidth.toString() + "px"
+	});
+}
+
+function showProfileSettingsForm()
+{
+	var sid, username, sessionlength, signature, cls;
+	[username, sid, signature, sessionlength] = get_name_sid_sign_length(false);
+	var accept_notifications = notifications_status(username, signature, sid).split("|");
+	if (accept_notifications[0] != "0") {
+		$("#profile_settings_tab").css({"display": "block", "visibility": "visible"});
+		$("#profile_settings_tab" ).dialog({
+		modal: true,
+		width: 480
+		});
+		var notifications_change_status_action;
+		if (accept_notifications[1] == "0") {
+			notifications_change_status_action = "Enable";
+			//flag = '\xd7';
+			cls = 'notifications_off';
+			}
+		else {
+			notifications_change_status_action = "Disable";
+			//flag = '&#10003';
+			cls = 'notifications_on';
+			}
+		//document.getElementById("notification_status").innerHTML
+		$("#notification_area").removeClass();
+		$("#notification_area").addClass(cls);
+		
+		$("#notification_status").html('<button class="ui-corner-all" id="change_notification_status" onclick=confirm_global_notifications_change("'+notifications_change_status_action+'")>'+ notifications_change_status_action +'</button>');
+		
+		
+		$("#change_password_request").button();
+		$("#change_password_request").button("disable");
+	}
+	else {
+		alert("Can't load tab. Session has expired or has been closed");}
+}
+
+function authenticate() {
+	// we grant access only to users with enabled cookies
+	if (getCookie("cookies_accepted")) {
+		//var username = ($("[name='login_userid']").val()).trim(); 
+		var username = (($("[name='login_userid']").val()).trim()).toLowerCase();
+		var sid = prepare_session(username, $("#login-password-box").val());
+		if (sid!="Fail") {
+			erase_user_cookies();
+			// by default session lasts for 8 hours
+			var sessionlength=8;
+			// if "keep me logged in" option is chosen - remember for 1 month
+			if ($("#keepme-check").is(':checked')) {sessionlength = 31*24;}
+			setCookie("username", username, sessionlength);
+			set_sid(sid, sessionlength);
+			hideLoginForm();
+			// creating session
+			var signature = getSignature()
+			var sessionstatus = open_session(username, signature, sid, sessionlength);
+			if (sessionstatus=="Success") {
+				display_login(username);
+				fill_projects(username, signature, sid);
+				if (sessionlength > 8) {usetCookie("cookies_accepted", "true", sessionlength);}
+				}
+			else {
+				alert("Failed to create session");}
+			}
+		else {
+			alert("Failed to log in: please check your username and password, make sure that your account has been activated");}
+		}
+	else {
+		alert("Please accept cookies to log in");}
+}
+
+function signup()
+{
+	var xmlhttp = new XMLHttpRequest();
+	var signupstatus;
+	var username = $("[name='signup_userid']").val();
+	// use synchronous call for we have to wait
+	xmlhttp.open("GET", "cgi/r.cgi?username="+encodeURIComponent(username)+"&password="+encodeURIComponent($("#signup-password-box").val()), false);
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+		signupstatus = this.responseText;}
+	}
+	xmlhttp.send();
+	if (signupstatus=="success") {
+		xmlhttp.open("GET", "cgi/send_activation_letter.cgi?username="+encodeURIComponent(username), true);
+		xmlhttp.send();
+		alert("Check your email to activate your account.");
+		hideLoginForm();}
+	else {
+		alert("Sign up failed");}
+}
+
+function forgot()
+{
+	// test if user has entered the right mail
+	var emailVailidity = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	if (emailVailidity.test($("#login-userid-box").val())) {
+		var reset_status = forgot_password($("#login-userid-box").val());
+		if (reset_status) {
+			alert("Check your mail to get the link for resetting your password");}
+		else {
+			alert("You have already tried to reset your password for 3 times. Please contact the webmaster");}
+		}
+	else {
+		alert("Please enter the email address you used for registration into Username field");}
+}
+
+function logout()
+{
+	var signature = getSignature();
+	var username = ((getCookie("username")).split("|"))[0];
+	var sid = ((getCookie("session_id")).split("|"))[0];
+	close_session(username, signature, sid);
+	erase_user_cookies();
+	$("#username").val("");
+	$("#signature").val("");
+	$("#sid").val("");
+	/*var logoutButton = document.getElementById("logout_button");
+	logoutButton.style.display = 'none';
+	var loginButton = document.getElementById("login_button");
+	loginButton.style.display = 'initial';
+	var profileSettingsButton = document.getElementById("profile_settings_button");
+	profileSettingsButton.style.display = 'none';
+	var projectSettingsButton = document.getElementById("project_settings_button");
+	projectSettingsButton.style.display = 'none';*/
+	$("#logout_button").css("display", "none");
+	$("#login_button").css("display", "initial");
+	$("#profile_settings_button").css("display", "none");
+	$("#project_settings_button").css("display", "none");
+	$("#user_name" ).html("");
+	$("#user_name" ).attr("title", null);
+	// remove projects from combobox
+	var projectslength = ($("#project_id_select")[0].options).length;
+	for (i=0; i<projectslength; i++) {
+		$("#project_id_select")[0].remove(0);
+	}
+	$('#list_ags_files').html("No project selected...");
+	$("#project_id_ne").val("");
+	$("#display-archive").css("display", "none");
+	usetCookie("username", "Anonymous", 168);
+	writeHref();
+	$("#arc-content").html("")
+}
+
+function showShareFields(project_id, item_id)
+{
+	$(".sharefield" + project_id).css({"visibility": "visible"});
+	$("#" + item_id).removeClass("ui-icon-plus");
+	$("#" + item_id).addClass("ui-icon-minus");
+}
+
+function hideShareFields(project_id, item_id)
+{
+	if (item_id == null) {
+		var cellData_addmember_index = 6;
+		item_id = "id_" + cellData_addmember_index + "_" + project_id;
+	}
+	$(".sharefield" + project_id).css({"visibility": "hidden"});
+	$("#" + item_id).removeClass("ui-icon-minus");
+	$("#" + item_id).addClass("ui-icon-plus");
+}
+
+function create_project(projectid)
+{
+	var usercookie = (getCookie("username").split("|"))[0];
+	var loggedin = (usercookie != "Anonymous") & (usercookie != "");
+	var response, status;
+	// check if the name is correct
+	switch (verify_project_name(projectid)) {
+		case 0:
+			if (loggedin) {
+				var sid, username, sessionlength, oldsignature, newsignature;
+				[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+				response = new_project(username, projectid, sid, oldsignature, newsignature, sessionlength).split("|");
+				set_sid(response[0], sessionlength);
+			}
+			else {
+				response = new_project('Anonymous', projectid).split("|");
+			}
+			if (response[1] == "Success") {
+				status = response[1];
+			}
+			else {
+				status = "another user created a project with this name";
+			}
+			break;
+		case 1:
+			status = "forbidden symbols found";
+			break;
+		case 2:
+			status = "the name is too short";
+			break;
+	}
+	return status;
+}
+
+function confirm_invite_member(project_id)
+{
+	var newmember = document.getElementById("newmember_input_"+project_id).value.toLowerCase().replace(/\s/g,"");
+	var levelselector = document.getElementById("newmember_select_"+project_id);
+	var memberlevel = levelselector.options[levelselector.selectedIndex].value; 
+	var memberrole = roleIcon[decodeRole(memberlevel)].caption;
+
+	if(confirm("Invite user " + newmember + " to project " + project_id + " with the following access level: " + memberrole + "?")) {
+		// first - verify that user does not already have this role
+		var i=0;
+		var memberlist = document.getElementById("members_project_"+project_id);
+		while ((i<memberlist.length) && (!memberlist.options[i].text.includes(newmember + " (" + memberrole + ")"))) {i++;}
+		if (i < memberlist.length) {
+			alert("User " + newmember + " already has role " + memberrole + " in project " + project_id);
+		}
+		else {
+			var sid, username, sessionlength, oldsignature, newsignature;
+			[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+			var response = invite_project_member(username, oldsignature, sid, newsignature, sessionlength, project_id, newmember, memberlevel).split("|");
+			set_sid(response[0], sessionlength);
+			switch (response[1]) {
+				case "0":
+					alert('Operation failed. User does not exist, is not activated, has a project administrator role or has been already invited to this project.');
+					break;
+				case "1":
+					alert('New member '+newmember+' was invited to project: '+project_id+'. Role: ' + memberrole);
+					var sent_table = document.getElementById("sent_table");
+					//var row, projectcell, usercell, datecell, rolecell, cancelcell;
+					var i = sent_table.rows.length;
+					//row = sent_table.insertRow(i);
+					displayInvitation (
+						'sent', 
+						"sent_table", 
+						project_id, //project id
+						newmember, //who is invited?
+						"Now", //date
+						decodeRole(memberlevel),
+						i // row index
+					);
+					break;
+				case "2":
+					alert('User ' +newmember+ ' already had role in this project. Role changed');
+					i = 0;
+					while ((i<memberlist.length) && (!memberlist.options[i].text.includes(newmember))) {i++;}
+					if (i<memberlist.length) {
+						// we already had this user with different role, we should delete the old record
+						memberlist.remove(i);
+					}	
+					// add new record to the members list
+					var option = document.createElement("option");
+					option.text = newmember + " (" + memberrole + ")";
+					memberlist.add(option);
+					break;
+				case "3":
+					alert('Operation failed. User does not exist, is not activated or has a project administrator role');
+					break;
+			}
+			hideShareFields(project_id, null);
+		}
+	}
+}
+
+function confirm_delete_member(project_id)
+{
+	var memberselector = document.getElementById("members_project_"+ project_id);
+	var member = memberselector.options[memberselector.selectedIndex].text;
+	member = member.substr(0, member.indexOf("(")-1);
+	var message1 = (member == "Anonymous") ? "Make project " + project_id + " private, so that only authorized project members can view it?" : "Do you really want to delete member " + member + " from project " + project_id + "?";
+	var message2 = (member == "Anonymous") ? "Project " + project_id + " has been successfully made private. You can add registered project members" : "Member " + member + " was successfully removed from the project " + project_id;
+	if (confirm(message1)) {
+		var sid, username, sessionlength, oldsignature, newsignature;
+		[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+		var response = remove_member(member, project_id, username, oldsignature, sid, newsignature, sessionlength).split("|");
+		if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+			alert("Session problem: " + response[0]);
+		}
+		else {
+			if (response[1]=="1") {
+				set_sid(response[0], sessionlength);
+				// remove user from selector
+				var i=1;
+				while ((i<memberselector.length) && (!memberselector.options[i].text.includes(member))) {
+					i++;
+				}
+				memberselector.remove(i);
+				$("#members_project_"+ project_id).iconselectmenu( "refresh" );
+				if (member == "Anonymous") {
+					toggleProjectStatus("#id_3_" + project_id, false);
+				}
+				alert(message2);
+			}
+			else {
+				alert("User is an administrator. You cannot delete administrators by yourself. Please contact the webmaster");
+				set_sid(response[0], sessionlength);
+			}
+		}
+	}
+}
+
+function confirm_cancel_invitation(project_id, member, i)
+{
+	if (confirm("Do you want to cancel invitation of " + member + " to project " + project_id + "?")) {
+		//var i = document.getElementById("cancel_invitation_"+project_id).			parentNode.parentNode.rowIndex;
+		var sid, username, sessionlength, oldsignature, newsignature;
+		[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+		var response = cancel_invitation(username, oldsignature, sid, newsignature, sessionlength, project_id, member).split("|");
+		if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+			alert("Session problem: " + response[0]);}
+		else {
+			if (response[1]=="1") {
+				set_sid(response[0], sessionlength);
+				// remove invitation from the table
+				//document.getElementById("sent_table").deleteRow(Number(i)); 
+				document.getElementById("sent_table").deleteRow(document.getElementById("sent_table").rows.namedItem("rowid_" + "sent" + "_" +  project_id + "_" + js_id_fit(member)).rowIndex);
+				alert("Invitation for " + member + " to project " + project_id + " has been succesfully canceled");
+			}
+			else {
+				alert("Operation failed. Please reload the page.");
+				set_sid(response[0], sessionlength);
+			}
+		}
+	}	
+}
+
+function confirm_makepublic(project_id) {
+	if (confirm("Make project " + project_id + " public, so that anyone can view the file list and results?")) {
+		var sid, username, sessionlength, oldsignature, newsignature;
+		[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+		var response = make_public(project_id, username, oldsignature, sid, newsignature, sessionlength).split("|");
+		if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+			alert("Session problem: " + response[0]);}
+		else {
+			if (response[1]=="1") {
+				alert("Project " + project_id + " has been successfully made public. Anyone who knows the project ID can now make changes. You can discard this by removing user 'Anonymous/public'  from member list");
+				set_sid(response[0], sessionlength);
+				var memberlist = document.getElementById("members_project_"+project_id);
+				var option = document.createElement("option");
+				option.text = "Anonymous (Read/write)";
+				memberlist.add(option);
+				$("#members_project_"+ project_id).iconselectmenu( "refresh" );
+				toggleProjectStatus("#id_3_" + project_id, true);
+			}
+			else {
+				alert("Failed to make project public. Please check if it is not public already (look for Anonymous user in the project members).");
+				set_sid(response[0], sessionlength);
+			}
+		}
+	}
+}
+
+function toggleProjectStatus (id, state) {
+	if (state == true) {
+		$(id).removeClass("ui-icon-locked");
+		$(id).addClass("ui-icon-unlocked");
+		$(id).addClass("icon-static");
+		$(id).attr("title", "The project is publicly accessible. \nThis can be discarded by removing user 'Anonymous/public'  from member list");
+		$(id).off().on( "click", function () {return(null);});
+	} 
+	else {
+		$(id).removeClass("ui-icon-unlocked");
+		$(id).addClass("ui-icon-locked");
+		$(id).removeClass("icon-static");
+		$(id).attr("title", "Make project public");
+		$(id).off().on( "click", function () {confirm_makepublic(id.replace("#id_3_", ""));});
+	}
+}
+
+function confirm_changepassword()
+{
+	if(confirm("Are you sure you want to change your password?")) {
+		var sid, username, sessionlength, oldsignature, newsignature;
+		[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+		var oldpassword = $("#old_password_box").val();
+		var newpassword = $("#change_password_box1").val();
+		var response = change_password(username, oldpassword, newpassword, oldsignature, sid, newsignature, sessionlength).split("|");
+		if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+			alert("Session problem: " + response[0]);}
+		else {
+			set_sid(response[0], sessionlength);
+			if (response[1]=="1") {
+				alert("Your password has been succesfully changed");
+				$("#change_password_request").button("disable");
+			}
+			else {
+				alert("Failed to change password. Please verify the password you have typed in 'Old password' is valid");}
+		}
+	}
+}
+
+function confirm_global_notifications_change(action)
+{
+	var sid, username, sessionlength, oldsignature, newsignature, cls;
+	[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+	var response = change_global_notifications_status(username, oldsignature, sid, newsignature, sessionlength).split("|");
+	if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+		alert("Session problem: " + response[0]);}
+	else {
+		set_sid(response[0], sessionlength);
+		if (response[1]=="1") {
+			//alert("Global notifications status has been changed to: " + action);
+			if (action == "Disable") {
+				action = "Enable";
+				//flag = '\xd7';
+				cls = 'notifications_off';
+				}
+			else {
+				action = "Disable";
+				//flag = '&#10003';
+				cls = 'notifications_on';
+				}
+			//document.getElementById("notification_status").innerHTML 		
+			$("#notification_area").removeClass();
+			$("#notification_area").addClass(cls);
+			$("#notification_status").html('<button id="change_notification_status" class="ui-corner-all" onclick=confirm_global_notifications_change("'+action+'")>'+ action +' </button>');
+		}
+		else {
+			alert('Failed to change settings. Please reload the page');}
+	}
+}
+
+function confirm_project_notifications_change(project_id)
+{
+	var thatSpan = document.getElementById('notifications_project_'+project_id);
+	if (thatSpan.classList.contains('ui-icon-mail-closed'))
+	{
+		$("#" + thatSpan.id).removeClass('ui-icon-mail-closed');		
+		$("#" + thatSpan.id).addClass('ui-icon-mail-open');		 
+		action = "enable";
+	}
+	else
+	{		
+		$("#" + thatSpan.id).removeClass('ui-icon-mail-open');		
+		$("#" + thatSpan.id).addClass('ui-icon-mail-closed');		 
+		action = "disable";
+	}
+	var sid, username, sessionlength, oldsignature, newsignature;
+	[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+	var response = change_project_notifications_status(project_id, username, oldsignature, sid, newsignature, sessionlength).split("|");
+	if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+		alert("Session problem: " + response[0]);}
+	else
+	{
+		set_sid(response[0], sessionlength);
+		if (response[1]=="1") {
+			alert("Notifications setting for project " + project_id + " has been changed");
+		}
+		else {
+			alert('Failed to change settings. Please reload the page');
+		}
+	}
+}
+
+function accept_p_invitation(project_id, rowid)
+{
+	var sid, username, sessionlength, oldsignature, newsignature;
+	[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+	var response = accept_invitation(username, oldsignature, sid, newsignature, sessionlength, project_id).split("|");
+	if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+					alert("Session problem: " + response[0]);}
+	else {
+		if (response[1]=="1") {
+			set_sid(response[0], sessionlength);
+			// remove invitation from the received table
+			console.log("Delete row " + i);
+			//document.getElementById("received_table").deleteRow(Number(i));
+			document.getElementById("received_table").deleteRow(document.getElementById("received_table").rows.namedItem(rowid).rowIndex);
+			// add to current project
+			var record = project_info(username, newsignature, response[0], project_id).split(",");
+			oldsignature = newsignature;
+			setCookie("username", username, sessionlength);
+			newsignature = ((getCookie("username")).split("|"))[1];
+			var prs = user_projects(username, oldsignature, response[0], newsignature, sessionlength).split("|"); 	
+			var session_status_or_sid = prs.shift();
+			set_sid(session_status_or_sid, sessionlength);
+			//console.log(session_status_or_sid);
+			displayProjectSettings(
+				"projects_table", 
+				"(" + project_id + "," + record[1][0] + "," + record[0].substr(1) + ")", 
+				username, 
+				session_status_or_sid, 
+				newsignature, 
+				null);
+				$("#members_project_" + project_id).iconselectmenu().iconselectmenu("menuWidget").addClass("ui-menu-icons");
+			var sel = document.getElementById("project_id_select"); 
+			var option = document.createElement("option"); 
+			option.text = project_id; 
+			sel.add(option);
+			alert("You joined project " + project_id);
+		}
+		else {
+			alert("Operation failed. Please reload the page.");}
+		}
+}
+
+function reject_p_invitation(project_id, rowid)
+{
+	var sid, username, sessionlength, oldsignature, newsignature;
+	[username, sid, oldsignature, sessionlength, newsignature] = get_name_sid_sign_length(true);
+	var response = reject_invitation(username, oldsignature, sid, newsignature, sessionlength, project_id).split("|");
+	if ((response[0]=="Nonexisting_session") || (response[0]=="Session_expired")) {
+		alert("Session problem: " + response[0]);}
+	else {
+		if (response[1]=="1") {
+			set_sid(response[0], sessionlength);
+			// remove invitation from the table
+			// button -> td -> tr -> row index
+			//var i = document.getElementById("reject_invitation_"+project_id).parentNode.parentNode.rowIndex;
+			//document.getElementById("received_table").deleteRow(Number(i));
+			document.getElementById("received_table").deleteRow(document.getElementById("received_table").rows.namedItem(rowid).rowIndex);
+			alert("You rejected invitation to project " + project_id);
+		}
+		else {
+			alert("Operation failed. Please reload the page.");}
+		}
+}
+
+// fill popup list of combobox with projects
+function fill_projects(username, signature, sid)
+{
+	if ((document.getElementById("project_id_select") == null)) {
+		setTimeout(fill_projects, 100, username, signature, sid);}
+	else {
+		var project_string = user_projects_simple(username, signature, sid);
+		if (project_string != null) {
+			var projects = project_string.split("|");
+			//console.log("All from user_projects: " + projects); 
+			//projects.pop();
+			for (var i = 0; i < projects.length; i++) {
+				var pp = projects[i].split(",");
+				pp = pp[0].substr(1);
+				//console.log(projects[i]);  
+				$("#project_id_select").append($("<option></option>").attr("value", pp).text(pp));
+			}
+		}
+	}
+}
+
+// function to test a new project name
+// 0 = ok
+// 1 = forbidden symbols
+// 2 = too short
+function verify_project_name(projectid)
+{
+	var response;
+	if (projectid.length>0) {
+		// forbidden symbols: !@#$%^&*'"()[]/\|{}_
+		//var forbiddenSymbols = /^(?=.*[_!@#\$%\^&\*\('"\)\[\]\\\/\|\{\}])/;
+		var allowedSymbols = /^[a-zA-Z0-9]*$/;
+		//if (!forbiddenSymbols.test(projectid)) {
+		if (allowedSymbols.test(projectid)) {
+			response = 0;}
+		else {
+			response = 1;}
+		}
+	else {
+		response = 2;
+	}
+	return response;
+}
+
+// event - button released in "signup_userid" field	
+$(function()
+{
+	$('[name="signup_userid"]').keyup(
+	function () {
+		var valueSoFar = ($('[name="signup_userid"]').val()).trim();
+		var thisTips = $("#" + this.id.replace("box", "tips")); 
+		var emailVailidity = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		if (emailVailidity.test(valueSoFar)) {
+			thisTips.html('&#10003' + " - correct email format").css({"color": "green"});
+			if (checkMailAndPassword(valueSoFar, $("[name='signup_user_password']").val()) && (passwordsMatch($('[name="signup_user_password"]'), $('[name="signup_user_password2"]')))) {$("#signup_button-login_form").button("enable");} 
+		}
+		else {
+			thisTips.html('\xd7' + " - invalid email").css({"color": "red"});
+			$("#signup_button-login_form").button("disable");}
+	});
+})
+	
+// event - button released in "signup_user_password" field	
+$(function()
+{
+	$('[name="signup_user_password"]').keyup(
+	function () {
+		var valueSoFar = $('[name="signup_user_password"]').val();
+		var thisTips = $("#" + this.id.replace("box", "tips"));
+		if ($(this).val().length < 8) {
+			thisTips.html('\xd7' + " - password too short").css({"color": "red"});
+			$("#signup_button-login_form").button("disable");}
+		else {
+			if (checkMailAndPassword($("[name='signup_userid']").val(), valueSoFar)) {
+				thisTips.html('&#10003' + " - password is OK").css({"color": "green"});
+				if (passwordsMatch(valueSoFar, $('[name="signup_user_password2"]').val())) {
+					$("#signup-password-tips2").html('&#10003' + " - Passwords match").css({"color": "green"});
+					$("#signup_button-login_form").button("enable");}
+				else {
+					$("#signup-password-tips2").html('\xd7' + " - passwords do not match").css({"color": "red"});
+					$("#signup_button-login_form").button("disable");}
+				}
+			else {
+				thisTips.html('\xd7' + " - password should contain letters in upper and lower case, numbers and special characters").css({"color": "red"});
+				$("#signup_button-login_form").button("disable");}
+		}
+	});
+})
+
+// event - button released in "signup_user_password2" ("Repeat password") field
+$(function()
+{
+	$('[name="signup_user_password2"]').keyup(
+	function () {
+		var valueSoFar = $('[name="signup_user_password2"]').val();
+		var thisTips = $("#" + this.id.replace("box2", "tips2"));
+		if ((checkMailAndPassword($("[name='signup_userid']").val(), valueSoFar)) && (passwordsMatch(valueSoFar, $('[name="signup_user_password"]').val()))) {
+			thisTips.html('&#10003' + " - Passwords match").css({"color": "green"});
+			$("#signup_button-login_form").button("enable");}
+		else {
+			thisTips.html('\xd7' + " - passwords do not match").css({"color": "red"});
+			$("#signup_button-login_form").button("disable");}
+	});
+})
+
+function checkMailAndPassword(mail, password)
+{
+	var strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?.,#;:-=$&])[A-Za-z0-9!?.,#;:-=$&]{8,32}$/;
+	var emailVailidity = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	return (emailVailidity.test(mail) && strongRegex.test(password));
+}
+
+function passwordsMatch(password1, password2)
+{
+	return (password1 == password2);
+}
+
+// event - button released in "old_password_box" field
+$(function()
+{
+	$("#old_password_box").keyup(
+	function () {
+		if ($(this).val().length < 8) {
+				$("#change_password_request").button("disable");}
+		else {
+			var strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?.,#;:-=$&])[A-Za-z0-9!?.,#;:-=$&]{8,32}$/;
+			if ((strongRegex.test($("#change_password_box1").val())) && (passwordsMatch($("#change_password_box1").val(), $("#change_password_box2").val()))) {
+				$("#change_password_request").button("enable");}
+		}
+	});
+})
+
+// event - button released in "change_password_box1" field	
+$(function()
+{
+	$("#change_password_box1").keyup(
+	function () {
+		var valueSoFar = $("#change_password_box1").val();
+		var thisTips = $("#" + this.id.replace("box1", "tips1"));
+		if ($(this).val().length < 8) {
+			thisTips.html('\xd7' + " - password too short").css({"color": "red"});
+			$("#change_password_request").button("disable");}
+		else {
+			var strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!?.,#;:-=$&])[A-Za-z0-9!?.,#;:-=$&]{8,32}$/;
+			if (strongRegex.test(valueSoFar)) {
+				thisTips.html('&#10003' + " - password is OK").css({"color": "green"});
+				if (passwordsMatch(valueSoFar, $("#change_password_box2").val())) {
+					$("#change_password_tips2").html('&#10003' + " - Passwords match").css({"color": "green"});
+					$("#change_password_request").button("enable");}
+				else {
+					$("#change_password_tips2").html('\xd7' + " - passwords do not match").css({"color": "red"});
+					$("#change_password_request").button("disable");}
+				}
+			else {
+				thisTips.html('\xd7' + " - password should contain letters in upper and lower case, numbers and special characters").css({"color": "red"});
+				$("#change_password_request").button("disable");}
+		}
+	});
+})
+
+// event - button released in "change_password_box2" field	
+$(function()
+{
+	$("#change_password_box2").keyup(
+	function () {
+		var valueSoFar = $("#change_password_box2").val();
+		var thisTips = $("#" + this.id.replace("box2", "tips2"));
+		if (passwordsMatch(valueSoFar, $("#change_password_box1").val())) {
+			thisTips.html('&#10003' + " - Passwords match").css({"color": "green"});
+			$("#change_password_request").button("enable");}
+		else {
+			thisTips.html('\xd7' + " - passwords do not match").css({"color": "red"});
+			$("#change_password_request").button("disable");}
+	});
+})
+
+</script> 
+
+
+
+<!--script  type="text/javascript"> 
+$( "#main-nea" ).load( "cgi/i.cgi?mode=begin"); //#DEV#
+$( "#top-menu" ).load( "cgi/i.cgi?mode=fill_menu"); //#DEV#
+
+</script>
+
+<div class="extra_info"><A href="https://www.evinet.org/" class="clickable">EviNet v. 1.0</A></div>
+<div class="extra_info">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se" class="clickable">Send us email</A></div>
+<div class="extra_info"><A href="https://research.scilifelab.se/andrej_alexeyenko/" class="clickable">Learn about our research</A></div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-71600347-1', 'auto');
+  ga('send', 'pageview');
+</script> 
+
+<script language="JavaScript" type="text/javascript">
+TrustLogo("https://www.evinet.org/pics/comodo_secure_seal_76x26_transp.png", "CL1", "none");
+</script>
+<a  style="width: 10%; text-align:left; display: inline;" href="https://www.positivessl.com/" id="comodoTL">Positive SSL</a-->
+           
+</BODY>
+	</HTML>
+	

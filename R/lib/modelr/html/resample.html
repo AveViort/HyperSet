@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A &quot;lazy&quot; resample.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for resample {modelr}"><tr><td>resample {modelr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>A &quot;lazy&quot; resample.</h2>
+
+<h3>Description</h3>
+
+<p>Often you will resample a dataset hundreds or thousands of times. Storing
+the complete resample each time would be very inefficient so this class
+instead stores a &quot;pointer&quot; to the original dataset, and a vector of row
+indexes. To turn this into a regular data frame, call <code>as.data.frame</code>,
+to extract the indices, use <code>as.integer</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+resample(data, idx)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>The data frame</p>
+</td></tr>
+<tr valign="top"><td><code>idx</code></td>
+<td>
+<p>A vector of integer indexes indicating which rows have
+been selected. These values should lie between 1 and <code>nrow(data)</code>
+but they are not checked by this function in the interests of performance.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+resample(mtcars, 1:10)
+
+b &lt;- resample_bootstrap(mtcars)
+b
+as.integer(b)
+as.data.frame(b)
+
+# Many modelling functions will do the coercion for you, so you can
+# use a resample object directly in the data argument
+lm(mpg ~ wt, data = b)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>modelr</em> version 0.1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

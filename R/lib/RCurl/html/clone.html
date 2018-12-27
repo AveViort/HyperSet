@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Clone/duplicate an object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for clone {RCurl}"><tr><td>clone {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Clone/duplicate an object</h2>
+
+<h3>Description</h3>
+
+<p>This is a generic function and methods for making a copy of an
+object such as a curl handle, C-level pointer to a file, etc.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+clone(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the object to be cloned.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters for methods</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Typically, an object of the same class and &ldquo;value&rdquo;
+as the input - <code>x</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="getCurlHandle.html">dupCurlHandle</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ h = getCurlHandle(verbose = TRUE)
+ other = dupCurlHandle(h)
+ curlSetOpt(curl = h, verbose = FALSE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

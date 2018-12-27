@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Color Spectrum Plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for specplot {colorspace}"><tr><td>specplot {colorspace}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Color Spectrum Plot</h2>
+
+<h3>Description</h3>
+
+<p>Visualization of color palettes (given as hex codes) in
+RGB and/or HCL coordinates.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  specplot(x, rgb = TRUE, hcl = TRUE, fix = TRUE, cex = 1,
+    type = "l", lwd = 2 * cex, lty = 1, pch = NULL,
+    legend = TRUE, palette = TRUE, plot = TRUE) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>character vector containing color hex codes.</p>
+</td></tr>
+<tr valign="top"><td><code>rgb</code></td>
+<td>
+<p>logical or color specification. Should the RGB spectrum
+be visualized? Can also be a vector of three colors for the R/G/B
+coordinates.</p>
+</td></tr>
+<tr valign="top"><td><code>hcl</code></td>
+<td>
+<p>logical or color specification. Should the HCL spectrum
+be visualized? Can also be a vector of three colors for the H/C/L
+coordinates.</p>
+</td></tr>
+<tr valign="top"><td><code>fix</code></td>
+<td>
+<p>logical. Should the hues be fixed to be on a smooth(er)
+curve? For details see below.</p>
+</td></tr>
+<tr valign="top"><td><code>cex</code></td>
+<td>
+<p>numeric. Character extension for figure axes and labels.</p>
+</td></tr>
+<tr valign="top"><td><code>type, lwd, lty, pch</code></td>
+<td>
+<p>plotting parameters passed to
+<code><a href="../../graphics/html/lines.html">lines</a></code> for drawing the RGB and HCL coordinates,
+respectively. Can be vectors of length 3.</p>
+</td></tr>
+<tr valign="top"><td><code>legend</code></td>
+<td>
+<p>logical. Should legends for the coordinates be plotted?</p>
+</td></tr>
+<tr valign="top"><td><code>palette</code></td>
+<td>
+<p>logical. Should the given palette <code>x</code> be plotted?</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>logical. Should the RGB and/or HCL coordinates be
+plotted?</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function <code>specplot</code> transforms a given color palette in hex
+codes into their RGB (<code><a href="sRGB.html">sRGB</a></code>) or
+HCL (<code><a href="polarLUV.html">polarLUV</a></code>) coordinates. As the hues for
+low-chroma colors are not (or poorly) identified, by default a smoothing
+is applied to the hues (<code>fix = TRUE</code>). Also, to avoid jumps from
+0 to 360 or vice versa, the hue coordinates are shifted suitably.
+</p>
+<p>By default (<code>plot = TRUE</code>) the resulting RGB and HCL coordinates
+are visualized by simple line plots along with the color palette <code>x</code>
+itself.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>specplot</code> invisibly returns a list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>RGB</code></td>
+<td>
+<p>a matrix of sRGB coordinates,</p>
+</td></tr>
+<tr valign="top"><td><code>HCL</code></td>
+<td>
+<p>a matrix of HCL coordinates,</p>
+</td></tr>
+<tr valign="top"><td><code>hex</code></td>
+<td>
+<p>original color palette <code>x</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Reto Stauffer, Achim Zeileis</p>
+
+
+<h3>References</h3>
+
+<p>Zeileis A, Hornik K, Murrell P (2009).
+Escaping RGBland: Selecting Colors for Statistical Graphics.
+<em>Computational Statistics &amp; Data Analysis</em>, <b>53</b>, 3259&ndash;3270.
+<a href="http://doi.org/10.1016/j.csda.2008.11.033">doi: 10.1016/j.csda.2008.11.033</a>
+Preprint available from <a href="https://eeecon.uibk.ac.at/~zeileis/papers/Zeileis+Hornik+Murrell-2009.pdf">https://eeecon.uibk.ac.at/~zeileis/papers/Zeileis+Hornik+Murrell-2009.pdf</a>.
+</p>
+<p>Stauffer R, Mayr GJ, Dabernig M, Zeileis A (2015).
+Somewhere over the Rainbow: How to Make Effective Use of Colors in Meteorological Visualizations.
+<em>Bulletin of the American Meteorological Society</em>, <b>96</b>(2), 203&ndash;216.
+<a href="http://doi.org/10.1175/BAMS-D-13-00155.1">doi: 10.1175/BAMS-D-13-00155.1</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="rainbow_hcl.html">rainbow_hcl</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## spectrum of the (in)famous RGB rainbow palette
+specplot(rainbow(100))
+
+## spectrum of HCL-based palettes: qualitative/sequential/diverging
+specplot(rainbow_hcl(100))
+specplot(sequential_hcl(100))
+specplot(diverge_hcl(100))
+
+## return computed RGB and HCL coordinates
+res &lt;- specplot(rainbow(10), plot = FALSE)
+print(res)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>colorspace</em> version 1.3-2 <a href="00Index.html">Index</a>]</div>
+</body></html>

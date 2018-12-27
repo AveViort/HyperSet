@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;kqr&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kqr-class {kernlab}"><tr><td>kqr-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;kqr&quot;</h2>
+
+<h3>Description</h3>
+
+<p>The Kernel Quantile Regression object class</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("kqr", ...)</code>.
+or by calling the <code>kqr</code> function 
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>kernelf</code>:</dt><dd><p>Object of class <code>"kfunction"</code> contains
+the kernel function used</p>
+</dd>
+<dt><code>kpar</code>:</dt><dd><p>Object of class <code>"list"</code> contains the
+kernel parameter used </p>
+</dd>
+<dt><code>coef</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the model parameters</p>
+</dd>
+<dt><code>param</code>:</dt><dd><p>Object of class <code>"list"</code> contains the
+cost parameter C and tau parameter used </p>
+</dd>
+<dt><code>kcall</code>:</dt><dd><p>Object of class <code>"list"</code> contains the used
+function call </p>
+</dd>
+<dt><code>terms</code>:</dt><dd><p>Object of class <code>"ANY"</code> contains the
+terms representation of the symbolic model used (when using a formula)</p>
+</dd>
+<dt><code>xmatrix</code>:</dt><dd><p>Object of class <code>"input"</code> containing
+the data matrix used </p>
+</dd>
+<dt><code>ymatrix</code>:</dt><dd><p>Object of class <code>"output"</code> containing the
+response matrix</p>
+</dd>
+<dt><code>fitted</code>:</dt><dd><p>Object of class <code>"output"</code> containing the
+fitted values  </p>
+</dd>
+<dt><code>alpha</code>:</dt><dd><p>Object of class <code>"listI"</code> containing the
+computes alpha values </p>
+</dd>
+<dt><code>b</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+offset of the model.</p>
+</dd>
+<dt><code>scaling</code></dt><dd><p>Object of class <code>"ANY"</code> containing
+the scaling coefficients of the data (when case <code>scaled = TRUE</code> is used).</p>
+</dd>
+<dt><code>error</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+training error</p>
+</dd>
+<dt><code>cross</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+cross validation error</p>
+</dd>
+<dt><code>n.action</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+action performed in NA </p>
+</dd>
+<dt><code>nclass</code>:</dt><dd><p>Inherited from class <code>vm</code>, not used in kqr</p>
+</dd>
+<dt><code>lev</code>:</dt><dd><p>Inherited from class <code>vm</code>, not used in kqr</p>
+</dd>
+<dt><code>type</code>:</dt><dd><p>Inherited from class <code>vm</code>, not used in kqr</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+ 
+<dl>
+<dt>coef</dt><dd><p><code>signature(object = "kqr")</code>: returns the
+coefficients (alpha) of the model</p>
+</dd>
+<dt>alpha</dt><dd><p><code>signature(object = "kqr")</code>: returns the alpha
+vector (identical to <code>coef</code>)</p>
+</dd>
+<dt>b</dt><dd><p><code>signature(object = "kqr")</code>: returns the offset beta
+of the model.</p>
+</dd>
+<dt>cross</dt><dd><p><code>signature(object = "kqr")</code>: returns the cross
+validation error </p>
+</dd>
+<dt>error</dt><dd><p><code>signature(object = "kqr")</code>: returns the
+training error </p>
+</dd>
+<dt>fitted</dt><dd><p><code>signature(object = "vm")</code>: returns the fitted values </p>
+</dd>
+<dt>kcall</dt><dd><p><code>signature(object = "kqr")</code>: returns the call performed</p>
+</dd>
+<dt>kernelf</dt><dd><p><code>signature(object = "kqr")</code>: returns the
+kernel function used</p>
+</dd>
+<dt>kpar</dt><dd><p><code>signature(object = "kqr")</code>: returns the kernel
+parameter used</p>
+</dd>
+<dt>param</dt><dd><p><code>signature(object = "kqr")</code>: returns the
+cost regularization parameter C and tau used</p>
+</dd>
+<dt>xmatrix</dt><dd><p><code>signature(object = "kqr")</code>: returns the
+data matrix used</p>
+</dd>
+<dt>ymatrix</dt><dd><p><code>signature(object = "kqr")</code>: returns the
+response matrix used</p>
+</dd>
+<dt>scaling</dt><dd><p><code>signature(object = "kqr")</code>: returns the
+scaling coefficients of the data (when <code>scaled = TRUE</code> is used)</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="kqr.html">kqr</a></code>, 
+<code><a href="vm-class.html">vm-class</a></code>,
+<code><a href="ksvm-class.html">ksvm-class</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+
+# create data
+x &lt;- sort(runif(300))
+y &lt;- sin(pi*x) + rnorm(300,0,sd=exp(sin(2*pi*x)))
+
+# first calculate the median
+qrm &lt;- kqr(x, y, tau = 0.5, C=0.15)
+
+# predict and plot
+plot(x, y)
+ytest &lt;- predict(qrm, x)
+lines(x, ytest, col="blue")
+
+# calculate 0.9 quantile
+qrm &lt;- kqr(x, y, tau = 0.9, kernel = "rbfdot",
+           kpar = list(sigma = 10), C = 0.15)
+ytest &lt;- predict(qrm, x)
+lines(x, ytest, col="red")
+
+# print model coefficients and other information
+coef(qrm)
+b(qrm)
+error(qrm)
+kernelf(qrm)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

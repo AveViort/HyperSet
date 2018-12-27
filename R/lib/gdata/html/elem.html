@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Display Information about Elements in a Given Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for elem {gdata}"><tr><td>elem {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Display Information about Elements in a Given Object
+</h2>
+
+<h3>Description</h3>
+
+<p><em>This function is depreciated.  Please use <code><a href="ll.html">ll</a></code>
+instead.</em>
+</p>
+<p>Display name, class, size, and dimensions of each element in a given
+object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+elem(object=1, unit=c("KB","MB","bytes"), digits=0,
+                 dimensions=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>object containing named elements, perhaps a model or
+data frame.</p>
+</td></tr>
+<tr valign="top"><td><code>unit</code></td>
+<td>
+<p>required unit for displaying element size: &quot;KB&quot;, &quot;MB&quot;,
+&quot;bytes&quot;, or first letter.</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>number of decimals to display when rounding element
+size.</p>
+</td></tr>
+<tr valign="top"><td><code>dimensions</code></td>
+<td>
+<p>whether element dimensions should be returned.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A verbose alternative to <code>names()</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A data frame with named rows and the following columns:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>Class</code></td>
+<td>
+<p>element class.</p>
+</td></tr>
+<tr valign="top"><td><code>KB</code></td>
+<td>
+<p>element size <em>(see notes)</em>.</p>
+</td></tr>
+<tr valign="top"><td><code>Dim</code></td>
+<td>
+<p>element dimensions <em>(optional)</em>.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>The name of the element size column is the same as the unit used.
+</p>
+<p>Elements of class <code>classRepresentation</code>,
+<code>ClassUnionRepresentation</code>, and <code>grob</code> do not have a defined
+size, so 0 bytes are assumed for those.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Arni Magnusson <a href="mailto:arnima@u.washington.edu">arnima@u.washington.edu</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../base/html/names.html">names</a></code>, <code><a href="../../utils/html/str.html">str</a></code>, and
+<code><a href="../../base/html/summary.html">summary</a></code> display different information about object
+elements.
+</p>
+<p><code><a href="ll.html">ll</a></code> and <code><a href="env.html">env</a></code> are related to <code>elem</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+data(infert)
+elem(infert)
+model &lt;- glm(case~spontaneous+induced, family=binomial, data=infert)
+elem(model, dim=TRUE)
+elem(model$family)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

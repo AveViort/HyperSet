@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Compute vertex ordering for an undirected graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Ordering {RBGL}"><tr><td>Ordering {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Compute vertex ordering for an undirected graph</h2>
+
+<h3>Description</h3>
+
+<p>Compute vertex ordering for an undirected graph</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cuthill.mckee.ordering(g)
+minDegreeOrdering(g, delta=0)
+sloan.ordering(g, w1=1, w2=2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>an instance of the <code>graph</code> class with <code>edgemode</code>
+&ldquo;undirected&rdquo;</p>
+</td></tr>
+<tr valign="top"><td><code>delta</code></td>
+<td>
+<p>Multiple elimination control variable. If it is larger than or 
+equal to zero then multiple elimination is enabled. The value of delta 
+specifies the difference between the minimum degree and the degree of 
+vertices that are to be eliminated.</p>
+</td></tr>
+<tr valign="top"><td><code>w1</code></td>
+<td>
+<p> First heuristic weight for the Sloan algorithm. </p>
+</td></tr>
+<tr valign="top"><td><code>w2</code></td>
+<td>
+<p> Second heuristic weight for the Sloan algorithm. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The following details were obtained from 
+the documentation of these algorithms in Boost Graph 
+Library and readers are referred their for even more detail.
+The goal of the Cuthill-Mckee (and reverse Cuthill-Mckee) ordering algorithm is
+to reduce the bandwidth of a graph by reordering the indices assigned to each
+vertex. 
+</p>
+<p>The minimum degree ordering algorithm is a fill-in reduction matrix reordering
+algorithm. 
+</p>
+<p>The goal of the Sloan ordering algorithm is to reduce the profile and the
+wavefront of a graph by reordering the indices assigned to each vertex. 
+</p>
+<p>The goal of the King ordering algorithm is to reduce the bandwidth of a graph 
+by reordering the indices assigned to each vertex.
+</p>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>cuthill.mckee.ordering</code></td>
+<td>
+<p> returns a list with elements:</p>
+</td></tr>
+<tr valign="top"><td><code>reverse cuthill.mckee.ordering</code></td>
+<td>
+<p>the vertices in the new ordering</p>
+</td></tr>
+<tr valign="top"><td><code>original bandwidth</code></td>
+<td>
+<p>bandwidth before reordering vertices</p>
+</td></tr>
+<tr valign="top"><td><code>new bandwidth</code></td>
+<td>
+<p>bandwidth after reordering of vertices</p>
+</td></tr>
+<tr valign="top"><td><code>minDegreeOrdering</code></td>
+<td>
+<p> return a list with elements:</p>
+</td></tr>
+<tr valign="top"><td><code>inverse_permutation</code></td>
+<td>
+<p>the new vertex ordering, given as the mapping from the new indices to the old indices </p>
+</td></tr>
+<tr valign="top"><td><code>permutation</code></td>
+<td>
+<p>the new vertex ordering, given as the mapping from the old indices to the new indices </p>
+</td></tr>
+<tr valign="top"><td><code>sloan.ordering</code></td>
+<td>
+<p> returns a list with elements:</p>
+</td></tr>
+<tr valign="top"><td><code>sloan.ordering</code></td>
+<td>
+<p>the vertices in the new ordering</p>
+</td></tr>
+<tr valign="top"><td><code>bandwidth</code></td>
+<td>
+<p>bandwidth of the graph after reordering</p>
+</td></tr>
+<tr valign="top"><td><code>profile</code></td>
+<td>
+<p>profile of the graph after reordering</p>
+</td></tr>
+<tr valign="top"><td><code>maxWavefront</code></td>
+<td>
+<p>maxWavefront of the graph after reordering</p>
+</td></tr>
+<tr valign="top"><td><code>aver.wavefront</code></td>
+<td>
+<p>aver.wavefront of the graph after reordering</p>
+</td></tr>
+<tr valign="top"><td><code>rms.wavefront</code></td>
+<td>
+<p>rms.wavefront of the graph after reordering</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/dijkex.gxl",package="RBGL"), open="r")
+coex &lt;- fromGXL(con)
+close(con)
+
+coex &lt;- ugraph(coex)
+cuthill.mckee.ordering(coex)
+minDegreeOrdering(coex)
+sloan.ordering(coex)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

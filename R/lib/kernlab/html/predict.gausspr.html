@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: predict method for Gaussian Processes object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for predict.gausspr {kernlab}"><tr><td>predict.gausspr {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>predict method for Gaussian Processes object</h2>
+
+<h3>Description</h3>
+
+<p>Prediction of test data using Gaussian Processes</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'gausspr'
+predict(object, newdata, type = "response", coupler = "minpair")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>an S4 object of class <code>gausspr</code> created by the
+<code>gausspr</code> function</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>a data frame or matrix containing new data</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>one of <code>response</code>, <code>probabilities</code> 
+indicating the type of output: predicted values or matrix of class
+probabilities</p>
+</td></tr>
+<tr valign="top"><td><code>coupler</code></td>
+<td>
+<p>Coupling method used in the multiclass case, can be one
+of <code>minpair</code> or <code>pkpd</code> (see reference for more details).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>response</code></td>
+<td>
+<p>predicted classes (the classes with majority vote)
+or the response value in regression.</p>
+</td></tr>
+<tr valign="top"><td><code>probabilities</code></td>
+<td>
+<p>matrix of class probabilities (one column for each class and
+one row for each input).</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+
+<ul>
+<li>
+<p>C. K. I. Williams and D. Barber <br />
+Bayesian classification with Gaussian processes. <br />
+IEEE Transactions on Pattern Analysis and Machine Intelligence, 20(12):1342-1351, 1998<br />
+<a href="http://www.dai.ed.ac.uk/homes/ckiw/postscript/pami_final.ps.gz">http://www.dai.ed.ac.uk/homes/ckiw/postscript/pami_final.ps.gz</a>
+</p>
+</li>
+<li>
+<p>T.F. Wu, C.J. Lin, R.C. Weng. <br />
+<em>Probability estimates for Multi-class Classification by
+Pairwise Coupling</em><br />
+<a href="http://www.csie.ntu.edu.tw/~cjlin/papers/svmprob/svmprob.pdf">http://www.csie.ntu.edu.tw/~cjlin/papers/svmprob/svmprob.pdf</a>
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## example using the promotergene data set
+data(promotergene)
+
+## create test and training set
+ind &lt;- sample(1:dim(promotergene)[1],20)
+genetrain &lt;- promotergene[-ind, ]
+genetest &lt;- promotergene[ind, ]
+
+## train a support vector machine
+gene &lt;- gausspr(Class~.,data=genetrain,kernel="rbfdot",
+                kpar=list(sigma=0.015))
+gene
+
+## predict gene type probabilities on the test set
+genetype &lt;- predict(gene,genetest,type="probabilities")
+genetype
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Evinet Help</title>
+<LINK href="help.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<p class="headr1">How to evaluate driver roles of candidate disease genes?</p>
+The idea of network-based functional analysis is in assuming that multiple genes involved in the disease would appear connected in the global network. Hence we should formulate gene-specific requests so that the answers confirm or reject respective hypotheses. The analysis is most applicable to cancer mutations (because of their abundance), but can well be applied to other diseases where candidate genes were derived in GWAS etc. Example applications can be found in <a href="http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308">Merid et al., 2014
+(cancer driver genes)</a> and Bennet et al., 2011, Hong et al., 2010, Reynolds et al., 2010 (Alzheimer's disease).
+<ol>
+<li><a href="#roleofpms" class="clickable">Investigate roles of point mutations in Glioblastoma</a></li>
+<li><a href="#network" class="clickable">Select Network</a></li>
+<li><a href="#fgs" class="clickable">Select Functional genesets</a></li>
+<ul>
+<li><a href="#expr_ags" class="clickable">A set of altered genes discovered experimentally</a></li>
+<li><a href="#curated_ags" class="clickable">A curated gene set with well characterized functional role in the disease</a></li>
+</ol>
+<hr>
+<span id="roleofpms" class="headr2">Investigate roles of point mutations in <i>Glioblastoma Multiforme</i></span>
+<br></br>
+As an example, we investigate roles of point mutations in one somatic genome of  <span class="hlight">glioblastoma multiforme</span>. We start by  pasting the whole list of <a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/drivergenes.txt">34 mutations</a> in the first tab  <span class="hlight">Altered gene sets -> Genes -> Paste a list of IDS</span>. Although, each gene is going to be analyzed separately (submitting the list would just save time). <br>
+ <span class="hcolor"> Note: You can also submit them as a text file, e.g. <a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/SomaticMutations.GBM_OV.example">this one</a> and select mutations for particular cancer genome (column 3)</span>.
+<br></br>
+<img src="../pics/help_newpics/p16_f.png" />
+<hr>
+<span id="network" class="headr2">Select Network</span>
+<br></br>
+Select a network. For more details go through: <a href="https://www.evinet.org/help/part1.html#networks">Select Network</a>
+<br></br>
+<img src="../pics/help_newpics/p17_f.png"/><br>
+<br><a href="?">top</a>
+<hr>
+<span id="fgs" class="headr2">Select Functional genesets</span>
+<br></br>
+Select functional gene sets. For more details go through: <a href="https://www.evinet.org/help/part1.html#fgs">Selecting Functional Genesets</a>.<br> 
+There are <span class="hlight">two major modes</span> in the analysis that can be run separately or in parallel. We can evaluate connections between a given candidate gene and a group of genes that together are likely to be implicated in the disease. Such a group can be either:
+<ol>
+<li><a href="#expr_ags" class="clickable">A set of altered genes discovered experimentally (typically the whole set of mutations, genetic variants, or differentially methylated or expressed genes)</a></li>
+<li><a href="#curated_ags" class="clickable">A curated gene set  with well characterized functional role in the disease </a></li>
+</ol>
+<br></br>
+<span id="expr_ags" class="headr3">Scenario1</span><br></br>
+<span class="headr3">A set of altered genes discovered experimentally (typically the whole set of mutations, genetic variants, or differentially methylated or expressed genes)</span>
+<br></br>
+For this scenario; we ask which of the genes manifest enriched network connectivity to their fellow mutations. In order to do that, we paste the same list in the tab 3 <span class="hlight">"Functional gene sets"</span>. The collection of FGS menu is unselected.
+<br></br>
+<img src="../pics/help_newpics/p18_f.png"/><br></br>
+<span id="check" class="headr3">Check and Submit</span>
+<br>
+We do not know in advance which genes would interact with which. Furthermore, we want to evaluate individual genes relations to the whole set of mutations. For these reasons, we check the box <span class="hlight">"Analyze AGS genes/proteins individually"</span> and do not check the other box (or vice versa -it does not matter in this case). 
+<br>For more details go through <a href="https://www.evinet.org/help/part1.html#check">Check and Submit</a>
+<br></br>
+<img src="../pics/help_newpics/p19_f.png"/><br>
+<br>
+<span id="results" class="headr3">Results</span>
+<br>
+We see few genes from our AGS list <span class="hlight">(like MAPK9,NTRK1,TNK2...) </span>appear significantly connected to the fellow mutations (in the given network).<br></br>
+<img src="../pics/help_newpics/p20_f.png"/>
+<hr>
+<span id="curated_ags" class="headr3">Scenario2</span><br></br>
+<span class="headr3">A curated gene set  with well characterized functional role in the disease </span> <br>
+Following scenario 2, we investigate how the genes relate to known pathways. For cancer applications one can utilize the group of 42 database-and publication-based cancer pathways <span class="hlight">"CPW_collection"</span>. Similarly to scenario 1, we use checkbox <span class="hlight">"Analyze AGS genes / proteins individually"</span> at the next tab.
+<br></br>
+<img src="../pics/help_newpics/p21_f.png"/>
+<br></br>
+This gives many more findings than scenario 1 which is mostly due to using many more sets of much better characterized genes. However this approach requires a control analysis: how many such findings would be made for a randomly picked gene set of size 34?
+<br></br>
+<img src="../pics/help_pics/p25.png"/>
+<br></br>
+<span id="results" class="headr3">Results</span><br></br>
+<img src="../pics/help_pics/p27.png"/>
+<br></br>
+Thus, stronger evidence was accumulated in the both scenarios for <span class="hlight">MAPK9</span> and a few other genes scored high against multiple cancer pathways <span class="hlight">(e.g. PRKDC,TNK2)</span>. However a full-scale statistical framework should be implemented for a systematic analysis of multiple cancer genes and genomes. Examples can be found in <a href="http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308">Merid et al., 2014</a> and might require additional information from the same samples (methylation, copy number events etc.). Required software in R and/or perl can be downloaded from <a href="https://cran.r-project.org/web/packages/NEArender/index.html"> CRAN</a>
+<br><a href="?">top</a>
+</body>
+</html>

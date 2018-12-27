@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Definition and execution of RUnit test suites.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for runTestSuite {RUnit}"><tr><td>runTestSuite {RUnit}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Definition and execution of RUnit test suites.</h2>
+
+<h3>Description</h3>
+
+<p><code>runTestSuite</code> is the central function of the RUnit package.
+Given one or more test suites it identifies and sources specified test
+code files one after another and executes all specified test functions
+defined therein. This is done sequentially for suites, test code files
+and test functions. During the execution information about the test function calls including the
+possible occurrence of failures or errors is recorded and returned at the
+end of the test run. The return object can then be used to create a
+test protocol of various formats.
+</p>
+<p><code>runTestFile</code> is just a  convenience function for executing the
+tests in a single test file.
+</p>
+<p><code>defineTestSuite</code> is a helper function to define a test
+suite. See below for a precise definition of a test suite.
+</p>
+<p><code>isValidTestSuite</code> checks if an object defines a valid test suite.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+defineTestSuite(name, dirs, testFileRegexp = "^runit.+\\.[rR]$",
+                testFuncRegexp = "^test.+",
+                rngKind = "Marsaglia-Multicarry",
+                rngNormalKind = "Kinderman-Ramage")
+isValidTestSuite(testSuite)
+runTestSuite(testSuites, useOwnErrorHandler = TRUE, 
+             verbose = getOption("RUnit")$verbose,
+             gcBeforeTest = FALSE)
+runTestFile(absFileName, useOwnErrorHandler = TRUE,
+            testFuncRegexp = "^test.+",
+            rngKind = "Marsaglia-Multicarry",
+            rngNormalKind = "Kinderman-Ramage", 
+            verbose = getOption("RUnit")$verbose,
+            gcBeforeTest = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>The name of the test suite.</p>
+</td></tr>
+<tr valign="top"><td><code>dirs</code></td>
+<td>
+<p>Vector of absolute directory names where to look for test files.</p>
+</td></tr>
+<tr valign="top"><td><code>testFileRegexp</code></td>
+<td>
+<p>Regular expression for matching test files.</p>
+</td></tr>
+<tr valign="top"><td><code>testFuncRegexp</code></td>
+<td>
+<p>Regular expression for matching test functions.</p>
+</td></tr>
+<tr valign="top"><td><code>rngKind</code></td>
+<td>
+<p>name of an available RNG  (see <code><a href="../../base/html/Random.html">RNGkind</a></code> 
+for possible options).</p>
+</td></tr>
+<tr valign="top"><td><code>rngNormalKind</code></td>
+<td>
+<p>name of a valid rnorm RNG version (see 
+<code><a href="../../base/html/Random.html">RNGkind</a></code> for possible options).</p>
+</td></tr>
+<tr valign="top"><td><code>testSuite</code></td>
+<td>
+<p>A single object of class test suite.</p>
+</td></tr>
+<tr valign="top"><td><code>testSuites</code></td>
+<td>
+<p>A single object of class test suite or a list of
+test suite objects.</p>
+</td></tr>
+<tr valign="top"><td><code>useOwnErrorHandler</code></td>
+<td>
+<p>If <code>TRUE</code> the RUnit framework installs
+its own error handler during test case execution (but reinstalls the
+original handler before it returns). If <code>FALSE</code> the error
+handler is not touched by RUnit but then the test protocol does not
+contain any call stacks in the case of errors.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>level of verbosity of output log messages, 0: omits
+begin/end comments for each test function. Queried from 
+global options set for RUnit at package load.</p>
+</td></tr>
+<tr valign="top"><td><code>absFileName</code></td>
+<td>
+<p>Absolute file name of a test function.</p>
+</td></tr>
+<tr valign="top"><td><code>gcBeforeTest</code></td>
+<td>
+<p>Run garbage collector before executing a test
+for more precise test timing. Enabling this option makes the tests
+run longer, especially when testing many small tests. By default
+GC is disabled (since 0.4.32).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The basic idea of the RUnit test framework is to declare a certain set
+of functions to be test functions and report the results of their
+execution. The test functions must not take any parameter nor return
+anything such that their execution can be automatised.
+</p>
+<p>The specification which functions are taken as test functions is
+contained in an object of class  <code>RUnitTestSuite</code> which is a list
+with the following elements.
+</p>
+
+<dl>
+<dt>name</dt><dd><p>A simple character string. The name of a test suite is mainly used 
+to create a well structure test protocol.</p>
+</dd>
+<dt>dirs</dt><dd><p>A character vector containing the absolute names of all
+directories where to look for test files.</p>
+</dd>
+<dt>testFileRegexp</dt><dd><p>A regular expression specifying the test
+files. All files in the test directories whose names match this
+regular expression are taken as test files. Order of file names will
+be alphabetical but depending on the used locale.</p>
+</dd>
+<dt>testFuncRegexp</dt><dd><p>A regular expression specifying the test
+functions. All functions defined in the test files whose names match
+this regular expression are used as test functions. Order of test
+functions will be alphabetical.</p>
+</dd>
+</dl>
+
+<p>After the RUnit framework has sequentially executed all test suites it returns all
+data collected during the test run as an object of class
+<code>RUnitTestData</code>. This is a (deeply nested)
+list with one list element for each executed test suite. Each of these
+executed test suite lists contains the following elements:
+</p>
+
+<dl>
+<dt>nTestFunc</dt><dd><p>The number of test functions executed in the test
+suite.</p>
+</dd>
+<dt>nErr</dt><dd><p>The number of errors that occurred during the execution.</p>
+</dd>
+<dt>nFail</dt><dd><p>The number of failures that occurred during the execution.</p>
+</dd>
+<dt>dirs</dt><dd><p>The test directories of the test suite.</p>
+</dd>
+<dt>testFileRegexp</dt><dd><p>The regular expression for identifying the test
+files of the test suite.</p>
+</dd>
+<dt>testFuncRegexp</dt><dd><p>The regular expression for identifying the test
+functions of the test suite.</p>
+</dd>
+<dt>sourceFileResults</dt><dd><p>A list containing the results for each
+separate test file of the test suite.</p>
+</dd>
+</dl>
+
+<p>The <code>sourceFileResults</code> list just mentioned contains one element
+for each specified test function in the source file. This element is a list with
+the following entries:
+</p>
+
+<dl>
+<dt>kind</dt><dd><p>Character string with one of <code>success</code>, <code>error</code> or 
+<code>failure</code> describing the outcome of the test function.</p>
+</dd>
+<dt>msg</dt><dd><p>the error message in case of an error or failure and
+<code>NULL</code> for a successfully executed test function.</p>
+</dd>
+<dt>time</dt><dd><p>The duration (measured in seconds) of the successful
+execution of a test function and <code>NULL</code> in the case of an error
+or failure. When running with <code>gcBeforeTest</code> option 
+set to <code>FALSE</code> (default since 0.4.32), the timing of the tests might
+be misleading when garbage collector has to reclaim memory allocated by
+a previous test.</p>
+</dd>
+<dt>traceBack</dt><dd><p>The full trace back as a character vector in the case of an 
+error and <code>NULL</code> otherwise.</p>
+</dd>
+</dl>
+
+<p>To further control test case execution it is possible to define two
+parameterless function <code>.setUp</code> and <code><a href="testCaseSetUp.html">.tearDown</a></code> in each
+test file. <code>.setUp()</code> is executed directly before and
+<code>.tearDown()</code> directly after each test function execution.
+</p>
+<p>Quite often, it is useful to base test cases on random numbers. To
+make this procedure reproducible, the function <code>runTestSuite</code>
+sets the random number generator to the default setting
+<code>RNGkind(kind="Marsaglia-Multicarry",
+    normal.kind="Kinderman-Ramage")</code> before sourcing each test file
+(note that this default has been chosen due to historical reasons and
+differs from the current R default). This default can be overwritten
+by  configuring the random number generator at the beginning of a test
+file. This setting, however, is valid only inside its own source file
+and gets overwritten when the next test file is sourced.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>runTestSuite</code> and <code>runTestFile</code> both return an object of
+class RUnitTestData.
+</p>
+<p><code>defineTestSuite</code> returns an object of class  <code>RUnitTestSuite</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Thomas KÃ¶nig, Klaus JÃ¼nemann 
+&amp; Matthias Burger</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="checkFuncs.html">checkTrue</a></code> and friends for writing test cases.
+<code><a href="textProtocol.html">printTextProtocol</a></code> and <code><a href="textProtocol.html">printHTMLProtocol</a></code>
+for printing the test protocol. See <a href="RUnit-options.html">RUnit-options</a> for global
+options controlling log out.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## run some test suite
+myTestSuite &lt;- defineTestSuite("RUnit Example",
+                               system.file("examples", package = "RUnit"),
+                               testFileRegexp = "correctTestCase.r")
+testResult &lt;- runTestSuite(myTestSuite)
+
+##  same but without the logger being involved
+## source(file.path(system.file("examples", package = "RUnit"), 
+##                  "correctTestCase.r"))
+## test.correctTestCase()
+
+
+## prints detailed text protocol
+## to standard out:
+printTextProtocol(testResult, showDetails = TRUE)
+
+##  use current default RNGs
+myTestSuite1 &lt;- defineTestSuite("RUnit Example",
+                               system.file("examples", package = "RUnit"),
+                               testFileRegexp = "correctTestCase.r",
+                               rngKind = "Mersenne-Twister",
+                               rngNormalKind = "Inversion")
+
+testResult1 &lt;- runTestSuite(myTestSuite)
+
+
+##  for single test files, e.g. outside a package context
+testResult2 &lt;- runTestFile(file.path(system.file("examples", 
+                                                 package = "RUnit"),
+                                     "correctTestCase.r"))
+printTextProtocol(testResult2, showDetails = TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RUnit</em> version 0.4.32 <a href="00Index.html">Index</a>]</div>
+</body></html>

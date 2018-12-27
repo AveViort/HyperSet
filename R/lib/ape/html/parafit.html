@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Test of host-parasite coevolution</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for parafit {ape}"><tr><td>parafit {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Test of host-parasite coevolution </h2>
+
+<h3>Description</h3>
+
+<p>Function <code><a href="parafit.html">parafit</a></code> tests the hypothesis of coevolution between a clade of hosts and a clade of parasites. The null hypothesis (H0) of the global test is that the evolution of the two groups, as revealed by the two phylogenetic trees and the set of host-parasite association links, has been independent. Tests of individual host-parasite links are also available as an option.
+</p>
+<p>The method, which is described in detail in Legendre et al. (2002), requires some estimates of the phylogenetic trees or phylogenetic distances, and also a description of the host-parasite associations (H-P links) observed in nature.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+parafit(host.D, para.D, HP, nperm = 999, test.links = FALSE,
+        seed = NULL, correction = "none", silent = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>host.D </code></td>
+<td>
+<p> A matrix of phylogenetic or patristic distances among the hosts (object class: <code>matrix</code>, <code>data.frame</code> or <code>dist</code>). A matrix of patristic distances exactly represents the information in a phylogenetic tree. </p>
+</td></tr>
+<tr valign="top"><td><code>para.D </code></td>
+<td>
+<p> A matrix of phylogenetic or patristic distances among the parasites (object class: <code>matrix</code>, <code>data.frame</code> or <code>dist</code>). A matrix of patristic distances exactly represents the information in a phylogenetic tree. </p>
+</td></tr>
+<tr valign="top"><td><code>HP </code></td>
+<td>
+<p> A rectangular matrix with hosts as rows and parasites as columns. The matrix contains 1's when a host-parasite link has been observed in nature between the host in the row and the parasite in the column, and 0's otherwise. </p>
+</td></tr>
+<tr valign="top"><td><code>nperm</code></td>
+<td>
+<p> Number of permutations for the tests. If <code>nperm =
+   0</code>, permutation tests will not be computed. The default value is <code>nperm = 999</code>. For large data files, the permutation test is rather slow since the permutation procedure is not compiled. </p>
+</td></tr>
+<tr valign="top"><td><code>test.links </code></td>
+<td>
+ <p><code>test.links = TRUE</code> will test the significance of individual host-parasite links. Default: <code>test.links = FALSE</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>seed </code></td>
+<td>
+ <p><code>seed = NULL</code> (default): a seed is chosen at random by the function. That seed is used as the starting point for all tests of significance, i.e. the global H-P test and the tests of individual H-P links if they are requested. Users can select a seed of their choice by giving any integer value to <code>seed</code>, for example <code>seed = -123456</code>. Running the function again with the same seed value will produce the exact same test results. </p>
+</td></tr>
+<tr valign="top"><td><code>correction</code></td>
+<td>
+<p> Correction methods for negative eigenvalues (details below): <code>correction="lingoes"</code> and <code>correction="cailliez"</code>. Default value: <code>"none"</code>.  </p>
+</td></tr>
+<tr valign="top"><td><code>silent</code></td>
+<td>
+<p> Informative messages and the time to compute the tests will not be written to the <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> console if silent=TRUE. Useful when the function is called by a numerical simulation function. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Two types of test are produced by the program: a global test of coevolution and, optionally, a test on the individual host-parasite (H-P) link.
+</p>
+<p>The function computes principal coordinates for the host and the parasite distance matrices. The principal coordinates (all of them) act as a complete representation of either the phylogenetic distance matrix or the phylogenetic tree.
+</p>
+<p>Phylogenetic distance matrices are normally Euclidean. Patristic distance matrices are additive, thus they are metric and Euclidean. Euclidean matrices are fully represented by real-valued principal coordinate axes. For non-Euclidean matrices, negative eigenvalues are produced; complex principal coordinate axes are associated with the negative eigenvalues. So, the program rejects matrices that are not Euclidean and stops.
+</p>
+<p>Negative eigenvalues can be corrected for by one of two methods: the Lingoes or the Caillez correction. It is up to the user to decide which correction method should be applied. This is done by selecting the option <code>correction="lingoes"</code> or <code>correction="cailliez"</code>. Details on these correction methods are given in the help file of the <code>pcoa</code> function.
+</p>
+<p>The principle of the global test is the following (H0: independent evolution of the hosts and parasites): (1) Compute matrix D = C t(A) B. Note: D is a fourth-corner matrix (sensu Legendre et al. 1997), where A is the H-P link matrix, B is the matrix of principal coordinates computed from the host.D matrix, and C is the matrix of principal coordinates computed from the para.D matrix. (2) Compute the statistic ParaFitGlobal, the sum of squares of all values in matrix D. (3) Permute at random, separately, each row of matrix A, obtaining matrix A.perm. Compute D.perm = C 
+</p>
+<p>The test of each individual H-P link is carried out as follows (H0: this particular link is random): (1) Remove one link (k) from matrix A. (2) Compute matrix D = C t(A) B. (3a) Compute trace(k), the sum of squares of all values in matrix D. (3b) Compute the statistic ParaFitLink1 = (trace - trace(k)) where trace is the ParaFitGlobal statistic. (3c) Compute the statistic ParaFitLink2 = (trace - trace(k)) / (tracemax - trace) where tracemax is the maximum value that can be taken by trace. (4) Permute at random, separately, each row of matrix A, obtaining A.perm. Use the same sequences of permutations as were used in the test of ParaFitGlobal. Using the values of trace and trace.perm saved during the global test, compute the permuted values of the two statistics, ParaFit1.perm and ParaFit2.perm. (5) Repeat step 4 a large number of times. (6) Add the reference value of ParaFit1 to the distribution of ParaFit1.perm values; add the reference value of ParaFit2 to the distribution of ParaFit2.perm values. Calculate the permutational probabilities associated to ParaFit1 and ParaFit2.
+</p>
+<p>The <code>print.parafit</code> function prints out the results of the global test and, optionally, the results of the tests of the individual host-parasite links.
+</p>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>ParaFitGlobal </code></td>
+<td>
+<p>The statistic of the global H-P test. </p>
+</td></tr>
+<tr valign="top"><td><code>p.global </code></td>
+<td>
+<p>The permutational p-value associated with the ParaFitGlobal statistic. </p>
+</td></tr>
+<tr valign="top"><td><code>link.table </code></td>
+<td>
+<p>The results of the tests of individual H-P links, including the ParaFitLink1 and ParaFitLink2 statistics and the p-values obtained from their respective permutational tests. </p>
+</td></tr>
+<tr valign="top"><td><code>para.per.host </code></td>
+<td>
+<p>Number of parasites per host. </p>
+</td></tr>
+<tr valign="top"><td><code>host.per.para </code></td>
+<td>
+<p>Number of hosts per parasite. </p>
+</td></tr>
+<tr valign="top"><td><code>nperm </code></td>
+<td>
+<p>Number of permutations for the tests. </p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p> Pierre Legendre, Universite de Montreal </p>
+
+
+<h3>References</h3>
+
+<p>Hafner, M. S, P. D. Sudman, F. X. Villablanca, T. A. Spradling, J. W. Demastes and S. A. Nadler. 1994. Disparate rates of molecular evolution in cospeciating hosts and parasites. <em>Science</em>, <b>265</b>, 1087&ndash;1090.
+</p>
+<p>Legendre, P., Y. Desdevises and E. Bazin. 2002. A statistical test for host-parasite coevolution. <em>Systematic Biology</em>, <b>51(2)</b>, 217&ndash;234.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="pcoa.html">pcoa</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Gopher and lice data from Hafner et al. (1994)
+
+data(gopher.D)
+data(lice.D)
+data(HP.links)
+
+res &lt;- parafit(gopher.D, lice.D, HP.links, nperm=99, test.links=TRUE)
+# res     # or else: print(res)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

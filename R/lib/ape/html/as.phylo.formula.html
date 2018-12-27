@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Conversion from Taxonomy Variables to Phylogenetic Trees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for as.phylo.formula {ape}"><tr><td>as.phylo.formula {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Conversion from Taxonomy Variables to Phylogenetic Trees</h2>
+
+<h3>Description</h3>
+
+<p>The function <code>as.phylo.formula</code> (short form <code>as.phylo</code>)
+builds a phylogenetic tree (an object of class <code>phylo</code>) from
+a set of nested taxonomic variables.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'formula'
+as.phylo(x, data = parent.frame(), collapse = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a right-side formula describing the taxonomic relationship:
+<code>~C1/C2/.../Cn</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>the data.frame where to look for the variables (default
+to user's workspace).</p>
+</td></tr>
+<tr valign="top"><td><code>collapse</code></td>
+<td>
+<p>a logical value specifying whether to collapse single
+nodes in the returned tree (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Taxonomic variables must be nested and passed in the correct order:
+the higher clade must be on the left of the formula, for instance
+<code>~Order/Family/Genus/Species</code>. In most cases, the resulting tree
+will be unresolved and will contain polytomies.
+</p>
+<p>The option <code>collapse = FALSE</code> has for effect to add single nodes
+in the tree when a given higher level has only one element in the
+level below (e.g., a monospecific genus); see the example below.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:Julien.Dutheil@univ-montp2.fr">Julien.Dutheil@univ-montp2.fr</a> and Eric
+Marcon</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="as.phylo.html">as.phylo</a></code>, <code><a href="read.tree.html">read.tree</a></code> for a
+description of <code>"phylo"</code> objects, <code><a href="multi2di.html">multi2di</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(carnivora)
+frm &lt;- ~SuperFamily/Family/Genus/Species
+tr &lt;- as.phylo(frm, data = carnivora)
+plot(tr)
+Nnode(tr)
+## compare with:
+Nnode(as.phylo(frm, data = carnivora, collapse = FALSE))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

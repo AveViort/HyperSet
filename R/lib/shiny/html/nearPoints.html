@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find rows of data that are near a click/hover/double-click</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nearPoints {shiny}"><tr><td>nearPoints {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find rows of data that are near a click/hover/double-click</h2>
+
+<h3>Description</h3>
+
+<p>This function returns rows from a data frame which are near a click, hover, or
+double-click, when used with <code><a href="plotOutput.html">plotOutput</a></code>. The rows will be sorted
+by their distance to the mouse event.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nearPoints(df, coordinfo, xvar = NULL, yvar = NULL, panelvar1 = NULL,
+  panelvar2 = NULL, threshold = 5, maxpoints = NULL,
+  addDist = FALSE, allRows = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>df</code></td>
+<td>
+<p>A data frame from which to select rows.</p>
+</td></tr>
+<tr valign="top"><td><code>coordinfo</code></td>
+<td>
+<p>The data from a mouse event, such as <code>input$plot_click</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>xvar</code></td>
+<td>
+<p>A string with the name of the variable on the x or y axis.
+This must also be the name of a column in <code>df</code>. If absent, then this
+function will try to infer the variable from the brush (only works for
+ggplot2).</p>
+</td></tr>
+<tr valign="top"><td><code>yvar</code></td>
+<td>
+<p>A string with the name of the variable on the x or y axis.
+This must also be the name of a column in <code>df</code>. If absent, then this
+function will try to infer the variable from the brush (only works for
+ggplot2).</p>
+</td></tr>
+<tr valign="top"><td><code>panelvar1</code></td>
+<td>
+<p>Each of these is a string with the name of a panel
+variable. For example, if with ggplot2, you facet on a variable called
+<code>cyl</code>, then you can use <code>"cyl"</code> here. However, specifying the
+panel variable should not be necessary with ggplot2; Shiny should be able
+to auto-detect the panel variable.</p>
+</td></tr>
+<tr valign="top"><td><code>panelvar2</code></td>
+<td>
+<p>Each of these is a string with the name of a panel
+variable. For example, if with ggplot2, you facet on a variable called
+<code>cyl</code>, then you can use <code>"cyl"</code> here. However, specifying the
+panel variable should not be necessary with ggplot2; Shiny should be able
+to auto-detect the panel variable.</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p>A maxmimum distance to the click point; rows in the data
+frame where the distance to the click is less than <code>threshold</code> will be
+returned.</p>
+</td></tr>
+<tr valign="top"><td><code>maxpoints</code></td>
+<td>
+<p>Maximum number of rows to return. If NULL (the default),
+return all rows that are within the threshold distance.</p>
+</td></tr>
+<tr valign="top"><td><code>addDist</code></td>
+<td>
+<p>If TRUE, add a column named <code>dist_</code> that contains the
+distance from the coordinate to the point, in pixels. When no mouse event
+has yet occured, the value of <code>dist_</code> will be <code>NA</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>allRows</code></td>
+<td>
+<p>If <code>FALSE</code> (the default) return a data frame containing
+the selected rows. If <code>TRUE</code>, the input data frame will have a new
+column, <code>selected_</code>, which indicates whether the row was inside the
+selected by the mouse event (<code>TRUE</code>) or not (<code>FALSE</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>It is also possible for this function to return all rows from the input data
+frame, but with an additional column <code>selected_</code>, which indicates which
+rows of the input data frame are selected by the brush (<code>TRUE</code> for
+selected, <code>FALSE</code> for not-selected). This is enabled by setting
+<code>allRows=TRUE</code> option. If this is used, the resulting data frame will not
+be sorted by distance to the mouse event.
+</p>
+<p>The <code>xvar</code>, <code>yvar</code>, <code>panelvar1</code>, and <code>panelvar2</code> arguments
+specify which columns in the data correspond to the x variable, y variable,
+and panel variables of the plot. For example, if your plot is
+<code>plot(x=cars$speed, y=cars$dist)</code>, and your click variable is named
+<code>"cars_click"</code>, then you would use <code>nearPoints(cars,
+input$cars_brush, "speed", "dist")</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plotOutput.html">plotOutput</a></code> for more examples.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Note that in practice, these examples would need to go in reactives
+# or observers.
+
+# This would select all points within 5 pixels of the click
+nearPoints(mtcars, input$plot_click)
+
+# Select just the nearest point within 10 pixels of the click
+nearPoints(mtcars, input$plot_click, threshold = 10, maxpoints = 1)
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

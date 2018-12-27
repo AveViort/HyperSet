@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find the number of records that match a given term across all...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for entrez_global_query {rentrez}"><tr><td>entrez_global_query {rentrez}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find the number of records that match a given term across all NCBI Entrez databases</h2>
+
+<h3>Description</h3>
+
+<p>Find the number of records that match a given term across all NCBI Entrez databases
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+entrez_global_query(term, config = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>term</code></td>
+<td>
+<p>the search term to use</p>
+</td></tr>
+<tr valign="top"><td><code>config</code></td>
+<td>
+<p>vector configuration options passed to httr::GET</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments to add to the query</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a named vector with counts for each a database
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../httr/html/config.html">config</a></code> for available configs
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+NCBI_data_on_best_butterflies_ever &lt;- entrez_global_query(term="Heliconius")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rentrez</em> version 1.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

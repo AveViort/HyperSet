@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Work with xml.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xml {rvest}"><tr><td>xml {rvest}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Work with xml.</h2>
+
+<h3>Description</h3>
+
+<p>Deprecated. Please use just xml2 directly
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xml(x, ..., encoding = "")
+
+xml_tag(x)
+
+xml_node(x, css, xpath)
+
+xml_nodes(x, css, xpath)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A url, a local path, a string containing html, or a response from
+an httr request.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>If <code>x</code> is a URL, additional arguments are passed on to
+<code><a href="../../httr/html/GET.html">GET</a>()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>encoding</code></td>
+<td>
+<p>Specify encoding of document. See <code><a href="../../base/html/iconv.html">iconvlist</a>()</code>
+for complete list. If you have problems determining the correct encoding,
+try <code><a href="../../stringi/html/stri_enc_detect.html">stri_enc_detect</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>css</code></td>
+<td>
+<p>Nodes to select. Supply one of <code>css</code> or <code>xpath</code>
+depending on whether you want to use a css or xpath 1.0 selector.</p>
+</td></tr>
+<tr valign="top"><td><code>xpath</code></td>
+<td>
+<p>Nodes to select. Supply one of <code>css</code> or <code>xpath</code>
+depending on whether you want to use a css or xpath 1.0 selector.</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>rvest</em> version 0.3.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

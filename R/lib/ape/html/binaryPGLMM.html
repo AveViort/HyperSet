@@ -1,0 +1,412 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Phylogenetic Generalized Linear Mixed Model for Binary Data</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for binaryPGLMM {ape}"><tr><td>binaryPGLMM {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Phylogenetic Generalized Linear Mixed Model for Binary Data</h2>
+
+<h3>Description</h3>
+
+<p>binaryPGLMM performs linear regression for binary phylogenetic data, estimating regression coefficients with approximate standard errors. It simultaneously estimates the strength of phylogenetic signal in the residuals and gives an approximate conditional likelihood ratio test for the hypothesis that there is no signal. Therefore, when applied without predictor (independent) variables, it gives a test for phylogenetic signal for binary data. The method uses a GLMM approach, alternating between penalized quasi-likelihood (PQL) to estimate the &quot;mean components&quot; and restricted maximum likelihood (REML) to estimate the &quot;variance components&quot; of the model.
+</p>
+<p>binaryPGLMM.sim is a companion function that simulates binary phylogenetic data of the same structure analyzed by binaryPGLMM.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+binaryPGLMM(formula, data = list(), phy, s2.init = 0.1,
+            B.init = NULL, tol.pql = 10^-6, maxit.pql = 200,
+            maxit.reml = 100)
+
+binaryPGLMM.sim(formula, data = list(), phy, s2 = NULL, B = NULL, nrep = 1)
+
+## S3 method for class 'binaryPGLMM'
+print(x, digits = max(3, getOption("digits") - 3), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+<p>a two-sided linear formula object describing the
+fixed-effects of the model; for example, Y ~ X.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>a data frame containing the variables named in formula.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>a phylogenetic tree as an object of class &quot;phylo&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>s2.init</code></td>
+<td>
+<p>an initial estimate of s2, the scaling component of the
+variance in the PGLMM. A value of s2 = 0 implies no phylogenetic
+signal. Note that the variance-covariance matrix given by the
+phylogeny phy is scaled to have determinant = 1.</p>
+</td></tr>
+<tr valign="top"><td><code>B.init</code></td>
+<td>
+<p>initial estimates of B, the matrix containing regression
+coefficients in the model. This matrix must have
+dim(B.init)=c(p+1,1), where p is the number of predictor
+(independent) variables; the first element of B corresponds to the
+intercept, and the remaining elements correspond in order to the
+predictor (independent) variables in the model.</p>
+</td></tr>
+<tr valign="top"><td><code>tol.pql</code></td>
+<td>
+<p>a control parameter dictating the tolerance for
+convergence for the PQL optimization.</p>
+</td></tr>
+<tr valign="top"><td><code>maxit.pql</code></td>
+<td>
+<p>a control parameter dictating the maximum number of
+iterations for the PQL optimization.</p>
+</td></tr>
+<tr valign="top"><td><code>maxit.reml</code></td>
+<td>
+<p>a control parameter dictating the maximum number of
+iterations for the REML optimization.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class &quot;binaryPGLMM&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>s2</code></td>
+<td>
+<p>in binaryPGLMM.sim, value of s2. See s2.init.</p>
+</td></tr>
+<tr valign="top"><td><code>B</code></td>
+<td>
+<p>in binaryPGLMM.sim, value of B, the matrix containing regression coefficients in the model. See B.init.</p>
+</td></tr>
+<tr valign="top"><td><code>nrep</code></td>
+<td>
+<p>in binaryPGLMM.sim,  number of compete data sets produced.</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>the number of digits to print.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to <code>print</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The function estimates parameters for the model
+</p>
+<p style="text-align: center;"><i>Pr(Y = 1) = q </i></p>
+
+<p style="text-align: center;"><i>q = inverse.logit(b0 + b1 * x1 + b2 * x2 + &hellip; + &epsilon;)</i></p>
+
+<p style="text-align: center;"><i>&epsilon; ~ Gaussian(0, s2 * V) </i></p>
+
+<p>where <i>V</i> is a variance-covariance matrix derived from a phylogeny (typically under the assumption of Brownian motion evolution). Although mathematically there is no requirement for <i>V</i> to be ultrametric, forcing <i>V</i> into ultrametric form can aide in the interpretation of the model, because in regression for binary dependent variables, only the off-diagonal elements (i.e., covariances) of matrix <i>V</i> are biologically meaningful (see Ives &amp; Garland 2014).
+</p>
+<p>The function converts a phylo tree object into a variance-covariance matrix, and further standardizes this matrix to have determinant = 1. This in effect standardizes the interpretation of the scalar s2. Although mathematically not required, it is a very good idea to standardize the predictor (independent) variables to have mean 0 and variance 1. This will make the function more robust and improve the interpretation of the regression coefficients. For categorical (factor) predictor variables, you will need to construct 0-1 dummy variables, and these should not be standardized (for obvious reasons).
+</p>
+<p>The estimation method alternates between PQL to obtain estimates of the mean components of the model (this is the standard approach to estimating GLMs) and REML to obtain estimates of the variance components. This method gives relatively fast and robust estimation. Nonetheless, the estimates of the coefficients B will generally be upwards bias, as is typical of estimation for binary data. The standard errors of B are computed from the PQL results conditional on the estimate of s2 and therefore should tend to be too small. The function returns an approximate P-value for the hypothesis of no phylogenetic signal in the residuals (i.e., H0:s2 = 0) using an approximate likelihood ratio test based on the conditional REML likelihood (rather than the marginal likelihood). Simulations have shown that these P-values tend to be high (giving type II errors: failing to identify variances that in fact are statistically significantly different from zero).
+</p>
+<p>It is a good idea to confirm statistical inferences using parametric bootstrapping, and the companion function binaryPGLMM.sim gives a simply tool for this. See Examples below.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class &quot;binaryPGLMM&quot;.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+<p>formula specifying the regression model.</p>
+</td></tr>
+<tr valign="top"><td><code>B</code></td>
+<td>
+<p>estimates of the regression coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>B.se</code></td>
+<td>
+<p>approximate PQL standard errors of the regression
+coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>B.cov</code></td>
+<td>
+<p>approximate PQL covariance matrix for the regression
+coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>B.zscore</code></td>
+<td>
+<p>approximate PQL Z scores for the regression
+coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>B.pvalue</code></td>
+<td>
+<p>approximate PQL tests for the regression coefficients
+being different from zero.</p>
+</td></tr>
+<tr valign="top"><td><code>s2</code></td>
+<td>
+<p>phylogenetic signal measured as the scalar magnitude of the
+phylogenetic variance-covariance matrix s2 * V.</p>
+</td></tr>
+<tr valign="top"><td><code>P.H0.s2</code></td>
+<td>
+<p>approximate likelihood ratio test of the hypothesis H0
+that s2 = 0. This test is based on the conditional REML (keeping the
+regression coefficients fixed) and is prone to inflated type 1 errors.</p>
+</td></tr>
+<tr valign="top"><td><code>mu</code></td>
+<td>
+<p>for each data point y, the estimate of p that y = 1.</p>
+</td></tr>
+<tr valign="top"><td><code>b</code></td>
+<td>
+<p>for each data point y, the estimate of inverse.logit(p).</p>
+</td></tr>
+<tr valign="top"><td><code>X</code></td>
+<td>
+<p>the predictor (independent) variables returned in matrix form
+(including 1s in the first column).</p>
+</td></tr>
+<tr valign="top"><td><code>H</code></td>
+<td>
+<p>residuals of the form b + (Y - mu)/(mu * (1 - mu)).</p>
+</td></tr>
+<tr valign="top"><td><code>B.init</code></td>
+<td>
+<p>the user-provided initial estimates of B. If B.init is
+not provided, these are estimated using glm() assuming no phylogenetic
+signal. The glm() estimates can generate convergence problems, so
+using small values (e.g., 0.01) is more robust but slower.</p>
+</td></tr>
+<tr valign="top"><td><code>VCV</code></td>
+<td>
+<p>the standardized phylogenetic variance-covariance matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>V</code></td>
+<td>
+<p>estimate of the covariance matrix of H.</p>
+</td></tr>
+<tr valign="top"><td><code>convergeflag</code></td>
+<td>
+<p>flag for cases when convergence failed.</p>
+</td></tr>
+<tr valign="top"><td><code>iteration</code></td>
+<td>
+<p>number of total iterations performed.</p>
+</td></tr>
+<tr valign="top"><td><code>converge.test.B</code></td>
+<td>
+<p>final tolerance for B.</p>
+</td></tr>
+<tr valign="top"><td><code>converge.test.s2</code></td>
+<td>
+<p>final tolerance for s2.</p>
+</td></tr>
+<tr valign="top"><td><code>rcondflag</code></td>
+<td>
+<p>number of times B is reset to 0.01. This is done when
+rcond(V) &lt; 10^(-10), which implies that V cannot be inverted.</p>
+</td></tr>
+<tr valign="top"><td><code>Y</code></td>
+<td>
+<p>in binaryPGLMM.sim, the simulated values of Y.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Anthony R. Ives</p>
+
+
+<h3>References</h3>
+
+<p>Ives, A. R. and Helmus, M. R. (2011) Generalized linear mixed models
+for phylogenetic analyses of community structure. <em>Ecological
+Monographs</em>, <b>81</b>, 511&ndash;525.
+</p>
+<p>Ives, A. R. and Garland, T., Jr. (2014) Phylogenetic regression for
+binary dependent variables. Pages 231&ndash;261 <em>in</em> L. Z. Garamszegi,
+editor. <em>Modern Phylogenetic Comparative Methods and Their
+Application in Evolutionary Biology</em>. Springer-Verlag, Berlin
+Heidelberg.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>package <span class="pkg">pez</span> and its function <code>communityPGLMM</code>;
+package <span class="pkg">phylolm</span> and its function <code>phyloglm</code>;
+package <span class="pkg">MCMCglmm</span>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Illustration of binaryPGLMM() with simulated data
+
+# Generate random phylogeny
+
+n &lt;- 100
+phy &lt;- compute.brlen(rtree(n=n), method = "Grafen", power = 1)
+
+# Generate random data and standardize to have mean 0 and variance 1
+X1 &lt;- rTraitCont(phy, model = "BM", sigma = 1)
+X1 &lt;- (X1 - mean(X1))/var(X1)
+
+# Simulate binary Y
+sim.dat &lt;- data.frame(Y=array(0, dim=n), X1=X1, row.names=phy$tip.label)
+sim.dat$Y &lt;- binaryPGLMM.sim(Y ~ X1, phy=phy, data=sim.dat, s2=.5,
+                             B=matrix(c(0,.25),nrow=2,ncol=1), nrep=1)$Y
+
+# Fit model
+binaryPGLMM(Y ~ X1, phy=phy, data=sim.dat)
+
+## Not run: 
+# Compare with phyloglm()
+library(phylolm)
+summary(phyloglm(Y ~ X1, phy=phy, data=sim.dat))
+
+# Compare with glm() that does not account for phylogeny
+summary(glm(Y ~ X1, data=sim.dat, family="binomial"))
+
+# Compare with logistf() that does not account
+# for phylogeny but is less biased than glm()
+library(logistf)
+logistf(Y ~ X1, data=sim.dat)
+
+# Compare with MCMCglmm
+library(MCMCglmm)
+
+V &lt;- vcv(phy)
+V &lt;- V/max(V)
+detV &lt;- exp(determinant(V)$modulus[1])
+V &lt;- V/detV^(1/n)
+
+invV &lt;- Matrix(solve(V),sparse=T)
+sim.dat$species &lt;- phy$tip.label
+rownames(invV) &lt;- sim.dat$species
+
+nitt &lt;- 43000
+thin &lt;- 10
+burnin &lt;- 3000
+
+prior &lt;- list(R=list(V=1, fix=1), G=list(G1=list(V=1, nu=1000, alpha.mu=0, alpha.V=1)))
+summary(MCMCglmm(Y ~ X1, random=~species, ginvers=list(species=invV),
+    data=sim.dat, slice=TRUE, nitt=nitt, thin=thin, burnin=burnin,
+    family="categorical", prior=prior, verbose=FALSE))
+
+## Examine bias in estimates of B1 and s2 from binaryPGLMM with
+# simulated data. Note that this will take a while.
+
+Reps = 1000
+
+s2 &lt;- 0.4
+B1 &lt;- 1
+
+meanEsts &lt;- data.frame(n = Inf, B1 = B1, s2 = s2, Pr.s2 = 1, propconverged = 1)
+
+for (n in c(160, 80, 40, 20)) {
+
+  meanEsts.n &lt;- data.frame(B1 = 0, s2 = 0, Pr.s2 = 0, convergefailure = 0)
+    for (rep in 1:Reps) {
+      phy &lt;- compute.brlen(rtree(n = n), method = "Grafen", power = 1)
+      X &lt;- rTraitCont(phy, model = "BM", sigma = 1)
+      X &lt;- (X - mean(X))/var(X)
+
+      sim.dat &lt;- data.frame(Y = array(0, dim = n), X = X, row.names = phy$tip.label)
+      sim &lt;- binaryPGLMM.sim(Y ~ 1 + X, phy = phy, data = sim.dat, s2 = s2,
+                                       B = matrix(c(0,B1), nrow = 2, ncol = 1), nrep = 1)
+      sim.dat$Y &lt;- sim$Y
+
+      z &lt;- binaryPGLMM(Y ~ 1 + X, phy = phy, data = sim.dat)
+
+      meanEsts.n[rep, ] &lt;- c(z$B[2], z$s2, z$P.H0.s2, z$convergeflag == "converged")
+  }
+converged &lt;- meanEsts.n[,4]
+meanEsts &lt;- rbind(meanEsts,
+                  c(n, mean(meanEsts.n[converged==1,1]),
+                            mean(meanEsts.n[converged==1,2]),
+                            mean(meanEsts.n[converged==1, 3] &lt; 0.05),
+                            mean(converged)))
+}
+meanEsts
+
+# Results output for B1 = 0.5, s2 = 0.4; n-Inf gives the values used to
+# simulate the data
+#    n       B1        s2      Pr.s2 propconverged
+# 1 Inf 1.000000 0.4000000 1.00000000         1.000
+# 2 160 1.012719 0.4479946 0.36153072         0.993
+# 3  80 1.030876 0.5992027 0.24623116         0.995
+# 4  40 1.110201 0.7425203 0.13373860         0.987
+# 5  20 1.249886 0.8774708 0.05727377         0.873
+
+
+## Examine type I errors for estimates of B0 and s2 from binaryPGLMM()
+# with simulated data. Note that this will take a while.
+
+Reps = 1000
+
+s2 &lt;- 0
+B0 &lt;- 0
+B1 &lt;- 0
+
+H0.tests &lt;- data.frame(n = Inf, B0 = B0, s2 = s2, Pr.B0 = .05,
+                       Pr.s2 = .05, propconverged = 1)
+for (n in c(160, 80, 40, 20)) {
+
+  ests.n &lt;- data.frame(B1 = 0, s2 = 0, Pr.B0 = 0, Pr.s2 = 0, convergefailure = 0)
+  for (rep in 1:Reps) {
+    phy &lt;- compute.brlen(rtree(n = n), method = "Grafen", power = 1)
+    X &lt;- rTraitCont(phy, model = "BM", sigma = 1)
+    X &lt;- (X - mean(X))/var(X)
+
+    sim.dat &lt;- data.frame(Y = array(0, dim = n), X = X, row.names = phy$tip.label)
+    sim &lt;- binaryPGLMM.sim(Y ~ 1, phy = phy, data = sim.dat, s2 = s2,
+                           B = matrix(B0, nrow = 1, ncol = 1), nrep = 1)
+    sim.dat$Y &lt;- sim$Y
+
+    z &lt;- binaryPGLMM(Y ~ 1, phy = phy, data = sim.dat)
+
+    ests.n[rep, ] &lt;- c(z$B[1], z$s2, z$B.pvalue, z$P.H0.s2, z$convergeflag == "converged")
+  }
+
+converged &lt;- ests.n[,5]
+H0.tests &lt;- rbind(H0.tests,
+                  c(n, mean(ests.n[converged==1,1]),
+                    mean(ests.n[converged==1,2]),
+                    mean(ests.n[converged==1, 3] &lt; 0.05),
+                    mean(ests.n[converged==1, 4] &lt; 0.05),
+                    mean(converged)))
+}
+H0.tests
+
+# Results for type I errors for B0 = 0 and s2 = 0; n-Inf gives the values
+# used to simulate the data. These results show that binaryPGLMM() tends to
+# have lower-than-nominal p-values; fewer than 0.05 of the simulated
+# data sets have H0:B0=0 and H0:s2=0 rejected at the alpha=0.05 level.
+#     n            B0         s2      Pr.B0      Pr.s2 propconverged
+# 1 Inf  0.0000000000 0.00000000 0.05000000 0.05000000         1.000
+# 2 160 -0.0009350357 0.07273163 0.02802803 0.04804805         0.999
+# 3  80 -0.0085831477 0.12205876 0.04004004 0.03403403         0.999
+# 4  40  0.0019303847 0.25486307 0.02206620 0.03711133         0.997
+# 5  20  0.0181394905 0.45949266 0.02811245 0.03313253         0.996
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

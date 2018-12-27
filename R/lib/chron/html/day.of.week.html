@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert between Julian and Calendar Dates</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for day.of.week {chron}"><tr><td>day.of.week {chron}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Convert between Julian and Calendar Dates
+</h2>
+
+<h3>Description</h3>
+
+<p>Utility functions to convert between Julian dates (numbers of days
+since an origin, by default 1970-01-01) and calendar dates given by
+year, month, and day within the month.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## Default S3 method:
+julian(x, d, y, origin., ...)
+month.day.year(jul, origin.)
+leap.year(y)
+day.of.week(month, day, year)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x, month</code></td>
+<td>
+<p>vector of month numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>d, day</code></td>
+<td>
+<p>vector of day numbers.</p>
+</td></tr>
+<tr valign="top"><td><code>y, year</code></td>
+<td>
+<p>vector of years.</p>
+</td></tr>
+<tr valign="top"><td><code>jul</code></td>
+<td>
+<p>vector of Julian Dates, i.e., number of days since
+<code>origin.</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>origin.</code></td>
+<td>
+<p>vector specifying the origin as month, day, and year.
+If missing, it defaults to <code>getOption("chron.origin")</code> if this
+is non-null, otherwise
+<code>c(month = 1, day = 1, year = 1970)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to or from methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A vector of Julian dates (number of days since <code>origin.</code>) when
+<code>julian()</code> is called, or a list with members <code>month</code>,
+<code>day</code>, <code>year</code> corresponding to the input Julian dates if
+<code>month.day.year()</code> is called.  <code>leap.year()</code> returns a
+logical vector indicating whether the corresponding year is a leap
+year.
+<code>day.of.week()</code> returns a number between 0 and 6 to specify day
+of the week&ndash;0 refers to Sunday.
+</p>
+<p>These functions were taken from Becker, Chambers, and Wilks (1988),
+and were slightly modified to take <code>chron</code> and <code>dates</code>
+objects; some also take the extra argument <code>origin.</code>.
+
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="chron.html">chron</a></code>,
+<code><a href="dates.html">dates</a></code>,
+<code><a href="dates.html">times</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+julian(1, 1, 1970)
+# [1] 0
+unlist(month.day.year(0))
+# month   day  year 
+#     1     1  1970 
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>chron</em> version 2.3-53 <a href="00Index.html">Index</a>]</div>
+</body></html>

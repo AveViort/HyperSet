@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Visualises clusters of markers vs. species</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lociplots {prabclus}"><tr><td>lociplots {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Visualises clusters of markers vs. species</h2>
+
+<h3>Description</h3>
+
+<p>Given a clustering of individuals from <code><a href="prabclust.html">prabclust</a></code> (as
+generated in species delimitation) and a clustering of markers (for
+example dominant markers of genetic loci), <code>lociplots</code> visualises 
+the presence of markers against the clustering of individuals and
+computes some statistics.   
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  lociplots(indclust,locclust,locprab,lcluster,
+                      symbols=NULL,brightest.grey=0.8,darkest.grey=0,
+                      mdsdim=1:2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>indclust</code></td>
+<td>
+<p><code><a href="prabclust.html">prabclust</a></code>-object. Clustering of individuals.</p>
+</td></tr>
+<tr valign="top"><td><code>locclust</code></td>
+<td>
+<p>vector of integers. Clustering of markers/loci.</p>
+</td></tr>
+<tr valign="top"><td><code>locprab</code></td>
+<td>
+<p><code><a href="prabinit.html">prab</a></code>-object in which the markers are what
+the help page of <code><a href="prabinit.html">prabinit</a></code> refers to as &quot;species&quot;
+(i.e., reverse of what is used for species delimitation clustering;
+for data sets with codominant markers, such an object can be
+constructed by use of <code><a href="allele2zeroone.html">allele2zeroone</a></code> before
+<code><a href="prabinit.html">prabinit</a></code>.)</p>
+</td></tr>
+<tr valign="top"><td><code>lcluster</code></td>
+<td>
+<p>integer. Number of cluster in <code>locclust</code> for
+which plot and statistics are produced.</p>
+</td></tr>
+<tr valign="top"><td><code>symbols</code></td>
+<td>
+<p>vector of plot symbols. If <code>NULL</code>,
+<code>indclust$symbols</code> is used.</p>
+</td></tr>
+<tr valign="top"><td><code>brightest.grey</code></td>
+<td>
+<p>numeric between 0 and 1. Brightest grey value
+used in plot for individuals with smallest marker percentage, see
+details.</p>
+</td></tr>
+<tr valign="top"><td><code>darkest.grey</code></td>
+<td>
+<p>numeric between 0 and 1. Darkest grey value
+used in plot for individuals with highest marker percentage, see
+details.</p>
+</td></tr>
+<tr valign="top"><td><code>mdsdim</code></td>
+<td>
+<p>vector of two integers. The two MDS variables taken from
+<code>indclust</code> used for visualisation.</p>
+</td></tr>  
+</table>
+
+
+<h3>Details</h3>
+
+<p>Plot and statistics are based on the individual marker percentage,
+which is the percentage of markers present in an individual of the
+markers belonging to cluster no. <code>lcluster</code>. In the plot, the
+grey value visualises the marker percentage.
+</p>
+
+
+<h3>Value</h3>
+
+<p>list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>locfreq</code></td>
+<td>
+<p>vector of individual marker percentages.</p>
+</td></tr>
+<tr valign="top"><td><code>locfreqmin</code></td>
+<td>
+<p>vector of minimum individual marker precentages for
+each cluster in <code>indclust</code>-clustering (the first value refers
+to the &quot;noise component&quot;, if present).</p>
+</td></tr>
+<tr valign="top"><td><code>locfreqmax</code></td>
+<td>
+<p>vector of maximum individual marker precentages for
+each cluster in <code>indclust</code>-clustering (the first value refers
+to the &quot;noise component&quot;, if present).</p>
+</td></tr>
+<tr valign="top"><td><code>locfreqmean</code></td>
+<td>
+<p>vector of average individual marker precentages for
+each cluster in <code>indclust</code>-clustering (the first value refers
+to the &quot;noise component&quot;, if present).</p>
+</td></tr>  
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="prabclust.html">prabclust</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+  options(digits=4)
+  data(veronica)
+  vei &lt;- prabinit(prabmatrix=veronica[1:50,],distance="jaccard")
+  ppv &lt;- prabclust(vei)
+  veloci &lt;- prabinit(prabmatrix=veronica[1:50,],rows.are.species=FALSE)
+  velociclust &lt;- prabclust(veloci,nnk=0)
+  lociplots(ppv,velociclust$clustering,veloci,lcluster=3)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

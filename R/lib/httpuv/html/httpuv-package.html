@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: HTTP and WebSocket server</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for httpuv-package {httpuv}"><tr><td>httpuv-package {httpuv}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>HTTP and WebSocket server</h2>
+
+<h3>Description</h3>
+
+<p>HTTP and WebSocket server
+</p>
+
+
+<h3>Details</h3>
+
+<p>Allows R code to listen for and interact with HTTP and WebSocket clients, so 
+you can serve web traffic directly out of your R process. Implementation is
+based on <a href="https://github.com/joyent/libuv">libuv</a> and
+<a href="https://github.com/joyent/http-parser">http-parser</a>.
+</p>
+<p>This is a low-level library that provides little more than network I/O and 
+implementations of the HTTP and WebSocket protocols. For an easy way to 
+create web applications, try <a href="http://rstudio.com/shiny/">Shiny</a> instead.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Joe Cheng <a href="mailto:joe@rstudio.com">joe@rstudio.com</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="startServer.html">startServer</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+demo("echo", package="httpuv")
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>httpuv</em> version 1.4.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

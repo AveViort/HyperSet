@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Count or list sheet names in Excel spreadsheet files.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sheetCount {gdata}"><tr><td>sheetCount {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Count or list sheet names in Excel spreadsheet files.
+</h2>
+
+<h3>Description</h3>
+
+<p>Count or list sheet names in Excel spreadsheet files.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sheetCount(xls, verbose = FALSE, perl = "perl")
+sheetNames(xls, verbose = FALSE, perl = "perl")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>xls</code></td>
+<td>
+<p>File path to spreadsheet.  Supports &quot;http://&quot;,
+&quot;https://&quot;, and &quot;ftp://&quot; URLS.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>If <code>TRUE</code>, show additional messages during
+processing.</p>
+</td></tr>
+<tr valign="top"><td><code>perl</code></td>
+<td>
+<p>Path to perl interpreter.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>sheetCount</code> returns the number of sheets in the spreadsheet.
+<code>sheetNames</code> returns the names of sheets  in the spreadsheet.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.xls.html">read.xls</a></code>, <code><a href="read.xls.html">xls2csv</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+   xlsfile &lt;- system.file("xls", "iris.xls", package = "gdata")
+   xlsfile
+
+   sheetCount(xlsfile)
+
+
+   exampleFile &lt;- file.path(path.package('gdata'),'xls',
+                            'ExampleExcelFile.xls')
+   exampleFile2007 &lt;- file.path(path.package('gdata'),'xls',
+                            'ExampleExcelFile.xlsx')
+
+   sheetCount(exampleFile)
+
+   if( 'XLSX' %in% xlsFormats() )  # if XLSX is supported..
+     sheetNames(exampleFile2007)
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

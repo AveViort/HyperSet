@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Matrix of pairwise Bhattacharyya distances</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bhattacharyya.matrix {fpc}"><tr><td>bhattacharyya.matrix {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Matrix of pairwise Bhattacharyya distances</h2>
+
+<h3>Description</h3>
+
+<p>Computes Bhattachryya distances for pairs of components
+given the parameters of a Gaussian mixture. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bhattacharyya.matrix(muarray,Sigmaarray,ipairs="all", 
+                                 misclassification.bound=TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>muarray</code></td>
+<td>
+<p>matrix of component means (different components are in
+different columns).</p>
+</td></tr>
+<tr valign="top"><td><code>Sigmaarray</code></td>
+<td>
+<p>three dimensional array with component covariance
+matrices (the third dimension refers to components).</p>
+</td></tr>
+<tr valign="top"><td><code>ipairs</code></td>
+<td>
+<p><code>"all"</code> or list of vectors of two integers. If
+<code>ipairs="all"</code>, computations are carried out for all pairs of
+components. Otherwise, ipairs gives the pairs of components for
+which computations are carried out.</p>
+</td></tr>
+<tr valign="top"><td><code>misclassification.bound</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, upper bounds
+for misclassification probabilities <code>exp(-b)</code>
+are given out instead of the original Bhattacharyya distances <code>b</code>.</p>
+</td></tr>  
+</table>
+
+
+<h3>Value</h3>
+
+<p>A matrix with Bhattacharyya distances (or derived misclassification
+bounds, see above) between pairs of Gaussian distributions with the
+provided parameters. If <code>ipairs!="all"</code>, the Bhattacharyya
+distance and the misclassification bound are given as <code>NA</code> for
+pairs not included in <code>ipairs</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Fukunaga, K. (1990) <em>Introduction to Statistical Pattern
+Recognition</em>, 2nd edition, Academic
+Press, New York.
+</p>
+<p>Hennig, C. (2010) Methods for merging Gaussian mixture components,
+<em>Advances in Data Analysis and Classification</em>, 4, 3-34.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bhattacharyya.dist.html">bhattacharyya.dist</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  muarray &lt;- cbind(c(0,0),c(0,0.1),c(10,10))
+  sigmaarray &lt;- array(c(diag(2),diag(2),diag(2)),dim=c(2,2,3))
+  bhattacharyya.matrix(muarray,sigmaarray,ipairs=list(c(1,2),c(2,3)))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

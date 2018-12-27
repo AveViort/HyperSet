@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+	<LINK href="https://www.evinet.org/js/jquery-ui-themes-1.11.2/themes/redmond/jquery-ui-1.11.icon-font.min.css" type="text/css" rel="stylesheet">
+
+	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="css/test_v2.css"> <!-- Resource style -->
+	<!--LINK href="../../js/jquery-ui-themes-1.11.2/themes/redmond/jquery-ui.min.css" type="text/css" rel="stylesheet">
+	<script src="../../js/jquery-2.1.1.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery-ui-1.11.2/jquery-ui.min.js" type="text/javascript"></script-->
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+
+	<title>EviNet FAQ </title>
+	<style>
+.restore_defaults {
+	all: initial;
+	display: block;
+	font-family: "Open Sans", sans-serif;
+	margin: 10px;
+	
+  }
+  	TD{font-family: Arial; font-size: 9pt}
+
+	table {
+    	font-family: arial, sans-serif;
+    	border-collapse: collapse;
+    	width: 100%;
+	}
+
+	td, th {
+    	border: 1px solid black;
+    	text-align: center;
+    	padding: 8px;
+	}
+
+	tr:hover{
+   	 background-color: #dddddd;
+	}
+
+	</style>
+</head>
+<body>
+<header>
+	<h1>EviNet: frequently asked questions</h1>
+</header>
+<section class="cd-faq">
+	<ul class="cd-faq-categories">
+		<li><a class="selected" href="#basics">Basics</a></li>
+		<li><a href="#ags">Altered Gene Sets</a></li>
+		<li><a href="#fgs">Functional Gene Sets</a></li>
+		<li><a href="#net">Network</a></li>
+		<li><a href="#chk">Check and Submit</a></li>
+		<li><a href="#res">Results</a></li>
+		<li><a href="#arc">Archive</a></li>
+		<li><a href="#privacy">Privacy</a></li>
+		<li><a href="#mail">Enquires</a></li>
+	</ul> <!-- cd-faq-categories -->
+
+	<div class="cd-faq-items">
+		<ul id="basics" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Basics</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">What is project ID?</a>
+				<div class="cd-faq-content">
+					<p> Project ID is name (a single-word string that you choose yourself) for a separate project that you create for analyses at our server. It would allow you 1) uploading and storing input data files in an isolated, protected environment, 2) using the data for network analyses, and 3) saving their parameter and results for later retrieval. One user can create multiple projects and multiple users can have access to the same project. The access level is granted by the user who created the project. For using project IDs, registration is not required (although it might enable additional features).</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Can one perform multiple analyses within the same project?</a>
+				<div class="cd-faq-content">
+					<p>Yes, different analyses are stored under unique job IDs and can be reviewed, retrieved, or removed  via Archive window.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">NEA components and Supported species</a>
+				<div class="cd-faq-content">
+					<p>The network enrichment analysis requires three input components: 1) altered, experimental data set(s) (AGS), 2) functional gene sets (FGS), such as KEGG pathways or GO terms, and 3) a global network of functional coupling between genes and/or proteins. EviNet readily supports network analysis in four species: <span class="hlite"> human, mouse, rat and Arabidopsis</span>. This means that the species-specific networks and FGS collections  are available on the server (while an AGS is usually provided by the user anyway). However, if a user uploads custom files for the network and FGS, then any organism can be subject to the network analysis (this feature will be avaialble soon...).<br>Note that the AGS, FGS, and network components for one analysis shall share a name space, i.e. be defined in the same ID format.</p> 
+				</div> <!-- cd-faq-content -->
+			</li>
+
+				<li>
+				<a class="cd-faq-trigger" href="#0">How safe my data would be?</a>
+				<div class="cd-faq-content">
+					<p>Nobody else can access input data and results even by learning the project ID and the analysis job ID. Exclusions are the following: </p>
+					<ul>
+						<li >
+						You granted access to the project to another person, specified the email address, and sent an invitation. 
+						</li>
+						<li> You created a project as anonymous user and someone have guessed the project ID. Then the list of uploaded files (but not their content) and NEA results can be viewed;</li>
+						<li> You created a shared link for a particular analysis (accessible from the project archive). Then anyone can view the results via the URL (but not the input data). This mode is meant for publications and other sharing.</li>
+					</ul>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="ags" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Altered Gene Sets (AGS)</h2></li>
+						<li>
+				<a class="cd-faq-trigger" href="#0">Major types of AGS input</a>
+				<div class="cd-faq-content">
+					<h2> 1) Paste gene IDs</h2>
+					<p>  You can directly paste gene symbols or other IDs in the text area (text box) provided under tab <span class="hlite">Altered gene sets -> Genes </span> <br> 
+					The gene symbols can be pasted either as a row (space or comma delimited) or as a column<br> See more details <a href="https://www.evinet.org/help/part1.html#pasteids">here </a></p>
+					<h2> 2) Upload a file with pre-compiled gene set(s)</h2> 
+					<p>Input AGS can be imported from a gene list file which a user prepared in advance and uploaded under <span class="hlite"> Altered Gene sets -> File </span> tab. The genes and AGS IDs should be found in two arbitrary columns of a TAB-delimited text file. Which are those columns, can be selected later from the dialogue menu.</p>
+					<p>Example: Type in <span class="hlite">‘myveryfirstproject’</span> in the project ID box on the top of the main page to see our example files. 
+					<h2> 3) Upload a file for input via Venn diagrams</h2> 
+					<p>In order to enable the Venn diagram mode, you would need a big file with gene-by-gene data such as fold-change, p-values etc. Such files are typically available from differential expression analysis, but in order to be understood by our web site, the header should follow a special, rather simple format.<br> For more details, click <a href="https://www.evinet.org/help/venn_help.html">here</a>.
+					</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">How to upload and start using input files?</a>
+				<div class="cd-faq-content">
+					<p>Both pre-compiled AGS and Venn files can be uploaded from the tab <span class="hlite"> Altered Gene sets -> File </span>, as explained <a href="https://www.evinet.org/help/part1.html?#upload_ags">here</a></p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Supported gene ID formats</a>
+				<div class="cd-faq-content">
+				 	<p>Uploaded files and text box input can contain the following gene/protein IDs (case-insensitive):<br>
+					<ul>
+						Human, mouse, rat:
+						<li>Gene symbol (HUGO/MGI), </li>
+						<li>ENSEMBL gene and protein ID, </li>
+						<li>Swiss-Prot accession number, </li>
+						<li>Swiss-Prot ID, </li>
+						<li>TREMBL accession number </li>
+					</ul>
+					<ul> A. thaliana:
+						<li> Symbol, </li>
+						<li> Locus name </li>
+					</ul>
+					<p>These will be converted to standard gene symbols and analyzed against functional gene sets and networks, which are also stored in this format.</p> 
+					</p>	
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Gene sets from a Venn diagram</a>
+				<div class="cd-faq-content">
+					<p>As an essential complement to static user-defined gene lists, EviNet offers a dynamic Venn diagram functionality. Users can try e.g. differential expression cut-offs and explore any list intersections. This is done by uploading an own file with such information and then playing with criteria and submitting the desirable list(s) to the network enrichment analysis. The uploaded file should thus contain results of a differential expression analysis performed in advance, off-line. See more details <a href="https://www.evinet.org/help/HyperSet.Demo.Venn.pdf">here</a> and <a href="https://www.evinet.org/help/venn_help.html">here</a></p>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="fgs" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Functional Gene Sets</h2></li>
+			
+			<li>
+                                <a class="cd-faq-trigger" href="#0">FGS versions and available species</a>
+                                <div class="cd-faq-content">
+                                        <!--img src="FGS_version.png" style="margin:auto; width:600px;display:block" /-->
+                                    <table>
+  										<tr>
+    										<th width="20%">Database</th>
+    										<th width="30%">Version/Release date</th>
+    										<th width="50%">Species <br><i>(networks are not yet available for each of these)</i></th>
+  										</tr>
+  										<tr>
+    										<td>Gene Ontology</td>
+    										<td>Version 1.2 (2017- 06 - 08)</td>
+                                            <td>Homo sapiens, Mus musculus, Rattus norvegicus, Arabidopsis thaliana </td> <!--Saccharomyces_cerevisiae, Caenorhabditis_elegans, Drosophila_melanogaster</td-->
+ 										</tr>
+  										<tr>
+   											<td> KEGG</td>
+    										<td>Release 82.0 (2017- 06 - 07)</td>
+    										<td>Homo sapiens, Mus musculus, Rattus norvegicus, Arabidopsis thaliana</td>
+  											</tr>
+  										<tr>
+    										<td>WikiPathways</td>
+   											<td>Release (2017- 05 -10)</td>
+   											<td>Homo sapiens, Mus musculus, Rattus norvegicus, Arabidopsis thaliana</td>
+  										</tr>
+  										<!--tr>
+    										<td>CommonPathways</td>
+   											<td>V9 (2017-05-04)</td>
+    										<td>Homo sapiens</td>
+  										</tr-->
+  										<tr>
+   	 										<td>Reactome</td>
+    										<td>2017- 04 -13 </td>
+    										<td>Homo sapiens</td>
+  										</tr>
+									</table>
+
+                                </div> <!-- cd-faq-content -->
+                        </li>
+
+ 
+			<li>
+				<a class="cd-faq-trigger" href="#0">Can I upload my own FGS file?</a>
+				<div class="cd-faq-content">
+					<p>Yes, in the same way as you would do for AGS. See button <span class="ui-icon ui-icon-refresh hlite"></span> in the tab <span class="hlite">Functional Gene sets -> File</span>. Moreover, these two "File" tabs access the same project directory, so that same files can be used interchangeably for either AGS or FGS.<p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Which FGS to select?</a>
+				<div class="cd-faq-content">
+					<p>It depends on the purpose and focus of your analysis. However note that any chosen collection would be used, at the background, for false discovery rate estimation. Therefore, less biased estimates (FDR column in the results table) would be obtained on a more "universal", comprehensive collection, such as all KEGG (or at least all KEGG signaling) pathways. On the contrary, a single (or a few) FGS submitted via the text field or a user file cannot enable this estimation - although the FDR value would be calculated automatically. Note also, that these two scenarios correspond to hypothesis-free and hypothesis-driven research, respectively.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Is it worth including multiple/all listed FGS collections?</a>
+				<div class="cd-faq-content">
+					<p>This again depends on your purpose. We however note that it not only may take too long, but would also produce too many hits to navigate among. The latter is due to the high sensitivity of the network enrichment analysis.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="net" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Network</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">Which network to select?</a>
+				<div class="cd-faq-content">
+					<p>The known part of the global gene network consists of physical interactions and protein-mediated gene regulation, which was learned experimentally. In addition, we and others developed Bayesian tools, such as FunCoup, that reconstructed novel edges of functional coupling. This was done by integrating evidence from multiple high-throughput platforms and evaluating consistency of literature reports. In order to enable network analysis from different angles and consider particular molecular mechanisms, one can use different link categories separately: protein complexes, signaling and metabolic pathways, protein phosphorylation, transcription factor binding etc. The PathwayCommons network is a union of such curated resources. While category-specific smaller networks would have lower sensitivity due to encompassing fewer gene nodes and edges, using PathwayCommons and/or FunCoup should drastically increase the performance - while the links categories can no longer be discriminated. Note that it is possible to choose a union of (merge) networks for a particular analysis.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Can I choose multiple networks?</a>
+				<div class="cd-faq-content">
+					<p>Yes, by simply checking more than one item in the collection table (also see above).</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Is it possible to create my own network?</a>
+				<div class="cd-faq-content">
+					<p>Creating a network is usually not straightforward due to very high false positive rates for edges predicted by simple means, such as via mRNA correlation. However, one could at least find and bring a custom network (also for a species not available via the EviNet menu). <b><i>This feature will be available soon.</b></i></p>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="chk" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Check and Submit</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">When to select "Analyze the AGS (FGS) genes/proteins individually?"</a>
+				<div class="cd-faq-content">
+					<p>A rather unique feature of NEA is the ability to detect network enrichment of a single gene against a gene set in the same way as it would be done for multigene AGS/FGS. Therefore, the checkboxes can be for finding more details on member genes by separating them. Note that this won't equal the result on the members submitted as a whole gene set. For example, z-scores (or FDR values) for 10 genes (checkbox enabled) will not sum up to enrichment of the respective 10-gene AGS analyzed as a whole (checkbox disabled).</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Is it possible to analyze enrichment of a gene set against itself?</a>
+				<div class="cd-faq-content">
+					<p>Yes, and it might be biologically relevant, in order to e.g. see if a gene set appears as a pathway-like structure. This feature can be enabled by submitting the same gene set(s) as both AGS and FGS. If there is a significant self-enrichment, a loop edge will be seen in the resulting graph and and a line will appear in the table view.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+		</ul> <!-- cd-faq-group -->
+		
+		<ul id="res" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Results</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">Options and interpretation</a>
+				<div class="cd-faq-content">
+					<p>See detailed explanations <a href="https://www.evinet.org/help/drivers.html">here <span class="ui-icon ui-icon-file-richtext hlite">icon</span></a> and <a href="https://www.evinet.org/help/molecular.html">here<span class="ui-icon ui-icon-file-richtext hlite" >icon</span></a>
+					</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+		</ul> <!-- cd-faq-group --> 
+		
+		<ul id="arc" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Archive</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">What can be retrieved from the Archive?</a>
+				<div class="cd-faq-content">
+					<p>Every time you press <span class="hlite">"Check and submit" </span> button (and there is no apparent error in the set parameters), an analysis would be performed. The output will be shown in the tab <span class="hlite">"Results" </span> as both a graph (with AGS vs. FGS as meta-nodes) and as a table. These same views can be, either immediately or at a later time point, retrieved from the Archive (button <span class="ui-icon ui-icon-folder-open hlite"></span>) into a new browser window. Note that you always have to set the same ID in the project box and press Enter. However, Archive does not allow you to re-calculate the results. In order to do that, you would need to look up the parameters from the respective Archive line (AGS, FGS, network etc.), set them  manually and press <span class="hlite">"Check and submit" </span>again. See <a href="https://www.evinet.org/help/part1.html#archive">here</a></p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="privacy" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Privacy</h2></li>
+			
+			<li>
+				<a class="cd-faq-trigger" href="#0">How my email address will be used?</a>
+				<div class="cd-faq-content">
+					<p>Your email is used for:</p>
+					<ul>
+						<li> Login;</li>
+						<li> Account activation;</li>
+						<li> Password recovery;</li>
+						<li> Notifications - you can disable this function;</li>
+					</ul>
+				<p> We will not reveal your email address to third parties. </p>
+				</div> <!-- cd-faq-content -->
+			</li>
+			
+			<li>
+				<a class="cd-faq-trigger" href="#0">What are cookies?</a>
+				<div class="cd-faq-content">
+					<p>Cookies are small text files containing “key-value” pairs. They are stored on your computer and enable a number of web site-specific operations.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">Why evinet.org uses cookies?</a>
+				<div class="cd-faq-content">
+					<p> We need cookies for certain procedures. For example, your username and session ID stored together on your computer would act as a key. File-specific information on e.g. uploaded files can also be stored - in order to facilitate loading frequently used files. We store no private information in cookies.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<!--li>
+				<a class="cd-faq-trigger" href="#0">What if I won't use cookies?</a>
+				<div class="cd-faq-content">
+					<p> You are still able to perform some operations, but you cannot use most features:
+										</p>
+					<ul class="restore_defaults">
+						<li class="restore_defaults">Log in as a registered user;</li>
+						<li class="restore_defaults">You cannot create a project or run an analysis for a created project.</li>
+					</ul>
+
+				</div> <!-- cd-faq-content -->
+			</li-->
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">What about privacy?</a>
+				<div class="cd-faq-content">
+					<p>Cookies would only be stored on your local computer. The default expiration time (the time period after which it is automatically removed) for the authentication cookies is 1 hour (or longer if you have chosen “Remember me” option while logging in). In other, server-based directories we may store your email (if you ever provided any), input data uploaded by the project owner (not downloadable and only accessible to specified project members), an archive list of analyses and their results. The project archive would allow restoring and re-visualizing any earlier made analysis or removing it from the list. Currently, a user cannot completely delete input data or results, so that if you need to physically erase (or restore) that, please contact the <a href="mailto:andrej.alekseenko@scilifelab.se">webmaster</a>. <br>This site uses <a href="https://analytics.google.com">Google Analytics</a> platform. <br>We would not pass your information, including the email address, to any third party. <br>Cookies are ussed in accordance with <a href="http://ec.europa.eu/ipg/basics/legal/cookies/index_en.htm#section_2">EU legislation on cookies</a>.
+					</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+			
+			<li>
+				<a class="cd-faq-trigger" href="#0">Why should a user register at evinet.org?</a>
+				<div class="cd-faq-content">
+					<p> You are not obliged to, but, as a registered user, would be able to perform many additional operations:
+					</p>
+					<ul>
+						<li> Create private projects with separated data storage;</li>
+						<li> Invite new members to your projects and manage access level;</li>
+						<li> Join others' projects different roles;</li>
+						<li> Change project status between public and private;</li>
+						<li> Enable link sharing for your public analyses;</li>
+						<li> Manage notification modes.</li>
+					</ul>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->	
+		
+		<ul id="mail" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Enquires</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">Found problems?</a>
+				<div class="cd-faq-content">
+					<a href="mailto:andrej.alekseenko@scilifelab.se">Send us email</a>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+	
+	</div> <!-- cd-faq-items -->
+	
+	<a href="#0" class="cd-close-panel">Close</a>
+</section> <!-- cd-faq -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/jquery.mobile.custom.min.js"></script>
+<script src="js/main.js"></script> <!-- Resource jQuery -->
+</body>
+</html>

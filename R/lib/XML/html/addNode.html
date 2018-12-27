@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add a node to a tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for addNode {XML}"><tr><td>addNode {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add a node to a tree</h2>
+
+<h3>Description</h3>
+
+<p>This generic function allows us to add a node to a tree
+for different types of trees.
+Currently it just works for XMLHashTree, but it could
+be readily extended to the more general XMLFlatTree class.
+However, the concept in this function is to change the tree
+and return the node. This does not work unless the tree
+is directly mutable without requiring reassignment,
+i.e. the changes do not induce a new copy of the original tree object.
+DOM trees which are lists of lists of lists do not fall into this category.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+addNode(node, parent, to, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>the node to be added as a child of the parent.</p>
+</td></tr>
+<tr valign="top"><td><code>parent</code></td>
+<td>
+<p>the parent node or identifier</p>
+</td></tr>
+<tr valign="top"><td><code>to</code></td>
+<td>
+<p>the tree object</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments that are understood by the different methods for the different types of 
+trees/nodes. These can include <code>attrs</code>, <code>namespace</code>, <code>namespaceDefinitions</code>,
+<code>.children</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The new node object.
+For flat trees, this will be the <code>node</code> after it has been
+coerced to be compatible with a flat tree, i.e. has an id and the
+host tree added to it.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.w3.org">http://www.w3.org</a> </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlFlatListTree.html">xmlHashTree</a></code>
+<code><a href="asXMLTreeNode.html">asXMLTreeNode</a></code>  
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+  tt = xmlHashTree()
+
+  top = addNode(xmlNode("top"), character(), tt)
+  addNode(xmlNode("a"), top, tt)
+  b = addNode(xmlNode("b"), top, tt)
+  c = addNode(xmlNode("c"), b, tt)
+  addNode(xmlNode("c"), top, tt)
+  addNode(xmlNode("c"), b, tt)    
+  addNode(xmlTextNode("Some text"), c, tt)
+
+  xmlElementsByTagName(tt$top, "c")
+
+  tt
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

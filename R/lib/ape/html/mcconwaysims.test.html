@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: McConway-Sims Test of Homogeneous Diversification</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mcconwaysims.test {ape}"><tr><td>mcconwaysims.test {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>McConway-Sims Test of Homogeneous Diversification</h2>
+
+<h3>Description</h3>
+
+<p>This function performs the McConway&ndash;Sims test that a trait or
+variable does not affect diversification rate.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mcconwaysims.test(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a matrix or a data frame with at least two columns: the first
+one gives the number of species in clades with a trait supposed to
+increase or decrease diversification rate, and the second one the number of
+species in the sister-clades without the trait. Each
+row represents a pair of sister-clades.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The McConway&ndash;Sims test compares a series of sister-clades where one
+of the two is characterized by a trait supposed to affect
+diversification rate. The null hypothesis is that the trait does not
+affect diversification. The alternative hypothesis is that
+diversification rate is increased or decreased by the trait (by
+contrast to the Slowinski&ndash;Guyer test). The test is a likelihood-ratio
+of a null Yule model and an alternative model with two parameters.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a data frame with the <i>chi2</i>, the number of degrees of
+freedom, and the <em>P</em>-value.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>McConway, K. J. and Sims, H. J. (2004) A likelihood-based method for
+testing for nonstochastic variation of diversification rates in
+phylogenies. <em>Evolution</em>, <b>58</b>, 12&ndash;23.
+</p>
+<p>Paradis, E. (2012) Shift in diversification in sister-clade
+comparisons: a more powerful test. <em>Evolution</em>, <b>66</b>,
+288&ndash;295.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="balance.html">balance</a></code>, <code><a href="slowinskiguyer.test.html">slowinskiguyer.test</a></code>,
+<code><a href="../../geiger/html/rc.html">rc</a></code> in <span class="pkg">geiger</span>,
+<code><a href="../../apTreeshape/html/shift.test.html">shift.test</a></code> in <span class="pkg">apTreeshape</span>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### simulate 10 clades with lambda = 0.1 and mu = 0.09:
+n0 &lt;- replicate(10, balance(rbdtree(.1, .09, Tmax = 35))[1])
+### simulate 10 clades with lambda = 0.15 and mu = 0.1:
+n1 &lt;- replicate(10, balance(rbdtree(.15, .1, Tmax = 35))[1])
+x &lt;- cbind(n1, n0)
+mcconwaysims.test(x)
+slowinskiguyer.test(x)
+richness.yule.test(x, 35)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

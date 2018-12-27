@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: isKuratowskiSubgraph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for isKuratowskiSubgraph {RBGL}"><tr><td>isKuratowskiSubgraph {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>isKuratowskiSubgraph</h2>
+
+<h3>Description</h3>
+
+<p>isKuratowskiSubgraph description </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+isKuratowskiSubgraph(g) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p> instance of class graphNEL from Bioconductor graph class</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a list with three elements: 'Is planar' (logical), 'Is there a
+Kuratowski subgraph' (logical), and a two-row character matrix 'Edges of Kuratowski subgraph' with rows 'from' and 'two' and node names as entries.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Li Long &lt;li.long@isb-sib.ch&gt; </p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+V &lt;- LETTERS[1:6]
+g &lt;- new("graphNEL", nodes=V, edgemode="undirected")
+g &lt;- addEdge(V[1+0], V[1+1], g)
+g &lt;- addEdge(V[1+0], V[2+1], g)
+g &lt;- addEdge(V[1+0], V[3+1], g)
+g &lt;- addEdge(V[1+0], V[4+1], g)
+g &lt;- addEdge(V[1+0], V[5+1], g)
+g &lt;- addEdge(V[1+1], V[2+1], g)
+g &lt;- addEdge(V[1+1], V[3+1], g)
+g &lt;- addEdge(V[1+1], V[4+1], g)
+g &lt;- addEdge(V[1+1], V[5+1], g)
+g &lt;- addEdge(V[1+2], V[3+1], g)
+g &lt;- addEdge(V[1+2], V[4+1], g)
+g &lt;- addEdge(V[1+2], V[5+1], g)
+g &lt;- addEdge(V[1+3], V[4+1], g)
+g &lt;- addEdge(V[1+3], V[5+1], g)
+g &lt;- addEdge(V[1+4], V[5+1], g)
+
+x4 &lt;- isKuratowskiSubgraph(g)
+x4
+
+ </pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

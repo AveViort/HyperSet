@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;specc&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for specc-class {kernlab}"><tr><td>specc-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;specc&quot;</h2>
+
+<h3>Description</h3>
+
+<p> The Spectral Clustering Class</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("specc", ...)</code>.
+or by calling the function <code>specc</code>. 
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>.Data</code>:</dt><dd><p>Object of class <code>"vector"</code> containing the cluster assignments</p>
+</dd>
+<dt><code>centers</code>:</dt><dd><p>Object of class <code>"matrix"</code> containing
+the cluster centers</p>
+</dd>
+<dt><code>size</code>:</dt><dd><p>Object of class <code>"vector"</code> containing the
+number of points in each  cluster</p>
+</dd>
+<dt><code>withinss</code>:</dt><dd><p>Object of class <code>"vector"</code> containing
+the within-cluster sum of squares for each cluster</p>
+</dd>
+<dt><code>kernelf</code></dt><dd><p>Object of class <code>kernel</code> containing the
+used kernel function.</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>centers</dt><dd><p><code>signature(object = "specc")</code>: returns the
+cluster centers</p>
+</dd>
+<dt>withinss</dt><dd><p><code>signature(object = "specc")</code>: returns the
+within-cluster sum of squares for each cluster</p>
+</dd>
+<dt>size</dt><dd><p><code>signature(object = "specc")</code>: returns the number
+of points in each cluster </p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="specc.html">specc</a></code>, 
+<code><a href="kpca-class.html">kpca-class</a></code> 
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Cluster the spirals data set.
+data(spirals)
+
+sc &lt;- specc(spirals, centers=2)
+
+centers(sc)
+size(sc)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

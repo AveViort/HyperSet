@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Side color plots for heatmaps</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ggplot_side_color_plot {heatmaply}"><tr><td>ggplot_side_color_plot {heatmaply}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Side color plots for heatmaps</h2>
+
+<h3>Description</h3>
+
+<p>Important for creating annotation.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ggplot_side_color_plot(df, palette = NULL, scale_title = paste(type,
+  "side colors"), type = c("column", "row"), text_angle = if (type ==
+  "column") 0 else 90, is_colors = FALSE, fontsize, label_name = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>df</code></td>
+<td>
+<p>A &quot;molten&quot; data.frame as produced by (eg) reshape2::melt</p>
+</td></tr>
+<tr valign="top"><td><code>palette</code></td>
+<td>
+<p>A function which can return colors to be used in the sidebar
+plot</p>
+</td></tr>
+<tr valign="top"><td><code>scale_title</code></td>
+<td>
+<p>Title of the color scale. Not currently used.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Horizontal or vertical plot? Valid values are &quot;column&quot; and &quot;row&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>text_angle</code></td>
+<td>
+<p>the angle of the text of the rows/columns.</p>
+</td></tr>
+<tr valign="top"><td><code>is_colors</code></td>
+<td>
+<p>Use if the values in df are valid colours and should not be mapped
+to a color scheme, and instead should be plotted directly.</p>
+</td></tr>
+<tr valign="top"><td><code>fontsize</code></td>
+<td>
+<p>Font size (currently unused)</p>
+</td></tr>
+<tr valign="top"><td><code>label_name</code></td>
+<td>
+<p>Name for the mouseover label, usually &quot;row&quot; or &quot;column&quot;</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A ggplot geom_tile object
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>heatmaply</em> version 0.15.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

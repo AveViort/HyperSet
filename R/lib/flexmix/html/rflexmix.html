@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Random Number Generator for Finite Mixtures</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rflexmix {flexmix}"><tr><td>rflexmix {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Random Number Generator for Finite Mixtures</h2>
+
+<h3>Description</h3>
+
+<p>Given a finite mixture model generate random
+numbers from it.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rflexmix(object, newdata, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>A fitted finite mixture model of class <code>flexmix</code> 
+or an unfitted of class <code>FLXdist</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>Optionally, a data frame in which to look for variables with
+which to predict or an integer specifying the number of random draws
+for model-based clustering. If omitted, the data to which the model
+was fitted is used.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments to be passed to or from methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>rflexmix</code> provides the creation of the model matrix for new data
+and the sampling of the cluster memberships. The sampling of the
+component distributions given the classification is done by calling
+<code>rFLXM</code>. This step has to be provided for the different model
+classes. 
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>Random sample</p>
+</td></tr>
+<tr valign="top"><td><code>group</code></td>
+<td>
+<p>Grouping factor</p>
+</td></tr>
+<tr valign="top"><td><code>class</code></td>
+<td>
+<p>Class membership</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Bettina Gruen</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+example(flexmix)
+sample &lt;- rflexmix(ex1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

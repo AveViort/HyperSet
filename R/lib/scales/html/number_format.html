@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Number formatters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for number_format {scales}"><tr><td>number_format {scales}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Number formatters</h2>
+
+<h3>Description</h3>
+
+<p>A set of functions to format numeric values:
+</p>
+
+<ul>
+<li> <p><code>number_format()</code> and <code>number()</code> are generic formatters for numbers.
+</p>
+</li>
+<li> <p><code>comma_format()</code> and <code>comma()</code> format numbers with commas separating
+thousands.
+</p>
+</li>
+<li> <p><code>percent_format()</code> and <code>percent()</code> multiply values by one hundred and
+display percent sign.
+</p>
+</li>
+<li> <p><code>unit_format()</code> add units to the values.
+</p>
+</li></ul>
+
+<p>All formatters allow you to re-<code>scale</code> (multiplicatively), to round to
+specified <code>accuracy</code>, to add custom <code>suffix</code> and <code>prefix</code> and to specify
+<code>decimal.mark</code> and <code>big.mark</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+number_format(accuracy = 1, scale = 1, prefix = "", suffix = "",
+  big.mark = " ", decimal.mark = ".", trim = TRUE, ...)
+
+number(x, accuracy = 1, scale = 1, prefix = "", suffix = "",
+  big.mark = " ", decimal.mark = ".", trim = TRUE, ...)
+
+comma_format(accuracy = 1, scale = 1, prefix = "", suffix = "",
+  big.mark = ",", decimal.mark = ".", trim = TRUE, digits, ...)
+
+comma(x, accuracy = 1, scale = 1, prefix = "", suffix = "",
+  big.mark = ",", decimal.mark = ".", trim = TRUE, digits, ...)
+
+percent_format(accuracy = NULL, scale = 100, prefix = "",
+  suffix = "%", big.mark = " ", decimal.mark = ".", trim = TRUE,
+  ...)
+
+percent(x, accuracy = NULL, scale = 100, prefix = "",
+  suffix = "%", big.mark = " ", decimal.mark = ".", trim = TRUE,
+  ...)
+
+unit_format(accuracy = 1, scale = 1, prefix = "", unit = "m",
+  sep = " ", suffix = paste0(sep, unit), big.mark = " ",
+  decimal.mark = ".", trim = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>accuracy</code></td>
+<td>
+<p>Number to round to, <code>NULL</code> for automatic guess.</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>A scaling factor: <code>x</code> will be multiply by <code>scale</code> before
+formating (useful if the underlying data is on another scale,
+e.g. for computing percentages or thousands).</p>
+</td></tr>
+<tr valign="top"><td><code>prefix, suffix</code></td>
+<td>
+<p>Symbols to display before and after value.</p>
+</td></tr>
+<tr valign="top"><td><code>big.mark</code></td>
+<td>
+<p>Character used between every 3 digits to separate thousands.</p>
+</td></tr>
+<tr valign="top"><td><code>decimal.mark</code></td>
+<td>
+<p>The character to be used to indicate the numeric
+decimal point.</p>
+</td></tr>
+<tr valign="top"><td><code>trim</code></td>
+<td>
+<p>Logical, if <code>FALSE</code>, values are right-justified to a common
+width (see <code><a href="../../base/html/format.html">base::format()</a></code>).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Other arguments passed on to <code><a href="../../base/html/format.html">base::format()</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A numeric vector to format.</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>Deprecated, use <code>accuracy</code> instead.</p>
+</td></tr>
+<tr valign="top"><td><code>unit</code></td>
+<td>
+<p>The units to append.</p>
+</td></tr>
+<tr valign="top"><td><code>sep</code></td>
+<td>
+<p>The separator between the number and the unit label.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>*_format()</code> returns a function with single parameter
+<code>x</code>, a numeric vector, that returns a character vector.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# number()
+v &lt;- c(12.3, 4, 12345.789, 0.0002)
+number(v)
+number(v, big.mark = ",")
+number(v, accuracy = .001)
+number(v, accuracy = .001, decimal.mark = ",")
+number(v, accuracy = .5)
+
+# number_format()
+my_format &lt;- number_format(big.mark = "'", decimal.mark = ",")
+my_format(v)
+
+# comma() and comma_format()
+comma_format()(c(1, 1e3, 2000, 1e6))
+comma_format(accuracy = .01)(c(1, 1e3, 2000, 1e6))
+comma(c(1, 1e3, 2000, 1e6))
+
+# percent() and percent_format()
+percent_format()(runif(10))
+percent(runif(10))
+
+per_mille &lt;- percent_format(
+  scale = 1000,
+  suffix = "\u2030",
+  accuracy = .1
+)
+per_mille(.1234)
+
+french_percent &lt;- percent_format(
+  decimal.mark = ",",
+  suffix = " %"
+)
+french_percent(runif(10))
+
+# unit_format()
+# labels in kilometer when the raw data are in meter
+km &lt;- unit_format(unit = "km", scale = 1e-3, digits = 2)
+km(runif(10) * 1e3)
+
+# labels in hectares, raw data in square meters
+ha &lt;- unit_format(unit = "ha", scale = 1e-4)
+km(runif(10) * 1e5)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>scales</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

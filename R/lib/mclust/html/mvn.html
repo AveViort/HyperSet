@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Univariate or Multivariate Normal Fit</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mvn {mclust}"><tr><td>mvn {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Univariate or Multivariate Normal Fit
+</h2>
+
+<h3>Description</h3>
+
+<p>Computes the mean, covariance, and log-likelihood from fitting a single
+Gaussian to given data (univariate or multivariate normal).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mvn( modelName, data, prior = NULL, warn = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string representing a model name. This can be either
+<code>"Spherical"</code>, <code>"Diagonal"</code>, or <code>"Ellipsoidal"</code> or 
+else <br />
+<code>"X"</code> for one-dimensional data,<br />
+<code>"XII"</code> for a spherical Gaussian, <br />
+<code>"XXI"</code> for a diagonal Gaussian <br />
+<code>"XXX"</code> for a general ellipsoidal Gaussian 
+</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations. Categorical
+variables are not allowed. If a matrix or data frame, rows
+correspond to observations and columns correspond to variables. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>prior</code></td>
+<td>
+
+<p>Specification of a conjugate prior on the means and variances.
+The default assumes no prior.
+</p>
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+
+<p>A logical value indicating whether or not a warning should be issued
+whenever a singularity is encountered.
+The default is given by <code>mclust.options("warn")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>... </code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list including the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string identifying the model (same as the input argument).
+</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+
+<dl>
+<dt><code>mean</code></dt><dd>
+<p>The mean for each component. If there is more than one component,
+this is a matrix whose kth column is the mean of the <em>k</em>th
+component of the mixture model.
+</p>
+</dd>
+<dt><code>variance</code></dt><dd>
+<p>A list of variance parameters for the model.
+The components of this list depend on the model
+specification. See the help file for <code><a href="mclustVariance.html">mclustVariance</a></code>
+for details.
+</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>loglik</code></td>
+<td>
+
+<p>The log likelihood for the data in the mixture model.
+</p>
+</td></tr>
+<tr valign="top"><td><code>Attributes:</code></td>
+<td>
+
+<p><code>"WARNING"</code> An appropriate warning if problems are 
+encountered in the computations.
+</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mvnX.html">mvnX</a></code>,
+<code><a href="mvnX.html">mvnXII</a></code>,
+<code><a href="mvnX.html">mvnXXI</a></code>,
+<code><a href="mvnX.html">mvnXXX</a></code>,
+<code><a href="mclustModelNames.html">mclustModelNames</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+n &lt;- 1000
+
+set.seed(0)
+x &lt;- rnorm(n, mean = -1, sd = 2)
+mvn(modelName = "X", x) 
+
+mu &lt;- c(-1, 0, 1)
+
+set.seed(0)
+x &lt;- sweep(matrix(rnorm(n*3), n, 3) %*% (2*diag(3)), 
+           MARGIN = 2, STATS = mu, FUN = "+")
+mvn(modelName = "XII", x) 
+mvn(modelName = "Spherical", x) 
+
+set.seed(0)
+x &lt;- sweep(matrix(rnorm(n*3), n, 3) %*% diag(1:3), 
+           MARGIN = 2, STATS = mu, FUN = "+")
+mvn(modelName = "XXI", x)
+mvn(modelName = "Diagonal", x)
+
+Sigma &lt;- matrix(c(9,-4,1,-4,9,4,1,4,9), 3, 3)
+set.seed(0)
+x &lt;- sweep(matrix(rnorm(n*3), n, 3) %*% chol(Sigma), 
+           MARGIN = 2, STATS = mu, FUN = "+")
+mvn(modelName = "XXX", x) 
+mvn(modelName = "Ellipsoidal", x) 
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

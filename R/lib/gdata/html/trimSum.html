@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Trim a vector such that the last/first value represents the...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for trimSum {gdata}"><tr><td>trimSum {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Trim a vector such that the last/first value represents the sum of 
+trimmed values</h2>
+
+<h3>Description</h3>
+
+<p><code>trimSum</code> trims (shortens) a vector in such a way that 
+the last or first value represents the sum of trimmed values. User needs
+to specify the desired length of a trimmed vector.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>trimSum(x, n, right=TRUE, na.rm=FALSE, ...)</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>numeric, a vector of numeric values</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>numeric, desired length of the output</p>
+</td></tr>
+<tr valign="top"><td><code>right</code></td>
+<td>
+<p>logical, trim on the right/bottom  or the left/top  side</p>
+</td></tr>
+<tr valign="top"><td><code>na.rm</code></td>
+<td>
+<p>logical, remove <code>NA</code> values when applying a function</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>arguments passed to other methods - currently not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Trimmed vector with a last/first value representing the sum of 
+trimmed values</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gregor Gorjanc</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="trim.html">trim</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+x &lt;- 1:10
+trimSum(x, n=5)
+trimSum(x, n=5, right=FALSE)
+
+x[9] &lt;- NA
+trimSum(x, n=5)
+trimSum(x, n=5, na.rm=TRUE)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

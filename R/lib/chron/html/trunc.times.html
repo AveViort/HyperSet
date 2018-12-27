@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Truncate times Objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for trunc.times {chron}"><tr><td>trunc.times {chron}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Truncate times Objects</h2>
+
+<h3>Description</h3>
+
+<p>Truncate times objects.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'times'
+trunc(x, units = "days", eps = 1e-10, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a <code>"times"</code> object.</p>
+</td></tr>
+<tr valign="top"><td><code>units</code></td>
+<td>
+<p>Can be one of <code>"days"</code>, <code>"hours"</code>, 
+<code>"minutes"</code>, <code>"seconds"</code> or an unambiguous abbreviated
+version of any of those.</p>
+</td></tr>
+<tr valign="top"><td><code>eps</code></td>
+<td>
+<p>Comparison tolerance.  Times are considered equal if their
+absolute difference is less than <code>eps</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments to be passed to or from methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The time is truncated to the second, minute, hour or day or to the
+value specified.
+</p>
+<p>There is also a <code>round</code> method which has the same arguments as
+the <code>trunc</code> method, and performs rounding instead of truncation.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>"times"</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../base/html/Round.html">trunc</a></code> for the generic function and default methods.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tt &lt;- times(c("12:13:14", "15:46:17"))
+trunc(tt, "minutes")
+trunc(tt, "min")
+trunc(tt, times("00:01:00"))
+trunc(tt, "00:01:00")
+trunc(tt, 1/(24*60))
+
+tt2 &lt;- structure(c(3.0, 3.1, 3.5, 3.9), class = "times")
+trunc(tt2, "day")
+trunc(tt2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>chron</em> version 2.3-53 <a href="00Index.html">Index</a>]</div>
+</body></html>

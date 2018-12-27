@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Connectivity components of an undirected graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for con.comp {prabclus}"><tr><td>con.comp {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Connectivity components of an undirected graph</h2>
+
+<h3>Description</h3>
+
+<p>Computes the connectivity components of an undirected graph from a
+matrix giving the edges.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+con.comp(comat)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>comat</code></td>
+<td>
+<p>a symmetric logical or 0-1 matrix, where <code>comat[i,j]=TRUE</code>
+means that there is an edge between vertices <code>i</code> and
+<code>j</code>. The diagonal is ignored.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The &quot;depth-first search&quot; algorithm of Cormen, Leiserson and Rivest
+(1990, p. 477) is used.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An integer vector, giving the number of the connectivity component for
+each vertice.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Cormen, T. H., Leiserson, C. E. and Rivest, R. L. (1990), <em>Introduction
+to Algorithms</em>, Cambridge: MIT Press.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../stats/html/hclust.html">hclust</a></code>, <code><a href="../../stats/html/cutree.html">cutree</a></code> for cutted single linkage
+trees (often equivalent).
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  set.seed(1000)
+  x &lt;- rnorm(20)
+  m &lt;- matrix(0,nrow=20,ncol=20)
+  for(i in 1:20)
+    for(j in 1:20)
+      m[i,j] &lt;- abs(x[i]-x[j])
+  d &lt;- m&lt;0.2
+  cc &lt;- con.comp(d)
+  max(cc) # number of connectivity components
+  plot(x,cc)
+  # The same should be produced by
+  # cutree(hclust(as.dist(m),method="single"),h=0.2).
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

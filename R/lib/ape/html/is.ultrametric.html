@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Test if a Tree is Ultrametric</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for is.ultrametric {ape}"><tr><td>is.ultrametric {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Test if a Tree is Ultrametric</h2>
+
+<h3>Description</h3>
+
+<p>This function tests whether a tree is ultrametric using the distances
+from each tip to the root.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+is.ultrametric(phy, ...)
+## S3 method for class 'phylo'
+is.ultrametric(phy, tol = .Machine$double.eps^0.5, option = 1, ...)
+## S3 method for class 'multiPhylo'
+is.ultrametric(phy, tol = .Machine$double.eps^0.5, option = 1, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code> or <code>"multiPhylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>tol</code></td>
+<td>
+<p>a numeric &gt;= 0, variation below this value are considered
+non-significant.</p>
+</td></tr>
+<tr valign="top"><td><code>option</code></td>
+<td>
+<p>an integer (1 or 2; see details).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>arguments passed among methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The test is based on the distances from each tip to the root and a
+criterion: if <code>option = 1</code>, the criterion is the scaled range
+((max - min/max)), if <code>option = 2</code>, the variance is used (this
+was the method used until ape 3.5). The default criterion is invariant
+to linear changes of the branch lengths.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a logical vector.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="is.binary.tree.html">is.binary</a></code>, <code><a href="../../base/html/.Machine.html">.Machine</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+is.ultrametric(rtree(10))
+is.ultrametric(rcoal(10))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

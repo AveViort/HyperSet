@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Determines the encoding for an XML document or node</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getEncoding {XML}"><tr><td>getEncoding {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Determines the encoding for an XML document or node</h2>
+
+<h3>Description</h3>
+
+<p>This function and its methods are intended to return the
+encoding of n XML .
+It is similar to <code><a href="../../base/html/Encoding.html">Encoding</a></code> but currently
+restricted to  XML nodes and documents.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getEncoding(obj, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>the object whose encoding is being queried.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>any additional parameters which can be customized by the methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A character vector of length 1 giving the encoding of the XML document.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Duncan Temple Lang</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  f = system.file("exampleData", "charts.svg", package = "XML")
+  doc = xmlParse(f)
+  getEncoding(doc)
+  n = getNodeSet(doc, "//g/text")[[1]]
+  getEncoding(n)
+
+  f = system.file("exampleData", "iTunes.plist", package = "XML")
+  doc = xmlParse(f)
+  getEncoding(doc)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

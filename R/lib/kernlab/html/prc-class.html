@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;prc&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for prc-class {kernlab}"><tr><td>prc-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;prc&quot;</h2>
+
+<h3>Description</h3>
+
+<p>Principal Components Class</p>
+
+
+<h3>Objects of class &quot;prc&quot;</h3>
+
+<p>Objects from the class cannot be created directly but only contained
+in other classes.</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>pcv</code>:</dt><dd><p>Object of class <code>"matrix"</code> containing the
+principal component vectors </p>
+</dd>
+<dt><code>eig</code>:</dt><dd><p>Object of class <code>"vector"</code> containing the
+corresponding eigenvalues</p>
+</dd>
+<dt><code>kernelf</code>:</dt><dd><p>Object of class <code>"kfunction"</code> containing
+the kernel function used</p>
+</dd>
+<dt><code>kpar</code>:</dt><dd><p>Object of class <code>"list"</code> containing the
+kernel parameters used </p>
+</dd>
+<dt><code>xmatrix</code>:</dt><dd><p>Object of class <code>"input"</code> containing
+the data matrix used </p>
+</dd>
+<dt><code>kcall</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+function call </p>
+</dd>
+<dt><code>n.action</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+action performed on NA </p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>eig</dt><dd><p><code>signature(object = "prc")</code>: returns the eigenvalues </p>
+</dd>
+<dt>kcall</dt><dd><p><code>signature(object = "prc")</code>: returns the
+performed call</p>
+</dd>
+<dt>kernelf</dt><dd><p><code>signature(object = "prc")</code>: returns the used
+kernel function</p>
+</dd>
+<dt>pcv</dt><dd><p><code>signature(object = "prc")</code>: returns the principal
+component vectors </p>
+</dd>
+<dt>predict</dt><dd><p><code>signature(object = "prc")</code>: embeds new data </p>
+</dd>
+<dt>xmatrix</dt><dd><p><code>signature(object = "prc")</code>: returns the used
+data matrix </p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="kpca-class.html">kpca-class</a></code>,<code><a href="kha-class.html">kha-class</a></code>, <code><a href="kfa-class.html">kfa-class</a></code> 
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

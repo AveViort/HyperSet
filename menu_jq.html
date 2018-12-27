@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jQuery UI Menu - Default functionality</title>
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="menu_jq/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#menu" ).menu();
+  } );
+  </script>
+  <style>
+  .ui-menu { width: 150px; }
+  </style>
+</head>
+<body>
+
+
+ 
+<ul id="menu">
+  <li><div>Help</div>
+    <ul>
+      <li><div id="help-tab-faq">FAQ</div>
+        <ul>
+            <a href="help.html" class="clickable"><span style="float: left; margin-right: 0.5em;">Open as new page</span></a>
+        </ul>
+      </li>
+      <li><div>Demo</div>
+        <ul>
+          <li><div><img src="pics/venn627483358680368.png" alt="Venn" style="width:100%" onclick="myFunction(this);"></div>
+          <div ><img src="pics/_showme.png" alt="showme" style="width:100%" onclick="myFunction(this);"></div>
+          </li>
+        </ul>
+      </li>
+      <li><div>Scenerios</div>
+      <ul>
+        <li>How to Begin?</li>
+        <li> Identification of driver genes <li>
+        <li> Exploration of molecular landscapes <li>
+        <li> Using Venn diagrams </li>
+    </ul>
+  </li>
+</ul>
+<div class="container">
+  <span onclick="this.parentElement.style.display='none'" class="closebtn">&times;</span>
+  <img id="expandedImg" style="width:100%">
+  <div id="imgtext"></div>
+</div>
+
+<script>
+  function myFunction(imgs) {
+    var expandImg = document.getElementById("expandedImg");
+    var imgText = document.getElementById("imgtext");
+    expandImg.src = imgs.src;
+    imgText.innerHTML = imgs.alt;
+    expandImg.parentElement.style.display = "block";
+}
+</script>
+ 
+ 
+</body>
+</html>

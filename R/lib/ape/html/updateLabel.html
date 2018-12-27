@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Update Labels</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for updateLabel {ape}"><tr><td>updateLabel {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Update Labels</h2>
+
+<h3>Description</h3>
+
+<p>This function changes labels (names or rownames) giving two vectors (<code>old</code> and <code>new</code>). It is a generic function with several methods as described below.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+updateLabel(x, old, new, ...)
+## S3 method for class 'character'
+updateLabel(x, old, new, exact = TRUE, ...)
+## S3 method for class 'DNAbin'
+updateLabel(x, old, new, exact = TRUE, ...)
+## S3 method for class 'AAbin'
+updateLabel(x, old, new, exact = TRUE, ...)
+## S3 method for class 'phylo'
+updateLabel(x, old, new, exact = TRUE, nodes = FALSE, ...)
+## S3 method for class 'evonet'
+updateLabel(x, old, new, exact = TRUE, nodes = FALSE, ...)
+## S3 method for class 'data.frame'
+updateLabel(x, old, new, exact = TRUE, ...)
+## S3 method for class 'matrix'
+updateLabel(x, old, new, exact = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object where to change the labels.</p>
+</td></tr>
+<tr valign="top"><td><code>old, new</code></td>
+<td>
+<p>two vectors of mode character (must be of the same length).</p>
+</td></tr>
+<tr valign="top"><td><code>exact</code></td>
+<td>
+<p>a logical value (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>nodes</code></td>
+<td>
+<p>a logical value specifying whether to also update the node labels of the tree or network.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to and from methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function can be used to change some of the labels (see examples) or all of them if their ordering is not sure.
+</p>
+<p>If <code>exact = TRUE</code> (the default), the values in <code>old</code> are matched exactly with the labels; otherwise (<code>exact = FALSE</code>), the values in <code>old</code> are considered as regular expressions and searched in the labels with <code><a href="../../base/html/grep.html">grep</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of the same class than <code>x</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="makeLabel.html">makeLabel</a></code>, <code><a href="makeNodeLabel.html">makeNodeLabel</a></code>,
+<code><a href="mixedFontLabel.html">mixedFontLabel</a></code>, <code><a href="label2table.html">stripLabel</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+## the tree by Nyakatura &amp; Bininda-Emonds (2012, BMC Biology)
+x &lt;- "https://static-content.springer.com/esm/art"
+y &lt;- "3A10.1186"
+z &lt;- "2F1741-7007-10-12/MediaObjects/12915_2011_534_MOESM5_ESM.NEX"
+## The commande below may not print correctly in HTML because of the
+## percentage symbol; see the text or PDF help page.
+url &lt;- paste(x, y, z, sep = "
+TC &lt;- read.nexus(url)
+tr &lt;- TC$carnivoreST_bestEstimate
+old &lt;- c("Uncia_uncia", "Felis_manul", "Leopardus_jacobitus")
+new &lt;- c("Panthera_uncia", "Otocolobus_manul", "Leopardus_jacobita")
+tr.updated &lt;- updateLabel(tr, old, new)
+
+## End(Not run)
+
+tr &lt;- rtree(6)
+## the order of the labels are randomized by this function
+old &lt;- paste0("t", 1:6)
+new &lt;- paste0("x", 1:6)
+updateLabel(tr, old, new)
+tr
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

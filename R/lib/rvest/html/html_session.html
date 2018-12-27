@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Simulate a session in an html browser.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for html_session {rvest}"><tr><td>html_session {rvest}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Simulate a session in an html browser.</h2>
+
+<h3>Description</h3>
+
+<p>Simulate a session in an html browser.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+html_session(url, ...)
+
+is.session(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>url</code></td>
+<td>
+<p>Location to start session</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Any additional httr config to use throughout session.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object to test to see if it's a session.</p>
+</td></tr>
+</table>
+
+
+<h3>Methods</h3>
+
+<p>A session object responds to a combination of httr and html methods:
+use <code><a href="../../httr/html/cookies.html">cookies</a>()</code>, <code><a href="../../httr/html/headers.html">headers</a>()</code>,
+and <code><a href="../../httr/html/status_code.html">status_code</a>()</code> to access properties of the request;
+and <code><a href="html_nodes.html">html_nodes</a></code> to access the html.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# http://stackoverflow.com/questions/15853204
+
+s &lt;- html_session("http://hadley.nz")
+s %&gt;% jump_to("hadley-wickham.jpg") %&gt;% jump_to("/") %&gt;% session_history()
+s %&gt;% jump_to("hadley-wickham.jpg") %&gt;% back() %&gt;% session_history()
+
+s %&gt;% follow_link(css = "p a")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rvest</em> version 0.3.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

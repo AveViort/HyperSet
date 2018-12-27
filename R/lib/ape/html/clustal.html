@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Multiple Sequence Alignment with External Applications</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for clustal {ape}"><tr><td>clustal {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Multiple Sequence Alignment with External Applications</h2>
+
+<h3>Description</h3>
+
+<p>These functions call their respective program from <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> to align a set
+of nucleotide sequences of class <code>"DNAbin"</code> or
+<code>"AAbin"</code>. The application(s) must be installed seperately and it
+is highly recommended to do this so that the executables are in a
+directory located on the PATH of the system.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+clustal(x, y, guide.tree, pw.gapopen = 10, pw.gapext = 0.1,
+        gapopen = 10, gapext = 0.2, exec = NULL, MoreArgs = "",
+        quiet = TRUE, original.ordering = TRUE, file)
+clustalomega(x, y, guide.tree, exec = NULL,MoreArgs = "",
+              quiet = TRUE, original.ordering = TRUE, file)
+muscle(x, y, guide.tree, exec, MoreArgs = "",
+        quiet = TRUE, original.ordering = TRUE, file)
+tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
+        original.ordering = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>"DNAbin"</code> or <code>"AAbin"</code> (can be
+missing).</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>an object of class <code>"DNAbin"</code> or <code>"AAbin"</code> used for
+profile alignment (can be missing).</p>
+</td></tr>
+<tr valign="top"><td><code>guide.tree</code></td>
+<td>
+<p>guide tree, an object of class <code>"phylo"</code> (can
+be missing).</p>
+</td></tr>
+<tr valign="top"><td><code>pw.gapopen, pw.gapext</code></td>
+<td>
+<p>gap opening and gap extension penalties
+used by Clustal during pairwise alignments.</p>
+</td></tr>
+<tr valign="top"><td><code>gapopen, gapext</code></td>
+<td>
+<p>idem for global alignment.</p>
+</td></tr>
+<tr valign="top"><td><code>exec</code></td>
+<td>
+<p>a character string giving the name of the program, with
+its path if necessary. <code>clustal</code> tries to guess this argument
+depending on the operating system (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>MoreArgs</code></td>
+<td>
+<p>a character string giving additional options.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>a logical: the default is to not print on <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>'s console the
+messages from the external program.</p>
+</td></tr>
+<tr valign="top"><td><code>original.ordering</code></td>
+<td>
+<p>a logical specifying whether to return the
+aligned sequences in the same order than in <code>x</code> (<code>TRUE</code> by
+default).</p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a file with its path if results should be stored (can be
+missing).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>It is highly recommended to install the executables properly so that
+they are in a directory located on the PATH (i.e., accessible from any
+other directory). Alternatively, the full path to the executable
+may be given (e.g., <code>exec = "~/muscle/muscle"</code>), or a (symbolic)
+link may be copied in the working directory. For Debian and its
+derivatives (e.g., Ubuntu), it is recommended to use the binaries
+distributed by Debian.
+</p>
+<p><code>clustal</code> tries to guess the name of the executable program
+depending on the operating system. Specifically, the followings are
+used: &ldquo;clustalw&rdquo; under Linux, &ldquo;clustalw2&rdquo; under MacOS, and
+&ldquo;clustalw2.exe&rdquo; under Windows. For <code>clustalomega</code>,
+&ldquo;clustalo[.exe]&rdquo; is the default on all systems (with no specific
+path).
+</p>
+<p>When called without arguments (i.e., <code>clustal()</code>, ...), the
+function prints the options of the program which may be passed to
+<code>MoreArgs</code>.
+</p>
+<p>Since <span class="pkg">ape</span> 5.1, <code>clustal</code>, <code>clustalomega</code>, and
+<code>muscle</code> can align AA sequences as well as DNA sequences.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"DNAbin"</code> or <code>"AAbin"</code> with the aligned
+sequences.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>References</h3>
+
+<p>Chenna, R., Sugawara, H., Koike, T., Lopez, R., Gibson, T. J.,
+Higgins, D. G. and Thompson, J. D. (2003) Multiple sequence alignment
+with the Clustal series of programs. <em>Nucleic Acids Research</em>
+<b>31</b>, 3497&ndash;3500. <a href="http://www.clustal.org/">http://www.clustal.org/</a>
+</p>
+<p>Edgar, R. C. (2004) MUSCLE: Multiple sequence alignment with high
+accuracy and high throughput. <em>Nucleic Acids Research</em>,
+<b>32</b>, 1792&ndash;1797.
+<a href="http://www.drive5.com/muscle/muscle_userguide3.8.html">http://www.drive5.com/muscle/muscle_userguide3.8.html</a>
+</p>
+<p>Notredame, C., Higgins, D. and Heringa, J. (2000) T-Coffee: A novel
+method for multiple sequence alignments. <em>Journal of Molecular
+Biology</em>, <b>302</b>, 205&ndash;217.
+<a href="http://www.tcoffee.org/">http://www.tcoffee.org/</a>
+</p>
+<p>Sievers, F., Wilm, A., Dineen, D., Gibson, T. J., Karplus, K., Li, W.,
+Lopez, R., McWilliam, H., Remmert, M., S\&quot;oding, J., Thompson,
+J. D. and Higgins, D. G. (2011) Fast, scalable generation of
+high-quality protein multiple sequence alignments using Clustal
+Omega. <em>Molecular Systems Biology</em>, <b>7</b>, 539.
+<a href="http://www.clustal.org/">http://www.clustal.org/</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="image.DNAbin.html">image.DNAbin</a></code>, <code><a href="del.gaps.html">del.gaps</a></code>,
+<code><a href="all.equal.DNAbin.html">all.equal.DNAbin</a></code>, <code><a href="alex.html">alex</a></code>,
+<code><a href="alview.html">alview</a></code>, <code><a href="checkAlignment.html">checkAlignment</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+### display the options:
+clustal()
+clustalomega()
+muscle()
+tcoffee()
+
+data(woodmouse)
+### open gaps more easily:
+clustal(woodmouse, pw.gapopen = 1, pw.gapext = 1)
+### T-Coffee requires negative values (quite slow; muscle() is much faster):
+tcoffee(woodmouse,  MoreArgs = "-gapopen=-10 -gapext=-2")
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Using the Concorde TSP Solver</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Concorde {TSP}"><tr><td>Concorde {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Using the Concorde TSP Solver</h2>
+
+<h3>Description</h3>
+
+<p>The Concorde TSP Solver package contains several solvers.
+Currently, interfaces to
+the Concorde solver (Applegate et al. 2001), one of the most
+advanced and fastest TSP solvers using branch-and-cut, and
+the Chained Lin-Kernighan (Applegate et al. 2003)
+implementation are provided in <span class="pkg">TSP</span>.
+</p>
+<p>The Concorde TSP Solver package is freely available for academic
+research and has to
+be obtained separately from the Concorde web site (see details).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## set path for executables
+concorde_path(path)
+
+## obtain a list of command line options for the solvers
+concorde_help()
+linkern_help()
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p> a character string with the path to the directory where
+the executables are installed. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The code of the Concorde TSP package is not included in this package and has to
+be obtained separately from the Concorde web site (see references).  Either
+download the precompiled executables and place them in a suitable directory
+and make them executable, or you can get the source code and compile it on your
+own. <span class="pkg">TSP</span> needs to know where the executables are. There are two options:
+(1) use <code>concorde_path()</code> to set the path to the directory  containing the
+executables for concorde and linkern, or (2) make sure that the executables are
+in the search path stored in the <code>PATH</code> environment variable
+(see <code>link{Sys.setenv}</code>).
+</p>
+<p>To get a list of all available command line options which can be used via the
+<code>clo</code> option for <code>solve_TSP</code> use <code>concorde_help()</code> and
+<code>linkern_help()</code>.  Several options (<span class="option">-x</span>, <span class="option">-o</span>,
+<span class="option">-N</span>,  <span class="option">-Q</span>) are not available via <code>solve_TSP</code> since they
+are used by the interface.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Concorde home page,
+<a href="http://www.math.uwaterloo.ca/tsp/concorde/">http://www.math.uwaterloo.ca/tsp/concorde/</a>
+</p>
+<p>Concorde download page,
+<a href="http://www.math.uwaterloo.ca/tsp/concorde/downloads/downloads.htm">http://www.math.uwaterloo.ca/tsp/concorde/downloads/downloads.htm</a>
+</p>
+<p>David Appletgate, Robert Bixby, Vasek Chvatal, William Cook (2001):
+TSP cuts which do not conform to the template paradigm,
+Computational Combinatorial Optimization, M. Junger and D. Naddef (editors),
+Springer.
+</p>
+<p>David Applegate and William Cook and Andre Rohe (2003):
+Chained Lin-Kernighan for Large Traveling Salesman Problems,
+<em>INFORMS Journal on Computing</em>, <b>15</b>, 82&ndash;92.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="solve_TSP.html">solve_TSP</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+## see if Concorde is correctly installed
+concorde_path()
+
+
+## set path to the Concorde executible if it is not in the search PATH
+## Example:
+## concorde_path("~/concorde/")
+
+concorde_help()
+
+data("USCA312")
+
+## run concorde only with fast cuts (-V)
+solve_TSP(USCA312, method = "concorde", control = list(clo = "-V"))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

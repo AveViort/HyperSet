@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tribolium Beetles</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tribolium {flexmix}"><tr><td>tribolium {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Tribolium Beetles</h2>
+
+<h3>Description</h3>
+
+<p>The data investigates whether the adult Tribolium species Castaneum has
+developed an evolutionary advantage to recognize and avoid eggs of
+their own species while foraging.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("tribolium")</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 27 observations on the following 4 variables.
+</p>
+
+<dl>
+<dt><code>Remaining</code></dt><dd><p>A numeric vector.</p>
+</dd>
+<dt><code>Total</code></dt><dd><p>A numeric vector.</p>
+</dd>
+<dt><code>Replicate</code></dt><dd><p>A factor with levels <code>1</code>, <code>2</code>, <code>3</code>.</p>
+</dd>
+<dt><code>Species</code></dt><dd><p>A factor with levels <code>Castaneum</code> <code>Confusum</code> <code>Madens</code>.</p>
+</dd>
+</dl>
+
+
+
+<h3>Details</h3>
+
+<p>Beetles of the genus Tribolium are cannibalistic in the sense that
+adults eat the eggs of their own species as well as those of closely
+related species. The experiment isolated a number of adult beetles of
+the same species and presented them with a vial of 150 eggs (50 of
+each type), the eggs being thoroughly mixed to ensure uniformity
+throughout the vial.
+</p>
+<p>The data gives the consumption data for adult Castaneum species. It
+reports the number of Castaneum, Confusum and Madens eggs,
+respectively, that remain uneaten after two day exposure to the adult
+beetles. Replicates 1, 2, and 3 correspond to different occasions on
+which the experiment was conducted.
+</p>
+
+
+<h3>Source</h3>
+
+<p>P. Wang and M.L. Puterman. Mixed Logistic Regression Models.
+<em>Journal of Agricultural, Biological, and Environmental Statistics</em>, <b>3</b>
+(2), 175&ndash;200, 1998.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("tribolium", package = "flexmix")
+tribMix &lt;- initFlexmix(cbind(Remaining, Total - Remaining) ~ Species, 
+                   k = 2, nrep = 5, data = tribolium,
+                   model = FLXMRglm(family = "binomial"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

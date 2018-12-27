@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Multiple regression through the origin</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lmorigin {ape}"><tr><td>lmorigin {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Multiple regression through the origin </h2>
+
+<h3>Description</h3>
+
+<p>Function <code><a href="lmorigin.html">lmorigin</a></code> computes a multiple linear regression and performs tests of significance of the equation parameters (F-test of R-square and t-tests of regression coefficients) using permutations.
+</p>
+<p>The regression line can be forced through the origin. Testing the significance in that case requires a special permutation procedure. This option was developed for the analysis of independent contrasts, which requires regression through the origin. A permutation test, described by Legendre &amp; Desdevises (2009), is needed to analyze contrasts that are not normally distributed.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+lmorigin(formula, data, origin=TRUE, nperm=999, method=NULL, silent=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula </code></td>
+<td>
+<p> A formula specifying the bivariate model, as in
+<code><a href="../../stats/html/lm.html">lm</a></code> and <code><a href="../../stats/html/aov.html">aov</a></code>. </p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p> A data frame containing the two variables specified in the formula. </p>
+</td></tr>
+<tr valign="top"><td><code>origin</code></td>
+<td>
+ <p><code>origin = TRUE</code> (default) to compute regression through the origin; <code>origin = FALSE</code> to compute multiple regression with estimation of the intercept. </p>
+</td></tr>
+<tr valign="top"><td><code>nperm</code></td>
+<td>
+<p> Number of permutations for the tests. If <code>nperm =
+   0</code>, permutation tests will not be computed. The default value is <code>nperm = 999</code>. For large data files, the permutation test is rather slow since the permutation procedure is not compiled. </p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+ <p><code>method = "raw"</code> computes t-tests of the regression coefficients by permutation of the raw data. <code>method = "residuals"</code> computes t-tests of the regression coefficients by permutation of the residuals of the full model. If <code>method = NULL</code>, permutation of the raw data is used to test the regression coefficients in regression through the origin; permutation of the residuals of the full model is used to test the regression coefficients in ordinary multiple regression. </p>
+</td></tr>
+<tr valign="top"><td><code>silent</code></td>
+<td>
+<p> Informative messages and the time to compute the tests will not be written to the <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> console if silent=TRUE. Useful when the function is called by a numerical simulation function. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The permutation F-test of R-square is always done by permutation of the raw data. When there is a single explanatory variable, permutation of the raw data is used for the t-test of the single regression coefficient, whatever the method chosen by the user. The rationale is found in Anderson &amp; Legendre (1999).
+</p>
+<p>The <code>print.lmorigin</code> function prints out the results of the parametric tests (in all cases) and the results of the permutational tests (when nperm &gt; 0).
+</p>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>reg </code></td>
+<td>
+<p>The regression output object produced by function <code>lm</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>p.param.t.2tail </code></td>
+<td>
+<p>Parametric probabilities for 2-tailed tests of the regression coefficients. </p>
+</td></tr>
+<tr valign="top"><td><code>p.param.t.1tail </code></td>
+<td>
+<p>Parametric probabilities for 1-tailed tests of the regression coefficients. Each test is carried out in the direction of the sign of the coefficient. </p>
+</td></tr>
+<tr valign="top"><td><code>p.perm.t.2tail </code></td>
+<td>
+<p>Permutational probabilities for 2-tailed tests of the regression coefficients. </p>
+</td></tr>
+<tr valign="top"><td><code>p.perm.t.1tail </code></td>
+<td>
+<p>Permutational probabilities for 1-tailed tests of the regression coefficients. Each test is carried out in the direction of the sign of the coefficient. </p>
+</td></tr>
+<tr valign="top"><td><code>p.perm.F </code></td>
+<td>
+<p>Permutational probability for the F-test of R-square. </p>
+</td></tr>
+<tr valign="top"><td><code>origin </code></td>
+<td>
+<p>TRUE is regression through the origin has been computed, FALSE if multiple regression with estimation of the intercept has been used. </p>
+</td></tr>
+<tr valign="top"><td><code>nperm </code></td>
+<td>
+<p>Number of permutations used in the permutation tests. </p>
+</td></tr>
+<tr valign="top"><td><code>method </code></td>
+<td>
+<p>Permutation method for the t-tests of the regression coefficients: <code>method = "raw"</code> or <code>method = "residuals"</code>.  </p>
+</td></tr>
+<tr valign="top"><td><code>var.names </code></td>
+<td>
+<p>Vector containing the names of the variables used in the regression. </p>
+</td></tr>
+<tr valign="top"><td><code>call </code></td>
+<td>
+<p>The function call.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p> Pierre Legendre, Universite de Montreal </p>
+
+
+<h3>References</h3>
+
+<p>Anderson, M. J. and Legendre, P. (1999) An empirical comparison of permutation methods for tests of partial regression coefficients in a linear model. <em>Journal of Statistical Computation and Simulation</em>, <b>62</b>, 271&ndash;303.
+</p>
+<p>Legendre, P. and Desdevises, Y. (2009) Independent contrasts and regression through the origin. <em>Journal of Theoretical Biology</em>, <b>259</b>, 727&ndash;743.
+</p>
+<p>Sokal, R. R. and Rohlf, F. J. (1995) <em>Biometry - The principles and
+practice of statistics in biological research. Third edition.</em> New
+York: W. H. Freeman.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Example 1 from Sokal &amp; Rohlf (1995) Table 16.1
+## SO2 air pollution in 41 cities of the USA
+data(lmorigin.ex1)
+out &lt;- lmorigin(SO2 ~ ., data=lmorigin.ex1, origin=FALSE, nperm=99)
+out
+
+## Example 2: Contrasts computed on the phylogenetic tree of Lamellodiscus
+## parasites. Response variable: non-specificity index (NSI); explanatory
+## variable: maximum host size. Data from Table 1 of Legendre &amp; Desdevises
+## (2009).
+data(lmorigin.ex2)
+out &lt;- lmorigin(NSI ~ MaxHostSize, data=lmorigin.ex2, origin=TRUE, nperm=99)
+out
+
+## Example 3: random numbers
+y &lt;- rnorm(50)
+X &lt;- as.data.frame(matrix(rnorm(250),50,5))
+out &lt;- lmorigin(y ~ ., data=X, origin=FALSE, nperm=99)
+out
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

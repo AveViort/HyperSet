@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert mixture component covariances to decomposition form.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sigma2decomp {mclust}"><tr><td>sigma2decomp {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Convert mixture component covariances to decomposition form.
+</h2>
+
+<h3>Description</h3>
+
+<p>Converts a set of covariance matrices from representation as a 3-D array 
+to a parameterization by eigenvalue decomposition.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sigma2decomp(sigma, G = NULL, tol = sqrt(.Machine$double.eps), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>sigma</code></td>
+<td>
+
+<p>Either a 3-D array whose [,,k]th component is the covariance matrix for the
+kth component in an MVN mixture model, or a single covariance
+matrix in the case that all components have the same covariance.
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>The number of components in the mixture. When 
+<code>sigma</code> is a 3-D array, the number of components
+can be inferred from its dimensions.
+</p>
+</td></tr>
+<tr valign="top"><td><code>tol</code></td>
+<td>
+
+<p>Tolerance for determining whether or not the covariances have equal volume,
+shape, and or orientation. The default is the square root of the relative
+machine precision, <code>sqrt(.Machine$double.eps)</code>, which is about 
+<code>1.e-8</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Catches unused arguments from an indirect or list call via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The covariance matrices for the mixture components in decomposition form,
+including the following components: 
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string indicating the infered model. The help file for
+<code><a href="mclustModelNames.html">mclustModelNames</a></code> describes the available models.
+</p>
+</td></tr>
+<tr valign="top"><td><code>d</code></td>
+<td>
+
+<p>The dimension of the data. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>The number of components in the mixture model. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+
+<p>Either a <em>G</em>-vector giving the scale of the covariance (the
+<em>d</em>th root of its determinant) for each component in the
+mixture model, or a single numeric value if the scale is the same
+for each component.
+</p>
+</td></tr>
+<tr valign="top"><td><code>shape</code></td>
+<td>
+
+<p>Either a <em>G</em> by <em>d</em> matrix in which the <em>k</em>th
+column is the shape of the covariance matrix (normalized to have
+determinant 1) for the <em>k</em>th component, or a <em>d</em>-vector
+giving a common shape for all components. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>orientation</code></td>
+<td>
+
+<p>Either a <em>d</em> by <em>d</em> by <em>G</em> array whose
+<code>[,,k]</code>th entry is the orthonomal matrix whose columns are the
+eigenvectors of the covariance matrix of the <em>k</em>th component,
+or a <em>d</em> by <em>d</em> orthonormal matrix if the mixture
+components have a common orientation. The <code>orientation</code> component of
+<code>decomp</code> can be omitted in spherical and diagonal models, for
+which the principal components are parallel to the coordinate axes
+so that the orientation matrix is the identity.  
+</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="decomp2sigma.html">decomp2sigma</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+meEst &lt;- meEEE(iris[,-5], unmap(iris[,5])) 
+names(meEst$parameters$variance)
+meEst$parameters$variance$Sigma
+
+sigma2decomp(meEst$parameters$variance$Sigma, G = length(unique(iris[,5])))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

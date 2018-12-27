@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Render tags into HTML</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for renderTags {htmltools}"><tr><td>renderTags {htmltools}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Render tags into HTML</h2>
+
+<h3>Description</h3>
+
+<p>Renders tags (and objects that can be converted into tags using
+<code><a href="as.tags.html">as.tags</a></code>) into HTML. (Generally intended to be called from web
+framework libraries, not directly by most users&ndash;see
+<code><a href="print.html.html">print.html</a>(browse=TRUE)</code> for higher level rendering.)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+renderTags(x, singletons = character(0), indent = 0)
+
+doRenderTags(x, indent = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Tag object(s) to render</p>
+</td></tr>
+<tr valign="top"><td><code>singletons</code></td>
+<td>
+<p>A list of <a href="singleton.html">singleton</a> signatures to consider already
+rendered; any matching singletons will be dropped instead of rendered.
+(This is useful (only?) for incremental rendering.)</p>
+</td></tr>
+<tr valign="top"><td><code>indent</code></td>
+<td>
+<p>Initial indent level, or <code>FALSE</code> if no indentation should
+be used.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>doRenderTags</code> is intended for very low-level use; it ignores
+singleton, head, and dependency handling, and simply renders the given tag
+objects as HTML.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>renderTags</code> returns a list with the following variables:
+</p>
+
+<dl>
+<dt><code>head</code></dt><dd><p>An <code><a href="HTML.html">HTML</a></code> string that should be included in
+<code>&lt;head&gt;</code>.
+</p>
+</dd>
+<dt><code>singletons</code></dt><dd><p>Character vector of singleton signatures that are
+known after rendering.
+</p>
+</dd>
+<dt><code>dependencies</code></dt><dd><p>A list of <a href="resolveDependencies.html">resolved</a>
+<code><a href="htmlDependency.html">htmlDependency</a></code> objects.
+</p>
+</dd>
+<dt><code>html</code></dt><dd><p>An <code><a href="HTML.html">HTML</a></code> string that represents the main
+HTML that was rendered.
+</p>
+</dd>
+</dl>
+
+<p><code>doRenderTags</code> returns a simple <code><a href="HTML.html">HTML</a></code> string.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>htmltools</em> version 0.3.6 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a non-reactive scope for an expression</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for isolate {shiny}"><tr><td>isolate {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a non-reactive scope for an expression</h2>
+
+<h3>Description</h3>
+
+<p>Executes the given expression in a scope where reactive values or expression
+can be read, but they cannot cause the reactive scope of the caller to be
+re-evaluated when they change.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+isolate(expr)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>An expression that can access reactive values or expressions.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Ordinarily, the simple act of reading a reactive value causes a relationship
+to be established between the caller and the reactive value, where a change
+to the reactive value will cause the caller to re-execute. (The same applies
+for the act of getting a reactive expression's value.) The <code>isolate</code>
+function lets you read a reactive value or expression without establishing this
+relationship.
+</p>
+<p>The expression given to <code>isolate()</code> is evaluated in the calling
+environment. This means that if you assign a variable inside the
+<code>isolate()</code>, its value will be visible outside of the <code>isolate()</code>.
+If you want to avoid this, you can use <code><a href="../../base/html/local.html">local</a>()</code> inside the
+<code>isolate()</code>.
+</p>
+<p>This function can also be useful for calling reactive expression at the
+console, which can be useful for debugging. To do so, simply wrap the
+calls to the reactive expression with <code>isolate()</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+observe({
+  input$saveButton  # Do take a dependency on input$saveButton
+
+  # isolate a simple expression
+  data &lt;- get(isolate(input$dataset))  # No dependency on input$dataset
+  writeToDatabase(data)
+})
+
+observe({
+  input$saveButton  # Do take a dependency on input$saveButton
+
+  # isolate a whole block
+  data &lt;- isolate({
+    a &lt;- input$valueA   # No dependency on input$valueA or input$valueB
+    b &lt;- input$valueB
+    c(a=a, b=b)
+  })
+  writeToDatabase(data)
+})
+
+observe({
+  x &lt;- 1
+  # x outside of isolate() is affected
+  isolate(x &lt;- 2)
+  print(x) # 2
+
+  y &lt;- 1
+  # Use local() to avoid affecting calling environment
+  isolate(local(y &lt;- 2))
+  print(y) # 1
+})
+
+
+## End(Not run)
+
+# Can also use isolate to call reactive expressions from the R console
+values &lt;- reactiveValues(A=1)
+fun &lt;- reactive({ as.character(values$A) })
+isolate(fun())
+# "1"
+
+# isolate also works if the reactive expression accesses values from the
+# input object, like input$x
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

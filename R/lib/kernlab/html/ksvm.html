@@ -1,0 +1,555 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Support Vector Machines</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ksvm {kernlab}"><tr><td>ksvm {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Support Vector Machines</h2>
+
+<h3>Description</h3>
+
+<p>Support Vector Machines are an excellent tool for classification, 
+novelty detection, and regression. <code>ksvm</code> supports the 
+well known C-svc, nu-svc, (classification) one-class-svc (novelty)
+eps-svr, nu-svr (regression) formulations along with 
+native multi-class classification formulations and 
+the bound-constraint SVM formulations.<br />
+<code>ksvm</code> also supports class-probabilities output and 
+confidence intervals for regression.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'formula'
+ksvm(x, data = NULL, ..., subset, na.action = na.omit, scaled = TRUE)
+
+## S4 method for signature 'vector'
+ksvm(x, ...)
+
+## S4 method for signature 'matrix'
+ksvm(x, y = NULL, scaled = TRUE, type = NULL,
+     kernel ="rbfdot", kpar = "automatic",
+     C = 1, nu = 0.2, epsilon = 0.1, prob.model = FALSE,
+     class.weights = NULL, cross = 0, fit = TRUE, cache = 40,
+     tol = 0.001, shrinking = TRUE, ..., 
+     subset, na.action = na.omit)
+
+## S4 method for signature 'kernelMatrix'
+ksvm(x, y = NULL, type = NULL,
+     C = 1, nu = 0.2, epsilon = 0.1, prob.model = FALSE,
+     class.weights = NULL, cross = 0, fit = TRUE, cache = 40,
+     tol = 0.001, shrinking = TRUE, ...)
+
+## S4 method for signature 'list'
+ksvm(x, y = NULL, type = NULL,
+     kernel = "stringdot", kpar = list(length = 4, lambda = 0.5),
+     C = 1, nu = 0.2, epsilon = 0.1, prob.model = FALSE,
+     class.weights = NULL, cross = 0, fit = TRUE, cache = 40,
+     tol = 0.001, shrinking = TRUE, ...,
+     na.action = na.omit)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a symbolic description of the model to be fit.  When not
+using a formula x can be a matrix or vector containing the training
+data 
+or a kernel matrix of class <code>kernelMatrix</code> of the training data
+or a list of character vectors (for use with the string
+kernel). Note, that the intercept is always excluded, whether
+given in the formula or not.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>an optional data frame containing the training data, when using a formula.
+By default the data is taken from the environment which
+&lsquo;ksvm&rsquo; is called from.</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>a response vector with one label for each row/component of <code>x</code>. Can be either
+a factor (for classification tasks) or a numeric vector (for
+regression).</p>
+</td></tr>
+<tr valign="top"><td><code>scaled</code></td>
+<td>
+<p>A logical vector indicating the variables to be
+scaled. If <code>scaled</code> is of length 1, the value is recycled as
+many times as needed and all non-binary variables are scaled.
+Per default, data are scaled internally (both <code>x</code> and <code>y</code>
+variables) to zero mean and unit variance. The center and scale
+values are returned and used for later predictions.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p><code>ksvm</code> can be used for classification
+, for regression, or for novelty detection.
+Depending on whether <code>y</code> is
+a factor or not, the default setting for <code>type</code> is <code>C-svc</code>
+or <code>eps-svr</code>,
+respectively, but can be overwritten by setting an explicit value.<br />
+Valid options are:
+</p>
+
+<ul>
+<li> <p><code>C-svc</code>   C classification
+</p>
+</li>
+<li> <p><code>nu-svc</code>  nu classification
+</p>
+</li>
+<li> <p><code>C-bsvc</code>  bound-constraint svm classification
+</p>
+</li>
+<li> <p><code>spoc-svc</code>  Crammer, Singer native multi-class
+</p>
+</li>
+<li> <p><code>kbb-svc</code>  Weston, Watkins native multi-class
+</p>
+</li>
+<li> <p><code>one-svc</code>  novelty detection
+</p>
+</li>
+<li> <p><code>eps-svr</code>  epsilon regression
+</p>
+</li>
+<li> <p><code>nu-svr</code>   nu regression
+</p>
+</li>
+<li> <p><code>eps-bsvr</code>  bound-constraint svm regression
+</p>
+</li></ul>
+
+</td></tr>
+<tr valign="top"><td><code>kernel</code></td>
+<td>
+<p>the kernel function used in training and predicting.
+This parameter can be set to any function, of class kernel, which
+computes the inner product in feature space between two
+vector arguments (see <code><a href="dots.html">kernels</a></code>). <br />
+kernlab provides the most popular kernel functions
+which can be used by setting the kernel parameter to the following
+strings:
+</p>
+
+<ul>
+<li> <p><code>rbfdot</code> Radial Basis kernel &quot;Gaussian&quot;
+</p>
+</li>
+<li> <p><code>polydot</code> Polynomial kernel
+</p>
+</li>
+<li> <p><code>vanilladot</code> Linear kernel 
+</p>
+</li>
+<li> <p><code>tanhdot</code> Hyperbolic tangent kernel 
+</p>
+</li>
+<li> <p><code>laplacedot</code> Laplacian kernel 
+</p>
+</li>
+<li> <p><code>besseldot</code> Bessel kernel 
+</p>
+</li>
+<li> <p><code>anovadot</code> ANOVA RBF kernel 
+</p>
+</li>
+<li> <p><code>splinedot</code> Spline kernel 
+</p>
+</li>
+<li> <p><code>stringdot</code> String kernel 
+</p>
+</li></ul>
+
+<p>Setting the kernel parameter to &quot;matrix&quot; treats <code>x</code> as a kernel
+matrix calling the <code>kernelMatrix</code> interface.<br />
+</p>
+<p>The kernel parameter can also be set to a user defined function of
+class kernel by passing the function name as an argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>the list of hyper-parameters (kernel parameters).
+This is a list which contains the parameters to be used with the
+kernel function. For valid parameters for existing kernels are :
+</p>
+
+<ul>
+<li> <p><code>sigma</code> inverse kernel width for the Radial Basis
+kernel function &quot;rbfdot&quot; and the Laplacian kernel &quot;laplacedot&quot;.
+</p>
+</li>
+<li> <p><code>degree, scale, offset</code> for the Polynomial kernel &quot;polydot&quot;
+</p>
+</li>
+<li> <p><code>scale, offset</code> for the Hyperbolic tangent kernel
+function &quot;tanhdot&quot;
+</p>
+</li>
+<li> <p><code>sigma, order, degree</code> for the Bessel kernel &quot;besseldot&quot;. 
+</p>
+</li>
+<li> <p><code>sigma, degree</code> for the ANOVA kernel &quot;anovadot&quot;.
+</p>
+</li>
+<li> <p><code>length, lambda, normalized</code> for the &quot;stringdot&quot; kernel
+where length is the length of the strings considered, lambda the
+decay factor and normalized a logical parameter determining if the
+kernel evaluations should be normalized.
+</p>
+</li></ul>
+
+<p>Hyper-parameters for user defined kernels can be passed through the
+kpar parameter as well. In the case of a Radial Basis kernel function (Gaussian)
+kpar can also be set to the string &quot;automatic&quot; which uses the heuristics in 
+<code><a href="sigest.html">sigest</a></code> to calculate a good <code>sigma</code> value for the
+Gaussian RBF or Laplace kernel, from the data.
+(default = &quot;automatic&quot;).</p>
+</td></tr>
+<tr valign="top"><td><code>C</code></td>
+<td>
+<p>cost of constraints violation (default: 1) this is the
+&lsquo;C&rsquo;-constant of the regularization term in the Lagrange
+formulation.</p>
+</td></tr>
+<tr valign="top"><td><code>nu</code></td>
+<td>
+<p>parameter needed for <code>nu-svc</code>,
+<code>one-svc</code>, and <code>nu-svr</code>. The <code>nu</code>
+parameter sets the upper bound on the training error and the lower
+bound on the fraction of data points to become Support Vectors (default: 0.2).</p>
+</td></tr>
+<tr valign="top"><td><code>epsilon</code></td>
+<td>
+<p>epsilon in the insensitive-loss function used for
+<code>eps-svr</code>, <code>nu-svr</code> and <code>eps-bsvm</code> (default: 0.1)</p>
+</td></tr>
+<tr valign="top"><td><code>prob.model</code></td>
+<td>
+<p>if set to <code>TRUE</code> builds a model for calculating class
+probabilities or in case of regression, calculates the scaling
+parameter of the Laplacian distribution fitted on the residuals.
+Fitting is done  on output data created by performing a
+3-fold cross-validation on the training data. For details see
+references. (default: <code>FALSE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>class.weights</code></td>
+<td>
+<p>a named vector of weights for the different
+classes, used for asymmetric class sizes. Not all factor levels have
+to be supplied (default weight: 1). All components have to be named.</p>
+</td></tr>
+<tr valign="top"><td><code>cache</code></td>
+<td>
+<p>cache memory in MB (default 40)</p>
+</td></tr>
+<tr valign="top"><td><code>tol</code></td>
+<td>
+<p>tolerance of termination criterion (default: 0.001)</p>
+</td></tr>
+<tr valign="top"><td><code>shrinking</code></td>
+<td>
+<p>option whether to use the shrinking-heuristics
+(default: <code>TRUE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>cross</code></td>
+<td>
+<p>if a integer value k&gt;0 is specified, a k-fold cross
+validation on the training data is performed to assess the quality
+of the model: the accuracy rate for classification and the Mean
+Squared Error for regression</p>
+</td></tr>
+<tr valign="top"><td><code>fit</code></td>
+<td>
+<p>indicates whether the fitted values should be computed
+and included in the model or not (default: <code>TRUE</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters for the low level fitting function</p>
+</td></tr>
+<tr valign="top"><td><code>subset</code></td>
+<td>
+<p>An index vector specifying the cases to be used in the
+training sample.  (NOTE: If given, this argument must be
+named.)</p>
+</td></tr>
+<tr valign="top"><td><code>na.action</code></td>
+<td>
+<p>A function to specify the action to be taken if <code>NA</code>s are
+found. The default action is <code>na.omit</code>, which leads to rejection of cases
+with missing values on any required variable. An alternative
+is <code>na.fail</code>, which causes an error if <code>NA</code> cases
+are found. (NOTE: If given, this argument must be named.)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>ksvm</code> uses John Platt's SMO algorithm for solving the SVM QP problem an
+most SVM formulations. On the <code>spoc-svc</code>, <code>kbb-svc</code>, <code>C-bsvc</code> and
+<code>eps-bsvr</code> formulations a chunking algorithm based on the TRON QP
+solver is used. <br />
+For multiclass-classification with <i>k</i> classes, <i>k &gt; 2</i>, <code>ksvm</code> uses the
+&lsquo;one-against-one&rsquo;-approach, in which <i>k(k-1)/2</i> binary classifiers are
+trained; the appropriate class is found by a voting scheme,
+The <code>spoc-svc</code> and the <code>kbb-svc</code> formulations deal with the
+multiclass-classification problems by solving a single quadratic problem involving all the classes.<br />
+If the predictor variables include factors, the formula interface must be used to get a
+correct model matrix. <br />
+In classification when <code>prob.model</code> is <code>TRUE</code> a 3-fold cross validation is
+performed on the data and a sigmoid function is fitted on the
+resulting decision values <i>f</i>.
+The data can be passed to the <code>ksvm</code> function in a <code>matrix</code> or a
+<code>data.frame</code>, in addition <code>ksvm</code> also supports input in the form of a
+kernel matrix of class <code>kernelMatrix</code> or as a list of character
+vectors where a string kernel has to be used.<br />
+The <code>plot</code> function for binary classification <code>ksvm</code> objects
+displays a contour plot of the decision values with the corresponding
+support vectors highlighted.<br />
+The predict function can return class probabilities for 
+classification problems by setting the <code>type</code> parameter to
+&quot;probabilities&quot;. <br />
+The problem of model selection is partially addressed by an empirical
+observation for the RBF kernels (Gaussian , Laplace) where the optimal values of the
+<i>sigma</i> width parameter are shown to lie in between the 0.1 and 0.9
+quantile of the <i>\|x- x'\|</i> statistics. When using an RBF kernel
+and setting <code>kpar</code> to &quot;automatic&quot;, <code>ksvm</code> uses the <code>sigest</code> function
+to estimate the quantiles and uses the median of the values.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An S4 object of class <code>"ksvm"</code> containing the fitted model,
+Accessor functions can be used to access the slots of the object (see
+examples) which include:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>The resulting support vectors, (alpha vector) (possibly scaled).</p>
+</td></tr>
+<tr valign="top"><td><code>alphaindex</code></td>
+<td>
+<p>The index of the resulting support vectors in the data
+matrix. Note that this index refers to the pre-processed data (after
+the possible effect of <code>na.omit</code> and <code>subset</code>)</p>
+</td></tr>
+<tr valign="top"><td><code>coef</code></td>
+<td>
+<p>The corresponding coefficients times the training labels.</p>
+</td></tr>
+<tr valign="top"><td><code>b</code></td>
+<td>
+<p>The negative intercept.</p>
+</td></tr>
+<tr valign="top"><td><code>nSV</code></td>
+<td>
+<p>The number of Support Vectors</p>
+</td></tr>
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>The value of the objective function. In case of one-against-one classification this is a vector of values</p>
+</td></tr> 
+<tr valign="top"><td><code>error</code></td>
+<td>
+<p>Training error</p>
+</td></tr>
+<tr valign="top"><td><code>cross</code></td>
+<td>
+<p>Cross validation error, (when cross &gt; 0)</p>
+</td></tr>
+<tr valign="top"><td><code>prob.model</code></td>
+<td>
+<p>Contains the width of the Laplacian fitted on the
+residuals in case of regression, or the parameters of the sigmoid
+fitted on the decision values in case of classification.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>Data is scaled internally by default, usually yielding better results.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou (SMO optimizers in C++ by Chih-Chung Chang &amp; Chih-Jen Lin)<br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a>
+</p>
+
+
+<h3>References</h3>
+
+
+<ul>
+<li>
+<p>Chang Chih-Chung, Lin Chih-Jen<br />
+<em>LIBSVM: a library for Support Vector Machines</em><br />
+<a href="http://www.csie.ntu.edu.tw/~cjlin/libsvm">http://www.csie.ntu.edu.tw/~cjlin/libsvm</a>
+</p>
+</li>
+<li>
+<p>Chih-Wei Hsu, Chih-Jen Lin<br />
+<em>BSVM</em>
+<a href="http://www.csie.ntu.edu.tw/~cjlin/bsvm/">http://www.csie.ntu.edu.tw/~cjlin/bsvm/</a>
+</p>
+</li>
+<li>
+<p>J. Platt<br />
+<em>Probabilistic outputs for support vector machines and comparison to regularized likelihood methods</em> <br />
+Advances in Large Margin Classifiers, A. Smola, P. Bartlett, B. Schoelkopf and D. Schuurmans, Eds. Cambridge, MA: MIT Press, 2000.<br />
+<a href="http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.41.1639">http://citeseer.ist.psu.edu/viewdoc/summary?doi=10.1.1.41.1639</a>
+</p>
+</li>
+<li>
+<p>H.-T. Lin, C.-J. Lin and R. C. Weng<br />
+<em>A note on Platt's probabilistic outputs for support vector machines</em><br />
+<a href="http://www.csie.ntu.edu.tw/~htlin/paper/doc/plattprob.pdf">http://www.csie.ntu.edu.tw/~htlin/paper/doc/plattprob.pdf</a>
+</p>
+</li>
+<li>
+<p>C.-W. Hsu and C.-J. Lin <br />
+<em>A comparison on methods for multi-class support vector machines</em><br />
+IEEE Transactions on Neural Networks, 13(2002) 415-425.<br />
+<a href="http://www.csie.ntu.edu.tw/~cjlin/papers/multisvm.ps.gz">http://www.csie.ntu.edu.tw/~cjlin/papers/multisvm.ps.gz</a>
+</p>
+</li>
+<li>
+<p>K. Crammer, Y. Singer<br />
+<em>On the learnability and design of output codes for multiclass prolems</em><br />
+Computational Learning Theory, 35-46, 2000.<br />
+<a href="http://webee.technion.ac.il/people/koby/publications/ecoc-mlj02.pdf">http://webee.technion.ac.il/people/koby/publications/ecoc-mlj02.pdf</a>
+</p>
+</li>
+<li>
+<p>J. Weston, C. Watkins<br />
+<em>Multi-class support vector machines</em> <br />
+In M. Verleysen, Proceedings of ESANN99 Brussels, 1999<br />
+<a href="http://citeseer.ist.psu.edu/8884.html">http://citeseer.ist.psu.edu/8884.html</a>
+</p>
+</li></ul>
+
+
+
+<h3>See Also</h3>
+
+<p><code><a href="predict.ksvm.html">predict.ksvm</a></code>, <code><a href="ksvm-class.html">ksvm-class</a></code>, <code><a href="couple.html">couple</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## simple example using the spam data set
+data(spam)
+
+## create test and training set
+index &lt;- sample(1:dim(spam)[1])
+spamtrain &lt;- spam[index[1:floor(dim(spam)[1]/2)], ]
+spamtest &lt;- spam[index[((ceiling(dim(spam)[1]/2)) + 1):dim(spam)[1]], ]
+
+## train a support vector machine
+filter &lt;- ksvm(type~.,data=spamtrain,kernel="rbfdot",
+               kpar=list(sigma=0.05),C=5,cross=3)
+filter
+
+## predict mail type on the test set
+mailtype &lt;- predict(filter,spamtest[,-58])
+
+## Check results
+table(mailtype,spamtest[,58])
+
+
+## Another example with the famous iris data
+data(iris)
+
+## Create a kernel function using the build in rbfdot function
+rbf &lt;- rbfdot(sigma=0.1)
+rbf
+
+## train a bound constraint support vector machine
+irismodel &lt;- ksvm(Species~.,data=iris,type="C-bsvc",
+                  kernel=rbf,C=10,prob.model=TRUE)
+
+irismodel
+
+## get fitted values
+fitted(irismodel)
+
+## Test on the training set with probabilities as output
+predict(irismodel, iris[,-5], type="probabilities")
+
+
+## Demo of the plot function
+x &lt;- rbind(matrix(rnorm(120),,2),matrix(rnorm(120,mean=3),,2))
+y &lt;- matrix(c(rep(1,60),rep(-1,60)))
+
+svp &lt;- ksvm(x,y,type="C-svc")
+plot(svp,data=x)
+
+
+### Use kernelMatrix
+K &lt;- as.kernelMatrix(crossprod(t(x)))
+
+svp2 &lt;- ksvm(K, y, type="C-svc")
+
+svp2
+
+# test data
+xtest &lt;- rbind(matrix(rnorm(20),,2),matrix(rnorm(20,mean=3),,2))
+# test kernel matrix i.e. inner/kernel product of test data with
+# Support Vectors
+
+Ktest &lt;- as.kernelMatrix(crossprod(t(xtest),t(x[SVindex(svp2), ])))
+
+predict(svp2, Ktest)
+
+
+#### Use custom kernel 
+
+k &lt;- function(x,y) {(sum(x*y) +1)*exp(-0.001*sum((x-y)^2))}
+class(k) &lt;- "kernel"
+
+data(promotergene)
+
+## train svm using custom kernel
+gene &lt;- ksvm(Class~.,data=promotergene[c(1:20, 80:100),],kernel=k,
+             C=5,cross=5)
+
+gene
+
+
+#### Use text with string kernels
+data(reuters)
+is(reuters)
+tsv &lt;- ksvm(reuters,rlabels,kernel="stringdot",
+            kpar=list(length=5),cross=3,C=10)
+tsv
+
+
+## regression
+# create data
+x &lt;- seq(-20,20,0.1)
+y &lt;- sin(x)/x + rnorm(401,sd=0.03)
+
+# train support vector machine
+regm &lt;- ksvm(x,y,epsilon=0.01,kpar=list(sigma=16),cross=3)
+plot(x,y,type="l")
+lines(x,predict(regm,x),col="red")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

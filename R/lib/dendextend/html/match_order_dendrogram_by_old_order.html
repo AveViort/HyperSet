@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Adjust the order of one dendrogram based on another (using...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for match_order_dendrogram_by_old_order {dendextend}"><tr><td>match_order_dendrogram_by_old_order {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Adjust the order of one dendrogram based on another (using order)</h2>
+
+<h3>Description</h3>
+
+<p>Takes one dendrogram and adjusts its order leaves valeus based on the order
+of another dendrogram. The values are matached based on the order of the
+two dendrograms.
+</p>
+<p>This allows for faster <a href="entanglement.html">entanglement</a> running time, since we can be 
+sure that the leaves order is just as using their labels.
+</p>
+<p>This is a function is FASTER than <a href="match_order_by_labels.html">match_order_by_labels</a>, but it 
+assumes that the order and the labels of the two trees are matching!!
+</p>
+<p>This will allow for a faster calculation of <a href="entanglement.html">entanglement</a>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+match_order_dendrogram_by_old_order(dend_change, dend_template,
+  dend_change_old_order, check_that_labels_match = FALSE,
+  check_that_leaves_order_match = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend_change</code></td>
+<td>
+<p>tree object (dendrogram)</p>
+</td></tr>
+<tr valign="top"><td><code>dend_template</code></td>
+<td>
+<p>tree object (dendrogram)</p>
+</td></tr>
+<tr valign="top"><td><code>dend_change_old_order</code></td>
+<td>
+<p>a numeric vector with the order of leaves in
+dend_change (at least before it was changes for some reason).
+This is the vector based on which we adjust the new values of dend_change.</p>
+</td></tr>
+<tr valign="top"><td><code>check_that_labels_match</code></td>
+<td>
+<p>logical (FALSE). If to check that the labels
+in the two dendrogram match. (if they do not, the function aborts)</p>
+</td></tr>
+<tr valign="top"><td><code>check_that_leaves_order_match</code></td>
+<td>
+<p>logical (FALSE). If to check that 
+the order in the two dendrogram match. (if they do not, the function aborts)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns dend_change after adjusting its order values to
+be like dend_template.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="entanglement.html">entanglement</a> , <a href="tanglegram.html">tanglegram</a>,
+<a href="match_order_by_labels.html">match_order_by_labels</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+dend &lt;- USArrests[1:4,] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+order.dendrogram(dend) #  c(4L, 3L, 1L, 2L)
+
+
+# Watch this!
+dend_changed &lt;- dend
+dend_changed &lt;- rev(dend_changed)
+expect_false(identical(order.dendrogram(dend_changed), order.dendrogram(dend)))
+# we keep the order of dend_change, so that the leaves order are synced
+# with their labels JUST LIKE dend:
+old_dend_changed_order &lt;- order.dendrogram(dend_changed)   
+# now we change dend_changed leaves order values:
+order.dendrogram(dend_changed) &lt;- 1:4
+# and we can fix them again, based on their old kept leaves order:
+dend_changed &lt;- match_order_dendrogram_by_old_order(dend_changed, dend, 
+                                                     old_dend_changed_order)
+expect_identical(order.dendrogram(dend_changed), order.dendrogram(dend))
+
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

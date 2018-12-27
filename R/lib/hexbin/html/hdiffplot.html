@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot of Domain and Median Differences of Two &quot;hexbin&quot; Objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hdiffplot {hexbin}"><tr><td>hdiffplot {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot of Domain and Median Differences of Two &quot;hexbin&quot; Objects</h2>
+
+<h3>Description</h3>
+
+<p>Let <code>bin1</code> and <code>bin2</code> represent two <code><a href="hexbin.html">hexbin</a></code>
+objects with scaling, plot shapes, and bin sizes.  This plot
+distinguishes cells unique to <code>bin1</code>, cells in common, and cells
+unique to <code>bin2</code> using color.  When the erode components are
+present, color also distinguishes the two erosion medians.  An arrow
+shows the vector from the median of <code>bin1</code> to the median of
+<code>bin2</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hdiffplot(bin1, bin2 = NULL, xbnds, ybnds,
+          focus = NULL,
+          col.control = list(medhex = "white", med.bord = "black",
+          focus = NULL, focus.border = NULL, back.col = "grey"),
+          arrows = TRUE, size = unit(0.1, "inches"), lwd = 2,
+          eps = 1e-6, unzoom = 1.08, clip="off", xlab = "", ylab = "",
+          main = deparse(mycall), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>bin1, bin2</code></td>
+<td>
+<p>two objects of class <code><a href="hexbin.html">hexbin</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>xbnds,ybnds</code></td>
+<td>
+<p>global x- and y-axis plotting limits.  Used
+primarily for multiple comparison plots.</p>
+</td></tr>
+</table>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>focus</code></td>
+<td>
+<p>a vector of integers specifying which hexbin objects
+should be treated as focal. Excluded hexbins are treated as background.</p>
+</td></tr>
+<tr valign="top"><td><code>col.control</code></td>
+<td>
+<p>a list for detailed color control.</p>
+</td></tr></table>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>arrows</code></td>
+<td>
+<p>a logical indicating wheter or not to draw arrows
+between the focal hexbin objects median cells.</p>
+</td></tr>
+</table>
+
+
+<table summary="R argblock">
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p>border arguments to polygon</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>arrow type size in inches.</p>
+</td></tr>
+<tr valign="top"><td><code>eps</code></td>
+<td>
+<p>distance criteria for distinct medians</p>
+</td></tr>
+<tr valign="top"><td><code>unzoom</code></td>
+<td>
+<p>plot limit expansion factor when xbnds is missing</p>
+</td></tr>
+<tr valign="top"><td><code>clip</code></td>
+<td>
+<p>either 'on' or 'off' are the allowed arguments, when on
+everything is clipped to the plotting region.</p>
+</td></tr>
+<tr valign="top"><td><code>lwd</code></td>
+<td>
+<p>Line width for arrows, ignored when <code>arrows=FALSE</code> or
+when bins have no erosion component</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>label for x-axis</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>label for y-axis</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>main title for the plot; automatically constructed by default.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>...............</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The hexbin objects for comparison, <code>bin1</code> and <code>bin2</code>, must
+have the same plotting limits and cell size.  The plot produces a
+comparison overlay of the cells in the two objects.  If external
+global scaling is not supplied, the algorithm determines plotting
+limits to increase resolution.  For example, the objects may be the
+result of the <code><a href="erode.hexbin.html">erode.hexbin</a>()</code> and include only high count cells
+containing 50 of the counts.  The density, border, and pen arguments
+correspond to the polygon function calls for plotting six types of
+cells.  The cell types are respectively:
+</p>
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+    unique cells of bin1,</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    joint cells,</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    unique cells of bin2,</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    median cell of bin1,</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    median cell of bin2,</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+    median cell if identical.</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+  </td>
+</tr>
+
+</table>
+
+<p>The <code>erode</code> components of the hexbin objects must be present for the
+medians to plot.  The algorithm select a single cell for the median if
+there are algorithmic ties.
+</p>
+
+<p>The <code>pen</code> numbers for types of cells start at Pen 2.  Pen 1 is
+presumed black.  The suggested six additional colors are light blue,
+light gray, light red, blue, red, and black.  Carr (1991) shows an
+example for black and white printing.  That plot changes the six
+colors to light gray, dark gray, white, black, black, and black.  It
+changes the 4th, 5th, and 6th argument of border to TRUE.  It also
+changes 4th, 5th and 6th argument of density to 0.  In other words
+cells in common do not show and medians cells appear as outlines.
+</p>
+<p>When <code>xbnds</code> is missing, the plot changes graphics parameters and
+resets them.  The function also zooms in based on the available data
+to provide increased resolution.
+</p>
+
+
+<h3>References</h3>
+
+<p> see in <code><a href="grid.hexagons.html">grid.hexagons</a></code>.</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hexbin.html">hexbin</a></code>, <code><a href="smooth.hexbin.html">smooth.hexbin</a></code>, <code><a href="erode.hexbin.html">erode.hexbin</a></code>,
+
+<code><a href="hcell2xy.html">hcell2xy</a></code>, 
+<code><a href="gplot.hexbin.html">gplot.hexbin</a></code>,
+<code><a href="hboxplot.html">hboxplot</a></code>, 
+<code><a href="grid.hexagons.html">grid.hexagons</a></code>, <code><a href="grid.hexlegend.html">grid.hexlegend</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Comparison of two bivariate boxplots
+x1 &lt;- rnorm(10000)
+y1 &lt;- rnorm(10000)
+x2 &lt;- rnorm(10000,mean=.5)
+y2 &lt;- rnorm(10000,mean=.5)
+xbnds &lt;- range(x1,x2)
+ybnds &lt;- range(y1,y2)
+
+bin1 &lt;- hexbin(x1,y1,xbnds=xbnds,ybnds=ybnds)
+bin2 &lt;- hexbin(x2,y2,xbnds=xbnds,ybnds=ybnds)
+erodebin1 &lt;- erode.hexbin(smooth.hexbin(bin1))
+erodebin2 &lt;- erode.hexbin(smooth.hexbin(bin2))
+
+hdiffplot(erodebin1,erodebin2)
+
+## Compare  *three* of them: --------------------
+
+x3 &lt;- rnorm(10000,mean=-1)
+y3 &lt;- rnorm(10000,mean=-.5)
+xbnds &lt;- range(x1,x2,x3)
+ybnds &lt;- range(y1,y2,y3)
+
+bin1 &lt;- hexbin(x1,y1,xbnds=xbnds,ybnds=ybnds)
+bin2 &lt;- hexbin(x2,y2,xbnds=xbnds,ybnds=ybnds)
+bin3 &lt;- hexbin(x3,y3,xbnds=xbnds,ybnds=ybnds)
+erodebin1 &lt;- erode.hexbin(smooth.hexbin(bin1))
+erodebin2 &lt;- erode.hexbin(smooth.hexbin(bin2))
+erodebin3 &lt;- erode.hexbin(smooth.hexbin(bin3))
+
+bnlst &lt;- list(b1=erodebin1, b2=erodebin2, b3=erodebin3)
+hdiffplot(bnlst)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

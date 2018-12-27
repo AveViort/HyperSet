@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Identify regions on a map</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for identify.map {maps}"><tr><td>identify.map {maps}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Identify regions on a map
+</h2>
+
+<h3>Description</h3>
+
+<p>Identifies the map regions clicked by the user.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'map'
+identify(x, n = 1, index = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a map object containing named polygons.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>the number of clicks to wait for.</p>
+</td></tr>
+<tr valign="top"><td><code>index</code></td>
+<td>
+<p>If TRUE, returns the index of the polygon, rather than
+its name.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments passed to <code><a href="../../graphics/html/identify.html">identify.default</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The current algorithm is somewhat crude &mdash; selects the region whose
+centroid is closest to the click.  A more sophisticated approach would
+use <code><a href="map.where.html">map.where</a></code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a character vector of length <code>n</code>, naming the selected regions.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tom Minka</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../graphics/html/identify.html">identify</a></code>, <code><a href="map.where.html">map.where</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+identify(map("state", fill = TRUE, col = 0))
+if(require(mapproj))
+  identify(map("world", proj = "lagrange", fill = TRUE, col = 0, wrap=c(-180,180,-90)))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>maps</em> version 3.3.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

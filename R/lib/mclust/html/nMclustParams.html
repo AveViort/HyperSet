@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Number of Estimated Parameters in Gaussian Mixture Models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nMclustParams {mclust}"><tr><td>nMclustParams {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Number of Estimated Parameters in Gaussian Mixture Models</h2>
+
+<h3>Description</h3>
+
+<p>Gives the number of estimated parameters for parameterizations of the 
+Gaussian mixture model that are used in MCLUST. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nMclustParams(modelName, d, G, noise = FALSE, equalPro = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string indicating the model. The help file for
+<code><a href="mclustModelNames.html">mclustModelNames</a></code> describes the available models.
+</p>
+</td></tr>
+<tr valign="top"><td><code>d</code></td>
+<td>
+
+<p>The dimension of the data. Not used for models in which neither
+the shape nor the orientation varies.
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>The number of components in the Gaussian mixture model used to compute
+<code>loglik</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>noise</code></td>
+<td>
+
+<p>A logical variable indicating whether or not the model includes an
+optional Poisson noise component. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>equalPro</code></td>
+<td>
+
+<p>A logical variable indicating whether or not the components in the
+model are assumed to be present in equal proportion.
+</p>
+</td></tr>
+<tr valign="top"><td><code>... </code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>To get the total number of parameters in model, add <code>G*d</code> for the
+means and <code>G-1</code> for the mixing proportions if they are unequal.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The number of variance parameters in the corresponding Gaussian mixture
+model. 
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bic.html">bic</a></code>, <code><a href="nVarParams.html">nVarParams</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+mapply(nMclustParams, mclust.options("emModelNames"), d = 2, G = 3)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

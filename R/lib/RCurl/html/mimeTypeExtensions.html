@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Mapping from extension to MIME type</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mimeTypeExtensions {RCurl}"><tr><td>mimeTypeExtensions {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Mapping from extension to MIME type</h2>
+
+<h3>Description</h3>
+
+<p>This is a programmatically generated character vector
+whose names identify the  MIME type typically associated with
+the extension which are the values.
+This is used in <code><a href="guessMIMEType.html">guessMIMEType</a></code>.
+We can match an extension and then find the corresponding
+MIME type.
+There are duplicates.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(mimeTypeExtensions)</pre>
+
+
+<h3>Format</h3>
+
+<p>The format is a named character vector
+where the names are the MIME types
+and the values are the file
+extensions.
+</p>
+
+
+<h3>Source</h3>
+
+<p>The table of MIME types and extensions was programmatically extracted
+from <span class="samp">http://www.webmaster-toolkit.com/mime-types.shtml</span> or
+<a href="http://reference.sitepoint.com/html/mime-types-full">http://reference.sitepoint.com/html/mime-types-full</a> with
+<code>
+  tbls = readHTMLTable("http://www.webmaster-toolkit.com/mime-types.shtml")
+  tmp = tbls[[1]][-1,]
+  mimeTypeExtensions = structure(as.character(tmp[[2]]), names = gsub("^\.", "", tmp[[1]]))
+  save(mimeTypeExtensions, file = "data/mimeTypeExtensions.rda")
+</code>
+The IANA list is not as convenient to programmatically compile.
+
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(mimeTypeExtensions)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

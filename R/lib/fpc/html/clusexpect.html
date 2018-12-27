@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Expected value of the number of times a fixed point cluster...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for clusexpect {fpc}"><tr><td>clusexpect {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Expected value of the number of times a fixed point
+cluster is found</h2>
+
+<h3>Description</h3>
+
+<p>A rough approximation of the expectation of the number of times a well
+separated fixed point
+cluster (FPC) of size <code>n</code> is found in <code>ir</code> fixed point
+iterations of <code><a href="fixreg.html">fixreg</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  clusexpect(n, p, cn, ir)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>positive integer. Total number of points.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>positive integer. Number of independent variables.</p>
+</td></tr>
+<tr valign="top"><td><code>cn</code></td>
+<td>
+<p>positive integer smaller or equal to <code>n</code>.
+Size of the FPC.</p>
+</td></tr>
+<tr valign="top"><td><code>ir</code></td>
+<td>
+<p>positive integer. Number of fixed point iterations.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The approximation is based on the assumption that a well separated FPC
+is found iff all <code>p+2</code> points of the initial coinfiguration come
+from the FPC. The value is <code>ir</code> times the probability for
+this. For a discussion of this assumption cf. Hennig (2002).
+</p>
+
+
+<h3>Value</h3>
+
+<p>A number.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a></p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. (2002) Fixed point clusters for linear regression:
+computation and comparison, <em>Journal of
+Classification</em> 19, 249-276.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fixreg.html">fixreg</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  round(clusexpect(500,4,150,2000),digits=2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

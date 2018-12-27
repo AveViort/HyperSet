@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Adjust the order of one dendrogram based on another (using...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for match_order_by_labels {dendextend}"><tr><td>match_order_by_labels {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Adjust the order of one dendrogram based on another (using labels)</h2>
+
+<h3>Description</h3>
+
+<p>Takes one dendrogram and adjusts its order leaves valeus based on the order
+of another dendrogram. The values are matached based on the labels of the
+two dendrograms.
+</p>
+<p>This allows for faster <a href="entanglement.html">entanglement</a> running time, since we can be 
+sure that the leaves order is just as using their labels.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+match_order_by_labels(dend_change, dend_template,
+  check_that_labels_match = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend_change</code></td>
+<td>
+<p>tree object (dendrogram)</p>
+</td></tr>
+<tr valign="top"><td><code>dend_template</code></td>
+<td>
+<p>tree object (dendrogram)</p>
+</td></tr>
+<tr valign="top"><td><code>check_that_labels_match</code></td>
+<td>
+<p>logical (TRUE). If to check that the labels
+in the two dendrogram match. (if they do not, the function aborts)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns dend_change after adjusting its order values to
+be like dend_template.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="entanglement.html">entanglement</a> , <a href="tanglegram.html">tanglegram</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+
+dend &lt;- USArrests[1:4,] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+order.dendrogram(dend) #  c(4L, 3L, 1L, 2L)
+
+dend_changed &lt;- dend
+order.dendrogram(dend_changed) &lt;- 1:4
+order.dendrogram(dend_changed) # c(1:4)
+
+# now let's fix the order of the new object to be as it was:
+dend_changed &lt;- match_order_by_labels(dend_changed, dend)
+# these two are now the same:
+order.dendrogram(dend_changed)
+order.dendrogram(dend))
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

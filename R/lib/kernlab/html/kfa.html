@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Kernel Feature Analysis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kfa {kernlab}"><tr><td>kfa {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Kernel Feature Analysis</h2>
+
+<h3>Description</h3>
+
+<p>The Kernel Feature Analysis algorithm is an algorithm for extracting
+structure from possibly high-dimensional data sets.
+Similar to <code>kpca</code> a new basis for the data is found.
+The data can then be projected on the new basis. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'formula'
+kfa(x, data = NULL, na.action = na.omit, ...)
+
+## S4 method for signature 'matrix'
+kfa(x, kernel = "rbfdot", kpar = list(sigma = 0.1),
+   features = 0, subset = 59, normalize = TRUE, na.action = na.omit)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> The data matrix indexed by row or a formula
+describing the model. Note, that an intercept is always
+included, whether given in the formula or not.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>an optional data frame containing the variables in
+the model
+(when using a formula).</p>
+</td></tr>
+<tr valign="top"><td><code>kernel</code></td>
+<td>
+<p>the kernel function used in training and predicting.
+This parameter can be set to any function, of class kernel, which
+computes an inner product in feature space between two
+vector arguments. <span class="pkg">kernlab</span> provides the most popular kernel functions
+which can be used by setting the kernel parameter to the following
+strings:
+</p>
+
+<ul>
+<li> <p><code>rbfdot</code> Radial Basis kernel function &quot;Gaussian&quot;
+</p>
+</li>
+<li> <p><code>polydot</code> Polynomial kernel function
+</p>
+</li>
+<li> <p><code>vanilladot</code> Linear kernel function
+</p>
+</li>
+<li> <p><code>tanhdot</code> Hyperbolic tangent kernel function
+</p>
+</li>
+<li> <p><code>laplacedot</code> Laplacian kernel function
+</p>
+</li>
+<li> <p><code>besseldot</code> Bessel kernel function
+</p>
+</li>
+<li> <p><code>anovadot</code> ANOVA RBF kernel function
+</p>
+</li>
+<li> <p><code>splinedot</code> Spline kernel 
+</p>
+</li></ul>
+
+<p>The kernel parameter can also be set to a user defined function of
+class kernel by passing the function name as an argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>the list of hyper-parameters (kernel parameters).
+This is a list which contains the parameters to be used with the
+kernel function. Valid parameters for existing kernels are :
+</p>
+
+<ul>
+<li> <p><code>sigma</code> inverse kernel width for the Radial Basis
+kernel function &quot;rbfdot&quot; and the Laplacian kernel &quot;laplacedot&quot;.
+</p>
+</li>
+<li> <p><code>degree, scale, offset</code> for the Polynomial kernel &quot;polydot&quot;
+</p>
+</li>
+<li> <p><code>scale, offset</code> for the Hyperbolic tangent kernel
+function &quot;tanhdot&quot;
+</p>
+</li>
+<li> <p><code>sigma, order, degree</code> for the Bessel kernel &quot;besseldot&quot;.
+</p>
+</li>
+<li> <p><code>sigma, degree</code> for the ANOVA kernel &quot;anovadot&quot;.
+</p>
+</li></ul>
+
+<p>Hyper-parameters for user defined kernels can be passed through the
+kpar parameter as well.</p>
+</td></tr>
+<tr valign="top"><td><code>features</code></td>
+<td>
+<p>Number of features (principal components) to
+return. (default: 0 , all)</p>
+</td></tr>
+<tr valign="top"><td><code>subset</code></td>
+<td>
+<p>the number of features sampled (used) from the data set</p>
+</td></tr>
+<tr valign="top"><td><code>normalize</code></td>
+<td>
+<p>normalize the feature selected (default: TRUE)</p>
+</td></tr>  
+<tr valign="top"><td><code>na.action</code></td>
+<td>
+<p>A function to specify the action to be taken if <code>NA</code>s are
+found. The default action is <code>na.omit</code>, which leads to rejection of cases
+with missing values on any required variable. An alternative
+is <code>na.fail</code>, which causes an error if <code>NA</code> cases
+are found. (NOTE: If given, this argument must be named.)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> additional parameters</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Kernel Feature analysis is similar to Kernel PCA, but instead of
+extracting eigenvectors of the training dataset in feature space, it
+approximates the eigenvectors by selecting training patterns which are good
+basis vectors for the training set. It works by choosing a fixed size
+subset of the data set and scaling it to unit length (under the kernel).
+It then chooses the features that maximize the value of the inner
+product (kernel function) with the rest of the patterns.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>kfa</code> returns an object of class <code>kfa</code> containing the
+features selected by the algorithm. 
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>xmatrix</code></td>
+<td>
+<p>contains the features selected</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>contains the sparse alpha vector</p>
+</td></tr>
+</table>
+<p>The <code>predict</code> function can be used to embed new data points into to the
+selected feature base.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p>Alex J. Smola, Olvi L. Mangasarian and Bernhard Schoelkopf<br />
+<em>Sparse Kernel Feature Analysis</em><br />
+Data Mining Institute Technical Report 99-04, October 1999<br />
+<a href="ftp://ftp.cs.wisc.edu/pub/dmi/tech-reports/99-04.ps">ftp://ftp.cs.wisc.edu/pub/dmi/tech-reports/99-04.ps</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="kpca.html">kpca</a></code>, <code><a href="kfa-class.html">kfa-class</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(promotergene)
+f &lt;- kfa(~.,data=promotergene,features=2,kernel="rbfdot",
+         kpar=list(sigma=0.01))
+plot(predict(f,promotergene),col=as.numeric(promotergene[,1]))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Update the elements of a list</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for update.list {gdata}"><tr><td>update.list {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Update the elements of a list
+</h2>
+
+<h3>Description</h3>
+
+<p>Function to update the elements of a list to contain all of the named elements
+of a new list, overwriting elements with the same name, and (optionally) copying
+unnamed elements.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+
+
+## S3 method for class 'list'
+update(object,
+       new,
+       unnamed=FALSE,
+       ...)
+
+
+
+
+
+
+
+
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>Object to be updated.</p>
+</td></tr>
+<tr valign="top"><td><code>new</code></td>
+<td>
+<p>List or dataframe containing new elements.</p>
+</td></tr>
+<tr valign="top"><td><code>unnamed</code></td>
+<td>
+<p>Logical. If <code>TRUE</code>, unnamed elements
+of <code>new</code> will be appended to <code>object</code>.</p>
+</td></tr>
+</table>
+
+
+
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>optional method arguments (ignored)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A new list constructed from the elements of <code>object</code> by merging the elements of <code>old</code> and <code>new</code> with named items of <code>new</code> replacing the corresponding elements of <code>old</code>.  Unnamed elements of <code>new</code> will be appened unless <code>unnamed=FALSE</code>.
+</p>
+
+
+
+<h3>Note</h3>
+
+<p>This method can be called directly, or as via the S3 base method for <code>update</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gregory R. Warnes <a href="mailto:greg@warnes.net">greg@warnes.net</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../stats/html/update.html">update</a></code>, <code><a href="../../base/html/merge.html">merge</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+old &lt;- list(a=1,b="red",c=1.37)
+new &lt;- list(b="green",c=2.4)
+
+update(old, new)
+update.list(old,new)  # equivalent
+
+older &lt;- list(a=0, b="orange", 4, 5, 6)
+newer &lt;- list(b="purple", 7, 8, 9)
+update(older, newer)               # ignores unnamed elements of newer
+update(older, newer, unnamed=TRUE) # appends unnamed elements of newer
+
+
+
+
+
+
+
+
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

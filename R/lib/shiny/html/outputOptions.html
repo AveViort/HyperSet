@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Set options for an output object.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for outputOptions {shiny}"><tr><td>outputOptions {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Set options for an output object.</h2>
+
+<h3>Description</h3>
+
+<p>These are the available options for an output object:
+</p>
+
+<ul>
+<li><p> suspendWhenHidden. When <code>TRUE</code> (the default), the output object
+will be suspended (not execute) when it is hidden on the web page. When
+<code>FALSE</code>, the output object will not suspend when hidden, and if it
+was already hidden and suspended, then it will resume immediately.
+</p>
+</li>
+<li><p> priority. The priority level of the output object. Queued outputs
+with higher priority values will execute before those with lower values.
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+outputOptions(x, name, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A shinyoutput object (typically <code>output</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>The name of an output observer in the shinyoutput object.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Options to set for the output observer.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# Get the list of options for all observers within output
+outputOptions(output)
+
+# Disable suspend for output$myplot
+outputOptions(output, "myplot", suspendWhenHidden = FALSE)
+
+# Change priority for output$myplot
+outputOptions(output, "myplot", priority = 10)
+
+# Get the list of options for output$myplot
+outputOptions(output, "myplot")
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

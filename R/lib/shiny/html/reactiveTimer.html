@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Timer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reactiveTimer {shiny}"><tr><td>reactiveTimer {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Timer</h2>
+
+<h3>Description</h3>
+
+<p>Creates a reactive timer with the given interval. A reactive timer is like a
+reactive value, except reactive values are triggered when they are set, while
+reactive timers are triggered simply by the passage of time.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+reactiveTimer(intervalMs = 1000, session = getDefaultReactiveDomain())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>intervalMs</code></td>
+<td>
+<p>How often to fire, in milliseconds</p>
+</td></tr>
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>A session object. This is needed to cancel any scheduled
+invalidations after a user has ended the session. If <code>NULL</code>, then
+this invalidation will not be tied to any session, and so it will still
+occur.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><a href="reactive.html">Reactive expressions</a> and observers that want to be
+invalidated by the timer need to call the timer function that
+<code>reactiveTimer</code> returns, even if the current time value is not actually
+needed.
+</p>
+<p>See <code><a href="invalidateLater.html">invalidateLater</a></code> as a safer and simpler alternative.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A no-parameter function that can be called from a reactive context,
+in order to cause that context to be invalidated the next time the timer
+interval elapses. Calling the returned function also happens to yield the
+current time (as in <code><a href="../../base/html/Sys.time.html">Sys.time</a></code>).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="invalidateLater.html">invalidateLater</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  sliderInput("n", "Number of observations", 2, 1000, 500),
+  plotOutput("plot")
+)
+
+server &lt;- function(input, output) {
+
+  # Anything that calls autoInvalidate will automatically invalidate
+  # every 2 seconds.
+  autoInvalidate &lt;- reactiveTimer(2000)
+
+  observe({
+    # Invalidate and re-execute this reactive expression every time the
+    # timer fires.
+    autoInvalidate()
+
+    # Do something each time this is invalidated.
+    # The isolate() makes this observer _not_ get invalidated and re-executed
+    # when input$n changes.
+    print(paste("The value of input$n is", isolate(input$n)))
+  })
+
+  # Generate a new histogram each time the timer fires, but not when
+  # input$n changes.
+  output$plot &lt;- renderPlot({
+    autoInvalidate()
+    hist(rnorm(isolate(input$n)))
+  })
+}
+
+shinyApp(ui, server)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

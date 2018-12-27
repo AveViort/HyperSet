@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fix rank of leaves order values in a dendrogram</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rank_order.dendrogram {dendextend}"><tr><td>rank_order.dendrogram {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Fix rank of leaves order values in a dendrogram</h2>
+
+<h3>Description</h3>
+
+<p>Generally, leaves order value should be a sequence of integer values.
+From 1 to nleaves(dend). 
+This function fixes trees by using <a href="../../base/html/rank.html">rank</a> on existing leaves order
+values.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+rank_order.dendrogram(dend, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram, after fixing its leaves order values.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="prune.html">prune</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+# define dendrogram object to play with:
+dend &lt;- USArrests[1:4,] %&gt;% dist %&gt;% hclust(method = "ave") %&gt;% as.dendrogram
+# plot(dend)
+order.dendrogram(dend)
+dend2 &lt;- prune(dend, "Alaska")
+order.dendrogram(dend2)
+order.dendrogram(rank_order.dendrogram(dend2))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

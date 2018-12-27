@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;BezierCurve&quot;: A class to describe a Bezier curve</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for BezierCurve-class {Rgraphviz}"><tr><td>BezierCurve-class {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;BezierCurve&quot;: A class to describe a Bezier curve</h2>
+
+<h3>Description</h3>
+
+<p>  This class is used to represent a Bezier curve in R,
+which can then be used for other applications, plotted, etc</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("BezierCurve", ...)</code>.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>cPoints</code>:</dt><dd><p>Object of class <code>"list"</code>: A list of
+<code>xyPoint</code> objects, representing control points for the curve</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt><code>cPoints</code>:</dt><dd><p>Returns the <code>cPoints</code> slot</p>
+</dd>
+<dt><code>pointList</code>:</dt><dd><p>Returns a list of all points having been
+processed with teh <code>getPoints</code> method of <code>xyPoint</code></p>
+</dd>
+<dt><code>bezierPoints</code>:</dt><dd><p>Returns a matrix giving x &amp; y points (by
+column) for the complete Bezier curve</p>
+</dd>
+<dt><code>lines</code>:</dt><dd><p>Draws the Bezier curve</p>
+</dd>
+<dt><code>show</code>:</dt><dd><p>Provides a concise display of information</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xyPoint-class.html">xyPoint</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+V &lt;- letters[1:10]
+M &lt;- 1:4
+g1 &lt;- randomGraph(V, M, .2)
+z &lt;- agopen(g1,"foo")
+x &lt;- AgEdge(z)  ## list of AgEdge objects
+x[[1]]  ## AgEdge
+a &lt;- splines(x[[1]])[[1]]
+a  ## BezierCurve
+
+cPoints(a)
+pointList(a)
+bezierPoints(a)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

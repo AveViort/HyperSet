@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Bitwise And, Or and Xor Operations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bitAnd {bitops}"><tr><td>bitAnd {bitops}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Bitwise And, Or and Xor Operations</h2>
+
+<h3>Description</h3>
+
+<p>Bitwise operations, &lsquo;and&rsquo; (<code><a href="../../base/html/Logic.html">&amp;</a></code>),
+&lsquo;or&rsquo; (<code><a href="../../base/html/Logic.html">|</a></code>), and &lsquo;Xor&rsquo; (<code><a href="../../base/html/Logic.html">xor</a></code>).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bitAnd(a, b)
+bitOr (a, b)
+bitXor(a, b)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>a,b</code></td>
+<td>
+<p>numeric vectors of compatible length.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The bitwise operations are applied to the arguments cast as 32 bit
+(unsigned long) integers.  NA is returned wherever the magnitude of the
+arguments is not less than <i>2^31</i>, or, where either of the arguments is
+not finite.
+</p>
+
+
+<h3>Value</h3>
+
+<p>numeric vector of maximum length of <code>a</code> or <code>b</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Steve Dutky</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="bitFlip.html">bitFlip</a></code>, <code><a href="bitShiftL.html">bitShiftL</a></code>; further,
+<code><a href="cksum.html">cksum</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+	bitAnd(15,7) == 7
+	bitOr(15,7) == 15
+	bitXor(15,7) == 8
+	bitOr(-1,0) == 4294967295
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>bitops</em> version 1.0-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

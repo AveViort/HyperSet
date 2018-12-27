@@ -1,0 +1,7 @@
+Network	Filename	No.of links	No. of genes
+FunCoup 3.0 	FC3_ref	1000000	10833
+merged_high_quality	Mouse.merged4_and_tf	1022236	18144
+KEGG pathways	kgml.LNK.Genes	28639	4100
+KINASE2SUBSTRATE 	Kinase_Substrate.2015.mouse	1808	346 kinases, 865 substrates
+Protein complexes 	CORUM_and_KEGG_complexes.Genes	21417	1345
+FunCoup LE	FC.2010.GENE	923596	14358

@@ -1,0 +1,38 @@
+Package: pkgdown
+Title: Make Static HTML Documentation for a Package
+Version: 1.1.0
+Authors@R: c(
+    person("Hadley", "Wickham", , "hadley@rstudio.com", role = c("aut", "cre"), 
+      comment = c(ORCID = "0000-0003-4757-117X")
+    ),
+    person("Jay", "Hesselberth", role = "aut", 
+      comment = c(ORCID = "0000-0002-6299-179X")
+    ),
+    person("RStudio", role = c("cph", "fnd"))
+    )
+Description: Generate an attractive and useful website from a source package.
+    'pkgdown' convert your documentation, vignettes, 'README' and more to 
+    'HTML' making it easy to share information about your package online.
+License: MIT + file LICENSE
+URL: http://pkgdown.r-lib.org, https://github.com/r-lib/pkgdown
+BugReports: https://github.com/r-lib/pkgdown/issues
+Depends: R (>= 3.1.0)
+Imports: callr (>= 2.0.2), cli, crayon, desc, devtools, digest,
+        evaluate, fs (>= 1.2.0), highlight, httr, magrittr, MASS,
+        memoise, purrr, R6, rematch, rlang (>= 0.2.0), rmarkdown (>=
+        1.1.9007), roxygen2, rsconnect, rstudioapi, tibble, tools,
+        whisker, xml2 (>= 1.1.1), yaml
+Suggests: BiocInstaller, covr, htmlwidgets, jsonlite, knitr, leaflet,
+        magick, testthat
+VignetteBuilder: knitr
+SystemRequirements: pandoc
+RoxygenNote: 6.0.1
+NeedsCompilation: no
+Packaged: 2018-06-02 13:16:04 UTC; hadley
+Author: Hadley Wickham [aut, cre] (<https://orcid.org/0000-0003-4757-117X>),
+  Jay Hesselberth [aut] (<https://orcid.org/0000-0002-6299-179X>),
+  RStudio [cph, fnd]
+Maintainer: Hadley Wickham <hadley@rstudio.com>
+Repository: CRAN
+Date/Publication: 2018-06-02 22:10:23 UTC
+Built: R 3.5.1; ; 2018-11-16 12:51:56 UTC; unix

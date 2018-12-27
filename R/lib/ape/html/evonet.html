@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Evolutionary Networks</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for evonet {ape}"><tr><td>evonet {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Evolutionary Networks</h2>
+
+<h3>Description</h3>
+
+<p><code>evonet</code> builds a network from a tree of class
+<code>"phylo"</code>. There are <code>print</code>, <code>plot</code>, and
+<code>reorder</code> methods as well as a few conversion functions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+evonet(phy, from, to = NULL)
+## S3 method for class 'evonet'
+print(x, ...)
+## S3 method for class 'evonet'
+plot(x, col = "blue", lty = 1, lwd = 1, alpha = 0.5,
+              arrows = 0, arrow.type = "classical", ...)
+## S3 method for class 'evonet'
+Nedge(phy)
+## S3 method for class 'evonet'
+reorder(x, order = "cladewise", index.only = FALSE, ...)
+## S3 method for class 'evonet'
+as.phylo(x, ...)
+## S3 method for class 'evonet'
+as.networx(x, weight = NA, ...)
+## S3 method for class 'evonet'
+as.network(x, directed = TRUE, ...)
+## S3 method for class 'evonet'
+as.igraph(x, directed = TRUE, use.labels = TRUE, ...)
+
+as.evonet(x, ...)
+## S3 method for class 'phylo'
+as.evonet(x, ...)
+
+read.evonet(file = "", text = NULL, comment.char = "", ...)
+write.evonet(x, file = "", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>"evonet"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>from</code></td>
+<td>
+<p>a vector (or a matrix if <code>to = NULL</code>) giving the node
+or tip numbers involved in the reticulations.</p>
+</td></tr>
+<tr valign="top"><td><code>to</code></td>
+<td>
+<p>a vector of the same length than <code>from</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>col, lty, lwd</code></td>
+<td>
+<p>colors, line type and width of the reticulations
+(recycled if necessary).</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>a value between 0 and 1 specifying the transparency of
+the reticulations.</p>
+</td></tr>
+<tr valign="top"><td><code>arrows, arrow.type</code></td>
+<td>
+<p>see <code><a href="edges.html">fancyarrows</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>order, index.only</code></td>
+<td>
+<p>see <code><a href="reorder.phylo.html">reorder.phylo</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>weight</code></td>
+<td>
+<p>a numeric vector giving the weights for the
+reticulations when converting to the class <code>"networx"</code>
+(recycled or shortened if needed).</p>
+</td></tr>
+<tr valign="top"><td><code>directed</code></td>
+<td>
+<p>a logical: should the network be considered as
+directed? <code>TRUE</code> by default.</p>
+</td></tr>
+<tr valign="top"><td><code>use.labels</code></td>
+<td>
+<p>a logical specifying whether to use the tip and node
+labels when building the network of class <code>"igraph"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>file, text, comment.char</code></td>
+<td>
+<p>see <code><a href="read.tree.html">read.tree</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>arguments passed to other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>evonet</code> is a constructor function that checks the arguments.
+</p>
+<p>The classes <code>"networx"</code>, <code>"network"</code>, and <code>"igraph"</code>
+are defined in the packages <span class="pkg">phangorn</span>, <span class="pkg">network</span>, and
+<span class="pkg">igraph</span>, respectively.
+</p>
+<p><code>read.evonet</code> reads networks from files in extended newick format
+(Cardona et al. 2008).
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>c("evonet", "phylo")</code> which is made of an
+object of class <code>"<a href="read.tree.html">phylo</a>"</code> plus an element
+<code>reticulation</code> coding additional edges among nodes and uses the
+same coding rules than the <code>edge</code> matrix.
+</p>
+<p>The conversion functions return an object of the appropriate class.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis, Klaus Schliep</p>
+
+
+<h3>References</h3>
+
+<p>Cardona, G., Rossell, F., and Valiente, G. (2008) Extended Newick: it
+is time for a standard representation of phylogenetic
+networks. <em>BMC Bioinformatics</em>, <b>9</b>, 532.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../phangorn/html/as.networx.html">as.networx</a></code> in package <span class="pkg">phangorn</span>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tr &lt;- rcoal(5)
+(x &lt;- evonet(tr, 6:7, 8:9))
+plot(x)
+## simple example of extended Newick format:
+(enet &lt;- read.evonet(text = "((a:2,(b:1)#H1:1):1,(#H1,c:1):2);"))
+plot(enet, arrows=1)
+## from Fig. 2 in Cardona et al. 2008:
+z &lt;- read.evonet(text =
+"((1,((2,(3,(4)Y#H1)g)e,(((Y#H1, 5)h,6)f)X#H2)c)a,((X#H2,7)d,8)b)r;")
+z
+plot(z)
+## Not run: 
+if (require(igraph)) {
+    plot(as.igraph(z))
+}
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

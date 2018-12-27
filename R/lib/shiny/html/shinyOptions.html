@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get or set Shiny options</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getShinyOption {shiny}"><tr><td>getShinyOption {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get or set Shiny options</h2>
+
+<h3>Description</h3>
+
+<p><code>getShinyOption</code> retrieves the value of a Shiny option.
+<code>shinyOptions</code> sets the value of Shiny options; it can also be used to
+return a list of all currently-set Shiny options.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getShinyOption(name, default = NULL)
+
+shinyOptions(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>Name of an option to get.</p>
+</td></tr>
+<tr valign="top"><td><code>default</code></td>
+<td>
+<p>Value to be returned if the option is not currently set.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Options to set, with the form <code>name = value</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>There is a global option set, which is available by default. When a Shiny
+application is run with <code><a href="runApp.html">runApp</a></code>, that option set is duplicated
+and the new option set is available for getting or setting values. If options
+are set from global.R, app.R, ui.R, or server.R, or if they are set from
+inside the server function, then the options will be scoped to the
+application. When the application exits, the new option set is discarded and
+the global option set is restored.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+shinyOptions(myOption = 10)
+getShinyOption("myOption")
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

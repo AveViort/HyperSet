@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Inversion of (possibly singular) symmetric matrices</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for solvecov {fpc}"><tr><td>solvecov {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Inversion of (possibly singular) symmetric matrices</h2>
+
+<h3>Description</h3>
+
+<p>Tries to invert a matrix by <code>solve</code>. If this fails because of
+singularity, an
+eigenvector decomposition is computed, and eigenvalues below
+<code>1/cmax</code> are replaced by <code>1/cmax</code>, i.e., <code>cmax</code> will be
+the corresponding eigenvalue of the inverted matrix.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+solvecov(m, cmax = 1e+10)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>m</code></td>
+<td>
+<p>a numeric symmetric matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>cmax</code></td>
+<td>
+<p>a positive value, see above.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>inv</code></td>
+<td>
+<p>the inverted matrix</p>
+</td></tr>
+<tr valign="top"><td><code>coll</code></td>
+<td>
+<p><code>TRUE</code> if <code>solve</code> failed because of singularity.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../Matrix/html/solve-methods.html">solve</a></code>, <code><a href="../../base/html/eigen.html">eigen</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  x &lt;- c(1,0,0,1,0,1,0,0,1)
+  dim(x) &lt;- c(3,3)
+  solvecov(x)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

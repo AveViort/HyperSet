@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Session object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for session {shiny}"><tr><td>session {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Session object</h2>
+
+<h3>Description</h3>
+
+<p>Shiny server functions can optionally include <code>session</code> as a parameter
+(e.g. <code>function(input, output, session)</code>). The session object is an
+environment that can be used to access information and functionality
+relating to the session. The following list describes the items available
+in the environment; they can be accessed using the <code>$</code> operator (for
+example, <code>session$clientData$url_search</code>).
+</p>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>allowReconnect(value)</code></td>
+<td>
+
+<p>If <code>value</code> is <code>TRUE</code> and run in a hosting environment (Shiny
+Server or Connect) with reconnections enabled,  then when the session ends
+due to the network connection closing, the client will attempt to
+reconnect to the server. If a reconnection is successful, the browser will
+send all the current input values to the new session on the server, and
+the server will recalculate any outputs and send them back to the client.
+If <code>value</code> is <code>FALSE</code>, reconnections will be disabled (this is
+the default state). If <code>"force"</code>, then the client browser will always
+attempt to reconnect. The only reason to use <code>"force"</code> is for testing
+on a local connection (without Shiny Server or Connect).
+</p>
+</td></tr>
+<tr valign="top"><td><code>clientData</code></td>
+<td>
+
+<p>A <code><a href="reactiveValues.html">reactiveValues</a></code> object that contains information about the client.
+</p>
+
+<ul>
+<li><p><code>allowDataUriScheme</code> is a logical value that indicates whether
+the browser is able to handle URIs that use the <code>data:</code> scheme.
+
+</p>
+</li>
+<li><p><code>pixelratio</code> reports the &quot;device pixel ratio&quot; from the web browser,
+or 1 if none is reported. The value is 2 for Apple Retina displays.
+
+</p>
+</li>
+<li><p><code>singletons</code> - for internal use
+</p>
+</li>
+<li><p><code>url_protocol</code>, <code>url_hostname</code>, <code>url_port</code>,
+<code>url_pathname</code>, <code>url_search</code>, <code>url_hash_initial</code>
+and <code>url_hash</code> can be used to get the components of the URL
+that was requested by the browser to load the Shiny app page.
+These values are from the browser's perspective, so neither HTTP
+proxies nor Shiny Server will affect these values. The
+<code>url_search</code> value may be used with <code><a href="parseQueryString.html">parseQueryString</a></code>
+to access query string parameters.
+
+</p>
+</li></ul>
+
+<p><code>clientData</code> also contains information about each output.
+<code>output_<var>outputId</var>_width</code> and <code>output_<var>outputId</var>_height</code>
+give the dimensions (using <code>offsetWidth</code> and <code>offsetHeight</code>) of
+the DOM element that is bound to <code><var>outputId</var></code>, and
+<code>output_<var>outputId</var>_hidden</code> is a logical that indicates whether
+the element is hidden. These values may be <code>NULL</code> if the output is
+not bound.
+</p>
+</td></tr>
+<tr valign="top"><td><code>input</code></td>
+<td>
+
+<p>The session's <code>input</code> object (the same as is passed into the Shiny
+server function as an argument).
+</p>
+</td></tr>
+<tr valign="top"><td><code>isClosed()</code></td>
+<td>
+<p>A function that returns <code>TRUE</code> if the client has
+disconnected.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ns(id)</code></td>
+<td>
+
+<p>Server-side version of <code>ns &lt;- <a href="NS.html">NS</a>(id)</code>. If bare IDs need to be
+explicitly namespaced for the current module, <code>session$ns("name")</code>
+will return the fully-qualified ID.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onEnded(callback)</code></td>
+<td>
+
+<p>Synonym for <code>onSessionEnded</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onFlush(func, once=TRUE)</code></td>
+<td>
+
+<p>Registers a function to be called before the next time (if <code>once=TRUE</code>)
+or every time (if <code>once=FALSE</code>) Shiny flushes the reactive system.
+Returns a function that can be called with no arguments to cancel the
+registration.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onFlushed(func, once=TRUE)</code></td>
+<td>
+
+<p>Registers a function to be called after the next time (if <code>once=TRUE</code>)
+or every time (if <code>once=FALSE</code>) Shiny flushes the reactive system.
+Returns a function that can be called with no arguments to cancel the
+registration.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onSessionEnded(callback)</code></td>
+<td>
+
+<p>Registers a function to be called after the client has disconnected.
+Returns a function that can be called with no arguments to cancel the
+registration.
+</p>
+</td></tr>
+<tr valign="top"><td><code>output</code></td>
+<td>
+
+<p>The session's <code>output</code> object (the same as is passed into the Shiny
+server function as an argument).
+</p>
+</td></tr>
+<tr valign="top"><td><code>reactlog</code></td>
+<td>
+
+<p>For internal use.
+</p>
+</td></tr>
+<tr valign="top"><td><code>registerDataObj(name, data, filterFunc)</code></td>
+<td>
+
+<p>Publishes any R object as a URL endpoint that is unique to this session.
+<code>name</code> must be a single element character vector; it will be used
+to form part of the URL. <code>filterFunc</code> must be a function that takes
+two arguments: <code>data</code> (the value that was passed into
+<code>registerDataObj</code>) and <code>req</code> (an environment that implements
+the Rook specification for HTTP requests). <code>filterFunc</code> will be
+called with these values whenever an HTTP request is made to the URL
+endpoint. The return value of <code>filterFunc</code> should be a Rook-style
+response.
+</p>
+</td></tr>
+<tr valign="top"><td><code>reload()</code></td>
+<td>
+
+<p>The equivalent of hitting the browser's Reload button. Only works if the
+session is actually connected.
+</p>
+</td></tr>
+<tr valign="top"><td><code>request</code></td>
+<td>
+
+<p>An environment that implements the Rook specification for HTTP requests.
+This is the request that was used to initiate the websocket connection
+(as opposed to the request that downloaded the web page for the app).
+</p>
+</td></tr>
+<tr valign="top"><td><code>userData</code></td>
+<td>
+
+<p>An environment for app authors and module/package authors to store whatever
+session-specific data they want.
+</p>
+</td></tr>
+<tr valign="top"><td><code>resetBrush(brushId)</code></td>
+<td>
+
+<p>Resets/clears the brush with the given <code>brushId</code>, if it exists on
+any <code>imageOutput</code> or <code>plotOutput</code> in the app.
+</p>
+</td></tr>
+<tr valign="top"><td><code>sendCustomMessage(type, message)</code></td>
+<td>
+
+<p>Sends a custom message to the web page. <code>type</code> must be a
+single-element character vector giving the type of message, while
+<code>message</code> can be any jsonlite-encodable value. Custom messages
+have no meaning to Shiny itself; they are used soley to convey information
+to custom JavaScript logic in the browser. You can do this by adding
+JavaScript code to the browser that calls
+<code>Shiny.addCustomMessageHandler(type, function(message){...})</code>
+as the page loads; the function you provide to
+<code>addCustomMessageHandler</code> will be invoked each time
+<code>sendCustomMessage</code> is called on the server.
+</p>
+</td></tr>
+<tr valign="top"><td><code>sendBinaryMessage(type, message)</code></td>
+<td>
+
+<p>Similar to <code>sendCustomMessage</code>, but the message must be a raw vector
+and the registration method on the client is
+<code>Shiny.addBinaryMessageHandler(type, function(message){...})</code>. The
+message argument on the client will be a
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>sendInputMessage(inputId, message)</code></td>
+<td>
+
+<p>Sends a message to an input on the session's client web page; if the input
+is present and bound on the page at the time the message is received, then
+the input binding object's <code>receiveMessage(el, message)</code> method will
+be called. <code>sendInputMessage</code> should generally not be called directly
+from Shiny apps, but through friendlier wrapper functions like
+<code><a href="updateTextInput.html">updateTextInput</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>setBookmarkExclude(names)</code></td>
+<td>
+
+<p>Set input names to be excluded from bookmarking.
+</p>
+</td></tr>
+<tr valign="top"><td><code>getBookmarkExclude()</code></td>
+<td>
+
+<p>Returns the set of input names to be excluded from bookmarking.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onBookmark(fun)</code></td>
+<td>
+
+<p>Registers a function that will be called just before bookmarking state.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onBookmarked(fun)</code></td>
+<td>
+
+<p>Registers a function that will be called just after bookmarking state.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onRestore(fun)</code></td>
+<td>
+
+<p>Registers a function that will be called when a session is restored, before
+all other reactives, observers, and render functions are run.
+</p>
+</td></tr>
+<tr valign="top"><td><code>onRestored(fun)</code></td>
+<td>
+
+<p>Registers a function that will be called when a session is restored, after
+all other reactives, observers, and render functions are run.
+</p>
+</td></tr>
+<tr valign="top"><td><code>doBookmark()</code></td>
+<td>
+
+<p>Do bookmarking and invoke the onBookmark and onBookmarked callback functions.
+</p>
+</td></tr>
+<tr valign="top"><td><code>exportTestValues()</code></td>
+<td>
+
+<p>Registers expressions for export in test mode, available at the test
+snapshot URL.
+</p>
+</td></tr>
+<tr valign="top"><td><code>getTestSnapshotUrl(input=TRUE, output=TRUE, export=TRUE,
+format=&quot;json&quot;)</code></td>
+<td>
+
+<p>Returns a URL for the test snapshots. Only has an effect when the
+<code>shiny.testmode</code> option is set to TRUE. For the input, output, and
+export arguments, TRUE means to return all of these values. It is also
+possible to specify by name which values to return by providing a
+character vector, as in <code>input=c("x", "y")</code>. The format can be
+&quot;rds&quot; or &quot;json&quot;.
+</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

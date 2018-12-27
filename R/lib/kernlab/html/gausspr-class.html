@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;gausspr&quot;</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for gausspr-class {kernlab}"><tr><td>gausspr-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;gausspr&quot;</h2>
+
+<h3>Description</h3>
+
+<p>The Gaussian Processes object class</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("gausspr", ...)</code>.
+or by calling the <code>gausspr</code> function 
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>tol</code>:</dt><dd><p>Object of class <code>"numeric"</code> contains
+tolerance of termination criteria</p>
+</dd>
+<dt><code>kernelf</code>:</dt><dd><p>Object of class <code>"kfunction"</code> contains
+the kernel function used</p>
+</dd>
+<dt><code>kpar</code>:</dt><dd><p>Object of class <code>"list"</code> contains the
+kernel parameter used </p>
+</dd>
+<dt><code>kcall</code>:</dt><dd><p>Object of class <code>"list"</code> contains the used
+function call </p>
+</dd>
+<dt><code>type</code>:</dt><dd><p>Object of class <code>"character"</code> contains
+type of problem </p>
+</dd>
+<dt><code>terms</code>:</dt><dd><p>Object of class <code>"ANY"</code> contains the
+terms representation of the symbolic model used (when using a formula)</p>
+</dd>
+<dt><code>xmatrix</code>:</dt><dd><p>Object of class <code>"input"</code> containing
+the data matrix used </p>
+</dd>
+<dt><code>ymatrix</code>:</dt><dd><p>Object of class <code>"output"</code> containing the
+response matrix</p>
+</dd>
+<dt><code>fitted</code>:</dt><dd><p>Object of class <code>"output"</code> containing the
+fitted values  </p>
+</dd>
+<dt><code>lev</code>:</dt><dd><p>Object of class <code>"vector"</code> containing the
+levels of the response (in case of classification) </p>
+</dd>
+<dt><code>nclass</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing
+the number of classes (in case of classification) </p>
+</dd>
+<dt><code>alpha</code>:</dt><dd><p>Object of class <code>"listI"</code> containing the
+computes alpha values </p>
+</dd>
+<dt><code>alphaindex</code></dt><dd><p>Object of class <code>"list"</code> containing
+the indexes for the alphas in various classes (in multi-class
+problems).</p>
+</dd>
+<dt><code>sol</code></dt><dd><p>Object of class <code>"matrix"</code> containing the solution to the Gaussian Process formulation, it is used to compute the variance in regression problems.</p>
+</dd> 
+<dt><code>scaling</code></dt><dd><p>Object of class <code>"ANY"</code> containing
+the scaling coefficients of the data (when case <code>scaled = TRUE</code> is used).</p>
+</dd>
+<dt><code>nvar</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+computed variance</p>
+</dd>
+<dt><code>error</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+training error</p>
+</dd>
+<dt><code>cross</code>:</dt><dd><p>Object of class <code>"numeric"</code> containing the
+cross validation error</p>
+</dd>
+<dt><code>n.action</code>:</dt><dd><p>Object of class <code>"ANY"</code> containing the
+action performed in NA </p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+ 
+<dl>
+<dt>alpha</dt><dd><p><code>signature(object = "gausspr")</code>: returns the alpha
+vector</p>
+</dd>
+<dt>cross</dt><dd><p><code>signature(object = "gausspr")</code>: returns the cross
+validation error </p>
+</dd>
+<dt>error</dt><dd><p><code>signature(object = "gausspr")</code>: returns the
+training error </p>
+</dd>
+<dt>fitted</dt><dd><p><code>signature(object = "vm")</code>: returns the fitted values </p>
+</dd>
+<dt>kcall</dt><dd><p><code>signature(object = "gausspr")</code>: returns the call performed</p>
+</dd>
+<dt>kernelf</dt><dd><p><code>signature(object = "gausspr")</code>: returns the
+kernel function used</p>
+</dd>
+<dt>kpar</dt><dd><p><code>signature(object = "gausspr")</code>: returns the kernel
+parameter used</p>
+</dd>
+<dt>lev</dt><dd><p><code>signature(object = "gausspr")</code>: returns the
+response levels (in classification) </p>
+</dd>
+<dt>type</dt><dd><p><code>signature(object = "gausspr")</code>: returns the type
+of problem</p>
+</dd>
+<dt>xmatrix</dt><dd><p><code>signature(object = "gausspr")</code>: returns the
+data matrix used</p>
+</dd>
+<dt>ymatrix</dt><dd><p><code>signature(object = "gausspr")</code>: returns the
+response matrix used</p>
+</dd>
+<dt>scaling</dt><dd><p><code>signature(object = "gausspr")</code>: returns the
+scaling coefficients of the data (when <code>scaled = TRUE</code> is used)</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="gausspr.html">gausspr</a></code>, 
+<code><a href="ksvm-class.html">ksvm-class</a></code>,
+<code><a href="vm-class.html">vm-class</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+# train model
+data(iris)
+test &lt;- gausspr(Species~.,data=iris,var=2)
+test
+alpha(test)
+error(test)
+lev(test)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

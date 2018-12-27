@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Permutation Image Plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pimage {seriation}"><tr><td>pimage {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Permutation Image Plot</h2>
+
+<h3>Description</h3>
+
+<p>Provides methods for plotting image plots for
+matrix and <code>dist</code> objects given a permutation.
+By default, no permutation is performed.
+This plot can also
+be used as a more versatile replacement of <code>image</code> plot
+in <span class="pkg">graphics</span> based on <span class="pkg">grid</span>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pimage(x, order = NULL, col = NULL, main ="", xlab = "", ylab = "",
+  axes = "auto", zlim=NULL, key=TRUE, key.lab="", symkey=TRUE,
+  upper.tri = TRUE, lower.tri = TRUE, prop = NULL,
+  ..., newpage=TRUE, pop=TRUE, gp=NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a matrix or an object of class <code>dist</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>an object of class <code>ser_permutation</code>. If <code>NULL</code> the order
+in <code>x</code> is plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>a list of colors used. If <code>NULL</code>, a gray scale is used (for
+matrix larger values are displayed darker and for <code>dist</code> smaller
+distances are darker). For matrices containing logical data, black and
+white is used. For matrices containing negative values a symmetric
+diverging color palette is used.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>plot title.</p>
+</td></tr>
+<tr valign="top"><td><code>xlab, ylab</code></td>
+<td>
+<p>labels for the x and y axes.</p>
+</td></tr>
+<tr valign="top"><td><code>axes</code></td>
+<td>
+<p> a character string indicating if axes labels (column and row
+names of <code>x</code>) should be potted. Possible values are
+<code>"auto"</code> (only plot if less then 25 labels),
+<code>"x"</code>,
+<code>"y"</code>,
+<code>"both"</code> and
+<code>"none"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>zlim</code></td>
+<td>
+<p> vector with two elements giving the range (min, max) for
+representing the values in the matrix. </p>
+</td></tr>
+<tr valign="top"><td><code>key</code></td>
+<td>
+<p> logical; add a color key? No key is available for logical
+matrices. </p>
+</td></tr>
+<tr valign="top"><td><code>key.lab</code></td>
+<td>
+<p> string plotted next to the color key.</p>
+</td></tr>
+<tr valign="top"><td><code>symkey</code></td>
+<td>
+<p> logical; if <code>x</code> contains negative values, should the
+color palate be symmetric (zero is in the middle)&gt;</p>
+</td></tr>
+<tr valign="top"><td><code>upper.tri, lower.tri</code></td>
+<td>
+<p> a logical indicating whether to show the
+upper or lower triangle of the distance matrix. </p>
+</td></tr>
+<tr valign="top"><td><code>prop</code></td>
+<td>
+<p>logical; draw the cells in the image proportional (defaults to
+<code>TRUE</code> for <code>dist</code> and <code>FALSE</code> for matrix).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed on to <code>image</code> in <span class="pkg">graphics</span>.</p>
+</td></tr>
+<tr valign="top"><td><code>newpage, pop</code></td>
+<td>
+<p>two logical. Start plot on a new page and pop the viewports after plotting (see <span class="pkg">grid</span>).</p>
+</td></tr>
+<tr valign="top"><td><code>gp</code></td>
+<td>
+<p>a <code>gpar</code> object (see <span class="pkg">grid</span>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Plots a matrix in its original row and column orientation. This means, in a
+plot the columns become the x-coordinates and the reversed rows the
+y-coordinates.
+</p>
+<p>If <code>x</code> is of class <code>dist</code> it is converted to full-storage
+representation before plotting.
+</p>
+<p>The viewports used for plotting are called: <code>"plot"</code>, <code>"image"</code>
+and <code>"colorkey"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Buchta and Michael Hahsler</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="seriate.html">seriate</a></code>,
+<code><a href="hmap.html">hmap</a></code>,
+<code><a href="dissplot.html">dissplot</a></code> and
+<code><a href="../../graphics/html/image.html">image</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- matrix(sample(c(FALSE, TRUE), 300, rep=TRUE), ncol=10,
+  dimnames = list(1:30, LETTERS[1:10]))
+
+## matrix (large values are dark/black)
+pimage(x, main = "Random data", key = FALSE)
+
+## plot seriated matrix (use red, proportional display and plot all axes)
+pimage(x, seriate(x), col = c("white", "red"),
+  prop = TRUE, axes="both", main = "Reordered data", key = FALSE)
+
+## show correlation (for neg. values a diverging color scheme is
+## used automatically)
+pimage(cor(x), prop=TRUE)
+
+## distances (note that low distances are represented dark!)
+d &lt;- dist(x, method = "binary")
+pimage(d, upper.tri = FALSE, main = "Distances")
+
+pimage(d, seriate(d), upper.tri = FALSE, main = "Distances", axes = "both")
+
+## add to the plot using grid (use pop = FALSE)
+library(grid)
+pimage(x, pop = FALSE)
+downViewport(name = "image")
+
+## highlight cell 7/5 with a red arrow
+grid.lines(x = c(5, 7), y = c(3, 5), arrow = arrow(),
+  default.units = "native", gp = gpar(col="red", lwd = 3))
+
+## add a red box around rows 15 and 16
+grid.rect(x = 0.5, y = 15.5, width = ncol(x), height = 2,
+  just = "left",
+  default.units = "native", gp = gpar(col="red", lwd = 3, fill = NA))
+
+## remove the viewports
+popViewport(0)
+
+## put several pimages on a page (uses viewports and newpage = FALSE)
+library(grid)
+grid.newpage()
+pushViewport(viewport(layout=grid.layout(nrow = 1, ncol = 2)))
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+
+## seriate matrix
+o &lt;- seriate(x)
+pimage(x, o, main = "Random data", prop = TRUE, axes = "both", key = FALSE,
+  newpage = FALSE)
+
+upViewport(1)
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+
+## add the reordered disimilarity matrix for rowa
+pimage(d, o[[1]], upper.tri = FALSE, main = "Distances", axes = "both",
+  key = FALSE, newpage = FALSE)
+
+upViewport(1)
+popViewport(0)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

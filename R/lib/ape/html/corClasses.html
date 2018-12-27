@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Phylogenetic Correlation Structures</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for corClasses {ape}"><tr><td>corClasses {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Phylogenetic Correlation Structures</h2>
+
+<h3>Description</h3>
+
+<p>Classes of phylogenetic correlation structures (<code>"corPhyl"</code>)
+available in <span class="pkg">ape</span>.
+</p>
+
+<ul>
+<li><p>corBrownianBrownian motion model (Felsenstein 1985)
+</p>
+</li>
+<li><p>corMartinsThe covariance matrix defined in Martins and Hansen
+(1997)
+</p>
+</li>
+<li><p>corGrafenThe covariance matrix defined in Grafen (1989)
+</p>
+</li>
+<li><p>corPagelThe covariance matrix defined in Freckelton et al. (2002)
+</p>
+</li>
+<li><p>corBlombergThe covariance matrix defined in Blomberg et al. (2003)
+</p>
+</li></ul>
+
+<p>See the help page of each class for references and detailed
+description.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:julien.dutheil@univ-montp2.fr">julien.dutheil@univ-montp2.fr</a>, Emmanuel
+Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../nlme/html/corClasses.html">corClasses</a></code> and <code><a href="../../nlme/html/gls.html">gls</a></code> in the
+<span class="pkg">nlme</span> librarie, <code><a href="corBrownian.html">corBrownian</a></code>,
+<code><a href="corMartins.html">corMartins</a></code>, <code><a href="corGrafen.html">corGrafen</a></code>,
+<code><a href="corPagel.html">corPagel</a></code>, <code><a href="corBlomberg.html">corBlomberg</a></code>,
+<code><a href="vcv.phylo.html">vcv</a></code>, <code><a href="vcv2phylo.html">vcv2phylo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(nlme)
+cat("((((Homo:0.21,Pongo:0.21):0.28,",
+"Macaca:0.49):0.13,Ateles:0.62):0.38,Galago:1.00);",
+file = "ex.tre", sep = "\n")
+tree.primates &lt;- read.tree("ex.tre")
+X &lt;- c(4.09434, 3.61092, 2.37024, 2.02815, -1.46968)
+Y &lt;- c(4.74493, 3.33220, 3.36730, 2.89037, 2.30259)
+unlink("ex.tre") # delete the file "ex.tre"
+m1 &lt;- gls(Y ~ X, correlation=corBrownian(1, tree.primates))
+summary(m1)
+m2 &lt;- gls(Y ~ X, correlation=corMartins(1, tree.primates))
+summary(m2)
+corMatrix(m2$modelStruct$corStruct)
+m3 &lt;- gls(Y ~ X, correlation=corGrafen(1, tree.primates))
+summary(m3)
+corMatrix(m3$modelStruct$corStruct)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

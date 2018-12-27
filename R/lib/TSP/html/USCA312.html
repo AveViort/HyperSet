@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: USCA312/USCA50 - 312/50 cities in the US and Canada</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for USCA {TSP}"><tr><td>USCA {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>USCA312/USCA50 &ndash; 312/50 cities in the US and Canada</h2>
+
+<h3>Description</h3>
+
+<p>The <code>USCA312</code> dataset contains the distances between 312 cities in the US
+and Canada as an object of class <code>TSP</code>.  <code>USCA50</code> is a subset of
+<code>USCA312</code> containing only the first 50 cities.
+</p>
+<p>The <code>USCA312_map</code> dataset contains 
+spatial data of the 312 cities.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+data("USCA312")
+data("USCA312_map")
+data("USCA50")
+</pre>
+
+
+<h3>Format</h3>
+
+<p><code>USCA312</code> and <code>USCA50</code> are objects of class <code>TSP</code>.
+<code>USCA312_map</code> contains in <code>USCA312_coords</code> the spatial coordinates
+of the 312 cities and in <code>USCA312_basemap</code> a part of the 
+map of North America.
+</p>
+
+
+<h3>Details</h3>
+
+<p>For <code>USCA312_map</code> several packages for geographic data are needed (see
+Examples section).
+</p>
+<p>We want to thank Roger Bivand for his help with plotting the map.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>Source</h3>
+
+<p>John Burkardt, CITIES &ndash; City Distance Datasets, Florida State University, 
+Department of Scientific Computing
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("USCA312")
+data("USCA312_map")
+
+## calculate a tour
+tour &lt;- solve_TSP(USCA312)
+tour
+
+## load map tools
+library("maps")
+library("sp")
+library("maptools")
+
+## plot map
+plot(as(USCA312_coords, "Spatial"), axes=TRUE)
+plot(USCA312_basemap, add=TRUE, col = "gray")
+
+
+## plot tour and add cities
+tour_line &lt;- SpatialLines(list(Lines(list(
+    Line(USCA312_coords[c(tour, tour[1]),])), ID="1")))
+
+plot(tour_line, add=TRUE, col = "red")
+points(USCA312_coords, pch=3, cex=0.4, col="black")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate SQL from R expressions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sql_expr {dbplyr}"><tr><td>sql_expr {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate SQL from R expressions</h2>
+
+<h3>Description</h3>
+
+<p>Low-level building block for generating SQL from R expressions.
+Strings are escaped; names become bare SQL identifiers. User infix
+functions have <code>%</code> stripped.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sql_expr(x, con = sql_current_con())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A quasiquoted expression</p>
+</td></tr>
+<tr valign="top"><td><code>con</code></td>
+<td>
+<p>An optional database connection to control the details of
+the translation. The default, <code>NULL</code>, generates ANSI SQL.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+sql_expr(f(x + 1))
+
+sql_expr(f("x", "y"))
+sql_expr(f(x, y))
+
+sql_expr(cast("x" %as% DECIMAL))
+sql_expr(round(x) %::% numeric)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

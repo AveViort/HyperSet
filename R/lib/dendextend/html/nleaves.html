@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Counts the number of leaves in a tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nleaves {dendextend}"><tr><td>nleaves {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Counts the number of leaves in a tree</h2>
+
+<h3>Description</h3>
+
+<p>Counts the number of leaves in a tree (dendrogram or hclust).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nleaves(x, ...)
+
+## Default S3 method:
+nleaves(x, ...)
+
+## S3 method for class 'dendrogram'
+nleaves(x, method = c("members", "order"), ...)
+
+## S3 method for class 'dendlist'
+nleaves(x, ...)
+
+## S3 method for class 'hclust'
+nleaves(x, ...)
+
+## S3 method for class 'phylo'
+nleaves(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>tree object (dendrogram/hclust/phylo,<a href="dendlist.html">dendlist</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>a character scalar (default is &quot;members&quot;). If &quot;order&quot; 
+than nleaves is based on length of <a href="../../stats/html/order.dendrogram.html">order.dendrogram</a>. 
+If &quot;members&quot;, than length is trusting what is written in the 
+dendrogram's root <a href="../../base/html/attr.html">attr</a>. 
+&quot;members&quot; is about 4 times faster than &quot;order&quot;.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The idea for the name is from functions like ncol, and nrow.
+</p>
+<p>Also, it is worth noting that the nleaves.dendrogram is based on 
+order.dendrogram instead of labels.dendrogram since the first is 
+MUCH faster than the later.
+</p>
+<p>The phylo method is based on turning the phylo to hclust and than to 
+dendrogram. It may not work for complex phylo trees.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The number of leaves in the tree
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../base/html/nrow.html">nrow</a>, <a href="count_terminal_nodes.html">count_terminal_nodes</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hc &lt;- hclust(dist(USArrests[1:5,]), "ave")
+dend &lt;- as.dendrogram(hc)
+
+nleaves(dend) # 5
+nleaves(hc) # 5
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

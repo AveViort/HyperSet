@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Extract or replace the upper/lower triangular portion of a...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for upperTriangle {gdata}"><tr><td>upperTriangle {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Extract or replace the upper/lower triangular portion of a matrix</h2>
+
+<h3>Description</h3>
+
+<p>Extract or replace the upper/lower triangular portion of a matrix
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+upperTriangle(x, diag=FALSE, byrow=FALSE)
+upperTriangle(x, diag=FALSE, byrow=FALSE) &lt;- value
+lowerTriangle(x, diag=FALSE, byrow=FALSE)
+lowerTriangle(x, diag=FALSE, byrow=FALSE) &lt;- value
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Matrix</p>
+</td></tr>
+<tr valign="top"><td><code>diag</code></td>
+<td>
+<p>Logical.  If <code>TRUE</code>, include the matrix diagonal.</p>
+</td></tr>
+<tr valign="top"><td><code>byrow</code></td>
+<td>
+<p>Logical.  If <code>FALSE</code>, return/replace elements in 
+column-wise order. If <code>TRUE</code>, return/replace elements in 
+row-wise order.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>Either a single value or a vector of length equal to that
+of the current upper/lower triangular.  Should be of a mode which 
+can be coerced to that of <code>x</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>upperTriangle(x)</code> and <code>lowerTriangle(x)</code> return the upper
+or lower triangle of matrix x, respectively. The assignment forms
+replace the upper or lower triangular area of the
+matrix with the provided value(s).  
+</p>
+
+
+<h3>Note</h3>
+
+<p>By default, the elements are returned/replaced in R's default column-wise order.  Thus 
+</p>
+<pre>  lowerTriangle(x) &lt;- upperTriangle(x)</pre>
+<p>will not yield a symmetric matrix.  Instead use:
+</p>
+<pre>  lowerTriangle(x) &lt;- upperTriangle(x, byrow=TRUE)</pre> 
+<p>or equivalently:
+</p>
+<pre>  lowerTriangle(x, byrow=TRUE) &lt;- upperTriangle(x)</pre> 
+
+
+<h3>Author(s)</h3>
+
+<p>Gregory R. Warnes <a href="mailto:greg@warnes.net">greg@warnes.net</a></p>
+
+
+<h3>See Also</h3>
+
+ 
+<p><code><a href="../../base/html/diag.html">diag</a></code>,  
+<code><a href="../../base/html/lower.tri.html">lower.tri</a></code>, 
+<code><a href="../../base/html/upper.tri.html">upper.tri</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  x &lt;- matrix( 1:25, nrow=5, ncol=5)
+  x
+  upperTriangle(x)
+  upperTriangle(x, diag=TRUE)
+  upperTriangle(x, diag=TRUE, byrow=TRUE)
+
+
+  lowerTriangle(x)
+  lowerTriangle(x, diag=TRUE)
+  lowerTriangle(x, diag=TRUE, byrow=TRUE)
+
+  upperTriangle(x) &lt;- NA
+  x
+
+  upperTriangle(x, diag=TRUE) &lt;- 1:15
+  x
+
+  lowerTriangle(x) &lt;- NA
+  x
+
+  lowerTriangle(x, diag=TRUE) &lt;- 1:15
+  x
+
+  ## Copy lower triangle into upper triangle to make 
+  ## the matrix (diagonally) symmetric
+  x &lt;- matrix(LETTERS[1:25], nrow=5, ncol=5, byrow=TRUE)
+  x
+  lowerTriangle(x) = upperTriangle(x, byrow=TRUE)
+  x
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

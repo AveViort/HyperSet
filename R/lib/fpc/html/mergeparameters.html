@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: New parameters from merging two Gaussian mixture components</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mergeparameters {fpc}"><tr><td>mergeparameters {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>New parameters from merging two Gaussian mixture components</h2>
+
+<h3>Description</h3>
+
+<p>Re-computes pointwise posterior probabilities, mean and covariance
+matrix for a mixture component obtained by merging two mixture
+components in a Gaussian mixture.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  mergeparameters(xdata, j1, j2, probs, muarray,Sigmaarray, z)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>xdata</code></td>
+<td>
+<p>data (something that can be coerced into a matrix).</p>
+</td></tr>
+<tr valign="top"><td><code>j1</code></td>
+<td>
+<p>integer. Number of first mixture component to be merged.</p>
+</td></tr>
+<tr valign="top"><td><code>j2</code></td>
+<td>
+<p>integer. Number of second mixture component to be merged.</p>
+</td></tr>
+<tr valign="top"><td><code>probs</code></td>
+<td>
+<p>vector of component proportions (for all components;
+should sum up to one).</p>
+</td></tr>
+<tr valign="top"><td><code>muarray</code></td>
+<td>
+<p>matrix of component means (rows).</p>
+</td></tr>
+<tr valign="top"><td><code>Sigmaarray</code></td>
+<td>
+<p>array of component covariance matrices (third
+dimension refers to component number).</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p>matrix of observation- (row-)wise posterior probabilities of
+belonging to the components (columns).</p>
+</td></tr> 
+</table>
+
+
+<h3>Value</h3>
+
+<p>List with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>probs</code></td>
+<td>
+<p>see above; sum of probabilities for original components
+<code>j1</code> and <code>j2</code> is now <code>probs[j1]</code>. Note that generally,
+also for the further components, values for the merged component are
+in place <code>j1</code> and values in place <code>j2</code> are not changed. This
+means that in order to have only the information for the new mixture
+after merging, the entries in places <code>j2</code> need to be suppressed.</p>
+</td></tr>  
+<tr valign="top"><td><code>muarray</code></td>
+<td>
+<p>see above; weighted mean of means of component
+<code>j1</code> and <code>j2</code> is now in place <code>j1</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>Sigmaarray</code></td>
+<td>
+<p>see above; weighted covariance matrix handled as
+above.</p>
+</td></tr> 
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p>see above; original entries for columns <code>j1</code> and
+<code>j2</code> are summed up and now in column <code>j1</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. (2010) Methods for merging Gaussian mixture components,
+<em>Advances in Data Analysis and Classification</em>, 4, 3-34.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  set.seed(98765)
+  require(mclust)
+  iriss &lt;- iris[sample(150,20),-5]
+  irisBIC &lt;- mclustBIC(iriss)
+  siris &lt;- summary(irisBIC,iriss)
+  probs &lt;- siris$parameters$pro
+  muarray &lt;- siris$parameters$mean
+  Sigmaarray &lt;- siris$parameters$variance$sigma
+  z &lt;- siris$z
+  mpi &lt;- mergeparameters(iriss,1,2,probs,muarray,Sigmaarray,z)
+  mpi$probs
+  mpi$muarray
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

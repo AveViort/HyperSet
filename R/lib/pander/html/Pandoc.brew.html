@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Brew in pandoc format</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Pandoc.brew {pander}"><tr><td>Pandoc.brew {pander}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Brew in pandoc format</h2>
+
+<h3>Description</h3>
+
+<p>This function behaves just like <code>brew</code> except for the <code>&lt;%=...%&gt;</code> tags, where <code>Pandoc.brew</code> first translate the R object found between the tags to Pandoc's markdown before passing to the <code>cat</code> function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+Pandoc.brew(file = stdin(), output = stdout(), convert = FALSE,
+  open = TRUE, graph.name, graph.dir, graph.hi.res = FALSE,
+  text = NULL, envir = parent.frame(), append = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>file path of the brew template. As this is passed to <code>readLines</code>, <code>file</code> could be an URL too, but not over SSL (for that latter <code>RCurl</code> would be needed).</p>
+</td></tr>
+<tr valign="top"><td><code>output</code></td>
+<td>
+<p>(optional) file path of the output file</p>
+</td></tr>
+<tr valign="top"><td><code>convert</code></td>
+<td>
+<p>string: format of required output document (besides Pandoc's markdown). Pandoc is called if set via <code>Pandoc.convert</code> and the converted document could be also opened automatically (see below).</p>
+</td></tr>
+<tr valign="top"><td><code>open</code></td>
+<td>
+<p>try to open converted document with operating system's default program</p>
+</td></tr>
+<tr valign="top"><td><code>graph.name</code></td>
+<td>
+<p>character string (default to <code>%t</code> when <code>output</code> is set to <code>stdout</code> and <code>paste0(basename(output), '-%n')</code> otherwise) passed to <code><a href="evals.html">evals</a></code>.  Besides <code><a href="evals.html">evals</a></code>'s possible tags <code>%i</code> is also available which would be replaced by the chunk number (and optionally an integer which would handle nested <code>brew</code> calls) and <code>%I</code> with the order of the current expression.</p>
+</td></tr>
+<tr valign="top"><td><code>graph.dir</code></td>
+<td>
+<p>character string (default to <code>tempdir()</code> when <code>output</code> is set to <code>stdout</code> and <code>dirname(graph.name)</code> otherwise) passed to <code><a href="evals.html">evals</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>graph.hi.res</code></td>
+<td>
+<p>render high resolution images of plots? Default is <code>FALSE</code> except for HTML output.</p>
+</td></tr>
+<tr valign="top"><td><code>text</code></td>
+<td>
+<p>character vector (treated as the content of the <code>file</code></p>
+</td></tr>
+<tr valign="top"><td><code>envir</code></td>
+<td>
+<p>environment where to <code>brew</code> the template</p>
+</td></tr>
+<tr valign="top"><td><code>append</code></td>
+<td>
+<p>should append or rather overwrite (default) the <code>output</code> markdown text file? Please note that this option only affects the markdown file and not the optionally created other formats.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters passed to <code><a href="Pandoc.convert.html">Pandoc.convert</a></code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This parser tries to be smart in some ways:
+</p>
+
+<ul>
+<li><p> a block (R commands between the tags) could return any value at any part of the block and there are no restrictions about the number of returned R objects
+</p>
+</li>
+<li><p> plots and images are grabbed in the document, rendered to a png file and <code>pander</code> method would result in a Pandoc's markdown formatted image link (so the image would be shown/included in the exported document). The images are put in <code>plots</code> directory in current <code>getwd()</code> or to the specified <code>output</code> file's directory.
+</p>
+</li>
+<li><p> all warnings/messages and errors are recorded in the blocks and returned in the document as a footnote
+</p>
+</li></ul>
+
+<p>Please see my Github page for details (<a href="http://rapporter.github.com/pander/#brew-to-pandoc">http://rapporter.github.com/pander/#brew-to-pandoc</a>) and examples (<a href="http://rapporter.github.com/pander/#examples">http://rapporter.github.com/pander/#examples</a>).
+</p>
+
+
+<h3>Value</h3>
+
+<p>converted file name with full path if <code>convert</code> is set, none otherwise
+</p>
+
+
+<h3>Note</h3>
+
+<p>Only one of the input parameters (<code>file</code> or <code>text</code>) is to be used at once!
+</p>
+
+
+<h3>References</h3>
+
+
+<ul>
+<li><p> Jeffrey Horner (2011). _brew: Templating Framework for Report Generation._ <a href="https://cran.r-project.org/package=brew">https://cran.r-project.org/package=brew</a>
+</p>
+</li>
+<li><p> John MacFarlane (2012): _Pandoc User's Guide_. <a href="http://johnmacfarlane.net/pandoc/README.html">http://johnmacfarlane.net/pandoc/README.html</a>
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+text &lt;- paste('# Header', '',
+  'What a lovely list:\n&lt;%=as.list(runif(10))%&gt;',
+  'A wide table:\n&lt;%=mtcars[1:3, ]%&gt;',
+  'And a nice chart:\n\n&lt;%=plot(1:10)%&gt;', sep = '\n')
+Pandoc.brew(text = text)
+Pandoc.brew(text = text, output = tempfile(), convert = 'html')
+Pandoc.brew(text = text, output = tempfile(), convert = 'pdf')
+
+## pi is awesome
+Pandoc.brew(text='&lt;%for (i in 1:5) {%&gt;\n Pi has a lot (&lt;%=i%&gt;) of power: &lt;%=pi^i%&gt;&lt;%}%&gt;')
+
+## package bundled examples
+Pandoc.brew(system.file('examples/minimal.brew', package='pander'))
+Pandoc.brew(system.file('examples/minimal.brew', package='pander'),
+  output = tempfile(), convert = 'html')
+Pandoc.brew(system.file('examples/short-code-long-report.brew', package='pander'))
+Pandoc.brew(system.file('examples/short-code-long-report.brew', package='pander'),
+  output = tempfile(), convert = 'html')
+
+## brew returning R objects
+str(Pandoc.brew(text='Pi equals to &lt;%=pi%&gt;.
+And here are some random data:\n&lt;%=runif(10)%&gt;'))
+
+str(Pandoc.brew(text='# Header &lt;%=1%&gt;\nPi is &lt;%=pi%&gt; which is smaller then &lt;%=2%&gt;.
+foo\nbar\n &lt;%=3%&gt;\n&lt;%=mtcars[1:2,]%&gt;'))
+
+str(Pandoc.brew(text='&lt;%for (i in 1:5) {%&gt;
+Pi has a lot (&lt;%=i%&gt;) of power: &lt;%=pi^i%&gt;&lt;%}%&gt;'))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pander</em> version 0.6.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

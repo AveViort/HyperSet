@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Application directories: determine where to save data, caches...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for rappdirs-package {rappdirs}"><tr><td>rappdirs-package {rappdirs}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Application directories: determine where to save data, caches and logs.</h2>
+
+<h3>Description</h3>
+
+<p>rappdirs solves the problem of where to save persistent data 
+outside of the R library or the R per-session <code><a href="../../base/html/tempfile.html">tempdir</a></code>.
+</p>
+
+
+<h3>main functions</h3>
+
+
+<ul>
+<li><p> user data dir (<code>user_data_dir</code>)
+</p>
+</li>
+<li><p> user config dir (<code>user_config_dir</code>)
+</p>
+</li>
+<li><p> user cache dir (<code>user_cache_dir</code>)
+</p>
+</li>
+<li><p> site data dir (<code>site_data_dir</code>)
+</p>
+</li>
+<li><p> user log dir (<code>user_log_dir</code>)
+</p>
+</li></ul>
+
+
+
+<h3>single entry function</h3>
+
+<p>The <code>app_dir</code> provides a convenient single entry point.
+</p>
+
+
+<h3>Caveats</h3>
+
+<p>Note that if you use rappdir's <code><a href="user_data_dir.html">user_data_dir</a></code> 
+and friends to define a storage location for files you must be aware of 
+<a href="http://en.wikipedia.org/wiki/Race_condition">race conditions</a> when 
+more than one R process tries to create/write files in this directory. This
+is in contrast to using the <code><a href="../../base/html/tempfile.html">tempdir</a></code>, <code><a href="../../base/html/tempfile.html">tempfile</a></code>
+base functions which should be unique for each R process. In general the
+directories provided by rappdirs are most suitable for storing data that is
+rarely written but might need to be shared across R sessions.
+</p>
+<p>Note also that the 
+<a href="http://cran.r-project.org/web/packages/policies.html">CRAN Policies</a> 
+have the following to say about storage of data by packages:
+</p>
+<p>- Packages should not write in the users' home filespace, nor anywhere else
+on the file system apart from the R session's temporary directory (or 
+during installation in the location pointed to by TMPDIR: and such usage 
+should be cleaned up). Installing into the system's R installation (e.g., 
+scripts to its bin directory) is not allowed.
+</p>
+<p>Limited exceptions may be allowed in interactive sessions if the package 
+obtains confirmation from the user.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="app_dir.html">app_dir</a>, <a href="user_data_dir.html">user_data_dir</a>, <a href="user_data_dir.html">user_config_dir</a>, 
+  <a href="user_cache_dir.html">user_cache_dir</a>, <a href="site_data_dir.html">site_data_dir</a>, <a href="user_log_dir.html">user_log_dir</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+dirs &lt;- app_dir("SuperApp", "Acme")
+dirs$config()
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rappdirs</em> version 0.3.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

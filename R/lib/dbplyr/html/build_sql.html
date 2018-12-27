@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Build a SQL string.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for build_sql {dbplyr}"><tr><td>build_sql {dbplyr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Build a SQL string.</h2>
+
+<h3>Description</h3>
+
+<p>This is a convenience function that should prevent sql injection attacks
+(which in the context of dplyr are most likely to be accidental not
+deliberate) by automatically escaping all expressions in the input, while
+treating bare strings as sql. This is unlikely to prevent any serious
+attack, but should make it unlikely that you produce invalid sql.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+build_sql(..., .env = parent.frame(), con = sql_current_con())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>input to convert to SQL. Use <code><a href="sql.html">sql()</a></code> to preserve
+user input as is (dangerous), and <code><a href="ident.html">ident()</a></code> to label user
+input as sql identifiers (safe)</p>
+</td></tr>
+<tr valign="top"><td><code>.env</code></td>
+<td>
+<p>the environment in which to evalute the arguments. Should not
+be needed in typical use.</p>
+</td></tr>
+<tr valign="top"><td><code>con</code></td>
+<td>
+<p>database connection; used to select correct quoting characters.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+build_sql("SELECT * FROM TABLE")
+x &lt;- "TABLE"
+build_sql("SELECT * FROM ", x)
+build_sql("SELECT * FROM ", ident(x))
+build_sql("SELECT * FROM ", sql(x))
+
+# http://xkcd.com/327/
+name &lt;- "Robert'); DROP TABLE Students;--"
+build_sql("INSERT INTO Students (Name) VALUES (", name, ")")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dbplyr</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

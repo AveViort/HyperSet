@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Discriminant projection plot.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plotcluster {fpc}"><tr><td>plotcluster {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Discriminant projection plot.</h2>
+
+<h3>Description</h3>
+
+<p>Plots to distinguish given classes by ten available projection
+methods. Includes classical discriminant
+coordinates, methods to project differences in
+mean and covariance structure, asymmetric methods (separation of a
+homogeneous class from a heterogeneous one), local neighborhood-based
+methods and methods based on robust covariance matrices.
+One-dimensional data is plotted against the cluster number.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plotcluster(x, clvecd, clnum=NULL,
+            method=ifelse(is.null(clnum),"dc","awc"),
+            bw=FALSE,
+            ignorepoints=FALSE, ignorenum=0, pointsbyclvecd=TRUE,
+            xlab=NULL, ylab=NULL,
+            pch=NULL, col=NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the data matrix; a numerical object which can be coerced
+to a matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>clvecd</code></td>
+<td>
+<p>vector of class numbers which can be coerced into
+integers; length must equal
+<code>nrow(xd)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>one of
+</p>
+
+<dl>
+<dt>&quot;dc&quot;</dt><dd><p>usual discriminant coordinates, see <code><a href="discrcoord.html">discrcoord</a></code>,</p>
+</dd>
+<dt>&quot;bc&quot;</dt><dd><p>Bhattacharyya coordinates, first coordinate showing
+mean differences, second showing covariance matrix differences,
+see <code><a href="batcoord.html">batcoord</a></code>,</p>
+</dd>
+<dt>&quot;vbc&quot;</dt><dd><p>variance dominated Bhattacharyya coordinates,
+see <code><a href="batcoord.html">batcoord</a></code>,</p>
+</dd>
+<dt>&quot;mvdc&quot;</dt><dd><p>added mean and variance differences optimizing
+coordinates, see <code><a href="mvdcoord.html">mvdcoord</a></code>,</p>
+</dd>
+<dt>&quot;adc&quot;</dt><dd><p>asymmetric discriminant coordinates, see
+<code><a href="adcoord.html">adcoord</a></code>,</p>
+</dd>
+<dt>&quot;awc&quot;</dt><dd><p>asymmetric discriminant coordinates with weighted
+observations, see <code><a href="awcoord.html">awcoord</a></code>,</p>
+</dd>
+<dt>&quot;arc&quot;</dt><dd><p>asymmetric discriminant coordinates with weighted
+observations and robust MCD-covariance matrix,
+see <code><a href="awcoord.html">awcoord</a></code>,</p>
+</dd>
+<dt>&quot;nc&quot;</dt><dd><p>neighborhood based coordinates,
+see <code><a href="ncoord.html">ncoord</a></code>,</p>
+</dd>
+<dt>&quot;wnc&quot;</dt><dd><p>neighborhood based coordinates with weighted neighborhoods,
+see <code><a href="ncoord.html">ncoord</a></code>,</p>
+</dd>
+<dt>&quot;anc&quot;</dt><dd><p>asymmetric neighborhood based coordinates,
+see <code><a href="ancoord.html">ancoord</a></code>.</p>
+</dd>
+</dl>
+
+<p>Note that &quot;bc&quot;, &quot;vbc&quot;, &quot;adc&quot;, &quot;awc&quot;, &quot;arc&quot; and &quot;anc&quot; assume that
+there are only two classes.</p>
+</td></tr>
+<tr valign="top"><td><code>clnum</code></td>
+<td>
+<p>integer. Number of the class which is attempted to plot
+homogeneously by &quot;asymmetric methods&quot;, which are the methods
+assuming that there are only two classes, as indicated above.
+<code>clnum</code> is ignored for methods &quot;dc&quot; and &quot;nc&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>bw</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the classes are distinguished by
+symbols, and the default color is black/white.
+If <code>FALSE</code>, the classes are distinguished by
+colors, and the default symbol is <code>pch=1</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>ignorepoints</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, points with label
+<code>ignorenum</code> in <code>clvecd</code> are ignored in the computation for
+<code>method</code> and are only projected afterwards onto the resulting
+units. If <code>pch=NULL</code>, the plot symbol for these points is &quot;N&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>ignorenum</code></td>
+<td>
+<p>one of the potential values of the components of
+<code>clvecd</code>. Only has effect if <code>ignorepoints=TRUE</code>, see above.</p>
+</td></tr>
+<tr valign="top"><td><code>pointsbyclvecd</code></td>
+<td>
+<p>logical. If <code>TRUE</code> and <code>pch=NULL</code>
+and/or <code>col=NULL</code>, some hopefully suitable
+plot symbols (numbers and letters) and colors are chosen to
+distinguish the values of <code>clvecd</code>, starting with &quot;1&quot;/&quot;black&quot;
+for the cluster with the smallest <code>clvecd</code>-code (note that
+colors for clusters with numbers larger than minimum number
+<code>+3</code> are drawn at random from all available colors).
+<code>FALSE</code> produces
+potentially less reasonable (but nonrandom) standard colors and symbols if
+<code>method</code> is &quot;dc&quot; or &quot;nc&quot;, and will only distinguish whether
+<code>clvecd=clnum</code> or not for the other methods.</p>
+</td></tr> 
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>label for x-axis. If <code>NULL</code>, a default text is used.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>label for y-axis. If <code>NULL</code>, a default text is used.</p>
+</td></tr>
+<tr valign="top"><td><code>pch</code></td>
+<td>
+<p>plotting symbol, see <code><a href="../../graphics/html/par.html">par</a></code>.
+If <code>NULL</code>, the default is used.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p>plotting color, see <code><a href="../../graphics/html/par.html">par</a></code>.
+If <code>NULL</code>, the default is used.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters passed to <code>plot</code> or the
+projection methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>For some of the asymmetric methods, the area in the plot
+occupied by the &quot;homogeneous class&quot; (see <code>clnum</code> above) may be
+very small, and it may make sense to run <code>plotcluster</code> a second
+time specifying plot parameters <code>xlim</code> and <code>ylim</code> in a
+suitable way. It often makes sense to magnify the plot region
+containing the homogeneous class in this way
+so that its separation from the rest can be
+seen more clearly.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a></p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. (2004) Asymmetric linear dimension reduction for classification.
+Journal of Computational and Graphical Statistics 13, 930-945 .
+</p>
+<p>Hennig, C. (2005)  A method for visual cluster validation.  In:
+Weihs, C. and Gaul, W. (eds.): Classification - The Ubiquitous
+Challenge. Springer, Heidelberg 2005, 153-160.
+</p>
+<p>Seber, G. A. F. (1984). <em>Multivariate Observations</em>. New York: Wiley.
+</p>
+<p>Fukunaga (1990). <em>Introduction to Statistical Pattern
+Recognition</em> (2nd ed.). Boston: Academic Press.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="discrcoord.html">discrcoord</a></code>, <code><a href="batcoord.html">batcoord</a></code>,
+<code><a href="mvdcoord.html">mvdcoord</a></code>, <code><a href="adcoord.html">adcoord</a></code>,
+<code><a href="awcoord.html">awcoord</a></code>, <code><a href="ncoord.html">ncoord</a></code>,
+<code><a href="ancoord.html">ancoord</a></code>.
+</p>
+<p><code><a href="discrproj.html">discrproj</a></code> is an interface to all these projection methods.
+</p>
+<p><code><a href="rFace.html">rFace</a></code> for generation of the example data used below.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(4634)
+face &lt;- rFace(300,dMoNo=2,dNoEy=0)
+grface &lt;- as.integer(attr(face,"grouping"))
+plotcluster(face,grface)
+plotcluster(face,grface==1)
+plotcluster(face,grface, clnum=1, method="vbc")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

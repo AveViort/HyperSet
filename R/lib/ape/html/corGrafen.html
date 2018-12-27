@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Grafen's (1989) Correlation Structure</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for corGrafen {ape}"><tr><td>corGrafen {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Grafen's (1989) Correlation Structure</h2>
+
+<h3>Description</h3>
+
+<p>Grafen's (1989) covariance structure. Branch lengths are computed using
+Grafen's method (see <code><a href="compute.brlen.html">compute.brlen</a></code>). The covariance
+matrice is then the traditional variance-covariance matrix for a
+phylogeny.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+corGrafen(value, phy, form=~1, fixed = FALSE)
+## S3 method for class 'corGrafen'
+coef(object, unconstrained = TRUE, ...)
+## S3 method for class 'corGrafen'
+corMatrix(object,
+                  covariate = getCovariate(object), corr = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>The <i>rho</i> parameter</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>An object of class <code>phylo</code> representing the phylogeny
+(branch lengths are ignored) to consider</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>An (initialized) object of class <code>corGrafen</code></p>
+</td></tr>
+<tr valign="top"><td><code>corr</code></td>
+<td>
+<p>a logical value. If 'TRUE' the function returns the
+correlation matrix, otherwise it returns the variance/covariance
+matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>fixed</code></td>
+<td>
+<p>an optional logical value indicating whether the
+coefficients should be allowed to vary in the optimization, or kept
+fixed at their initial value. Defaults to 'FALSE', in which case the
+coefficients are allowed to vary.</p>
+</td></tr>
+<tr valign="top"><td><code>form</code></td>
+<td>
+<p>ignored for now.</p>
+</td></tr>
+<tr valign="top"><td><code>covariate</code></td>
+<td>
+<p>ignored for now.</p>
+</td></tr>
+<tr valign="top"><td><code>unconstrained</code></td>
+<td>
+<p>a logical value. If 'TRUE' the coefficients are
+returned in unconstrained form (the same used in the optimization
+algorithm). If 'FALSE' the coefficients are returned in &quot;natural&quot;,
+possibly constrained, form. Defaults to 'TRUE'</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>some methods for these generics require additional
+arguments. None are used in these methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>corGrafen</code> or the rho coefficient from an
+object of this class or the correlation matrix of an initialized
+object of this class.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:julien.dutheil@univ-montp2.fr">julien.dutheil@univ-montp2.fr</a></p>
+
+
+<h3>References</h3>
+
+<p>Grafen, A. (1989) The phylogenetic regression. <em>Philosophical
+Transactions of the Royal society of London. Series B. Biological
+Sciences</em>, <b>326</b>, 119&ndash;157.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="corClasses.html">corClasses</a></code>, <code><a href="compute.brlen.html">compute.brlen</a></code>, <code><a href="vcv.phylo.html">vcv.phylo</a></code>.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

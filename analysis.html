@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<HTML lang="en-US">
+<HEAD>
+<TITLE>Drug screen data</TITLE>
+<meta http-equiv="content-type" content="charset=utf-8">
+<META http-equiv="Content-Script-Type" content="application/javascript" >
+<LINK href="hyperset.css" type="text/css" rel="stylesheet">
+<!--LINK href="../pics/favicon.ico" rel="shortcut icon"-->
+<LINK href="js/jquery-ui-themes-1.11.2/themes/smoothness/jquery-ui.min.css" type="text/css" rel="stylesheet">
+<LINK href="js/qTip/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+<link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
+<link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="js/colorpicker-master/css/evol.colorpicker.css" rel="stylesheet" type="text/css">
+<link href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+<link href="//cdn.datatables.net/tabletools/2.2.3/css/dataTables.tableTools.css" rel="stylesheet" type="text/css">
+<link href="//cdn.datatables.net/plug-ins/3cfcc339e89/integration/jqueryui/dataTables.jqueryui.css" type="text/css">
+<link href="//cdn.datatables.net/responsive/1.0.4/css/dataTables.responsive.css" type="text/css">
+<script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui-1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui-contextmenu-master/jquery.ui-contextmenu.min.js" type="text/javascript"></script>  
+<script src="js/jquery.form.js" type="text/javascript"></script>  
+<script src="js/Cytoscape.js/cytoscape.min.js" type="text/javascript"></script>  
+<!--script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script-->
+<script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script>
+<script src="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.js" type="text/javascript"></script>
+<script src="js/overlib.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/responsive/1.0.4/js/dataTables.responsive.js" type="text/javascript"></script>
+<script src="js/qTip/jquery.qtip.min.js" type="text/javascript"></script>
+<script src="js/Cytoscape.js/arbor.js" type="text/javascript"></script>
+<script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script>
+<script src="js/Cytoscape.js/cytoscape.js-edgehandles.js" type="text/javascript"></script>
+<script src="js/FileSaver.js" type="text/javascript"></script>
+<script src="js/Blob.js" type="text/javascript"></script>
+<script src="js/jquery.ba-hashchange.js" type="text/javascript"></script>
+<script src="js/raphael-min.js" type="text/javascript"></script>
+<script src="js/jquery.venn.HS.js" type="text/javascript"></script>
+<script src="js/springy-master/springy.js" type="text/javascript"></script>
+<script src="js/colorpicker-master/js/evol.colorpicker.js"  type="text/javascript" charset="utf-8"></script>
+<!--script src="js/HS.js" type="text/javascript" charset="utf-8"></script-->
+<script  type="text/javascript">
+var AonReady;
+var pressedButton;	
+var pressedID;	
+var suggestedTarget;
+var HSonReady;
+		//$(document).ready(
+		$(document).ready(function(){
+		HSonReady();
+		 $(function() {
+		 
+$( "#showScales" ).dialog({
+		resizable: false,
+        modal: false,
+        title: "Drug sensitivity scales", 
+        width:  600,
+        height: "auto",
+		position: { 		my: "center", at: "center", 		of: "#form_total" 		}, 
+autoOpen: false,
+show: {
+effect: "blind",
+duration: 280
+},
+hide: {
+effect: "explode",
+duration: 600
+},
+        buttons: {"Close": 
+		function () {
+		$(this).dialog("close");
+	}}
+});
+ $( "#ssOpener" ).click(function() {
+$( "#showScales" ).dialog( "open" );
+   $( "#ssAcc" ).accordion();
+
+});
+});
+});
+
+ 	HSonReady = function () { 		
+		  //function () { 
+var options = { 
+        beforeSubmit:  	showRequest,  // pre-submit callback 
+        success:       	showResponse,  // post-submit callback 
+        error: 			explainError,
+        forceSync: false
+    };
+//alert("Drug screen correlations");  
+
+$("form").ajaxForm(options); 
+ 
+$(function() {$(':submit').click(
+function () {
+ pressedID = $(this).attr("id"); 
+ pressedButton = $(this).attr("name"); 
+ suggestedTarget = $(this).attr("value"); 
+ if (suggestedTarget.search("Rplot") > -1) {
+ suggestedTarget = "Rplot";
+ }
+//alert(suggestedTarget); 
+ }); }); 
+ }
+ function explainError(XMLHttpRequest, textStatus, errorThrown) { 
+        alert("responseText: " + XMLHttpRequest.responseText 
+         + ", textStatus: " + textStatus 
+         + ", errorThrown: " + errorThrown);
+        }
+	function showRequest(formData, jqForm, options) {
+		// make sure this is encryptecd!
+	var queryString = $.param(formData); 
+//	alert(queryString); 
+	if (pressedID == "submit-populate") {
+	if (
+	$("#platform_as_x_axis_choice").val() == $("#platform_as_y_axis_choice").val() || 
+	$("#platform_as_y_axis_choice").val() == $("#platform_as_color_axis_choice").val() || 
+	$("#platform_as_x_axis_choice").val() == $("#platform_as_color_axis_choice").val()) {
+alert("Same or no data sources selected for different plot dimensions..."); 
+return false;	
+	}}
+
+if (pressedButton == "pressed-button") {
+	options.target = "#" + suggestedTarget; 
+	}
+	//alert(options.target);
+$( "#progressbar" ).css({"visibility": "visible"})
+	    return true; 
+} 
+ 
+function showResponse(responseText, statusText, xhr, form)  { 
+	//alert(responseText);
+$( "#progressbar" ).css({"visibility": "hidden"})
+}
+
+var change_font = function (fc, obj) {
+var currentf = $("#" + obj).css("font-size");
+var i = 0; var unit = undefined; var sp; var dels =  ["em", "px", "%"];
+//console.log(unit);
+while (unit === undefined) {
+  sp = currentf.split(dels[i]); 
+  if (sp.length == 2) {
+    unit = dels[i];
+  }
+i++;
+}
+$("#" + obj).css("font-size",  fc * sp[0] + unit );
+}
+
+
+</script>
+</HEAD>
+  <BODY class="ui-state-default ui-corner-all">
+<FORM id="form_total" action="cgi/a.cgi" method="GET" autocomplete="on" class="main_ajax_menu form"><table style="width: 100%;"><tr><td><H1 class="title">Drug screens and molecular correlates</H1></td>
+<td style="width: 16%;">
+<div id="login" style="display: inline-block;"></div><div id="autherror" style="display: none;">Log in unsuccessful: wrong username or password...</div></td></tr></table>
+<div id="main"><div id="showtable"></div></div></FORM>	  
+<script  type="text/javascript">
+$( "#main" ).load( "cgi/a.cgi");
+</script>
+<div id="ssOpener" style="width: 14%; text-align: left;  cursor: pointer;" title="How the four screens measured drug activity?">
+<b>Drug response scales
+<div style="width: 7%; text-align: left;" id="help-0" class="js_ui_help">[?]</div></b>
+</div>    
+<div id="showScales" >
+<div id="ssAcc"> 
+<h3>ACT</h3>
+<div>
+<p>
+The units stand for 1:300 dilution steps, so that '6' corresponds to the highest dilution.
+Sensitivity to compounds is expressed as IC50 value, so that: 
+<ul><li>
+0 means 'insensitive to compound' and 
+</li><li>
+6 means 'fully sensitive to compound' 
+</li></ul></p>
+</div>
+<h3>CCLE (Barretina et al., 2012), 24 drugs</h3>
+<div>
+<p>
+These authors considered a range of metrics for their analysis, but finally preferred s.c. 'normalized activity areas'. These original units were calculated as areas under compound response curves where higher values corresponded to higher sensitivity so that 0 stood for 'insensitive to compound' and 8 stood for 'full sensitivity'.<br>
+Further, the activity area values were normalized for unequal luminiscence in the assay, and we rendered them normally distributed by log-transformation. Hence finally the values range from 
+ <ul><li>
+-3: 'insensitive to compound' to 
+</li><li>
++2.31: 'maximal sensitivity'
+</li></ul>
+</p>
+</div>
+<h3>CTD2 (Basu et al., 2013), 354 drugs <font  color="red"> <b>(NOTE: INVERTED SCALE!)</b></font ></h3>
+<div>
+<p>The authors mainly used area under curve (AUC) for the quantitative analyses - so did we, too.
+In completely insensitive cases the full area under 8 experimental points reached 8, whereas 0 stood for  full sensitivity. Thus, the scale of this screen <b>is INVERTED compared to the three other screens!</b> We did not transform the values further.
+<ul><li>
+0: 'maximal sensitivity', whereas
+</li><li>
+8 or (sometimes) higher: 'insensitive to compound' 
+</li></ul>
+
+</p>
+</div>
+<h3>CGP (Garnett et al., 2012), 138 drugs</h3>
+<div>
+<p>Since these authors used a combination of IC50 and the slope parameter to achieve the most complete description of responses, we decided to use the area under curve (AUC) as a single feature that reflects the both above values. AUC was originally provided in the same table and ranged from 0% (fully sensitive) to 100% (insensitive). To approach the normal distribution, we transformed the values as log(1 - AUC), so that now they range from 
+ <ul><li>
+-8.11: 'insensitive to compound' to 
+</li><li>
+0: 'maximal sensitivity'
+</li></ul>
+
+</p>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+		
+<P style="width:34%;"><a href="https://research.scilifelab.se/andrej_alexeyenko/HyperSet/">HyperSet v0.01 (under development)</a></P>
+<P style="width:34%;"><a href="http://funcoup2.sbc.su.se/index.TEST01.html">FunCoup v.1-LE (requires Java)</a></P>
+<P style="width:34%;"><a href="http://funcoup.sbc.su.se/search/">FunCoup v.4.0 </a></P>
+
+        <P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
+
+    </BODY>
+</body>
+	</HTML>
+	

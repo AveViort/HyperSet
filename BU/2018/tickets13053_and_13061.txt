@@ -1,0 +1,79 @@
+Done!
+
+BTW: the server is running Scientific Linux so the installation command
+is:
+yum install unixODBC-devel
+
+apt is for debian derived systems.
+
+Cheers,
+Eric
+
+_____________________________________
+
+Eric Björkvall
+IT Manager
+Department of Biotechnology, KTH
+Science for Life Laboratory (SciLifeLab)
+
+Phone: +46  70 77 8 77 16
+_____________________________________
+
+
+
+> While installing RODBC package in R, it failed saying :
+> configure: error: "ODBC headers sql.h and sqlext.h not found"
+>
+> I found that the problem can be solved by this:
+> sudo apt-get install libiodbc2-dev
+>
+> or this:
+> sudo aptitude install unixodbc-dev
+>
+> See 
+> http://superuser.com/questions/283272/problem-with-rodbc-installation-in-ubuntu 
+> and 
+> http://rforge.wordpress.com/tag/install/
+
+
+################################################
+#AND:
+
+Hej Andrej
+
+I've set up the /etc/odbc.ini file now, and I had to change ServerName from localhost to 127.0.0.1 otherwise it was trying to use IPv6.
+
+Try now and see if it works.
+
+/Fredrik
+
+
+
+>
+> To be able to use the ODBC connection from R to PostgreSQL (RODBC), we need 
+> a DSN to be created. 
+> Now the connection does not work:
+>> isql -v hs_pg hyperset
+> [28000][unixODBC]FATAL: no pg_hba.conf entry for host "::1", user "hyperset", database "hyperset", SSL off
+> [ISQL]ERROR: Could not SQLConnect
+>
+> It seems that in the file pg_hba.conf a line should be introduced, something like this:
+> "local  hyperset hyperset password"
+>
+> I have described a DSN entry in the own user file  ~/.odbc.ini (not sure if it's correct):
+> [hs_pg]
+> Description = HS PostgreSQL
+> Driver = PostgreSQL
+> Trace = No
+> TraceFile =
+> ServerName = localhost
+> UserName = hyperset
+> Port = 5432
+> Socket =
+> Database = hyperset
+> ReadOnly = 0
+>
+> However, the idea is to use RODBC on the web site, so that apache would be the primary user. Hence the global file 
+> /etc/odbc.ini should contain a similar entry.
+>
+>

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Run a gadget</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for runGadget {shiny}"><tr><td>runGadget {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Run a gadget</h2>
+
+<h3>Description</h3>
+
+<p>Similar to <code>runApp</code>, but handles <code>input$cancel</code> automatically, and
+if running in RStudio, defaults to viewing the app in the Viewer pane.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+runGadget(app, server = NULL, port = getOption("shiny.port"),
+  viewer = paneViewer(), stopOnCancel = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>app</code></td>
+<td>
+<p>Either a Shiny app object as created by
+<code><a href="shiny-package.html">shinyApp</a></code> et al, or, a UI object.</p>
+</td></tr>
+<tr valign="top"><td><code>server</code></td>
+<td>
+<p>Ignored if <code>app</code> is a Shiny app object; otherwise, passed
+along to <code>shinyApp</code> (i.e. <code>shinyApp(ui = app, server = server)</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>port</code></td>
+<td>
+<p>See <code><a href="shiny-package.html">runApp</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>viewer</code></td>
+<td>
+<p>Specify where the gadget should be displayed&ndash;viewer pane,
+dialog window, or external browser&ndash;by passing in a call to one of the
+<code><a href="viewer.html">viewer</a></code> functions.</p>
+</td></tr>
+<tr valign="top"><td><code>stopOnCancel</code></td>
+<td>
+<p>If <code>TRUE</code> (the default), then an <code>observeEvent</code>
+is automatically created that handles <code>input$cancel</code> by calling
+<code>stopApp()</code> with an error. Pass <code>FALSE</code> if you want to handle
+<code>input$cancel</code> yourself.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>The value returned by the gadget.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+library(shiny)
+
+ui &lt;- fillPage(...)
+
+server &lt;- function(input, output, session) {
+  ...
+}
+
+# Either pass ui/server as separate arguments...
+runGadget(ui, server)
+
+# ...or as a single app object
+runGadget(shinyApp(ui, server))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Print Summary of a Phylogeny</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for summary.phylo {ape}"><tr><td>summary.phylo {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Print Summary of a Phylogeny</h2>
+
+<h3>Description</h3>
+
+<p>The first function prints a compact summary of a phylogenetic tree (an
+object of class <code>"phylo"</code>). The three other functions return the
+number of tips, nodes, or edges, respectively.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'phylo'
+summary(object, ...)
+
+Ntip(phy)
+## S3 method for class 'phylo'
+Ntip(phy)
+## S3 method for class 'multiPhylo'
+Ntip(phy)
+
+Nnode(phy, ...)
+## S3 method for class 'phylo'
+Nnode(phy, internal.only = TRUE, ...)
+## S3 method for class 'multiPhylo'
+Nnode(phy, internal.only = TRUE, ...)
+
+Nedge(phy)
+## S3 method for class 'phylo'
+Nedge(phy)
+## S3 method for class 'multiPhylo'
+Nedge(phy)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object, phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code> or
+<code>"multiPhylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+<tr valign="top"><td><code>internal.only</code></td>
+<td>
+<p>a logical indicating whether to return the number
+of internal nodes only (the default), or of internal and terminal
+(tips) nodes (if <code>FALSE</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The summary includes the numbers of tips and of nodes, summary
+statistics of the branch lengths (if they are available) with mean,
+variance, minimum, first quartile, median, third quartile, and
+maximum, listing of the first ten tip labels, and (if available) of
+the first ten node labels. It is also printed whether some of these
+optional elements (branch lengths, node labels, and root edge) are not
+found in the tree.
+</p>
+<p><code>summary</code> simply prints its results on the standard output and is
+not meant for programming.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A NULL value in the case of <code>summary</code>, a single numeric value for
+the three other functions.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.tree.html">read.tree</a></code>, <code><a href="../../base/html/summary.html">summary</a></code> for the generic R
+function, <code><a href="multiphylo.html">multiphylo</a></code>, <code><a href="c.phylo.html">c.phylo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(bird.families)
+summary(bird.families)
+Ntip(bird.families)
+Nnode(bird.families)
+Nedge(bird.families)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

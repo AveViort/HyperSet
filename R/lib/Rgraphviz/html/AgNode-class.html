@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;AgNode&quot;: A class to describe a node for a Ragraph...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for AgNode-class {Rgraphviz}"><tr><td>AgNode-class {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;AgNode&quot;: A class to describe a node for a Ragraph object</h2>
+
+<h3>Description</h3>
+
+<p>This class is used to represent nodes for the
+<code>Ragraph</code> class.  One can retrieve various pieces of information
+as well as draw them.</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("AgNode", ...)</code>.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>center</code>:</dt><dd><p>Object of class <code>"xyPoint"</code>: The center
+point of the node</p>
+</dd>
+<dt><code>name</code>:</dt><dd><p>Object of class <code>"character"</code>: The name of
+the node, used to reference it</p>
+</dd>
+<dt><code>txtLabel</code>:</dt><dd><p>Object of class <code>"AgTextLabel"</code>: Label
+for this edge</p>
+</dd>
+<dt><code>height</code>:</dt><dd><p>Object of class <code>"integer"</code>: Height of
+the node in points</p>
+</dd>
+<dt><code>rWidth</code>:</dt><dd><p>Object of class <code>"integer"</code>: The right
+half of the node in points.</p>
+</dd>
+<dt><code>lWidth</code>:</dt><dd><p>Object of class <code>"integer"</code>: The left
+half of the node in points.</p>
+</dd>
+<dt><code>color</code>:</dt><dd><p>Object of class <code>"character"</code>: The drawing
+color of the node.</p>
+</dd>
+<dt><code>fillcolor</code>:</dt><dd><p>Object of class <code>"character"</code>: The
+color to fill in the node with.</p>
+</dd>
+<dt><code>shape</code>:</dt><dd><p>Object of class <code>"character"</code>: The shape
+of the node.</p>
+</dd>
+<dt><code>style</code>:</dt><dd><p>Object of class <code>"character"</code>: The style
+of the node.</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>color</dt><dd><p><code>signature(object = "AgNode")</code>: Retrieves the
+drawing color for the node.</p>
+</dd>
+<dt>fillcolor</dt><dd><p><code>signature(object = "AgNode")</code>: Retrieves the
+color to fill in the node image with.</p>
+</dd>
+<dt>getNodeCenter</dt><dd><p><code>signature(object = "AgNode")</code>: Returns
+the center point of the node.</p>
+</dd>
+<dt>getNodeXY</dt><dd><p><code>signature(object = "AgNode")</code>: Returns the
+center as a two element list, with the first element containing
+the 'x' value and the second element containing the 'y' value.</p>
+</dd>
+<dt>getNodeHeight</dt><dd><p><code>signature(object = "AgNode")</code>: Returns
+the height of the node. </p>
+</dd>
+<dt>getNodeLW</dt><dd><p><code>signature(object = "AgNode")</code>: Returns the
+left width of the node.</p>
+</dd>
+<dt>getNodeRW</dt><dd><p><code>signature(object = "AgNode")</code>: Returns the
+right width of the node.</p>
+</dd>
+<dt>name</dt><dd><p><code>signature(object = "AgNode")</code>: Retrieves the name
+of the node.</p>
+</dd>
+<dt>shape</dt><dd><p><code>signature(object = "AgNode")</code>: Returns the shape
+of the node.</p>
+</dd>
+<dt>style</dt><dd><p><code>signature(object = "AgNode")</code>: Returns the style
+of the node.</p>
+</dd>
+<dt>txtLabel</dt><dd><p><code>signature(object = "AgNode")</code>: Retrieves the
+node label.</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Ragraph-class.html">Ragraph</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+V &lt;- letters[1:10]
+M &lt;- 1:4
+g1 &lt;- randomGraph(V, M, .2)
+z &lt;- agopen(g1,name="foo")
+x &lt;- AgNode(z) ## list of AgNode objects
+vv &lt;- x[[1]]
+
+## The methods in use
+color(vv)
+fillcolor(vv)
+getNodeCenter(vv)
+getNodeXY(vv)
+getNodeHeight(vv)
+getNodeLW(vv)
+getNodeRW(vv)
+name(vv)
+shape(vv)
+style(vv)
+txtLabel(vv)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

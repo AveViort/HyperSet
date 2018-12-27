@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: List available links for records from a given NCBI database</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for entrez_db_links {rentrez}"><tr><td>entrez_db_links {rentrez}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>List available links for records from a given NCBI database</h2>
+
+<h3>Description</h3>
+
+<p>For a given database, fetch a list of other databases that contain
+cross-referenced records. The names of these records can be used as the
+<code>db</code> argument in <code><a href="entrez_link.html">entrez_link</a></code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+entrez_db_links(db, config = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>db</code></td>
+<td>
+<p>character, name of database to search</p>
+</td></tr>
+<tr valign="top"><td><code>config</code></td>
+<td>
+<p>config vector passed to <code>httr::GET</code></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An eInfoLink object (sub-classed from list) summarizing linked-databases.
+Can be coerced to a data-frame with <code>as.data.frame</code>. Printing the object
+the name of each element (which is the correct name for <code>entrez_link</code>,
+and can be used to get (a little) more information about each linked database
+(see example below).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="entrez_link.html">entrez_link</a></code>
+</p>
+<p>Other einfo: <code><a href="entrez_db_searchable.html">entrez_db_searchable</a></code>,
+<code><a href="entrez_db_summary.html">entrez_db_summary</a></code>,
+<code><a href="entrez_dbs.html">entrez_dbs</a></code>, <code><a href="entrez_info.html">entrez_info</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+taxid &lt;- entrez_search(db="taxonomy", term="Osmeriformes")$ids
+tax_links &lt;- entrez_db_links("taxonomy")
+tax_links
+entrez_link(dbfrom="taxonomy", db="pmc", id=taxid)
+
+sra_links &lt;- entrez_db_links("sra")
+as.data.frame(sra_links)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rentrez</em> version 1.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

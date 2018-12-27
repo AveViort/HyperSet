@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Graph clustering based on edge betweenness centrality</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for betweenness.centrality.clustering {RBGL}"><tr><td>betweenness.centrality.clustering {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Graph clustering based on edge betweenness centrality</h2>
+
+<h3>Description</h3>
+
+<p>Graph clustering based on edge betweenness centrality</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+betweenness.centrality.clustering(g, threshold = -1, normalize = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>an instance of the <code>graph</code> class with <code>edgemode</code>
+&ldquo;undirected&rdquo;</p>
+</td></tr>
+<tr valign="top"><td><code>threshold</code></td>
+<td>
+<p>threshold to terminate clustering process</p>
+</td></tr>
+<tr valign="top"><td><code>normalize</code></td>
+<td>
+<p>boolean, when TRUE, the  edge betweenness centrality is 
+scaled by <code>2/((n-1)(n-2))</code> where <code>n</code> is the number of vertices 
+in <code>g</code>; when FALSE, the edge betweenness centrality is the absolute
+value</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>To implement graph clustering based on edge betweenness centrality.
+</p>
+<p>The algorithm is iterative, at each step it computes the edge betweenness
+centrality and removes the edge with maximum betweenness centrality when it
+is above the given <code>threshold</code>.  When the maximum betweenness centrality 
+falls below the threshold, the algorithm terminates.
+</p>
+<p>See documentation on Clustering algorithms in Boost Graph Library for details.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>no.of.edges</code></td>
+<td>
+<p>number of remaining edges after removal</p>
+</td></tr>
+<tr valign="top"><td><code>edges</code></td>
+<td>
+<p>remaining edges</p>
+</td></tr>
+<tr valign="top"><td><code>edge.betweenness.centrality</code></td>
+<td>
+<p>betweenness centrality of remaining edges</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="betweenness.html">brandes.betweenness.centrality</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/conn.gxl",package="RBGL"))
+coex &lt;- fromGXL(con)
+close(con)
+coex &lt;- ugraph(coex)
+betweenness.centrality.clustering(coex, 0.5, TRUE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

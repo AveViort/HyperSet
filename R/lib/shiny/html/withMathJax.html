@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Load the MathJax library and typeset math expressions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for withMathJax {shiny}"><tr><td>withMathJax {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Load the MathJax library and typeset math expressions</h2>
+
+<h3>Description</h3>
+
+<p>This function adds MathJax to the page and typeset the math expressions (if
+found) in the content <code>...</code>. It only needs to be called once in an app
+unless the content is rendered <em>after</em> the page is loaded, e.g. via
+<code><a href="renderUI.html">renderUI</a></code>, in which case we have to call it explicitly every
+time we write math expressions to the output.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+withMathJax(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>any HTML elements to apply MathJax to</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+withMathJax(helpText("Some math here $$\\alpha+\\beta$$"))
+# now we can just write "static" content without withMathJax()
+div("more math here $$\\sqrt{2}$$")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

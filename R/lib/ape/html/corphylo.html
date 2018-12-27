@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Correlations among Multiple Traits with Phylogenetic Signal</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for corphylo {ape}"><tr><td>corphylo {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Correlations among Multiple Traits with Phylogenetic Signal</h2>
+
+<h3>Description</h3>
+
+<p>This function calculates Pearson correlation coefficients for multiple continuous traits that may have phylogenetic signal, allowing users to specify measurement error as the standard error of trait values at the tips of the phylogenetic tree.  Phylogenetic signal for each trait is estimated from the data assuming that trait evolution is given by a Ornstein-Uhlenbeck process.  Thus, the function allows the estimation of phylogenetic signal in multiple traits while incorporating correlations among traits. It is also possible to include independent variables (covariates) for each trait to remove possible confounding effects.  corphylo() returns the correlation matrix for trait values, estimates of phylogenetic signal for each trait, and regression coefficients for independent variables affecting each trait.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+corphylo(X, U = list(), SeM = NULL, phy = NULL, REML = TRUE,
+method = c("Nelder-Mead", "SANN"), constrain.d = FALSE, reltol = 10^-6,
+maxit.NM = 1000, maxit.SA = 1000, temp.SA = 1, tmax.SA = 1, verbose = FALSE)
+
+## S3 method for class 'corphylo'
+print(x, digits = max(3, getOption("digits") - 3), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>X</code></td>
+<td>
+<p>a n x p matrix with p columns containing the values for the n taxa. Rows of X should have rownames matching the taxon names in phy.</p>
+</td></tr>
+<tr valign="top"><td><code>U</code></td>
+<td>
+<p>a list of p matrices corresponding to the p columns of X, with each matrix containing independent variables for the corresponding column of X. The rownames of each matrix within U must be the same as X, or alternatively, the order of values in rows must match those in X. If U is omitted, only the mean (aka intercept) for each column of X is estimated. If U[[i]] is NULL, only an intercept is estimated for X[, i]. If all values of U[[i]][j] are the same, this variable is automatically dropped from the analysis (i.e., there is no offset in the regression component of the model).</p>
+</td></tr>
+<tr valign="top"><td><code>SeM</code></td>
+<td>
+<p>a n x p matrix with p columns containing standard errors of the trait values in X. The rownames of SeM must be the same as X, or alternatively, the order of values in rows must match those in X. If SeM is omitted, the trait values are assumed to be known without error. If only some traits have mesurement errors, the remaining traits can be given zero-valued standard errors.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>a phylo object giving the phylogenetic tree.  The rownames of phy must be the same as X, or alternatively, the order of values in rows must match those in X.</p>
+</td></tr>
+<tr valign="top"><td><code>REML</code></td>
+<td>
+<p>whether REML or ML is used for model fitting.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>in optim(), either Nelder-Mead simplex minimization or SANN (simulated annealing) minimization is used. If SANN is used, it is followed by Nelder-Mead minimization.</p>
+</td></tr>
+<tr valign="top"><td><code>constrain.d</code></td>
+<td>
+<p>if constrain.d is TRUE, the estimates of d are constrained to be between zero and 1. This can make estimation more stable and can be tried if convergence is problematic. This does not necessarily lead to loss of generality of the results, because before using corphylo, branch lengths of phy can be transformed so that the &quot;starter&quot; tree has strong phylogenetic signal.</p>
+</td></tr>
+<tr valign="top"><td><code>reltol</code></td>
+<td>
+<p>a control parameter dictating the relative tolerance for convergence in the optimization; see optim().</p>
+</td></tr>
+<tr valign="top"><td><code>maxit.NM</code></td>
+<td>
+<p>a control parameter dictating the maximum number of iterations in the optimization with Nelder-Mead minimization; see optim().</p>
+</td></tr>
+<tr valign="top"><td><code>maxit.SA</code></td>
+<td>
+<p>a control parameter dictating the maximum number of iterations in the optimization with SANN minimization; see optim().</p>
+</td></tr>
+<tr valign="top"><td><code>temp.SA</code></td>
+<td>
+<p>a control parameter dictating the starting temperature in the optimization with SANN minimization; see optim().</p>
+</td></tr>
+<tr valign="top"><td><code>tmax.SA</code></td>
+<td>
+<p>a control parameter dictating the number of function evaluations at each temperature in the optimization with SANN minimization; see optim().</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>if TRUE, the model logLik and running estimates of the
+correlation coefficients and values of d are printed each iteration
+during optimization.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an objects of class corphylo.</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>the number of digits to be printed.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>arguments passed to and from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For the case of two variables, the function estimates parameters for the model of the form, for example,
+</p>
+<p style="text-align: center;"><i>X[1] =  B[1,0] + B[1,1] * u[1,1] + &epsilon;[1]</i></p>
+
+<p style="text-align: center;"><i>X[2] =  B[2,0] + B[2,1] * u[2,1] + &epsilon;[2]</i></p>
+
+<p style="text-align: center;"><i>&epsilon; ~ Gaussian(0, V) </i></p>
+
+<p>where <i>B[1,0]</i>, <i>B[1,1]</i>, <i>B[2,0]</i>, and <i>B[2,1]</i> are regression coefficients, and <i>V</i> is a variance-covariance matrix containing the correlation coefficient r, parameters of the OU process <i>d1</i> and <i>d2</i>, and diagonal matrices <i>M1</i> and <i>M2</i> of measurement standard errors for <i>X[1]</i> and <i>X[2]</i>. The matrix <i>V</i> is <i>2n x 2n</i>, with <i>n x n</i> blocks given by
+</p>
+<p style="text-align: center;"><i>V[1,1] = C[1,1](d1) + M1</i></p>
+
+<p style="text-align: center;"><i>V[1,2] = C[1,2](d1,d2)</i></p>
+
+<p style="text-align: center;"><i>V[2,1] = C[2,1](d1,d2)</i></p>
+
+<p style="text-align: center;"><i>V[2,2] = C[2,2](d2) + M2</i></p>
+
+<p>where <i>C[i,j](d1,d2)</i> are derived from phy under the assumption of joint OU evolutionary processes for each trait (see Zheng et al. 2009).  This formulation extends in the obvious way to more than two traits.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class &quot;corphylo&quot;.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>cor.matrix</code></td>
+<td>
+<p>the p x p matrix of correlation coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>d</code></td>
+<td>
+<p>values of d from the OU process for each trait.</p>
+</td></tr>
+<tr valign="top"><td><code>B</code></td>
+<td>
+<p>estimates of the regression coefficients, including intercepts. Coefficients are named according to the list U. For example, B1.2 is the coefficient corresponding to U[[1]][, 2], and if column 2 in U[[1]] is named &quot;colname2&quot;, then the coefficient will be B1.colname2. Intercepts have the form B1.0.</p>
+</td></tr>
+<tr valign="top"><td><code>B.se</code></td>
+<td>
+<p>standard errors of the regression coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>B.cov</code></td>
+<td>
+<p>covariance matrix for regression coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>B.zscore</code></td>
+<td>
+<p>Z scores for the regression coefficients.</p>
+</td></tr>
+<tr valign="top"><td><code>B.pvalue</code></td>
+<td>
+<p>tests for the regression coefficients being different from zero.</p>
+</td></tr>
+<tr valign="top"><td><code>logLik</code></td>
+<td>
+<p>he log likelihood for either the restricted likelihood (REML = TRUE) or the overall likelihood (REML = FALSE).</p>
+</td></tr>
+<tr valign="top"><td><code>AIC</code></td>
+<td>
+<p>AIC for either the restricted likelihood (REML = TRUE) or the overall likelihood (REML = FALSE).</p>
+</td></tr>
+<tr valign="top"><td><code>BIC</code></td>
+<td>
+<p>BIC for either the restricted likelihood (REML = TRUE) or the overall likelihood (REML = FALSE).</p>
+</td></tr>
+<tr valign="top"><td><code>REML</code></td>
+<td>
+<p>whether REML is used rather than ML (TRUE or FALSE).</p>
+</td></tr>
+<tr valign="top"><td><code>constrain.d</code></td>
+<td>
+<p>whether or not values of d were constrained to be between 0 and 1 (TRUE or FALSE).</p>
+</td></tr>
+<tr valign="top"><td><code>XX</code></td>
+<td>
+<p>values of X in vectorized form, with each trait X[, i] standardized to have mean zero and standard deviation one.</p>
+</td></tr>
+<tr valign="top"><td><code>UU</code></td>
+<td>
+<p>design matrix with values in UU corresponding to XX; each variable U[[i]][, j] is standardized to have mean zero and standard deviation one.</p>
+</td></tr>
+<tr valign="top"><td><code>MM</code></td>
+<td>
+<p>vector of measurement standard errors corresponding to XX, with the standard errors suitably standardized.</p>
+</td></tr>
+<tr valign="top"><td><code>Vphy</code></td>
+<td>
+<p>the phylogenetic covariance matrix computed from phy and standardized to have determinant equal to one.</p>
+</td></tr>
+<tr valign="top"><td><code>R</code></td>
+<td>
+<p>covariance matrix of trait values relative to the standardized values of XX.</p>
+</td></tr>
+<tr valign="top"><td><code>V</code></td>
+<td>
+<p>overall estimated covariance matrix of residuals for XX including trait correlations, phylogenetic signal, and measurement error variances. This matrix can be used to simulate data for parametric bootstrapping. See examples.</p>
+</td></tr>
+<tr valign="top"><td><code>C</code></td>
+<td>
+<p>matrix V excluding measurement error variances.</p>
+</td></tr>
+<tr valign="top"><td><code>convcode</code></td>
+<td>
+<p>he convergence code provided by optim().</p>
+</td></tr>
+<tr valign="top"><td><code>niter</code></td>
+<td>
+<p>number of iterations performed by optim().</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Anthony R. Ives</p>
+
+
+<h3>References</h3>
+
+<p>Zheng, L., A. R. Ives, T. Garland, B. R. Larget, Y. Yu, and K. F. Cao. 2009. New multivariate tests for phylogenetic signal and trait correlations applied to ecophysiological phenotypes of nine <em>Manglietia</em> species. <em>Functional Ecology</em> <b>23</b>:1059&ndash;1069.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Simple example using data without correlations or phylogenetic
+## signal. This illustrates the structure of the input data.
+
+phy &lt;- rcoal(10, tip.label = 1:10)
+X &lt;- matrix(rnorm(20), nrow = 10, ncol = 2)
+rownames(X) &lt;- phy$tip.label
+U &lt;- list(NULL, matrix(rnorm(10, mean = 10, sd = 4), nrow = 10, ncol = 1))
+rownames(U[[2]]) &lt;- phy$tip.label
+SeM &lt;- matrix(c(0.2, 0.4), nrow = 10, ncol = 2)
+rownames(SeM) &lt;- phy$tip.label
+
+corphylo(X = X, SeM = SeM, U = U, phy = phy, method = "Nelder-Mead")
+
+## Not run: 
+## Simulation example for the correlation between two variables. The
+## example compares the estimates of the correlation coefficients from
+## corphylo when measurement error is incorporated into the analyses with
+## three other cases: (i) when measurement error is excluded, (ii) when
+## phylogenetic signal is ignored (assuming a "star" phylogeny), and (iii)
+## neither measurement error nor phylogenetic signal are included.
+
+## In the simulations, variable 2 is associated with a single
+## independent variable. This requires setting up a list U that has 2
+## elements: element U[[1]] is NULL and element U[[2]] is a n x 1 vector
+## containing simulated values of the independent variable.
+
+# Set up parameter values for simulating data
+n &lt;- 50
+phy &lt;- rcoal(n, tip.label = 1:n)
+
+R &lt;- matrix(c(1, 0.7, 0.7, 1), nrow = 2, ncol = 2)
+d &lt;- c(0.3, .95)
+B2 &lt;- 1
+
+Se &lt;- c(0.2, 1)
+SeM &lt;- matrix(Se, nrow = n, ncol = 2, byrow = T)
+rownames(SeM) &lt;- phy$tip.label
+
+# Set up needed matrices for the simulations
+p &lt;- length(d)
+
+star &lt;- stree(n)
+star$edge.length &lt;- array(1, dim = c(n, 1))
+star$tip.label &lt;- phy$tip.label
+
+Vphy &lt;- vcv(phy)
+Vphy &lt;- Vphy/max(Vphy)
+Vphy &lt;- Vphy/exp(determinant(Vphy)$modulus[1]/n)
+
+tau &lt;- matrix(1, nrow = n, ncol = 1) 
+C &lt;- matrix(0, nrow = p * n, ncol = p * n)
+for (i in 1:p) for (j in 1:p) {
+	Cd &lt;- (d[i]^tau * (d[j]^t(tau)) * (1 - (d[i] * d[j])^Vphy))/(1 - d[i] * d[j])
+	C[(n * (i - 1) + 1):(i * n), (n * (j - 1) + 1):(j * n)] &lt;- R[i, j] * Cd
+}
+MM &lt;- matrix(SeM^2, ncol = 1)
+V &lt;- C + diag(as.numeric(MM))
+
+## Perform a Cholesky decomposition of Vphy. This is used to generate
+## phylogenetic signal: a vector of independent normal random variables,
+## when multiplied by the transpose of the Cholesky deposition of Vphy will
+## have covariance matrix equal to Vphy.
+iD &lt;- t(chol(V))
+
+# Perform Nrep simulations and collect the results
+Nrep &lt;- 100
+cor.list &lt;- matrix(0, nrow = Nrep, ncol = 1)
+cor.noM.list &lt;- matrix(0, nrow = Nrep, ncol = 1)
+cor.noP.list &lt;- matrix(0, nrow = Nrep, ncol = 1)
+cor.noMP.list &lt;- matrix(0, nrow = Nrep, ncol = 1)
+d.list &lt;- matrix(0, nrow = Nrep, ncol = 2)
+d.noM.list &lt;- matrix(0, nrow = Nrep, ncol = 2)
+B.list &lt;- matrix(0, nrow = Nrep, ncol = 3)
+B.noM.list &lt;- matrix(0, nrow = Nrep, ncol = 3)
+B.noP.list &lt;- matrix(0, nrow = Nrep, ncol = 3)
+for (rep in 1:Nrep) {
+	XX &lt;- iD 
+	X &lt;- matrix(XX, nrow = n, ncol = 2)
+	rownames(X) &lt;- phy$tip.label
+
+	U &lt;- list(NULL, matrix(rnorm(n, mean = 2, sd = 10), nrow = n, ncol = 1))
+	rownames(U[[2]]) &lt;- phy$tip.label
+	colnames(U[[2]]) &lt;- "V1"
+	X[,2] &lt;- X[,2] + B2[1] * U[[2]][,1] - B2[1] * mean(U[[2]][,1])
+
+	z &lt;- corphylo(X = X, SeM = SeM, U = U, phy = phy, method = "Nelder-Mead")
+	z.noM &lt;- corphylo(X = X, U = U, phy = phy, method = "Nelder-Mead")
+	z.noP &lt;- corphylo(X = X, SeM = SeM, U = U, phy = star, method = "Nelder-Mead")
+
+	cor.list[rep] &lt;- z$cor.matrix[1, 2]
+	cor.noM.list[rep] &lt;- z.noM$cor.matrix[1, 2]
+	cor.noP.list[rep] &lt;- z.noP$cor.matrix[1, 2]
+	cor.noMP.list[rep] &lt;- cor(cbind(lm(X[,1] ~ 1)$residuals, lm(X[,2] ~ U[[2]])$residuals))[1,2]
+
+	d.list[rep, ] &lt;- z$d
+	d.noM.list[rep, ] &lt;- z.noM$d
+
+	B.list[rep, ] &lt;- z$B
+	B.noM.list[rep, ] &lt;- z.noM$B
+	B.noP.list[rep, ] &lt;- z.noP$B
+
+	show(c(rep, z$convcode, z$cor.matrix[1, 2], z$d))
+}
+correlation &lt;- rbind(R[1, 2], mean(cor.list), mean(cor.noM.list),
+                     mean(cor.noP.list), mean(cor.noMP.list))
+rownames(correlation) &lt;- c("True", "With SeM and Phy", "Without SeM",
+                           "Without Phy", "Without Phy or SeM")
+correlation
+
+signal.d &lt;- rbind(d, colMeans(d.list), colMeans(d.noM.list))
+rownames(signal.d) &lt;- c("True", "With SeM and Phy", "Without SeM")
+signal.d
+
+est.B &lt;- rbind(c(0, 0, B2), colMeans(B.list), colMeans(B.noM.list),
+               colMeans(B.noP.list))
+rownames(est.B) &lt;- c("True", "With SeM and Phy", "Without SeM", "Without Phy")
+colnames(est.B) &lt;- rownames(z$B)
+est.B
+
+# Example simulation output
+# correlation
+                        # [,1]
+# True               0.7000000
+# With SeM and Phy   0.7055958
+# Without SeM        0.3125253
+# Without Phy        0.4054043
+# Without Phy or SeM 0.3476589
+
+# signal.d
+                     # [,1]      [,2]
+# True             0.300000 0.9500000
+# With SeM and Phy 0.301513 0.9276663
+# Without SeM      0.241319 0.4872675
+
+# est.B
+                        # B1.0      B2.0     B2.V1
+# True              0.00000000 0.0000000 1.0000000
+# With SeM and Phy -0.01285834 0.2807215 0.9963163
+# Without SeM       0.01406953 0.3059110 0.9977796
+# Without Phy       0.02139281 0.3165731 0.9942140
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

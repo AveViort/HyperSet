@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Quadratic Programming Solver</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ipop {kernlab}"><tr><td>ipop {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Quadratic Programming Solver</h2>
+
+<h3>Description</h3>
+
+<p>ipop solves the quadratic programming problem :<br />
+<i>\min(c'*x + 1/2 * x' * H * x)</i><br />
+subject to: <br />
+<i>b &lt;= A * x &lt;= b + r</i><br />
+<i>l &lt;= x &lt;= u</i>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ipop(c, H, A, b, l, u, r, sigf = 7, maxiter = 40, margin = 0.05,
+     bound = 10, verb = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>c</code></td>
+<td>
+<p>Vector or one column matrix appearing in the quadratic function</p>
+</td></tr>
+<tr valign="top"><td><code>H</code></td>
+<td>
+<p>square matrix appearing in the quadratic function, or the
+decomposed form <i>Z</i> of the <i>H</i> matrix where <i>Z</i> is a
+<i>n x m</i> matrix with <i>n &gt; m</i> and <i>ZZ' = H</i>.</p>
+</td></tr>
+<tr valign="top"><td><code>A</code></td>
+<td>
+<p>Matrix defining the constrains under which we minimize the
+quadratic function</p>
+</td></tr>
+<tr valign="top"><td><code>b</code></td>
+<td>
+<p>Vector or one column matrix defining the constrains</p>
+</td></tr>
+<tr valign="top"><td><code>l</code></td>
+<td>
+<p>Lower bound vector or one column matrix</p>
+</td></tr>
+<tr valign="top"><td><code>u</code></td>
+<td>
+<p>Upper bound vector or one column matrix</p>
+</td></tr>
+<tr valign="top"><td><code>r</code></td>
+<td>
+<p>Vector or one column matrix defining constrains</p>
+</td></tr>
+<tr valign="top"><td><code>sigf</code></td>
+<td>
+<p>Precision (default: 7 significant figures)</p>
+</td></tr>
+<tr valign="top"><td><code>maxiter</code></td>
+<td>
+<p>Maximum number of iterations</p>
+</td></tr>
+<tr valign="top"><td><code>margin</code></td>
+<td>
+<p>how close we get to the constrains</p>
+</td></tr>
+<tr valign="top"><td><code>bound</code></td>
+<td>
+<p>Clipping bound for the variables</p>
+</td></tr>
+<tr valign="top"><td><code>verb</code></td>
+<td>
+<p>Display convergence information during runtime</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>ipop uses an interior point method to solve the quadratic programming
+problem. <br />
+The <i>H</i> matrix can also be provided in the decomposed form <i>Z</i>
+where <i>ZZ' = H</i> in that case the Sherman Morrison Woodbury formula
+is used internally.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An S4 object with the following slots
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>primal</code></td>
+<td>
+<p>Vector containing the primal solution of the quadratic problem</p>
+</td></tr>
+<tr valign="top"><td><code>dual</code></td>
+<td>
+<p>The dual solution of the problem</p>
+</td></tr>
+<tr valign="top"><td><code>how</code></td>
+<td>
+<p>Character string describing the type of convergence</p>
+</td></tr>
+</table>
+<p>all slots can be accessed through accessor functions (see example)
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou (based on Matlab code by Alex Smola) <br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p>R. J. Vanderbei<br />
+<em>LOQO: An interior point code for quadratic programming</em><br />
+Optimization Methods and Software 11, 451-484, 1999 <br />
+<a href="http://www.princeton.edu/~rvdb/ps/loqo5.pdf">http://www.princeton.edu/~rvdb/ps/loqo5.pdf</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code>solve.QP</code>, <code><a href="inchol.html">inchol</a></code>, <code><a href="csi.html">csi</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## solve the Support Vector Machine optimization problem
+data(spam)
+
+## sample a scaled part (500 points) of the spam data set
+m &lt;- 500
+set &lt;- sample(1:dim(spam)[1],m)
+x &lt;- scale(as.matrix(spam[,-58]))[set,]
+y &lt;- as.integer(spam[set,58])
+y[y==2] &lt;- -1
+
+##set C parameter and kernel
+C &lt;- 5
+rbf &lt;- rbfdot(sigma = 0.1)
+
+## create H matrix etc.
+H &lt;- kernelPol(rbf,x,,y)
+c &lt;- matrix(rep(-1,m))
+A &lt;- t(y)
+b &lt;- 0
+l &lt;- matrix(rep(0,m))
+u &lt;- matrix(rep(C,m))
+r &lt;- 0
+
+sv &lt;- ipop(c,H,A,b,l,u,r)
+sv
+dual(sv)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

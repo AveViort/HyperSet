@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create date input</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dateInput {shiny}"><tr><td>dateInput {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create date input</h2>
+
+<h3>Description</h3>
+
+<p>Creates a text input which, when clicked on, brings up a calendar that
+the user can click on to select dates.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+dateInput(inputId, label, value = NULL, min = NULL, max = NULL,
+  format = "yyyy-mm-dd", startview = "month", weekstart = 0,
+  language = "en", width = NULL, autoclose = TRUE,
+  datesdisabled = NULL, daysofweekdisabled = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>inputId</code></td>
+<td>
+<p>The <code>input</code> slot that will be used to access the value.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>Display label for the control, or <code>NULL</code> for no label.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>The starting date. Either a Date object, or a string in
+<code>yyyy-mm-dd</code> format. If NULL (the default), will use the current date
+in the client's time zone.</p>
+</td></tr>
+<tr valign="top"><td><code>min</code></td>
+<td>
+<p>The minimum allowed date. Either a Date object, or a string in
+<code>yyyy-mm-dd</code> format.</p>
+</td></tr>
+<tr valign="top"><td><code>max</code></td>
+<td>
+<p>The maximum allowed date. Either a Date object, or a string in
+<code>yyyy-mm-dd</code> format.</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>The format of the date to display in the browser. Defaults to
+<code>"yyyy-mm-dd"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>startview</code></td>
+<td>
+<p>The date range shown when the input object is first clicked.
+Can be &quot;month&quot; (the default), &quot;year&quot;, or &quot;decade&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>weekstart</code></td>
+<td>
+<p>Which day is the start of the week. Should be an integer
+from 0 (Sunday) to 6 (Saturday).</p>
+</td></tr>
+<tr valign="top"><td><code>language</code></td>
+<td>
+<p>The language used for month and day names. Default is &quot;en&quot;.
+Other valid values include &quot;ar&quot;, &quot;az&quot;, &quot;bg&quot;, &quot;bs&quot;, &quot;ca&quot;, &quot;cs&quot;, &quot;cy&quot;, &quot;da&quot;,
+&quot;de&quot;, &quot;el&quot;, &quot;en-AU&quot;, &quot;en-GB&quot;, &quot;eo&quot;, &quot;es&quot;, &quot;et&quot;, &quot;eu&quot;, &quot;fa&quot;, &quot;fi&quot;, &quot;fo&quot;,
+&quot;fr-CH&quot;, &quot;fr&quot;, &quot;gl&quot;, &quot;he&quot;, &quot;hr&quot;, &quot;hu&quot;, &quot;hy&quot;, &quot;id&quot;, &quot;is&quot;, &quot;it-CH&quot;, &quot;it&quot;,
+&quot;ja&quot;, &quot;ka&quot;, &quot;kh&quot;, &quot;kk&quot;, &quot;ko&quot;, &quot;kr&quot;, &quot;lt&quot;, &quot;lv&quot;, &quot;me&quot;, &quot;mk&quot;, &quot;mn&quot;, &quot;ms&quot;,
+&quot;nb&quot;, &quot;nl-BE&quot;, &quot;nl&quot;, &quot;no&quot;, &quot;pl&quot;, &quot;pt-BR&quot;, &quot;pt&quot;, &quot;ro&quot;, &quot;rs-latin&quot;, &quot;rs&quot;,
+&quot;ru&quot;, &quot;sk&quot;, &quot;sl&quot;, &quot;sq&quot;, &quot;sr-latin&quot;, &quot;sr&quot;, &quot;sv&quot;, &quot;sw&quot;, &quot;th&quot;, &quot;tr&quot;, &quot;uk&quot;,
+&quot;vi&quot;, &quot;zh-CN&quot;, and &quot;zh-TW&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The width of the input, e.g. <code>'400px'</code>, or <code>'100%'</code>;
+see <code><a href="validateCssUnit.html">validateCssUnit</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>autoclose</code></td>
+<td>
+<p>Whether or not to close the datepicker immediately when a
+date is selected.</p>
+</td></tr>
+<tr valign="top"><td><code>datesdisabled</code></td>
+<td>
+<p>Which dates should be disabled. Either a Date object,
+or a string in <code>yyyy-mm-dd</code> format.</p>
+</td></tr>
+<tr valign="top"><td><code>daysofweekdisabled</code></td>
+<td>
+<p>Days of the week that should be disabled. Should be
+a integer vector with values from 0 (Sunday) to 6 (Saturday).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The date <code>format</code> string specifies how the date will be displayed in
+the browser. It allows the following values:
+</p>
+
+<ul>
+<li> <p><code>yy</code> Year without century (12)
+</p>
+</li>
+<li> <p><code>yyyy</code> Year with century (2012)
+</p>
+</li>
+<li> <p><code>mm</code> Month number, with leading zero (01-12)
+</p>
+</li>
+<li> <p><code>m</code> Month number, without leading zero (1-12)
+</p>
+</li>
+<li> <p><code>M</code> Abbreviated month name
+</p>
+</li>
+<li> <p><code>MM</code> Full month name
+</p>
+</li>
+<li> <p><code>dd</code> Day of month with leading zero
+</p>
+</li>
+<li> <p><code>d</code> Day of month without leading zero
+</p>
+</li>
+<li> <p><code>D</code> Abbreviated weekday name
+</p>
+</li>
+<li> <p><code>DD</code> Full weekday name
+</p>
+</li></ul>
+
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dateRangeInput.html">dateRangeInput</a></code>, <code><a href="updateDateInput.html">updateDateInput</a></code>
+</p>
+<p>Other input elements: <code><a href="actionButton.html">actionButton</a></code>,
+<code><a href="checkboxGroupInput.html">checkboxGroupInput</a></code>,
+<code><a href="checkboxInput.html">checkboxInput</a></code>,
+<code><a href="dateRangeInput.html">dateRangeInput</a></code>, <code><a href="fileInput.html">fileInput</a></code>,
+<code><a href="numericInput.html">numericInput</a></code>, <code><a href="passwordInput.html">passwordInput</a></code>,
+<code><a href="radioButtons.html">radioButtons</a></code>, <code><a href="selectInput.html">selectInput</a></code>,
+<code><a href="sliderInput.html">sliderInput</a></code>, <code><a href="submitButton.html">submitButton</a></code>,
+<code><a href="textAreaInput.html">textAreaInput</a></code>, <code><a href="textInput.html">textInput</a></code>,
+<code><a href="varSelectInput.html">varSelectInput</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  dateInput("date1", "Date:", value = "2012-02-29"),
+
+  # Default value is the date in client's time zone
+  dateInput("date2", "Date:"),
+
+  # value is always yyyy-mm-dd, even if the display format is different
+  dateInput("date3", "Date:", value = "2012-02-29", format = "mm/dd/yy"),
+
+  # Pass in a Date object
+  dateInput("date4", "Date:", value = Sys.Date()-10),
+
+  # Use different language and different first day of week
+  dateInput("date5", "Date:",
+          language = "ru",
+          weekstart = 1),
+
+  # Start with decade view instead of default month view
+  dateInput("date6", "Date:",
+            startview = "decade"),
+
+  # Disable Mondays and Tuesdays.
+  dateInput("date7", "Date:", daysofweekdisabled = c(1,2)),
+  
+  # Disable specific dates.
+  dateInput("date8", "Date:", value = "2012-02-29",
+            datesdisabled = c("2012-03-01", "2012-03-02"))
+)
+
+shinyApp(ui, server = function(input, output) { })
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

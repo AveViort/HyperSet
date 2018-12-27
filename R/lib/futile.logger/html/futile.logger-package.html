@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A Logging Utility for R</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for futile.logger-package {futile.logger}"><tr><td>futile.logger-package {futile.logger}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>A Logging Utility for R</h2>
+
+<h3>Description</h3>
+
+<p>This package implements a logging system inspired by log4j. The basic idea
+of layouts, appenders, and loggers is faithful to log4j, while the
+implementation and idiom is all R. This means that support for hierarchical
+loggers, custom appenders, custom layouts is coupled with a simple and
+intuitive functional syntax.
+</p>
+
+
+<h3>Details</h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Package: </td><td style="text-align: left;"> futile.logger</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+Type: </td><td style="text-align: left;"> Package</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+Version: </td><td style="text-align: left;"> 1.4.3</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+Date: </td><td style="text-align: left;"> 2016-07-10</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+License: </td><td style="text-align: left;"> LGPL-3</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+LazyLoad: </td><td style="text-align: left;"> yes</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+<p>The latest version of futile.logger introduces zero-configuration semantics
+out of the box. This means that you can use the default configuration as is.
+It is also easy to interactively change the configuration of the ROOT
+logger, as well as create new loggers. Since loggers form a hierarchy based
+on their name, the ROOT logger is the starting point of the hierarchy and
+always exists. By default the ROOT logger is defined with a simple layout,
+printing to the console, with an INFO threshold. This means that writing to
+any logger with a threshold of INFO or higher will write to the console.
+</p>
+<p>All of the logging functions take a format string so it is easy to add
+arbitrary values to log messages.
+</p>
+<p>&gt; flog.info(&quot;This song is just %s words %s&quot;, 7, &quot;long&quot;)
+</p>
+<p>Thresholds range from most verbose to least verbose: TRACE, DEBUG, INFO,
+WARN, ERROR, FATAL. You can easily change the threshold of the ROOT logger
+by calling &gt; flog.threshold(TRACE) which changes will print all log messages
+from every package. To suppress most logging by default but turn on all
+debugging for a logger 'my.logger', you would execute
+</p>
+<p>&gt; flog.threshold(ERROR)<br />
+&gt; flog.threshold(TRACE, name='my.logger')
+</p>
+<p>Any arbitrary logger can be defined simply by specifying it in any
+futile.logger write operation (futile.threshold, futile.appender,
+futile.layout). If the logger hasn't been defined, then it will be defined
+dynamically. Any unspecified options will be copied from the parent logger.
+</p>
+<p>When writing log messages, futile.logger will search the hierarchy based on
+the logger name. In our example, if 'my.logger' hasn't been defined then
+futile.logger will look for a logger named 'my' and finally the ROOT logger.
+</p>
+<p>Functions calling futile.logger from a package are automatically assigned a
+logger that has the name of the package. Suppose we have log messages in a
+package called 'my.package'. Then any function that calls futile.logger from
+within the package will automatically be assigned a default logger of
+'my.package' instead of ROOT. This means that it is easy to change the log
+setting of any package that uses futile.logger for logging by just updating
+the logger for the given package. For instance suppose you want to output
+log message for my.package to a file instead.
+</p>
+<p>&gt; flog.appender(appender.file('my.package.log'), name='my.package')
+</p>
+<p>Now all log statements in the package my.package will be written to a file
+instead of the console. All other log messages will continue to be written
+to the console.
+</p>
+<p>Appenders do the actual work of writing log messages to a writeable target,
+whether that is a console, a file, a URL, database, etc. When creating an
+appender, the implementation-specific options are passed to the appender at
+instantiation. The package defines two appender generator functions:
+</p>
+
+<dl>
+<dt>appender.file</dt><dd><p>Write to a file</p>
+</dd>
+<dt>appender.console</dt><dd><p>Write to the console</p>
+</dd>
+</dl>
+
+<p>Each of these functions returns the actual appender function, so be sure to
+actually call the function!
+</p>
+<p>Layouts are responsible for formatting messages. This operation usually
+consists of adding the log level, a timestamp, plus some pretty-printing to
+make the log messages easy on the eyes. The package supplies several layouts:
+</p>
+
+<dl>
+<dt>layout.simple</dt><dd><p>Writes messages with a default format</p>
+</dd>
+<dt>layout.json</dt><dd><p>Generates messages in a JSON format</p>
+</dd>
+<dt>layout.format</dt><dd><p>Define your own format</p>
+</dd>
+<dt>layout.tracearg</dt><dd><p>Print a variable name along with its value</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Brian Lee Yung Rowe &lt;r@zatonovo.com&gt;
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="flog.logger.html">flog.logger</a></code>, <code><a href="flog.threshold.html">flog.threshold</a></code>,
+<code><a href="flog.layout.html">flog.layout</a></code>, <code><a href="flog.appender.html">flog.appender</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+flog.debug("This %s print", "won't")
+flog.warn("This %s print", "will")
+  
+flog.info("This inherits from the ROOT logger", name='logger.a')
+flog.threshold(DEBUG, name='logger.a')
+flog.debug("logger.a has now been set to DEBUG", name='logger.a')
+flog.debug("But the ROOT logger is still at INFO (so this won't print)")
+
+## Not run: 
+flog.appender(appender.file("other.log"), name='logger.b')
+flog.info("This writes to a %s", "file", name='logger.b')
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>futile.logger</em> version 1.4.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

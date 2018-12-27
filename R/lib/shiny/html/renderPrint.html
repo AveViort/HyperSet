@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Printable Output</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for renderPrint {shiny}"><tr><td>renderPrint {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Printable Output</h2>
+
+<h3>Description</h3>
+
+<p>Makes a reactive version of the given function that captures any printed
+output, and also captures its printable result (unless
+<code><a href="../../base/html/invisible.html">invisible</a></code>), into a string. The resulting function is suitable
+for assigning to an  <code>output</code> slot.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+renderPrint(expr, env = parent.frame(), quoted = FALSE,
+  width = getOption("width"), outputArgs = list())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>An expression that may print output and/or return a printable R
+object.</p>
+</td></tr>
+<tr valign="top"><td><code>env</code></td>
+<td>
+<p>The environment in which to evaluate <code>expr</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>quoted</code></td>
+<td>
+<p>Is <code>expr</code> a quoted expression (with <code>quote()</code>)? This
+is useful if you want to save an expression in a variable.</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The value for <code><a href="../../base/html/options.html">options</a>('width')</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>outputArgs</code></td>
+<td>
+<p>A list of arguments to be passed through to the implicit
+call to <code><a href="verbatimTextOutput.html">verbatimTextOutput</a></code> when <code>renderPrint</code> is used
+in an interactive R Markdown document.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The corresponding HTML output tag can be anything (though <code>pre</code> is
+recommended if you need a monospace font and whitespace preserved) and should
+have the CSS class name <code>shiny-text-output</code>.
+</p>
+<p>The result of executing <code>func</code> will be printed inside a
+<code><a href="../../utils/html/capture.output.html">capture.output</a></code> call.
+</p>
+<p>Note that unlike most other Shiny output functions, if the given function
+returns <code>NULL</code> then <code>NULL</code> will actually be visible in the output.
+To display nothing, make your function return <code><a href="../../base/html/invisible.html">invisible</a>()</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="renderText.html">renderText</a></code> for displaying the value returned from a
+function, instead of the printed output.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+isolate({
+
+# renderPrint captures any print output, converts it to a string, and
+# returns it
+visFun &lt;- renderPrint({ "foo" })
+visFun()
+# '[1] "foo"'
+
+invisFun &lt;- renderPrint({ invisible("foo") })
+invisFun()
+# ''
+
+multiprintFun &lt;- renderPrint({
+  print("foo");
+  "bar"
+})
+multiprintFun()
+# '[1] "foo"\n[1] "bar"'
+
+nullFun &lt;- renderPrint({ NULL })
+nullFun()
+# 'NULL'
+
+invisNullFun &lt;- renderPrint({ invisible(NULL) })
+invisNullFun()
+# ''
+
+vecFun &lt;- renderPrint({ 1:5 })
+vecFun()
+# '[1] 1 2 3 4 5'
+
+
+# Contrast with renderText, which takes the value returned from the function
+# and uses cat() to convert it to a string
+visFun &lt;- renderText({ "foo" })
+visFun()
+# 'foo'
+
+invisFun &lt;- renderText({ invisible("foo") })
+invisFun()
+# 'foo'
+
+multiprintFun &lt;- renderText({
+  print("foo");
+  "bar"
+})
+multiprintFun()
+# 'bar'
+
+nullFun &lt;- renderText({ NULL })
+nullFun()
+# ''
+
+invisNullFun &lt;- renderText({ invisible(NULL) })
+invisNullFun()
+# ''
+
+vecFun &lt;- renderText({ 1:5 })
+vecFun()
+# '1 2 3 4 5'
+
+})
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

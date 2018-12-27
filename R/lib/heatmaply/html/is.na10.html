@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Indicates which elements are missing (either 1 and 0)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for is.na10 {heatmaply}"><tr><td>is.na10 {heatmaply}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Indicates which elements are missing (either 1 and 0)</h2>
+
+<h3>Description</h3>
+
+<p>is.na10 is a helper function for creating heatmaps to diagnose missing value patterns.
+It is similar to <a href="../../base/html/NA.html">is.na</a> but instead of returning a logical TRUE/FALSE vector (or matrix) it
+returns a numeric 1/0 output. This enables the <a href="heatmaply.html">heatmaply</a> function to be used on the data.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+is.na10(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a vector, matrix or data.frame.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Returns a numeric (instead of a logical) variable/matrix of 1 (missing) or 0 (not missing) values (hence the name is.na10)
+while still preserving the attributes resulted from running <a href="../../base/html/NA.html">is.na</a>.
+</p>
+<p>These are useful for funnelling into a heatmap (see the examples).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../base/html/NA.html">is.na</a>, the grid_gap parameter in <a href="heatmaply.html">heatmaply</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+x &lt;- mtcars
+x &lt;- data.frame(x)
+x$am &lt;- factor(x$am)
+x$vs &lt;- factor(x$vs)
+set.seed(2017-01-19)
+x[sample(nrow(x))[1:6],sample(ncol(x))[1:6]] &lt;- NA
+
+
+# nice grey colors from here: https://github.com/njtierney/visdat/blob/master/R/vis_miss_ly.R
+x %&gt;% is.na10 %&gt;% heatmaply( colors = c("grey80", "grey20"), dendrogram = "none")
+x %&gt;% is.na10 %&gt;% heatmaply( colors = c("grey80", "grey20"), k_col = 2, k_row = 2)
+
+heatmaply(is.na10(airquality), grid_gap = 1,
+         colors = c("grey80", "grey20"), k_col = 2, k_row = 2)
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>heatmaply</em> version 0.15.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

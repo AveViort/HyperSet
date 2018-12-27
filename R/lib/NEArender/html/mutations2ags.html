@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create AGS from a mutation matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mutations2ags {NEArender}"><tr><td>mutations2ags {NEArender}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create AGS from a mutation matrix</h2>
+
+<h3>Description</h3>
+
+<p>Imports a TAB-delimited file with mutations.
+This function creates a new list of AGSs from a table listing point (or otherwise qualitatively defined) mutations. Such a matrix M typically has size Ngenes x Nsamples, so that the current function returns a list of <code>length=ncol(M)</code>. For each of the Nsamples, AGSs are created as simple lists of all mutated genes G in a given sample S, i.e. any value X in the matrix M that satisfies condition <code>!is.na(X)</code> would be treated as a mutation. Eventual mutation types / categories are ignored. Wild type gene states in the original TAB-delimited file should be represented with NAs.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mutations2ags(MUT, col.mask = NA, namesFromColumn = NA, permute = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>MUT</code></td>
+<td>
+<p>Matrix of size <em>Ngenes x Nsamples</em> (the both Ns are positive integers, depending on the screen scale).</p>
+</td></tr>
+<tr valign="top"><td><code>col.mask</code></td>
+<td>
+<p>To include only columns with IDs that contain the specified mask. This parameter is aware of regular expression syntax, i.e. uses <code>grep(..., fixed = FALSE)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>namesFromColumn</code></td>
+<td>
+<p>Number of the column (if any) that contains the gene/protein names. Note that it is only necessary if the latter are NOT the unique rownames of the matrix. This could be sometimes useful for processing redundant gene  profiles with one-to-many mapping etc. Otherwise (i.e. the default), rownames shall contain gene IDs.</p>
+</td></tr>
+<tr valign="top"><td><code>permute</code></td>
+<td>
+<p>If the list of AGSs should be created via random permutation of sample labels. This might be needed for testing the null hypothesis that mutated genes are randomly combined into individual genomes, while having the same frequency distribution as in the actual cohort. Since reproducing the original distribution of AGS sizes is a non-trivial set theoretical problem, the procedure is accompanied by plotting gene set sizes in actual vs. permuted AGS (the latter is usually smaller, which might be unavoidable without a sophisticated algortihm...).</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("tcga.gbm",package="NEArender")
+dim(tcga.gbm)
+ags.list &lt;- mutations2ags(tcga.gbm, col.mask="[-.]01$")
+length(ags.list)
+length(unique(unlist(ags.list)))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NEArender</em> version 1.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Run covr on a package and upload the result to coveralls</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for coveralls {covr}"><tr><td>coveralls {covr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Run covr on a package and upload the result to coveralls</h2>
+
+<h3>Description</h3>
+
+<p>Run covr on a package and upload the result to coveralls
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+coveralls(..., coverage = NULL,
+  repo_token = Sys.getenv("COVERALLS_TOKEN"),
+  service_name = Sys.getenv("CI_NAME", "travis-ci"), quiet = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>arguments passed to <code><a href="package_coverage.html">package_coverage()</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>coverage</code></td>
+<td>
+<p>an existing coverage object to submit, if <code>NULL</code>,
+<code><a href="package_coverage.html">package_coverage()</a></code> will be called with the arguments from
+<code>...</code></p>
+</td></tr>
+<tr valign="top"><td><code>repo_token</code></td>
+<td>
+<p>The secret repo token for your repository,
+found at the bottom of your repository's page on Coveralls. This is useful
+if your job is running on a service Coveralls doesn't support out-of-the-box.
+If set to NULL, it is assumed that the job is running on travis-ci</p>
+</td></tr>
+<tr valign="top"><td><code>service_name</code></td>
+<td>
+<p>the CI service to use, if environment variable
+&lsquo;CI_NAME&rsquo; is set that is used, otherwise &lsquo;travis-ci&rsquo; is used.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>if <code>FALSE</code>, print the coverage before submission.</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>covr</em> version 3.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

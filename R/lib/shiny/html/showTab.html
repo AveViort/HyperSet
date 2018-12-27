@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dynamically hide/show a tabPanel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for showTab {shiny}"><tr><td>showTab {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Dynamically hide/show a tabPanel</h2>
+
+<h3>Description</h3>
+
+<p>Dynamically hide or show a <code><a href="tabPanel.html">tabPanel</a></code> (or a
+<code><a href="navbarPage.html">navbarMenu</a></code>)from an existing <code><a href="tabsetPanel.html">tabsetPanel</a></code>,
+<code><a href="navlistPanel.html">navlistPanel</a></code> or <code><a href="navbarPage.html">navbarPage</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+showTab(inputId, target, select = FALSE,
+  session = getDefaultReactiveDomain())
+
+hideTab(inputId, target, session = getDefaultReactiveDomain())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>inputId</code></td>
+<td>
+<p>The <code>id</code> of the <code>tabsetPanel</code> (or
+<code>navlistPanel</code> or <code>navbarPage</code>) in which to find
+<code>target</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>target</code></td>
+<td>
+<p>The <code>value</code> of the <code>tabPanel</code> to be
+hidden/shown. See Details if you want to hide/show an entire
+<code>navbarMenu</code> instead.</p>
+</td></tr>
+<tr valign="top"><td><code>select</code></td>
+<td>
+<p>Should <code>target</code> be selected upon being shown?</p>
+</td></tr>
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The shiny session within which to call this function.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For <code>navbarPage</code>, you can hide/show conventional
+<code>tabPanel</code>s (whether at the top level or nested inside a
+<code>navbarMenu</code>), as well as an entire <code><a href="navbarPage.html">navbarMenu</a></code>.
+For the latter case, <code>target</code> should be the <code>menuName</code> that
+you gave your <code>navbarMenu</code> when you first created it (by default,
+this is equal to the value of the <code>title</code> argument).
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="insertTab.html">insertTab</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run this example in interactive R sessions
+if (interactive()) {
+
+ui &lt;- navbarPage("Navbar page", id = "tabs",
+  tabPanel("Home",
+    actionButton("hideTab", "Hide 'Foo' tab"),
+    actionButton("showTab", "Show 'Foo' tab"),
+    actionButton("hideMenu", "Hide 'More' navbarMenu"),
+    actionButton("showMenu", "Show 'More' navbarMenu")
+  ),
+  tabPanel("Foo", "This is the foo tab"),
+  tabPanel("Bar", "This is the bar tab"),
+  navbarMenu("More",
+    tabPanel("Table", "Table page"),
+    tabPanel("About", "About page"),
+    "------",
+    "Even more!",
+    tabPanel("Email", "Email page")
+  )
+)
+
+server &lt;- function(input, output, session) {
+  observeEvent(input$hideTab, {
+    hideTab(inputId = "tabs", target = "Foo")
+  })
+
+  observeEvent(input$showTab, {
+    showTab(inputId = "tabs", target = "Foo")
+  })
+
+  observeEvent(input$hideMenu, {
+    hideTab(inputId = "tabs", target = "More")
+  })
+
+  observeEvent(input$showMenu, {
+    showTab(inputId = "tabs", target = "More")
+  })
+}
+
+shinyApp(ui, server)
+}
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

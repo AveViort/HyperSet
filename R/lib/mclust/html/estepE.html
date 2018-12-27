@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: E-step in the EM algorithm for a parameterized Gaussian...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for estepE {mclust}"><tr><td>estepE {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+E-step in the EM algorithm for a parameterized Gaussian mixture model.
+</h2>
+
+<h3>Description</h3>
+
+<p>Implements the expectation step in the EM algorithm for a 
+parameterized Gaussian mixture model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+estepE(data, parameters, warn = NULL, ...)
+estepV(data, parameters, warn = NULL, ...)
+estepEII(data, parameters, warn = NULL, ...)
+estepVII(data, parameters, warn = NULL, ...)
+estepEEI(data, parameters, warn = NULL, ...)
+estepVEI(data, parameters, warn = NULL, ...)
+estepEVI(data, parameters, warn = NULL, ...)
+estepVVI(data, parameters, warn = NULL, ...)
+estepEEE(data, parameters, warn = NULL, ...)
+estepEEV(data, parameters, warn = NULL, ...)
+estepVEV(data, parameters, warn = NULL, ...)
+estepVVV(data, parameters, warn = NULL, ...)
+estepEVE(data, parameters, warn = NULL, ...)
+estepEVV(data, parameters, warn = NULL, ...)
+estepVEE(data, parameters, warn = NULL, ...)
+estepVVE(data, parameters, warn = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations.
+Categorical variables are not allowed.
+If a matrix or data frame, rows correspond to observations and
+columns correspond to variables.
+</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+<p>The parameters of the model:
+
+
+</p>
+
+<dl>
+<dt><code>pro</code></dt><dd>
+<p>Mixing proportions for the components of the mixture.
+If the model includes a Poisson term for noise, there
+should be one more mixing proportion than the number
+of Gaussian components.
+</p>
+</dd>
+<dt>mu</dt><dd>
+<p>The mean for each component. If there is more than one component,
+this is a matrix whose columns are the means of the  components.
+</p>
+</dd>
+<dt><code>variance</code></dt><dd>
+<p>A list of variance parameters for the model.
+The components of this list depend on the model
+specification. See the help file for <code><a href="mclustVariance.html">mclustVariance</a></code> 
+for details.
+</p>
+</dd>
+<dt><code>Vinv</code></dt><dd>
+<p>An estimate of the reciprocal hypervolume of the data region.
+If not supplied or set to a negative value, the default is
+determined by applying function <code>hypvol</code> to the data.
+Used only when <code>pro</code> includes an additional
+mixing proportion for a noise component.
+</p>
+</dd>
+</dl>
+
+
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+
+<p>A logical value indicating whether or certain warnings should be issued.
+The default is given by <code>mclust.options("warn")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Catches unused arguments in indirect or list calls via <code>do.call</code>.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list including the following components: 
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>Character string identifying the model.
+</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+
+<p>A matrix whose <code>[i,k]</code>th entry is the
+conditional probability of the <em>i</em>th observation belonging to
+the <em>k</em>th component of the mixture.  
+</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+<p>The input parameters.
+</p>
+</td></tr>
+<tr valign="top"><td><code>loglik</code></td>
+<td>
+
+<p>The logliklihood for the data in the mixture model. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>Attribute</code></td>
+<td>
+
+<p><code>"WARNING"</code>: An appropriate warning if problems are
+encountered in the computations.
+</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="estep.html">estep</a></code>,
+<code><a href="em.html">em</a></code>,
+<code><a href="mstep.html">mstep</a></code>,
+<code><a href="../../base/html/do.call.html">do.call</a></code>,
+<code><a href="mclustVariance.html">mclustVariance</a></code>,
+<code><a href="mclust.options.html">mclust.options</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+msEst &lt;- mstepEII(data = iris[,-5], z = unmap(iris[,5]))
+names(msEst)
+
+estepEII(data = iris[,-5], parameters = msEst$parameters)
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

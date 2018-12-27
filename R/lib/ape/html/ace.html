@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Ancestral Character Estimation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ace {ape}"><tr><td>ace {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Ancestral Character Estimation</h2>
+
+<h3>Description</h3>
+
+<p>This function estimates ancestral character states, and the associated
+uncertainty, for continuous and discrete characters.
+</p>
+<p><code>logLik</code>, <code>deviance</code>, and <code>AIC</code> are generic functions
+used to extract the log-likelihood, the deviance, or the Akaike
+information criterion of a fitted object. If no such values are
+available, <code>NULL</code> is returned.
+</p>
+<p><code>anova</code> is another generic function which is used to compare
+nested models: the significance of the additional parameter(s) is
+tested with likelihood ratio tests. You must ensure that the models
+are effectively nested (if they are not, the results will be
+meaningless). It is better to list the models from the smallest to the
+largest.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ace(x, phy, type = "continuous", method = if (type == "continuous")
+   "REML" else "ML", CI = TRUE,
+    model = if (type == "continuous") "BM" else "ER",
+    scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1,
+    use.expm = FALSE, use.eigen = TRUE, marginal = FALSE)
+## S3 method for class 'ace'
+print(x, digits = 4, ...)
+## S3 method for class 'ace'
+logLik(object, ...)
+## S3 method for class 'ace'
+deviance(object, ...)
+## S3 method for class 'ace'
+AIC(object, ..., k = 2)
+## S3 method for class 'ace'
+anova(object, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a vector or a factor; an object of class <code>"ace"</code> in the
+case of <code>print</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>the variable type; either <code>"continuous"</code> or
+<code>"discrete"</code> (or an abbreviation of these).</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>a character specifying the method used for
+estimation. Four choices are possible: <code>"ML"</code>, <code>"REML"</code>,
+<code>"pic"</code>, or <code>"GLS"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>CI</code></td>
+<td>
+<p>a logical specifying whether to return the 95% confidence
+intervals of the ancestral state estimates (for continuous
+characters) or the likelihood of the different states (for discrete
+ones).</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>a character specifying the model (ignored if <code>method
+      = "GLS"</code>), or a numeric matrix if <code>type = "discrete"</code> (see
+details).</p>
+</td></tr>
+<tr valign="top"><td><code>scaled</code></td>
+<td>
+<p>a logical specifying whether to scale the contrast
+estimate (used only if <code>method = "pic"</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>kappa</code></td>
+<td>
+<p>a positive value giving the exponent transformation of
+the branch lengths (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>corStruct</code></td>
+<td>
+<p>if <code>method = "GLS"</code>, specifies the correlation
+structure to be used (this also gives the assumed model).</p>
+</td></tr>
+<tr valign="top"><td><code>ip</code></td>
+<td>
+<p>the initial value(s) used for the ML estimation procedure
+when <code>type == "discrete"</code> (possibly recycled).</p>
+</td></tr>
+<tr valign="top"><td><code>use.expm</code></td>
+<td>
+<p>a logical specifying whether to use the package
+<span class="pkg">expm</span> to compute the matrix exponential (relevant only if
+<code>type = "d"</code>). If <code>FALSE</code>, the function <code>matexpo</code>
+from <span class="pkg">ape</span> is used (see details). This option is ignored if
+<code>use.eigen = TRUE</code> (see next).</p>
+</td></tr>
+<tr valign="top"><td><code>use.eigen</code></td>
+<td>
+<p>a logical (relevant if <code>type = "d"</code>); if
+<code>TRUE</code> then the probability matrix is computed with an eigen
+decomposition instead of a matrix exponential (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>marginal</code></td>
+<td>
+<p>a logical (relevant if <code>type = "d"</code>). By default,
+the joint reconstruction of the ancestral states are done. Set this
+option to <code>TRUE</code> if you want the marginal reconstruction (see
+details.)</p>
+</td></tr>
+<tr valign="top"><td><code>digits</code></td>
+<td>
+<p>the number of digits to be printed.</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>an object of class <code>"ace"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>a numeric value giving the penalty per estimated parameter;
+the default is <code>k = 2</code> which is the classical Akaike
+information criterion.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If <code>type = "continuous"</code>, the default model is Brownian motion
+where characters evolve randomly following a random walk. This model
+can be fitted by residual maximum likelihood (the default), maximum
+likelihood (Felsenstein 1973, Schluter et al. 1997), least squares
+(<code>method = "pic"</code>, Felsenstein 1985), or generalized least
+squares (<code>method = "GLS"</code>, Martins and Hansen 1997, Cunningham et
+al. 1998). In the last case, the specification of <code>phy</code> and
+<code>model</code> are actually ignored: it is instead given through a
+correlation structure with the option <code>corStruct</code>.
+</p>
+<p>In the setting <code>method = "ML"</code> and <code>model = "BM"</code> (this used
+to be the default until <span class="pkg">ape</span> 3.0-7) the maximum likelihood
+estimation is done simultaneously on the ancestral values and the
+variance of the Brownian motion process; these estimates are then used
+to compute the confidence intervals in the standard way. The REML
+method first estimates the ancestral value at the root (aka, the
+phylogenetic mean), then the variance of the Brownian motion process
+is estimated by optimizing the residual log-likelihood. The ancestral
+values are finally inferred from the likelihood function giving these
+two parameters. If <code>method = "pic"</code> or <code>"GLS"</code>, the
+confidence intervals are computed using the expected variances under
+the model, so they depend only on the tree.
+</p>
+<p>It could be shown that, with a continous character, REML results in
+unbiased estimates of the variance of the Brownian motion process
+while ML gives a downward bias. Therefore the former is recommanded.
+</p>
+<p>For discrete characters (<code>type = "discrete"</code>), only maximum
+likelihood estimation is available (Pagel 1994) (see <code><a href="MPR.html">MPR</a></code>
+for an alternative method). The model is specified through a numeric
+matrix with integer values taken as indices of the parameters. The
+numbers of rows and of columns of this matrix must be equal, and are
+taken to give the number of states of the character. For instance,
+<code>matrix(c(0, 1, 1, 0), 2)</code> will represent a model with two
+character states and equal rates of transition, <code>matrix(c(0, 1,
+  2, 0), 2)</code> a model with unequal rates, <code>matrix(c(0, 1, 1, 1, 0,
+  1, 1, 1, 0), 3)</code> a model with three states and equal rates of
+transition (the diagonal is always ignored). There are short-cuts to
+specify these models: <code>"ER"</code> is an equal-rates model (e.g., the
+first and third examples above), <code>"ARD"</code> is an
+all-rates-different model (the second example), and <code>"SYM"</code> is a
+symmetrical model (e.g., <code>matrix(c(0, 1, 2, 1, 0, 3, 2, 3, 0),
+  3)</code>). If a short-cut is used, the number of states is determined from
+the data.
+</p>
+<p>By default, the likelihood of the different ancestral states of
+discrete characters are computed with a joint estimation procedure
+using a procedure similar to the one described in Pupko et al. (2000).
+If <code>marginal = TRUE</code>, a marginal estimation procedure is used
+(this was the only choice until ape 3.1-1). With this method, the
+likelihood values at a given node are computed using only the
+information from the tips (and branches) descending from this node.
+With the joint estimation, all information is used for each node. The
+difference between these two methods is further explained in
+Felsenstein (2004, pp. 259-260) and in Yang (2006, pp. 121-126). The
+present implementation of the joint estimation uses a &ldquo;two-pass&rdquo;
+algorithm which is much faster than stochastic mapping while the
+estimates of both methods are very close.
+</p>
+<p>With discrete characters it is necessary to compute the exponential of
+the rate matrix. The only possibility until <span class="pkg">ape</span> 3.0-7 was the
+function <code><a href="matexpo.html">matexpo</a></code> in <span class="pkg">ape</span>. If <code>use.expm = TRUE</code>
+and <code>use.eigen = FALSE</code>, the function <code><a href="../../expm/html/expm.html">expm</a></code>,
+in the package of the same name, is used. <code>matexpo</code> is faster but
+quite inaccurate for large and/or asymmetric matrices. In case of
+doubt, use the latter. Since <span class="pkg">ape</span> 3.0-10, it is possible to use
+an eigen decomposition avoiding the need to compute the matrix
+exponential; see details in Lebl (2013, sect. 3.8.3). This is much
+faster and is now the default.
+</p>
+<p>Since version 5.2 of <span class="pkg">ape</span>, <code>ace</code> can take state uncertainty
+for discrete characters into account: this should be coded with <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span>'s
+<code><a href="../../base/html/NA.html">NA</a></code> only. More details:
+</p>
+<p><a href="https://www.mail-archive.com/r-sig-phylo@r-project.org/msg05286.html">https://www.mail-archive.com/r-sig-phylo@r-project.org/msg05286.html</a>
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"ace"</code> with the following elements:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>ace</code></td>
+<td>
+<p>if <code>type = "continuous"</code>, the estimates of the
+ancestral character values.</p>
+</td></tr>
+<tr valign="top"><td><code>CI95</code></td>
+<td>
+<p>if <code>type = "continuous"</code>, the estimated 95%
+confidence intervals.</p>
+</td></tr>
+<tr valign="top"><td><code>sigma2</code></td>
+<td>
+<p>if <code>type = "continuous"</code>, <code>model = "BM"</code>, and
+<code>method = "ML"</code>, the maximum likelihood estimate of the
+Brownian parameter.</p>
+</td></tr>
+<tr valign="top"><td><code>rates</code></td>
+<td>
+<p>if <code>type = "discrete"</code>, the maximum likelihood
+estimates of the transition rates.</p>
+</td></tr>
+<tr valign="top"><td><code>se</code></td>
+<td>
+<p>if <code>type = "discrete"</code>, the standard-errors of
+estimated rates.</p>
+</td></tr>
+<tr valign="top"><td><code>index.matrix</code></td>
+<td>
+<p>if <code>type = "discrete"</code>, gives the indices of
+the <code>rates</code> in the rate matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>loglik</code></td>
+<td>
+<p>if <code>method = "ML"</code>, the maximum log-likelihood.</p>
+</td></tr>
+<tr valign="top"><td><code>lik.anc</code></td>
+<td>
+<p>if <code>type = "discrete"</code>, the scaled likelihoods of
+each ancestral state.</p>
+</td></tr>
+<tr valign="top"><td><code>call</code></td>
+<td>
+<p>the function call.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>Liam Revell points out that for discrete characters the ancestral
+likelihood values returned with <code>marginal = FALSE</code> are actually
+the marginal estimates, while setting <code>marginal = TRUE</code> returns
+the conditional (scaled) likelihoods of the subtree:
+</p>
+<p><a href="http://blog.phytools.org/2015/05/about-how-acemarginaltrue-does-not.html">http://blog.phytools.org/2015/05/about-how-acemarginaltrue-does-not.html</a>
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis, Ben Bolker</p>
+
+
+<h3>References</h3>
+
+<p>Cunningham, C. W., Omland, K. E. and Oakley, T. H. (1998)
+Reconstructing ancestral character states: a critical
+reappraisal. <em>Trends in Ecology &amp; Evolution</em>, <b>13</b>,
+361&ndash;366.
+</p>
+<p>Felsenstein, J. (1973) Maximum likelihood estimation
+of evolutionary trees from continuous characters. <em>American
+Journal of Human Genetics</em>, <b>25</b>, 471&ndash;492.
+</p>
+<p>Felsenstein, J. (1985) Phylogenies and the comparative
+method. <em>American Naturalist</em>, <b>125</b>, 1&ndash;15.
+</p>
+<p>Felsenstein, J. (2004) <em>Inferring Phylogenies</em>. Sunderland:
+Sinauer Associates.
+</p>
+<p>Lebl, J. (2013) <em>Notes on Diffy Qs: Differential Equations for
+Engineers</em>. <a href="http://www.jirka.org/diffyqs/">http://www.jirka.org/diffyqs/</a>.
+</p>
+<p>Martins, E. P. and Hansen, T. F. (1997) Phylogenies and the
+comparative method: a general approach to incorporating phylogenetic
+information into the analysis of interspecific data. <em>American
+Naturalist</em>, <b>149</b>, 646&ndash;667.
+</p>
+<p>Pagel, M. (1994) Detecting correlated evolution on phylogenies: a
+general method for the comparative analysis of discrete
+characters. <em>Proceedings of the Royal Society of London. Series
+B. Biological Sciences</em>, <b>255</b>, 37&ndash;45.
+</p>
+<p>Pupko, T., Pe'er, I, Shamir, R., and Graur, D. (2000) A fast algorithm
+for joint reconstruction of ancestral amino acid sequences.
+<em>Molecular Biology and Evolution</em>, <b>17</b>, 890&ndash;896.
+</p>
+<p>Schluter, D., Price, T., Mooers, A. O. and Ludwig, D. (1997)
+Likelihood of ancestor states in adaptive radiation. <em>Evolution</em>,
+<b>51</b>, 1699&ndash;1711.
+</p>
+<p>Yang, Z. (2006) <em>Computational Molecular Evolution</em>. Oxford:
+Oxford University Press.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="MPR.html">MPR</a></code>, <code><a href="corBrownian.html">corBrownian</a></code>, <code><a href="compar.ou.html">compar.ou</a></code>,
+<code><a href="../../stats/html/anova.html">anova</a></code>
+</p>
+<p>Reconstruction of ancestral sequences can be done with the package
+<span class="pkg">phangorn</span> (see function <code>?ancestral.pml</code>).
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### Some random data...
+data(bird.orders)
+x &lt;- rnorm(23)
+### Compare the three methods for continuous characters:
+ace(x, bird.orders)
+ace(x, bird.orders, method = "pic")
+ace(x, bird.orders, method = "GLS",
+    corStruct = corBrownian(1, bird.orders))
+### For discrete characters:
+x &lt;- factor(c(rep(0, 5), rep(1, 18)))
+ans &lt;- ace(x, bird.orders, type = "d")
+#### Showing the likelihoods on each node:
+plot(bird.orders, type = "c", FALSE, label.offset = 1)
+co &lt;- c("blue", "yellow")
+tiplabels(pch = 22, bg = co[as.numeric(x)], cex = 2, adj = 1)
+nodelabels(thermo = ans$lik.anc, piecol = co, cex = 0.75)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

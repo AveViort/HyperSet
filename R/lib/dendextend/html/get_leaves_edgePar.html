@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get edgePar of dendrogram's leaves</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for get_leaves_edgePar {dendextend}"><tr><td>get_leaves_edgePar {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get edgePar of dendrogram's leaves</h2>
+
+<h3>Description</h3>
+
+<p>This is helpful to get the attributes of branches of the leaves.
+For example, after we use <a href="color_branches.html">color_branches</a>, to get the colors
+of the labels to match (since getting the colors of branches to match
+those of the labels can be tricky).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+get_leaves_edgePar(dend, simplify = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>simplify</code></td>
+<td>
+<p>logical (default is FALSE). If TRUE, then the return vector is 
+after using <code>unlist</code> on it.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list (or a vector) with the dendrogram's leaves edgePar attribute
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="get_nodes_attr.html">get_nodes_attr</a>, <a href="assign_values_to_leaves_nodePar.html">assign_values_to_leaves_nodePar</a>, <a href="labels_colors.html">labels_colors</a>
+<a href="get_leaves_nodePar.html">get_leaves_nodePar</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# define dendrogram object to play with:
+hc &lt;- hclust(dist(USArrests[1:5,]), "ave")
+dend &lt;- as.dendrogram(hc)
+
+# get_leaves_edgePar(dend) # error :)
+get_leaves_edgePar(dend)
+dend &lt;- color_branches(dend, k = 3)
+get_leaves_edgePar(dend)
+get_leaves_edgePar(dend, TRUE)
+
+dend &lt;- dend %&gt;% set("branches_lwd", c(2,1,2))
+get_leaves_edgePar(dend)
+
+plot(dend)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

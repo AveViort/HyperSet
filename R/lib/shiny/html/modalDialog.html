@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a modal dialog UI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for modalDialog {shiny}"><tr><td>modalDialog {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a modal dialog UI</h2>
+
+<h3>Description</h3>
+
+<p>This creates the UI for a modal dialog, using Bootstrap's modal class. Modals
+are typically used for showing important messages, or for presenting UI that
+requires input from the user, such as a username and password input.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+modalDialog(..., title = NULL, footer = modalButton("Dismiss"),
+  size = c("m", "s", "l"), easyClose = FALSE, fade = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>UI elements for the body of the modal dialog box.</p>
+</td></tr>
+<tr valign="top"><td><code>title</code></td>
+<td>
+<p>An optional title for the dialog.</p>
+</td></tr>
+<tr valign="top"><td><code>footer</code></td>
+<td>
+<p>UI for footer. Use <code>NULL</code> for no footer.</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>One of <code>"s"</code> for small, <code>"m"</code> (the default) for medium,
+or <code>"l"</code> for large.</p>
+</td></tr>
+<tr valign="top"><td><code>easyClose</code></td>
+<td>
+<p>If <code>TRUE</code>, the modal dialog can be dismissed by
+clicking outside the dialog box, or be pressing the Escape key. If
+<code>FALSE</code> (the default), the modal dialog can't be dismissed in those
+ways; instead it must be dismissed by clicking on the dismiss button, or
+from a call to <code><a href="showModal.html">removeModal</a></code> on the server.</p>
+</td></tr>
+<tr valign="top"><td><code>fade</code></td>
+<td>
+<p>If <code>FALSE</code>, the modal dialog will have no fade-in animation
+(it will simply appear rather than fade in to view).</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+if (interactive()) {
+# Display an important message that can be dismissed only by clicking the
+# dismiss button.
+shinyApp(
+  ui = basicPage(
+    actionButton("show", "Show modal dialog")
+  ),
+  server = function(input, output) {
+    observeEvent(input$show, {
+      showModal(modalDialog(
+        title = "Important message",
+        "This is an important message!"
+      ))
+    })
+  }
+)
+
+
+# Display a message that can be dismissed by clicking outside the modal dialog,
+# or by pressing Esc.
+shinyApp(
+  ui = basicPage(
+    actionButton("show", "Show modal dialog")
+  ),
+  server = function(input, output) {
+    observeEvent(input$show, {
+      showModal(modalDialog(
+        title = "Somewhat important message",
+        "This is a somewhat important message.",
+        easyClose = TRUE,
+        footer = NULL
+      ))
+    })
+  }
+)
+
+
+# Display a modal that requires valid input before continuing.
+shinyApp(
+  ui = basicPage(
+    actionButton("show", "Show modal dialog"),
+    verbatimTextOutput("dataInfo")
+  ),
+
+  server = function(input, output) {
+    # reactiveValues object for storing current data set.
+    vals &lt;- reactiveValues(data = NULL)
+
+    # Return the UI for a modal dialog with data selection input. If 'failed' is
+    # TRUE, then display a message that the previous value was invalid.
+    dataModal &lt;- function(failed = FALSE) {
+      modalDialog(
+        textInput("dataset", "Choose data set",
+          placeholder = 'Try "mtcars" or "abc"'
+        ),
+        span('(Try the name of a valid data object like "mtcars", ',
+             'then a name of a non-existent object like "abc")'),
+        if (failed)
+          div(tags$b("Invalid name of data object", style = "color: red;")),
+
+        footer = tagList(
+          modalButton("Cancel"),
+          actionButton("ok", "OK")
+        )
+      )
+    }
+
+    # Show modal when button is clicked.
+    observeEvent(input$show, {
+      showModal(dataModal())
+    })
+
+    # When OK button is pressed, attempt to load the data set. If successful,
+    # remove the modal. If not show another modal, but this time with a failure
+    # message.
+    observeEvent(input$ok, {
+      # Check that data object exists and is data frame.
+      if (!is.null(input$dataset) &amp;&amp; nzchar(input$dataset) &amp;&amp;
+          exists(input$dataset) &amp;&amp; is.data.frame(get(input$dataset))) {
+        vals$data &lt;- get(input$dataset)
+        removeModal()
+      } else {
+        showModal(dataModal(failed = TRUE))
+      }
+    })
+
+    # Display information about selected data
+    output$dataInfo &lt;- renderPrint({
+      if (is.null(vals$data))
+        "No data selected"
+      else
+        summary(vals$data)
+    })
+  }
+)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

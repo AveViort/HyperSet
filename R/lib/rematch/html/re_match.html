@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Match a regular expression to a character vector</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for re_match {rematch}"><tr><td>re_match {rematch}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Match a regular expression to a character vector</h2>
+
+<h3>Description</h3>
+
+<p>This function is a small wrapper on the <code><a href="../../base/html/regexpr.html">regexpr</a></code>
+base R function, to provide an API that is easier to use.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+re_match(pattern, text, perl = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pattern</code></td>
+<td>
+<p>Regular expression, defaults to be a PCRE
+expression. See <code><a href="../../base/html/regex.html">regex</a></code> for more about
+regular expressions.</p>
+</td></tr>
+<tr valign="top"><td><code>text</code></td>
+<td>
+<p>Character vector.</p>
+</td></tr>
+<tr valign="top"><td><code>perl</code></td>
+<td>
+<p>Logical, should Perl-compatible regular expessions
+be used?</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments to pass to
+<code><a href="../../base/html/regexpr.html">regexpr</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Currently only the first occurence of the pattern is used.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character matrix of the matched (sub)strings.
+The first column is always the full match. This column is
+named <code>.match</code>. The result of the columns are capture groups,
+with appropriate column names, if the groups are named.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+dates &lt;- c("2016-04-20", "1977-08-08", "not a date", "2016",
+  "76-03-02", "2012-06-30", "2015-01-21 19:58")
+isodate &lt;- "([0-9]{4})-([0-1][0-9])-([0-3][0-9])"
+re_match(text = dates, pattern = isodate)
+
+# The same with named groups
+isodaten &lt;- "(?&lt;year&gt;[0-9]{4})-(?&lt;month&gt;[0-1][0-9])-(?&lt;day&gt;[0-3][0-9])"
+re_match(text = dates, pattern = isodaten)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rematch</em> version 1.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

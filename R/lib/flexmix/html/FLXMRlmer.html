@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: FlexMix Interface to Linear Mixed Models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for FLXMRlmer {flexmix}"><tr><td>FLXMRlmer {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>FlexMix Interface to Linear Mixed Models</h2>
+
+<h3>Description</h3>
+
+<p>This is a driver which allows fitting of mixtures of linear models
+with random effects.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+FLXMRlmm(formula = . ~ ., random, lm.fit = c("lm.wfit",
+          "smooth.spline"), varFix = c(Random = FALSE, Residual =
+          FALSE), ...)
+FLXMRlmer(formula = . ~ ., random, weighted = TRUE,
+          control = list(), eps = .Machine$double.eps)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>formula</code></td>
+<td>
+<p>A formula which is interpreted relative to the formula
+specified in the call to <code>flexmix</code> using
+<code><a href="../../stats/html/update.formula.html">update.formula</a></code>. Default is to use the original
+<code>flexmix</code> model
+formula.</p>
+</td></tr>
+<tr valign="top"><td><code>random</code></td>
+<td>
+<p>A formula for specifying the random effects.</p>
+</td></tr>
+<tr valign="top"><td><code>weighted</code></td>
+<td>
+<p>A logical indicating if the model should be estimated
+with weighted ML.</p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p>A list of control parameters. See
+<code><a href="../../lme4/html/lmer.html">lmer</a></code> for details.</p>
+</td></tr>
+<tr valign="top"><td><code>eps</code></td>
+<td>
+<p>Observations with a component-specific posterior smaller
+than <code>eps</code> are omitted in the M-step for this component.</p>
+</td></tr>
+<tr valign="top"><td><code>lm.fit</code></td>
+<td>
+<p>A character string indicating if the coefficients should
+be fitted using either a linear model or the function
+<code>smooth.spline</code></p>
+</td></tr>
+<tr valign="top"><td><code>varFix</code></td>
+<td>
+<p>Named logical vector of length 2 indicating if the
+variance of the random effects and the residuals are fixed over the
+components.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments to be passed to <code>smooth.spline</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>FLXMRlmm</code> allows only one random effect. <code>FLXMRlmer</code> allows
+an arbitrary number of random effects if <code>weighted = FALSE</code>; a
+certain structure of the model matrix of the random effects has to be
+given for weighted ML estimation, i.e. where <code>weighted = TRUE</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns an object of class <code>FLXMRlmer</code> and <code>FLXMRlmm</code>.
+</p>
+
+
+<h3>Warning</h3>
+
+<p>For <code>FLXMRlmer</code> the weighted ML estimation is only correct if the
+covariate matrix of the random effects is the same for each
+observation. By default weighted ML estimation is made and the
+condition on the covariate matrix of the random effects is checked. If
+this fails, only estimation with <code>weighted = FALSE</code> is possible
+which will maximize the classification likelihood.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Bettina Gruen</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+id &lt;- rep(1:50, each = 10)
+x &lt;- rep(1:10, 50)
+sample &lt;- data.frame(y = rep(rnorm(unique(id)/2, 0, c(5, 2)), each = 10) +
+                         rnorm(length(id), rep(c(3, 8), each = 10)) +
+                         rep(c(0, 3), each = 10) * x,
+                     x = x,
+                     id = factor(id))
+fitted &lt;- flexmix(.~.|id, k = 2, model = FLXMRlmm(y ~ x, random = ~ 1),
+                  data = sample, control = list(tolerance = 10^-3),
+                  cluster = rep(rep(1:2, each = 10), 25))
+parameters(fitted)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

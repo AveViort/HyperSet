@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Runs a set of tests.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for test.data.table {data.table}"><tr><td>test.data.table {data.table}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Runs a set of tests. </h2>
+
+<h3>Description</h3>
+
+<p>Runs a set of tests to check data.table is working correctly.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+test.data.table(verbose=FALSE, pkg="pkg", silent=FALSE,
+                with.other.packages=FALSE, benchmark=FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p> If <code>TRUE</code> sets datatable.verbose to <code>TRUE</code> for the duration of the tests. </p>
+</td></tr>
+<tr valign="top"><td><code>pkg</code></td>
+<td>
+<p>Root directory name under which all package content (ex: DESCRIPTION, src/, R/, inst/ etc..) resides.</p>
+</td></tr>
+<tr valign="top"><td><code>silent</code></td>
+<td>
+<p>Logical, default <code>FALSE</code>, when <code>TRUE</code> it will not raise error on in case of test fails.</p>
+</td></tr>
+<tr valign="top"><td><code>with.other.packages</code></td>
+<td>
+<p> Run compatibility tests with other packages. </p>
+</td></tr>
+<tr valign="top"><td><code>benchmark</code></td>
+<td>
+<p> Run the benchmark script. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Runs a series of tests. These can be used to see features and examples of usage, too. Running test.data.table will tell you the full location of the test file(s) to open.
+</p>
+
+
+<h3>Value</h3>
+
+<p>When <code>silent</code> equals to <code>TRUE</code> it will return <code>TRUE</code> if all tests were successful. <code>FALSE</code> otherwise. If <code>silent</code> equals to <code>FALSE</code> it will return <code>TRUE</code> if all tests were successful. Error otherwise.
+</p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="data.table.html">data.table</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+  library(data.table)
+  test.data.table()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>data.table</em> version 1.11.8 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get a table of qgram counts from one or more character...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for qgrams {stringdist}"><tr><td>qgrams {stringdist}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get a table of qgram counts from one or more character vectors.</h2>
+
+<h3>Description</h3>
+
+<p>Get a table of qgram counts from one or more character vectors.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+qgrams(..., .list = NULL, q = 1L, useBytes = FALSE,
+  useNames = !useBytes)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>any number of (named) arguments, that will be coerced to character with <code>as.character</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>.list</code></td>
+<td>
+<p>Will be concatenated with the <code>...</code> argument(s). Useful for adding character vectors named <code>'q'</code> or <code>'useNames'</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>q</code></td>
+<td>
+<p>size of q-gram, must be non-negative.</p>
+</td></tr>
+<tr valign="top"><td><code>useBytes</code></td>
+<td>
+<p>Determine byte-wise qgrams. <code>useBytes=TRUE</code> is faster but may yield different
+results depending on character encoding. For <code>ASCII</code> it is identical. See also <code><a href="stringdist.html">stringdist</a></code> under Encoding issues.</p>
+</td></tr>
+<tr valign="top"><td><code>useNames</code></td>
+<td>
+<p>Add q-grams as column names. If <code>useBytes=useNames=TRUE</code>, the q-byte sequences are represented as 2 hexadecimal numbers
+per byte, separated by a vertical bar (<code>|</code>).</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A table with <i>q</i>-gram counts. Detected <i>q</i>-grams are column names and the argument names as row names.
+If no argument names were provided, they will be generated.
+</p>
+
+
+<h3>Details</h3>
+
+<p>The input is converted to <code>character</code>. If <code>useBytes=TRUE</code>, each element is 
+converted to <code>utf8</code> and then to <code>integer</code> as in <code><a href="stringdist.html">stringdist</a></code>. 
+Next,the data is passed to the underlying routine.
+</p>
+<p>Strings with less than <code>q</code> characters and elements containing <code>NA</code> are skipped. Using <code>q=0</code> 
+therefore counts the number of empty strings <code>""</code> occuring in each argument.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="stringdist.html">stringdist</a></code>, <code><a href="amatch.html">amatch</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+qgrams('hello world',q=3)
+
+# q-grams are counted uniquely over a character vector
+qgrams(rep('hello world',2),q=3)
+
+# to count them separately, do something like
+x &lt;- c('hello', 'world')
+lapply(x,qgrams, q=3)
+
+# output rows may be named, and you can pass any number of character vectors
+x &lt;- "I will not buy this record, it is scratched"
+y &lt;- "My hovercraft is full of eels"
+z &lt;- c("this", "is", "a", "dead","parrot")
+qgrams(A = x, B = y, C = z,q=2)
+
+# a tonque twister, showing the effects of useBytes and useNames
+x &lt;- "peter piper picked a peck of pickled peppers"
+qgrams(x, q=2) 
+qgrams(x, q=2, useNames=FALSE) 
+qgrams(x, q=2, useBytes=TRUE)
+qgrams(x, q=2, useBytes=TRUE, useNames=TRUE)
+
+
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>stringdist</em> version 0.9.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

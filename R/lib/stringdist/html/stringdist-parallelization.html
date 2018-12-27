@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Multithreading and parallelization in 'stringdist'</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for stringdist-parallelization {stringdist}"><tr><td>stringdist-parallelization {stringdist}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Multithreading and parallelization in <span class="pkg">stringdist</span></h2>
+
+<h3>Description</h3>
+
+<p>This page describes how <span class="pkg">stringdist</span> uses parallel processing.
+</p>
+
+
+<h3>Multithreading and parallelization in <span class="pkg">stringdist</span></h3>
+
+<p>The core 
+functions of <span class="pkg">stringdist</span> are implemented in C. On systems where 
+<code>openMP</code> is available, <span class="pkg">stringdist</span> will automatically take 
+advantage of multiple cores. The
+<a href="https://cran.r-project.org/doc/manuals/r-release/R-exts.html#OpenMP-support">section
+on OpenMP</a> of the
+<a href="https://cran.r-project.org/doc/manuals/r-release/R-exts.html">Writing
+R Extensions</a> manual discusses on what systems OpenMP is available (at the time of writing more or
+less, anywhere except on OSX).
+</p>
+<p>By default, the number of threads to use is taken from <code>options('sd_num_thread')</code>.
+When the package is loaded, the value for this option is determined as follows:
+</p>
+
+<ul>
+<li><p>If the environment variable <code>OMP_NUM_THREADS</code> is set, this value is taken.
+</p>
+</li>
+<li><p>Otherwise, the number of available cores is determined with <code>parallel::detectCores()</code>
+If this fails, the number of threads is set to 1 (with a message). If the nr of detected
+cores exceeds three, the number of used cores is set to <i>n-1</i>.
+</p>
+</li>
+<li><p>If available, the environment variable <code>OMP_THREAD_LIMIT</code> is
+determined and The number of threads is set to the lesser of
+<code>OMP_THREAD_LIMIT</code> and the number of detected cores.
+</p>
+</li></ul>
+
+<p>The latter step makes sure that on machines with <i>n&gt;3</i> cores, <i>n-1</i> 
+cores are used. Some benchmarking showed that using all cores is often slower
+in such cases. This is probably because at least one of the threads will be
+shared with the operating system.
+</p>
+<p>Functions that use multithreading have an option named <code>nthread</code> that
+controls the maximum number of threads to use. If you need to do large
+calculations, it is probably a good idea to benchmark the performance on your
+machine(s) as a function of <code>'nthread'</code>, for example using the 
+<a href="https://cran.r-project.org/package=microbenchmark">microbenchmark</a>
+package of Mersmann.
+</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li><p>Functions running multithreaded: <code><a href="stringdist.html">stringdist</a></code>, <code><a href="stringdist.html">stringdistmatrix</a></code>, <code><a href="amatch.html">amatch</a></code>, <code><a href="amatch.html">ain</a></code> 
+</p>
+</li></ul>
+
+
+<hr /><div style="text-align: center;">[Package <em>stringdist</em> version 0.9.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

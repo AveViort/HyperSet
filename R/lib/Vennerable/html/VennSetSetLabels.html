@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Set and get annotation labels and graphical styles</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for VennSetSetLabels {Vennerable}"><tr><td>VennSetSetLabels {Vennerable}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Set and get annotation labels and graphical styles
+</h2>
+
+<h3>Description</h3>
+
+<p>Embedded within a <code>VennDiagram</code> object are instructions for displaying annotation
+for the sets and their faces. Retrieve them so they can be edited
+and re-embedded for subsequent display.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+VennGetSetLabels(object)
+VennSetSetLabels(object, SetLabels)
+VennGetFaceLabels(object)
+VennSetFaceLabels(object, FaceLabels)
+VennGetUniverseRange(object)
+VennSetUniverseRange(object, universe)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+
+<p>An object of class <code>VennDrawing</code>
+</p>
+</td></tr>
+<tr valign="top"><td><code>SetLabels</code></td>
+<td>
+
+<p>A data.frame. The format of this data.frame may change. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>FaceLabels</code></td>
+<td>
+
+<p>A data.frame. The format of this data.frame may change. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>universe</code></td>
+<td>
+
+<p>An <i>nx2</i> matrix defining <i>x</i> and <i>y</i> coordinates of the bounding universe. 
+Currently assumed to have 2 rows by much of the code, 
+corresponding to the lower left and upper right corners of a bounding rectangle</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Jonathan Swinton (jonathan@swintons.net)
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(StemCell)
+Vstem &lt;- Venn(StemCell)
+Vstem3 &lt;- Vstem[,c("OCT4","SOX2","NANOG")]
+Cstem3 &lt;- compute.Venn(Vstem3,doWeights=TRUE)
+plot(Cstem3)
+# don't like the default position of 'SOX2'?
+SetLabels &lt;- VennGetSetLabels(Cstem3)
+SetLabels[SetLabels$Label=="SOX2","x"] &lt;- 12
+Cstem3 &lt;- VennSetSetLabels(Cstem3,SetLabels)
+grid::grid.newpage()
+plot(Cstem3)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Vennerable</em> version 3.1.0.9000 <a href="00Index.html">Index</a>]</div>
+</body></html>

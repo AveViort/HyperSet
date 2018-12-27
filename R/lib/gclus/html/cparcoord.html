@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Enhanced parallel coordinate plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cparcoord {gclus}"><tr><td>cparcoord {gclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Enhanced parallel coordinate plot </h2>
+
+<h3>Description</h3>
+
+<p>This function draws a parallel coordinate plot of data. Variables
+may be reordered and panels colored in the display. It is a modified
+version of <code>parcoord {MASS}</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cparcoord(data, order = NULL, panel.colors = NULL, col = 1, lty = 1, horizontal = FALSE, mar = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>a numeric matrix </p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>the order of variables. Default is the order in data.</p>
+</td></tr>
+<tr valign="top"><td><code>panel.colors</code></td>
+<td>
+<p>either a vector or a matrix of panel colors. If a 
+vector is supplied, the ith color is used for the ith panel. If a matrix, dimensions 
+should match those of the variables. Diagonal entries are ignored. </p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p> a vector of colours, recycled as necessary for each observation.  </p>
+</td></tr>
+<tr valign="top"><td><code>lty</code></td>
+<td>
+<p> a vector of line types, 
+recycled as necessary for each observation.  </p>
+</td></tr>
+<tr valign="top"><td><code>horizontal</code></td>
+<td>
+<p> If TRUE, orientation is horizontal. </p>
+</td></tr>
+<tr valign="top"><td><code>mar</code></td>
+<td>
+<p> margin parameters, passed to <code>par</code>. </p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> graphics parameters which are passed to matplot.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If <code>panel.colors</code> is a matrix and <code>order</code> is supplied, <code>panel.colors</code> is 
+reordered.</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Catherine B. Hurley </p>
+
+
+<h3>References</h3>
+
+<p>Hurley, Catherine B.  &ldquo;Clustering Visualisations of Multidimensional 
+Data&rdquo;, Journal of Computational and Graphical Statistics,
+vol. 13, (4), pp 788-806, 2004. </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cpairs.html">cpairs</a></code>, <code><a href="../../MASS/html/parcoord.html">parcoord</a></code>,
+<code><a href="dmat.color.html">dmat.color</a></code>, <code><a href="colpairs.html">colpairs</a></code>, <code><a href="order.html">order.endlink</a></code>.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(state)
+state.m &lt;- colpairs(state.x77, 
+function(x,y)  cor.test(x,y,"two.sided","kendall")$estimate, diag=1)
+# OR, Works only in R1.8,  state.m &lt;-cor(state.x77,method="kendall")  
+
+
+state.col &lt;- dmat.color(state.m)
+
+cparcoord(state.x77, panel.color= state.col)
+# Get rid of the panels with lots of line crossings (yellow) by reordering:
+cparcoord(state.x77, order.endlink(state.m), state.col)
+
+# To get rid of the panels with lots of long line segments:
+#  use a different panel merit measure- pclen:
+
+mins &lt;- apply(state.x77,2,min)
+ranges &lt;- apply(state.x77,2,max) - mins
+state.m &lt;- -colpairs(scale(state.x77,mins,ranges), pclen)
+cparcoord(state.x77, order.endlink(state.m), dmat.color(state.m))
+
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gclus</em> version 1.3.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

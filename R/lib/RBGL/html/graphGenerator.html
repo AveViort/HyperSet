@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Generate an undirected graph with adjustable clustering...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for graphGenerator {RBGL}"><tr><td>graphGenerator {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Generate an undirected graph with adjustable clustering coefficient</h2>
+
+<h3>Description</h3>
+
+<p>Generate an undirected graph with adjustable clustering coefficient </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+graphGenerator(n, d, o)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>no. of nodes in the generated graph</p>
+</td></tr>
+<tr valign="top"><td><code>d</code></td>
+<td>
+<p>parameter for preferential attachment</p>
+</td></tr>
+<tr valign="top"><td><code>o</code></td>
+<td>
+<p>parameter for triple generation</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The graph generator works according to the prefential attachment rule.  It also generates graphs with adjustable clustering coefficient.  Parameter <code>d</code> specifies how many preferred edges a new node has.  Parameter <code>o</code> limits how many triples to add to a new node.
+</p>
+<p>See reference for details.
+</p>
+
+
+<h3>Value</h3>
+
+<table summary="R valueblock">
+<tr valign="top"><td><code>no. of nodes</code></td>
+<td>
+<p>No. of nodes in the generated graph</p>
+</td></tr>
+<tr valign="top"><td><code>no. of edges</code></td>
+<td>
+<p>No. of edges in the generated graph</p>
+</td></tr>
+<tr valign="top"><td><code>edges</code></td>
+<td>
+<p>Edges in the generated graph</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Approximating Clustering Coefficient and Transitivity, T. Schank, D. Wagner, 
+Journal of Graph Algorithms and Applications, Vol. 9, No. 2 (2005).
+</p>
+
+
+<h3>See Also</h3>
+
+<p>clusteringCoef, transitivity, clusteringCoefAppr</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+n &lt;- 20
+d &lt;- 6
+o &lt;- 3
+gg &lt;- graphGenerator(n, d, o)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

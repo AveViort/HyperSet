@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Microsatellite genetic data of Tetragonula bees</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tetragonula {prabclus}"><tr><td>tetragonula {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Microsatellite genetic data of Tetragonula bees</h2>
+
+<h3>Description</h3>
+
+<p>Genetic data for 236 Tetragonula (Apidae) bees from Australia
+and Southeast Asia, see  Franck et al. (2004). The data give pairs of
+alleles (codominant markers) for 13 microsatellite loci.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(tetragonula)</pre>
+
+
+<h3>Format</h3>
+
+<p>Two objects are generated:
+</p>
+
+<dl>
+<dt>tetragonula</dt><dd><p>A data frame with 236 observations and 13 string
+variables. Strings consist of six digits each. The
+format is derived from the data format used by the software GENEPOP
+(Rousset 2010). Alleles have a three digit code, so a value of
+<code>"258260"</code> on variable V10 means that on locus 10 the two alleles have
+codes 258 and 260. <code>"000"</code> refers to missing values.</p>
+</dd>
+<dt>tetragonula.coord</dt><dd><p>a 236*2 matrix. Coordinates of locations of
+individuals in decimal format, i.e. the first number is latitude
+(negative values are South), with minutes and seconds
+converted to fractions. The second number is longitude (negative
+values are West).</p>
+</dd>
+</dl>
+
+
+
+<h3>Details</h3>
+
+<p>Reads from example data file <code>Heterotrigona_indoFO.dat</code>. 
+</p>
+
+
+<h3>Source</h3>
+
+<p>Franck, P., E. Cameron, G. Good, J.-Y. Rasplus, and B. P. Oldroyd
+(2004) Nest architecture and genetic differentiation in a species
+complex of Australian stingless bees. <em>Mol. Ecol.</em> 13, 2317-2331.
+</p>
+<p>Rousset, F. (2010) Genepop 4.0 for Windows and Linux.
+<a href="http://kimura.univ-montp2.fr/~rousset/Genepop.pdf">http://kimura.univ-montp2.fr/~rousset/Genepop.pdf</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(tetragonula)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

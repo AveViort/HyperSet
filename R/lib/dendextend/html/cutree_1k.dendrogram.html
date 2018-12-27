@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: cutree for dendrogram (by 1 k value only!)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cutree_1k.dendrogram {dendextend}"><tr><td>cutree_1k.dendrogram {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>cutree for dendrogram (by 1 k value only!)</h2>
+
+<h3>Description</h3>
+
+<p>Cuts a dendrogram tree into several groups 
+by specifying the desired number of clusters k (only a single k value!).
+</p>
+<p>In case there exists no such k for which exists a relevant split of the 
+dendrogram, a warning is issued to the user, and NA is returned.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cutree_1k.dendrogram(dend, k, dend_heights_per_k = NULL,
+  use_labels_not_values = TRUE, order_clusters_as_data = TRUE,
+  warn = dendextend_options("warn"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>numeric scalar (not a vector!) with the number of clusters
+the tree should be cut into.</p>
+</td></tr>
+<tr valign="top"><td><code>dend_heights_per_k</code></td>
+<td>
+<p>a named vector that resulted from running.
+<code>heights_per_k.dendrogram</code>. When running the function many times,
+supplying this object will help improve the running time.</p>
+</td></tr>
+<tr valign="top"><td><code>use_labels_not_values</code></td>
+<td>
+<p>logical, defaults to TRUE. If the actual labels of the 
+clusters do not matter - and we want to gain speed (say, 10 times faster) - 
+then use FALSE (gives the &quot;leaves order&quot; instead of their labels.).
+This is passed to <code>cutree_1h.dendrogram</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>order_clusters_as_data</code></td>
+<td>
+<p>logical, defaults to TRUE. There are two ways by which 
+to order the clusters: 1) By the order of the original data. 2) by the order of the 
+labels in the dendrogram. In order to be consistent with <a href="../../stats/html/cutree.html">cutree</a>, this is set
+to TRUE.
+This is passed to <code>cutree_1h.dendrogram</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>warn</code></td>
+<td>
+<p>logical (default from dendextend_options(&quot;warn&quot;) is FALSE).
+Set if warning are to be issued, it is safer to keep this at TRUE,
+but for keeping the noise down, the default is FALSE.
+Should the function send a warning in case the desried k is not available?</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>(not currently in use)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p><code>cutree_1k.dendrogram</code> returns an integer vector with group 
+memberships.
+</p>
+<p>In case there exists no such k for which exists a relevant split of the 
+dendrogram, a warning is issued to the user, and NA is returned.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Tal Galili
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../stats/html/hclust.html">hclust</a></code>, <code><a href="cutree-methods.html">cutree</a></code>, 
+<code><a href="cutree_1h.dendrogram.html">cutree_1h.dendrogram</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hc &lt;- hclust(dist(USArrests[c(1,6,13,20, 23),]), "ave")
+dend &lt;- as.dendrogram(hc)
+cutree(hc, k=3) # on hclust
+cutree_1k.dendrogram(dend, k=3) # on a dendrogram
+
+labels(dend)
+
+# the default (ordered by original data's order)
+cutree_1k.dendrogram(dend, k=3, order_clusters_as_data = TRUE) 
+
+# A different order of labels - order by their order in the tree
+cutree_1k.dendrogram(dend, k=3, order_clusters_as_data = FALSE) 
+
+
+# make it faster
+## Not run: 
+library(microbenchmark)
+dend_ks &lt;- heights_per_k.dendrogram
+microbenchmark(
+         cutree_1k.dendrogram = cutree_1k.dendrogram(dend, k=4),
+         cutree_1k.dendrogram_no_labels = cutree_1k.dendrogram(dend, 
+                                       k=4,use_labels_not_values = FALSE),
+         cutree_1k.dendrogram_no_labels_per_k = cutree_1k.dendrogram(dend, 
+                                       k=4, use_labels_not_values = FALSE,
+                                             dend_heights_per_k = dend_ks)
+         )
+         # the last one is the fastest...
+
+## End(Not run)
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

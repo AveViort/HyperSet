@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Breadth and Depth-first search</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bfs {RBGL}"><tr><td>bfs {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Breadth and Depth-first search </h2>
+
+<h3>Description</h3>
+
+<p>These functions return information on
+graph traversal by breadth and depth first search using
+routines from the BOOST library.  
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bfs(object, node, checkConn=TRUE)
+dfs(object, node, checkConn=TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p> instance of class graph from Bioconductor graph class</p>
+</td></tr>
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p> node name where search starts; defaults to the
+node in first position in the node vector.</p>
+</td></tr>
+<tr valign="top"><td><code>checkConn</code></td>
+<td>
+<p> logical for backwards compatibility; this
+parameter has no effect as of RBGL 1.7.9 and will be removed in future versions.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These two functions are interfaces to the BOOST graph library functions for 
+breadth first and depth first search. Both methods handle unconnected graphs 
+by applying the algorithms over the connected components. 
+</p>
+<p>Cormen et al note (p 542) that 'results of depth-first search
+may depend upon the order in which the vertices are examined ...
+These different visitation orders tend not to cause problems
+in practice, as any DFS result can usually be used effectively,
+with essentially equivalent results'.  
+</p>
+
+
+<h3>Value</h3>
+
+<p>For <code>bfs</code> a vector of node indices in order of BFS visit.
+</p>
+<p>For <code>dfs</code> a list of two vectors of nodes, with elements <code>discover</code> 
+(order of DFS discovery), and <code>finish</code> (order of DFS completion).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> VJ Carey &lt;stvjc@channing.harvard.edu&gt; </p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con1 &lt;- file(system.file("XML/bfsex.gxl",package="RBGL"), open="r")
+dd &lt;- fromGXL(con1)
+close(con1)
+
+bfs(dd, "r")
+bfs(dd, "s")
+
+con2 &lt;- file(system.file("XML/dfsex.gxl",package="RBGL"), open="r")
+dd2 &lt;- fromGXL(con2)
+close(con2)
+
+dfs(dd2, "u")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

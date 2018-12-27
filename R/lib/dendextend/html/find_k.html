@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Find the (estimated) number of clusters for a dendrogram...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for find_k {dendextend}"><tr><td>find_k {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Find the (estimated) number of clusters for a dendrogram using average silhouette width</h2>
+
+<h3>Description</h3>
+
+<p>This function estimates the number of clusters based on the maximal average <a href="../../cluster/html/silhouette.html">silhouette</a> width 
+derived from running <a href="../../cluster/html/pam.html">pam</a> on the <a href="../../stats/html/cophenetic.html">cophenetic</a> distance matrix of 
+the <a href="../../stats/html/dendrogram.html">dendrogram</a>. The output is based on the <a href="../../fpc/html/pamk.html">pamk</a> output.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+find_k(dend, krange = 2:min(10, (nleaves(dend) - 1)), ...)
+
+## S3 method for class 'find_k'
+plot(x, xlab = "Number of clusters (k)",
+  ylab = "Average silhouette width",
+  main = "Estimating the number of clusters using\n average silhouette width",
+  ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>A dendrogram (or hclust) tree object</p>
+</td></tr>
+<tr valign="top"><td><code>krange</code></td>
+<td>
+<p>integer vector. Numbers of clusters which are to be compared 
+by the average silhouette width criterion. 
+Note: average silhouette width and Calinski-Harabasz can't estimate number 
+of clusters nc=1. If 1 is included, a Duda-Hart test is applied and 1 is 
+estimated if this is not significant.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to <a href="../../fpc/html/pamk.html">pamk</a> (the current defaults criterion=&quot;asw&quot; and usepam=TRUE can not be changes).</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>An object of class &quot;find_k&quot; (has its own S3 plot method).</p>
+</td></tr>
+<tr valign="top"><td><code>xlab, ylab, main</code></td>
+<td>
+<p>parameters passed to plot.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A <a href="../../fpc/html/pamk.html">pamk</a> output. This is a list with the following components: 
+1) pamobject - The output of the optimal run of the pam-function.
+2) nc	- the optimal number of clusters.
+3) crit - vector of criterion values for numbers of clusters. crit[1] is the p-value of the Duda-Hart test if 1 is in krange and diss=FALSE.
+4) k - a copy of nc (just to make it easier to extract - since k is often used in other functions)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../fpc/html/pamk.html">pamk</a>, <a href="../../cluster/html/pam.html">pam</a>, <a href="../../cluster/html/silhouette.html">silhouette</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+dend &lt;- iris[,-5] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+dend_k &lt;- find_k(dend)
+plot(dend_k)
+plot(color_branches(dend, k = dend_k$nc))
+
+library(cluster)
+sil &lt;- silhouette(dend_k$pamobject)
+plot(sil)
+
+dend &lt;- USArrests %&gt;% dist %&gt;% hclust(method = "ave") %&gt;% as.dendrogram
+dend_k &lt;- find_k(dend)
+plot(dend_k)
+plot(color_branches(dend, k = dend_k$nc))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

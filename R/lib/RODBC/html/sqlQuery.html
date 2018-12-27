@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Query an ODBC Database</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for sqlQuery {RODBC}"><tr><td>sqlQuery {RODBC}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Query an ODBC Database</h2>
+
+<h3>Description</h3>
+
+<p>Submit an SQL query to an ODBC database, and retrieve the results.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+sqlQuery(channel, query, errors = TRUE, ..., rows_at_time)
+
+sqlGetResults(channel, as.is = FALSE,  errors = FALSE,
+              max = 0, buffsize = 1000,
+              nullstring = NA_character_, na.strings = "NA",
+              believeNRows = TRUE, dec = getOption("dec"),
+              stringsAsFactors = default.stringsAsFactors())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>channel</code></td>
+<td>
+<p>connection handle as returned by <code><a href="odbcConnect.html">odbcConnect</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>query</code></td>
+<td>
+<p>any valid SQL statement.</p>
+</td></tr>
+<tr valign="top"><td><code>errors</code></td>
+<td>
+<p>logical: if true halt and display error, else return <code>-1</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments to be passed to <code>sqlGetResults</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>rows_at_time</code></td>
+<td>
+<p>The number of rows to fetch at a time, between 1
+and 1024.  See &lsquo;Details&rsquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>as.is</code></td>
+<td>
+<p>which (if any) columns returned as character should be
+converted to another type?  Allowed values are as for
+<code><a href="../../utils/html/read.table.html">read.table</a></code>.  See &lsquo;Details&rsquo;.</p>
+</td></tr>
+<tr valign="top"><td><code>max</code></td>
+<td>
+<p>limit on the number of rows to fetch, with <code>0</code>
+indicating no limit.</p>
+</td></tr>
+<tr valign="top"><td><code>buffsize</code></td>
+<td>
+<p>an initial guess at the number of rows, used if
+<code>max = 0</code> and <code>believeNRows == FALSE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>nullstring</code></td>
+<td>
+<p>character string to be used when reading
+<code>SQL_NULL_DATA</code> character items from the database.</p>
+</td></tr>
+<tr valign="top"><td><code>na.strings</code></td>
+<td>
+<p>character vector of strings to be mapped to
+<code>NA</code> when reading character data.</p>
+</td></tr>
+<tr valign="top"><td><code>believeNRows</code></td>
+<td>
+<p>logical.  Is the number of rows returned by the
+ODBC connection believable?  This might have been set to false when
+the channel was opened, and if so that setting cannot be overridden.</p>
+</td></tr>
+<tr valign="top"><td><code>dec</code></td>
+<td>
+<p>The character for the decimal place to be assumed when
+converting character columns to numeric.</p>
+</td></tr>
+<tr valign="top"><td><code>stringsAsFactors</code></td>
+<td>
+<p>logical: should columns returned as character and not
+excluded by <code>as.is</code> and not converted to anything else be
+converted to factors?</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>sqlQuery</code> is the workhorse function of <span class="pkg">RODBC</span>.  It sends the SQL
+statement <code>query</code> to the server, using connection <code>channel</code>
+returned by <code><a href="odbcConnect.html">odbcConnect</a></code>, and retrieves (some or all of)
+the results <em>via</em> <code>sqlGetResults</code>.
+</p>
+<p>The term &lsquo;query&rsquo; includes any valid SQL statement including
+table creation, alteration, updates etc as well as <span class="samp">SELECT</span>s.  The
+<code>sqlQuery</code> command is a convenience wrapper that first calls
+<code><a href="odbc.html">odbcQuery</a></code> and then <code>sqlGetResults</code>. If
+finer-grained control is needed, for example over the number of rows
+fetched, additional arguments can be passed to <code>sqlQuery</code> or the
+underlying functions called directly.
+</p>
+<p><code>sqlGetResults</code> is a mid-level function.  It is called after a
+call to <code>sqlQuery</code> or <code><a href="odbc.html">odbcQuery</a></code> to retrieve waiting
+results into a data frame.  Its main use is with <code>max</code> set to
+non-zero when it will retrieve the result set in batches with repeated
+calls.  This is useful for very large result sets which can be
+subjected to intermediate processing.
+</p>
+<p>Where possible <code>sqlGetResults</code> transfers data in binary form:
+this happens for columns of (ODBC) SQL types <code>double</code>,
+<code>real</code>, <code>integer</code> and <code>smallint</code>, and for binary SQL
+types (which are transferred as lists of raw vectors, given class
+<code>"ODBC_binary"</code>).  All other SQL data types are converted to
+character strings by the ODBC interface.
+</p>
+<p>This paragraph applies only to SQL data types which are returned by
+ODBC as character vectors.  If when creating the connection (see
+<code><a href="odbcConnect.html">odbcConnect</a>)</code> <code>DBMSencoding</code> was set to a non-empty
+value, the character strings are re-encoded.  Then if <code>as.is</code>
+is true for a column, it is returned as a character vector.  Otherwise
+(where detected) <code>date</code>, <code>datetime</code> and <code>timestamp</code>
+values are converted to the <code>"Date"</code> or <code>"POSIXct"</code> class.
+(Some drivers seem to confuse times with dates, so times may get
+converted too.  Also, some DBMSs (e.g. Oracle's) idea of <code>date</code>
+is a date-time.)  Remaining cases are converted by <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> using
+<code><a href="../../utils/html/type.convert.html">type.convert</a></code>.  When character data are to be converted
+to numeric data, the setting of <code>options("dec")</code> is used to map
+the character used by the ODBC driver in setting decimal points&mdash;this
+is set to a locale-specific value when <span class="pkg">RODBC</span> is initialized if
+it is not already set.
+</p>
+<p>Using <code>buffsize</code> will yield a marginal increase in speed if set
+to no less than the maximum number of rows when <code>believeNRows =
+    FALSE</code>.  (If set too small it can result in unnecessarily high
+memory use as the buffers will need to be expanded.)
+</p>
+<p>Modern drivers should work (and work faster, especially if
+communicating with a remote machine) with <code>rows_at_time = 100</code>,
+the usual default, or more.  (However, some drivers may mis-fetch
+multiple rows, in which case set <code>rows_at_time = 1</code> when creating
+the connection.)  However, if <code>max</code> is specified then this
+may fetch too many rows and hence it could be reduced (but then this
+setting applies to all subsequent fetches from that result set).
+Another circumstance in which you might want to reduce
+<code>rows_at_time</code> is if there are large character columns in the
+result set: with the default value up to 6Mb of buffer for each such
+column could be allocated to store intermediate results.
+</p>
+
+
+<h3>Value</h3>
+
+<p>On success, a data frame (possibly with 0 rows) or character string.
+On error, if <code>errors = TRUE</code> a character vector of error
+message(s), otherwise an invisible integer error code <code>-1</code>
+(general, call <code><a href="odbc.html">odbcGetErrMsg</a></code> for details) or <code>-2</code>
+(no data, which may not be an error as some SQL statements do return
+no data).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Lapsley and Brian Ripley
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="odbcConnect.html">odbcConnect</a></code>, <code><a href="sqlFetch.html">sqlFetch</a></code>,
+<code><a href="sqlSave.html">sqlSave</a></code>, <code><a href="sqlTables.html">sqlTables</a></code>, <code><a href="odbc.html">odbcQuery</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+channel &lt;- odbcConnect("test")
+sqlSave(channel, USArrests, rownames = "State", verbose = TRUE)
+# options(dec=".") # optional, if DBMS is not locale-aware or set to ASCII
+## note case of State, Murder, Rape are DBMS-dependent,
+## and some drivers need column and table names double-quoted.
+sqlQuery(channel, paste("select State, Murder from USArrests",
+                        "where Rape &gt; 30 order by Murder"))
+close(channel)
+
+## End(Not run)</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RODBC</em> version 1.3-15 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read Tree File in CAIC Format</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for read.caic {ape}"><tr><td>read.caic {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read Tree File in CAIC Format</h2>
+
+<h3>Description</h3>
+
+<p>This function reads one tree from a CAIC file.
+A second file containing branch lengths values may also be passed (experimental).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+read.caic(file, brlen = NULL, skip = 0, comment.char = "#", ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>a file name specified by either a variable of mode character, or a double-quoted string.</p>
+</td></tr>
+<tr valign="top"><td><code>brlen</code></td>
+<td>
+<p>a file name for the branch lengths file.</p>
+</td></tr>
+<tr valign="top"><td><code>skip</code></td>
+<td>
+<p>the number of lines of the input file to skip before beginning to read data (this is passed directly to scan()).</p>
+</td></tr>
+<tr valign="top"><td><code>comment.char</code></td>
+<td>
+<p>a single character, the remaining of the line after this character is ignored (this is passed directly to scan()).</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments to be passed to scan().</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Read a tree from a file in the format used by the CAIC and MacroCAIc program.
+</p>
+
+
+<h3>Value</h3>
+
+<p>an object of class <code>"phylo"</code>.
+</p>
+
+
+<h3>Warning</h3>
+
+<p>The branch length support is still experimental and was not fully tested.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:julien.dutheil@univ-montp2.fr">julien.dutheil@univ-montp2.fr</a></p>
+
+
+<h3>References</h3>
+
+<p>Purvis, A. and Rambaut, A. (1995) Comparative analysis by independent
+contrasts (CAIC): an Apple Macintosh application for analysing
+comparative data. <em>CABIOS</em>, <b>11</b> :241&ndash;251.
+</p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="read.tree.html">read.tree</a></code>, <code><a href="read.nexus.html">read.nexus</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+### The same example than in read.tree, without branch lengths.
+### An extract from Sibley and Ahlquist (1990)
+cat("AAA","Strix_aluco","AAB","Asio_otus",
+   "AB","Athene_noctua","B","Tyto_alba",
+   file = "ex.tre", sep = "\n")
+tree.owls &lt;- read.caic("ex.tre")
+plot(tree.owls)
+tree.owls
+unlink("ex.tre") # delete the file "ex.tre"
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

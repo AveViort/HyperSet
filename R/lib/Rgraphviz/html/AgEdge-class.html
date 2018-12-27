@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;AgEdge&quot;: A class to describe an edge for a Ragraph...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for AgEdge-class {Rgraphviz}"><tr><td>AgEdge-class {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;AgEdge&quot;: A class to describe an edge for a Ragraph object</h2>
+
+<h3>Description</h3>
+
+<p>  This class is used to represent edges for the
+<code>Ragraph</code> class.  One can retrieve various pieces of information
+as well as draw them.</p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("AgEdge", ...)</code>.
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>arrowhead</code>:</dt><dd><p>Object of class <code>"character"</code> The
+style of arrowhead for this edge.</p>
+</dd>
+<dt><code>arrowsize</code>:</dt><dd><p>Object of class <code>"character"</code> A scale
+factor for the length of the arrow heads &amp; tails</p>
+</dd>
+<dt><code>arrowtail</code>:</dt><dd><p>Object of class <code>"character"</code> The
+style of arrowtail for this edge.</p>
+</dd>
+<dt><code>color</code>:</dt><dd><p>Object of class <code>"character"</code> The edge
+color.</p>
+</dd>
+<dt><code>dir</code>:</dt><dd><p>Object of class <code>"character"</code> The edge direction.</p>
+</dd>
+<dt><code>ep</code>:</dt><dd><p>Object of class <code>"xyPoint"</code> The end point of
+the edge.</p>
+</dd>
+<dt><code>head</code>:</dt><dd><p>Object of class <code>"character"</code> The head node
+for this edge.</p>
+</dd>
+<dt><code>lty</code>:</dt><dd><p>Object of class <code>"character"</code> The edge
+line type.</p>
+</dd>
+<dt><code>lwd</code>:</dt><dd><p>Object of class <code>"numeric"</code> The edge
+line width.</p>
+</dd>
+<dt><code>sp</code>:</dt><dd><p>Object of class <code>"xyPoint"</code> The starting
+point of the edge.</p>
+</dd>
+<dt><code>splines</code>:</dt><dd><p>Object of class <code>"list"</code> A list of
+<code>BezierCurve</code> objects</p>
+</dd>
+<dt><code>tail</code>:</dt><dd><p>Object of class <code>"character"</code> The tail node
+for this edge.</p>
+</dd>
+<dt><code>txtLabel</code>:</dt><dd><p>Object of class <code>"character"</code> The edge
+text label.</p>
+</dd>    
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>splines</dt><dd><p>Returns the <code>splines</code> slot</p>
+</dd>
+<dt>sp</dt><dd><p>Returns the <code>sp</code> slot</p>
+</dd>
+<dt>ep</dt><dd><p>Returns the <code>ep</code> slot</p>
+</dd>
+<dt>numSplines</dt><dd><p>Returns the number of splines</p>
+</dd>
+<dt>getSpline</dt><dd><p>Convenience method to retrieve a specific spline</p>
+</dd>
+<dt>show</dt><dd><p>Displays a concise description of the object</p>
+</dd>
+<dt>lines</dt><dd><p>Draws the edge</p>
+</dd>
+<dt>head</dt><dd><p>Gets the head slot</p>
+</dd>
+<dt>tail</dt><dd><p>Gets the tail slot</p>
+</dd>
+<dt>txtLabel</dt><dd><p>Returns any label for this edge</p>
+</dd>
+<dt>arrowhead</dt><dd><p>Retrieves the <code>arrowhead</code> slot.</p>
+</dd>
+<dt>arrowtail</dt><dd><p>Retrieves the <code>arrowtail</code> slot.</p>
+</dd>
+<dt>arrowsize</dt><dd><p>Retrieves the <code>arrowsize</code> slot.</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Ragraph-class.html">Ragraph</a></code>, <code><a href="BezierCurve-class.html">BezierCurve</a></code>, <code><a href="xyPoint-class.html">xyPoint</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+V &lt;- letters[1:10]
+M &lt;- 1:4
+g1 &lt;- randomGraph(V, M, .2)
+z &lt;- agopen(g1,name="foo")
+x &lt;- AgEdge(z)  ## list of AgEdge objects
+
+vv &lt;- x[[1]]
+vv
+## Demonstrate the methods of this class
+splines(vv)
+sp(vv)
+ep(vv)
+numSplines(vv)
+getSpline(vv, 1)
+head(vv)
+tail(vv)
+txtLabel(vv)
+arrowhead(vv)
+arrowtail(vv)
+arrowsize(vv)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

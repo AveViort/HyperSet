@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Various utility functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for vec2distm {gclus}"><tr><td>vec2distm {gclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2> Various utility functions</h2>
+
+<h3>Description</h3>
+
+<p><code>vec2distm</code> converts a vector to a distance matrix.
+</p>
+<p><code>vec2dist</code> converts a vector to a <code>dist</code> structure.
+</p>
+<p><code>lower2upper.tri.inds</code> is the same as <code>lower.to.upper.tri.inds</code>
+from package cluster. It computes an index vector for extracting or reordering a lower     
+triangular matrix that is stored as a contiguous vectors. 
+</p>
+<p><code>diag.off</code>  returns a vector of off-diagonal elements of a matrix.
+<code>off</code> specifies the distance above the main (0) diagonal.
+</p>
+<p><code>clus2memship</code> converts  a list whose ith element contains the indices
+of objects in the ith cluster into a vector whose ith 
+element gives the cluster number of the ith object.
+</p>
+<p><code>memship2clus</code> converts  a vector whose ith 
+element gives the cluster number of the ith object into a list 
+whose ith element contains the indices
+of objects in the ith cluster.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+vec2distm(vec)
+vec2dist(vec)
+lower2upper.tri.inds(n)
+diag.off(m,off=1)
+clus2memship(clusters)
+memship2clus(memship)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>vec</code></td>
+<td>
+<p>is a vector. </p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>is an integer &gt; 1. </p>
+</td></tr>
+<tr valign="top"><td><code>m</code></td>
+<td>
+<p>is a matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>clusters</code></td>
+<td>
+<p>is a list whose ith element contains the indices of the 
+objects belonging to the ith cluster.</p>
+</td></tr>
+<tr valign="top"><td><code>off</code></td>
+<td>
+<p>is an integer specifying the distance above the main (0) diagonal.</p>
+</td></tr>
+<tr valign="top"><td><code>memship</code></td>
+<td>
+<p>is a vector whose ith element gives the cluster number of 
+the ith object.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p> Catherine B. Hurley</p>
+
+
+<h3>See Also</h3>
+
+  <p><code><a href="../../stats/html/dist.html">dist</a></code>, <code><a href="../../base/html/diag.html">diag</a></code>. </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+vec &lt;- 1:15
+vec2distm(vec)
+vec2dist(vec)
+diag.off(vec2distm(vec))
+lower2upper.tri.inds(5)
+clus2memship(list(c(1,3,5),c(2,6),4))
+memship2clus(c(1,3,4,2,1,4,2,3,2,3))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gclus</em> version 1.3.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

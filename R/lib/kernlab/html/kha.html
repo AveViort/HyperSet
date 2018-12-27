@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Kernel Principal Components Analysis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kha {kernlab}"><tr><td>kha {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Kernel Principal Components Analysis</h2>
+
+<h3>Description</h3>
+
+<p>Kernel Hebbian Algorithm is a nonlinear iterative algorithm for principal
+component analysis.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'formula'
+kha(x, data = NULL, na.action, ...)
+
+## S4 method for signature 'matrix'
+kha(x, kernel = "rbfdot", kpar = list(sigma = 0.1), features = 5, 
+         eta = 0.005, th = 1e-4, maxiter = 10000, verbose = FALSE,
+        na.action = na.omit, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> The data matrix indexed by row
+or a formula describing the model. Note, that an
+intercept is always included, whether given in the formula or
+not.</p>
+</td></tr> 
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>an optional data frame containing the variables in
+the model
+(when using a formula).</p>
+</td></tr>
+<tr valign="top"><td><code>kernel</code></td>
+<td>
+<p>the kernel function used in training and predicting.
+This parameter can be set to any function, of class kernel, which
+computes the inner product in feature space between two
+vector arguments (see <code><a href="dots.html">kernels</a></code>).
+<span class="pkg">kernlab</span> provides the most popular kernel functions
+which can be used by setting the kernel parameter to the following
+strings:
+</p>
+
+<ul>
+<li> <p><code>rbfdot</code> Radial Basis kernel function &quot;Gaussian&quot;
+</p>
+</li>
+<li> <p><code>polydot</code> Polynomial kernel function
+</p>
+</li>
+<li> <p><code>vanilladot</code> Linear kernel function
+</p>
+</li>
+<li> <p><code>tanhdot</code> Hyperbolic tangent kernel function
+</p>
+</li>
+<li> <p><code>laplacedot</code> Laplacian kernel function
+</p>
+</li>
+<li> <p><code>besseldot</code> Bessel kernel function
+</p>
+</li>
+<li> <p><code>anovadot</code> ANOVA RBF kernel function
+</p>
+</li>
+<li> <p><code>splinedot</code> Spline kernel 
+</p>
+</li></ul>
+
+<p>The kernel parameter can also be set to a user defined function of
+class kernel by passing the function name as an argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>the list of hyper-parameters (kernel parameters).
+This is a list which contains the parameters to be used with the
+kernel function. Valid parameters for existing kernels are :
+</p>
+
+<ul>
+<li> <p><code>sigma</code> inverse kernel width for the Radial Basis
+kernel function &quot;rbfdot&quot; and the Laplacian kernel &quot;laplacedot&quot;.
+</p>
+</li>
+<li> <p><code>degree, scale, offset</code> for the Polynomial kernel &quot;polydot&quot;
+</p>
+</li>
+<li> <p><code>scale, offset</code> for the Hyperbolic tangent kernel
+function &quot;tanhdot&quot;
+</p>
+</li>
+<li> <p><code>sigma, order, degree</code> for the Bessel kernel &quot;besseldot&quot;. 
+</p>
+</li>
+<li> <p><code>sigma, degree</code> for the ANOVA kernel &quot;anovadot&quot;.
+</p>
+</li></ul>
+
+<p>Hyper-parameters for user defined kernels can be passed through the
+kpar parameter as well.</p>
+</td></tr>
+<tr valign="top"><td><code>features</code></td>
+<td>
+<p>Number of features (principal components) to
+return. (default: 5)</p>
+</td></tr>
+<tr valign="top"><td><code>eta</code></td>
+<td>
+<p>The hebbian learning rate (default : 0.005)</p>
+</td></tr>
+<tr valign="top"><td><code>th</code></td>
+<td>
+<p>the smallest value of the convergence step (default : 0.0001) </p>
+</td></tr>
+<tr valign="top"><td><code>maxiter</code></td>
+<td>
+<p>the maximum number of iterations.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>print convergence every 100 iterations. (default : FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>na.action</code></td>
+<td>
+<p>A function to specify the action to be taken if <code>NA</code>s are
+found. The default action is <code>na.omit</code>, which leads to rejection of cases
+with missing values on any required variable. An alternative
+is <code>na.fail</code>, which causes an error if <code>NA</code> cases
+are found. (NOTE: If given, this argument must be named.)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> additional parameters</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The original form of KPCA can only be used on small data sets
+since it requires the estimation of the eigenvectors of a full kernel
+matrix. The Kernel Hebbian Algorithm iteratively estimates the Kernel
+Principal Components with only linear order memory complexity.
+(see ref. for more details)
+</p>
+
+
+<h3>Value</h3>
+
+<p>An S4 object containing the principal component vectors along with the
+corresponding normalization values. 
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>pcv</code></td>
+<td>
+<p>a matrix containing the principal component vectors (column
+wise)</p>
+</td></tr>
+<tr valign="top"><td><code>eig</code></td>
+<td>
+<p>The normalization values</p>
+</td></tr>
+<tr valign="top"><td><code>xmatrix</code></td>
+<td>
+<p>The original data matrix</p>
+</td></tr>
+</table>
+<p>all the slots of the object can be accessed by accessor functions.
+</p>
+
+
+<h3>Note</h3>
+
+<p>The predict function can be used to embed new data on the new space</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou <br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p>Kwang In Kim, M.O. Franz and B. Schölkopf<br />
+<em>Kernel Hebbian Algorithm for Iterative Kernel Principal Component Analysis</em><br />
+Max-Planck-Institut für biologische Kybernetik, Tübingen (109)<br />
+<a href="http://www.kyb.tuebingen.mpg.de/publications/pdfs/pdf2302.pdf">http://www.kyb.tuebingen.mpg.de/publications/pdfs/pdf2302.pdf</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="kpca.html">kpca</a></code>, <code><a href="kfa.html">kfa</a></code>, <code><a href="kcca.html">kcca</a></code>, <code>pca</code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# another example using the iris
+data(iris)
+test &lt;- sample(1:150,70)
+
+kpc &lt;- kha(~.,data=iris[-test,-5],kernel="rbfdot",
+           kpar=list(sigma=0.2),features=2, eta=0.001, maxiter=65)
+
+#print the principal component vectors
+pcv(kpc)
+
+#plot the data projection on the components
+plot(predict(kpc,iris[,-5]),col=as.integer(iris[,5]),
+     xlab="1st Principal Component",ylab="2nd Principal Component")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

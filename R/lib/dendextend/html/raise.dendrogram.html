@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Raise the height of a dendrogram tree</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for raise.dendrogram {dendextend}"><tr><td>raise.dendrogram {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Raise the height of a dendrogram tree</h2>
+
+<h3>Description</h3>
+
+<p>Raise the height of nodes in a dendrogram tree.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+raise.dendrogram(dend, heiget_to_add, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>heiget_to_add</code></td>
+<td>
+<p>how much height to add to all the branches (not leaves) in the dendrogram</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed on (not used)</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A raised dendrogram
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hc &lt;- hclust(dist(USArrests[2:9,]), "com")
+dend &lt;- as.dendrogram(hc)
+
+par(mfrow = c(1,2))
+plot(dend, main = "original tree")
+plot(raise.dendrogram(dend , 100), main = "Raised tree")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

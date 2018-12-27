@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Prediction strength of merged Gaussian mixture</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mixpredictive {fpc}"><tr><td>mixpredictive {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Prediction strength of merged Gaussian mixture</h2>
+
+<h3>Description</h3>
+
+<p>Computes the prediction strength of clustering by
+merging Gaussian mixture components, see <code><a href="mergenormals.html">mergenormals</a></code>.
+The predictive strength is
+defined according to Tibshirani and Walther (2005), carried out as
+described in Hennig (2010), see details. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  mixpredictive(xdata, Gcomp, Gmix, M=50, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>xdata</code></td>
+<td>
+<p>data (something that can be coerced into a matrix).</p>
+</td></tr>
+<tr valign="top"><td><code>Gcomp</code></td>
+<td>
+<p>integer. Number of components of the underlying Gaussian mixture.</p>
+</td></tr>
+<tr valign="top"><td><code>Gmix</code></td>
+<td>
+<p>integer. Number of clusters after merging Gaussian components.</p>
+</td></tr>
+<tr valign="top"><td><code>M</code></td>
+<td>
+<p>integer. Number of times the dataset is divided into two
+halves.</p>
+</td></tr> 
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments that can potentially arrive in calls but
+are currently not used.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The prediction strength for a certain number of clusters <code>Gmix</code> under a
+random partition of the dataset in halves A and B is defined as
+follows. Both halves are clustered with <code>Gmix</code>
+clusters. Then the points of
+A are classified to the clusters of B. This is done by use of the
+maximum a posteriori rule for mixtures as in Hennig (2010),
+differently from Tibshirani and Walther (2005). A pair of points A in
+the same A-cluster is defined to be correctly predicted if both points
+are classified into the same cluster on B. The same is done with the
+points of B relative to the clustering on A. The prediction strength
+for each of the clusterings is the minimum (taken over all clusters)
+relative frequency of correctly predicted pairs of points of that
+cluster. The final mean prediction strength statistic is the mean over
+all 2M clusterings.
+</p>
+
+
+<h3>Value</h3>
+
+<p>List with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>predcorr</code></td>
+<td>
+<p>vector of length <code>M</code> with relative frequencies of
+correct predictions (clusterwise minimum).</p>
+</td></tr>
+<tr valign="top"><td><code>mean.pred</code></td>
+<td>
+<p>mean of <code>predcorr</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. (2010) Methods for merging Gaussian mixture components,
+<em>Advances in Data Analysis and Classification</em>, 4, 3-34.
+</p>
+<p>Tibshirani, R. and Walther, G. (2005) Cluster Validation by 
+Prediction Strength, <em>Journal of Computational and Graphical 
+Statistics</em>, 14, 511-528.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="prediction.strength.html">prediction.strength</a></code> for Tibshirani and Walther's
+original method.
+<code><a href="mergenormals.html">mergenormals</a></code> for the clustering method applied here.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  set.seed(98765)
+  iriss &lt;- iris[sample(150,20),-5]
+  mp &lt;- mixpredictive(iriss,2,2,M=2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

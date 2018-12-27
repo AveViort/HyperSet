@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot Tree With Time Axis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plotTreeTime {ape}"><tr><td>plotTreeTime {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot Tree With Time Axis</h2>
+
+<h3>Description</h3>
+
+<p>This function plots a non-ultrametric tree where the tips are not
+contemporary together with their dates on the x-axis.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+plotTreeTime(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL,
+             color = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>tip.dates</code></td>
+<td>
+<p>a vector of the same length than the number of tips
+in <code>phy</code> (see details).</p>
+</td></tr>
+<tr valign="top"><td><code>show.tip.label</code></td>
+<td>
+<p>a logical value; see <code><a href="plot.phylo.html">plot.phylo</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>y.lim</code></td>
+<td>
+<p>by default, one fifth of the plot is left below the tree;
+use this option to change this behaviour.</p>
+</td></tr>
+<tr valign="top"><td><code>color</code></td>
+<td>
+<p>a logical value specifying whether to use colors for the
+lines linking the tips to the time axis. If <code>FALSE</code>, a grey
+scale is used.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other arguments to be passed to <code>plot.phylo</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The vector <code>tip.dates</code> may be numeric or of class
+&ldquo;<a href="../../base/html/Date.html">Date</a>&rdquo;. In either case, the time axis is set
+accordingly. The length of this vector must be equal to the number of
+tips of the tree: the dates are matched to the tips numbers. Missing
+values are allowed.
+</p>
+
+
+<h3>Value</h3>
+
+<p>NULL</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="plot.phylo.html">plot.phylo</a></code>, <code><a href="node.dating.html">estimate.dates</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+dates &lt;- as.Date(.leap.seconds)
+tr &lt;- rtree(length(dates))
+plotTreeTime(tr, dates)
+
+## handling NA's:
+dates[11:26] &lt;- NA
+plotTreeTime(tr, dates)
+
+## dates can be on an arbitrary scale, e.g., [-1, 1]:
+plotTreeTime(tr, runif(Ntip(tr), -1, 1))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

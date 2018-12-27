@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Optimal Shape Parameter for Hexbin Viewport</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for optShape {hexbin}"><tr><td>optShape {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Optimal Shape Parameter for Hexbin Viewport</h2>
+
+<h3>Description</h3>
+
+<p>Takes a viewport or a given height and width and returns the shape
+parameter that will fill the specified plotting region with the
+appropriately shaped hexagons.  If margins are specified the margins
+are subtracted from height and width before the shape parameter is
+specified.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+optShape(vp, height = NULL, width = NULL, mar = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>vp</code></td>
+<td>
+<p>a <code>viewport</code> object, optional see details</p>
+</td></tr>
+<tr valign="top"><td><code>height</code></td>
+<td>
+<p>the height of the plotting region, can be numeric or units</p>
+</td></tr>
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The width of the plotting region, can be numeric or units</p>
+</td></tr>
+<tr valign="top"><td><code>mar</code></td>
+<td>
+<p>A four element numeric or units vector describing the
+margins in the order <code>c(bottom, left, top, right)</code></p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a scalar numeric value specifiyng <code>shape</code>.
+</p>
+
+
+<h3>Warning</h3>
+
+<p>If a viewport is given as an argument it should
+already be pushed on the graphics device or it will have null units
+and a meaningless shape parameter will be returned.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Nicholas Lewin-Koh</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hexViewport.html">hexViewport</a></code>, <code><a href="hexVP-class.html">hexVP-class</a></code>,
+<code><a href="hexbin.html">hexbin</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- rgamma(10000,.9)
+m &lt;- as.logical(rbinom(10000,1,.17))
+x[m] &lt;- -x[m]
+y &lt;- rnorm(x,abs(x))
+library("grid")
+vp &lt;- plotViewport(xscale= range(x)+c(-.5,.5),
+                   yscale= range(y)+c(-.5,.5),
+             default.units = "native")
+grid.newpage()
+pushViewport(vp)
+grid.rect()
+shape &lt;- optShape(vp)
+shape
+hb &lt;- hexbin(x,y,xbins=40,shape=shape)
+grid.hexagons(hb,colramp=BTY)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: The WORDLIST file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for wordlist {spelling}"><tr><td>wordlist {spelling}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>The WORDLIST file</h2>
+
+<h3>Description</h3>
+
+<p>The package wordlist file is used to allow custom words which will be added to the
+dictionary when spell checking. It is stored in <code>inst/WORDLIST</code> in the source package
+and must contain one word per line in UTF-8 encoded text.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+update_wordlist(pkg = ".", vignettes = TRUE, confirm = TRUE)
+
+get_wordlist(pkg = ".")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pkg</code></td>
+<td>
+<p>path to package root directory containing the <code>DESCRIPTION</code> file</p>
+</td></tr>
+<tr valign="top"><td><code>vignettes</code></td>
+<td>
+<p>also check all <code>rmd</code> and <code>rnw</code> files in the pkg <code>vignettes</code> folder</p>
+</td></tr>
+<tr valign="top"><td><code>confirm</code></td>
+<td>
+<p>show changes and ask confirmation before adding new words to the list</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <a href="wordlist.html">update_wordlist</a> function runs a full spell check on a package, shows the results,
+and then prompts to add the found words to the package wordlist. Obviously you should
+check closely that these legitimate words and not actual spelling errors. It also
+removes words from the wordlist that no longer appear as spelling errors, either because
+they have been removed from the documentation or added to the <code>lang</code> dictionary.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other spelling: <code><a href="spell_check_files.html">spell_check_files</a></code>,
+<code><a href="spell_check_package.html">spell_check_package</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>spelling</em> version 1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

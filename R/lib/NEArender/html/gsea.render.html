@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Gene Set Enrichment Analysis (GSEA)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for gsea.render {NEArender}"><tr><td>gsea.render {NEArender}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Gene Set Enrichment Analysis (GSEA)</h2>
+
+<h3>Description</h3>
+
+<p>A binomial version of GSEA, unified as much as possible with <code><a href="nea.render.html">nea.render</a></code>. Given the altered gene sets (AGS) and functional gene sets (FGS), calculates no. of members (genes/protein IDs) shared by each AGS-FGS pair as well as respective enrichment statistics. Returns matrices of size <em>length(FGS) x length(AGS)</em> (see &quot;Value&quot;). Each of these two parameters can be submitted as either a text file or as an R list which have been preloaded with <code><a href="import.gs.html">import.gs</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+gsea.render(AGS, FGS, Lowercase = 1, ags.gene.col = 2, ags.group.col = 3,
+  fgs.gene.col = 2, fgs.group.col = 3, echo = 1, Ntotal = 20000,
+  Parallelize = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>AGS</code></td>
+<td>
+<p>Either a text file or a list of members of each AGS (see Details). Group IDs should be found in <code>ags.group.col</code> and gene IDs would be found in <code>ags.gene.col</code>. Identical to AGS needed for in <code><a href="nea.render.html">nea.render</a></code> - see also details there.</p>
+</td></tr>
+<tr valign="top"><td><code>FGS</code></td>
+<td>
+<p>Either a text file or a list of members of each FGS (see Details). Group IDs should be found in <code>fgs.group.col</code> and gene IDs would be found in <code>fgs.gene.col</code>. Alsmost identical to FGS needed for in <code><a href="nea.render.html">nea.render</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>Lowercase</code></td>
+<td>
+<p>render node and group IDs lower-case (Default:1, i.e. 'yes').</p>
+</td></tr>
+<tr valign="top"><td><code>ags.gene.col</code></td>
+<td>
+<p>number of the column containing AGS genes (only needed if AGS is submitted as a text file).</p>
+</td></tr>
+<tr valign="top"><td><code>ags.group.col</code></td>
+<td>
+<p>number of the column containing group IDs (only needed if AGS is submitted as a text file).</p>
+</td></tr>
+<tr valign="top"><td><code>fgs.gene.col</code></td>
+<td>
+<p>number of the column containing FGS genes (only needed if FGS is submitted as a text file).</p>
+</td></tr>
+<tr valign="top"><td><code>fgs.group.col</code></td>
+<td>
+<p>number of the column containing group IDs (only needed if FGS is submitted as a text file).</p>
+</td></tr>
+<tr valign="top"><td><code>echo</code></td>
+<td>
+<p>if messages about execution progress should appear.</p>
+</td></tr>
+<tr valign="top"><td><code>Ntotal</code></td>
+<td>
+<p>The important parameter for precise calculation of the Fisher's statistics: how big is the whole gene universe? Defaults to 20000 but should be changed depending on the hypothesis and genome/proteome size.</p>
+</td></tr>
+<tr valign="top"><td><code>Parallelize</code></td>
+<td>
+<p>The number of CPU cores to be used for calculating the gene set overlap. The other steps are sufficiently fast. The option is not supported in Windows.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list of entries <code>estimate</code>, <code>p</code>, <code>q</code>, and <code>n</code>, each of which is a matrix of size <code>length(FGS)</code> x <code>length(AGS)</code>. The two former ones contain respective output of <code><a href="../../stats/html/fisher.test.html">fisher.test</a></code>: <code>p.value</code> and <code>estimate</code>, whereas <code>q</code> is produced by <code>p.adjust(p.value, method="BH")</code> and <code>n</code> is the no. of shared  members. Input to <code><a href="../../stats/html/fisher.test.html">fisher.test</a></code> is <code>matrix(c(&lt;no. of shared  members&gt;, &lt;no. of solely FGS  members&gt;, &lt;no. of solely AGS  members&gt;, &lt;no. of non-members&gt;), nrow=2)</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="nea.render.html">nea.render</a></code>, <code><a href="import.gs.html">import.gs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ags.list &lt;- samples2ags(fantom5.43samples, Ntop=20, method="topnorm")
+data(can.sig.go)
+fpath &lt;- can.sig.go
+fgs.list &lt;- import.gs(fpath)
+g1 &lt;- gsea.render(AGS=ags.list, FGS=fgs.list, Lowercase = 1, 
+ags.gene.col = 2, ags.group.col = 3, fgs.gene.col = 2, fgs.group.col = 3, 
+echo=1, Ntotal = 20000, Parallelize=1)
+hist(g1$estimate, breaks=100)
+hist(g1$n, breaks=100)
+hist(g1$p, breaks=100)
+hist(g1$q, breaks=100)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>NEArender</em> version 1.5 <a href="00Index.html">Index</a>]</div>
+</body></html>

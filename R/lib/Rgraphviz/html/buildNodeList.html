@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: A function to build lists of node and edge objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for buildNodeList {Rgraphviz}"><tr><td>buildNodeList {Rgraphviz}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>A function to build lists of node and edge objects</h2>
+
+<h3>Description</h3>
+
+<p>These functions can be used to generate lists of <code>pNode</code> and
+<code>pEdge</code> objects from an object of class <code>graph</code>.  These
+lists can then be sent to Graphviz to initialize and layout the graph
+for plotting.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+buildNodeList(graph, nodeAttrs = list(), subGList=list(), defAttrs=list())
+buildEdgeList(graph, recipEdges=c("combined", "distinct"),
+              edgeAttrs = list(), subGList=list(), defAttrs=list())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>An object of class <code>graph</code></p>
+</td></tr>
+<tr valign="top"><td><code>nodeAttrs</code></td>
+<td>
+<p>A list of attributes for specific nodes</p>
+</td></tr>
+<tr valign="top"><td><code>edgeAttrs</code></td>
+<td>
+<p>A list of attributes for specific edges</p>
+</td></tr>
+<tr valign="top"><td><code>subGList</code></td>
+<td>
+<p>A list of any subgraphs to be used in Graphviz</p>
+</td></tr>
+<tr valign="top"><td><code>recipEdges</code></td>
+<td>
+<p>How to deal with reciprocated edges</p>
+</td></tr>
+<tr valign="top"><td><code>defAttrs</code></td>
+<td>
+<p>A list of attributes used to specify defaults.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions will take either the nodes or the edges of the
+specified graph and generate a list of either <code>pNode</code> or
+<code>pEdge</code> objects.
+</p>
+<p>The <code>recipEdges</code> argument can be used to specify how to handle
+reciprocal edges.  The default value, <code>combined</code> will combine any
+reciprocated edges into a single edge (and if the graph is directed,
+will by default place an arrowhead on both ends of the edge), while
+the other option is <code>distinct</code> which will draw to separate
+edges.  Note that in the case of an undirected graph, every edge of a
+<code>graphNEL</code> is going to be reciprocal due to implementation issues.
+</p>
+<p>The <code>nodeAttrs</code> and <code>edgeAttrs</code> attribute lists are to be
+used for cases where one wants to set an attribute on a node or an
+edge that is not the default.  In both cases, these are lists with the
+names of the elements corresponding to a particular attribute and the
+elements containing a named vector - the names of the vector are names
+of either node or edge objects and the values in the vector are the
+values for this attribute.
+</p>
+<p>Note that with the <code>edgeAttrs</code> list, the name of the edges are in
+a particular format where an edge between x and y is named <code>x~y</code>.
+Note that even in an undirected graph that <code>x~y</code> is not the same
+as <code>y~x</code> - the name must be in the same order that the edge was
+defined as having. 
+</p>
+<p>The <code>subGraph</code> argument can be used to specify a list of
+subgraphs that one wants to use for this plot.  The <code>buildXXXList</code>
+functions will determine if a particular node or edge is in one of the
+subgraphs and note that in the object.
+</p>
+<p>The <code>defAttrs</code> list is a list used to specify any default values
+that one wishes to use.  The element names corresponde to the
+attribute and the value is the default for that particular attribute.
+</p>
+<p>If there is no default specified in <code>defAttrs</code> for an attribute
+declared in <code>nodeAttrs</code> or <code>edgeAttrs</code>, then the latter must
+have a value for every node or edge in the graph.  Otherwise, if a
+default is supplied, that value is used for any node or edge not
+explicitly defined for a particular attribute.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of class <code>pNode</code> or <code>pEdge</code> objects.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Jeff Gentry</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="agopen.html">agopen</a></code>, <code><a href="plot-methods.html">plot.graph</a></code>,
+<code><a href="pNode-class.html">pNode</a></code>,<code><a href="pEdge-class.html">pEdge</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+   set.seed(123)
+   V &lt;- letters[1:10]
+   M &lt;- 1:4
+   g1 &lt;- randomGraph(V, M, .2)
+
+   z &lt;- buildEdgeList(g1)
+   x &lt;- buildNodeList(g1)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Rgraphviz</em> version 2.26.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

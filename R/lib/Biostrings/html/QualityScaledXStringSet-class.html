@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: QualityScaledBStringSet, QualityScaledDNAStringSet,...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for QualityScaledXStringSet-class {Biostrings}"><tr><td>QualityScaledXStringSet-class {Biostrings}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>QualityScaledBStringSet, QualityScaledDNAStringSet, QualityScaledRNAStringSet and QualityScaledAAStringSet objects</h2>
+
+<h3>Description</h3>
+
+<p>The QualityScaledBStringSet class is a container for storing a
+<code><a href="XStringSet-class.html">BStringSet</a></code> object with an <code><a href="XStringQuality-class.html">XStringQuality</a></code> object.
+</p>
+<p>Similarly, the QualityScaledDNAStringSet (or QualityScaledRNAStringSet, or
+QualityScaledAAStringSet) class is a container for storing a
+<code><a href="XStringSet-class.html">DNAStringSet</a></code> (or <code><a href="XStringSet-class.html">RNAStringSet</a></code>, or
+<code><a href="XStringSet-class.html">AAStringSet</a></code>) objects with an <code><a href="XStringQuality-class.html">XStringQuality</a></code>
+object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## Constructors:
+QualityScaledBStringSet(x, quality)
+QualityScaledDNAStringSet(x, quality)
+QualityScaledRNAStringSet(x, quality)
+QualityScaledAAStringSet(x, quality)
+
+## Read/write a QualityScaledXStringSet object from/to a FASTQ file:
+readQualityScaledDNAStringSet(filepath,
+                quality.scoring=c("phred", "solexa", "illumina"),
+                nrec=-1L, skip=0L, seek.first.rec=FALSE,
+                use.names=TRUE)
+
+writeQualityScaledXStringSet(x, filepath, append=FALSE,
+                compress=FALSE, compression_level=NA)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>For the <code>QualityScaled*StringSet</code> constructors:
+Either a character vector, or an <a href="XString-class.html">XString</a>, <a href="XStringSet-class.html">XStringSet</a>
+or <a href="XStringViews-class.html">XStringViews</a> object.
+</p>
+<p>For <code>writeQualityScaledXStringSet</code>:
+A QualityScaledDNAStringSet object or other QualityScaledXStringSet
+derivative.
+</p>
+</td></tr>
+<tr valign="top"><td><code>quality</code></td>
+<td>
+
+<p>An <a href="XStringQuality-class.html">XStringQuality</a> derivative.
+</p>
+</td></tr>
+<tr valign="top"><td><code>filepath, nrec, skip, seek.first.rec, use.names,
+append, compress, compression_level</code></td>
+<td>
+
+<p>See <code>?`<a href="XStringSet-io.html">XStringSet-io</a>`</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>quality.scoring</code></td>
+<td>
+
+<p>Specify the quality scoring used in the FASTQ file. Must be one of
+<code>"phred"</code> (the default), <code>"solexa"</code>, or <code>"illumina"</code>.
+If set to <code>"phred"</code> (or <code>"solexa"</code> or <code>"illumina"</code>),
+the qualities will be stored in a <a href="XStringQuality-class.html">PhredQuality</a> (or
+<a href="XStringQuality-class.html">SolexaQuality</a> or <a href="XStringQuality-class.html">IlluminaQuality</a>, respectively)
+object.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>QualityScaledBStringSet</code>, <code>QualityScaledDNAStringSet</code>,
+<code>QualityScaledRNAStringSet</code> and <code>QualityScaledAAStringSet</code>
+functions are constructors that can be used to &quot;naturally&quot; turn
+<code>x</code> into an QualityScaledXStringSet object of the desired base type.
+</p>
+
+
+<h3>Accessor methods</h3>
+
+<p>The QualityScaledXStringSet class derives from the <a href="XStringSet-class.html">XStringSet</a>
+class hence all the accessor methods defined for an <a href="XStringSet-class.html">XStringSet</a>
+object can also be used on an QualityScaledXStringSet object. Common
+methods include (in the code snippets below, <code>x</code> is an
+QualityScaledXStringSet object):
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>length(x)</code>:
+The number of sequences in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>width(x)</code>:
+A vector of non-negative integers containing the number
+of letters for each element in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>nchar(x)</code>:
+The same as <code>width(x)</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>names(x)</code>:
+<code>NULL</code> or a character vector of the same length as <code>x</code>
+containing a short user-provided description or comment for each
+element in <code>x</code>.
+</p>
+</dd>
+<dt></dt><dd>
+<p><code>quality(x)</code>:
+The quality of the strings.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Subsetting and appending</h3>
+
+<p>In the code snippets below,
+<code>x</code> and <code>values</code> are XStringSet objects,
+and <code>i</code> should be an index specifying the elements to extract.
+</p>
+
+<dl>
+<dt></dt><dd>
+<p><code>x[i]</code>:
+Return a new QualityScaledXStringSet object made of the selected elements.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>P. Aboyoun</p>
+
+
+<h3>See Also</h3>
+
+
+<ul>
+<li> <p><a href="XStringSet-class.html">BStringSet</a>, <a href="XStringSet-class.html">DNAStringSet</a>, <a href="XStringSet-class.html">RNAStringSet</a>,
+and <a href="XStringSet-class.html">AAStringSet</a> objects.
+</p>
+</li>
+<li> <p><a href="XStringQuality-class.html">XStringQuality</a> objects.
+</p>
+</li>
+<li> <p><code><a href="XStringSet-io.html">readDNAStringSet</a></code> and <code><a href="XStringSet-io.html">writeXStringSet</a></code>
+for reading/writing a <a href="XStringSet-class.html">DNAStringSet</a> object (or other
+<a href="XStringSet-class.html">XStringSet</a> derivative) from/to a FASTA or FASTQ file.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## ---------------------------------------------------------------------
+## QualityScaled*StringSet() CONSTRUCTORS
+## ---------------------------------------------------------------------
+
+x1 &lt;- DNAStringSet(c("TTGA", "CTCN"))
+q1 &lt;- PhredQuality(c("*+,-", "6789"))
+qdna1 &lt;- QualityScaledDNAStringSet(x1, q1)
+qdna1
+
+## ---------------------------------------------------------------------
+## READ/WRITE A QualityScaledDNAStringSet OBJECT FROM/TO A FASTQ FILE
+## ---------------------------------------------------------------------
+
+filepath &lt;- system.file("extdata", "s_1_sequence.txt",
+                        package="Biostrings")
+
+## By default, readQualityScaledDNAStringSet() assumes that the FASTQ
+## file contains "Phred quality scores" (this is the standard Sanger
+## variant to assess reliability of a base call):
+qdna2 &lt;- readQualityScaledDNAStringSet(filepath)
+qdna2
+
+outfile2a &lt;- tempfile()
+writeQualityScaledXStringSet(qdna2, outfile2a)
+
+outfile2b &lt;- tempfile()
+writeQualityScaledXStringSet(qdna2, outfile2b, compress=TRUE)
+
+## Use 'quality.scoring="solexa"' or 'quality.scoring="illumina"' if the
+## quality scores are Solexa quality scores:
+qdna3 &lt;- readQualityScaledDNAStringSet(filepath, quality.scoring="solexa")
+qdna3
+
+outfile3a &lt;- tempfile()
+writeQualityScaledXStringSet(qdna3, outfile3a)
+
+outfile3b &lt;- tempfile()
+writeQualityScaledXStringSet(qdna3, outfile3b, compress=TRUE)
+
+## Sanity checks:
+stopifnot(identical(readLines(outfile2a), readLines(filepath)))
+stopifnot(identical(readLines(outfile2a), readLines(outfile2b)))
+stopifnot(identical(readLines(outfile3a), readLines(filepath)))
+stopifnot(identical(readLines(outfile3a), readLines(outfile3b)))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>Biostrings</em> version 2.50.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

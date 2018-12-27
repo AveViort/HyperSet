@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: linters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for absolute_paths_linter {lintr}"><tr><td>absolute_paths_linter {lintr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>linters</h2>
+
+<h3>Description</h3>
+
+<p>Available linters
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+absolute_paths_linter(source_file)
+
+assignment_linter(source_file)
+
+closed_curly_linter(allow_single_line = FALSE)
+
+commas_linter(source_file)
+
+commented_code_linter(source_file)
+
+infix_spaces_linter(source_file)
+
+line_length_linter(length)
+
+no_tab_linter(source_file)
+
+object_usage_linter(source_file)
+
+camel_case_linter(source_file)
+
+snake_case_linter(source_file)
+
+multiple_dots_linter(source_file)
+
+object_length_linter(length = 20L)
+
+open_curly_linter(allow_single_line = FALSE)
+
+single_quotes_linter(source_file)
+
+spaces_inside_linter(source_file)
+
+spaces_left_parentheses_linter(source_file)
+
+trailing_blank_lines_linter(source_file)
+
+trailing_whitespace_linter(source_file)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>source_file</code></td>
+<td>
+<p>returned by <code><a href="get_source_expressions.html">get_source_expressions</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>allow_single_line</code></td>
+<td>
+<p>if true allow a open and closed curly pair on the
+same line.</p>
+</td></tr>
+<tr valign="top"><td><code>length</code></td>
+<td>
+<p>the length cutoff to use for the given linter.</p>
+</td></tr>
+</table>
+
+
+<h3>Functions</h3>
+
+
+<ul>
+<li> <p><code>absolute_paths_linter</code>: checks that no absolute paths are used.
+</p>
+</li>
+<li> <p><code>assignment_linter</code>: checks that '&lt;-' is always used for assignment
+</p>
+</li>
+<li> <p><code>closed_curly_linter</code>: check that closed curly braces should always be on their
+own line unless they follow an else.
+</p>
+</li>
+<li> <p><code>commas_linter</code>: check that all commas are followed by spaces, but do not
+have spaces before them.
+</p>
+</li>
+<li> <p><code>commented_code_linter</code>: checks that there is no commented code outside roxygen
+blocks
+</p>
+</li>
+<li> <p><code>infix_spaces_linter</code>: check that all infix operators have spaces around them.
+</p>
+</li>
+<li> <p><code>line_length_linter</code>: check the line length of both comments and code is less
+than length.
+</p>
+</li>
+<li> <p><code>no_tab_linter</code>: check that only spaces are used, never tabs.
+</p>
+</li>
+<li> <p><code>object_usage_linter</code>: checks that closures have the proper usage using
+<code><a href="../../codetools/html/checkUsage.html">checkUsage</a></code>.  Note this runs
+<code><a href="../../base/html/eval.html">eval</a></code> on the code, so do not use with untrusted code.
+</p>
+</li>
+<li> <p><code>camel_case_linter</code>: check that objects are not in camelCase.
+</p>
+</li>
+<li> <p><code>snake_case_linter</code>: check that objects are not in snake_case.
+</p>
+</li>
+<li> <p><code>multiple_dots_linter</code>: check that objects do not have.multiple.dots.
+</p>
+</li>
+<li> <p><code>object_length_linter</code>: check that objects do are not very long.not
+have.multiple.dots.
+</p>
+</li>
+<li> <p><code>open_curly_linter</code>: check that opening curly braces are never on their own
+line and are always followed by a newline.
+</p>
+</li>
+<li> <p><code>single_quotes_linter</code>: checks that only single quotes are used to delimit
+string contestants.
+</p>
+</li>
+<li> <p><code>spaces_inside_linter</code>: check that parentheses and square brackets do not have
+spaces directly inside them.
+</p>
+</li>
+<li> <p><code>spaces_left_parentheses_linter</code>: check that all left parentheses have a space before them
+unless they are in a function call.
+</p>
+</li>
+<li> <p><code>trailing_blank_lines_linter</code>: check there are no trailing blank lines.
+</p>
+</li>
+<li> <p><code>trailing_whitespace_linter</code>: check there are no trailing whitespace characters.
+</p>
+</li></ul>
+
+<hr /><div style="text-align: center;">[Package <em>lintr</em> version 1.0.3 <a href="00Index.html">Index</a>]</div>
+</body></html>

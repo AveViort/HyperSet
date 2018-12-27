@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add a namespace definition to an XML node</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for newXMLNamespace {XML}"><tr><td>newXMLNamespace {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add a namespace definition to an XML node</h2>
+
+<h3>Description</h3>
+
+<p>This function, and associated methods,
+define a name space <code>prefix = URI</code> combination for the
+given XML node.
+It can also optionally make this name space the
+default namespace for the node.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+newXMLNamespace(node, namespace, prefix = names(namespace), set = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>node</code></td>
+<td>
+<p>the XML node for which the name space is to be defined.</p>
+</td></tr>
+<tr valign="top"><td><code>namespace</code></td>
+<td>
+<p>the namespace(s).
+This can be a simple character vector giving the URI,
+a named character vector giving the prefix = URI pairs, with the prefixes being the names 
+of the character vector,
+or one or more (a list) of <code>XMLNamespace</code> objects, e.g. returned from a call to 
+<code><a href="xmlNamespaceDefinitions.html">xmlNamespaceDefinitions</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>prefix</code></td>
+<td>
+ 
+<p>the prefixes to be associated with the URIs given in <code>namespace</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>set</code></td>
+<td>
+<p>  a logical value indicating whether to 
+set the  namespace for this node to this newly created name space definition.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An name space definition object whose class corresponds 
+to the type of XML node given in <code>node</code>.
+</p>
+
+
+<h3>Note</h3>
+
+<p>Currently, this only applies to XMLInternalNodes. This will be rectified shortly
+and apply to RXMLNode and its non-abstract classes.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p> ~put references to the literature/web site here ~ </p>
+
+
+<h3>See Also</h3>
+
+<p>Constructors for different XML node types - <code>newXMLNode</code>
+<code>xmlNode</code>.
+<code><a href="newXMLNamespace.html">newXMLNamespace</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ foo = newXMLNode("foo")
+ ns = newXMLNamespace(foo, "http://www.r-project.org", "r")
+ as(ns, "character")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

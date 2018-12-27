@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add lines to a 3D scatterplot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for lines3d {threejs}"><tr><td>lines3d {threejs}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add lines to a 3D scatterplot</h2>
+
+<h3>Description</h3>
+
+<p>Add lines to a 3D scatterplot
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+lines3d(s, from, to, lwd = 1, alpha = 1, color)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>s</code></td>
+<td>
+<p>A scatterplot object returned by <code><a href="scatterplot3js.html">scatterplot3js</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>from</code></td>
+<td>
+<p>A vector of integer indices of starting points.</p>
+</td></tr>
+<tr valign="top"><td><code>to</code></td>
+<td>
+<p>A vector of integer indices of ending points of the same length as <code>from</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>lwd</code></td>
+<td>
+<p>A single numeric value of line width (applies to all lines).</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>A single numeric value of line alpha (applies to all lines).</p>
+</td></tr>
+<tr valign="top"><td><code>color</code></td>
+<td>
+<p>Either a single color value or vector of values as long as <code>from</code> of line colors;
+line colors default to interpolating their vertex point colors.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A new scatterplot htmlwidget object.
+</p>
+
+
+<h3>Note</h3>
+
+<p>This function replaces the old <code>points3d</code> approach used by <code>scatterplot3d</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+ x &lt;- rnorm(5)
+ y &lt;- rnorm(5)
+ z &lt;- rnorm(5)
+ scatterplot3js(x, y, z, pch="@", color=rainbow(5)) %&gt;%
+   lines3d(c(1, 2), c(3, 4), lwd=2)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>threejs</em> version 0.3.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

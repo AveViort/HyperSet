@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: The significant branches in a dendrogram, based on a pvclust...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pvclust_show_signif {dendextend}"><tr><td>pvclust_show_signif {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>The significant branches in a dendrogram, based on a pvclust object</h2>
+
+<h3>Description</h3>
+
+<p>Shows the significant branches in a dendrogram, based on a pvclust object
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pvclust_show_signif(dend, pvclust_obj, signif_type = c("bp", "au"),
+  alpha = 0.05, signif_value = c(5, 1), show_type = c("lwd", "col"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>pvclust_obj</code></td>
+<td>
+<p>a pvclust object</p>
+</td></tr>
+<tr valign="top"><td><code>signif_type</code></td>
+<td>
+<p>a character scalar (either &quot;bp&quot; or &quot;au&quot;), indicating
+which of the two should be used to update the dendrogram.</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>a number between 0 to 1, default is .05. Indicates what is the
+cutoff from which branches will be updated.</p>
+</td></tr>
+<tr valign="top"><td><code>signif_value</code></td>
+<td>
+<p>a 2d vector (deafult: c(5,1)),
+with the first element tells us what the significant branches will get,
+and the second element which value the non-significant branches will get.</p>
+</td></tr>
+<tr valign="top"><td><code>show_type</code></td>
+<td>
+<p>a character scalar (either &quot;lwd&quot; or &quot;col&quot;), indicating
+which parameter of the branches should be updated based on significance.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram with updated branches
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="pvclust_show_signif.html">pvclust_show_signif</a>, <a href="pvclust_show_signif_gradient.html">pvclust_show_signif_gradient</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+library(pvclust)
+data(lung) # 916 genes for 73 subjects
+set.seed(13134)
+result &lt;- pvclust(lung[, 1:20], method.dist="cor", method.hclust="average", nboot=100)
+
+dend &lt;- as.dendrogram(result)
+result %&gt;% as.dendrogram %&gt;% 
+   hang.dendrogram %&gt;%
+   plot(main = "Cluster dendrogram with AU/BP values (%)")
+result %&gt;% text
+result %&gt;% pvrect(alpha=0.95)
+
+dend %&gt;% pvclust_show_signif(result) %&gt;% plot
+dend %&gt;% pvclust_show_signif(result, show_type = "lwd") %&gt;% plot
+result %&gt;% text
+result %&gt;% pvrect(alpha=0.95)
+
+dend %&gt;% pvclust_show_signif_gradient(result) %&gt;% plot
+
+dend %&gt;% 
+   pvclust_show_signif_gradient(result) %&gt;% 
+   pvclust_show_signif(result) %&gt;%
+   plot(main = "Cluster dendrogram with AU/BP values (%)\n bp values are highlighted by signif")
+result %&gt;% text
+result %&gt;% pvrect(alpha=0.95)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

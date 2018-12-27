@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: highlight renderer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for renderer {highlight}"><tr><td>renderer {highlight}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>highlight renderer</h2>
+
+<h3>Description</h3>
+
+<p>The function builds a renderer, suitable for the renderer argument
+of the highlight function. In the highlight process, renderers
+are responsible to render the information in the target markup
+language.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+renderer(translator, formatter, space, newline, header, footer, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>translator</code></td>
+<td>
+<p>This argument should be a function with one argument. The translator
+needs to work token characters so that they display nicely
+in the target markup language.</p>
+</td></tr>
+<tr valign="top"><td><code>formatter</code></td>
+<td>
+<p>The formatter should be a function with at least two arguments: the
+tokens and the styles. These two arguments are supplied
+to the formatter by the highlight function. The formatter should wrap
+tokens and styles into the target markup language.
+For example, the formatter used by the html renderer makes
+a <span class="samp">&lt;span&gt;</span> tag of <span class="samp">class</span> given by the <span class="samp">styles</span>
+and content given by the <span class="samp">token</span>.</p>
+</td></tr>
+<tr valign="top"><td><code>space</code></td>
+<td>
+<p>This should be a function with no argument. The output of this function
+should be a character vector of length one giving the representation
+of a space character in the target language. For example, in the
+latex renderer, the function returns <span class="samp">"{\ }"</span>.</p>
+</td></tr>
+<tr valign="top"><td><code>newline</code></td>
+<td>
+<p>This should be a function with no argument. The output of the function
+is a character vector of length one giving the representation of a newline
+character in the target language.</p>
+</td></tr>
+<tr valign="top"><td><code>header</code></td>
+<td>
+<p>This should be a function with no argument. The output of this function
+is a character vector of arbitrary length. The elements of the output
+are written before the highlighted content. headers and footers are used
+to embed the highlighted tokens into some markup. For example, the header
+used in the html renderer starts a <span class="samp">&lt;pre&gt;</span> tag that is closed
+by the footer. headers and footer might also be used to write
+style definitions such as CSS, STY, ...</p>
+</td></tr>
+<tr valign="top"><td><code>footer</code></td>
+<td>
+<p>This should be a function with no argument. The output of this function
+is written after all tokens.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments. This might be used to store additional renderer
+specific objects.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Implementations of renderers should call this function to ensure
+that a proper renderer is created. At the moment, no checking is performed
+to ensure that the built object complies with the expected
+interface, but this is very likely to change.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A <span class="samp">renderer</span> object. Renderer objects define the interface expected
+by the <code><a href="highlight.html">highlight</a></code> function. At the moment, a renderer
+object is a list of class <span class="samp">renderer</span> containing elements:
+<span class="samp">translator</span>, <span class="samp">formatter</span>, <span class="samp">space</span>, <span class="samp">newline</span>,
+<span class="samp">header</span> and <span class="samp">footer</span>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>The <code><a href="renderer_html.html">renderer_html</a></code> implements a renderer using html markup,
+<span class="samp">&lt;span&gt;</span> tags and CSS.
+</p>
+<p>The <code><a href="renderer_latex.html">renderer_latex</a></code> implements a latex renderer.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>highlight</em> version 0.4.7.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

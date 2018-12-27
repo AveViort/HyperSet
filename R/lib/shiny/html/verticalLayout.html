@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Lay out UI elements vertically</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for verticalLayout {shiny}"><tr><td>verticalLayout {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Lay out UI elements vertically</h2>
+
+<h3>Description</h3>
+
+<p>Create a container that includes one or more rows of content (each element
+passed to the container will appear on it's own line in the UI)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+verticalLayout(..., fluid = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Elements to include within the container</p>
+</td></tr>
+<tr valign="top"><td><code>fluid</code></td>
+<td>
+<p><code>TRUE</code> to use fluid layout; <code>FALSE</code> to use fixed
+layout.</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fluidPage.html">fluidPage</a></code>, <code><a href="flowLayout.html">flowLayout</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  verticalLayout(
+    a(href="http://example.com/link1", "Link One"),
+    a(href="http://example.com/link2", "Link Two"),
+    a(href="http://example.com/link3", "Link Three")
+  )
+)
+shinyApp(ui, server = function(input, output) { })
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

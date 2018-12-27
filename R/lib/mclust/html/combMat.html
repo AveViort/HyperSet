@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Combining Matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for combMat {mclust}"><tr><td>combMat {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Combining Matrix
+</h2>
+
+<h3>Description</h3>
+
+<p>Create a combining matrix
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+combMat(K, l1, l2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>K</code></td>
+<td>
+
+<p>The original number of classes: the matrix will define a combining from K to (K-1) classes.
+</p>
+</td></tr>
+<tr valign="top"><td><code>l1</code></td>
+<td>
+
+<p>Label of one of the two classes to be combined.
+</p>
+</td></tr>
+<tr valign="top"><td><code>l2</code></td>
+<td>
+
+<p>Label of the other class to be combined.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>If <code>z</code> is a vector (length <em>K</em>) whose <em>k</em>th entry is the probability that an observation belongs to the <em>k</em>th class in a <em>K</em>-classes classification, then <code>combiM %*% z</code> is the vector (length <em>K-1</em>) whose <em>k</em>th entry is the probability that the observation belongs to the <em>k</em>th class in the <em>K-1</em>-classes classification obtained by merging classes <code>l1</code> and <code>l2</code> in the initial classification.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>J.-P. Baudry, A. E. Raftery, L. Scrucca
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="clustCombi.html">clustCombi</a></code>, <code><a href="combiPlot.html">combiPlot</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

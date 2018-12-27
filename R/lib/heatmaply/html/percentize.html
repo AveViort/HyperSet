@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Empirical Percentile Transformation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for percentize {heatmaply}"><tr><td>percentize {heatmaply}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Empirical Percentile Transformation</h2>
+
+<h3>Description</h3>
+
+<p>An Empirical Percentile Transformation (percentize) is similar to taking the rank
+of a variable. The difference is that it is simpler to compare and interpret
+the transformed variables.
+</p>
+<p>This is helpful for comparing several variables in a heatmap (e.g.: <a href="heatmaply.html">heatmaply</a>).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+percentize(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a vector or a data.frame.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Currently ignored.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A vector (or data.frame) after <a href="../../stats/html/ecdf.html">ecdf</a> was used on that vector.
+If x is a <a href="../../base/html/data.frame.html">data.frame</a> then only the numeric variables are transformed.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="normalize.html">normalize</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+x &lt;- mtcars
+x &lt;- data.frame(x)
+x$am &lt;- factor(x$am)
+x$vs &lt;- factor(x$vs)
+heatmaply(percentize(x))
+
+
+x &lt;- data.frame(a = 1:10, b = 11:20)
+x[4:6, 1:2] &lt;- NA
+percentize(x)
+percentize(x[,1])
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>heatmaply</em> version 0.15.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

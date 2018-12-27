@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a column within a UI definition</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for column {shiny}"><tr><td>column {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a column within a UI definition</h2>
+
+<h3>Description</h3>
+
+<p>Create a column for use within a  <code><a href="fluidPage.html">fluidRow</a></code> or
+<code><a href="fixedPage.html">fixedRow</a></code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+column(width, ..., offset = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>width</code></td>
+<td>
+<p>The grid width of the column (must be between 1 and 12)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Elements to include within the column</p>
+</td></tr>
+<tr valign="top"><td><code>offset</code></td>
+<td>
+<p>The number of columns to offset this column from the end of the
+previous column.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A column that can be included within a
+<code><a href="fluidPage.html">fluidRow</a></code> or <code><a href="fixedPage.html">fixedRow</a></code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fluidPage.html">fluidRow</a></code>, <code><a href="fixedPage.html">fixedRow</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  fluidRow(
+    column(4,
+      sliderInput("obs", "Number of observations:",
+                  min = 1, max = 1000, value = 500)
+    ),
+    column(8,
+      plotOutput("distPlot")
+    )
+  )
+)
+
+server &lt;- function(input, output) {
+  output$distPlot &lt;- renderPlot({
+    hist(rnorm(input$obs))
+  })
+}
+
+shinyApp(ui, server)
+
+
+
+ui &lt;- fluidPage(
+  fluidRow(
+    column(width = 4,
+      "4"
+    ),
+    column(width = 3, offset = 2,
+      "3 offset 2"
+    )
+  )
+)
+shinyApp(ui, server = function(input, output) { })
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

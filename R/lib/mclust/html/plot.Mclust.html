@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot Model-Based Clustering Results</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plot.Mclust {mclust}"><tr><td>plot.Mclust {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Plot Model-Based Clustering Results
+</h2>
+
+<h3>Description</h3>
+
+<p>Plot model-based clustering results: BIC, classification, uncertainty and 
+(for univariate and bivariate data) density.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'Mclust'
+plot(x, what = c("BIC", "classification", "uncertainty", "density"), 
+     dimens = NULL, xlab = NULL, ylab = NULL, ylim = NULL,
+     addEllipses = TRUE, main = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>Output from <code>Mclust</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>what</code></td>
+<td>
+
+<p>The type of graph requested:
+</p>
+
+<dl>
+<dt><code>"BIC"</code></dt><dd></dd>
+<dt><code>"classification"</code></dt><dd></dd>
+<dt><code>"uncertainty"</code></dt><dd></dd>
+<dt><code>"density"</code></dt><dd></dd>
+</dl>
+
+<p>By default, all the above graphs are produced. See the description below.
+</p>
+</td></tr>
+<tr valign="top"><td><code>dimens</code></td>
+<td>
+
+<p>A vector of length one or two giving the integer dimensions of the
+desired coordinate projections for multivariate data in case of
+<code>"classification"</code> or <code>"uncertainty"</code> plots. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>xlab, ylab</code></td>
+<td>
+
+<p>Optional labels for the x-axis and the y-axis.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+
+<p>Optional limits for the vertical axis of the BIC plot.
+</p>
+</td></tr>
+<tr valign="top"><td><code>addEllipses</code></td>
+<td>
+
+<p>A logical indicating whether or not to add ellipses with axes corresponding 
+to the within-cluster covariances in case of <code>"classification"</code> or
+<code>"uncertainty"</code> plots. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+
+<p>A logical or <code>NULL</code> indicating whether or not to add a title 
+to the plot identifying the type of plot drawn.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Other graphics parameters.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For more flexibility in plotting, use <code>mclust1Dplot</code>, 
+<code>mclust2Dplot</code>, <code>surfacePlot</code>, <code>coordProj</code>, or
+<code>randProj</code>. 
+</p>
+
+
+<h3>Value</h3>
+
+<p>Model-based clustering plots: 
+</p>
+
+<dl>
+<dt><code>"BIC"</code> =</dt><dd><p>BIC values used for choosing the number of clusters.</p>
+</dd>
+<dt><code>"classification"</code> =</dt><dd><p>a plot showing the clustering. For data
+in more than two dimensions a pairs plot is produced, followed by a
+coordinate projection plot using specified <code>dimens</code>.</p>
+</dd> 
+<dt><code>"uncertainty"</code> =</dt><dd><p>a plot of classification uncertainty. For
+data in more than two dimensions a coordinate projection plot is 
+drawn using specified <code>dimens</code>.</p>
+</dd>
+<dt><code>"density"</code> =</dt><dd><p>a plot of estimated density. For two
+dimensional a contour plot is drawn, while for data in more than 
+two dimensions a matrix of contours for pairs of variables is 
+produced.</p>
+</dd>
+</dl>
+
+
+
+<h3>See Also</h3>
+
+<p><code><a href="Mclust.html">Mclust</a></code>,
+<code><a href="plot.mclustBIC.html">plot.mclustBIC</a></code>,
+<code><a href="plot.mclustICL.html">plot.mclustICL</a></code>,
+<code><a href="mclust1Dplot.html">mclust1Dplot</a></code>,
+<code><a href="mclust2Dplot.html">mclust2Dplot</a></code>,
+<code><a href="surfacePlot.html">surfacePlot</a></code>,
+<code><a href="coordProj.html">coordProj</a></code>,
+<code><a href="randProj.html">randProj</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+precipMclust &lt;- Mclust(precip)
+plot(precipMclust)
+
+faithfulMclust &lt;- Mclust(faithful)
+plot(faithfulMclust)
+
+irisMclust &lt;- Mclust(iris[,-5])
+plot(irisMclust)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a C-level handle for a file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for CFILE {RCurl}"><tr><td>CFILE {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create a C-level handle for a file</h2>
+
+<h3>Description</h3>
+
+<p>This function and class allow us to work with C-level
+<code>FILE</code> handles.
+The intent is to be able to pass these to <code>libcurl</code>
+as options so that it can read or write from or to the file.
+We can also do this with R connections and specify callback functions
+that manipulate these connections. But using
+the C-level FILE handle is likely to be significantly faster for large
+files.
+</p>
+<p>The <code>close</code> method allows us to explicitly flush and close the file
+from within R.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+CFILE(filename, mode = "r")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>filename</code></td>
+<td>
+<p>the name of the file on disk</p>
+</td></tr>
+<tr valign="top"><td><code>mode</code></td>
+<td>
+<p>a string specifying how to open the file, read or write, text or binary.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is a simple interface to the C routine <code>fopen</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>CFILE</code> which is 
+has a single slot name <code>ref</code> which is an external pointer
+holding the address of the FILE object in C.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p>Man page for <code>fopen</code>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="curlPerform.html">curlPerform</a></code> and the <code>readdata</code> 
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+filename = system.file("tests", "amazon3.R", package = "RCurl")
+f = CFILE(filename)
+
+if(url.exists('http://s3.amazonaws.com/'))
+  curlPerform(url = "http://s3.amazonaws.com/RRupload/duncan2",
+              upload = TRUE,
+              readdata = f@ref,
+              infilesize = file.info(filename)[1, "size"])
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

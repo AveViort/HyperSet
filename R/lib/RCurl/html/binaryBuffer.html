@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create internal C-level data structure for collecting binary...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for binaryBuffer {RCurl}"><tr><td>binaryBuffer {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create internal C-level data structure for collecting binary data</h2>
+
+<h3>Description</h3>
+
+<p>This is the constructor function for creating an internal data
+structure
+that is used when reading binary data from an HTTP request
+via RCurl.  It is used with the native routine
+<code>R_curl_write_binary_data</code> for collecting
+the response from the HTTP query into a buffer that stores
+the bytes. The contents can then be brought back into R
+as a <code>raw</code> vector and then used in different ways,
+e.g. uncompressed with the <code>Rcompression</code> package,
+or written to a file via <code><a href="../../base/html/writeBin.html">writeBin</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+binaryBuffer(initialSize = 5000)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>initialSize</code></td>
+<td>
+<p>a number giving the size (number of bytes) to
+allocate for the buffer. In most cases, the size won't make an
+enormous difference. If this is small, the
+<code>R_curl_write_binary_data</code> routine will expand it as necessary
+when more daat is received than would fit in it.  If it is very
+large, i.e. larger than the resulting response, the consequence is
+simply unused memory.   One can determine the appropriate size by
+performing the HTTP request with <code>nobody = TRUE</code> and looking
+at the resulting size indicated by the headers of the response,
+i.e.
+<code>getCurlInfo(handle)</code> and then using that size and repeating
+the request and receiving the body. This is a trade-off between
+network speed and memor consumption and processing speed when
+collecting the .
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>RCurlBinaryBuffer</code> which is to be treated
+as an opaque data for the most part. When passing this as the value of
+the <code>file</code> option, one will have to pass the ref slot.
+</p>
+<p>After the contents have been read, one can convert this object to an R
+raw vector using <code>as(buf, "raw")</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang &lt;duncan@wald.ucdavis.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Curl homepage <a href="http://curl.haxx.se">http://curl.haxx.se</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code>R_curl_write_binary_data</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+if(url.exists("http://www.omegahat.net/RCurl/xmlParse.html.gz")) {
+  buf = binaryBuffer()
+
+     # Now fetch the binary file.
+  getURI("http://www.omegahat.net/RCurl/xmlParse.html.gz",
+         write = getNativeSymbolInfo("R_curl_write_binary_data")$address,
+         file = buf@ref)
+
+   # Convert the internal data structure into an R raw vector
+  b = as(buf, "raw")
+
+ if(require(Rcompression)) 
+   gunzip(b)
+ }
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

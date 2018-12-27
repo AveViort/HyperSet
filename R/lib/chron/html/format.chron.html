@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Format a chron object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for format.chron {chron}"><tr><td>format.chron {chron}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Format a chron object</h2>
+
+<h3>Description</h3>
+
+<p>Format a chron object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'chron'
+format(x, format = att$format, origin. = att$origin,
+       sep = " ",  simplify, enclosed = c("(", ")"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>A chron object.
+</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+
+<p>As in <code><a href="chron.html">chron</a></code> or a single character string with percent codes as
+detailed in <code><a href="../../base/html/strptime.html">strptime</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>origin.</code></td>
+<td>
+
+<p>As in <code><a href="chron.html">chron</a></code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>sep</code></td>
+<td>
+
+<p>A character string that separates the dates and times in the output.  Ignored
+if percent codes are used in <code>format</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>simplify</code></td>
+<td>
+
+<p>As in <code><a href="dates.html">format.dates</a></code>. Ignored 
+if percent codes are used in <code>format</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>enclosed</code></td>
+<td>
+
+<p>A character vector of length 2 containing the strings that begin and end
+each output date/time.
+Ignored if percent codes are used in <code>format</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Not currently used.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A character vector.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="chron.html">chron</a></code>.
+<code><a href="dates.html">format.dates</a></code>.
+<code><a href="../../base/html/strptime.html">strptime</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+format(chron(0, 0), c("yy/m/d", "h:m:s"), sep = "T", enclose = c("", ""))
+format(chron(0, 0), "%Y-%m-%dT%H:%M:%S") # same
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>chron</em> version 2.3-53 <a href="00Index.html">Index</a>]</div>
+</body></html>

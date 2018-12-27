@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create Simulated Data for Seriation Evaluation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for seriation_data {seriation}"><tr><td>seriation_data {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create Simulated Data for Seriation Evaluation</h2>
+
+<h3>Description</h3>
+
+<p>Several functions to create simulated data to evaluate different aspects
+of seriation algorithms and criterion functions. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+create_lines_data(n = 250)
+create_ordered_data(n = 250, k = 2, size = NULL, spacing = 6,  path = "linear",
+  sd1 = 1, sd2 = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>number of data points to create.</p>
+</td></tr>
+<tr valign="top"><td><code>k</code></td>
+<td>
+<p>number of Gaussian components.</p>
+</td></tr>
+<tr valign="top"><td><code>size</code></td>
+<td>
+<p>relative size (number of points) of components (length of k). 
+If <code>NULL</code> then all components have the same size. </p>
+</td></tr>
+<tr valign="top"><td><code>spacing</code></td>
+<td>
+<p> space between the centers of components. The default of 6
+means that the components will barely touch at <code>ds1=1</code> 
+(3 standard deviations for each Gaussian component). </p>
+</td></tr>
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p> Are the components arranged along a <code>"linear"</code> or 
+<code>"circular"</code> path? </p>
+</td></tr>
+<tr valign="top"><td><code>sd1</code></td>
+<td>
+<p> variation in the direction along the components. 
+A value greater than one means the
+components are mixing. </p>
+</td></tr>
+<tr valign="top"><td><code>sd2</code></td>
+<td>
+<p> variation perpendicular to the direction along the components. 
+A value greater than 0 will introduce anti-Robinson violation events. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>create_lines_data</code> creates the lines data set used in 
+for iVAT in Havens and Bezdeck (2012).
+</p>
+<p><code>create_ordered_data</code> is a versatile function which creates &quot;orderable&quot;
+2D data using Gaussian components along a linear or circular path. The 
+components are equally spaced (<code>spacing</code>) along the path. The 
+default spacing of 6 ensures that 2 adjacent components with a standard 
+deviation of one along the direction of the path will barely touch. The 
+standard deviation along the path is set by <code>sd1</code>. The standard deviation
+perpendicular to the path is set by <code>sd2</code>. A value larger than zero
+will result in the data not being perfectly orderable (i.e., the
+resulting distance matrix will not be a perfect pre-anti-Robinson matrix and
+contain anti-Robinson violation events after seriation). Note that a circular
+path always creates anti-Robinson violation since the circle has to be
+broken at some point to create a linear order. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>Havens, T.C. and Bezdek, J.C. (2012):
+An Efficient Formulation of the Improved Visual Assessment of Cluster Tendency 
+(iVAT) Algorithm, <em>IEEE Transactions on Knowledge and Data Engineering,</em>
+<b>24</b>(5), 813&ndash;822. 
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="seriate.html">seriate</a></code>,
+<code><a href="criterion.html">criterion</a></code>,
+<code><a href="VAT.html">VAT</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## lines data set from Havens and Bezdek (2011) 
+x &lt;- create_lines_data(250)
+plot(x, xlim=c(-5,5), ylim=c(-3,3), cex=.2, col = attr(x, "id"))  
+d &lt;- dist(x)
+pimage(d, seriate(d, "OLO_single"), col = bluered(100, bias=.5), key = TRUE)
+  
+## create_ordered_data can produce many types of "orderable" data
+
+## perfect pre-Anti-Robinson matrix (with a single components)
+x &lt;- create_ordered_data(250, k = 1)  
+plot(x, cex=.2, col = attr(x, "id"))  
+d &lt;- dist(x)
+pimage(d, seriate(d, "MDS"), col = bluered(100, bias=.5), key = TRUE)  
+  
+## separated components
+x &lt;- create_ordered_data(250, k = 5)  
+plot(x, cex=.2, col = attr(x, "id"))  
+d &lt;- dist(x)
+pimage(d, seriate(d, "MDS"), col = bluered(100, bias=.5), key = TRUE)  
+  
+## overlapping components
+x &lt;- create_ordered_data(250, k = 5, sd1 = 2)  
+plot(x, cex=.2, col = attr(x, "id"))
+d &lt;- dist(x)
+pimage(d, seriate(d, "MDS"), col = bluered(100, bias=.5), key = TRUE)  
+    
+## introduce anti-Robinson violations (a non-zero y value)
+x &lt;- create_ordered_data(250, k = 5, sd1 = 2, sd2 = 5)  
+plot(x, cex=.2, col = attr(x, "id"))  
+d &lt;- dist(x)
+pimage(d, seriate(d, "MDS"), col = bluered(100, bias=.5), key = TRUE)  
+  
+## circular path (has always violations)  
+x &lt;- create_ordered_data(250, k = 5, path = "circular", sd1=2)  
+plot(x, cex=.2, col = attr(x, "id"))
+d &lt;- dist(x)
+pimage(d, seriate(d, "OLO"), col = bluered(100, bias=.5), key = TRUE)  
+
+## circular path (with more violations violations)  
+x &lt;- create_ordered_data(250, k = 5, path = "circular", sd1=2, sd2=1)  
+plot(x, cex=.2, col = attr(x, "id"))
+d &lt;- dist(x)
+pimage(d, seriate(d, "OLO"), col = bluered(100, bias=.5), key = TRUE) 
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

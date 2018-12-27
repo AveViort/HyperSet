@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Clustering by merging Gaussian mixture components</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mergenormals {fpc}"><tr><td>mergenormals {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Clustering by merging Gaussian mixture components</h2>
+
+<h3>Description</h3>
+
+<p>Clustering by merging Gaussian mixture components; computes all
+methods introduced in Hennig (2010) from an initial mclust
+clustering. See details section for details.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+  mergenormals(xdata, mclustsummary=NULL, 
+                         clustering, probs, muarray, Sigmaarray, z,
+                         method=NULL, cutoff=NULL, by=0.005,
+                         numberstop=NULL, renumber=TRUE, M=50, ...)
+
+  ## S3 method for class 'mergenorm'
+summary(object, ...)
+
+  ## S3 method for class 'summary.mergenorm'
+print(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>xdata</code></td>
+<td>
+<p>data (something that can be coerced into a matrix).</p>
+</td></tr>
+<tr valign="top"><td><code>mclustsummary</code></td>
+<td>
+<p>output object from
+<code><a href="../../mclust/html/summary.mclustBIC.html">summary.mclustBIC</a></code> for <code>xdata</code>. Either
+<code>mclustsummary</code> or all of <code>clustering</code>,
+<code>probs</code>, <code>muarray</code>, <code>Sigmaarray</code> and <code>z</code> need
+to be specified (the latter are obtained from <code>mclustsummary</code>
+if they are not provided). I am not aware of restrictions of the
+usage of
+<code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code> to produce an initial clustering;
+covariance matrix models can be restricted and a noise component can be
+included if desired, although I have probably not tested all
+possibilities.  
+</p>
+</td></tr>
+<tr valign="top"><td><code>clustering</code></td>
+<td>
+<p>vector of integers. Initial assignment of data to
+mixture components.</p>
+</td></tr>
+<tr valign="top"><td><code>probs</code></td>
+<td>
+<p>vector of component proportions (for all components;
+should sum up to one).</p>
+</td></tr>
+<tr valign="top"><td><code>muarray</code></td>
+<td>
+<p>matrix of component means (rows).</p>
+</td></tr>
+<tr valign="top"><td><code>Sigmaarray</code></td>
+<td>
+<p>array of component covariance matrices (third
+dimension refers to component number).</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p>matrix of observation- (row-)wise posterior probabilities of
+belonging to the components (columns).</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>one of <code>"bhat"</code>, <code>"ridge.uni"</code>,
+<code>"ridge.ratio"</code>, <code>"demp"</code>, <code>"dipuni"</code>,
+<code>"diptantrum"</code>, <code>"predictive"</code>. See details.</p>
+</td></tr>
+<tr valign="top"><td><code>cutoff</code></td>
+<td>
+<p>numeric between 0 and 1. Tuning constant, see details
+and Hennig (2010). If not specified, the default values given in (9)
+in Hennig (2010) are used.</p>
+</td></tr>
+<tr valign="top"><td><code>by</code></td>
+<td>
+<p>real between 0 and 1. Interval width for density computation
+along the ridgeline, used for methods <code>"ridge.uni"</code> and
+<code>"ridge.ratio"</code>. Methods <code>"dipuni"</code> and
+<code>"diptantrum"</code> require ridgeline computations and use it as well.</p>
+</td></tr> 
+<tr valign="top"><td><code>numberstop</code></td>
+<td>
+<p>integer. If specified, <code>cutoff</code> is ignored and
+components are merged until the number of clusters specified here is
+reached.</p>
+</td></tr>
+<tr valign="top"><td><code>renumber</code></td>
+<td>
+<p>logical. If <code>TRUE</code> merged clusters are renumbered
+from 1 to their number. If not, numbers of the original clustering
+are used (numbers of components that were merged into others then
+will not appear).</p>
+</td></tr>
+<tr valign="top"><td><code>M</code></td>
+<td>
+<p>integer. Number of times the dataset is divided into two
+halves. Used if <code>method="predictive"</code>.</p>
+</td></tr> 
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional optional parameters to pass on to
+<code>ridgeline.diagnosis</code> or <code>mixpredictive</code> (in
+<code>mergenormals</code>).</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>object of class <code>mergenorm</code>, output of
+<code>mergenormals</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>object of class <code>summary.mergenorm</code>, output of
+<code>summary.mergenorm</code>.</p>
+</td></tr> 
+</table>
+
+
+<h3>Details</h3>
+
+<p>Mixture components are merged in a hierarchical fashion. The merging
+criterion is computed for all pairs of current clusters and the two
+clusters with the highest criterion value (lowest, respectively, for
+<code>method="predictive"</code>) are merged. Then criterion values are
+recomputed for the merged cluster. Merging is continued until the
+criterion value to merge is below (or above, for
+<code>method="predictive"</code>) the cutoff value. Details are given in
+Hennig (2010). The following criteria are offered, specified by the
+<code>method</code>-argument.
+</p>
+
+<dl>
+<dt>&quot;ridge.uni&quot;</dt><dd><p>components are only merged if their mixture is
+unimodal according to Ray and Lindsay's (2005) ridgeline theory,
+see <code><a href="ridgeline.diagnosis.html">ridgeline.diagnosis</a></code>. This ignores argument
+<code>cutoff</code>.</p>
+</dd>
+<dt>&quot;ridge.ratio&quot;</dt><dd><p>ratio between density minimum between
+components and minimum of density maxima according to Ray and
+Lindsay's (2005) ridgeline theory, see
+<code><a href="ridgeline.diagnosis.html">ridgeline.diagnosis</a></code>. </p>
+</dd>      
+<dt>&quot;bhat&quot;</dt><dd><p>Bhattacharyya upper bound on misclassification
+probability between two components, see
+<code><a href="bhattacharyya.matrix.html">bhattacharyya.matrix</a></code>.</p>
+</dd>
+<dt>&quot;demp&quot;</dt><dd><p>direct estimation of misclassification probability
+between components, see Hennig (2010).</p>
+</dd>
+<dt>&quot;dipuni&quot;</dt><dd><p>this uses <code>method="ridge.ratio"</code> to decide
+which clusters to merge but stops merging according to the p-value of
+the dip test computed as in Hartigan and Hartigan (1985), see
+<code><a href="../../diptest/html/dip.test.html">dip.test</a></code>.</p>
+</dd>
+<dt>&quot;diptantrum&quot;</dt><dd><p>as <code>"dipuni"</code>, but p-value of dip test
+computed as in Tantrum, Murua and Stuetzle (2003), see
+<code><a href="dipp.tantrum.html">dipp.tantrum</a></code>.</p>
+</dd>
+<dt>&quot;predictive&quot;</dt><dd><p>this uses <code>method="demp"</code> to decide which
+clusters to merge but stops merging according to the value of
+prediction strength (Tibshirani and Walther, 2005) as computed in
+<code><a href="mixpredictive.html">mixpredictive</a></code>.</p>
+</dd>
+</dl>
+
+
+
+<h3>Value</h3>
+
+<p><code>mergenormals</code> gives out an object of class <code>mergenorm</code>,
+which is a List with components
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>clustering</code></td>
+<td>
+<p>integer vector. Final clustering.</p>
+</td></tr>
+<tr valign="top"><td><code>clusternumbers</code></td>
+<td>
+<p>vector of numbers of remaining clusters. These
+are given in terms of the original clusters even of
+<code>renumber=TRUE</code>, in which case they may be needed to understand
+the numbering of some further components, see below.</p>
+</td></tr>
+<tr valign="top"><td><code>defunct.components</code></td>
+<td>
+<p>vector of numbers of components that were
+&quot;merged away&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>valuemerged</code></td>
+<td>
+<p>vector of values of the merging criterion (see
+details) at which components were merged.</p>
+</td></tr>
+<tr valign="top"><td><code>mergedtonumbers</code></td>
+<td>
+<p>vector of numbers of clusters to which the
+original components were merged.</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+<p>a list, if <code>mclustsummary</code> was provided. Entry
+no. i refers to number i in <code>clusternumbers</code>. The list entry i
+contains the parameters  of the original mixture components that
+make up cluster i, as extracted by
+<code><a href="extract.mixturepars.html">extract.mixturepars</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>predvalues</code></td>
+<td>
+<p>vector of prediction strength values for
+clusternumbers from 1 to the number of components in the original
+mixture, if <code>method=="predictive"</code>. See
+<code><a href="mixpredictive.html">mixpredictive</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>orig.decisionmatrix</code></td>
+<td>
+<p>square matrix with entries giving the
+original values of the merging criterion (see details) for every pair
+of original mixture components.</p>
+</td></tr>
+<tr valign="top"><td><code>new.decisionmatrix</code></td>
+<td>
+<p>square matrix as <code>orig.decisionmatrix</code>,
+but with final entries; numbering of rows and columns corresponds to
+<code>clusternumbers</code>; all entries corresponding to other rows and
+columns can be ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>probs</code></td>
+<td>
+<p>final cluster values of <code>probs</code> (see arguments)
+for merged components, generated by (potentially repeated) execution
+of  <code><a href="mergeparameters.html">mergeparameters</a></code> out of the original
+ones. Numbered according to <code>clusternumbers</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>muarray</code></td>
+<td>
+<p>final cluster means, analogous to <code>probs</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>Sigmaarray</code></td>
+<td>
+<p>final cluster covariance matrices, analogous to
+<code>probs</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+<p>final matrix of posterior probabilities of observations
+belonging to the clusters, analogous to <code>probs</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>noise</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, there was a noise component
+fitted in the initial mclust clustering (see help for
+<code>initialization</code> in <code><a href="../../mclust/html/mclustBIC.html">mclustBIC</a></code>). In this
+case, a cluster number 0 indicates noise. noise is ignored by the
+merging methods and kept as it was originally.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>as above.</p>
+</td></tr>  
+<tr valign="top"><td><code>cutoff</code></td>
+<td>
+<p>as above.</p>
+</td></tr>
+</table>
+<p><code>summary.mergenorm</code> gives out a list with components
+<code>clustering, clusternumbers, defunct.components, valuemerged,
+    mergedtonumbers, predvalues, probs, muarray, Sigmaarray, z, noise,
+    method, cutoff</code> as above, plus <code>onc</code> (original number of
+components) and <code>mnc</code> (number of clusters after merging).
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>J. A. Hartigan and P. M. Hartigan (1985) The Dip Test of
+Unimodality, <em>Annals of Statistics</em>, 13, 70-84.
+</p>
+<p>Hennig, C. (2010) Methods for merging Gaussian mixture components,
+<em>Advances in Data Analysis and Classification</em>, 4, 3-34.
+</p>
+<p>Ray, S. and Lindsay, B. G. (2005) The Topography of Multivariate 
+Normal Mixtures, <em>Annals of Statistics</em>, 33, 2042-2065.
+</p>
+<p>Tantrum, J., Murua, A. and Stuetzle, W. (2003) Assessment and 
+Pruning of Hierarchical Model Based Clustering, <em>Proceedings of the 
+ninth ACM SIGKDD international conference on Knowledge discovery and 
+data mining</em>, Washington, D.C., 197-205.
+</p>
+<p>Tibshirani, R. and Walther, G. (2005) Cluster Validation by 
+Prediction Strength, <em>Journal of Computational and Graphical 
+Statistics</em>, 14, 511-528.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  require(mclust)
+  require(MASS)
+  options(digits=3)
+  data(crabs)
+  dc &lt;- crabs[,4:8]
+  cm &lt;- mclustBIC(crabs[,4:8],G=9,modelNames="EEE")
+  scm &lt;- summary(cm,crabs[,4:8])
+  cmnbhat &lt;- mergenormals(crabs[,4:8],scm,method="bhat")
+  summary(cmnbhat)
+  cmndemp &lt;- mergenormals(crabs[,4:8],scm,method="demp")
+  summary(cmndemp)
+# Other methods take a bit longer, but try them!
+# The values of by and M below are still chosen for reasonably fast execution.
+# cmnrr &lt;- mergenormals(crabs[,4:8],scm,method="ridge.ratio",by=0.05)
+# cmd &lt;- mergenormals(crabs[,4:8],scm,method="dip.tantrum",by=0.05)
+# cmp &lt;- mergenormals(crabs[,4:8],scm,method="predictive",M=3)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

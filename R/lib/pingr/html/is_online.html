@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Is the computer online?</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for is_online {pingr}"><tr><td>is_online {pingr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Is the computer online?</h2>
+
+<h3>Description</h3>
+
+<p>Ping some name servers that are always (well, almost) up.
+If these are unreachable, then you are most probably not online.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+is_online(timeout = 0.2)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>timeout</code></td>
+<td>
+<p>Timeout for the pings.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>Possible values: </p>
+
+<ul>
+<li> <p><code>TRUE</code> Yes, online.
+</p>
+</li>
+<li> <p><code>FALSE</code> No, not online.
+</p>
+</li>
+<li> <p><code>"nodns"</code> We re online, but without a DNS service.
+</p>
+</li></ul>
+
+
+<hr /><div style="text-align: center;">[Package <em>pingr</em> version 1.1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

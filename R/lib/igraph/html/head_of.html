@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Head of the edge(s) in a graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for head_of {igraph}"><tr><td>head_of {igraph}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Head of the edge(s) in a graph</h2>
+
+<h3>Description</h3>
+
+<p>For undirected graphs, head and tail is not defined.  In this case
+<code>head_of</code> returns vertices incident to the supplied edges, and
+<code>tail_of</code> returns the other end(s) of the edge(s).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+head_of(graph, es)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>graph</code></td>
+<td>
+<p>The input graph.</p>
+</td></tr>
+<tr valign="top"><td><code>es</code></td>
+<td>
+<p>The edges to query.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A vertex sequence with the head(s) of the edge(s).
+</p>
+
+
+<h3>See Also</h3>
+
+<p>Other structural queries: <code><a href="sub-.igraph.html">[.igraph</a></code>,
+<code><a href="sub-sub-.igraph.html">[[.igraph</a></code>, <code><a href="adjacent_vertices.html">adjacent_vertices</a></code>,
+<code><a href="are_adjacent.html">are_adjacent</a></code>, <code><a href="ends.html">ends</a></code>,
+<code><a href="get.edge.ids.html">get.edge.ids</a></code>, <code><a href="gorder.html">gorder</a></code>,
+<code><a href="gsize.html">gsize</a></code>, <code><a href="incident_edges.html">incident_edges</a></code>,
+<code><a href="incident.html">incident</a></code>, <code><a href="is_directed.html">is_directed</a></code>,
+<code><a href="neighbors.html">neighbors</a></code>, <code><a href="tail_of.html">tail_of</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>igraph</em> version 1.2.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

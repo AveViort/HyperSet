@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Order or Sort strings with embedded numbers so that the...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mixedsort {gtools}"><tr><td>mixedsort {gtools}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Order or Sort strings with embedded numbers so that the numbers
+are in the correct order</h2>
+
+<h3>Description</h3>
+
+<p>These functions sort or order character strings containing embedded
+numbers so that the numbers are numerically sorted rather than sorted
+by character value.  I.e. &quot;Asprin 50mg&quot; will come before
+&quot;Asprin 100mg&quot;.  In addition, case of character strings is ignored so
+that &quot;a&quot;, will come before &quot;B&quot; and &quot;C&quot;.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mixedsort(x, decreasing=FALSE, na.last=TRUE, blank.last=FALSE,
+          numeric.type=c("decimal", "roman"),
+          roman.case=c("upper","lower","both") )
+mixedorder(x, decreasing=FALSE, na.last=TRUE, blank.last=FALSE,
+          numeric.type=c("decimal", "roman"),
+          roman.case=c("upper","lower","both") )
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Vector to be sorted.</p>
+</td></tr>
+<tr valign="top"><td><code>decreasing</code></td>
+<td>
+<p>logical.  Should the sort be increasing or
+decreasing? Note that <code>descending=TRUE</code> reverses the meanings of
+<code>na.last</code> and <code>blanks.last</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>na.last</code></td>
+<td>
+<p>for controlling the treatment of <code>NA</code> values.  If <code>TRUE</code>, missing
+values in the data are put last; if <code>FALSE</code>, they are put
+first; if <code>NA</code>, they are removed.</p>
+</td></tr>
+<tr valign="top"><td><code>blank.last</code></td>
+<td>
+<p>for controlling the treatment of blank values.  If <code>TRUE</code>, blank
+values in the data are put last; if <code>FALSE</code>, they are put
+first; if <code>NA</code>, they are removed.</p>
+</td></tr>
+<tr valign="top"><td><code>numeric.type</code></td>
+<td>
+<p>either &quot;decimal&quot; (default) or &quot;roman&quot;.  Are numeric values represented as
+decimal numbers (<code>numeric.type="decimal"</code>) or as Roman numerals
+(<code>numeric.type="roman"</code>)? </p>
+</td></tr>
+<tr valign="top"><td><code>roman.case</code></td>
+<td>
+<p>one of &quot;upper&quot;, &quot;lower&quot;, or &quot;both&quot;.  Are roman
+numerals represented using only capital letters ('IX') or lower-case
+letters ('ix') or both?</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>I often have character vectors (e.g. factor labels), such as compound
+and dose, that contain both text and numeric data.  This function
+is useful for sorting these character vectors into a logical order.
+</p>
+<p>It does so by splitting each character vector into a sequence of
+character and numeric sections, and then sorting along these sections,
+with numbers being sorted by numeric value (e.g. &quot;50&quot; comes before
+&quot;100&quot;), followed by characters strings sorted by character
+value (e.g. &quot;A&quot; comes before &quot;B&quot;) <em>ignoring case</em> (e.g. 'A' has
+the same sort order as 'a').
+</p>
+<p>By default, sort order is ascending, empty strings are sorted to the front,
+and <code>NA</code> values to the end.   Setting <code>descending=TRUE</code>
+changes the sort order to descending and reverses the meanings of
+<code>na.last</code> and <code>blank.last</code>.
+</p>
+<p>Parsing looks for decimal numbers unless <code>numeric.type="roman"</code>,
+in which parsing looks for roman numerals, with character case
+specified by <code>roman.case</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>mixedorder</code> returns a vector giving the sort order of the input
+elements. <code>mixedsort</code> returns the sorted vector.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Gregory R. Warnes <a href="mailto:greg@warnes.net">greg@warnes.net</a> </p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="../../base/html/sort.html">sort</a></code>, <code><a href="../../base/html/order.html">order</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## compound &amp; dose labels
+Treatment &lt;- c("Control", "Asprin 10mg/day", "Asprin 50mg/day",
+               "Asprin 100mg/day", "Acetomycin 100mg/day",
+               "Acetomycin 1000mg/day")
+
+## ordinary sort puts the dosages in the wrong order
+sort(Treatment)
+
+## but mixedsort does the 'right' thing
+mixedsort(Treatment)
+
+## Here is a more complex example
+x &lt;- rev(c("AA 0.50 ml", "AA 1.5 ml", "AA 500 ml", "AA 1500 ml",
+           "EXP 1", "AA 1e3 ml", "A A A", "1 2 3 A", "NA", NA, "1e2",
+           "", "-", "1A", "1 A", "100", "100A", "Inf"))
+
+mixedorder(x)
+
+mixedsort(x)  # Notice that plain numbers, including 'Inf' show up
+              # before strings, NAs at the end, and blanks at the
+              # beginning .
+
+
+mixedsort(x, na.last=TRUE)  # default
+mixedsort(x, na.last=FALSE) # push NAs to the front
+
+
+mixedsort(x, blank.last=FALSE) # default
+mixedsort(x, blank.last=TRUE)  # push blanks to the end
+
+mixedsort(x, decreasing=FALSE) # default
+mixedsort(x, decreasing=TRUE)  # reverse sort order
+
+## Roman numerals
+chapters &lt;- c("V. Non Sequiturs", "II. More Nonsense",
+              "I. Nonsense", "IV. Nonesensical Citations",
+              "III. Utter Nonsense")
+mixedsort(chapters, numeric.type="roman" )
+
+## Lower-case Roman numerals
+vals &lt;- c("xix", "xii", "mcv", "iii", "iv", "dcclxxii",   "cdxcii",
+          "dcxcviii",   "dcvi",   "cci")
+(ordered &lt;- mixedsort(vals, numeric.type="roman", roman.case="lower"))
+roman2int(ordered)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gtools</em> version 3.8.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

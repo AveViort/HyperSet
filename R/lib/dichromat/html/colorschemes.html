@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Color Schemes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for colorschemes {dichromat}"><tr><td>colorschemes {dichromat}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Color Schemes</h2>
+
+<h3>Description</h3>
+
+<p>17 color schemes suitable for people with deficient or anomalous
+red-green vision.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>colorschemes</pre>
+
+
+<h3>Format</h3>
+
+
+<ul>
+<li><p> BrowntoBlue.10 
+</p>
+</li>
+<li><p> BrowntoBlue.12 
+</p>
+</li>
+<li><p> BluetoDarkOrange.12
+</p>
+</li>
+<li><p> BluetoDarkOrange.18
+</p>
+</li>
+<li><p> DarkRedtoBlue.12   
+</p>
+</li>
+<li><p> DarkRedtoBlue.18   
+</p>
+</li>
+<li><p> BluetoGreen.14     
+</p>
+</li>
+<li><p> BluetoGray.8       
+</p>
+</li>
+<li><p> BluetoOrangeRed.14   
+</p>
+</li>
+<li><p> BluetoOrange.10      
+</p>
+</li>
+<li><p> BluetoOrange.12      
+</p>
+</li>
+<li><p> BluetoOrange.8       
+</p>
+</li>
+<li><p> LightBluetoDarkBlue.10
+</p>
+</li>
+<li><p> LightBluetoDarkBlue.7 
+</p>
+</li>
+<li><p> Categorical.12        
+</p>
+</li>
+<li><p> GreentoMagenta.16     
+</p>
+</li>
+<li><p> SteppedSequential.5
+</p>
+</li></ul>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Scott Waichler &lt;scott.waichler@pnl.gov&gt;</p>
+
+
+<h3>Source</h3>
+
+<p><a href="http://geography.uoregon.edu/datagraphics/color_scales.htm">http://geography.uoregon.edu/datagraphics/color_scales.htm</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Light A, Bartlein PJ (2004).
+The End of the Rainbow? Color Schemes for Improved Data Graphics.
+<em>EOS Transactions of the American Geophysical Union</em>, <b>85</b>(40), 385.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+pal &lt;- function(col, ...)
+  image(seq_along(col), 1, matrix(seq_along(col), ncol = 1),
+  col = col, axes = FALSE, ...)
+
+opar &lt;- par(mar = c(1, 2, 1, 1))
+layout(matrix(1:6, ncol = 1))
+pal(colorschemes$BrowntoBlue.10, main = "Brown to Blue (10)")
+pal(colorRampPalette(colorschemes$BrowntoBlue.10, space = "Lab")(100),
+  main = "Brown to Blue Ramp")
+pal(dichromat(colorschemes$BrowntoBlue.10),
+  main = "Brown to Blue (10) -- deuteranopia")
+pal(colorschemes$Categorical.12, main = "Categorical (12)")
+pal(dichromat(colorschemes$Categorical.12),
+  main = "Categorical (12) -- deuteranopia")
+pal(dichromat(colorschemes$Categorical.12, "protan"),
+  main = "Categorical (12) -- protanopia")
+par(opar)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dichromat</em> version 2.0-0 <a href="00Index.html">Index</a>]</div>
+</body></html>

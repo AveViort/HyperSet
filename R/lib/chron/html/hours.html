@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Return Hours, Minutes, or Seconds from a Times Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hours {chron}"><tr><td>hours {chron}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Return Hours, Minutes, or Seconds from a Times Object
+</h2>
+
+<h3>Description</h3>
+
+<p>Given a chron or times object, extract the hours, minutes or seconds
+of the time it represents.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hours(x)
+minutes(x)
+seconds(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object inheriting from class <code>"<a href="dates.html">times</a>"</code>, or
+coercible to such via <code><a href="chron.html">as.chron</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>the corresponding time period as an ordered factor.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="chron.html">chron</a></code>,
+<code><a href="dates.html">dates</a></code>,
+<code><a href="dates.html">times</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+x &lt;- chron(dates = c("02/27/92", "02/27/92", "01/14/92", "02/28/92"),
+           times = c("23:03:20", "22:29:56", "01:03:30", "18:21:03"))
+h &lt;- hours(x)
+y &lt;- runif(4)
+boxplot(y ~ h)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>chron</em> version 2.3-53 <a href="00Index.html">Index</a>]</div>
+</body></html>

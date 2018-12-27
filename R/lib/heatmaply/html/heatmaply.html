@@ -1,0 +1,678 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cluster heatmap based on plotly</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for heatmaply {heatmaply}"><tr><td>heatmaply {heatmaply}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cluster heatmap based on plotly</h2>
+
+<h3>Description</h3>
+
+<p>An object of class heatmapr includes all the needed information
+for producing a heatmap. The goal is to separate the pre-processing of the
+heatmap elements from the graphical rendering of the object, which could be done
+</p>
+<p>(Please submit an issue on github if you have a feature that you wish to have added)
+</p>
+<p>heatmaply_na is a wrapper for 'heatmaply' which comes with defaults that are better
+for exploring missing value (NA) patterns. Specifically, the grid_gap is set to 1, and the
+colors include two shades of grey. It also calculates the <a href="is.na10.html">is.na10</a> automatically.
+</p>
+<p>heatmaply_cor is a wrapper for 'heatmaply' which comes with defaults that are better
+for correlation matrixes. Specifically, the limits are set from -1 to 1, and the color palette is <a href="RColorBrewer_colors.html">RdBu</a>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+heatmaply(x, ...)
+
+heatmaply_na(x, grid_gap = 1, colors = c("grey80", "grey20"), ...)
+
+heatmaply_cor(x, limits = c(-1, 1), colors = cool_warm, ...)
+
+## Default S3 method:
+heatmaply(x, colors = viridis(n = 256, alpha = 1, begin = 0,
+  end = 1, option = "viridis"), limits = NULL, na.value = "grey50",
+  row_text_angle = 0, column_text_angle = 45, subplot_margin = 0,
+  cellnote = NULL, draw_cellnote = !is.null(cellnote),
+  cellnote_color = "auto", cellnote_textposition = "middle right",
+  cellnote_size = 12, Rowv, Colv, distfun = dist, hclustfun = hclust,
+  dist_method = NULL, hclust_method = NULL, distfun_row, hclustfun_row,
+  distfun_col, hclustfun_col, dendrogram = c("both", "row", "column", "none"),
+  reorderfun = function(d, w) reorder(d, w), k_row = 1, k_col = 1,
+  symm = FALSE, revC, scale = c("none", "row", "column"), na.rm = TRUE,
+  row_dend_left = FALSE, margins = c(NA, NA, NA, NA), ...,
+  scale_fill_gradient_fun = NULL, grid_color = NA, grid_gap = 0, srtRow,
+  srtCol, xlab = "", ylab = "", main = "", titleX = TRUE,
+  titleY = TRUE, hide_colorbar = FALSE, key.title = NULL,
+  return_ppxpy = FALSE, row_side_colors, row_side_palette = NULL,
+  col_side_colors, col_side_palette = NULL, ColSideColors = NULL,
+  RowSideColors = NULL, seriate = c("OLO", "mean", "none", "GW"),
+  heatmap_layers = NULL, side_color_layers = NULL, branches_lwd = 0.6,
+  file, width = NULL, height = NULL, long_data, plot_method = c("ggplot",
+  "plotly"), label_names = NULL, fontsize_row = 10, fontsize_col = 10,
+  cexRow, cexCol, subplot_widths = NULL, subplot_heights = NULL,
+  colorbar_len = 0.3, colorbar_xanchor = if (row_dend_left) "right" else
+  "left", colorbar_yanchor = "bottom", colorbar_xpos = if (row_dend_left)
+  -0.1 else 1.1, colorbar_ypos = 0, showticklabels = c(TRUE, TRUE),
+  dynamicTicks = FALSE, grid_size = 0.1, node_type = "heatmap",
+  point_size_mat = NULL, point_size_name = "Point size",
+  label_format_fun = function(...) format(..., digits = 4), labRow = NULL,
+  labCol = NULL, custom_hovertext = NULL, col = NULL)
+
+## S3 method for class 'heatmapr'
+heatmaply(x, colors = viridis(n = 256, alpha = 1, begin =
+  0, end = 1, option = "viridis"), limits = NULL, na.value = "grey50",
+  row_text_angle = 0, column_text_angle = 45, subplot_margin = 0,
+  row_dend_left = FALSE, margins = c(NA, NA, NA, NA), ...,
+  scale_fill_gradient_fun = scale_fill_gradientn(colors = if
+  (is.function(colors)) colors(256) else colors, na.value = na.value, limits =
+  limits), grid_color = NA, grid_gap = 0, srtRow, srtCol, xlab = "",
+  ylab = "", main = "", titleX = TRUE, titleY = TRUE,
+  hide_colorbar = FALSE, key.title = NULL, return_ppxpy = FALSE,
+  draw_cellnote = FALSE, cellnote_color = "auto",
+  cellnote_textposition = "middle right", cellnote_size = 12,
+  row_side_colors = x[["row_side_colors"]], row_side_palette = NULL,
+  col_side_colors = x[["col_side_colors"]], col_side_palette = NULL,
+  plot_method = c("ggplot", "plotly"), ColSideColors, RowSideColors,
+  heatmap_layers = NULL, side_color_layers = NULL, branches_lwd = 0.6,
+  label_names = c("row", "column", "value"), fontsize_row = 10,
+  fontsize_col = 10, subplot_widths = NULL, subplot_heights = NULL,
+  colorbar_xanchor = if (row_dend_left) "right" else "left",
+  colorbar_yanchor = "bottom", colorbar_xpos = if (row_dend_left) -0.1 else
+  1.1, colorbar_ypos = 0, colorbar_len = 0.3, showticklabels = c(TRUE,
+  TRUE), dynamicTicks = FALSE, node_type = c("scatter", "heatmap"),
+  grid_size = 0.1, point_size_mat = x[["matrix"]][["point_size_mat"]],
+  point_size_name = "Point size", label_format_fun = function(...)
+  format(..., digits = 4),
+  custom_hovertext = x[["matrix"]][["custom_hovertext"]])
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>can either be a heatmapr object, or a numeric matrix
+Defaults to <code>TRUE</code> unless <code>x</code> contains any <code>NA</code>s.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other parameters passed to <a href="heatmapr.html">heatmapr</a> (currently, various
+parameters may be ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>grid_gap</code></td>
+<td>
+<p>this is a fast alternative to grid_color. The default is 0, but if a larger value
+is used (for example, 1), then the resulting heatmap will have a white grid which can
+help identify different cells. This is implemented using <a href="../../plotly/html/style.html">style</a> (with xgap and ygap).</p>
+</td></tr>
+<tr valign="top"><td><code>colors, col</code></td>
+<td>
+<p>a vector of colors to use for heatmap color.
+The default uses
+<code><a href="../../viridis/html/viridis.html">viridis</a>(n=256, alpha = 1, begin = 0, end = 1, option = "viridis")</code>
+It is passed to <a href="../../ggplot2/html/scale_fill_gradientn.html">scale_fill_gradientn</a>.
+If colors is a color function (with the first argument being 'n' = the number of colors),
+it will be used to create 256 colors from that function.
+(col is there to stay compatible with <a href="../../gplots/html/heatmap.2.html">heatmap.2</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>limits</code></td>
+<td>
+<p>a two dimensional numeric vector specifying the data range for the scale.</p>
+</td></tr>
+<tr valign="top"><td><code>na.value</code></td>
+<td>
+<p>color to use for missing values (default is &quot;grey50&quot;).</p>
+</td></tr>
+<tr valign="top"><td><code>row_text_angle</code></td>
+<td>
+<p>numeric (Default is 0), the angle of the text of the
+rows. (this is called srtRow in <a href="../../gplots/html/heatmap.2.html">heatmap.2</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>column_text_angle</code></td>
+<td>
+<p>numeric (Default is 45), the angle of the text of
+the columns. (this is called srtCol in <a href="../../gplots/html/heatmap.2.html">heatmap.2</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>subplot_margin</code></td>
+<td>
+<p>Currently not well implemented. It is passed to
+<a href="../../plotly/html/subplot.html">subplot</a>. Default is 0. Either a single value or
+four values (all between 0 and 1). If four values are provided,
+the first is used as the left margin, the second is used as the right margin,
+the third is used as the top margin, and the fourth is used as the bottom margin.
+If a single value is provided, it will be used as all four margins.</p>
+</td></tr>
+<tr valign="top"><td><code>cellnote</code></td>
+<td>
+<p>Values to be shown as annotations atop the heatmap cells.</p>
+</td></tr>
+<tr valign="top"><td><code>draw_cellnote</code></td>
+<td>
+<p>Should the cellnote annotations be drawn? Defaults is FALSE,
+if cellnote is not supplied, TRUE if cellnote is supplied. If TRUE and
+cellnote is not supplied, x will be used for cellnote.</p>
+</td></tr>
+<tr valign="top"><td><code>cellnote_color</code></td>
+<td>
+<p>The color of the cellnote text to be used.</p>
+</td></tr>
+<tr valign="top"><td><code>cellnote_textposition</code></td>
+<td>
+<p>The text positioning/centering of the cellnote.
+Default is &quot;middle right&quot;. Options are
+&quot;top left&quot;, &quot;top center&quot;, &quot;top right&quot;, &quot;middle left&quot;, &quot;middle center&quot;,
+&quot;middle right&quot;, &quot;bottom left&quot;, &quot;bottom center&quot;, &quot;bottom right&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>cellnote_size</code></td>
+<td>
+<p>The font size (HTML/CSS) of the cellnote. Default is 12.</p>
+</td></tr>
+<tr valign="top"><td><code>Rowv</code></td>
+<td>
+<p>determines if and how the row dendrogram should be reordered.
+By default, it is TRUE, which implies dendrogram is computed and reordered
+based on row means. If NULL or FALSE, then no dendrogram is computed and
+no reordering is done. If a <a href="../../stats/html/dendrogram.html">dendrogram</a> (or <a href="../../stats/html/hclust.html">hclust</a>),
+then it is used &quot;as-is&quot;, ie without any reordering. If a vector of integers,
+then dendrogram is computed and reordered based on the order of the vector.</p>
+</td></tr>
+<tr valign="top"><td><code>Colv</code></td>
+<td>
+<p>determines if and how the column dendrogram should be reordered.
+Has the options as the Rowv argument above and additionally when x is a
+square matrix, Colv = &quot;Rowv&quot; means that columns should be treated
+identically to the rows.</p>
+</td></tr>
+<tr valign="top"><td><code>distfun</code></td>
+<td>
+<p>function used to compute the distance (dissimilarity)
+between both rows and columns. Defaults to dist.
+The options &quot;pearson&quot;, &quot;spearman&quot; and &quot;kendall&quot; can be used to
+use correlation-based clustering, which uses <code>as.dist(1 - cor(t(x)))</code>
+as the distance metric (using the specified correlation method).</p>
+</td></tr>
+<tr valign="top"><td><code>hclustfun</code></td>
+<td>
+<p>function used to compute the hierarchical clustering
+when Rowv or Colv are not dendrograms. Defaults to hclust.</p>
+</td></tr>
+<tr valign="top"><td><code>dist_method</code></td>
+<td>
+<p>default is NULL (which results in &quot;euclidean&quot; to be used).
+Can accept alternative character strings indicating the
+method to be passed to distfun. By default distfun. is <a href="../../stats/html/dist.html">dist</a> hence
+this can be one of &quot;euclidean&quot;, &quot;maximum&quot;, &quot;manhattan&quot;, &quot;canberra&quot;, &quot;binary&quot;
+or &quot;minkowski&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>hclust_method</code></td>
+<td>
+<p>default is NULL (which results in &quot;complete&quot; to be used).
+Can accept alternative character strings indicating the
+method to be passed to hclustfun By default hclustfun is <a href="../../stats/html/hclust.html">hclust</a> hence
+this can be one of &quot;ward.D&quot;, &quot;ward.D2&quot;, &quot;single&quot;, &quot;complete&quot;, &quot;average&quot; (= UPGMA), &quot;mcquitty&quot; (= WPGMA), &quot;median&quot; (= WPGMC) or &quot;centroid&quot; (= UPGMC).</p>
+</td></tr>
+<tr valign="top"><td><code>distfun_row</code></td>
+<td>
+<p>distfun for row dendrogram only.</p>
+</td></tr>
+<tr valign="top"><td><code>hclustfun_row</code></td>
+<td>
+<p>hclustfun for col dendrogram only.</p>
+</td></tr>
+<tr valign="top"><td><code>distfun_col</code></td>
+<td>
+<p>distfun for row dendrogram only.</p>
+</td></tr>
+<tr valign="top"><td><code>hclustfun_col</code></td>
+<td>
+<p>hclustfun for col dendrogram only.</p>
+</td></tr>
+<tr valign="top"><td><code>dendrogram</code></td>
+<td>
+<p>character string indicating whether to draw 'none', 'row',
+'column' or 'both' dendrograms. Defaults to 'both'. However, if Rowv (or Colv)
+is FALSE or NULL and dendrogram is 'both', then a warning is issued and Rowv
+(or Colv) arguments are honoured.
+It also accepts TRUE/FALSE as synonyms for &quot;both&quot;/&quot;none&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>reorderfun</code></td>
+<td>
+<p>function(d, w) of dendrogram and weights for reordering the
+row and column dendrograms. The default uses statsreorder.dendrogram</p>
+</td></tr>
+<tr valign="top"><td><code>k_row</code></td>
+<td>
+<p>an integer scalar with the desired number of groups by which to
+color the dendrogram's branches in the rows (uses <a href="../../dendextend/html/color_branches.html">color_branches</a>)
+If NA then <a href="../../dendextend/html/find_k.html">find_k</a> is used to deduce the optimal number of clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>k_col</code></td>
+<td>
+<p>an integer scalar with the desired number of groups by which to
+color the dendrogram's branches in the columns (uses <a href="../../dendextend/html/color_branches.html">color_branches</a>)
+If NA then <a href="../../dendextend/html/find_k.html">find_k</a> is used to deduce the optimal number of clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>symm</code></td>
+<td>
+<p>logical indicating if x should be treated symmetrically; can only
+be true when x is a square matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>revC</code></td>
+<td>
+<p>logical indicating if the column order should be reversed for plotting.
+Default (when missing) - is FALSE, unless symm is TRUE.
+This is useful for cor matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>character indicating if the values should be centered and scaled
+in either the row direction or the column direction, or none. The default is
+&quot;none&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>na.rm</code></td>
+<td>
+<p>logical (default is TRUE) indicating whether NA's should be removed when scaling
+(i.e.: when using rowMeans/colMeans). Generally it should always be kept as TRUE, and is included
+here mainly to stay backward compatible with gplots::heatmap.2.
+This argument does not effect the presence of NA values in the matrix itself.
+For removing rows/columns with NAs you should pre-process your matrix using na.omit
+(or some form of imputation).</p>
+</td></tr>
+<tr valign="top"><td><code>row_dend_left</code></td>
+<td>
+<p>logical (default is FALSE). Should the row dendrogram be
+plotted on the left side of the heatmap. If false then it will be plotted on
+the right side.</p>
+</td></tr>
+<tr valign="top"><td><code>margins</code></td>
+<td>
+<p>numeric vector of length 4 (default is c(50,50,NA,0))
+containing the margins (see <a href="../../plotly/html/layout.html">layout</a>) for column, row and main
+title names, respectively. The top margin is NA by default. If main==&quot;&quot;
+then the top margin will be set to 0, otherwise it will get 30.
+For a multiline title a larger default for the 3rd element should be set.
+The right margin is NA by default, meaning it will be zero if row_dend_left
+is FALSE, or 100 if row_dend_left is TRUE.</p>
+</td></tr>
+<tr valign="top"><td><code>scale_fill_gradient_fun</code></td>
+<td>
+<p>A function that creates a smooth gradient for the heatmap.
+The default uses <a href="../../ggplot2/html/scale_fill_gradientn.html">scale_fill_gradientn</a> with the values of colors, limits, and
+na.value that are supplied by the user. The user can input a customized function, such as
+<a href="../../ggplot2/html/scale_gradient.html">scale_color_gradient</a>() in order to get other results (although the virids default
+is quite recommended)</p>
+</td></tr>
+<tr valign="top"><td><code>grid_color</code></td>
+<td>
+<p>control the color of the heatmap grid. Default is NA.
+Value passed to <a href="../../ggplot2/html/geom_tile.html">geom_tile</a>. Do not use this parameter on
+larger matrix sizes, as it can dramatically prolong the build time of the heatmap.
+(another parameter, grid_color, will be added in the future - once it is implemented in plotly)
+In the meantime it is MUCH better to use the grid_gap argument.</p>
+</td></tr>
+<tr valign="top"><td><code>srtRow</code></td>
+<td>
+<p>if supplied, this overrides row_text_angle (this is to stay compatible with <a href="../../gplots/html/heatmap.2.html">heatmap.2</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>srtCol</code></td>
+<td>
+<p>if supplied, this overrides column_text_angle (this is to stay compatible with <a href="../../gplots/html/heatmap.2.html">heatmap.2</a>)</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+<p>A character title for the x axis.</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+<p>A character title for the y axis.</p>
+</td></tr>
+<tr valign="top"><td><code>main</code></td>
+<td>
+<p>A character title for the heatmap.</p>
+</td></tr>
+<tr valign="top"><td><code>titleX</code></td>
+<td>
+<p>logical (TRUE). should x-axis titles be retained? (passed to <a href="../../plotly/html/subplot.html">subplot</a>).</p>
+</td></tr>
+<tr valign="top"><td><code>titleY</code></td>
+<td>
+<p>logical (TRUE). should y-axis titles be retained? (passed to <a href="../../plotly/html/subplot.html">subplot</a>).</p>
+</td></tr>
+<tr valign="top"><td><code>hide_colorbar</code></td>
+<td>
+<p>logical (FALSE). If TRUE, then the color bar (i.e.: the legend) is hidden.</p>
+</td></tr>
+<tr valign="top"><td><code>key.title</code></td>
+<td>
+<p>(character) main title of the color key. If set to NULL (default) no title will be plotted.</p>
+</td></tr>
+<tr valign="top"><td><code>return_ppxpy</code></td>
+<td>
+<p>logical (FALSE). If TRUE, then no plotting is done and the p, px and py objects are
+returned (before turning into plotly objects). This is a temporary option which might be removed in the
+future just to make it easy to create a ggplot heatmaps.</p>
+</td></tr>
+<tr valign="top"><td><code>row_side_colors, col_side_colors</code></td>
+<td>
+<p>data.frame of factors to produce
+row/column side colors in the style of heatmap.2/heatmap.3.
+col_side_colors should be &quot;wide&quot;, ie be the same dimensions
+as the column side colors it will produce.
+When a data.frame is provided, the column names are used as the label names for each of the newly added row_side_colors.
+When a vector is provided it is coerced into a data.frame and the name of the side color will be just row_side_colors.</p>
+</td></tr>
+<tr valign="top"><td><code>row_side_palette, col_side_palette</code></td>
+<td>
+<p>Color palette functions to be
+used for row_side_colors and col_side_colors respectively.</p>
+</td></tr>
+<tr valign="top"><td><code>ColSideColors, RowSideColors</code></td>
+<td>
+<p>passed to row_side_colors,col_side_colors in order
+to keep compatibility with <a href="../../gplots/html/heatmap.2.html">heatmap.2</a></p>
+</td></tr>
+<tr valign="top"><td><code>seriate</code></td>
+<td>
+<p>character indicating the method of matrix sorting (default: &quot;OLO&quot;).
+Implemented options include:
+&quot;OLO&quot; (Optimal leaf ordering, optimizes the Hamiltonian path length that is
+restricted by the dendrogram structure - works in O(n^4) )
+&quot;mean&quot; (sorts the matrix based on the reorderfun using marginal means of
+the matrix. This is the default used by <a href="../../gplots/html/heatmap.2.html">heatmap.2</a>),
+&quot;none&quot; (the default order produced by the dendrogram),
+&quot;GW&quot; (Gruvaeus and Wainer heuristic to optimize the Hamiltonian path length
+that is restricted by the dendrogram structure)</p>
+</td></tr>
+<tr valign="top"><td><code>heatmap_layers</code></td>
+<td>
+<p>ggplot object (eg, theme_bw()) to be added to
+the heatmap before conversion to a plotly object.</p>
+</td></tr>
+<tr valign="top"><td><code>side_color_layers</code></td>
+<td>
+<p>Layers to be added to side color plots, similar to
+heatmap_layers.</p>
+</td></tr>
+<tr valign="top"><td><code>branches_lwd</code></td>
+<td>
+<p>numeric (default is 0.6). The width of the dendrograms' branches.
+If NULL then it is ignored. If the &quot;lwd&quot; is already defined in Rowv/Colv then this
+parameter is ignored (it is checked using <a href="../../dendextend/html/has_edgePar.html">has_edgePar</a>(&quot;lwd&quot;)).</p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p>name of the file(s) into which to save the heatmaply output.
+Should be a character vector of strings ending with &quot;.html&quot; for a dynamic output,
+or &quot;.png&quot;, &quot;.jpeg&quot;, &quot;.pdf&quot; for a static output.
+</p>
+<p>For example: heatmaply(x, file = &quot;heatmaply_plot.html&quot;) or
+dir.create(&quot;folder&quot;);
+heatmaply(x, file = &quot;folder/heatmaply_plot.html&quot;)
+</p>
+<p>This is based on <a href="../../htmlwidgets/html/saveWidget.html">saveWidget</a>, and <a href="../../webshot/html/webshot.html">webshot</a> for the static files.
+For more refined control over the static file output, you should save the heatmaply object using <a href="../../plotly/html/export.html">export</a> and pass the
+arguments you want based on the ones in <a href="../../webshot/html/webshot.html">webshot</a>.
+</p>
+<p>Another example: heatmaply(x, file = c(&quot;heatmaply_plot.html&quot;, &quot;heatmaply_plot.png&quot;))</p>
+</td></tr>
+<tr valign="top"><td><code>width, height</code></td>
+<td>
+<p>The width and height of the image saved. Default is
+which uses 800 x 500 pixels.</p>
+</td></tr>
+<tr valign="top"><td><code>long_data</code></td>
+<td>
+<p>Data in long format. Replaces x, so both should not be used.
+Colnames must be c(&quot;name&quot;, &quot;variable&quot;, &quot;value&quot;). If you do not have a names
+column you can simply use a sequence of numbers from 1 to the number of &quot;rows&quot;
+in the data.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_method</code></td>
+<td>
+<p>Use &quot;ggplot&quot; or &quot;plotly&quot; to choose which library produces heatmap
+and dendrogram plots</p>
+</td></tr>
+<tr valign="top"><td><code>label_names</code></td>
+<td>
+<p>Names for labels of x, y and value/fill mouseover.</p>
+</td></tr>
+<tr valign="top"><td><code>fontsize_row, fontsize_col, cexRow, cexCol</code></td>
+<td>
+<p>Font size for row and column labels.</p>
+</td></tr>
+<tr valign="top"><td><code>subplot_widths, subplot_heights</code></td>
+<td>
+<p>The relative widths and heights of each
+subplot. The length of these vectors will vary depending on the number of
+plots involved.</p>
+</td></tr>
+<tr valign="top"><td><code>colorbar_len</code></td>
+<td>
+<p>The length of the colorbar/color key relative to the total
+plot height. Only used if plot_method = &quot;plotly&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>colorbar_xanchor, colorbar_yanchor</code></td>
+<td>
+<p>The x and y anchoring points of the
+colorbar/color legend. Can be &quot;left&quot;, &quot;middle&quot; or &quot;right&quot; for colorbar_xanchor,
+and &quot;top&quot;, &quot;middle&quot; or &quot;bottom&quot; for colorbar_yanchor.
+See <code><a href="../../plotly/html/colorbar.html">colorbar</a></code> for more details.</p>
+</td></tr>
+<tr valign="top"><td><code>colorbar_xpos, colorbar_ypos</code></td>
+<td>
+<p>The x and y co-ordinates (in proportion of the plot window)
+of the colorbar/color legend. See <code><a href="../../plotly/html/colorbar.html">colorbar</a></code> for more details.</p>
+</td></tr>
+<tr valign="top"><td><code>showticklabels</code></td>
+<td>
+<p>A logical vector of length two (default is TRUE).
+If FALSE, then the ticks are removed from the sides of the plot. The first location refers to
+the x axis and the second to the y axis. If only one value is supplied (TRUE/FALSE) then it is
+replicated to get to length 2. When using this parameter, it might be worth also adjusting
+margins.
+This option should be used when working with medium to large matrix size as it
+makes the heatmap much faster (and the hover still works).</p>
+</td></tr>
+<tr valign="top"><td><code>dynamicTicks</code></td>
+<td>
+<p>(default: FALSE). passed to <a href="../../plotly/html/ggplotly.html">ggplotly</a>:
+should plotly.js dynamically generate axis tick labels?
+Dynamic ticks are useful for updating ticks in response to zoom/pan interactions; however,
+they can not always reproduce labels as they would appear in the static ggplot2 image.</p>
+</td></tr>
+<tr valign="top"><td><code>grid_size</code></td>
+<td>
+<p>When node_type is &quot;scatter&quot;, this controls point size. When
+node_type is &quot;heatmap&quot;, this controls the size of the grid between heatmap cells.</p>
+</td></tr>
+<tr valign="top"><td><code>node_type</code></td>
+<td>
+<p>For plot_method = &quot;ggplot&quot;, should the heatmap be rendered as
+a x-y scatter plot (node_type = &quot;scatter&quot;) or a heatmap (node_type = &quot;heatmap&quot;).
+Default is node_type = &quot;heatmap&quot;.</p>
+</td></tr>
+<tr valign="top"><td><code>point_size_mat</code></td>
+<td>
+<p>Matrix to map to point size</p>
+</td></tr>
+<tr valign="top"><td><code>point_size_name</code></td>
+<td>
+<p>Name of point size mapping (for hovertext/legend)</p>
+</td></tr>
+<tr valign="top"><td><code>label_format_fun</code></td>
+<td>
+<p>Function to format hovertext (eg,
+<code>function(...) round(..., digits=3)</code> or
+<code>function(...) format(..., digits=3)</code></p>
+</td></tr>
+<tr valign="top"><td><code>labRow, labCol</code></td>
+<td>
+<p>character vectors with row and column labels to use;
+these default to rownames(x) or colnames(x), respectively.
+if set to NA, they change the value in showticklabels to be FALSE. This is mainly to keep
+backward compatibility with gplots::heatmap.2.</p>
+</td></tr>
+<tr valign="top"><td><code>custom_hovertext</code></td>
+<td>
+<p>Custom hovertext matrix (the same dimensions as the input).
+If plot_method is &quot;plotly&quot; then just this text is displayed; if plot_method
+if &quot;ggplot&quot; then it is appended to the existing text.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+
+# mtcars
+# x &lt;- heatmapr(mtcars)
+library(heatmaply)
+heatmaply(iris[,-5], k_row = 3, k_col = 2)
+heatmaply(cor(iris[,-5]))
+heatmaply(cor(iris[,-5]), limits = c(-1,1))
+heatmaply(mtcars, k_row = 3, k_col = 2)
+# heatmaply(mtcars, k_row = 3, k_col = 2, grid_color = "white")
+heatmaply(mtcars, k_row = 3, k_col = 2, grid_gap = 1)
+
+# make sure there is enough room for the labels:
+heatmaply(mtcars, margins = c(40, 130))
+# this is the same as using:
+heatmaply(mtcars) %&gt;% layout(margin = list(l = 130, b = 40))
+
+# control text angle
+heatmaply(mtcars, column_text_angle = 90, margins = c(40, 130))
+# the same as using srtCol:
+# heatmaply(mtcars, srtCol = 90) %&gt;% layout(margin = list(l = 130, b = 40))
+
+
+
+x &lt;- mtcars
+# different colors
+heatmaply(x, colors = heat.colors(200))
+# using special scale_fill_gradient_fun colors
+heatmaply(x, scale_fill_gradient_fun = scale_color_gradient())
+
+
+# We can join two heatmaps together:
+library(heatmaply)
+hm1 &lt;- heatmaply(mtcars, margins = c(40, 130))
+hm2 &lt;- heatmaply(mtcars, scale = "col", margins = c(40, 130))
+subplot(hm1, hm2, margin = .2)
+
+# If we want to share the Y axis, then it is risky to keep any of the dendrograms:
+library(heatmaply)
+hm1 &lt;- heatmaply(mtcars, Colv = FALSE, Rowv = FALSE, margins = c(40, 130))
+hm2 &lt;- heatmaply(mtcars, scale = "col" , Colv = FALSE, Rowv = FALSE,
+             margins = c(40, 130))
+subplot(hm1, hm2, margin = .02, shareY = TRUE)
+
+
+# We can save heatmaply as an HTML file by using:
+heatmaply(iris[,-5], file = "heatmaply_iris.html")
+# or a png/pdf/jpeg file using:
+heatmaply(iris[,-5], file = "heatmaply_iris.png")
+# or just doing it in one go:
+heatmaply(iris[,-5], file = c("heatmaply_iris.html", "heatmaply_iris.png") )
+
+
+
+# If we don't want the HTML to be selfcontained, we can use the following:
+library(heatmaply)
+library(htmlwidgets)
+heatmaply(iris[,-5]) %&gt;%
+   saveWidget(file="heatmaply_iris.html",selfcontained = FALSE)
+
+
+# Example for using RowSideColors
+
+x  &lt;- as.matrix(datasets::mtcars)
+rc &lt;- colorspace::rainbow_hcl(nrow(x))
+
+library(gplots)
+library(viridis)
+heatmap.2(x, trace = "none", col = viridis(100),
+          RowSideColors=rc)
+
+heatmaply(x, seriate = "mean",
+          RowSideColors=rc)
+
+
+heatmaply(x[,-c(8,9)], seriate = "mean",
+          col_side_colors = c(rep(0,5), rep(1,4)),
+          row_side_colors = x[,8:9])
+heatmaply(x[,-c(8,9)], seriate = "mean",
+          col_side_colors = data.frame(a=c(rep(0,5), rep(1,4))),
+          row_side_colors = x[,8:9])
+
+
+## Example of using Rowv And Colv for custumized dendrograms.
+
+
+x  &lt;- as.matrix(datasets::mtcars)
+
+# now let's spice up the dendrograms a bit:
+library(dendextend)
+
+row_dend  &lt;- x %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram %&gt;%
+  set("branches_k_color", k = 3) %&gt;% set("branches_lwd", 4) %&gt;%
+  ladderize
+#    rotate_DendSer(ser_weight = dist(x))
+col_dend  &lt;- x %&gt;% t %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram %&gt;%
+  set("branches_k_color", k = 2) %&gt;% set("branches_lwd", 4) %&gt;%
+  ladderize
+#    rotate_DendSer(ser_weight = dist(t(x)))
+
+heatmaply(x, Rowv = row_dend, Colv = col_dend)
+
+
+heatmaply(is.na10(airquality))
+heatmaply(is.na10(airquality), grid_gap = 1)
+
+# grid_gap can handle quite large data matrix
+heatmaply(matrix(1:10000,100,100), k_row = 3, k_col = 3, grid_gap = 1)
+
+# Examples of playing with font size:
+heatmaply(mtcars, fontsize_col = 20, fontsize_row = 5, margin = c(100,90))
+
+
+
+# Example for using subplot_width/subplot_height
+
+heatmaply(percentize(mtcars),
+     subplot_widths=c(0.6, 0.4),
+     subplot_heights=c(0.05, 0.95))
+
+
+
+# Example of removing labels and thus making the plot faster
+heatmaply(iris, showticklabels = c(T,F), margins = c(80,10))
+
+# this is what allows for a much larger matrix to be printed:
+set.seed(2017-05-18)
+large_x &lt;- matrix(rnorm(19), 1000,100)
+heatmaply(large_x, dendrogram = F, showticklabels = F, margins = c(1,1))
+
+
+
+## End(Not run)
+## Not run: 
+heatmaply_na(airquality)
+
+## End(Not run)
+## Not run: 
+heatmaply_cor(cor(mtcars))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>heatmaply</em> version 0.15.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reporting progress (object-oriented API)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Progress {shiny}"><tr><td>Progress {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reporting progress (object-oriented API)</h2>
+
+<h3>Description</h3>
+
+<p>Reports progress to the user during long-running operations.
+</p>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The Shiny session object, as provided by
+<code>shinyServer</code> to the server function.</p>
+</td></tr>
+<tr valign="top"><td><code>min</code></td>
+<td>
+<p>The value that represents the starting point of the
+progress bar. Must be less tham <code>max</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>max</code></td>
+<td>
+<p>The value that represents the end of the progress bar.
+Must be greater than <code>min</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>message</code></td>
+<td>
+<p>A single-element character vector; the message to be
+displayed to the user, or <code>NULL</code> to hide the current message
+(if any).</p>
+</td></tr>
+<tr valign="top"><td><code>detail</code></td>
+<td>
+<p>A single-element character vector; the detail message
+to be displayed to the user, or <code>NULL</code> to hide the current
+detail message (if any). The detail message will be shown with a
+de-emphasized appearance relative to <code>message</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>A numeric value at which to set
+the progress bar, relative to <code>min</code> and <code>max</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>style</code></td>
+<td>
+<p>Progress display style. If <code>"notification"</code> (the default),
+the progress indicator will show using Shiny's notification API. If
+<code>"old"</code>, use the same HTML and CSS used in Shiny 0.13.2 and below
+(this is for backward-compatibility).</p>
+</td></tr>
+<tr valign="top"><td><code>amount</code></td>
+<td>
+<p>Single-element numeric vector; the value at which to set
+the progress bar, relative to <code>min</code> and <code>max</code>.
+<code>NULL</code> hides the progress bar, if it is currently visible.</p>
+</td></tr>
+<tr valign="top"><td><code>amount</code></td>
+<td>
+<p>For the <code>inc()</code> method, a numeric value to increment the
+progress bar.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This package exposes two distinct programming APIs for working with
+progress. <code><a href="withProgress.html">withProgress</a></code> and <code><a href="withProgress.html">setProgress</a></code>
+together provide a simple function-based interface, while the
+<code>Progress</code> reference class provides an object-oriented API.
+</p>
+<p>Instantiating a <code>Progress</code> object causes a progress panel to be
+created, and it will be displayed the first time the <code>set</code>
+method is called. Calling <code>close</code> will cause the progress panel
+to be removed.
+</p>
+<p>As of version 0.14, the progress indicators use Shiny's new notification API.
+If you want to use the old styling (for example, you may have used customized
+CSS), you can use <code>style="old"</code> each time you call
+<code>Progress$new()</code>. If you don't want to set the style each time
+<code>Progress$new</code> is called, you can instead call
+<code><a href="shinyOptions.html">shinyOptions</a>(progress.style="old")</code> just once, inside the server
+function.
+</p>
+<p><strong>Methods</strong>
+</p>
+
+<dl>
+<dt><code>initialize(session, min = 0, max = 1)</code></dt><dd>
+<p>Creates a new progress panel (but does not display it).
+</p>
+</dd>
+<dt><code>set(value = NULL, message = NULL, detail = NULL)</code></dt><dd>
+<p>Updates the progress panel. When called the first time, the
+progress panel is displayed.
+</p>
+</dd>
+<dt><code>inc(amount = 0.1, message = NULL, detail = NULL)</code></dt><dd>
+<p>Like <code>set</code>, this updates the progress panel. The difference is
+that <code>inc</code> increases the progress bar by <code>amount</code>, instead
+of setting it to a specific value.
+</p>
+</dd>
+<dt><code>close()</code></dt><dd>
+<p>Removes the progress panel. Future calls to <code>set</code> and
+<code>close</code> will be ignored.
+</p>
+</dd>
+</dl>
+
+
+
+<h3>See Also</h3>
+
+<p><code><a href="withProgress.html">withProgress</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Only run examples in interactive R sessions
+if (interactive()) {
+
+ui &lt;- fluidPage(
+  plotOutput("plot")
+)
+
+server &lt;- function(input, output, session) {
+  output$plot &lt;- renderPlot({
+    progress &lt;- Progress$new(session, min=1, max=15)
+    on.exit(progress$close())
+
+    progress$set(message = 'Calculation in progress',
+                 detail = 'This may take a while...')
+
+    for (i in 1:15) {
+      progress$set(value = i)
+      Sys.sleep(0.5)
+    }
+    plot(cars)
+  })
+}
+
+shinyApp(ui, server)
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

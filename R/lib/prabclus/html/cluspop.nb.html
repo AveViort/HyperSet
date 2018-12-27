@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Simulation of presence-absence matrices (clustered)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cluspop.nb {prabclus}"><tr><td>cluspop.nb {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Simulation of presence-absence matrices (clustered)</h2>
+
+<h3>Description</h3>
+
+<p>Generates a simulated matrix where the rows are interpreted as regions
+and the columns as species, 1 means that a species is present in the
+region and 0 means that the species is absent. Species are generated
+in order to produce 2 clusters of species with similar ranges.
+Spatial autocorrelation of a species' presences is governed by
+the parameter <code>p.nb</code> and a list of neighbors for each region.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cluspop.nb(neighbors, p.nb = 0.5, n.species, clus.specs, reg.group,
+grouppf = 10, n.regions = length(neighbors),
+vector.species = rep(1, n.species), pdf.regions = rep(1/n.regions,
+n.regions), count = TRUE, pdfnb = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>neighbors</code></td>
+<td>
+<p>A list with a component for every region. The
+components are vectors of integers indicating
+neighboring regions. A region without neighbors (e.g., an island)
+should be assigned a list <code>numeric(0)</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>p.nb</code></td>
+<td>
+<p>numerical between 0 and 1. The probability that a new
+region is drawn from the non-neighborhood of the previous regions
+belonging to a species under generation. Note that for a given
+presence-absence matrix, this parameter can be estimated by
+<code>autoconst</code> (called <code>pd</code> there).</p>
+</td></tr>
+<tr valign="top"><td><code>n.species</code></td>
+<td>
+<p>integer. Number of species.</p>
+</td></tr>
+<tr valign="top"><td><code>clus.specs</code></td>
+<td>
+<p>integer not larger than <code>n.species</code>. Number of
+species restricted to one of the two groups of regions defined by
+<code>reg.group</code> (called &quot;clustered species&quot; because this leads to
+more similar species ranges).</p>
+</td></tr>
+<tr valign="top"><td><code>reg.group</code></td>
+<td>
+<p>vector of pairwise distinct integers not larger than
+<code>n. regions</code>. Defines a group of regions to which a part of the
+<code>clus.specs</code> clustered species is restricted (more or less, see
+<code>grouppf</code>). The other clustered species are restricted to the
+complementary regions.</p>
+</td></tr>
+<tr valign="top"><td><code>grouppf</code></td>
+<td>
+<p>numerical. The probability of the region of
+a clustered species to belong to the corresponding group of regions
+is up-weighted by factor <code>grouppf</code> compared to the generation
+of &quot;non-clustered&quot; species.</p>
+</td></tr>
+<tr valign="top"><td><code>n.regions</code></td>
+<td>
+<p>integer. Number of regions.</p>
+</td></tr>
+<tr valign="top"><td><code>vector.species</code></td>
+<td>
+<p>vector of integers. The sizes
+(i.e., numbers of regions)
+of the species are generated randomly from
+the empirical distribution of <code>vector.species</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>pdf.regions</code></td>
+<td>
+<p>numerical vector of length <code>n.species</code>. The
+entries must sum up to 1 and give probabilities for the regions to
+be drawn during the generation of a species. These probabilities are
+used conditional on the new region being a neighbor or a
+non-neighbor of the previous regions of the species, see
+<code>p.nb</code>, modified by <code>grouppf</code> for the clustered species.</p>
+</td></tr>
+<tr valign="top"><td><code>count</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the number of the currently
+generated species is printed.</p>
+</td></tr>
+<tr valign="top"><td><code>pdfnb</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the probabilities of the regions
+are modified according to the number of neighboring regions by
+dividing them relative to the others by min(1,number of neighbors).</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The non-clustered species are generated as explained on the help page
+for <code>randpop.nb</code>. The general principle for the clustered species
+is the same, but with modified probabilities for the regions. For each
+clustered species, one of the two groups of regions is drawn,
+distributed according to the sum of its regions' probability given by
+<code>pdf.regions</code>. The first region of such a species is only drawn
+from the regions of this group.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A 0-1-matrix, rows are regions, columns are species.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. and Hausdorf, B. (2004) Distance-based parametric bootstrap
+tests for clustering of species ranges. <em>Computational Statistics
+and
+Data Analysis</em> 45, 875-896.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="randpop.nb.html">randpop.nb</a></code>,
+</p>
+<p><code><a href="autoconst.html">autoconst</a></code> estimates <code>p.nb</code> from matrices of class
+<code>prab</code>. These are generated by <code><a href="prabinit.html">prabinit</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(nb)
+set.seed(888)
+cluspop.nb(nb, p.nb=0.1, n.species=10, clus.specs=9, reg.group=1:17,
+vector.species=c(10))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

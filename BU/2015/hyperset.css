@@ -1,0 +1,401 @@
+/* HyperSet style sheet */
+
+* {font-family: Arial, Helvetica, sans-serif;
+   }
+body {
+background-color: white; 
+font-size: small; 
+font-weight: normal;
+}
+
+.rplot {
+  height: 	1500px;
+  width: 	1500px;
+}
+
+img {border-width: 0;
+     padding: 0;
+     margin: 0; }
+
+.stats  {
+border-style: solid;
+                 border-color: lightgray;
+                 border-width: 2px 0 0 2px;
+                 margin-bottom: 4px; }
+   
+#cy {
+  height: 550px;
+  width: 75%;
+  background-color: white;
+  position: relative;
+  z-index: 999;
+  left: 0px;
+  top: 0px;
+  float: left;
+}
+
+#cyMenu  {
+	border-width: 0px;
+	height: 550px;
+	width: 22%;
+	left: 10px;
+    top: 100px; 
+	z-index: -1;
+	/*width: 650px; 
+	height: 150px;  */
+	padding: 0.5em; 
+	border: 0px solid grey;
+	float: left;
+}
+
+.cySlider {
+display: run-in;
+margin: 15px;
+background-color: #ff2000;
+}
+
+.hiddenFileNameBox  {
+text-align: right; 
+display: none;
+}
+
+.analysis_step_area {
+       width: 600px;
+        /*height: 480px;*/
+}
+
+.net {color: brown;}
+.usr {color: #0000AA;}
+.ags {color: #000077;}
+.fgs {color: #007700;}
+.app {color: #9900AA;}
+
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.hidden {
+    display:    none;
+}
+.visible  {
+    display: block;
+}
+
+.clickmap {
+    display:    block;
+    position:   relative;
+    z-index:    1000;
+    top:        0px;
+    left:       0px;
+    height:     750px;
+    width:      875px;
+    background: rgba( 250, 250, 250, .95 ) 
+                /* url('http://research.scilifelab.se/andrej_alexeyenko/pics/venn_map_2.gif') 
+				http://ajaxload.info/ */
+                50% 50% 
+                no-repeat;
+	opacity:0.1;
+	/*background-size:875px 750px;			*/
+
+}
+
+	.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0px;
+    left:       0px;
+    height:     100%;
+    width:      100%;
+    background: rgba( 245, 245, 245, .8 ) ;
+    url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 
+				/* http://ajaxload.info/ */
+                50% 50% 
+                no-repeat;
+}
+
+.loading  {
+    display: block;
+}
+
+
+     .toggler {
+        width: 500px;
+        height: 200px;
+    }
+	
+    #button {
+        padding: .5em 1em;
+        text-decoration: none;
+    }
+
+.TCGA_tumor {
+color: #992; 
+}
+
+.TCGA_normal {
+color: #0A0; 
+}
+
+.TCGA_tumor_vs_normal {
+color: #AAF; 
+}
+
+.TCGA_blood {
+color: #F00; 
+}
+
+.nea_table {
+/*background-color: #DDD; 
+color: #441; */
+align: right; 
+font-weight: 300;
+}
+
+.AGSout {
+/*background-color: #EE8; */
+color: #330; 
+text-align:left; 
+}
+	 
+.FGSout {
+/*background-color: #E8E; */
+color: #330; 
+text-align:left; 
+}
+
+.js_ui_help {
+float: right;
+clear: both;
+font-size: large;
+color: #CCA; 
+}
+label.js_ui_help {
+        display: inline-block;
+        width: 5em;
+}	 
+
+.main_ajax_menu	   {
+text-align:left;
+}
+
+.normal_menu  {
+text-align:left;
+}
+.ne  {
+color: #0000BB;
+}
+.vs {
+color: #00BB00;
+}
+.dm {
+color: #BB0000;
+}
+
+.contrast_choice_header {
+font-weight: bold;
+font-size: 1em;
+font-family: Courier;
+background-color: #ccccaa;
+color: #551122;
+border: 1px solid grey;
+padding:5px;
+margin-top:40px;
+margin-bottom:60px;
+margin-right:20px;
+margin-left:30px;
+}
+
+.contrast_choice {
+background-color: #88aaaa;
+color: #668888;
+font-size: 1em;
+}
+
+.smaller_font {
+font-size: 0.9em;
+}
+
+.contrast_choice td{
+vertical-align: top;
+text-align:right;
+font-size: 1em;
+border-style: solid;
+border-width: 0 1px 1px 0; 
+border: 1px solid grey; 
+padding:5px;
+border-collapse:separate;
+margin-top:20px;
+margin-bottom:30px;
+margin-right:10px;
+margin-left:20px;
+empty-cells:hide;
+}
+
+.fdr_levels, .fold_change_levels  {
+background-color: lightgrey;
+width:3em;
+font-size: 0.9em;
+}
+
+
+td.active {
+background-color: #44bb99;
+color: #0055bb;
+}
+
+td.counteractive {
+background-color: #bb4444;
+color: #0055bb;
+}
+
+#analysis_type_ {
+height:500px;
+width:100px; 
+background-color: blue; 
+}
+
+
+
+/*
+code {font-family: monospace; }
+
+pre {font-family: monospace; }
+
+input {background-color: lightgrey; }
+
+textarea {background-color: lightgrey;
+          font-family: monospace; }
+
+form {padding: 0;
+      margin: 0; }
+
+fieldset th {text-align: right; }
+
+button     {vertical-align: middle; }
+button img {vertical-align: middle;
+            padding-right: 0.5em; }
+
+table th {vertical-align: top; }
+table td {vertical-align: top; }
+.body_left td {width: 120px; }
+
+.login {white-space: nowrap;}
+
+.icon img { vertical-align: middle; }
+.icon span { vertical-align: middle;
+             padding-left: 0.5em; }
+
+.descr pre { border-style: solid;
+             border-color: lightgray;
+             border-width: 0 0 0 5px;
+             padding: 1em;
+             margin: 1em; }
+
+form .descr { font-style: italic; }
+
+.integer {white-space: nowrap;
+          text-align: right; }
+
+.navigation table {white-space: nowrap;
+                   border-spacing: 0;
+                   padding: 0;
+                   margin: 0; }
+
+.navigation table ul {padding-left: 1em;
+		      margin: 0;
+		      list-style-type: none; }
+
+.info th {text-align: right;
+          vertical-align: middle; }
+
+.metadata table {border-style: solid;
+                 border-color: lightgray;
+                 border-width: 2px 0 0 2px;
+                 margin-bottom: 4px; }
+
+.metadata table th {text-align: left;
+                    border-style: solid;
+                    border-color: lightgray;
+                    border-width: 0 0 1px 0; }
+
+
+.outreprs table th {text-align: left;
+                    border-style: solid;
+                    border-color: lightgray;
+                    border-width: 0 0 1px 0; }
+
+.doc h2 a {font-size: large; }
+
+.doc code {white-space: nowrap; }
+
+.doc table {margin: 1em 0 0 0.5em; }
+
+.doc caption {text-align: left;
+              font-weight: bold;
+              margin: 0 0 0.25em 2em; }
+
+.doc th {text-align: left;
+         border-width: 2px;
+         border-top-style: solid;
+         border-bottom-style: solid;
+         padding-left: 0.5em; }
+.doc td {border-width: 1px;
+         border-bottom-style: solid;
+         padding-left: 0.5em; }
+
+.doc table td p {padding: 0;
+                 margin: 0; }
+
+.doc table td table {padding: 0;
+                     margin: 0;
+                     border-width: 0; }
+.doc table td table th {padding: 0;
+                        margin: 0;
+                        border-top-style: none;
+                        border-width: 1px; }
+.doc table td table td {padding: 0 2px;
+                        margin: 0;
+                        border-width: 0; }
+
+table.output th {vertical-align: top;
+                 text-align: right;
+                 white-space: nowrap; }
+table.output td {vertical-align: top;
+                 border-style: solid;
+                 border-width: 1px;
+                 padding: 2px 4px; }
+
+table.data {border-style: solid;
+            border-width: 2px 0 0 2px; }
+table.data th {vertical-align: top;
+               text-align: left;
+               border-style: solid;
+               border-width: 0 1px 1px 0; }
+table.data td {vertical-align: top;
+               border-style: solid;
+               border-width: 0 1px 1px 0; }
+table.data pre { border-style: none;
+		 padding: 0;
+		 margin: 0; }
+
+table.list th {vertical-align: top;
+               text-align: left;
+               border-style: solid;
+               border-width: 2px 0; }
+table.list td {vertical-align: top;
+               border-style: solid;
+               border-width: 0 0 1px 0; }
+
+table.params th {vertical-align: top;
+                 text-align: right; }
+table.params td {vertical-align: top;
+                 text-align: left;
+                 padding-left: 1em; }
+
+span.current { border-style: solid;
+               border-color: black;
+               border-width: 1px;}
+			   */
+			   

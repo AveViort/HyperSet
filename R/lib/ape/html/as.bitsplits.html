@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Split Frequencies and Conversion Among Split Classes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for as.bitsplits {ape}"><tr><td>as.bitsplits {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Split Frequencies and Conversion Among Split Classes</h2>
+
+<h3>Description</h3>
+
+<p><code>bitsplits</code> returns the bipartitions (aka splits) for a single
+tree or a list of trees.
+</p>
+<p><code>countBipartitions</code> returns the frequencies of the bipartitions
+from a reference tree (phy) observed in a list of trees (X).
+</p>
+<p><code>as.bitsplits</code> and <code>as.prop.part</code> are generic functions for
+converting between the <code>"bitsplits"</code> and <code>"prop.part"</code>
+classes.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bitsplits(x)
+countBipartitions(phy, X)
+as.bitsplits(x)
+## S3 method for class 'prop.part'
+as.bitsplits(x)
+## S3 method for class 'bitsplits'
+print(x, ...)
+## S3 method for class 'bitsplits'
+sort(x, decreasing = FALSE, ...)
+as.prop.part(x, ...)
+## S3 method for class 'bitsplits'
+as.prop.part(x, include.trivial = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of the appropriate class.</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>an object of class <code>"phylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>X</code></td>
+<td>
+<p>an object of class <code>"multiPhylo"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>decreasing</code></td>
+<td>
+<p>a logical value to sort the bipartitions in
+increasing (the default) or decreasing order of their frequency.</p>
+</td></tr>
+<tr valign="top"><td><code>include.trivial</code></td>
+<td>
+<p>a logical value specifying whether to include
+the trivial split with all tips in the returned object.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments passed to or from other methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>These functions count bipartitions as defined by internal branches, so
+they do not work with rooted trees (see examples). The structure of
+the class <code>"bitsplits"</code> is described in a separate document
+on ape's web site.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>bitsplits</code>, <code>as.bitsplits</code>, and <code>sort</code> return an object
+of class <code>"bitsplits"</code>.
+</p>
+<p><code>countBipartitions</code> returns a vector of integers.
+</p>
+<p><code>as.prop.part</code> returns an object of class <code>"prop.part"</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Emmanuel Paradis</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="boot.phylo.html">prop.part</a></code>, <code><a href="is.compatible.html">is.compatible</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+tr &lt;- rtree(20)
+pp &lt;- prop.part(tr)
+as.bitsplits(pp)
+## doesn't work for rooted trees...:
+countBipartitions(rtree(10), rmtree(100, 10))
+## ... but OK with unrooted trees:
+countBipartitions(rtree(10, rooted = FALSE), rmtree(100, 10, rooted = FALSE))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

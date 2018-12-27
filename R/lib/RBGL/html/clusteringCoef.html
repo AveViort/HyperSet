@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calculate clustering coefficient for an undirected graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for clusteringCoef {RBGL}"><tr><td>clusteringCoef {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calculate clustering coefficient for an undirected graph</h2>
+
+<h3>Description</h3>
+
+<p>Calculate clustering coefficient for an undirected graph </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+clusteringCoef(g, Weighted=FALSE, vW=degree(g))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p>an instance of the <code>graph</code> class </p>
+</td></tr>
+<tr valign="top"><td><code>Weighted</code></td>
+<td>
+<p>calculate weighted clustering coefficient or not</p>
+</td></tr>
+<tr valign="top"><td><code>vW</code></td>
+<td>
+<p>vertex weights to use when calculating weighted clustering coefficient</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>For an undirected graph <code>G</code>, let delta(v) be the number of triangles with
+<code>v</code>  
+as a node, let tau(v) be the number of triples, i.e., paths of length 2 with 
+<code>v</code> as the center node.  
+</p>
+<p>Let V' be the set of nodes with degree at least 2.
+</p>
+<p>Define clustering coefficient for <code>v</code>, c(v) = (delta(v) / tau(v)). 
+</p>
+<p>Define clustering coefficient for <code>G</code>, C(G) = sum(c(v)) / |V'|, 
+for all <code>v</code> in V'. 
+</p>
+<p>Define weighted clustering coefficient for <code>g</code>, 
+Cw(G) = sum(w(v) * c(v)) / sum(w(v)), for all <code>v</code> in V'.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Clustering coefficient for graph <code>G</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long <a href="mailto:li.long@isb-sib.ch">li.long@isb-sib.ch</a></p>
+
+
+<h3>References</h3>
+
+<p>Approximating Clustering Coefficient and Transitivity, T. Schank, D. Wagner, 
+Journal of Graph Algorithms and Applications, Vol. 9, No. 2 (2005).
+</p>
+
+
+<h3>See Also</h3>
+
+<p>clusteringCoefAppr, transitivity, graphGenerator</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/conn.gxl",package="RBGL"))
+g &lt;- fromGXL(con)
+close(con)
+cc &lt;- clusteringCoef(g)
+ccw1 &lt;- clusteringCoef(g, Weighted=TRUE)
+vW  &lt;- c(1, 1, 1, 1, 1,1, 1, 1)
+ccw2 &lt;- clusteringCoef(g, Weighted=TRUE, vW)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

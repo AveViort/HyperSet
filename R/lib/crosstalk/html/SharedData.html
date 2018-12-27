@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: An R6 class that represents a shared data frame</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for SharedData {crosstalk}"><tr><td>SharedData {crosstalk}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>An R6 class that represents a shared data frame</h2>
+
+<h3>Description</h3>
+
+<p>...or sufficiently data frame-like object. The primary use for
+<code>SharedData</code> is to be passed to Crosstalk-compatible widgets in place
+of a data frame. Each <code>SharedData$new(...)</code> call makes a new &quot;group&quot;
+of widgets that link to each other, but not to widgets in other groups.
+You can also use a <code>SharedData</code> object from Shiny code in order to
+react to filtering and brushing from non-widget visualizations (like ggplot2
+plots).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+SharedData
+</pre>
+
+
+<h3>Format</h3>
+
+<p>An object of class <code>R6ClassGenerator</code> of length 24.</p>
+
+
+<h3>Constructor</h3>
+
+<p><code>SharedData$new(data, key = NULL, group = createUniqueId(4, prefix = "SharedData"))</code>
+</p>
+
+<dl>
+<dt><code>data</code></dt><dd>
+<p>A data frame-like object, or a Shiny <a href="../../shiny/html/reactive.html">reactive
+expression</a> that returns a data frame-like object.
+</p>
+</dd>
+<dt><code>key</code></dt><dd>
+<p>Character vector or one-sided formula that indicates the name of the
+column that represents the key or ID of the data frame. These <em>must</em>
+be unique, and ideally will be something intrinsic to the data (a proper
+ID) rather than a transient property like row index.
+</p>
+<p>If <code>NULL</code>, then <code>row.names(data)</code> will be used.
+</p>
+</dd>
+<dt><code>group</code></dt><dd>
+<p>The &quot;identity&quot; of the Crosstalk group that widgets will join when you
+pass them this <code>SharedData</code> object. In some cases, you will want to
+have multiple independent <code>SharedData</code> objects link up to form a
+single web of widgets that all share selection and filtering state; in
+those cases, you'll give those <code>SharedData</code> objects the same group
+name. (One example: in Shiny, ui.R and server.R might each need their own
+<code>SharedData</code> instance, even though they're intended to represent a
+single group.)
+</p>
+</dd>
+</dl>
+
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt><code>data(withSelection = FALSE, withFilter = TRUE, withKey = FALSE)</code></dt><dd>
+<p>Return the data (or read and return the data if the data is a Shiny
+reactive expression). If <code>withSelection</code>, add a <code>selection_</code>
+column with logical values indicating which rows are in the current
+selection, or <code>NA</code> if no selection is currently active. If
+<code>withFilter</code> (the default), only return rows that are part of the
+current filter settings, if any. If <code>withKey</code>, add a <code>key_</code>
+column with the key values of each row (normally not needed since the
+key is either one of the other columns or else just the row names).
+</p>
+<p>When running in Shiny, calling <code>data()</code> is a reactive operation
+that will invalidate if the selection or filter change (assuming that
+information was requested), or if the original data is a reactive
+expression that has invalidated.
+</p>
+</dd>
+<dt><code>origData()</code></dt><dd>
+<p>Return the data frame that was used to create this <code>SharedData</code>
+instance. If a reactive expression, evaluate the reactive expression.
+Equivalent to <code>data(FALSE, FALSE, FALSE)</code>.
+</p>
+</dd>
+<dt><code>groupName()</code></dt><dd>
+<p>Returns the value of <code>group</code> that was used to create this instance.
+</p>
+</dd>
+<dt><code>key()</code></dt><dd>
+<p>Returns the vector of key values. Filtering is not applied.
+</p>
+</dd>
+<dt><code>selection(value, ownerId = "")</code></dt><dd>
+<p>If called without arguments, returns a logical vector of rows that are
+currently selected (brushed), or <code>NULL</code> if no selection exists.
+Intended to be called from a Shiny reactive context, and invalidates
+whenever the selection changes.
+</p>
+<p>If called with one or two arguments, expects <code>value</code> to be a logical
+vector of <code>nrow(origData())</code> length, indicating which rows are
+currently selected (brushed). This value is propagated to the web browser
+(assumes an active Shiny app or Shiny R Markdown document).
+</p>
+<p>Set the <code>ownerId</code> argument to the <code>outputId</code> of a widget if
+conceptually that widget &quot;initiated&quot; the selection (prevents that widget
+from clearing its visual selection box, which is normally cleared when
+the selection changes). For example, if setting the selection based on a
+<code><a href="../../shiny/html/plotOutput.html">plotOutput</a></code> brush, then <code>ownerId</code> should be the
+<code>outputId</code> of the <code>plotOutput</code>.
+</p>
+</dd>
+<dt><code>clearSelection(ownerId = "")</code></dt><dd>
+<p>Clears the selection. For the meaning of <code>ownerId</code>, see the
+<code>selection</code> method.
+</p>
+</dd>
+</dl>
+
+
+<hr /><div style="text-align: center;">[Package <em>crosstalk</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

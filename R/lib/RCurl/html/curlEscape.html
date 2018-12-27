@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Handle characters in URL that need to be escaped</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for curlEscape {RCurl}"><tr><td>curlEscape {RCurl}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Handle characters in URL that need to be escaped</h2>
+
+<h3>Description</h3>
+
+<p>These functions convert between URLs that are
+human-readable and those that have special characters
+escaped.  For example, to send a URL with a space,
+we need to represent the space as <code>%20</code>.
+</p>
+<p><code>curlPercentEncode</code> uses a different format than the
+<code>curlEscape</code>
+function and this is needed for x-www-form-encoded POST submissions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+curlEscape(urls)
+curlUnescape(urls)
+curlPercentEncode(x, amp = TRUE, codes = PercentCodes, post.amp = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>urls</code></td>
+<td>
+<p> a character vector giving the strings to be escaped or
+unescaped.</p>
+</td></tr>
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the strings to be encoded via the percent-encoding method</p>
+</td></tr>
+<tr valign="top"><td><code>amp</code></td>
+<td>
+<p>a  logical value indicating whether to encode \&amp;
+characters.</p>
+</td></tr>
+<tr valign="top"><td><code>codes</code></td>
+<td>
+<p>the named character vector giving the encoding map. The
+names are the characters we encode, the values are what we encode them
+as.</p>
+</td></tr>
+<tr valign="top"><td><code>post.amp</code></td>
+<td>
+<p>a logical value controlling whether the resulting
+string is further processed to escape the percent (%) prefixes with
+the code for percent, i.e. %25.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This calls <code>curl_escape</code> or <code>curl_unescape</code> in the libcurl library.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A character vector that has corresponding elements
+to the input with the characters escaped or not.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang &lt;duncan@wald.ucdavis.edu&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Curl homepage <a href="http://curl.haxx.se">http://curl.haxx.se</a>
+</p>
+<p>Percent encoding explained in <a href="http://en.wikipedia.org/wiki/Percent-encoding">http://en.wikipedia.org/wiki/Percent-encoding</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  curlEscape("http://www.abc.com?x=a is a sentence&amp;a b=and another")
+
+  # Reverse it should get back original
+  curlUnescape(curlEscape("http://www.abc.com?x=a is a sentence&amp;a b=and another"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RCurl</em> version 1.95-4.11 <a href="00Index.html">Index</a>]</div>
+</body></html>

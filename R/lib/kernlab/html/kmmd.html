@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Kernel Maximum Mean Discrepancy.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kmmd {kernlab}"><tr><td>kmmd {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Kernel Maximum Mean Discrepancy.</h2>
+
+<h3>Description</h3>
+
+<p>The Kernel Maximum Mean Discrepancy <code>kmmd</code> performs
+a non-parametric distribution test.</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+
+## S4 method for signature 'matrix'
+kmmd(x, y, kernel="rbfdot",kpar="automatic", alpha = 0.05,
+     asymptotic = FALSE, replace = TRUE, ntimes = 150, frac = 1, ...)
+
+## S4 method for signature 'kernelMatrix'
+kmmd(x, y, Kxy, alpha = 0.05,
+     asymptotic = FALSE, replace = TRUE, ntimes = 100, frac = 1, ...)
+
+## S4 method for signature 'list'
+kmmd(x, y, kernel="stringdot", 
+     kpar = list(type = "spectrum", length = 4), alpha = 0.05,
+     asymptotic = FALSE, replace = TRUE, ntimes = 150, frac = 1, ...)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>data values, in a <code>matrix</code>,
+<code>list</code>, or <code>kernelMatrix</code></p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>data values, in a <code>matrix</code>,
+<code>list</code>, or <code>kernelMatrix</code></p>
+</td></tr>
+<tr valign="top"><td><code>Kxy</code></td>
+<td>
+<p><code>kernlMatrix</code> between <i>x</i> and <i>y</i> values (only for the
+kernelMatrix interface)</p>
+</td></tr>
+<tr valign="top"><td><code>kernel</code></td>
+<td>
+<p>the kernel function used in training and predicting.
+This parameter can be set to any function, of class kernel, which computes a dot product between two
+vector arguments. <code>kernlab</code> provides the most popular kernel functions
+which can be used by setting the kernel parameter to the following
+strings:
+</p>
+
+<ul>
+<li> <p><code>rbfdot</code> Radial Basis kernel function &quot;Gaussian&quot;
+</p>
+</li>
+<li> <p><code>polydot</code> Polynomial kernel function
+</p>
+</li>
+<li> <p><code>vanilladot</code> Linear kernel function
+</p>
+</li>
+<li> <p><code>tanhdot</code> Hyperbolic tangent kernel function
+</p>
+</li>
+<li> <p><code>laplacedot</code> Laplacian kernel function
+</p>
+</li>
+<li> <p><code>besseldot</code> Bessel kernel function
+</p>
+</li>
+<li> <p><code>anovadot</code> ANOVA RBF kernel function
+</p>
+</li>
+<li> <p><code>splinedot</code> Spline kernel 
+</p>
+</li>
+<li> <p><code>stringdot</code> String kernel 
+</p>
+</li></ul>
+
+<p>The kernel parameter can also be set to a user defined function of
+class kernel by passing the function name as an argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>the list of hyper-parameters (kernel parameters).
+This is a list which contains the parameters to be used with the
+kernel function. Valid parameters for existing kernels are :
+</p>
+
+<ul>
+<li> <p><code>sigma</code> inverse kernel width for the Radial Basis
+kernel function &quot;rbfdot&quot; and the Laplacian kernel &quot;laplacedot&quot;.
+</p>
+</li>
+<li> <p><code>degree, scale, offset</code> for the Polynomial kernel &quot;polydot&quot;
+</p>
+</li>
+<li> <p><code>scale, offset</code> for the Hyperbolic tangent kernel
+function &quot;tanhdot&quot;
+</p>
+</li>
+<li> <p><code>sigma, order, degree</code> for the Bessel kernel &quot;besseldot&quot;. 
+</p>
+</li>
+<li> <p><code>sigma, degree</code> for the ANOVA kernel &quot;anovadot&quot;.
+</p>
+</li>
+<li> <p><code>lenght, lambda, normalized</code> for the &quot;stringdot&quot; kernel
+where length is the length of the strings considered, lambda the
+decay factor and normalized a logical parameter determining if the
+kernel evaluations should be normalized.
+</p>
+</li></ul>
+
+<p>Hyper-parameters for user defined kernels can be passed
+through the <code>kpar</code> parameter as well. In the case of a Radial
+Basis kernel function (Gaussian) kpar can also be set to the
+string &quot;automatic&quot; which uses the heuristics in  'sigest' to
+calculate a good 'sigma' value for the Gaussian RBF or
+Laplace kernel, from the data. (default = &quot;automatic&quot;).
+</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p>the confidence level of the test (default: 0.05)</p>
+</td></tr>
+<tr valign="top"><td><code>asymptotic</code></td>
+<td>
+<p>calculate the bounds asymptotically (suitable for
+smaller datasets) (default: FALSE)</p>
+</td></tr>
+<tr valign="top"><td><code>replace</code></td>
+<td>
+<p>use replace when sampling for computing the asymptotic
+bounds (default : TRUE)</p>
+</td></tr>
+<tr valign="top"><td><code>ntimes</code></td>
+<td>
+<p>number of times repeating the sampling procedure (default
+: 150)</p>
+</td></tr>
+<tr valign="top"><td><code>frac</code></td>
+<td>
+<p>fraction of points to sample (frac : 1) </p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>kmmd</code> calculates the kernel maximum mean discrepancy for
+samples from two distributions and conducts a test as to whether the samples are
+from different distributions with level <code>alpha</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An S4 object of class <code>kmmd</code> containing the
+results of whether the H0 hypothesis is rejected or not. H0 being
+that the samples <i>x</i> and <i>y</i> come from the same distribution.
+The object contains the following slots :
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code><code>H0</code></code></td>
+<td>
+<p>is H0 rejected (logical)</p>
+</td></tr>
+<tr valign="top"><td><code><code>AsympH0</code></code></td>
+<td>
+<p>is H0 rejected according to the asymptotic bound (logical)</p>
+</td></tr>
+<tr valign="top"><td><code><code>kernelf</code></code></td>
+<td>
+<p>the kernel function used.</p>
+</td></tr>
+<tr valign="top"><td><code><code>mmdstats</code></code></td>
+<td>
+<p>the test statistics (vector of two)</p>
+</td></tr>
+<tr valign="top"><td><code><code>Radbound</code></code></td>
+<td>
+<p>the Rademacher bound</p>
+</td></tr>
+<tr valign="top"><td><code><code>Asymbound</code></code></td>
+<td>
+<p>the asymptotic bound</p>
+</td></tr>
+</table>
+<p>see <code>kmmd-class</code> for more details.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou <br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p>Gretton, A., K. Borgwardt, M. Rasch, B. Schoelkopf and A. Smola<br />
+<em>A Kernel Method for the Two-Sample-Problem</em><br />
+Neural Information Processing Systems 2006, Vancouver   <br />
+<a href="http://papers.nips.cc/paper/3110-a-kernel-method-for-the-two-sample-problem.pdf">http://papers.nips.cc/paper/3110-a-kernel-method-for-the-two-sample-problem.pdf</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code>ksvm</code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# create data
+x &lt;- matrix(runif(300),100)
+y &lt;- matrix(runif(300)+1,100)
+
+
+mmdo &lt;- kmmd(x, y)
+
+mmdo
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

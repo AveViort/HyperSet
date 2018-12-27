@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: helper function to get a style file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getStyleFile {highlight}"><tr><td>getStyleFile {highlight}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>helper function to get a style file</h2>
+
+<h3>Description</h3>
+
+<p>helper function to get a style file
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getStyleFile(name = "default", extension = "css")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>the name of the style file to look for</p>
+</td></tr>
+<tr valign="top"><td><code>extension</code></td>
+<td>
+<p>the file extension (css, sty, or xterm)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>the search goes as follows: first the current working directory
+then the directory ~/.R/highlight, then the stylesheet directory
+in the installed package
+</p>
+
+
+<h3>Value</h3>
+
+<p>the name of the first file that is found, or NULL
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>highlight</em> version 0.4.7.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

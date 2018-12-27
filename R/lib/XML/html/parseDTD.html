@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read a Document Type Definition (DTD)</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for parseDTD {XML}"><tr><td>parseDTD {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read a Document Type Definition (DTD)</h2>
+
+<h3>Description</h3>
+
+<p>Represents the contents of a DTD as a user-level object containing the element and entity definitions.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+parseDTD(extId, asText=FALSE, name="", isURL=FALSE, error = xmlErrorCumulator())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>extId</code></td>
+<td>
+<p>The name of the file containing the DTD to be processed.</p>
+</td></tr>
+<tr valign="top"><td><code>asText</code></td>
+<td>
+<p>logical indicating whether the value of &lsquo;extId&rsquo; is the name of a file
+or the DTD content itself. Use this when the DTD is read as a character vector, before being parsed 
+and handed to the parser as content only.</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>Optional name to provide to the parsing mechanism.</p>
+</td></tr>
+<tr valign="top"><td><code>isURL</code></td>
+<td>
+<p>A logical value indicating whether the input source is to be
+considred a URL or a regular file or string containing the XML.</p>
+</td></tr>
+<tr valign="top"><td><code>error</code></td>
+<td>
+<p>an R function that is called when an error is
+encountered. This can report it and continue or terminate by raising
+an error in R.  See the error parameter for <code>link{xmlTreeParse}</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Parses and converts the contents of the DTD in the specified file 
+into a user-level object containing all the information about the DTD.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list with two entries, one for the entities and the other for the elements
+defined within the DTD.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>entities</code></td>
+<td>
+<p>a named list of the entities defined in the DTD. 
+Each entry is indexed by the name of the corresponding entity.
+Each is an object of class <code>XMLEntity</code>
+or alternatively <code>XMLExternalEntity</code> if the entity refers
+to an external definition.
+The fields of these types of objects are 
+</p>
+
+<ul>
+<li><p>namethe name of the entity by which users refer to it.
+</p>
+</li>
+<li><p>contentthe expanded value or definition of the entity
+</p>
+</li>
+<li><p>originalthe value of the entity, but with references to other entities not expanded, but
+maintained in symbolic form.
+</p>
+</li></ul>
+
+</td></tr>
+<tr valign="top"><td><code>elements</code></td>
+<td>
+<p>a named list of the elements defined in the DTD, with the name of each element being
+the identifier of the element being defined.
+Each entry is an object of class <code>XMLElementDef</code>
+which has 4 fields.
+</p>
+
+<ul>
+<li><p>namethe name of the element.
+</p>
+</li>
+<li><p>typea named integer indicating the type of entry in the DTD, usually
+either <code>element</code> or <code>mixed</code>.
+The name of the value is a user-level type. The value is used for programming, both
+internally and externally.
+
+</p>
+</li>
+<li><p>contentsa description of the elements that can be nested within this element.
+This is an object of class <code>XMLElementContent</code>
+or one of its specializations - <code>XMLSequenceContent</code>, <code>XMLOrContent</code>.
+Each of these encodes the number of such elements permitted 
+(one, one or more, zero or one, or zero or more);
+the type indicating whether the contents consist of a single element type,
+an ordered sequence of elements, or one of a set of elements.
+Finally, the actual contents description is described in the
+<code>elements</code> field. This is a list of
+one or more <code>XMLElementContent</code>, <code>XMLSequenceContent</code> and <code>XMLOrContent</code> 
+objects.
+
+</p>
+</li>
+<li><p>attributesa named list of the attributes defined for this element in the DTD.
+Each element is of class <code>XMLAttributeDef</code> which has 4 fields.
+</p>
+<p>namename of the attribute, i.e. the left hand side
+</p>
+<p>typethe type of the value, e.g. an CDATA, Id, Idref(s), Entity(s), NMToken(s),  Enumeration, Notation
+</p>
+<p>defaultTypethe defined type, one of  None, Implied, Fixed or Required.
+</p>
+<p>defaultValuethe default value if it is specified, or the enumerated values as a character vector, if the type is Enumeration.
+
+</p>
+</li></ul>
+
+</td></tr>
+</table>
+
+
+<h3>WARNING</h3>
+
+<p>Errors in the DTD are stored as warnings for programmatic access.</p>
+
+
+<h3>Note</h3>
+
+<p>Needs libxml (currently version 1.8.7)</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang &lt;duncan@wald.ucdavis.edu&gt;</p>
+
+
+<h3>References</h3>
+
+ <p><a href="http://www.w3.org">http://www.w3.org</a> </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlTreeParse.html">xmlTreeParse</a></code>, 
+WritingXML.html in the distribution.</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ dtdFile &lt;- system.file("exampleData", "foo.dtd",package="XML")
+ parseDTD(dtdFile)
+
+txt &lt;- readLines(dtdFile)
+txt &lt;- paste(txt,  collapse="\n")
+d &lt;- parseDTD(txt, asText=TRUE)
+
+
+## Not run: 
+ url &lt;- "http://www.omegahat.net/XML/DTDs/DatasetByRecord.dtd"
+ d &lt;- parseDTD(url, asText=FALSE)  
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

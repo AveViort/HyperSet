@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Calculate the length of a tour</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for tour_length {TSP}"><tr><td>tour_length {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Calculate the length of a tour</h2>
+
+<h3>Description</h3>
+
+<p>Calculate the length of a tour given a TSP and an order.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+tour_length(x, ...)
+## S3 method for class 'TOUR'
+tour_length(x, tsp = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>TOUR</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>tsp</code></td>
+<td>
+<p>a TSP object of class <code>TSP</code>, <code>ATSP</code> or <code>ETSP</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>further arguments are currently unused.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>If no <code>tsp</code> is given, then the tour length stored in <code>x</code> 
+as attribute <code>"tour_length"</code> is returned. 
+If <code>tsp</code> is given then the tour length is recalculated.  
+</p>
+<p>If a distance in the tour is infinite, the result is also infinite. If 
+the tour contains positive and negative infinite distances then the method
+returns <code>NA</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="TOUR.html">TOUR</a></code>,
+<code><a href="TSP.html">TSP</a></code>,
+<code><a href="ATSP.html">ATSP</a></code> and
+<code><a href="ETSP.html">ETSP</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("USCA50")
+
+## original order
+tour_length(solve_TSP(USCA50, method="identity"))
+
+## length of a manually created (random) tour
+tour &lt;- TOUR(sample(seq(n_of_cities(USCA50))))
+tour
+tour_length(tour)
+tour_length(tour, USCA50)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Martins's (1997) Correlation Structure</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for corMartins {ape}"><tr><td>corMartins {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Martins's (1997) Correlation Structure</h2>
+
+<h3>Description</h3>
+
+<p>Martins and Hansen's (1997) covariance structure:
+</p>
+<p style="text-align: center;"><i>
+					Vij = gamma . exp(-alpha . tij)</i></p>
+
+<p>where <i>tij</i> is the phylogenetic distance between taxa <i>i</i> and <i>j</i> and <i>gamma</i> is a constant.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+corMartins(value, phy, form = ~1, fixed = FALSE)
+## S3 method for class 'corMartins'
+coef(object, unconstrained = TRUE, ...)
+## S3 method for class 'corMartins'
+corMatrix(object,
+		covariate = getCovariate(object), corr = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>The <i>alpha</i> parameter</p>
+</td></tr>
+<tr valign="top"><td><code>phy</code></td>
+<td>
+<p>An object of class <code>phylo</code> representing the phylogeny
+(with branch lengths) to consider</p>
+</td></tr>
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>An (initialized) object of class <code>corMartins</code></p>
+</td></tr>
+<tr valign="top"><td><code>corr</code></td>
+<td>
+<p>a logical value. If 'TRUE' the function returns the
+correlation matrix, otherwise it returns  the variance/covariance
+matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>fixed</code></td>
+<td>
+<p>an optional logical value indicating whether the
+coefficients should be allowed to vary in the optimization, ok kept
+fixed at their initial value. Defaults to 'FALSE', in which case the
+coefficients are allowed to vary.</p>
+</td></tr>
+<tr valign="top"><td><code>form</code></td>
+<td>
+<p>ignored for now.</p>
+</td></tr>
+<tr valign="top"><td><code>covariate</code></td>
+<td>
+<p>ignored for now.</p>
+</td></tr>
+<tr valign="top"><td><code>unconstrained</code></td>
+<td>
+<p>a logical value. If 'TRUE' the coefficients are returned
+in unconstrained form (the same used in the optimization
+algorithm). If 'FALSE' the coefficients are returned in
+&quot;natural&quot;, possibly constrained, form. Defaults to 'TRUE'</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>some methods for these generics require additional arguments.
+None are used in these methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>corMartins</code> or the alpha coefficient from an object of this class
+or the correlation matrix of an initialized object of this class.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Julien Dutheil <a href="mailto:julien.dutheil@univ-montp2.fr">julien.dutheil@univ-montp2.fr</a></p>
+
+
+<h3>References</h3>
+
+<p>Martins, E. P. and Hansen, T. F. (1997) Phylogenies and the comparative
+method: a general approach to incorporating phylogenetic information
+into the analysis of interspecific data. <em>American Naturalist</em>,
+<b>149</b>, 646&ndash;667.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="corClasses.html">corClasses</a></code>.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

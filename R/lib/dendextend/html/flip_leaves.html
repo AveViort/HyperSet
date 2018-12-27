@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Flip leaves</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for flip_leaves {dendextend}"><tr><td>flip_leaves {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Flip leaves</h2>
+
+<h3>Description</h3>
+
+<p>Rotate a branch in a tree so that the locations of two bundles of leaves
+are flipped.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+flip_leaves(dend, leaves1, leaves2, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dend</code></td>
+<td>
+<p>a dendrogram object</p>
+</td></tr>
+<tr valign="top"><td><code>leaves1</code></td>
+<td>
+<p>a vector of leaves order value to flip.</p>
+</td></tr>
+<tr valign="top"><td><code>leaves2</code></td>
+<td>
+<p>a (second) vector of leaves order value to flip.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>not used</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function is based on a bunch of string manipulation functions. There
+may be a smarter/better way for doing it...
+</p>
+
+
+<h3>Value</h3>
+
+<p>A dendrogram object with flipped leaves.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="tanglegram.html">tanglegram</a>, <a href="match_order_by_labels.html">match_order_by_labels</a>,
+<a href="entanglement.html">entanglement</a>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+## Not run: 
+dend1 &lt;- USArrests[1:5,] %&gt;% dist %&gt;% hclust %&gt;% as.dendrogram
+dend2 &lt;- flip_leaves(dend1, c(3,5), c(1,2))
+tanglegram(dend1,dend2)
+entanglement(dend1,dend2, L = 2) # 0.4
+
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

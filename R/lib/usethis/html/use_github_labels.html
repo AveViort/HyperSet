@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Manage GitHub issue labels</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for use_github_labels {usethis}"><tr><td>use_github_labels {usethis}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Manage GitHub issue labels</h2>
+
+<h3>Description</h3>
+
+<p><code>use_github_labels()</code> creates new labels and/or changes label
+colours. It does not generally remove labels. But if you set
+<code>delete_default = TRUE</code>, it will delete labels that are (1) flagged by the
+API as being <a href="https://help.github.com/articles/about-labels/#using-default-labels">GitHub default labels</a>
+and (2) not present in the labels you provide via <code>labels</code>.
+</p>
+<p><code>tidy_labels()</code> returns the labels and colours commonly used by tidyverse
+packages.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+use_github_labels(labels = tidy_labels(), delete_default = FALSE,
+  auth_token = NULL, host = NULL)
+
+tidy_labels()
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>labels</code></td>
+<td>
+<p>Named character vector of labels. The names are the label text,
+such as &quot;bug&quot;, and the values are the label colours in hexadecimal, such as
+&quot;e02a2a&quot;. First, labels that don't yet exist are created, then label
+colours are updated.</p>
+</td></tr>
+<tr valign="top"><td><code>delete_default</code></td>
+<td>
+<p>If <code>TRUE</code>, will remove GitHub default labels that do
+not appear in the <code>labels</code> vector (presumably defaults that aren't relevant
+to your workflow).</p>
+</td></tr>
+<tr valign="top"><td><code>auth_token</code></td>
+<td>
+<p>Provide a personal access token (PAT) from
+<a href="https://github.com/settings/tokens">https://github.com/settings/tokens</a>. If <code>NULL</code>, will use the logic
+described in <code><a href="../../gh/html/gh_whoami.html">gh::gh_whoami()</a></code> to look for a token stored in an environment
+variable. Use <code><a href="browse_github_pat.html">browse_github_pat()</a></code> to help set up your PAT.</p>
+</td></tr>
+<tr valign="top"><td><code>host</code></td>
+<td>
+<p>GitHub API host to use. Override with the endpoint-root for your
+GitHub enterprise instance, for example,
+&quot;https://github.hostname.com/api/v3&quot;</p>
+</td></tr>
+</table>
+
+
+<h3>Label usage</h3>
+
+<p>Labels are used as part of the issue-triage process, designed to minimise the
+time spent re-reading issues. The absence of a label indicates that an issue
+is new, and has yet to be triaged.
+</p>
+
+<ul>
+<li> <p><code>reprex</code> indicates that an issue does not have a minimal reproducible
+example, and that a reply has been sent requesting one from the user.
+</p>
+</li>
+<li> <p><code>bug</code> type, indicates an unexpected problem or unintended behavior.
+</p>
+</li>
+<li> <p><code>feature</code> type, indicates a feature request or enhancement.
+</p>
+</li>
+<li> <p><code>docs</code> type, indicates an issue with the documentation.
+</p>
+</li>
+<li> <p><code>performance</code> indicates a non-breaking area related to performance.
+</p>
+</li>
+<li> <p><code>wip</code> indicates that someone else is working on it or has promised to.
+</p>
+</li>
+<li> <p><code>good first issue</code> indicates a good issue for first-time contributors.
+</p>
+</li>
+<li> <p><code>help wanted</code> indicates that a maintainer wants help on an issue.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+## typical use in, e.g., a new tidyverse project
+use_github_labels(delete_default = TRUE)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>usethis</em> version 1.4.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

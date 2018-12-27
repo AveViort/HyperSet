@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get the names of an XML nodes children.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for names.XMLNode {XML}"><tr><td>names.XMLNode {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get the names of an XML nodes children.</h2>
+
+<h3>Description</h3>
+
+<p>This is a convenient way to obtain the XML tag name
+of each of the sub-nodes of a given 
+<code>XMLNode</code> object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'XMLNode'
+names(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the <code>XMLNode</code> whose sub-node tag names are being
+queried.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A character vector returning the
+tag names of the sub-nodes of the given
+<code>XMLNode</code> argument.
+</p>
+
+
+<h3>Note</h3>
+
+<p> This overrides the regular names method
+which would display the names of the internal
+fields of an <code>XMLNode</code> object.
+Since these are intended to be invisible and
+queried via the accessor methods (<code><a href="xmlName.html">xmlName</a></code>,
+<code><a href="xmlAttrs.html">xmlAttrs</a></code>, etc.), this should not
+be a problem. If you really need the names
+of the fields, use <code>names(unclass(x))</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p> Duncan Temple Lang </p>
+
+
+<h3>References</h3>
+
+<p><a href="http://www.w3.org/XML">http://www.w3.org/XML</a>, <a href="http://www.jclark.com/xml">http://www.jclark.com/xml</a>,
+<a href="http://www.omegahat.net">http://www.omegahat.net</a>  </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlApply.html">xmlApply</a></code>
+<code><a href="xmlApply.html">xmlSApply</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+ doc &lt;- xmlTreeParse(system.file("exampleData", "mtcars.xml", package="XML"))
+ names(xmlRoot(doc))
+
+ r &lt;- xmlRoot(doc)
+ r[names(r) == "variables"]
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

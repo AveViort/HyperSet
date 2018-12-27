@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dissimilarities and Correlations Between Seriation Orders</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dissimilarity {seriation}"><tr><td>dissimilarity {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Dissimilarities and Correlations Between Seriation Orders</h2>
+
+<h3>Description</h3>
+
+<p>Calculates dissimilarities/correlations between seriation orders in a list.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ser_cor(x, y = NULL, method = "spearman", reverse = TRUE, test = FALSE)
+ser_dist(x, y = NULL, method = "spearman", reverse = TRUE, ...)
+ser_align(x, method = "spearman")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>set of seriation orders as a list with elements which can be
+coerced into <code>ser_permutation_vector</code> objects. </p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p> if not <code>NULL</code> then a single seriation order can be specified.   In this case <code>x</code> has to be a single seriation order and not a list. </p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p> a character string with the name of the used measure. Available
+measures are:
+<code>"kendall"</code>, <code>"spearman"</code>, <code>"manhattan"</code>,
+<code>"euclidean"</code>, <code>"hamming"</code>,
+<code>"ppc"</code> (positional proximity coefficient), and
+<code>"aprd"</code> (absolute pairwise rank differences).</p>
+</td></tr>
+<tr valign="top"><td><code>reverse</code></td>
+<td>
+<p>a logical indicating if the orders should also be checked in
+reverse order and the best value (highest correlation, lowest distance) is
+reported. This only affect ranking-based measures and not precedence
+invariant measures (e.g., ppc, aprd). </p>
+</td></tr>
+<tr valign="top"><td><code>test</code></td>
+<td>
+<p>a logical indicating if a correlation test should be performed. </p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Further arguments passed on to the method. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>ser_cor</code> calculates the correlation between two sequences (orders).
+Note that a seriation order and its reverse are identical and purely an artifact
+due to the method that creates the order. This is a major difference to
+rankings.
+For ranking-based correlation measures (Spearman and Kendall)
+the absolute value of the correlation is returned for <code>reverse = TRUE</code>
+(in effect returning the correltation for the reversed order).
+If <code>test = TRUE</code> then the appropriate test for association is performed
+and a matrix with p-values is returned as the attribute <code>"p-value"</code>. Note
+that no correction for multiple testing is performed.
+</p>
+<p>For <code>ser_dist</code>,
+the correlation coefficients (Kendall's tau and Spearman's rho) are converted
+into a dissimilarity by taking one minus the correlation value.
+Note that Manhattan distance between the
+ranks in a linear order is equivalent to Spearman's footrule
+metric (Diaconis 1988). <code>reverse = TRUE</code> returns the pairwise minima
+using also reversed orders.
+</p>
+<p>The positional proximity coefficient (ppc) is a precedence invariant measure based on product of the squared positional distances in two permutations defined as (see Goulermas et al 2016):
+</p>
+<p style="text-align: center;"><i>d_{ppc}(R, S) =
+1/h  &sum;_{j=2}^n &sum;_{i=1}^{j-1} (&pi;_R(i)-&pi;_R(j))^2 * (&pi;_S(i)-&pi;_S(j))^2,</i></p>
+
+<p>where
+<i>R</i> and <i>S</i> are two seriation orders, <i>pi_R</i> and <i>pi_S</i>
+are the associated permutation vectors and
+<i>h</i> is a normalization factor.
+The associatied generalized correlation coefficient is defined as <i>1-d_{ppc}</i>.
+For this precedence invariant measure <code>reverse</code> is ignored.
+</p>
+<p>The absolute pairwise rank difference (aprd) is also precedence invariant
+and defined as a distance measure:
+</p>
+<p style="text-align: center;"><i>d_{aprd}(R, S) =
+&sum;_{j=2}^n &sum;_{i=1}^{j-1} | |&pi;_R(i)-&pi;_R(j)| - |&pi;_S(i)-&pi;_S(j)| |^p,</i></p>
+
+<p>where <i>p</i> is the power which can be passed on as
+parameter <code>p</code> and is by default set to 2.
+For this precedence invariant measure <code>reverse</code> is ignored.
+</p>
+<p><code>ser_align</code> tries to normalize the direction in a list of seriations such
+that ranking-based methods can be used.
+We add for each permutation also the reversed order to the set and then
+use a modified version of Prim's
+algorithm for finding a minimum spanning tree (MST) to choose if the original seriation order or its reverse should be used. We use the orders first added to
+the MST. Every time an order is added, its reverse is removed from the possible
+remaining orders.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>ser_dist</code> returns an object of class <code>dist</code>.
+<code>ser_align</code> returns a new list with elements of class
+<code>ser_permutation</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>P. Diaconis (1988): Group Representations in Probability and Statistics. Institute of Mathematical Statistics, Hayward, CA.
+</p>
+<p>J.Y. Goulermas, A. Kostopoulos, and T. Mu (2016): A New Measure for Analyzing and Fusing Sequences of Objects. IEEE Transactions on Pattern Analysis and Machine Intelligence 38(5):833-48.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="permutation_vector.html">ser_permutation_vector</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(1234)
+## seriate dist of 50 flowers from the iris data set
+data("iris")
+x &lt;- as.matrix(iris[-5])
+x &lt;- x[sample(1:nrow(x), 50),]
+rownames(x) &lt;- 1:50
+d &lt;- dist(x)
+
+## Create a list of different seriations
+methods &lt;- c("HC_single", "HC_complete", "OLO", "GW", "R2E", "VAT",
+  "TSP", "Spectral", "SPIN", "MDS", "Identity", "Random")
+
+os &lt;- sapply(methods, function(m) {
+  cat("Doing", m, "... ")
+  tm &lt;- system.time(o &lt;- seriate(d, method = m))
+  cat("took", tm[3],"s.\n")
+  o
+})
+
+## Compare the methods using distances. Default is based on
+## Spearman's rank correlation coefficient. Reverse orders are considered
+## equivalent.
+ds &lt;- ser_dist(os)
+hmap(ds, margin=c(7,7))
+
+## Compare using actual correlation between orders. Reversed orders have
+## negative correlation!
+cs &lt;- ser_cor(os, reverse = FALSE)
+hmap(cs, margin=c(7,7))
+
+## Also check reversed seriation orders.
+## Now all but random and identity are highly positive correlated
+cs2 &lt;- ser_cor(os, reverse = TRUE)
+hmap(cs2, margin=c(7,7))
+
+## Use Manhattan distance of the ranks (i.e., Spearman's foot rule)
+ds &lt;- ser_dist(os, method="manhattan")
+plot(hclust(ds))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

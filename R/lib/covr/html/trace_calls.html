@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: trace each call with a srcref attribute</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for trace_calls {covr}"><tr><td>trace_calls {covr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>trace each call with a srcref attribute</h2>
+
+<h3>Description</h3>
+
+<p>This function calls itself recursively so it can properly traverse the AST.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+trace_calls(x, parent_functions = NULL, parent_ref = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>the call</p>
+</td></tr>
+<tr valign="top"><td><code>parent_functions</code></td>
+<td>
+<p>the functions which this call is a child of.</p>
+</td></tr>
+<tr valign="top"><td><code>parent_ref</code></td>
+<td>
+<p>argument used to set the srcref of the current call during
+the recursion.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>a modified expression with count calls inserted before each previous
+call.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="http://adv-r.had.co.nz/Expressions.html">http://adv-r.had.co.nz/Expressions.html</a>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>covr</em> version 3.2.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Install perl modules needed for read.xls to support Excel...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for installXLSXsupport {gdata}"><tr><td>installXLSXsupport {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Install perl modules needed for read.xls to support Excel 2007+ XLSX format
+</h2>
+
+<h3>Description</h3>
+
+<p>Install perl modules needed for read.xls to support Excel 2007+ XLSX format
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+installXLSXsupport(perl = "perl", verbose = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>perl</code></td>
+<td>
+<p>Path to perl interpreter (optional).</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>If <code>TRUE</code>, show additional messages during
+processing.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function calls the perl script 'install_modules.pl' located in
+the perl subdirectory of the gdata package directory (or inst/perl in
+the source package).  This perl script attempts to use the perl 'CPAN'
+package, which should be included as part of most perl installations,
+to automatically download, compile, and install the
+Compress::Raw::Zlib and Spreadsheet::XLSX perl modules needed for
+read.xls to support support Excel 2007+ XLSX files into the gdata
+perl subdirectory.
+</p>
+<p>Since the perl modules are installed into the gdata installation
+directory, the perl modules will be available until the gdata package
+is replaced or removed.  Since this occurs each time a new version of
+gdata is installed, <code>installXLSXsupport</code> will need to be run each
+time a new version of the gdata package is installed.
+</p>
+<p>Further, the binary Compress::Raw::Zlib package installed by
+<code>installXLSXsupport</code> is tied to the particular version of perl
+used to compile it, therefore, you will need to re-run
+<code>installXLSXsupport</code> if you install a different perl
+distribution.
+</p>
+<p>This installation process will fail if 1) perl is not available on the
+search path and the <code>perl</code> argument is not used to specify the
+path of the perl executable, 2) the perl installation is not properly
+configured for installing binary packages*, 3) if the CPAN module is
+not present, or 4) if the C compiler specified by the perl
+installation is   not present.
+</p>
+<p><em>In particular, <code>installXLSXsupport</code> will fail for the
+version of perl included with the current RTools.zip package, which is
+not correctly configured to allow installation of additional perl
+packages. (The RTools version of perl is installed in a different
+directory than the perl configuration files expect.)</em>
+</p>
+<p>The function <code>xlsFormats</code> can be used to see whether XLS and XLSX
+formats are supported by the currently available perl modules.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Either <code>TRUE</code> indicating that the necessary perl modules have
+been successfully installed, or <code>FALSE</code> indicating that an error
+has occured.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="read.xls.html">read.xls</a></code>, <code><a href="read.xls.html">xls2csv</a></code>, <code><a href="xlsFormats.html">xlsFormats</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+   installXLSXsupport()
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

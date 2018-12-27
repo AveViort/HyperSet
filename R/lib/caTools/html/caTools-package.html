@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Tools: moving window statistics, GIF, Base64, ROC AUC, etc.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for caTools-package {caTools}"><tr><td>caTools-package {caTools}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Tools: moving window statistics, GIF, Base64, ROC AUC, etc. 
+</h2>
+
+<h3>Description</h3>
+
+<p>Contains several basic utility functions including: moving
+(rolling, running) window statistic functions, read/write for
+GIF and ENVI binary files, fast calculation of AUC, LogitBoost
+classifier, base64 encoder/decoder, round-off error free sum
+and cumsum, etc.
+</p>
+
+
+<h3>Details</h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Package: </td><td style="text-align: left;"> caTools</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+Version: </td><td style="text-align: left;"> 1.17</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+Date: </td><td style="text-align: left;"> April 21, 2014</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+Depends: </td><td style="text-align: left;"> R (&gt;= 2.2.0), bitops</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+Suggests: </td><td style="text-align: left;"> MASS, rpart</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+License: </td><td style="text-align: left;"> GPL=3</td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+<p>Index:
+</p>
+<pre>
+LogitBoost              LogitBoost Classification Algorithm
+predict.LogitBoost      Prediction Based on LogitBoost Algorithm
+base64encode            Convert R vectors to/from the Base64 format
+colAUC                  Column-wise Area Under ROC Curve (AUC)
+combs                   All Combinations of k Elements from Vector v
+read.ENVI               Read and Write Binary Data in ENVI Format
+read.gif                Read and Write Images in GIF format
+runmean                 Mean of a Moving Window
+runmin                  Minimum and Maximum of Moving Windows
+runquantile             Quantile of Moving Window
+runmad                  Median Absolute Deviation of Moving Windows
+runsd                   Standard Deviation of Moving Windows
+sample.split            Split Data into Test and Train Set
+sumexact                Basic Sum Operations without Round-off Errors
+trapz                   Trapezoid Rule Numerical Integration
+</pre>
+
+
+<h3>Author(s)</h3>
+
+<p>Jarek Tuszynski &lt;jaroslaw.w.tuszynski@saic.com&gt;</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  # GIF image read &amp; write
+  write.gif( volcano, "volcano.gif", col=terrain.colors, flip=TRUE, 
+           scale="always", comment="Maunga Whau Volcano")
+  y = read.gif("volcano.gif", verbose=TRUE, flip=TRUE)
+  image(y$image, col=y$col, main=y$comment, asp=1)
+
+  # test runmin, runmax and runmed
+  k=25; n=200;
+  x = rnorm(n,sd=30) + abs(seq(n)-n/4)
+  col = c("black", "red", "green", "brown", "blue", "magenta", "cyan")
+  plot(x, col=col[1], main = "Moving Window Analysis Functions (window size=25)")
+  lines(runmin (x,k), col=col[2])
+  lines(runmed (x,k), col=col[3])
+  lines(runmean(x,k), col=col[4])
+  lines(runmax (x,k), col=col[5])
+  legend(0,.9*n, c("data", "runmin", "runmed", "runmean", "runmax"), col=col, lty=1 )
+
+  # sum vs. sumexact
+  x = c(1, 1e20, 1e40, -1e40, -1e20, -1)
+  a = sum(x);         print(a)
+  b = sumexact(x);    print(b)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>caTools</em> version 1.17.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

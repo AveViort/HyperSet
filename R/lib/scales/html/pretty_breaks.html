@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Pretty breaks. Uses default R break algorithm as implemented...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for pretty_breaks {scales}"><tr><td>pretty_breaks {scales}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Pretty breaks.
+Uses default R break algorithm as implemented in <code><a href="../../base/html/pretty.html">pretty()</a></code>.</h2>
+
+<h3>Description</h3>
+
+<p>Pretty breaks.
+Uses default R break algorithm as implemented in <code><a href="../../base/html/pretty.html">pretty()</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+pretty_breaks(n = 5, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>desired number of breaks</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other arguments passed on to <code><a href="../../base/html/pretty.html">pretty()</a></code></p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+pretty_breaks()(1:10)
+pretty_breaks()(1:100)
+pretty_breaks()(as.Date(c("2008-01-01", "2009-01-01")))
+pretty_breaks()(as.Date(c("2008-01-01", "2090-01-01")))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>scales</em> version 1.0.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

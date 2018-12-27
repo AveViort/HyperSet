@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Convert dendrogram Objects to Class hclust</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for as_hclust_fixed {dendextend}"><tr><td>as_hclust_fixed {dendextend}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Convert dendrogram Objects to Class hclust</h2>
+
+<h3>Description</h3>
+
+<p>Convert dendrogram Objects to Class hclust while preserving 
+the call/method/dist.method values of the original hclust object (hc)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+as_hclust_fixed(x, hc, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>any object which has an as.hclust method. 
+(mostly used for dendrogram)</p>
+</td></tr>
+<tr valign="top"><td><code>hc</code></td>
+<td>
+<p>an old hclust object from which to re-use 
+the call/method/dist.method values</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to as.hclust</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An hclust object (from a dendrogram) with the original hclust 
+call/method/dist.method values
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="../../stats/html/as.hclust.html">as.hclust</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hc &lt;- hclust(dist(USArrests[1:3,]), "ave")
+dend &lt;- as.dendrogram(hc)
+
+as.hclust(dend)
+as_hclust_fixed(dend, hc)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>dendextend</em> version 1.9.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Mean distance to kth nearest neighbor</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for nn {prabclus}"><tr><td>nn {prabclus}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Mean distance to kth nearest neighbor</h2>
+
+<h3>Description</h3>
+
+<p>Computes the mean of the distances from each point to its <code>ne</code>th
+nearest neighbor.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+nn(distmat, ne = 1)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>distmat</code></td>
+<td>
+<p>symmetric distance matrix (not a <code>dist</code>-object).</p>
+</td></tr>
+<tr valign="top"><td><code>ne</code></td>
+<td>
+<p>integer.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>numerical.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:chrish@stats.ucl.ac.uk">chrish@stats.ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche">http://www.homepages.ucl.ac.uk/~ucakche</a></p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. and Hausdorf, B. (2004) Distance-based parametric bootstrap
+tests for clustering of species ranges. <em>Computational Statistics
+and
+Data Analysis</em> 45, 875-896.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="prabtest.html">prabtest</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(kykladspecreg)
+j &lt;- jaccard(t(kykladspecreg))
+nn(j,4)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>prabclus</em> version 2.2-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

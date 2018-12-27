@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Fit a list of formulas</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for fit_with {modelr}"><tr><td>fit_with {modelr}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Fit a list of formulas</h2>
+
+<h3>Description</h3>
+
+<p><code>fit_with()</code> is a pipe-friendly tool that applies a list of
+formulas to a fitting function such as <code><a href="../../stats/html/lm.html">stats::lm()</a></code>.
+The list of formulas is typically created with <a href="formulas()">formulas()</a>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+fit_with(data, .f, .formulas, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>A dataset used to fit the models.</p>
+</td></tr>
+<tr valign="top"><td><code>.f</code></td>
+<td>
+<p>A fitting function such as <code><a href="../../stats/html/lm.html">stats::lm()</a></code>,
+<code><a href="../../lme4/html/lmer.html">lme4::lmer()</a></code> or <code><a href="../../rstanarm/html/stan_glmer.html">rstanarm::stan_glmer()</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>.formulas</code></td>
+<td>
+<p>A list of formulas specifying a model.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments passed on to <code>.f</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Assumes that <code>.f</code> takes the formula either as first argument
+or as second argument if the first argument is <code>data</code>.  Most
+fitting functions should fit these requirements.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><a href="formulas()">formulas()</a>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# fit_with() is typically used with formulas().
+disp_fits &lt;- mtcars %&gt;% fit_with(lm, formulas(~disp,
+  additive = ~drat + cyl,
+  interaction = ~drat * cyl,
+  full = add_predictors(interaction, ~am, ~vs)
+))
+
+# The list of fitted models is named after the names of the list of
+# formulas:
+disp_fits$full
+
+# Additional arguments are passed on to .f
+mtcars %&gt;% fit_with(glm, list(am ~ disp), family = binomial)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>modelr</em> version 0.1.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

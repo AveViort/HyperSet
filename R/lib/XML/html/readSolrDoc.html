@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read the data from a Solr document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for readSolrDoc {XML}"><tr><td>readSolrDoc {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read the data from a Solr document</h2>
+
+<h3>Description</h3>
+
+<p>Solr documents are used to represent
+general data in a reasonably simple format
+made up of lists, integers, logicals, longs,
+doubles, dates, etc. each with an optional name.
+These correspond very naturally to R objects.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+readSolrDoc(doc, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>doc</code></td>
+<td>
+<p>the object containing the data. This can be the name of a
+file, a parsed XML document or an XML node.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional parameters for the methods.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An R object representing the data in the Solr document,
+typically a named vector or named list.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>References</h3>
+
+<p>Lucene text search system.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="readKeyValueDB.html">readKeyValueDB</a></code>,
+<code><a href="xmlToList.html">xmlToList</a></code>,
+<code><a href="xmlToDataFrame.html">xmlToDataFrame</a></code>,
+<code><a href="xmlTreeParse.html">xmlParse</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+f = system.file("exampleData", "solr.xml", package = "XML")
+readSolrDoc(f)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Render page with template</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for render_page {pkgdown}"><tr><td>render_page {pkgdown}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Render page with template</h2>
+
+<h3>Description</h3>
+
+<p>Each page is composed of four templates: &quot;head&quot;, &quot;header&quot;, &quot;content&quot;, and
+&quot;footer&quot;. Each of these templates is rendered using the <code>data</code>, and
+then assembled into an overall page using the &quot;layout&quot; template.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+render_page(pkg = ".", name, data, path = "", depth = NULL,
+  quiet = FALSE)
+
+data_template(pkg = ".", depth = 0L)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pkg</code></td>
+<td>
+<p>Path to package to document.</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>Name of the template (e.g. &quot;home&quot;, &quot;vignette&quot;, &quot;news&quot;)</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>Data for the template.
+</p>
+<p>This is automatically supplemented with three lists:
+</p>
+
+<ul>
+<li> <p><code>site</code>: <code>title</code> and path to <code>root</code>.
+</p>
+</li>
+<li> <p><code>yaml</code>: the <code>template</code> key from <code>_pkgdown.yml</code>.
+</p>
+</li>
+<li> <p><code>package</code>: package metadata including <code>name</code> and<code>version</code>.
+</p>
+</li></ul>
+
+<p>See the full contents by running <code>data_template()</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>path</code></td>
+<td>
+<p>Location to create file; relative to destination directory.
+If <code>""</code> (the default), prints to standard out.</p>
+</td></tr>
+<tr valign="top"><td><code>depth</code></td>
+<td>
+<p>Depth of path relative to base directory.</p>
+</td></tr>
+<tr valign="top"><td><code>quiet</code></td>
+<td>
+<p>If <code>quiet</code>, will suppress output messages</p>
+</td></tr>
+</table>
+
+<hr /><div style="text-align: center;">[Package <em>pkgdown</em> version 1.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

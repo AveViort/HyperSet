@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Build news section</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for build_news {pkgdown}"><tr><td>build_news {pkgdown}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Build news section</h2>
+
+<h3>Description</h3>
+
+<p>Your <code>NEWS.md</code> is parsed in to sections based on your use of
+headings. Each minor version (i.e. the combination of first and second
+components) gets on one page, with all patch versions (i.e. the third
+component) on a single page. News items for development versions (by
+convention those versions with a fourth component) are displayed on an
+an &quot;unreleased&quot; page.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+build_news(pkg = ".", override = list(), preview = NA)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>pkg</code></td>
+<td>
+<p>Path to package.</p>
+</td></tr>
+<tr valign="top"><td><code>override</code></td>
+<td>
+<p>An optional named list used to temporarily override
+values in <code>_pkgdown.yml</code></p>
+</td></tr>
+<tr valign="top"><td><code>preview</code></td>
+<td>
+<p>If <code>TRUE</code>, or <code>is.na(preview) &amp;&amp; interactive()</code>, will preview
+freshly generated section in browser.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>NEWS.md</code> file should be formatted somewhat like this:</p>
+<pre># pkgdown 0.1.0.9000
+
+## Major changes
+
+- Fresh approach based on the staticdocs package. Site configuration now based on YAML files.
+
+...
+</pre>
+<p>Commonly used subsection headers include 'Major changes', 'Bug fixes', 'Minor
+changes'.
+</p>
+<p>Issues and contributors mentioned in news items are automatically linked to
+github if a <code>URL</code> entry linking to github.com is provided in the package
+<code>DESCRIPTION</code>.</p>
+<pre>## Major changes
+
+- Lots of bug fixes (@hadley, #100)
+</pre>
+<p>If the package is available on CRAN, release dates will be added for listed versions.
+</p>
+
+
+<h3>YAML config</h3>
+
+<p>To automatically link to release announcements, include a <code>releases</code>
+section.</p>
+<pre>news:
+ releases:
+ - text: "usethis 1.3.0"
+   href: https://www.tidyverse.org/articles/2018/02/usethis-1-3-0/
+ - text: "usethis 1.0.0 (and 1.1.0)"
+   href: https://www.tidyverse.org/articles/2017/11/usethis-1.0.0/
+</pre>
+<p>Control whether news is present on one page or multiple pages with the
+<code>one_page</code> field. The default is <code>true</code>.</p>
+<pre>news:
+- one_page: false
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pkgdown</em> version 1.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

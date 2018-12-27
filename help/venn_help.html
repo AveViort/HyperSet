@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Evinet Help</title>
+<LINK href="help.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+<p class="headr1">Using Venn diagrams</p>
+The idea of Venn diagram tool is to allow users working with a pre-computed file of differential expression (DE) values. Often, there are more than one contrast (comparison), and preparing DE lists off-line (e.g. in Excel) and then uploading them to EviNet is not very convenient. And again, there are no Venn diagrams in Excel.
+<ol>
+<li><a href="#fileformat" class="clickable">Prepare file for the upload</a></li>
+<li><a href="#upload_ags" class="clickable">Upload a file</a></li>
+<li><a href="#comparisons" class="clickable">Choose number of comparisions</a></li>
+<li><a href="#select_contrast" class="clickable">Select contrasts and Cutoff criterias</a></li>
+<li><a href="#venn_result" class="clickable">Understanding Venn-Diagrams</a></li>
+<li><a href="#select_ags" class="clickable">Select Altered Genes Sets</a></li>
+<li><a href="#select_nwandfgs" class="clickable">Select Networks and Functional Gene Sets</a></li>
+<li><a href="#result" class="clickable">Results</a></li>
+</ol>
+<hr>
+<span id="fileformat" class="headr2">Prepare file for the upload</span>
+<br></br>
+First, you have to prepare a file for the upload: it has to have columns that quantify DE and be understood by the header parser. At the moment, we support only one DE file format, the one currently used in the example in the project <span class="hlight">"stemcell"</span> and also downloadable from the <a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/P.matrix.NoModNodiff_wESC_full.VENN.txt">downloads directory</a>. Note that the file name should contain the keyword <span class="hlight">"VENN" (or ".venn")</span>. Given a simplest case of 3 different RNA-seq or microarray samples A, B, and C, your file might have contrasts <span class="hlight">"A vs. B"</span> and <span class="hlight">"C vs. B"</span>. And you might have compared <span class="hlight">"A vs. C"</span> as well, if it fits the idea of your experiment. If you calculated fold change values and accompanied them with p-values and adjusted p-values (FDR), then the header should have at least the following column headers.
+<img src="../pics/help_pics/p7.png" />
+<br></br>
+The most important elements here are the <span class="hcolor">delimiters</span>:
+<ol>
+<li>condition names should be separated with <span class="hcolor">"vs"</span> and then </li>
+<li>the value type (one of FC, P, FDR) is separated with <span class="hcolor">"-"<span></li>
+</ol>
+<a href="?">top</a>
+<hr>
+<span id="upload_ags" class="headr2">Upload a file</span>
+<br></br>
+<img src="../pics/help_newpics/p8_f.png"/>
+<br></br>
+The file is submitted in <span class="hlight">"Altered gene sets" -> "File" -> "Upload local file"</span>. Be patient, uploading can take time and 
+even get crashed. But as soon as it is done, you can always find it in the same section . Please click <span class="hlight">"Refresh list" </span>  if you dont see file after uploading.
+Click <span class="hlight">"Venn diagram"</span> button for further analysis.
+<br></br>
+<a href="?">top</a>
+<hr>
+<span id="comparisons" class="headr2">Choose number of comparisions</span>
+<br></br>
+By choosing the number of comparisons, number(n) of cross comparisons can be selected and represented by n circles in venn-diagram.
+<br></br>
+<img src="../pics/help_newpics/p9_f.png"/>
+<br></br>
+<a href="?">top</a>
+<hr>
+<span id="select_contrast" class="headr2">Select contrasts and Cutoff criterias</span>
+<br></br>
+After choosing 'n' you are going to see a set of controls that reflect the content of your DE file.
+<br>The ranges of cut-off sliders are defined by min/max values of each column. Note that the left and right fold change sliders correspond to down/up-regulation, 
+respectively. Their ranges end/begin at 0. In other words, this would only work with log fold change values. <br><span class="hcolor">Tip: If you want to only look at down-or only up-regulated genes, then you should set the other (right or left, respectively) slider in its utmost position, as it is done in the 1st and 2nd lines at the screenshot. This trick should filter out any genes with expression change in that direction</span>.</br> The filtering criteria are applied line-wise, i.e. there will be one DE list from contrast <span class="hlight">"WT_Nondiff_ESCs_Control_vs_WT_Nondiff_1_Control"</span>, where expression pattern of each gene satisfies both the FC and FDR criteria, then another list for <span class="hlight">"WT_Nondiff_ESCs_Control_vs_WT_Nondiff_2_Control"</span> and yet another for <span class="hlight">"WT_Nondiff_ESCs_Control_vs_WT_Nondiff_3_Control"</span>. Overlaps of these three will be reflected at the Venn diagram when you press the button <span class="hlight">"Generate Venn Diagram"</span>.
+<br></br>
+<img src="../pics/help_newpics/p10_f.png"/>
+<br>
+<a href="?">top</a>
+<hr>
+<span id="venn_result" class="headr2">Understanding Venn-Diagrams</span>
+<br></br>
+After click <span class="hlight">"Ready?Generate Venn Diagram"</span>, venn-diagram is created based on the number of comparisons (contrasts) chosen and cutoff criteria. The labeling of venn diagram areas might look 
+confusing. And it is indeed not trivial to label them without sacrificing readability. We thus propose this convention: labels consist of pluses and minuses which 
+indicate that genes satisfy conditions of  respective contrasts (lines of sliders). The order of +/- characters is the same as in the lines. For example, 
+<span class="hlight">"+--"</span> means that the genes fell within the criteria of contrast 1, <span class="hlight">"WT_Nondiff_ESCs_Control_vs_WT_Nondiff_1_Control"</span>, and did not within those of contrasts 2 and 3.
+<br></br>
+<img src="../pics/help_newpics/p11_f.png"/>
+<br>
+<a href="?">top</a>
+<hr>
+<span id="select_ags" class="headr2">Select Altered Genes Sets</span>
+<br></br>
+By clicking at the intersection areas, you can get respective gene tables.
+<br></br>
+<img src="../pics/help_newpics/p12_f.png"/>
+<br></br>
+You can pop up an arbitrary number of gene lists: from one to as many as there are non-zero intersections in the diagram. <br>Each of these lists can be automatically sent to NEA (as soon as you have chosen a network and FGS set).<br> <span class="hcolor">Note: only visible gene lists with box in the upper right corner checked will be treated as AGS. A tip: you can also filter/sort genes and copy some/all gene symbols with <span class="hlight">"Ctrl+mousedown"</span> and then use just these by pasting this new list in <span class="hlight">"Plain list"</span> section above. Do not forget then to uncheck the box near the button <span class="hlight">"Generate Venn Diagram"</span></span>.<br> The <span class="hlight">"Search"</span> is used to look for particular gene DE vales(FC/p/FDR) across various contrasts.
+<br>
+<a href="?">top</a>
+<hr>
+<span id="select_nwandfgs" class="headr2">Select Networks and Functional Gene Sets</span>
+<br></br>
+Select a Network and then Functional Gene Sets. For more details go through: <a href="https://www.evinet.org/help/part1.html#networks">Selecting Network,</a> <a href="https://www.evinet.org/help/part1.html#fgs">Selecting Functional Genesets</a>.<br>
+After selecting AGS,FGS and NW review the parameters before running analysis <a href="https://www.evinet.org/help/part1.html#check">Check and Submit</a>. 
+<br></br>
+<img src="../pics/help_newpics/p13_f.png"/>
+<br>
+<a href="?">top</a>
+<hr>
+<span id="result" class="headr2">Results</span>
+<br></br>
+<img src="../pics/help_newpics/p14_f.png"/>
+<br>
+<img src="../pics/help_newpics/p15_f.png"/>
+<a href="?">top</a>
+<hr>
+</body>
+</html>

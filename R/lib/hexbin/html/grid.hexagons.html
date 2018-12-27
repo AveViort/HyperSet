@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Add Hexagon Cells to Plot</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for grid.hexagons {hexbin}"><tr><td>grid.hexagons {hexbin}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Add Hexagon Cells to Plot</h2>
+
+<h3>Description</h3>
+
+<p>Plots cells in an hexbin object.  The function distinquishes among
+counts using 5 different styles.  This function is the hexagon
+plotting engine from the <code>plot</code> method for <code><a href="hexbin.html">hexbin</a></code>
+objects.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+grid.hexagons(dat, style = c("colorscale", "centroids", "lattice",
+	      "nested.lattice", "nested.centroids", "constant.col"),
+         use.count=TRUE, cell.at=NULL,
+	 minarea = 0.05, maxarea = 0.8, check.erosion = TRUE,
+	 mincnt = 1, maxcnt = max(dat@count), trans = NULL,
+	 colorcut = seq(0, 1, length = 17),
+	 density = NULL, border = NULL, pen = NULL,
+	 colramp = function(n){ LinGray(n,beg = 90, end = 15) },
+	 def.unit=  "native",
+	 verbose = getOption("verbose"))
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dat</code></td>
+<td>
+<p>an object of class <code>hexbin</code>, see <code><a href="hexbin.html">hexbin</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>style</code></td>
+<td>
+<p>character string specifying the type of plotting; must be (a
+unique abbrevation) of the values given in &lsquo;Usage&rsquo; above.</p>
+</td></tr>
+<tr valign="top"><td><code>use.count</code></td>
+<td>
+<p>logical specifying if counts should be used.</p>
+</td></tr>
+<tr valign="top"><td><code>cell.at</code></td>
+<td>
+<p>numeric vector to be plotted instead of counts, must
+besame length as the number of cells.</p>
+</td></tr>
+<tr valign="top"><td><code>minarea</code></td>
+<td>
+<p>numeric, the fraction of cell area for the lowest count.</p>
+</td></tr>
+<tr valign="top"><td><code>maxarea</code></td>
+<td>
+<p>the fraction of the cell area for the largest count.</p>
+</td></tr>
+<tr valign="top"><td><code>check.erosion</code></td>
+<td>
+<p>logical indicating only eroded points should be
+used for <code>"erodebin"</code> objects; simply passed to
+<code><a href="hcell2xy.html">hcell2xy</a></code>, see its documentation.</p>
+</td></tr>
+<tr valign="top"><td><code>mincnt</code></td>
+<td>
+<p>numeric; cells with counts smaller than <code>mincnt</code>
+are not shown.</p>
+</td></tr>
+<tr valign="top"><td><code>maxcnt</code></td>
+<td>
+<p>cells with counts larger than this are not shown.</p>
+</td></tr>
+<tr valign="top"><td><code>trans</code></td>
+<td>
+<p>a transformation function (or <code>NULL</code>) for the counts,
+e.g., <code><a href="../../base/html/MathFun.html">sqrt</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>colorcut</code></td>
+<td>
+<p>a vector of values covering [0, 1] which determine
+hexagon color class boundaries or hexagon size boundaries &ndash; for
+<code>style = "colorscale"</code> only.</p>
+</td></tr>
+<tr valign="top"><td><code>density</code></td>
+<td>
+<p><code><a href="../../grid/html/grid.polygon.html">grid.polygon</a></code> argument for shading.  0 causes
+the polygon not to be filled. <em>This is not implemented (for
+<code><a href="../../grid/html/grid.polygon.html">grid.polygon</a></code>) yet</em>.</p>
+</td></tr>
+<tr valign="top"><td><code>border</code></td>
+<td>
+<p><code><a href="../../grid/html/grid.polygon.html">grid.polygon</a>()</code> argument.  Draw the border for
+each hexagon.</p>
+</td></tr>
+<tr valign="top"><td><code>pen</code></td>
+<td>
+<p>colors for <code><a href="../../grid/html/grid.polygon.html">grid.polygon</a>()</code>.  Determines the color
+with which the polygon will be filled.</p>
+</td></tr>
+<tr valign="top"><td><code>colramp</code></td>
+<td>
+<p>function of an integer argument <code>n</code> returning n
+colors. <code>n</code> is determined </p>
+</td></tr></table>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>def.unit</code></td>
+<td>
+<p>default <code><a href="../../grid/html/unit.html">unit</a></code> to be used.</p>
+</td></tr></table>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>logical indicating if some diagnostic output should happen.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The six plotting styles have the following effect:
+</p>
+
+<dl>
+<dt><code>style="lattice"</code> or <code>"centroids"</code>:</dt><dd>
+<p>Plots the hexagons in different sizes based on counts.  The
+<code>"lattice"</code> version centers the hexagons at the cell centers
+whereas <code>"centroids"</code> moves the hexagon centers close to the
+center of mass for the cells.  In all cases the hexagons will not
+plot outside the cell unless <code>maxarea &gt; 1</code>.  Counts are rescaled
+into the interval [0,1] and colorcuts determine the class
+boundaries for sizes and counts. The pen argument for this style
+should be a single color or a vector of colors of
+<code>length(bin@count)</code>.</p>
+</dd>
+<dt><code>style="colorscale"</code>:</dt><dd>
+<p>Counts are rescaled into the interval [0,1] and colorcuts determines
+the class boundaries for the color classes.  For this style, the
+function passed as <code>colramp</code> is used to define the n colors for
+the n+1 color cuts. The pen argument is ignored.
+
+See <code><a href="colramp.html">LinGray</a></code> for the default <code>colramp</code> and
+alternative &ldquo;color ramp&rdquo; functions.
+</p>
+</dd>
+<dt><code>style="constant.col"</code>:</dt><dd>
+<p>This is an even simpler alternative to <code>"colorscale"</code>,
+using constant colors (determined <code>pen</code> optionally).
+</p>
+</dd>
+<dt><code>style="nested.lattice"</code> and <code>"nested.centroids"</code>:</dt><dd>
+<p>Counts are partitioned into classes by power of 10.  The encoding
+nests hexagon size within powers of 10 color contours.
+</p>
+<p>If the pen argument is used it should be a matrix of colors with 2
+columns and either <code>ceiling(log10(max(bin@count)))</code> or
+<code>length(bin@count)</code> rows.  The default uses the <span style="font-family: Courier New, Courier; color: #666666;"><b>R</b></span> color palatte
+so that pens numbers 2-11 determine colors for completely filled
+cell Pen 2 is the color for 1's, Pen 3 is the color for 10's, etc.
+Pens numbers 12-21 determine the color of the foreground hexagons. The
+hexagon size shows the relative count for the power of 10. Different
+color schemes give different effects including 3-D illusions
+
+
+
+
+
+
+</p>
+</dd>
+</dl>
+
+<p><em>Hexagon size encoding <code>minarea</code> and <code>maxarea</code></em>
+determine the area of the smallest and largest hexagons
+plotted.  Both are expressed fractions of the bin cell size.  Typical
+values might be .04 and 1.  When both values are 1, all plotted
+hexagons are bin cell size, if <code>maxarea</code> is greater than 1 than
+hexagons will overlap. This is sometimes interesting with the lattice
+and centroid styles.
+</p>
+<p><em>Count scaling</em>
+</p>
+<p><code>relcnt &lt;- (trans(cnt)-trans(mincnt)) / (trans(maxcnt)-trans(mincnt))</code>
+<br />
+<code>area &lt;- minarea + relcnt*maxarea</code>
+</p>
+<p>By default the transformation <code>trans()</code> is the identity
+function.  The legend routine requires the transformation inverse
+for some options.
+</p>
+<p><em>Count windowing <code>mincnt</code> and <code>maxcnt</code></em>
+Only routine only plots cells with cnts in [mincnts,   maxcnts]
+</p>
+
+
+<h3>SIDE EFFECTS</h3>
+
+<p>Adds hexagons to the plot.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Dan Carr &lt;dcarr@voxel.galaxy.gmu.edu&gt;;
+ported and extended by Nicholas Lewin-Koh <a href="mailto:nikko@hailmail.net">nikko@hailmail.net</a>.
+</p>
+
+
+<h3>References</h3>
+
+<p>Carr, D. B. (1991)
+Looking at Large Data Sets Using Binned Data Plots,
+pp. 7&ndash;39 in <em>Computing and Graphics in Statistics</em>;
+Eds. A. Buja and P. Tukey, Springer-Verlag, New York.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hexbin.html">hexbin</a></code>, <code><a href="smooth.hexbin.html">smooth.hexbin</a></code>,
+<code><a href="erode.hexbin.html">erode.hexbin</a></code>, <code><a href="hcell2xy.html">hcell2xy</a></code>,
+<code><a href="gplot.hexbin.html">gplot.hexbin</a></code>, <code><a href="hboxplot.html">hboxplot</a></code>, <code><a href="hdiffplot.html">hdiffplot</a></code>,
+<code><a href="grid.hexlegend.html">grid.hexlegend</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+set.seed(506)
+x &lt;- rnorm(10000)
+y &lt;- rnorm(10000)
+
+# bin the points
+bin &lt;- hexbin(x,y)
+
+# Typical approach uses plot( &lt;hexbin&gt; ) which controls the plot shape :
+plot(bin, main = "Bivariate rnorm(10000)")
+
+## but we can have more manual control:
+
+# A mixture distribution
+x &lt;- c(rnorm(5000),rnorm(5000,4,1.5))
+y &lt;- c(rnorm(5000),rnorm(5000,2,3))
+hb2 &lt;- hexbin(x,y)
+
+# Show color control and overplotting of hexagons
+## 1) setup coordinate system:
+P &lt;- plot(hb2, type="n", main = "Bivariate mixture (10000)")# asp=1
+
+## 2) add hexagons (in the proper viewport):
+pushHexport(P$plot.vp)
+grid.hexagons(hb2, style= "lattice", border = gray(.1), pen = gray(.6),
+              minarea = .1, maxarea = 1.5)
+library("grid")
+popViewport()
+
+## How to treat 'singletons' specially:
+P &lt;- plot(hb2, type="n", main = "Bivariate mixture (10000)")# asp=1
+pushHexport(P$plot.vp)
+grid.hexagons(hb2, style= "nested.centroids", mincnt = 2)# not the single ones
+grid.hexagons(hb2, style= "centroids", maxcnt = 1, maxarea=0.04)# single points
+popViewport()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>hexbin</em> version 1.27.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

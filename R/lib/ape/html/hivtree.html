@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Phylogenetic Tree of 193 HIV-1 Sequences</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hivtree {ape}"><tr><td>hivtree {ape}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Phylogenetic Tree of 193 HIV-1 Sequences</h2>
+
+<h3>Description</h3>
+
+<p>This data set describes an estimated clock-like phylogeny of 193 HIV-1
+group M sequences sampled in the Democratic Republic of Congo. 
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+data(hivtree.newick)
+data(hivtree.table)
+</pre>
+
+
+<h3>Format</h3>
+
+<p><code>hivtree.newick</code> is a string with the tree in Newick format.
+The data frame <code>hivtree.table</code> contains the corresponding internode
+distances.
+</p>
+
+
+<h3>Source</h3>
+
+<p>This is a data example from Strimmer and Pybus (2001).
+</p>
+
+
+<h3>References</h3>
+
+<p>Strimmer, K. and Pybus, O. G. (2001) Exploring the demographic history
+of DNA sequences using the generalized skyline plot. <em>Molecular
+Biology and Evolution</em>, <b>18</b>, 2298&ndash;2305.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# example tree in NH format (a string)
+data("hivtree.newick") 
+hivtree.newick
+
+# generate file "hivtree.phy" in working directory
+cat(hivtree.newick, file = "hivtree.phy", sep = "\n")
+tree.hiv &lt;- read.tree("hivtree.phy") # load tree
+unlink("hivtree.phy") # delete the file "hivtree.phy"
+
+plot(tree.hiv)
+
+# table with list of internode distances
+data("hivtree.table") 
+hivtree.table
+
+
+# construct coalescence intervals
+ci &lt;- coalescent.intervals(tree.hiv) # from tree
+ci &lt;- coalescent.intervals(hivtree.table$size) #from intervals
+ci
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>ape</em> version 5.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: RBGL.overview</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for RBGL.overview {RBGL}"><tr><td>RBGL.overview {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>RBGL.overview</h2>
+
+<h3>Description</h3>
+
+<p>The RBGL package consists of a number of interfaces to the Boost
+C++ library for graph algorithms.  This page follows, approximately,
+the chapter structure of the monograph on the Boost Graph Library
+by Siek et al., and gives hyperlinks to documentation on
+R functions currently available, along with the names
+of formal parameters to these functions. </p>
+
+
+<h3> basicAlgs </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="bandwidth.html">bandwidth</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="bfs.html">bfs</a></code> </td><td style="text-align: left;"> <code>object,node,checkConn</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="bfs.html">dfs</a></code> </td><td style="text-align: left;"> <code>object,node,checkConn</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="edgeConn.html">edgeConnectivity</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="gprofile.html">gprofile</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="isomorphism.html">isomorphism</a></code> </td><td style="text-align: left;"> <code>g1,g2</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="minCut.html">minCut</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="transClosure.html">transitive.closure</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="tsort.html">tsort</a></code> </td><td style="text-align: left;"> <code>x</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> ShortestPaths </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="bellman.ford.sp.html">bellman.ford.sp</a></code> </td><td style="text-align: left;"> <code>g,start</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="dag.sp.html">dag.sp</a></code> </td><td style="text-align: left;"> <code>g,start</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="dijkstra.sp.html">dijkstra.sp</a></code> </td><td style="text-align: left;"> <code>g,start</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="extractPath.html">extractPath</a></code> </td><td style="text-align: left;"> <code>s,f,pens</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="johnson.all.pairs.sp.html">johnson.all.pairs.sp</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="sp.between.html">sp.between</a></code> </td><td style="text-align: left;"> <code>g,start,finish</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="sp.between.html">sp.between.old</a></code> </td><td style="text-align: left;"> <code>g,start,finish</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="sp.between.html">sp.between.scalar</a></code> </td><td style="text-align: left;"> <code>g,start,finish</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> MinimumSpanningTree </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="mstree.kruskal.html">mstree.kruskal</a></code> </td><td style="text-align: left;"> <code>x</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> ConnectedComponents </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="connectedComp.html">connectedComp</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="highlyConnSG.html">highlyConnSG</a></code> </td><td style="text-align: left;"> <code>g,sat,ldv</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="incrConnComp.html">incremental.components</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="incrConnComp.html">init.incremental.components</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="incrConnComp.html">same.component</a></code> </td><td style="text-align: left;"> <code>g,node1,node2</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="strongComp.html">strongComp</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> MaximumFlow </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="maxFlow.html">edmonds.karp.max.flow</a></code> </td><td style="text-align: left;"> <code>g,source,sink</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="maxFlow.html">push.relabel.max.flow</a></code> </td><td style="text-align: left;"> <code>g,source,sink</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> SparseMatrixOrdering </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="ordering.html">cuthill.mckee.ordering</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="ordering.html">minDegreeOrdering</a></code> </td><td style="text-align: left;"> <code>g,delta</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="ordering.html">sloan.ordering</a></code> </td><td style="text-align: left;"> <code>g,w1,w2</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> LayoutAlgorithms </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="layout.html">circle.layout</a></code> </td><td style="text-align: left;"> <code>g,radius</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="layout.html">kamada.kawai.spring.layout</a></code> </td><td style="text-align: left;"> <code>g,edge_or_side,es_length</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> GraphClustering </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="bccluster.html">betweenness.centrality.clustering</a></code> </td><td style="text-align: left;"> <code>g,threshold,normalize</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> Betweenness </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="betweenness.html">brandes.betweenness.centrality</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3> Wavefront </h3>
+
+
+<table summary="Rd table">
+<tr>
+ <td style="text-align: left;">
+Functions </td><td style="text-align: left;"> parameters </td>
+</tr>
+<tr>
+ <td style="text-align: left;"> 
+<code><a href="wavefront.html">aver.wavefront</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="wavefront.html">ith.wavefront</a></code> </td><td style="text-align: left;"> <code>g,start</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="wavefront.html">maxWavefront</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+<code><a href="wavefront.html">rms.wavefront</a></code> </td><td style="text-align: left;"> <code>g</code></td>
+</tr>
+<tr>
+ <td style="text-align: left;">
+</td>
+</tr>
+
+</table>
+
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

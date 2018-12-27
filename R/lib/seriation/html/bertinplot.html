@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot a Bertin Matrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for bertinplot {seriation}"><tr><td>bertinplot {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot a Bertin Matrix</h2>
+
+<h3>Description</h3>
+
+<p>Plot a data matrix of cases and variables. Each value is represented by a
+symbol. Large values are highlighted. The matrix can be rearranged to make
+structure in the data visible (see Falguerolles et al 1997).
+<code>bertin_cut_line()</code> can be used to add cut lines (see Details).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+bertinplot(x, order = NULL, highlight = TRUE,  options = NULL)   
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> a data matrix. Note that following Bertin, 
+columns are variables and rows are cases. This behavior can be 
+reversed using <code>reverse = TRUE</code> in <code>options</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p>an object of class <code>ser_permutation</code> to rearrange <code>x</code> before
+plotting.  If <code>NULL</code>, no rearrangement is performed.</p>
+</td></tr>
+<tr valign="top"><td><code>highlight</code></td>
+<td>
+<p> a logical scalar indicating whether to use highlighting.
+If <code>TRUE</code>, all variables with values greater than the variable-wise
+mean are  highlighted. To control highlighting, also a 
+logical matrix with the same dimensions as <code>x</code> can be supplied.</p>
+</td></tr>
+<tr valign="top"><td><code>options</code></td>
+<td>
+<p>a list with options for plotting. The
+list can contain the following elements:
+</p>
+
+<dl>
+<dt><code>panel.function</code></dt><dd><p> a function to produce the symbols. Currently
+available functions are <code>panel.bars</code> (default),
+<code>panel.circles</code>,
+<code>panel.squares</code>,
+<code>panel.blocks</code>
+and
+<code>panel.lines</code>. For circles and squares neg. values are
+represented by a dashed border. For blocks all blocks are the same size
+(can be used with <code>shading=TRUE</code>).</p>
+</dd>
+<dt><code>reverse</code></dt><dd><p> logical indicating whether to swap cases and variables 
+in the plot. The default (<code>FALSE</code>) 
+is to plot cases as columns and variables as rows.</p>
+</dd>
+<dt><code>xlab, ylab</code></dt><dd><p> labels (default: use labels from <code>x</code>).</p>
+</dd>
+<dt><code>spacing</code></dt><dd><p> relative space between symbols (default: 0.2).</p>
+</dd>
+<dt><code>shading</code></dt><dd><p> use gray shades to encode value instead of highlighting (default: FALSE).</p>
+</dd>
+<dt><code>frame</code></dt><dd><p> plot a grid to separate symbols (default: codeFALSE).</p>
+</dd>
+<dt><code>mar</code></dt><dd><p> margins (see <code>par</code>).</p>
+</dd>
+<dt><code>gp_labels</code></dt><dd><p> gpar object for labels (see <code>gpar</code>).</p>
+</dd>
+<dt><code>gp_panels</code></dt><dd><p> gpar object for panels (see <code>gpar</code>).</p>
+</dd>
+<dt><code>newpage</code></dt><dd><p> a logical indicating  whether to start the plot 
+on a new page (see <code>grid.newpage</code>). </p>
+</dd>
+<dt><code>pop</code></dt><dd><p>a logical indicating whether to pop the created viewports
+(see <code>pop.viewport</code>)?  </p>
+</dd>
+</dl>
+
+</td></tr></table>
+
+
+<h3>Details</h3>
+
+<p>The plot is organized as a matrix of symbols. The symbols are drawn
+by a panel function, where all symbols of a row are drawn 
+by one call of the function (using vectorization). The interface for the
+panel function is <code>panel.myfunction(value, spacing, hl)</code>.
+<code>value</code> is the vector of values for a row scaled between 0 and 1, 
+<code>spacing</code> contains the relative space between symbols and
+<code>hl</code> is a logical vector indicating which symbol should be highlighted.
+</p>
+<p>Cut lines can be added to an existing bertin plot 
+using <code>bertin_cut_line(x=NULL, y=NULL)</code>. 
+<code>x</code>/<code>y</code> is can be a number indicating where to
+draw the cut line between two columns/rows. If both <code>x</code>
+and <code>y</code> is specified then one can select a row/column and the
+other can select a range to draw a line which does only span a part
+of the row/column. It is important to
+call <code>bertinplot()</code> with the option <code>pop=FALSE</code>. 
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>de Falguerolles, A., Friedrich, F., Sawitzki, G. (1997):
+A Tribute to J. Bertin's Graphical Data Analysis.
+In: Proceedings of the SoftStat '97 (Advances in Statistical Software 6),
+11&ndash;20.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="permutation.html">ser_permutation</a></code>,
+<code><a href="seriate.html">seriate</a></code>,
+Package <span class="pkg">grid</span>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("Irish")
+scale_by_rank &lt;- function(x) apply(x, 2, rank)
+x &lt;- scale_by_rank(Irish[,-6])
+
+## use the the sum of absolute rank differences
+order &lt;- c(
+  seriate(dist(x, "minkowski", p = 1)),
+  seriate(dist(t(x), "minkowski", p = 1))
+)
+
+## plot
+bertinplot(x, order)
+
+## some alternative displays
+bertinplot(x, order, options = list(shading = TRUE, panel = panel.blocks))
+bertinplot(x, order, options = list(panel = panel.lines))
+bertinplot(x, order, options = list(panel = panel.squares))
+bertinplot(x, order, 
+    options = list(panel = panel.circles, spacing = -0.5))
+
+## plot with cut lines (we manually set the order here)
+order &lt;- ser_permutation(c(21, 16, 19, 18, 14, 12, 20, 15, 
+    17, 26, 13, 41,  7, 11, 5, 23, 28, 34, 31, 1, 38, 40,  
+    3, 39,  4, 27, 24,  8, 37, 36, 25, 30, 33, 35,  2, 
+    22, 32, 29, 10,  6,  9),
+    c(4, 2, 1, 6, 8, 7, 5, 3))
+
+bertinplot(x, order, options=list(pop=FALSE))
+bertin_cut_line(,4) ## horizontal line between rows 4 and 5
+bertin_cut_line(,7) ## separate "Right to Life" from the rest
+bertin_cut_line(14,c(0,4)) ## separate a block of large values (vertically)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>

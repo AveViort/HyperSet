@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: compute shortest paths for all pairs of nodes</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for floyd.warshall.all.pairs.sp {RBGL}"><tr><td>floyd.warshall.all.pairs.sp {RBGL}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>compute shortest paths for all pairs of nodes</h2>
+
+<h3>Description</h3>
+
+<p> compute shortest paths for all pairs of nodes </p>
+
+
+<h3>Usage</h3>
+
+<pre>
+floyd.warshall.all.pairs.sp(g)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>g</code></td>
+<td>
+<p> graph object with edge weights given</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Compute shortest paths between every pair of vertices for a dense graph.  
+It works on both undirected and directed graph.
+The result is given as a distance matrix.  The matrix is symmetric for an
+undirected graph, and asymmetric (very likely) for a directed graph.
+For a sparse graph, the <code>johnson.all.pairs.sp</code> functions
+should be used instead.
+</p>
+<p>See documentation on these algorithms in Boost Graph Library for more details.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A matrix of shortest path lengths between all pairs of nodes in the graph.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Li Long &lt;li.long@isb-sib.ch&gt;</p>
+
+
+<h3>References</h3>
+
+<p>Boost Graph Library ( www.boost.org/libs/graph/doc/index.html )
+</p>
+<p>The Boost Graph Library: User Guide and Reference Manual;
+by Jeremy G. Siek, Lie-Quan Lee, and Andrew Lumsdaine;
+(Addison-Wesley, Pearson Education Inc., 2002), xxiv+321pp.
+ISBN 0-201-72914-8
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="johnson.all.pairs.sp.html">johnson.all.pairs.sp</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+con &lt;- file(system.file("XML/conn.gxl", package="RBGL"), open="r")
+coex &lt;- fromGXL(con)
+close(con)
+floyd.warshall.all.pairs.sp(coex)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>RBGL</em> version 1.58.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

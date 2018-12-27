@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: List function objects</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ls.funs {gdata}"><tr><td>ls.funs {gdata}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>List function objects</h2>
+
+<h3>Description</h3>
+
+<p>Return a character vector giving the names of function objects in the
+specified environment.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ls.funs(...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Arguments passed to <code>ls</code>. See the help for
+<code><a href="../../base/html/ls.html">ls</a></code> for details.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This function calls <code>ls</code> and then returns a character vector
+containing only the names of only function objects.
+</p>
+
+
+<h3>Value</h3>
+
+<p>character vector
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Gregory R. Warnes <a href="mailto:greg@warnes.net">greg@warnes.net</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../base/html/ls.html">ls</a></code>, <code><a href="../../base/html/is.function.html">is.function</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## List functions defined in the global environment:
+ls.funs()
+
+## List functions available in the base package:
+ls.funs("package:base")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>gdata</em> version 2.18.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

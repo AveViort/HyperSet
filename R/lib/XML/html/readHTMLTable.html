@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read data from one or more HTML tables</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for readHTMLTable {XML}"><tr><td>readHTMLTable {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read data from one or more HTML tables</h2>
+
+<h3>Description</h3>
+
+<p>This function and its methods provide somewhat robust methods for
+extracting data from HTML tables in an HTML document.
+One can read all the tables in a document given by filename or (<code>http:</code>
+or <code>ftp:</code>) URL,
+or having already parsed the document via <code><a href="xmlTreeParse.html">htmlParse</a></code>.
+Alternatively, one can specify an individual <code>&lt;table&gt;</code>
+node in the document.
+</p>
+<p>The methods attempt to do some heuristic computations to determine
+the header labels for the columns, the name of the table, etc.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+readHTMLTable(doc, header = NA,
+              colClasses = NULL, skip.rows = integer(), trim = TRUE,
+              elFun = xmlValue, as.data.frame = TRUE, which = integer(),
+               ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>doc</code></td>
+<td>
+<p>the HTML document which can be a file name or a URL
+or an already parsed <code>HTMLInternalDocument</code>, or
+an HTML node of class <code>XMLInternalElementNode</code>,
+or a character vector containing the HTML content to parse and process.</p>
+</td></tr>
+<tr valign="top"><td><code>header</code></td>
+<td>
+<p>either a logical value indicating whether the table has
+column labels, e.g. the first row or a <code>thead</code>, or alternatively
+a character vector giving the names to use for the resulting columns.
+This can be a logical vector and the individual values will be used
+in turn for the different tables. This allows the caller to control
+whether individual tables are processed as having column names.
+Alternatively, one can read a specific table via the <code>which</code>
+parameter and control how that is processed with a single scalar logical.
+</p>
+</td></tr>
+<tr valign="top"><td><code>colClasses</code></td>
+<td>
+<p>either a list or a vector that gives the names of
+the data types for the different columns in the table, or
+alternatively a function used to convert the string values to the
+appropriate type.  A value of <code>NULL</code> means that we should drop
+that column from the result.
+Note that currently the conversion occurs before the
+vectors are converted to a data frame (if <code>as.data.frame</code> is
+<code>TRUE</code>).
+As a result, to ensure that character vectors remain as characters
+and not factors, use <code>stringsAsFactors = FALSE</code>.
+This typically applies only to an individual table and so for the
+method applied to a <code>XMLInternalElementNode</code> object.
+</p>
+<p>In addition to the usual &quot;integer&quot;, &quot;numeric&quot;, &quot;logical&quot;, &quot;character&quot;, etc.
+names of R data types, one can use
+&quot;FormattedInteger&quot;, &quot;FormattedNumber&quot; and &quot;Percent&quot; to specify that
+format of the values are numbers possibly with commas (,) separating
+groups of digits or a number followed by a percent sign (%).
+This mechanism allows one to introduce new classes and specify these
+as targets in <code>colClasses</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>skip.rows</code></td>
+<td>
+<p>an integer vector indicating which rows to ignore.</p>
+</td></tr>
+<tr valign="top"><td><code>trim</code></td>
+<td>
+<p>a logical value indicating whether to remove leading and
+trailing white space from the content cells.</p>
+</td></tr>
+<tr valign="top"><td><code>elFun</code></td>
+<td>
+<p>a function which, if specified, is called when converting
+each cell. Currently, only the node is specified. In the future, we might 
+additionally pass the index of the column so that the function has
+some context, e.g. whether the value is a row label or a regular
+value, or if the caller knows the type of columns.
+</p>
+</td></tr>
+<tr valign="top"><td><code>as.data.frame</code></td>
+<td>
+<p>a logical value indicating whether to turn the
+resluting table(s) into data frames or leave them as matrices.
+</p>
+</td></tr>
+<tr valign="top"><td><code>which</code></td>
+<td>
+<p>an integer vector identifying which tables to return from
+within the document. This applies to the method for the document, not
+individual tables.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>currently additional parameters that are passed on to
+<code><a href="../../base/html/as.data.frame.html">as.data.frame</a></code> if <code>as.data.frame</code> is <code>TRUE</code>.
+We may change this to use these as additional arguments for calls to
+<code>elFun</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>If the document (either by name or parsed tree) is specified,
+the return vale is a list of data frames or matrices.
+If a single HTML node is provided
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang</p>
+
+
+<h3>References</h3>
+
+<p>HTML4.0 specification  
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlTreeParse.html">htmlParse</a></code>
+<code><a href="getNodeSet.html">getNodeSet</a></code>
+<code><a href="getNodeSet.html">xpathSApply</a></code>    
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+## This changed to using https: in June 2015, and that is unsupported.
+# u = "http://en.wikipedia.org/wiki/World_population"
+ u = "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population"
+
+ tables = readHTMLTable(u)
+ names(tables)
+
+ tables[[2]]
+  # Print the table. Note that the values are all characters
+  # not numbers. Also the column names have a preceding X since
+  # R doesn't allow the variable names to start with digits.
+ tmp = tables[[2]]
+
+
+   # Let's just read the second table directly by itself.
+ doc = htmlParse(u)
+ tableNodes = getNodeSet(doc, "//table")
+ tb = readHTMLTable(tableNodes[[2]])
+
+  # Let's try to adapt the values on the fly.
+  # We'll create a function that turns a th/td node into a val
+ tryAsInteger = function(node) {
+                  val = xmlValue(node)
+                  ans = as.integer(gsub(",", "", val))
+                  if(is.na(ans))
+                      val
+                  else
+                      ans
+                }
+
+ tb = readHTMLTable(tableNodes[[2]], elFun = tryAsInteger)
+
+ tb = readHTMLTable(tableNodes[[2]], elFun = tryAsInteger,
+                       colClasses = c("character", rep("integer", 9)))
+
+## End(Not run)
+
+zz =
+  readHTMLTable("https://www.inflationdata.com/Inflation/Consumer_Price_Index/HistoricalCPI.aspx")
+if(any(i &lt;- sapply(zz, function(x) if(is.null(x)) 0 else ncol(x)) == 14)) {
+  # guard against the structure of the page changing.
+    zz = zz[[which(i)[1]]]  # 4th table
+    # convert columns to numeric.  Could use colClasses in the call to readHTMLTable()
+    zz[-1] = lapply(zz[-1], function(x) as.numeric(gsub(".* ", "", as.character(x))))
+    matplot(1:12, t(zz[-c(1, 14)]), type = "l")
+}
+
+
+# From Marsh Feldman on R-help, possibly
+# https://stat.ethz.ch/pipermail/r-help/2010-March/232586.html
+# That site was non-responsive in June 2015,
+# and this does not do a good job on the current table.
+
+doc &lt;- "http://www.nber.org/cycles/cyclesmain.html"
+# The  main table is the second one because it's embedded in the page table.
+tables &lt;- getNodeSet(htmlParse(doc), "//table")
+xt &lt;- readHTMLTable(tables[[2]],
+                    header = c("peak","trough","contraction",
+                               "expansion","trough2trough","peak2peak"),
+                    colClasses = c("character","character","character",
+                                   "character","character","character"),
+                    trim = TRUE, stringsAsFactors = FALSE
+                   )
+
+if(FALSE) {
+ # Here is a totally different way of reading tables from HTML documents.
+ # The data are formatted using PRE and so can be read via read.table
+ u = "http://tidesonline.nos.noaa.gov/data_read.shtml?station_info=9414290+San+Francisco,+CA"
+ h = htmlParse(u)
+ p = getNodeSet(h, "//pre")
+ con = textConnection(xmlValue(p[[2]]))
+ tides = read.table(con)
+}
+
+## Not run: 
+## This is not accessible without authentication ...
+u = "http://www.omegahat.net/RCurl/testPassword/table.html"
+if(require(RCurl) &amp;&amp; url.exists(u)) {
+  tt =  getURL(u, userpwd = "bob:duncantl")
+  readHTMLTable(tt)
+}
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class TSP - Symmetric traveling salesperson problem</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for TSP {TSP}"><tr><td>TSP {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class TSP &ndash; Symmetric traveling salesperson problem</h2>
+
+<h3>Description</h3>
+
+<p>Constructor to create an instance of a symmetric traveling salesperson
+problem (TSP) and some auxiliary methods.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## constructor
+TSP(x, labels = NULL)
+
+## coercion
+as.TSP(x)
+
+## methods
+## S3 method for class 'TSP'
+n_of_cities(x)
+## S3 method for class 'TSP'
+image(x, order, col = gray.colors(64), ...)
+## S3 method for class 'TSP'
+labels(object, ...)
+## S3 method for class 'TSP'
+print(x, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x, object</code></td>
+<td>
+<p> an object (currently <code>dist</code> or a symmetric
+matrix) to be converted into a <code>TSP</code> or, for the methods, 
+an object of class <code>TSP</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>labels</code></td>
+<td>
+<p>optional city labels. If not given, labels are taken 
+from <code>x</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>col</code></td>
+<td>
+<p> color scheme for image. </p>
+</td></tr>
+<tr valign="top"><td><code>order</code></td>
+<td>
+<p> order of cities for the image as
+an integer vector or an object of class <code>TOUR</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> further arguments are passed on.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Objects of class <code>TSP</code> are internally represented as <code>dist</code> objects
+(use <code>as.dist()</code> to get the <code>dist</code> object).
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>TSP()</code> returns <code>x</code> as an object of class <code>TSP</code>.
+</p>
+<p><code>n_of_cities()</code> returns the number of cities in <code>x</code>.
+</p>
+<p><code>labels()</code> returns a vector with the names of the cities in <code>x</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="TOUR.html">TOUR</a></code>,
+<code><a href="insert_dummy.html">insert_dummy</a></code>,
+<code><a href="tour_length.html">tour_length</a></code>,
+<code><a href="solve_TSP.html">solve_TSP</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("iris")
+d &lt;- dist(iris[-5])
+
+## create a TSP
+tsp &lt;- TSP(d)
+tsp
+
+## use some methods 
+n_of_cities(tsp)
+labels(tsp)
+image(tsp)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

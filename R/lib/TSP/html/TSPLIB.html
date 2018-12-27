@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Read and write TSPLIB files</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for TSPLIB {TSP}"><tr><td>TSPLIB {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Read and write TSPLIB files</h2>
+
+<h3>Description</h3>
+
+<p>Reads and writes TSPLIB format files. TSPLIB files can be used by most
+TSP solvers. Sample instances for the TSP in TSPLIB format are available 
+on the TSPLIB homepage (see references).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+write_TSPLIB(x, file, precision = 6, inf = NULL, neg_inf = NULL)
+read_TSPLIB(file, precision = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> an object of class <code>TSP</code>, <code>ATSP</code> or <code>ETSP</code>. 
+<code>NA</code>s are not allowed.</p>
+</td></tr>
+<tr valign="top"><td><code>file</code></td>
+<td>
+<p> file name or a <code>connection</code>.  </p>
+</td></tr>
+<tr valign="top"><td><code>precision</code></td>
+<td>
+<p> controls the number of decimal places used to represent
+distances (see details).  If <code>x</code> already is <code>integer</code>, this
+argument is ignored and <code>x</code> is used as is.</p>
+</td></tr>
+<tr valign="top"><td><code>inf</code></td>
+<td>
+<p> replacement value for <code>Inf</code> (TSPLIB format cannot handle
+<code>Inf</code>). If <code>inf</code> is <code>NULL</code>, a large value of 
+<i>max(x) + 2 range(x)</i> (ignoring infinite entries) is used. </p>
+</td></tr>
+<tr valign="top"><td><code>neg_inf</code></td>
+<td>
+<p> replacement value for <code>-Inf</code>. 
+If no value is specified, a small value of
+<i>min(x) - 2 range(x)</i> (ignoring infinite entries) is used. </p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>In the TSPLIB format distances are represented by integer values. Therefore, if
+<code>x</code> contains <code>double</code> values (which is normal in R) the values given
+in <code>x</code> are multiplied by <i>10^{precision}</i> before coercion to
+<code>integer</code>. Note that therefore all results produced by programs using the
+TSPLIB file as input need to be divided by <i>10^{precision}</i> (i.e., the
+decimal point has to be shifted <code>precision</code> placed to the left).
+</p>
+<p>Currently only the following <code>EDGE_WEIGHT_TYPE</code>s are implemented:
+<code>EXPLICIT</code>, <code>EUC_2D</code> and <code>EUC_3D</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>read_TSPLIB</code> returns an object of class <code>TSP</code> or <code>ATSP</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>TSPLIB home page, 
+<a href="http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/">http://www.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/</a></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Drilling problem from TSP
+drill &lt;- read_TSPLIB(system.file("examples/d493.tsp", package = "TSP"))
+drill
+tour &lt;- solve_TSP(drill, method = "nn", two_opt = TRUE)
+tour
+plot(drill, tour, cex=.6, col = "red", pch= 3, main = "TSPLIB: d493")
+
+  
+## Write and read data in TSPLIB format
+x &lt;- data.frame(x=runif(5), y=runif(5))
+
+## create TSP, ATSP and ETSP (2D)
+tsp &lt;- TSP(dist(x))
+atsp &lt;- ATSP(dist(x))
+etsp &lt;- ETSP(x[,1:2])  
+  
+write_TSPLIB(tsp, file="example.tsp")
+#file.show("example.tsp")
+r &lt;- read_TSPLIB("example.tsp")  
+r  
+  
+write_TSPLIB(atsp, file="example.tsp")
+#file.show("example.tsp")
+r &lt;- read_TSPLIB("example.tsp")  
+r  
+  
+write_TSPLIB(etsp, file="example.tsp")
+#file.show("example.tsp")
+r &lt;- read_TSPLIB("example.tsp")  
+r  
+  
+## clean up
+unlink("example.tsp")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

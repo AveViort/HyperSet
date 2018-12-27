@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: TSP solver interface</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for solve_TSP {TSP}"><tr><td>solve_TSP {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>TSP solver interface</h2>
+
+<h3>Description</h3>
+
+<p>Common interface to all TSP solvers in this package.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+solve_TSP(x, method = NULL, control = NULL, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p> the TSP given as an object of class <code>TSP</code>, <code>ATSP</code>
+or <code>ETSP</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p> method to solve the TSP (default: arbitrary insertion
+algorithm with two_opt refinement. </p>
+</td></tr>
+<tr valign="top"><td><code>control</code></td>
+<td>
+<p> a list of arguments passed on to the TSP solver
+selected by <code>method</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p> additional arguments are added to <code>control</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Treatment of <code>NA</code>s and infinite values in <code>x</code>:
+<code>TSP</code> and <code>ATSP</code> contain distances and <code>NA</code>s are not allowed.
+<code>Inf</code> is allowed and can be used to model the missing edges in
+incomplete graphs
+(i.e., the distance between the two objects is infinite).
+Internally, <code>Inf</code> is replaced by a large value given by
+<i>max(x) + 2 range(x)</i>.
+Note that the solution might still place the two objects next to each other
+(e.g., if <code>x</code> contains several unconnected subgraphs)
+which results in a path length of <code>Inf</code>.
+</p>
+<p>All heuristics can be used with the control arguments <code>repetitions</code>
+(uses the best from that many repetitions with random starts)
+and <code>two_opt</code> (a logical indicating if two_opt refinement should be
+performed). If several repetitions are done (this includes method <code>"repetitive_nn"</code>) then <span class="pkg">foreach</span> is used so they
+can be performed in parallel on multiple cores/machines.
+To enable parallel execution an appropriate parallel backend needs to be registered (e.g., load <span class="pkg">doParallel</span> and register it with
+<code>registerDoParallel()</code>).
+</p>
+<p><code>ETSP</code> are currently solved by first calculating a dissimilarity matrix (a
+<code>TSP</code>). Only concorde and linkern can solve the TSP directly on the
+<code>ETSP</code>.
+</p>
+<p>Currently the following methods are available:
+</p>
+
+<dl>
+<dt><code>"identity"</code>, <code>"random"</code></dt><dd><p>return a tour representing the order
+in the data (identity order) or a random order.</p>
+</dd>
+<dt><code>"nearest_insertion"</code>,
+<code>"farthest_insertion"</code>,
+<code>"cheapest_insertion"</code>,
+<code>"arbitrary_insertion"</code>
+</dt><dd>
+<p>Nearest,
+farthest, cheapest and arbitrary insertion algorithms for a symmetric and
+asymmetric TSP (Rosenkrantz et al. 1977).
+</p>
+<p>The distances between cities are stored in a distance matrix <i>D</i> with
+elements <i>d(i,j)</i>.  All insertion algorithms start with a tour
+consisting of an arbitrary city and choose in each step a city <i>k</i> not
+yet on the tour. This city is inserted into the existing tour between two
+consecutive cities <i>i</i> and <i>j</i>, such that </p>
+<p style="text-align: center;"><i>d(i,k) + d(k,j) -
+    d(i,j)</i></p>
+<p> is minimized. The algorithms stops when all cities are on the tour.
+</p>
+<p>The nearest insertion algorithm chooses city <i>k</i> in each step as the
+city which is <em>nearest</em> to a city on the tour.
+</p>
+<p>For farthest insertion, the city <i>k</i> is chosen in each step as the city
+which is <em>farthest</em> to any city on the tour.
+</p>
+<p>Cheapest insertion chooses the city <i>k</i> such that the cost of inserting
+the new city (i.e., the increase in the tour's length) is minimal.
+</p>
+<p>Arbitrary insertion chooses the city <i>k</i> randomly from all cities not
+yet on the tour.
+</p>
+<p>Nearest and cheapest insertion tries to build the tour using cities which
+fit well into the partial tour constructed so far.  The idea behind behind
+farthest insertion is to link cities far away into the tour fist to
+establish an outline of the whole tour early.
+</p>
+<p>Additional control options:
+</p>
+
+<dl>
+<dt><code>start</code></dt><dd><p>index of the
+first city (default: random city).</p>
+</dd>
+</dl>
+
+</dd>
+<dt><code>"nn", "repetitive_nn"</code></dt><dd>
+<p>Nearest neighbor and repetitive nearest neighbor algorithms for
+symmetric and asymmetric TSPs (Rosenkrantz et al. 1977).
+</p>
+<p>The algorithm starts with a tour containing a random city. Then the
+algorithm always adds to the last city on the tour the nearest not yet
+visited city. The algorithm stops when all cities are on the tour.
+</p>
+<p>Repetitive nearest neighbor constructs a nearest neighbor tour for each
+city as the starting point and returns the shortest tour found.
+</p>
+<p>Additional control options:
+</p>
+
+<dl>
+<dt><code>start</code></dt><dd><p> index of the first city (default: random city). </p>
+</dd>
+</dl>
+
+</dd>
+<dt><code>"two_opt"</code></dt><dd><p>Two edge exchange improvement procedure (Croes 1958).
+</p>
+<p>This is a tour refinement procedure which systematically exchanges two
+edges in the graph represented
+by the distance matrix till no improvements are possible. Exchanging two
+edges is equal to reversing part of the tour. The resulting tour is called
+<em>2-optimal.</em>
+</p>
+<p>This method can be applied to tours created by other methods or used as
+its own method. In this case improvement starts with a random tour.
+</p>
+<p>Additional control options:
+</p>
+
+<dl>
+<dt><code>tour</code></dt><dd><p> an existing tour which should be improved.
+If no tour is given, a random tour is used. </p>
+</dd>
+<dt><code>two_opt_repetitions</code></dt><dd><p> number of times to try
+two_opt with a different initial
+random tour (default: 1). </p>
+</dd>
+</dl>
+
+</dd>
+<dt><code>"concorde"</code></dt><dd><p>Concorde algorithm (Applegate et al. 2001).
+</p>
+<p>Concorde is an advanced exact TSP solver for <em>only symmetric</em> TSPs
+based on branch-and-cut.  The program is not included in this package and
+has to be obtained and installed separately (see
+<code><a href="Concorde.html">Concorde</a></code>).
+</p>
+<p>Additional control options:
+</p>
+
+<dl>
+<dt><code>exe</code></dt><dd><p> a character string containing the path to the executable
+(see <code>Concorde</code>).</p>
+</dd>
+<dt><code>clo</code></dt><dd><p> a character string containing command line options for
+Concorde, e.g., <code>control = list(clo = "-B -v")</code>. See
+<code>concorde_help</code> on how to obtain a complete list of available
+command line options.</p>
+</dd>
+<dt><code>precision</code></dt><dd><p> an integer which controls the number of
+decimal places used for the internal representation of distances in
+Concorde. The values given in <code>x</code> are multiplied by
+<i>10^{precision}</i> before being passed on to Concorde. Note that
+therefore the results produced by Concorde (especially lower and upper
+bounds) need to be divided by <i>10^{precision}</i> (i.e., the decimal point
+has to be shifted <code>precision</code> placed to the left). The
+interface to Concorde uses <code>write_TSPLIB</code> (see there for more
+information).</p>
+</dd>
+</dl>
+
+</dd>
+<dt><code>"linkern"</code></dt><dd><p>Concorde's Chained Lin-Kernighan heuristic
+(Applegate et al. 2003).
+</p>
+<p>The Lin-Kernighan (Lin and Kernighan 1973)
+heuristic uses variable <i>k</i> edge exchanges to
+improve an initial tour.  The program is not included in this package and
+has to be obtained and installed separately (see
+<code><a href="Concorde.html">Concorde</a></code>).
+</p>
+<p>Additional control options: see Concorde above.
+</p>
+</dd>
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>TOUR</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>References</h3>
+
+<p>David Appletgate, Robert Bixby, Vasek Chvatal, William Cook (2001): TSP cuts
+which do not conform to the template paradigm, Computational Combinatorial
+Optimization, M. Junger and D. Naddef (editors), Springer.
+</p>
+<p>D. Applegate, W. Cook and A. Rohe (2003): Chained Lin-Kernighan for Large
+Traveling Salesman Problems.  <em>INFORMS Journal on Computing,
+15(1):82&ndash;92.</em>
+</p>
+<p>G.A. Croes (1958): A method for solving traveling-salesman problems.
+<em>Operations Research, 6(6):791&ndash;812.</em>
+</p>
+<p>S. Lin and B. Kernighan (1973): An effective heuristic algorithm for the
+traveling-salesman problem. <em>Operations Research, 21(2): 498&ndash;516.</em>
+</p>
+
+
+
+<p>D.J. Rosenkrantz, R. E. Stearns, and Philip M. Lewis II (1977): An analysis of
+several heuristics for the traveling salesman problem.  <em>SIAM Journal on
+Computing, 6(3):563&ndash;581.</em>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="TOUR.html">TOUR</a></code>,
+<code><a href="TSP.html">TSP</a></code>,
+<code><a href="ATSP.html">ATSP</a></code>,
+<code><a href="TSPLIB.html">write_TSPLIB</a></code>,
+<code><a href="Concorde.html">Concorde</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## solve a simple Euclidean TSP (using the default method)
+etsp &lt;- ETSP(data.frame(x = runif(20), y = runif(20)))
+tour &lt;- solve_TSP(etsp)
+tour
+tour_length(tour)
+plot(etsp, tour)
+
+
+## compare methods
+data("USCA50")
+USCA50
+methods &lt;- c("identity", "random", "nearest_insertion",
+  "cheapest_insertion", "farthest_insertion", "arbitrary_insertion",
+  "nn", "repetitive_nn", "two_opt")
+
+## calculate tours
+tours &lt;- lapply(methods, FUN = function(m) solve_TSP(USCA50, method = m))
+names(tours) &lt;- methods
+
+## use the external solver which has to be installed separately
+## Not run: 
+tours$concorde  &lt;- solve_TSP(USCA50, method = "concorde")
+tours$linkern  &lt;- solve_TSP(USCA50, method = "linkern")
+
+## End(Not run)
+
+## register a parallel backend to perform repetitions in parallel
+## Not run: 
+library(doParallel)
+registerDoParallel()
+
+## End(Not run)
+
+## add some tours using repetition and two_opt refinements
+tours$'nn+two_opt' &lt;- solve_TSP(USCA50, method="nn", two_opt=TRUE)
+tours$'nn+rep_10' &lt;- solve_TSP(USCA50, method="nn", rep=10)
+tours$'nn+two_opt+rep_10' &lt;- solve_TSP(USCA50, method="nn", two_opt=TRUE, rep=10)
+tours$'arbitrary_insertion+two_opt' &lt;- solve_TSP(USCA50)
+
+## show first tour
+tours[[1]]
+
+## compare tour lengths
+opt &lt;- 14497 # obtained by Concorde
+tour_lengths &lt;- c(sort(sapply(tours, tour_length), decreasing = TRUE),
+  optimal = opt)
+dotchart(tour_lengths/opt*100-100, xlab = "percent excess over optimum")
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

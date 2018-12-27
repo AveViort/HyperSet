@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<HTML lang="en-US">
+<HEAD>
+
+<base id="myBase" href="https://www.evinet.org/" target="_blank">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<META http-equiv="Content-Script-Type" content="application/javascript" >
+<meta name="pagetype" content="StartPage">
+<meta name="description" content="Network analysis">
+<meta name="description" content="Network enrichment analysis; Gene set enrichment; Pathway enrichment; Exploratory functional analysis; Driver versus passenger mutations">
+<TITLE>Human metabolic atlas</TITLE>
+
+<meta itemprop="name" content="Human metabolic atlas">
+<meta itemprop="description" content="Human metabolic atlas and network based analysis of metabolic pathways">
+<!--meta itemprop="image" content=""-->
+
+
+<meta property="og:title" content="Human metabolic atlas" />
+    <meta property="og:site_name" content="EVINET.ORG/hma.html" />
+    <meta property="og:description" content="Human metabolic atlas and network based analysis of metabolic pathways"/>
+    <!--meta property="og:image" content="" /-->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+	
+<LINK href="hyperset.css" type="text/css" rel="stylesheet">
+<!--LINK href="pics/favicon.ico" rel="shortcut icon"-->
+<LINK href="js/jquery-ui-themes-1.11.2/themes/blitzer/jquery-ui.min.css" type="text/css" rel="stylesheet">
+<LINK href="js/qTip/jquery.qtip.min.css" type="text/css" rel="stylesheet">
+<link href="js/cytoscape.js-panzoom-master/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
+<link href="js/cytoscape.js-panzoom-master/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
+<link href="js/colorpicker-master/css/evol.colorpicker.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.12/af-2.1.2/b-1.2.2/b-colvis-1.2.2/b-flash-1.2.2/b-html5-1.2.2/b-print-1.2.2/cr-1.3.2/fc-3.2.2/fh-3.1.2/r-2.1.0/rr-1.1.2/sc-1.4.2/se-1.2.0/datatables.min.css"/>
+<link href="hma/hma/static/css/style.css" rel="stylesheet" />
+ 
+<!--link rel="stylesheet" type="text/css" href="../shiny/assets/shiny.css"/--> 
+
+<script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui-1.11.2/jquery-ui.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+<script src="js/qTip/jquery.qtip.min.js" type="text/javascript"></script>
+<script src="js/jquery-ui-contextmenu-master/jquery.ui-contextmenu.min.js" type="text/javascript"></script>  
+<script src="js/jquery.form.js" type="text/javascript"></script>  
+<script src="js/cola.v3.min.js"></script>
+<script src="js/Cytoscape.js-2.7.8/cytoscape.min.js" type="text/javascript"></script>  
+<script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/ju/jszip-2.5.0/pdfmake-0.1.18/dt-1.10.12/af-2.1.2/b-1.2.2/b-colvis-1.2.2/b-flash-1.2.2/b-html5-1.2.2/b-print-1.2.2/cr-1.3.2/fc-3.2.2/fh-3.1.2/r-2.1.0/rr-1.1.2/sc-1.4.2/se-1.2.0/datatables.min.js"></script>
+<script src="js/cytoscape.js-arbor-1.2.1/arbor.js" type="text/javascript"></script>
+<script src="js/cytoscape.js-arbor-1.2.1/cytoscape-arbor.Line266off.js" type="text/javascript"></script>
+<script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script>
+<script src="js/cytoscape.js-panzoom-master/cytoscape-panzoom.js" type="text/javascript"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-cose-bilkent/1.0.5/cytoscape-cose-bilkent.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-spread/1.0.9/cytoscape-spread.js"></script>
+<script src="https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.1.2/cytoscape-dagre.js"></script>
+<script src="https://cdn.rawgit.com/cytoscape/cytoscape.js-cola/1.1.1/cytoscape-cola.js"></script>
+<script src="js/overlib.js" type="text/javascript"></script>
+
+<script src="js/FileSaver.js" type="text/javascript"></script>
+<script src="js/Blob.js" type="text/javascript"></script>
+<script src="js/jquery.ba-hashchange.js" type="text/javascript"></script>
+
+<script src="js/colorpicker-master/js/evol.colorpicker.js"  type="text/javascript" charset="utf-8"></script>
+<script src="js/jquery.maphilight.js" type="text/javascript"></script>
+<script src="js/raphael-min.js" type="text/javascript"></script>
+<!--script src="js/springy-master/springy.js" type="text/javascript"></script-->
+<script src="js/HS.js" type="text/javascript" charset="utf-8"></script>
+
+<!--script src="hma/hma/static/js/view4model.js"></script>
+<script src="hma/hma/static/js/view4ctrl.js"></script-->
+
+<!--script src="hma/hma/static/js/searchResultsModel.js"></script>
+<script src="hma/hma/static/js/searchResultsCtrl.js"></script>
+<script src="hma/hma/static/js/protocode.js"></script-->
+<script src="hma/hma/static/js/view3model.js"></script>
+<script src="hma/hma/static/js/view3ctrl.js"></script>
+
+
+</HEAD>
+  <BODY class="ui-state-default ui-corner-all">
+ <div id="load" class="modal"></div>
+		  <H1 >Human metabolic atlas and analysis of pathways</H1>
+		  <div id="tabs0">
+  <ul>
+
+    <!--li><a href="https://www.evinet.org/hma/view3.aa.html">View3 - file</a></li-->
+    <li><a href="https://www.evinet.org/hma.html#tabs0-3">View3</a></li>
+    <li><a href="https://www.evinet.org/hma.html#tabs0-0">Tab-0</a></li>
+    <li><a href="https://www.evinet.org/hma.html#tabs0-1">Tab-1</a></li>
+    <li><a href="https://www.evinet.org/hma.html#tabs0-2">Help</a></li>
+  </ul>
+
+<div id="tabs0-0">
+</div>	
+<div id="tabs0-1">
+</div>	
+<div id="tabs0-2">
+<div id="help_files">
+<br>
+<a href="http://www.metabolicatlas.org/">Human metabolic atlas</a>
+<br>
+</div>
+</div>
+<div id="tabs0-3">
+<div ng-app="app">
+
+  <table><tr><td><div id="cy"></div></td>
+  <td><div id="ctrl">
+  <!--div id="cyMenu_main" class="cyMenu ui-widget-content ui-corner-all ui-helper-clearfix" style="height: 636px;"><div id="toolbarcy_main" style="display: block;"-->
+<label for="changeLayoutcy_main">Network layout<br>
+<select name="changeLayout" id="changeLayoutcy_main" class="cy-selectmenu" style="display: none;"><option value="arbor">arbor</option>
+<option value="breadthfirst">breadthfirst</option>
+<option value="circle">circle</option>
+<option value="cola">cola</option>
+<option value="concentric">concentric</option>
+<option value="cose">cose</option>
+<option value="cose-bilkent">cose-bilkent</option>
+<option value="dagre">dagre</option>
+<option value="grid">grid</option>
+<option value="null">null</option>
+<option value="preset">preset</option>
+<option value="random">random</option>
+<option value="spread">spread</option>
+</select><br>
+
+<br>
+<label for="changeSelectedcy_main">Change color</label>
+<ul name="changeSelected" id="changeSelectedcy_main">
+<li >Nodes
+	<ul >
+	<li >Color
+		<ul >
+		<li >All</li>
+		<li >Selected</li>
+		<li >Apply system colors</li>
+		<li >By overall pathway activity</li>
+		</ul>
+	</li>
+	</ul>
+</li>
+<li >Edges
+	<ul >
+	<li >Color
+		<ul >
+		<li id="alter-edges-color-allcy_main">All</li>
+		<li id="alter-edges-color-selectedcy_main">Selected</li>
+		</ul>
+	</li>	
+	<li >Opacity
+		<ul >
+		<li id="alter-edges-opacity-confidencecy_main">By confidence (default)</li>
+		<li >Off</li>
+		</ul>
+	</li>
+	<li >Width
+		<ul >
+		<li id="alter-edges-width-nlinkscy_main">By no. of links (default)</li>
+		<li id="alter-edges-width-defaultcy_main" >Equal</li>
+		</ul>
+	</li>
+	</ul>
+</li></ul>
+<br>
+<div id="cycolorWrappercy_main" style="width:128px; display: none;">
+   <div style="width:132px;padding:1px 0;">
+   <input style="width:100px;" id="cycolorcy_main" class="colorPicker evo-cp0">
+   <div class="evo-pointer evo-colorind-ff" style="background-color:#008800">
+   </div>
+   </div>
+</div>
+
+<label for="saveCytoscapeViewcy_main-button">Save network view
+<select name="saveCytoscapeView" id="saveCytoscapeViewcy_main" class="cy-selectmenu" style="display: none;">
+<option value="saveCyView">As PNG image</option>
+<option value="submit-save-cy-json2">Save graph description on your computer</option>
+<option value="submit-save-cy-json3">Save graph description to project space</option>
+</select>
+</label><br>
+
+<div id="saveCyViewFileNamecy_main" class="hiddenFileNameBox">
+<input name="input-save-cy-view" value="CytoScapeView1" style="color: #666666;" oninput="this.style.color='#000000'" onblur="this.style.color='#666666'" type="text"><span id="fileExtensioncy_main"></span>
+</div>
+
+<label for="NodeRemoverDivcy_main" class="qtip-transient" title="Hide any nodes that contain a substring">
+<div id="NodeRemoverDivcy_main">
+<span class="ui-icon ui-icon-cancel venn_box_control" id="NodeRemoverButtoncy_main"></span>
+<input id="NodeRemovercy_main" size="40" placeholder="[ -- mask -- ]" class="cyText" type="text"> 
+</div>
+</label>
+
+<label for="NodeRestorerDivcy_main" class="qtip-transient" title="Show only nodes that contain a substring">
+<div id="NodeRestorerDivcy_main">
+<span class="ui-icon ui-icon-heart venn_box_control" id="NodeRestorerButtoncy_main"></span>
+<input id="NodeRestorercy_main" size="40" placeholder="[ -- mask -- ]" class="cyText" type="text">
+</div>
+</label> 
+
+<label for="NodeFinderDivcy_main" class="qtip-transient" title="Highlight nodes that contain a substring">
+<div id="NodeFinderDivcy_main">
+<span class="ui-icon ui-icon-search venn_box_control" id="NodeFinderButtoncy_main"></span>
+<input id="NodeFindercy_main" size="40" placeholder="[ -- mask -- ]" class="cyText" type="text"></div>
+</label>
+
+<label for="NodeRenamerDivcy_main" class="qtip-transient" title="Rename nodes by replacing the left substring (RegExp) with the right one">
+<div id="NodeRenamerDivcy_main">
+<span class="ui-icon ui-icon-scissors venn_box_control" id="NodeRenamerSourcecy_main"></span>
+<input id="NodeSourcecy_main" size="20" placeholder="[ -- from -- ]" class="cyText cyTextHalf" type="text">
+<span class="ui-icon ui-icon-arrowthick-1-e venn_box_control" id="NodeRenamerButtoncy_main"></span>
+<input id="NodeTargetcy_main" size="20" placeholder="[ -- to -- ]" class="cyText cyTextHalf" type="text"></div>
+</label>
+
+<br>
+<label for="edgeCySlidercy_main" class="qtip-transient" title="Do not allow links of lower confidence">Filter by confidence 
+<div id="edgeCySlidercy_main"></div></label> 
+<br> 
+<label for="fontNodeCySlidercy_main">Node font size
+<div id="fontNodeCySlidercy_main"></div></label>
+<br> 
+<label for="caseNodeLabelscy_main-button" class="qtip-transient" id="lableCaseNodeLabelscy_main" title="Change case of node labels">Convert case
+<select name="caseNodeLabels" id="caseNodeLabelscy_main" class="cy-selectmenu" style="display: none;">
+<option value="uppercase">Uppercase</option>
+<option value="lowercase">Lowercase</option>
+<option value="none">Original</option>
+</select></label><br>  
+<div style="display: inline-block; float: left;">
+<br> 
+<label for="edgeLabelcy_main" class="qtip-transient" title="Display no. of links as edge labels">Edge label<br>  
+<input name="edgeLabel" id="edgeLabelcy_main" value="showEdgeLabel" class="cyButtons" type="checkbox">
+</label></div><br> 
+<label for="fontEdgeCySlidercy_main" style="width: 120px;  display: inline; float: right;">Edge font size
+<div id="fontEdgeCySlidercy_main" style="width: 120px;  display: inline; float: right;" ></div></label>
+<br>
+</div>
+<!--########################################################################################-->
+<!--########################################################################################-->
+
+<!--/div-->
+  </div></td></tr></table>
+    <div ng-controller="v3ElemsCtrl">
+  <table id="view3-table-0" class="display" >
+    <thead>
+        <tr>
+          <th>Select</th>
+          <th>Type</th>
+          <th>Component</th>
+          <th>Short Name</th>
+          <th>Long Name</th>
+          <th>Description</th>
+          <th>Formula</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="elem in elms">
+        <td><input type="checkbox" ng-model="elem.id" ng-change="onSelected(elem)"></td>
+        <td>{{elem.type}}</td>
+        <td><a href="http://130.238.29.47/api/v1/reaction_components/{{elem.id}}/interaction_partners">{{elem.id}}</a></td>
+        <td>{{elem.short}}</td>
+        <td>{{elem.long}}</td>
+        <td>{{elem.description}}</td>
+        <td>{{elem.formula}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div>Query executed in <span>{{execTime}}</span> sec</div>  
+  
+  </div>
+  
+  
+  <div id="footer">Human Metabolic Atlas - View3</div>
+</div>	
+  </div>
+ 
+
+  <script>
+//var window.cycyc_main;
+<!-- var cycy_main;  -->
+  		$(document).ready(
+
+				HMAonReady = function () {
+				//$( function() {
+    $( "#tabs0" ).tabs({
+      beforeLoad: function( event, ui ) {
+        ui.jqXHR.fail(function() {
+          ui.panel.html(
+            "Couldn't load this tab. We'll try to fix this as soon as possible. " +
+            "If this wouldn't be a demo." );
+        });
+      }
+    });
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+<!--#####################################################-->
+		var Options = {
+arbor: {
+    name: 'arbor',
+    liveUpdate: true, // whether to show the layout as it's running
+    ready: undefined, // callback on layoutready 
+    stop: undefined, // callback on layoutstop
+    maxSimulationTime: 2500, // max length in ms to run the layout
+    fit: true, // reset viewport to fit default simulationBounds
+    padding: [ 50, 50, 50, 50 ], // top, right, bottom, left
+    simulationBounds: undefined, // [x1, y1, x2, y2]; [0, 0, width, height] by default
+    ungrabifyWhileSimulating: true, // so you can't drag nodes during layout
+    // forces used by arbor (use arbor default on undefined)
+    repulsion: undefined,
+    stiffness: undefined,
+    friction: undefined,
+    gravity: true,
+    fps: undefined,
+    precision: undefined,
+    // static numbers or functions that dynamically return what these
+    // values should be for each element
+    nodeMass: undefined, 
+    edgeLength: undefined,
+    stepSize: 1, // size of timestep in simulation
+    // function that returns true if the system is stable to indicate
+    // that the layout can be stopped
+    stableEnergy: function( energy ){
+      var e = energy; 
+      return (e.max <= 0.5) || (e.mean <= 0.3);
+    }
+}, 
+breadthfirst: {
+   name: 'breadthfirst',
+
+  fit: true, // whether to fit the viewport to the graph
+  directed: false, // whether the tree is directed downwards (or edges can point in any direction if false)
+  padding: 30, // padding on fit
+  circle: false, // put depths in concentric circles if true, put depths top down if false
+  boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+  avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+  roots: undefined, // the roots of the trees
+  maximalAdjustments: 0, // how many times to try to position the nodes in a maximal way (i.e. no backtracking)
+  animate: false, // whether to transition the node positions
+  animationDuration: 500, // duration of animation in ms if enabled
+  ready: undefined, // callback on layoutready
+  stop: undefined // callback on layoutstop
+}, 
+circle: {
+  name: 'circle',
+
+  fit: true, // whether to fit the viewport to the graph
+  padding: 30, // the padding on fit
+  boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+  avoidOverlap: true, // prevents node overlap, may overflow boundingBox and radius if not enough space
+  radius: undefined, // the radius of the circle
+  startAngle: 3/2 * Math.PI, // the position of the first node
+  counterclockwise: false, // whether the layout should go counterclockwise (true) or clockwise (false)
+  animate: false, // whether to transition the node positions
+  animationDuration: 500, // duration of animation in ms if enabled
+  ready: undefined, // callback on layoutready
+  stop: undefined // callback on layoutstop
+
+}, 
+cola: {
+    name: 'cola',
+
+  animate: true, // whether to show the layout as it's running
+  refresh: 1, // number of ticks per frame; higher is faster but more jerky
+  maxSimulationTime: 4000, // max length in ms to run the layout
+  ungrabifyWhileSimulating: false, // so you can't drag nodes during layout
+  fit: true, // on every layout reposition of nodes, fit the viewport
+  padding: 30, // padding around the simulation
+  boundingBox: undefined, // constrain layout bounds; { x1, y1, x2, y2 } or { x1, y1, w, h }
+
+  // layout event callbacks
+  ready: function(){}, // on layoutready
+  stop: function(){}, // on layoutstop
+
+  // positioning options
+  randomize: true, // default: false;;;; use random node positions at beginning of layout
+  avoidOverlap: true, // if true, prevents overlap of node bounding boxes
+  handleDisconnected: true, // if true, avoids disconnected components from overlapping
+  nodeSpacing: function( node ){ return 10; }, // extra spacing around nodes
+  flow: undefined, // use DAG/tree flow layout if specified, e.g. { axis: 'y', minSeparation: 30 }
+  alignment: undefined, // relative alignment constraints on nodes, e.g. function( node ){ return { x: 0, y: 1 } }
+
+  // different methods of specifying edge length
+  // each can be a constant numerical value or a function like \`function( edge ){ return 2; }\`
+  edgeLength: undefined, // sets edge length directly in simulation
+  edgeSymDiffLength: undefined, // symmetric diff edge length in simulation
+  edgeJaccardLength: undefined, // jaccard edge length in simulation
+
+  // iterations of cola algorithm; uses default values on undefined
+  unconstrIter: undefined, // unconstrained initial layout iterations
+  userConstIter: undefined, // initial layout iterations with user-specified constraints
+  allConstIter: undefined, // initial layout iterations with all constraints including non-overlap
+
+  // infinite layout options
+  infinite: false // overrides all other options for a forces-all-the-time mode
+
+}, 
+concentric: {
+    name: 'concentric',
+    concentric: function(){ return this.data('weight'); },
+    levelWidth: function( nodes ){ return 10; },
+    padding: 10
+}, 
+cose: {
+    name: 'cose',
+    // Called on `layoutready`
+    ready               : function() {},
+    // Called on `layoutstop`
+    stop                : function() {},
+    // Number of iterations between consecutive screen positions update (0 -> only updated on the end)
+    refresh             : 0,
+    // Whether to fit the network view after when done
+    fit                 : true, 
+    // Padding on fit
+    padding             : 30, 
+    // Whether to randomize node positions on the beginning
+    randomize           : true,
+    // Whether to use the JS console to print debug messages
+    debug               : false,
+    // Node repulsion (non overlapping) multiplier
+    nodeRepulsion       : 10000,
+    // Node repulsion (overlapping) multiplier
+    nodeOverlap         : 10,
+    // Ideal edge (non nested) length
+    idealEdgeLength     : 10,
+    // Divisor to compute edge forces
+    edgeElasticity      : 100,
+    // Nesting factor (multiplier) to compute ideal edge length for nested edges
+    nestingFactor       : 5, 
+    // Gravity force (constant)
+    gravity             : 250, 
+    // Maximum number of iterations to perform
+    numIter             : 100,
+    // Initial temperature (maximum node displacement)
+    initialTemp         : 200,
+    // Cooling factor (how the temperature is reduced between consecutive iterations
+    coolingFactor       : 0.95, 
+    // Lower temperature threshold (below this point the layout will end)
+    minTemp             : 1
+}, 
+grid: {
+    name: 'grid',
+    fit: true, // whether to fit the viewport to the graph
+    padding: 30, // padding used on fit
+    rows: undefined, // force num of rows in the grid
+    columns: undefined, // force num of cols in the grid
+    condense: true,
+	position: function( node ){}, // returns { row, col } for element
+    ready: undefined, // callback on layoutready
+    stop: undefined // callback on layoutstop
+	
+}, 
+null: {
+    name: 'null',
+    ready: function(){}, // on layoutready
+    stop: function(){} // on layoutstop
+
+}, 
+preset: { 
+ name: "preset",
+
+  positions: undefined, // map of (node id) => (position obj); or function(node){ return somPos; }
+  zoom: undefined, // the zoom level to set (prob want fit = false if set)
+  pan: undefined, // the pan level to set (prob want fit = false if set)
+  fit: true, // whether to fit to viewport
+  padding: 30, // padding on fit
+  animate: false, // whether to transition the node positions
+  animationDuration: 500, // duration of animation in ms if enabled
+  animationEasing: undefined, // easing of animation if enabled
+  ready: undefined, // callback on layoutready
+  stop: undefined // callback on layoutstop
+  
+}, 
+random: {
+    name: 'random',
+    ready: undefined, // callback on layoutready
+    stop: undefined, // callback on layoutstop
+    fit: true // whether to fit to viewport
+
+}, 
+spread: {
+name: "spread",
+minDist: 40
+  
+}
+};
+
+$("#changeLayoutcy_main").selectmenu({
+select: function() {
+if (Options[$(this).val()]) {
+cycy_main.layout(Options[$(this).val()]);   
+} else {
+cycy_main.layout({name: $(this).val()});  
+}
+           }
+});
+
+ $( "#changeSelectedcy_main" ).menu({ 
+ select: function( event, ui ) {
+ var Value = ui.item.attr("id");
+ Value = Value.replace("cy_main", "");
+// console.log(Value);
+ if (Value.substring(0,6) == "alter-" ) {
+  switch ( Value) {
+    case "alter-nodes-color-all":
+applyTo = 'node';
+$("#cycolorWrappercy_main").css({"display": "block"});
+break;
+    case "alter-nodes-color-selected":
+applyTo = 'node:selected';
+$("#cycolorWrappercy_main").css({"display": "block"});
+break;
+    case "alter-nodes-color-system":
+cycy_main.elements('node[type = "cy_ags"]').css({"background-color": "yellow"});
+cycy_main.elements('node[type = "cy_fgs"]').css({"background-color": "magenta"});
+break;
+    case "alter-nodes-color-activity":
+cycy_main.elements('node[type = "cy_fgs"]').css({"background-color": "mapData(shade, 5.409388, 10.727309, green, red)"}); 
+break;
+	case "alter-edges-color-all":
+applyTo = 'edge';
+$("#cycolorWrappercy_main").css({"display": "block"});
+break;
+    case "alter-edges-color-selected":
+applyTo = 'edge:selected';
+$("#cycolorWrappercy_main").css({"display": "block"});
+break;
+    case "alter-edges-opacity-confidence":
+cycy_main.elements('edge').css({"target-arrow-color": "data(confidence2opacity)"});
+cycy_main.elements('edge').css({"source-arrow-color": "data(confidence2opacity)"});
+cycy_main.elements('edge').css({"line-color": "data(confidence2opacity)"});
+break;
+    case "alter-edges-opacity-default":
+cycy_main.elements('edge').css({"target-arrow-color": "blue"});
+cycy_main.elements('edge').css({"source-arrow-color": "blue"});
+cycy_main.elements('edge').css({"line-color": "blue"});
+break;
+    case "alter-edges-width-nlinks":
+cycy_main.elements('edge').css({"width": "mapData(weight, 0, 6, 2, 16)"});        
+break;
+    case "alter-edges-width-default":
+cycy_main.elements('edge').css({"width": 10});
+break;
+		}
+//if (applyTo) {} else {return undefined;}
+}	} } );
+
+$("#saveCytoscapeViewcy_main").selectmenu({
+select: function() {
+var Option = $(this).val();		   
+$("#fileExtensioncy_main").html(function() {
+		switch ( Option) {
+    case "saveCyView":
+return ".png";
+break;
+    case "submit-save-cy-json2":
+return ".json";
+break;
+    case "submit-save-cy-json3":
+return ".json";
+break;
+           }
+});
+var fileExtension = $("#fileExtensioncy_main").html();
+//alert(Option);
+var Dialog = $("#saveCyViewFileNamecy_main");		   
+var nameInput = $("[name='input-save-cy-view']");
+	    Dialog.dialog({
+		resizable: false,
+        modal: true,
+        title: "File name",
+        height: 220,
+        width: 300,
+		position: { 
+		my: "right top", at: "right top"
+, of: "#toolbar-cycy_main" 
+		}, 
+        buttons: {
+            "Save": function () {
+var filename = nameInput.val() + fileExtension;
+	  console.log ( Option );
+	  switch ( Option) {
+    case "saveCyView":
+		saveCy(filename, cycy_main);
+	break;
+    case "submit-save-cy-json2":
+		saveCy2(filename, cycy_main);
+	break;
+    case "submit-save-cy-json3":
+		saveCy3(filename, '-save-cy-json3', cycy_main);
+	break;
+           }
+		$(this).dialog("close");		   
+		   },
+             "Cancel": function () {
+$(this).dialog("close");
+            }        }		});
+		$(".ui-dialog").css({"z-index": "10000001"});
+		}		} );
+
+$(".qtip-transient").qtip({
+     show: "mouseover",
+     hide: "mouseout"
+});
+		
+		
+	
+$(function() {
+$( "#fontEdgeCySlidercy_main" ).slider({
+orientation: "horizontal",
+range: "min",
+max: 28,
+min: 4, 
+value: 12,
+slide:  function(){
+cycy_main.elements('edge').css({"font-size": $( this ).slider( "value" )});
+} }); });
+$( "#edgeLabelcy_main" ).prop( "checked", true );
+	$(function() {
+$( "#edgeLabelcy_main" ).click( 
+function() {
+var Action = ($(this).prop( "checked" )) ? "enable":"disable";
+var State  = ($(this).prop( "checked" )) ? 1:0;
+$("#fontEdgeCySlidercy_main").slider(Action);
+cycy_main.elements('edge').css({"text-opacity": State});
+}
+);
+});
+
+$(function() {
+$( "#edgeCySlidercy_main" ).slider({
+orientation: "horizontal",
+range: "min",
+max: 8,
+value: 0,
+slide:  function(){
+cycy_main.elements('edge[confidence <  ' + $( this ).slider( "value" ) + ']').hide();
+cycy_main.elements('edge[confidence >=  ' + $( this ).slider( "value" ) + ']').show();
+}, 
+change:  function(){
+cycy_main.elements('edge[confidence <  ' + $( this ).slider( "value" ) + ']').hide();
+cycy_main.elements('edge[confidence >=  ' + $( this ).slider( "value" ) + ']').show();
+}, 
+});
+});
+
+$(function() {
+//$( "#NodeFindercy_main" ).change(
+$( "#NodeFinderButtoncy_main" ).click(
+function(){
+var th = "#NodeFindercy_main";
+cycy_main.elements('node').unselect();
+if ($( th ).val() != "") {
+    var patt = new RegExp($( th ).val());
+cycy_main.elements('node').each(
+  function (i, ele) {
+    var ID = ele.id();
+    if (patt.test(ID)) {
+cycy_main.elements('node[id="' +ID + '"]').select(); 
+    }
+         });
+}
+}
+)});
+$(function() {
+$( "#NodeRemoverButtoncy_main" ).click(
+function(){
+var th = "#NodeRemovercy_main";
+cycy_main.elements('node').show();
+if ($( th ).val() != "") {
+    var patt = new RegExp($( th ).val());
+cycy_main.elements('node').each(
+  function (i, ele) {
+    var ID = ele.id();
+    if (patt.test(ID)) {
+		cycy_main.elements('node[id="' +ID + '"]').hide(); 
+    }
+         });
+}
+});
+});
+
+$(function() {
+$( "#NodeRenamerButtoncy_main" ).click(
+function(){
+var src = "#NodeSourcecy_main";
+var tgt = "#NodeTargetcy_main";
+//console.log($( src ).val());
+
+if ($( src ).val() != "") {
+    var patt = new RegExp($( src ).val());
+cycy_main.elements('node').each(
+  function (i, ele) {
+    var ID = ele.id();
+    var nm = ele.data("name");
+    var patt = new RegExp("KEGG_[0-9]+:");
+	    var patt = new RegExp($( src ).val());
+    nnm = nm.replace(patt, $( tgt ).val());
+    ele.data("name", nnm);
+         });
+}
+}
+)});
+$(function() {
+//$( "#NodeRestorercy_main" ).change(
+$( "#NodeRestorerButtoncy_main" ).click(
+function(){
+var th = "#NodeRestorercy_main";
+cycy_main.elements('node').hide();
+    var patt = new RegExp($( th ).val());
+cycy_main.elements('node').each(
+  function (i, ele) {
+    var ID = ele.id();
+    if (patt.test(ID)) {
+      cycy_main.elements('node[id="' +ID + '"]').show(); 
+    }
+         });
+}
+)});
+$(function() {
+$( "#fontNodeCySlidercy_main" ).slider({
+orientation: "horizontal",
+range: "min",
+max: 28,
+min: 4, 
+value: 12,
+slide:  function(){
+cycy_main.elements('node').css({"font-size": $( this ).slider( "value" )});
+}
+});
+
+});
+$("#caseNodeLabelscy_main").selectmenu({
+select: function() {
+cycy_main.elements("node").css({"text-transform": $(this).val()});   
+           }
+});
+
+var applyTo = "";
+$("#cycolorcy_main").colorpicker({
+ color:"#008800",
+ transparentColor: true, 
+ displayIndicator: true,
+ showOn: "both", 
+ history: false
+ })
+.on("change.color", function(evt, color) {
+ switch (applyTo.substring(0,4)) {
+	case "edge": 
+cycy_main.elements(applyTo).css({"line-color": color});
+cycy_main.elements(applyTo).css({"source-arrow-color": color});
+cycy_main.elements(applyTo).css({"target-arrow-color": color});
+$("#cycolorWrappercy_main").css({"display": "none"});
+break;
+	case "node": 
+cycy_main.elements(applyTo).css({"background-color": color});
+$("#cycolorWrappercy_main").css({"display": "none"});
+break;
+} 
+})
+.on("mouseover.color", function(evt, color) {
+if(color){$("#cycolorcy_main").css("background-color",color);}
+} );
+
+
+var tableID = 'view3-table-0';
+var table = $('#' + tableID).DataTable({
+ "order": [[ 2, "asc" ]],
+ responsive: true, 
+ buttons: [
+        "copy"
+		, "excel"
+		, "pdf"
+    ], 
+ colReorder: {
+        realtime: true
+    }	
+	, fixedHeader: true
+	, "processing": true
+/*	, select: true
+	, rowReorder: {
+        selector: ":last-child"
+    }*/
+ });
+ 
+//table.buttons().container().appendTo( $('#' + tableID + '_wrapper').children()[0], table.table().container() ) ; 
+//table.buttons().container().prependTo($($('#' + tableID + '_wrapper').children()[0]) ) ; 
+table.buttons().container().prependTo($('#' + tableID + '_wrapper')) ; 
+  }
+, 
+saveCy = function   (file, cyInstance) {
+var filename = file;
+
+if ((filename.length - filename.toUpperCase().indexOf(".PNG")) != 4) {
+filename = filename + ".png";
+}
+var b64 = cyInstance.png();
+var byteString = atob(b64.split(',')[1]);
+var mimeString = b64.split(',')[0].split(':')[1].split(';')[0]
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+	alert("Saving image in " + filename + '...');
+
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+saveAs(new Blob([ab], {type: "image/png"}), filename);
+}, 
+cyHandle = function() {
+var appElement = $('[ng-controller="v3ElemsCtrl"]');
+var Scope  = angular.element(appElement).scope();
+console.log("Scope: ", Scope.Cy);
+return(Scope.Cy);
+} 
+//var cycy_main = cyHandle()
+  );
+/*$(window).load(
+function () {
+function waitForAngular (ww) {
+  if(cycy_main === undefined) {
+         console.log( ww.interval); 
+        setTimeout(waitForAngular, ww.interval, ww);
+    }
+    else {
+     console.log( "TRUE!!!" ); 
+         ww.func();
+	 return(null);
+    }
+}
+var cycy_main;
+var part1 = {
+ interval: 50, 
+ func: function () {
+	 var cycy_main = cyHandle();
+	 }   
+};
+waitForAngular(part1);
+setTimeout(function () {cycy_main = cyHandle();}, 1000);
+}
+);*/
+
+
+		//cycy_main = cyHandle()
+
+/*angular.element(document).ready(function() { 
+var appElement = $('[ng-controller="v3ElemsCtrl"]');
+var Scope  = angular.element(appElement).scope();
+var cycy_main = Scope.Cy; 
+});*/
+
+  </script>
+
+<!--script src="hma/test.js">
+//console.log('Directly from controllerScope:', controllerScope.cyLoaded);
+</script-->
+ 
+<div id="main_hma"></div>
+<!--div id="main_nea"></div-->
+<script  type="text/javascript"> 
+//$( "#main_hma" ).load( "cgi/hma.cgi?tab_id=analysis_type_ma;mode=begin");
+</script>
+        <P style="width:34%;">HMA v. 0.0 </P>
+        <P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>  
+</BODY>
+	</HTML>
+	

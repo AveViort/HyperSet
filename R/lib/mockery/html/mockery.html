@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: R package to make mocking easier</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mockery {mockery}"><tr><td>mockery {mockery}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>R package to make mocking easier</h2>
+
+<h3>Description</h3>
+
+<p>There are great tools for unit testing in R out there already but
+they don't come with a lot of support for mock objects. This
+package aims at fixing that.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+library(mockery)
+
+m &lt;- mock(TRUE, FALSE, TRUE)
+
+# this will make summary call our mock function rather then
+# UseMethod; thus, summary() will return values as above
+stub(summary, 'UseMethod', m)
+
+summary(iris) # returns TRUE
+summary(cars) # returns FALSE
+summary(co2)  # returns TRUE
+
+## Not run: 
+library(testthat)
+
+m &lt;- mock(TRUE)
+f &lt;- function() read.csv('data.csv')
+
+with_mock(read.csv = m, {
+  f()
+  expect_call(m, 1, read.csv('data.csv'))
+})
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mockery</em> version 0.4.1.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

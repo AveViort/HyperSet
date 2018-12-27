@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: CDbw-index for cluster validation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cdbw {fpc}"><tr><td>cdbw {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>CDbw-index for cluster validation</h2>
+
+<h3>Description</h3>
+
+<p>CDbw-index for cluster validation, as defined in Halkidi and
+Vazirgiannis (2008), Halkidi et al. (2015).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cdbw(x,clustering,r=10,s=seq(0.1,0.8,by=0.1),
+                 clusterstdev=TRUE,trace=FALSE)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>something that can be coerced into a numerical
+matrix. Euclidean dataset.</p>
+</td></tr>
+<tr valign="top"><td><code>clustering</code></td>
+<td>
+<p>vector of integers with length <code>=nrow(x)</code>;
+indicating the cluster for each observation.</p>
+</td></tr>
+<tr valign="top"><td><code>r</code></td>
+<td>
+<p>integer. Number of cluster border representatives.</p>
+</td></tr>
+<tr valign="top"><td><code>s</code></td>
+<td>
+<p>numerical vector of shrinking factors (between 0 and 1).</p>
+</td></tr>
+<tr valign="top"><td><code>clusterstdev</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, the neighborhood radius
+for intra-cluster density is the within-cluster estimated squared
+distance from the mean of the cluster; otherwise it is the average of
+these over all clusters.</p>
+</td></tr>
+<tr valign="top"><td><code>trace</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, results are printed for the
+steps to compute the index.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>List with components (see Halkidi and Vazirgiannis (2008), Halkidi et
+al. (2015) for details)
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>cdbw</code></td>
+<td>
+<p>value of CDbw index (the higher the better).</p>
+</td></tr>
+<tr valign="top"><td><code>cohesion</code></td>
+<td>
+<p>cohesion.</p>
+</td></tr>
+<tr valign="top"><td><code>compactness</code></td>
+<td>
+<p>compactness.</p>
+</td></tr>
+<tr valign="top"><td><code>sep</code></td>
+<td>
+<p>separation.</p>
+</td></tr> 
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>Halkidi, M. and Vazirgiannis, M. (2008) A density-based cluster
+validity approach using multi-representatives. <em>Pattern
+Recognition Letters</em> 29, 773-786.
+</p>
+<p>Halkidi, M., Vazirgiannis, M. and Hennig, C. (2015) Method-independent
+indices for cluster validation. In C. Hennig, M. Meila, F. Murtagh,
+R. Rocci (eds.) <em>Handbook of Cluster Analysis</em>, CRC
+Press/Taylor <code>&amp;</code> Francis, Boca Raton.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  options(digits=3)
+  iriss &lt;- as.matrix(iris[c(1:5,51:55,101:105),-5])
+  irisc &lt;- as.numeric(iris[c(1:5,51:55,101:105),5])
+  cdbw(iriss,irisc)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Remove redundant namespaces on an XML document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xmlCleanNamespaces {XML}"><tr><td>xmlCleanNamespaces {XML}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Remove redundant namespaces on an XML document</h2>
+
+<h3>Description</h3>
+
+<p>This is a convenience function that removes redundant
+repeated namespace definitions in an XML node.
+It removes namespace definitions in nodes
+where an ancestor node also has that definition.
+It does not remove unused namespace definitions.
+</p>
+<p>This uses the <code>NSCLEAN</code> option for <code><a href="xmlTreeParse.html">xmlParse</a></code>
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xmlCleanNamespaces(doc, options = integer(), out = docName(doc), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>doc</code></td>
+<td>
+<p>either the name of an XML documentor the XML content
+itself, or an already parsed document</p>
+</td></tr>
+<tr valign="top"><td><code>options</code></td>
+<td>
+<p>options for the XML parser. <code>NSCLEAN</code> is added to this.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>additional arguments passed to <code><a href="xmlTreeParse.html">xmlParse</a></code></p>
+</td></tr>
+<tr valign="top"><td><code>out</code></td>
+<td>
+<p>the name of a file to which to write the resulting XML
+document, or an empty character vector or logical value <code>FALSE</code>
+to avoid writing the new document.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>If the new document is written to a file, the name of the file is
+returned.
+Otherwise, the new parsed XML document is returned.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Duncan Temple Lang
+</p>
+
+
+<h3>References</h3>
+
+<p>libxml2 documentation <a href="http://xmlsoft.org/html/libxml-parser.html">http://xmlsoft.org/html/libxml-parser.html</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xmlTreeParse.html">xmlParse</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+f = system.file("exampleData", "redundantNS.xml", package = "XML")
+doc = xmlParse(f)
+print(doc)
+newDoc = xmlCleanNamespaces(f, out = FALSE)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>XML</em> version 3.98-1.16 <a href="00Index.html">Index</a>]</div>
+</body></html>

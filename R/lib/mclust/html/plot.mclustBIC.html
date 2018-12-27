@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: BIC Plot for Model-Based Clustering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for plot.mclustBIC {mclust}"><tr><td>plot.mclustBIC {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>BIC Plot for Model-Based Clustering</h2>
+
+<h3>Description</h3>
+
+<p>Plots the BIC values returned by the <code><a href="mclustBIC.html">mclustBIC</a></code> function.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'mclustBIC'
+plot(x, G = NULL, modelNames = NULL, 
+     symbols = NULL, colors = NULL, 
+     xlab = NULL, ylab = "BIC", ylim = NULL,
+     legendArgs = list(x = "bottomright", ncol = 2, cex = 1, inset = 0.01), 
+     ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+
+<p>Output from <code>mclustBIC</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>One or more numbers of components corresponding to models fit in <code>x</code>.
+The default is to plot the BIC for all of the numbers of components fit.
+</p>
+</td></tr>
+<tr valign="top"><td><code>modelNames</code></td>
+<td>
+
+<p>One or more model names corresponding to models fit in <code>x</code>.
+The default is to plot the BIC for all of the models fit.
+</p>
+</td></tr>
+<tr valign="top"><td><code>symbols</code></td>
+<td>
+
+<p>Either an integer or character vector assigning a plotting symbol to each
+unique class in <code>classification</code>. Elements in <code>colors</code>
+correspond to classes in order of appearance in the sequence of
+observations (the order used by the function <code>unique</code>). 
+The default is given by <code>mclust.options("classPlotSymbols")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>colors</code></td>
+<td>
+
+<p>Either an integer or character vector assigning a color to each
+unique class in <code>classification</code>. Elements in <code>colors</code>
+correspond to classes in order of appearance in the sequence of
+observations (the order used by the function <code>unique</code>). 
+The default is given by <code>mclust.options("classPlotColors")</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>xlab</code></td>
+<td>
+
+<p>Optional label for the horizontal axis of the BIC plot.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ylab</code></td>
+<td>
+
+<p>Label for the vertical axis of the BIC plot.
+</p>
+</td></tr>
+<tr valign="top"><td><code>ylim</code></td>
+<td>
+
+<p>Optional limits for the vertical axis of the BIC plot.
+</p>
+</td></tr>
+<tr valign="top"><td><code>legendArgs</code></td>
+<td>
+
+<p>Arguments to pass to the <code>legend</code> function. Set to <code>NULL</code>
+for no legend.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Other graphics parameters.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A plot of the BIC values.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mclustBIC.html">mclustBIC</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+plot(mclustBIC(precip), legendArgs =  list(x = "bottomleft"))
+
+plot(mclustBIC(faithful))
+
+plot(mclustBIC(iris[,-5]))
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

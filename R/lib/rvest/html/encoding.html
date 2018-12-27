@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Guess and repair faulty character encoding.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for encoding {rvest}"><tr><td>encoding {rvest}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Guess and repair faulty character encoding.</h2>
+
+<h3>Description</h3>
+
+<p>These functions help you respond to web pages that declare incorrect
+encodings. You can use <code>guess_encoding</code> to figure out what
+the real encoding is (and then supply that to the <code>encoding</code> argument of
+html), or use <code>repair_encoding</code> to fix character vectors after the
+fact.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+guess_encoding(x)
+
+repair_encoding(x, from = NULL)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>A character vector.</p>
+</td></tr>
+<tr valign="top"><td><code>from</code></td>
+<td>
+<p>The encoding that the string is actually in. If <code>NULL</code>,</p>
+</td></tr>
+</table>
+
+
+<h3>stringi</h3>
+
+<p>These function are wrappers around tools from the fantastic stringi
+package, so you'll need to make sure to have that installed.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# A file with bad encoding included in the package
+path &lt;- system.file("html-ex", "bad-encoding.html", package = "rvest")
+x &lt;- read_html(path)
+x %&gt;% html_nodes("p") %&gt;% html_text()
+
+guess_encoding(x)
+# Two valid encodings, only one of which is correct
+read_html(path, encoding = "ISO-8859-1") %&gt;% html_nodes("p") %&gt;% html_text()
+read_html(path, encoding = "ISO-8859-2") %&gt;% html_nodes("p") %&gt;% html_text()
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>rvest</em> version 0.3.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

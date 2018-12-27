@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Clinical Trial of Beta-Blockers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for betablocker {flexmix}"><tr><td>betablocker {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Clinical Trial of Beta-Blockers</h2>
+
+<h3>Description</h3>
+
+<p>22-centre clinical trial of beta-blockers for reducing mortality after
+myocardial infarction.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("betablocker")</pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 44 observations on the following 4 variables.
+</p>
+
+<dl>
+<dt>Deaths</dt><dd><p>Number of deaths.</p>
+</dd>
+<dt>Total</dt><dd><p>Total number of patients.</p>
+</dd>
+<dt>Center</dt><dd><p>Number of clinical centre.</p>
+</dd>
+<dt>Treatment</dt><dd><p>A factor with levels <code>Control</code> and <code>Treated</code>.</p>
+</dd>
+</dl>
+
+
+
+<h3>Source</h3>
+
+<p>G. McLachlan and D. Peel. <em>Finite Mixture Models</em>, 2000.
+John Wiley and Sons Inc.
+<a href="http://www.maths.uq.edu.au/~gjm/DATA/mmdata.html">http://www.maths.uq.edu.au/~gjm/DATA/mmdata.html</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>M. Aitkin. Meta-analysis by random effect modelling in
+generalized linear models.
+<em>Statistics in Medicine</em>, <b>18</b>, 2343&ndash;2351, 1999.
+</p>
+<p>S. Yusuf, R. Peto, J. Lewis, R. Collins and P. Sleight. Beta
+blockade during and after myocardial infarction: an overview of the
+randomized trials.
+<em>Progress in Cardiovascular Diseases</em>, <b>27</b>, 335&ndash;371,
+1985. 
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("betablocker", package = "flexmix")
+betaMix &lt;- initFlexmix(cbind(Deaths, Total - Deaths) ~ 1 | Center,
+                       data = betablocker, k = 3, nrep = 5,
+                       model = FLXMRglmfix(family = "binomial",
+                         fixed = ~Treatment)) 
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

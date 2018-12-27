@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot Output</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for renderPlot {shiny}"><tr><td>renderPlot {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot Output</h2>
+
+<h3>Description</h3>
+
+<p>Renders a reactive plot that is suitable for assigning to an <code>output</code>
+slot.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+renderPlot(expr, width = "auto", height = "auto", res = 72, ...,
+  env = parent.frame(), quoted = FALSE, execOnResize = FALSE,
+  outputArgs = list())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>expr</code></td>
+<td>
+<p>An expression that generates a plot.</p>
+</td></tr>
+<tr valign="top"><td><code>width, height</code></td>
+<td>
+<p>The width/height of the rendered plot, in pixels; or
+<code>'auto'</code> to use the <code>offsetWidth</code>/<code>offsetHeight</code> of the HTML
+element that is bound to this plot. You can also pass in a function that
+returns the width/height in pixels or <code>'auto'</code>; in the body of the
+function you may reference reactive values and functions. When rendering an
+inline plot, you must provide numeric values (in pixels) to both
+<code>width</code> and <code>height</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>res</code></td>
+<td>
+<p>Resolution of resulting plot, in pixels per inch. This value is
+passed to <code><a href="../../grDevices/html/png.html">png</a></code>. Note that this affects the resolution of PNG
+rendering in R; it won't change the actual ppi of the browser.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Arguments to be passed through to <code><a href="../../grDevices/html/png.html">png</a></code>.
+These can be used to set the width, height, background color, etc.</p>
+</td></tr>
+<tr valign="top"><td><code>env</code></td>
+<td>
+<p>The environment in which to evaluate <code>expr</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>quoted</code></td>
+<td>
+<p>Is <code>expr</code> a quoted expression (with <code>quote()</code>)? This
+is useful if you want to save an expression in a variable.</p>
+</td></tr>
+<tr valign="top"><td><code>execOnResize</code></td>
+<td>
+<p>If <code>FALSE</code> (the default), then when a plot is
+resized, Shiny will <em>replay</em> the plot drawing commands with
+<code><a href="../../grDevices/html/replayPlot.html">replayPlot</a>()</code> instead of re-executing <code>expr</code>.
+This can result in faster plot redrawing, but there may be rare cases where
+it is undesirable. If you encounter problems when resizing a plot, you can
+have Shiny re-execute the code on resize by setting this to <code>TRUE</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>outputArgs</code></td>
+<td>
+<p>A list of arguments to be passed through to the implicit
+call to <code><a href="plotOutput.html">plotOutput</a></code> when <code>renderPlot</code> is used in an
+interactive R Markdown document.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The corresponding HTML output tag should be <code>div</code> or <code>img</code> and have
+the CSS class name <code>shiny-plot-output</code>.
+</p>
+
+
+<h3>Interactive plots</h3>
+
+<p>With ggplot2 graphics, the code in <code>renderPlot</code> should return a ggplot
+object; if instead the code prints the ggplot2 object with something like
+<code>print(p)</code>, then the coordinates for interactive graphics will not be
+properly scaled to the data space.
+</p>
+<p>See <code><a href="plotOutput.html">plotOutput</a></code> for more information about interactive plots.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>For the corresponding client-side output function, and example
+usage, see <code><a href="plotOutput.html">plotOutput</a></code>. For more details on how the plots are
+generated, and how to control the output, see <code><a href="plotPNG.html">plotPNG</a></code>.
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

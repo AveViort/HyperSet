@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Class &quot;kernel&quot; &quot;rbfkernel&quot; &quot;polykernel&quot;, &quot;tanhkernel&quot;,...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for kernel-class {kernlab}"><tr><td>kernel-class {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Class &quot;kernel&quot; &quot;rbfkernel&quot; &quot;polykernel&quot;, &quot;tanhkernel&quot;, &quot;vanillakernel&quot;</h2>
+
+<h3>Description</h3>
+
+<p>  The built-in kernel classes in <span class="pkg">kernlab</span></p>
+
+
+<h3>Objects from the Class</h3>
+
+<p>Objects can be created by calls of the form <code>new("rbfkernel")</code>,
+<code>new{"polykernel"}</code>, <code>new{"tanhkernel"}</code>,
+<code>new{"vanillakernel"}</code>, <code>new{"anovakernel"}</code>,
+<code>new{"besselkernel"}</code>, <code>new{"laplacekernel"}</code>,
+<code>new{"splinekernel"}</code>, <code>new{"stringkernel"}</code>
+</p>
+<p>or by calling the <code>rbfdot</code>, <code>polydot</code>, <code>tanhdot</code>,
+<code>vanilladot</code>, <code>anovadot</code>, <code>besseldot</code>, <code>laplacedot</code>,
+<code>splinedot</code>, <code>stringdot</code> functions etc..
+</p>
+
+
+<h3>Slots</h3>
+
+
+<dl>
+<dt><code>.Data</code>:</dt><dd><p>Object of class <code>"function"</code> containing
+the kernel function </p>
+</dd>
+<dt><code>kpar</code>:</dt><dd><p>Object of class <code>"list"</code> containing the
+kernel parameters </p>
+</dd>
+</dl>
+
+
+
+<h3>Extends</h3>
+
+<p>Class <code>"kernel"</code>, directly.
+Class <code>"function"</code>, by class <code>"kernel"</code>.
+</p>
+
+
+<h3>Methods</h3>
+
+
+<dl>
+<dt>kernelMatrix</dt><dd><p><code>signature(kernel = "rbfkernel", x =
+	"matrix")</code>: computes the kernel matrix</p>
+</dd>
+<dt>kernelMult</dt><dd><p><code>signature(kernel = "rbfkernel", x =
+	"matrix")</code>: computes the quadratic kernel expression</p>
+</dd>
+<dt>kernelPol</dt><dd><p><code>signature(kernel = "rbfkernel", x =
+	"matrix")</code>: computes the kernel expansion</p>
+</dd>
+<dt>kernelFast</dt><dd><p><code>signature(kernel = "rbfkernel", x =
+	"matrix"),,a</code>: computes parts or the full kernel matrix, mainly
+used in kernel algorithms where columns of the kernel matrix are
+computed per invocation </p>
+</dd>
+</dl>
+
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br /> <a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a> </p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dots.html">dots</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+rbfkernel &lt;- rbfdot(sigma = 0.1)
+rbfkernel
+is(rbfkernel)
+kpar(rbfkernel)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

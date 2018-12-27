@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Model-based Hierarchical Clustering</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for hcE {mclust}"><tr><td>hcE {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Model-based Hierarchical Clustering
+</h2>
+
+<h3>Description</h3>
+
+<p>Agglomerative hierarchical clustering based on maximum likelihood
+for a Gaussian mixture model parameterized by eigenvalue decomposition.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+hcE(data, partition, minclus=1, ...)
+hcV(data, partition, minclus = 1, alpha = 1, ...)
+hcEII(data, partition, minclus = 1, ...)
+hcVII(data, partition, minclus = 1, alpha = 1, ...)
+hcEEE(data, partition, minclus = 1, ...)
+hcVVV(data, partition, minclus = 1, alpha = 1, beta = 1, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>A numeric vector, matrix, or data frame of observations. Categorical
+variables are not allowed. If a matrix or data frame, rows
+correspond to observations and columns correspond to variables. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>partition</code></td>
+<td>
+
+<p>A numeric or character vector representing a partition of
+observations (rows) of <code>data</code>. If provided, group merges will
+start with this partition. Otherwise, each observation is assumed to
+be in a cluster by itself at the start of agglomeration. 
+</p>
+</td></tr>
+<tr valign="top"><td><code>minclus</code></td>
+<td>
+
+<p>A number indicating the number of clusters at which to stop the
+agglomeration. The default is to stop when all observations have been
+merged into a single cluster.
+</p>
+</td></tr>
+<tr valign="top"><td><code>alpha, beta</code></td>
+<td>
+
+<p>Additional tuning parameters needed for initializatiion in some models. 
+For details, see Fraley 1998. The defaults provided are usually adequate.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Catch unused arguments from a <code>do.call</code> call.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Most models have memory usage of the order of the square of the
+number groups in the initial partition for fast execution.
+Some models, such as equal variance or <code>"EEE"</code>,
+do not admit a fast algorithm under the usual agglomerative
+hierachical clustering paradigm. 
+These use less memory but are much slower to execute.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A numeric two-column matrix in which the <em>i</em>th row gives the minimum 
+index for observations in each of the two clusters merged at the
+<em>i</em>th stage of agglomerative hierarchical clustering.
+</p>
+
+
+<h3>References</h3>
+
+<p>J. D. Banfield and A. E. Raftery (1993).
+Model-based Gaussian and non-Gaussian Clustering.
+<em>Biometrics 49:803-821</em>. 
+</p>
+<p>C. Fraley (1998).
+Algorithms for model-based Gaussian hierarchical clustering.
+<em>SIAM Journal on Scientific Computing 20:270-281</em>. 
+</p>
+<p>C. Fraley and A. E. Raftery (2002).
+Model-based clustering, discriminant analysis, and density estimation.
+<em>Journal of the American Statistical Association 97:611-631</em>. 
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="hc.html">hc</a></code>,
+<code><a href="hclass.html">hclass</a></code>
+<code><a href="randomPairs.html">randomPairs</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+hcTree &lt;- hcEII(data = iris[,-5])
+cl &lt;- hclass(hcTree,c(2,3))
+
+## Not run: 
+par(pty = "s", mfrow = c(1,1))
+clPairs(iris[,-5],cl=cl[,"2"])
+clPairs(iris[,-5],cl=cl[,"3"])
+
+par(mfrow = c(1,2))
+dimens &lt;- c(1,2)
+coordProj(iris[,-5], classification=cl[,"2"], dimens=dimens)
+coordProj(iris[,-5], classification=cl[,"3"], dimens=dimens)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

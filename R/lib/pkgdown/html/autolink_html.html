@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Automatic link references and articles in an HTML package</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for autolink_html {pkgdown}"><tr><td>autolink_html {pkgdown}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Automatic link references and articles in an HTML package</h2>
+
+<h3>Description</h3>
+
+<p>The autolinker is built around two XPath expressions:
+</p>
+
+<ul>
+<li> <p><code>//pre[contains(@class, 'r')]</code>:
+this finds all <code>&lt;div&gt;</code>s with class <code>sourceCode</code> and <code>r</code>. The contents
+must be syntax-highlighted using <a href="http://pygments.org/">pygments</a>.
+(This is default in <a href="../../rmarkdown/html/html_document.html">rmarkdown::html_document</a> when <code>theme = NULL</code>.)
+</p>
+</li>
+<li> <p><code>.//code[count(*) = 0]</code>: this finds all <code>&lt;code&gt;</code> that contain only
+text (and no other tags).
+</p>
+</li></ul>
+
+
+
+<h3>Usage</h3>
+
+<pre>
+autolink_html(input, output = input, local_packages = character())
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>input, output</code></td>
+<td>
+<p>Input and output paths for HTML file</p>
+</td></tr>
+<tr valign="top"><td><code>local_packages</code></td>
+<td>
+<p>A named character vector providing relative paths
+(value) to packages (name) that can be reached with relative links
+from the target HTML document.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Currently the following expressions are linked:
+</p>
+
+<ul>
+<li><p> Function calls, <code>foo()</code>
+</p>
+</li>
+<li><p> Function calls qualified with the package name, <code>bar::foo()</code>
+</p>
+</li>
+<li><p> Symbols qualified with the package name, <code>bar::baz</code>
+</p>
+</li>
+<li><p> Help calls, <code>?foo</code>, <code>package?foo</code>, and <code>?bar::foo</code>
+</p>
+</li>
+<li><p> Vignette calls, <code>vignette(baz)</code>, <code>vignette(baz, package = "bar")</code>
+</p>
+</li></ul>
+
+<p>Calls to <code>library()</code> and <code>require()</code> are used to find the topics connected
+to unqualified references.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+autolink_html("path/to/file.html",
+  local_packages = c(
+    shiny = "shiny",
+    shinydashboard = "shinydashboard"
+  )
+)
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>pkgdown</em> version 1.1.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

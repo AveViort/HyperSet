@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Phonetic algorithms</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for phonetic {stringdist}"><tr><td>phonetic {stringdist}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Phonetic algorithms</h2>
+
+<h3>Description</h3>
+
+<p>Translate strings to phonetic codes. Similar sounding strings should get 
+similar or equal codes.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+phonetic(x, method = c("soundex"), useBytes = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a character vector whose elements are phonetically encoded.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p>name of the algorithm used. The default is <code>"soundex"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>useBytes</code></td>
+<td>
+<p>Perform byte-wise comparison. <code>useBytes=TRUE</code> is faster 
+but may yield different results depending on character encoding. For more
+information see the documentation of <code><a href="stringdist.html">stringdist</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Currently, only the soundex algorithm is implemented. Note that soundex coding
+is only meaningful for characters in the ranges a-z and A-Z. Soundex coding of strings 
+containing non-printable ascii or non-ascii characters may be system-dependent and should 
+not be trusted. If non-ascii or non-printable ascii charcters are encountered, a warning 
+is emitted.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The returns value depends on the method used. However, all currently 
+implemented methods return a character vector of the same length of the input
+vector. Output characters are in the system's native encoding.
+</p>
+
+
+<h3>References</h3>
+
+
+<ul>
+<li><p>The Soundex algorithm implemented is the algorithm used by the 
+<a href="http://www.archives.gov/research/census/soundex.html">National Archives</a>. 
+This algorithm differs slightly from the original algorithm patented by R.C. Russell 
+(US patents 1261167 (1918) and 1435663 (1922)). 
+
+</p>
+</li></ul>
+
+
+
+<h3>See Also</h3>
+
+<p><code><a href="printable_ascii.html">printable_ascii</a></code>, <code><a href="stringdist-package.html">stringdist-package</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# The following examples are from The Art of Computer Programming (part III, p. 395)
+# (Note that our algorithm is specified different from the one in TACP, see references.)
+phonetic(c('Euler','Gauss','Hilbert','Knuth','Lloyd','Lukasiewicz','Wachs'),method='soundex')
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>stringdist</em> version 0.9.5.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

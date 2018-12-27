@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: String Kernel Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for stringdot {kernlab}"><tr><td>stringdot {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>String Kernel Functions</h2>
+
+<h3>Description</h3>
+
+<p>String kernels.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+stringdot(length = 4, lambda = 1.1, type = "spectrum", normalized = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>length</code></td>
+<td>
+<p>The length of the substrings considered</p>
+</td></tr>
+<tr valign="top"><td><code>lambda</code></td>
+<td>
+<p>The decay factor</p>
+</td></tr>
+<tr valign="top"><td><code>type</code></td>
+<td>
+<p>Type of string kernel, currently the following kernels are
+supported : <br />
+</p>
+<p><code>spectrum</code> the kernel considers only matching substring of
+exactly length <i>n</i> (also know as string kernel). Each such matching
+substring is given a constant weight. The length parameter in this
+kernel has to be <i>length &gt; 1</i>.<br />
+</p>
+<p><code>boundrange</code>
+this kernel (also known as boundrange) considers only matching substrings of length less than or equal to a
+given number N. This type of string kernel requires a length
+parameter <i>length &gt; 1</i><br />
+</p>
+<p><code>constant</code>
+The kernel considers all matching substrings and assigns constant weight (e.g. 1) to each
+of them. This <code>constant</code> kernel does not require any additional
+parameter.<br />
+</p>
+<p><code>exponential</code>
+Exponential Decay kernel where the substring weight decays as the
+matching substring gets longer. The kernel requires a decay factor <i>
+      &lambda; &gt; 1</i><br />
+</p>
+<p><code>string</code> essentially identical to the spectrum kernel, only
+computed using a more conventional way.<br />
+</p>
+<p><code>fullstring</code> essentially identical to the boundrange kernel
+only computed in a more conventional way. <br />
+</p>
+</td></tr>
+<tr valign="top"><td><code>normalized</code></td>
+<td>
+<p>normalize string kernel values, (default: <code>TRUE</code>)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The kernel generating functions are used to initialize a kernel function
+which calculates the dot (inner) product between two feature vectors in a
+Hilbert Space. These functions or their function generating names
+can be passed as a <code>kernel</code> argument on almost all
+functions in <span class="pkg">kernlab</span>(e.g., <code>ksvm</code>, <code>kpca</code>  etc.).
+</p>
+<p>The string kernels calculate similarities between two strings
+(e.g. texts or sequences) by matching the common substring
+in the strings.  Different types of string kernel exists and are
+mainly distinguished by how the matching is performed i.e. some string
+kernels count the exact matchings of <i>n</i> characters (spectrum
+kernel) between the strings, others allow gaps (mismatch kernel) etc.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Returns an S4 object of class <code>stringkernel</code> which extents the
+<code>function</code> class. The resulting function implements the given
+kernel calculating the inner (dot) product between two character vectors.
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>a list containing the kernel parameters (hyperparameters)
+used.</p>
+</td></tr>
+</table>
+<p>The kernel parameters can be accessed by the <code>kpar</code> function.
+</p>
+
+
+<h3>Note</h3>
+
+<p> The <code>spectrum</code> and <code>boundrange</code> kernel are faster and
+more efficient implementations of the <code>string</code> and
+<code>fullstring</code> kernels
+which will be still included in <code>kernlab</code> for the next two versions.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou<br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="dots.html">dots</a> </code>, <code><a href="kernelMatrix.html">kernelMatrix</a> </code>, <code><a href="kernelMatrix.html">kernelMult</a></code>, <code><a href="kernelMatrix.html">kernelPol</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+sk &lt;- stringdot(type="string", length=5)
+
+sk
+
+
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

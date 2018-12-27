@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Ranking</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ranking {kernlab}"><tr><td>ranking {kernlab}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Ranking</h2>
+
+<h3>Description</h3>
+
+<p>A universal ranking algorithm which assigns importance/ranking to data points
+given a query.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S4 method for signature 'matrix'
+ranking(x, y,
+        kernel ="rbfdot", kpar = list(sigma = 1),
+        scale = FALSE, alpha = 0.99, iterations = 600,
+        edgegraph = FALSE, convergence = FALSE ,...)
+
+## S4 method for signature 'kernelMatrix'
+ranking(x, y,
+        alpha = 0.99, iterations = 600, convergence = FALSE,...)
+
+## S4 method for signature 'list'
+ranking(x, y,
+        kernel = "stringdot", kpar = list(length = 4, lambda = 0.5),
+        alpha = 0.99, iterations = 600, convergence = FALSE, ...)
+
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a matrix containing the data to be ranked, or the kernel
+matrix of data to be ranked or a list of character vectors</p>
+</td></tr>
+<tr valign="top"><td><code>y</code></td>
+<td>
+<p>The index of the query point in the data matrix or a vector
+of length equal to the rows of the data matrix having a one at the
+index of the query points index and zero at all the other points.</p>
+</td></tr>
+<tr valign="top"><td><code>kernel</code></td>
+<td>
+<p>the kernel function used in training and predicting.
+This parameter can be set to any function, of class kernel, which computes a dot product between two
+vector arguments. kernlab provides the most popular kernel functions
+which can be used by setting the kernel parameter to the following
+strings:
+</p>
+
+<ul>
+<li> <p><code>rbfdot</code> Radial Basis kernel function &quot;Gaussian&quot;
+</p>
+</li>
+<li> <p><code>polydot</code> Polynomial kernel function
+</p>
+</li>
+<li> <p><code>vanilladot</code> Linear kernel function
+</p>
+</li>
+<li> <p><code>tanhdot</code> Hyperbolic tangent kernel function
+</p>
+</li>
+<li> <p><code>laplacedot</code> Laplacian kernel function
+</p>
+</li>
+<li> <p><code>besseldot</code> Bessel kernel function
+</p>
+</li>
+<li> <p><code>anovadot</code> ANOVA RBF kernel function
+</p>
+</li>
+<li> <p><code>splinedot</code> Spline kernel 
+</p>
+</li></ul>
+
+<p>The kernel parameter can also be set to a user defined function of
+class kernel by passing the function name as an argument.
+</p>
+</td></tr>
+<tr valign="top"><td><code>kpar</code></td>
+<td>
+<p>the list of hyper-parameters (kernel parameters).
+This is a list which contains the parameters to be used with the
+kernel function. For valid parameters for existing kernels are :
+</p>
+
+<ul>
+<li> <p><code>sigma</code> inverse kernel width for the Radial Basis
+kernel function &quot;rbfdot&quot; and the Laplacian kernel &quot;laplacedot&quot;.
+</p>
+</li>
+<li> <p><code>degree, scale, offset</code> for the Polynomial kernel &quot;polydot&quot;
+</p>
+</li>
+<li> <p><code>scale, offset</code> for the Hyperbolic tangent kernel
+function &quot;tanhdot&quot;
+</p>
+</li>
+<li> <p><code>sigma, order, degree</code> for the Bessel kernel &quot;besseldot&quot;.
+</p>
+</li>
+<li> <p><code>sigma, degree</code> for the ANOVA kernel &quot;anovadot&quot;.
+</p>
+</li></ul>
+
+<p>Hyper-parameters for user defined kernels can be passed through the
+kpar parameter as well.</p>
+</td></tr>
+<tr valign="top"><td><code>scale</code></td>
+<td>
+<p>If TRUE the data matrix columns are scaled to zero mean
+and unit variance.</p>
+</td></tr>
+<tr valign="top"><td><code>alpha</code></td>
+<td>
+<p> The <code>alpha</code> parameter takes values between 0 and 1
+and is used to control the authoritative scores received from the
+unlabeled points. For 0 no global structure is found the algorithm
+ranks the points similarly to the original distance metric.</p>
+</td></tr>
+<tr valign="top"><td><code>iterations</code></td>
+<td>
+<p>Maximum number of iterations</p>
+</td></tr>
+<tr valign="top"><td><code>edgegraph</code></td>
+<td>
+<p>Construct edgegraph (only supported with the RBF
+kernel)</p>
+</td></tr>
+<tr valign="top"><td><code>convergence</code></td>
+<td>
+<p>Include convergence matrix in results</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Additional arguments</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>A simple universal ranking algorithm which exploits the intrinsic
+global geometric structure of the data. In many real world
+applications this should be superior to a local method in which the data
+are simply ranked by pairwise Euclidean distances.
+Firstly a weighted network is defined on the data and an authoritative
+score is assigned to each query. The query points act as source nodes
+that continually pump their authoritative scores to the remaining points
+via the weighted network and the remaining points further spread the
+scores they received to their neighbors. This spreading process is
+repeated until convergence and the points are ranked according to their
+score at the end of the iterations.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An S4 object of class <code>ranking</code> which extends the <code>matrix</code>
+class.
+The first column of the returned matrix contains the original index of
+the points in the data matrix the second column contains the final
+score received by each point and the third column the ranking of the point.
+The object contains the following slots :
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>edgegraph</code></td>
+<td>
+<p>Containing the edgegraph of the data points. </p>
+</td></tr>
+<tr valign="top"><td><code>convergence</code></td>
+<td>
+<p>Containing the convergence matrix</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Alexandros Karatzoglou <br />
+<a href="mailto:alexandros.karatzoglou@ci.tuwien.ac.at">alexandros.karatzoglou@ci.tuwien.ac.at</a></p>
+
+
+<h3>References</h3>
+
+<p>D. Zhou, J. Weston, A. Gretton, O. Bousquet, B. Schoelkopf <br />
+<em>Ranking on Data Manifolds</em><br />
+Advances in Neural Information Processing Systems 16.<br />
+MIT Press Cambridge Mass. 2004 <br />
+<a href="http://www.kyb.mpg.de/publications/pdfs/pdf2334.pdf">http://www.kyb.mpg.de/publications/pdfs/pdf2334.pdf</a>
+</p>
+
+
+<h3>See Also</h3>
+
+ <p><code><a href="ranking-class.html">ranking-class</a></code>, <code><a href="specc.html">specc</a></code> </p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(spirals)
+
+## create data from spirals
+ran &lt;- spirals[rowSums(abs(spirals) &lt; 0.55) == 2,]
+
+## rank points according to similarity to the most upper left point  
+ranked &lt;- ranking(ran, 54, kernel = "rbfdot",
+                  kpar = list(sigma = 100), edgegraph = TRUE)
+ranked[54, 2] &lt;- max(ranked[-54, 2])
+c&lt;-1:86
+op &lt;- par(mfrow = c(1, 2),pty="s")
+plot(ran)
+plot(ran, cex=c[ranked[,3]]/40)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>kernlab</em> version 0.9-27 <a href="00Index.html">Index</a>]</div>
+</body></html>

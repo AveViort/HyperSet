@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Minimum size of regression fixed point cluster</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for minsize {fpc}"><tr><td>minsize {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Minimum size of regression fixed point cluster</h2>
+
+<h3>Description</h3>
+
+<p>Computes the minimum size of a fixed point cluster (FPC) which is
+found at least <code>mtf</code> times with approximated
+probability <code>prob</code> by
+<code>ir</code> fixed point iterations of <code><a href="fixreg.html">fixreg</a></code>.
+</p>
+<p>Thought for use within <code><a href="fixreg.html">fixreg</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+minsize(n, p, ir, mtf, prob = 0.5)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>positive integer. Total number of points.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>positive integer. Number of independent variables.</p>
+</td></tr>
+<tr valign="top"><td><code>ir</code></td>
+<td>
+<p>positive integer. Number of fixed point iterations.</p>
+</td></tr>
+<tr valign="top"><td><code>mtf</code></td>
+<td>
+<p>positive integer.</p>
+</td></tr>
+<tr valign="top"><td><code>prob</code></td>
+<td>
+<p>numerical between 0 and 1.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The computation is based on the binomial distribution with probability
+given by <code><a href="clusexpect.html">clusexpect</a></code> with <code>ir=1</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An integer.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a></p>
+
+
+<h3>References</h3>
+
+<p>Hennig, C. (2002) Fixed point clusters for linear regression:
+computation and comparison, <em>Journal of
+Classification</em> 19, 249-276.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fixreg.html">fixreg</a></code>, <code><a href="clusexpect.html">clusexpect</a></code>,
+<code><a href="itnumber.html">itnumber</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  minsize(500,4,7000,2)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

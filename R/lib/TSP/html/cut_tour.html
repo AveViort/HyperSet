@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cut a tour to form a path</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cut_tour {TSP}"><tr><td>cut_tour {TSP}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cut a tour to form a path</h2>
+
+<h3>Description</h3>
+
+<p>Cuts a tour at a specified city to form a path.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cut_tour(x, cut, exclude_cut = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an object of class <code>TOUR</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>cut</code></td>
+<td>
+<p>the index or label of the city to cut the tour.</p>
+</td></tr> 
+<tr valign="top"><td><code>exclude_cut</code></td>
+<td>
+<p>exclude the city where we cut? If <code>FALSE</code>,
+the city at the cut is included in the path as the first city.</p>
+</td></tr> 
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>Michael Hahsler</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="TOUR.html">TOUR</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("USCA50")
+
+tsp &lt;- insert_dummy(USCA50, label = "cut")
+tour &lt;- solve_TSP(tsp)
+
+## cut tour into path at the dummy city
+path &lt;- cut_tour(tour, "cut")
+
+labels(path)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>TSP</em> version 1.1-6 <a href="00Index.html">Index</a>]</div>
+</body></html>

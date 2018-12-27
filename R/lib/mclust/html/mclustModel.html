@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Best model based on BIC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mclustModel {mclust}"><tr><td>mclustModel {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Best model based on BIC
+</h2>
+
+<h3>Description</h3>
+
+<p>Determines the best model from clustering via <code>mclustBIC</code>
+for a given set of model parameterizations and numbers of components.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mclustModel(data, BICvalues, G, modelNames, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+
+<p>The matrix or vector of observations used to generate &lsquo;object&rsquo;.
+</p>
+</td></tr>
+<tr valign="top"><td><code>BICvalues</code></td>
+<td>
+
+<p>An <code>'mclustBIC'</code> object, 
+which is the result of applying <code>mclustBIC</code> 
+to <code>data</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>A vector of integers giving the numbers of mixture components (clusters)
+from which the best model according to BIC will be selected 
+(<code>as.character(G)</code> must be a subset of the row names of 
+<code>BICvalues</code>).
+The default is to select the best model for all numbers 
+of mixture components used to obtain <code>BICvalues</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>modelNames</code></td>
+<td>
+
+<p>A vector of integers giving the model parameterizations
+from which the best model according to BIC will be selected 
+(<code>as.character(model)</code> must be a subset of the column names of 
+<code>BICvalues</code>).
+The default is to select the best model for parameterizations
+used to obtain <code>BICvalues</code>.
+</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+
+<p>Not used. For generic/method consistency.
+</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list giving the optimal (according to BIC) parameters,
+conditional probabilities <code>z</code>, and log-likelihood,
+together with the associated classification and its uncertainty.
+</p>
+<p>The details of the output components are as follows:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>modelName</code></td>
+<td>
+
+<p>A character string indicating the model. The help file for
+<code><a href="mclustModelNames.html">mclustModelNames</a></code> describes the available models.
+</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+
+<p>The number of observations in the data.
+</p>
+</td></tr>
+<tr valign="top"><td><code>d</code></td>
+<td>
+
+<p>The dimension of the data.
+</p>
+</td></tr>
+<tr valign="top"><td><code>G</code></td>
+<td>
+
+<p>The number of components in the Gaussian mixture model corresponding
+to the optimal BIC.
+</p>
+</td></tr>
+<tr valign="top"><td><code>bic</code></td>
+<td>
+
+<p>The optimal BIC value.
+</p>
+</td></tr>
+<tr valign="top"><td><code>loglik</code></td>
+<td>
+
+<p>The log-likelihood corresponding to the optimal BIC.
+</p>
+</td></tr>
+<tr valign="top"><td><code>parameters</code></td>
+<td>
+
+<p>A list with the following components:
+</p>
+
+<dl>
+<dt><code>pro</code></dt><dd>
+<p>A vector whose <em>k</em>th component is the mixing proportion for
+the <em>k</em>th component of the mixture model.
+If missing, equal proportions are assumed.
+</p>
+</dd>
+<dt><code>mean</code></dt><dd>
+<p>The mean for each component. If there is more than one component,
+this is a matrix whose kth column is the mean of the <em>k</em>th
+component of the mixture model.
+</p>
+</dd>
+<dt><code>variance</code></dt><dd>
+<p>A list of variance parameters for the model.
+The components of this list depend on the model
+specification. See the help file for <code><a href="mclustVariance.html">mclustVariance</a></code>
+for details.
+</p>
+</dd>
+<dt><code>Vinv</code></dt><dd>
+<p>The estimate of the reciprocal hypervolume of the data region
+used in the computation when the input indicates the
+addition of a noise component to the model.
+</p>
+</dd>
+</dl>
+
+</td></tr>
+<tr valign="top"><td><code>z</code></td>
+<td>
+
+<p>A matrix whose <em>[i,k]</em>th entry is the probability that observation
+<em>i</em> in the test data belongs to the <em>k</em>th class.
+</p>
+</td></tr>
+</table>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="mclustBIC.html">mclustBIC</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+irisBIC &lt;- mclustBIC(iris[,-5])
+mclustModel(iris[,-5], irisBIC)
+mclustModel(iris[,-5], irisBIC, G = 1:6, modelNames = c("VII", "VVI", "VVV"))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Mahalanobis distances from center of indexed points</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for mahalanofix {fpc}"><tr><td>mahalanofix {fpc}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Mahalanobis distances from center of indexed points</h2>
+
+<h3>Description</h3>
+
+<p>Computes the vector of (classical or robust)
+Mahalanobis distances of all points of <code>x</code>
+to the center of the points indexed (or weighted)
+by <code>gv</code>. The latter also determine
+the covariance matrix.
+</p>
+<p>Thought for use within <code><a href="fixmahal.html">fixmahal</a></code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+mahalanofix(x, n = nrow(as.matrix(x)), p = ncol(as.matrix(x)), gv =
+rep(1, times = n), cmax = 1e+10, method = "ml")
+
+mahalanofuz(x, n = nrow(as.matrix(x)), p = ncol(as.matrix(x)),
+                         gv = rep(1, times=n), cmax = 1e+10) 
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>a numerical data matrix, rows are points, columns are variables.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>positive integer. Number of points.</p>
+</td></tr>
+<tr valign="top"><td><code>p</code></td>
+<td>
+<p>positive integer. Number of variables.</p>
+</td></tr>
+<tr valign="top"><td><code>gv</code></td>
+<td>
+<p>for <code>mahalanofix</code>
+a logical or 0-1 vector of length <code>n</code>. For <code>mahalanofuz</code> a
+numerical vector with values between 0 and 1.</p>
+</td></tr>
+<tr valign="top"><td><code>cmax</code></td>
+<td>
+<p>positive number. used in <code><a href="solvecov.html">solvecov</a></code> if
+covariance matrix is singular.</p>
+</td></tr>
+<tr valign="top"><td><code>method</code></td>
+<td>
+<p><code>"ml"</code>, <code>"classical"</code>,
+<code>"mcd"</code> or <code>"mve"</code>. Method to compute the covariance
+matrix estimator. See <code><a href="../../MASS/html/cov.rob.html">cov.rob</a></code>, <code><a href="fixmahal.html">fixmahal</a></code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code><a href="solvecov.html">solvecov</a></code> is used to invert the covariance matrix. The methods
+<code>"mcd"</code> and <code>"mve"</code> in <code>mahalanofix</code> do not work properly
+with point constellations with singular covariance matrices!
+</p>
+
+
+<h3>Value</h3>
+
+<p>A list of the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>md</code></td>
+<td>
+<p>vector of Mahalanobis distances.</p>
+</td></tr>
+<tr valign="top"><td><code>mg</code></td>
+<td>
+<p>mean of the points indexed by <code>gv</code>, weighted mean in
+<code>mahalanofuz</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>covg</code></td>
+<td>
+<p>covariance matrix of the points indexed by <code>gv</code>,
+weighted covariance matrix in <code>mahalanofuz</code>.</p>
+</td></tr> 
+<tr valign="top"><td><code>covinv</code></td>
+<td>
+<p><code>covg</code> inverted by <code><a href="solvecov.html">solvecov</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>coll</code></td>
+<td>
+<p>logical. If <code>TRUE</code>, <code>covg</code> has been
+(numerically) singular.</p>
+</td></tr>
+</table>
+
+
+<h3>Note</h3>
+
+<p>Methods <code>"mcd"</code> and <code>"mve"</code> require library <code>lqs</code>.</p>
+
+
+<h3>Author(s)</h3>
+
+<p>Christian Hennig
+<a href="mailto:c.hennig@ucl.ac.uk">c.hennig@ucl.ac.uk</a>
+<a href="http://www.homepages.ucl.ac.uk/~ucakche/">http://www.homepages.ucl.ac.uk/~ucakche/</a></p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="fixmahal.html">fixmahal</a></code>, <code><a href="solvecov.html">solvecov</a></code>, <code><a href="../../MASS/html/cov.rob.html">cov.rob</a></code></p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  x &lt;- c(1,2,3,4,5,6,7,8,9,10)
+  y &lt;- c(1,2,3,8,7,6,5,8,9,10)
+  mahalanofix(cbind(x,y),gv=c(0,0,0,1,1,1,1,1,0,0))
+  mahalanofix(cbind(x,y),gv=c(0,0,0,1,1,1,1,0,0,0))
+  mahalanofix(cbind(x,y),gv=c(0,0,0,1,1,1,1,1,0,0),method="mcd")
+  mahalanofuz(cbind(x,y),gv=c(0,0,0.5,0.5,1,1,1,0.5,0.5,0))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>fpc</em> version 2.1-11.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

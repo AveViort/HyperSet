@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Artificial Data from a Generalized Linear Regression Mixture</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for ExLinear {flexmix}"><tr><td>ExLinear {flexmix}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Artificial Data from a Generalized Linear Regression Mixture</h2>
+
+<h3>Description</h3>
+
+<p>Generate random data mixed from k generalized linear regressions (GLMs).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+ExLinear(beta, n, xdist = "runif", xdist.args = NULL,
+         family = c("gaussian","poisson"), sd = 1, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>beta</code></td>
+<td>
+<p>A matrix of regression coefficients. Each row corresponds
+to a variable, each column to a mixture component. The first row is
+used as intercept.</p>
+</td></tr>
+<tr valign="top"><td><code>n</code></td>
+<td>
+<p>Integer, the number of observations per component.</p>
+</td></tr>
+<tr valign="top"><td><code>xdist</code></td>
+<td>
+<p>Character, name of a random number function for the
+explanatory variables.</p>
+</td></tr>
+<tr valign="top"><td><code>xdist.args</code></td>
+<td>
+<p>List, arguments for the random number functions.</p>
+</td></tr>
+<tr valign="top"><td><code>family</code></td>
+<td>
+<p>A character string naming a GLM
+family.Only <code>"gaussian"</code> and <code>"poisson"</code> are implemented
+at the moment.</p>
+</td></tr>
+<tr valign="top"><td><code>sd</code></td>
+<td>
+<p>Numeric, the error standard deviation for each component for
+Gaussian responses.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Used as default for <code>xdist.args</code> if that is not
+specified.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>First, arguments <code>n</code> (and <code>sd</code> for Gaussian response) are
+recycled to the number of mixture components <code>ncol(beta)</code>, and
+arguments <code>xdist</code> and <code>xdist.args</code> are recycled to the
+number of explanatory variables <code>nrow(beta)-1</code>. Then a design
+matrix is created for each mixture component by drawing random numbers
+from <code>xdist</code>. For each component, the design matrix is multiplied
+by the regression coefficients to form the linear predictor. For
+Gaussian responses the identity link is used, for Poisson responses
+the log link.
+</p>
+<p>The true cluster memberships are returned as attribute <code>"clusters"</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## simple example in 2d
+beta &lt;- matrix(c(1, 2, 3, -1), ncol = 2)
+sigma &lt;- c(.5, 1)
+df1 &lt;- ExLinear(beta, 100, sd = sigma, min = -1, max = 2)
+plot(y~x1, df1, col = attr(df1, "clusters"))
+
+## add a second explanatory variable with exponential distribution
+beta2 &lt;- rbind(beta, c(-2, 2))
+df2 &lt;-  ExLinear(beta2, 100, sd = c(.5, 1),
+                 xdist = c("runif", "rexp"),
+                 xdist.args = list(list(min = -1, max = 2),
+                                   list(rate = 3)))
+
+summary(df2)
+
+opar = par("mfrow")
+par(mfrow = 1:2)
+hist(df2$x1)
+hist(df2$x2)
+par(opar)
+
+f1 &lt;- flexmix(y ~ ., data = df2, k = 2)
+
+## sort components on Intercept
+f1 &lt;- relabel(f1, "model", "Intercept")
+
+## the parameters should be close to the true beta and sigma
+round(parameters(f1), 3)
+rbind(beta2, sigma)
+
+### A simple Poisson GLM
+df3 &lt;- ExLinear(beta/2, 100, min = -1, max = 2, family = "poisson")
+plot(y ~ x1, df3, col = attr(df3, "clusters"))
+
+f3 &lt;- flexmix(y ~ ., data = df3, k = 2,
+              model = FLXMRglm(family = "poisson"))
+round(parameters(relabel(f3, "model", "Intercept")), 3)
+beta/2
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>flexmix</em> version 2.3-14 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Weighted means, covariance and scattering matrices...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for covw {mclust}"><tr><td>covw {mclust}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Weighted means, covariance and scattering matrices conditioning on a weighted matrix.</h2>
+
+<h3>Description</h3>
+
+<p>Compute efficiently (via Fortran code) the means, covariance and scattering matrices conditioning on a weighted or indicator matrix
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+covw(X, Z, normalize = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>X</code></td>
+<td>
+<p>A <i>(n x p)</i> data matrix, with <i>n</i> observations on <i>p</i> variables.</p>
+</td></tr>
+<tr valign="top"><td><code>Z</code></td>
+<td>
+<p>A <i>(n x G)</i> matrix of weights, with <i>G</i> number of groups.</p>
+</td></tr>
+<tr valign="top"><td><code>normalize</code></td>
+<td>
+<p>A logical indicating if rows of <code>Z</code> should be normalized to sum to one.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>A list with the following components:
+</p>
+<table summary="R valueblock">
+<tr valign="top"><td><code>mean</code></td>
+<td>
+<p>A <i>(p x G)</i> matrix of weighted means.</p>
+</td></tr>
+<tr valign="top"><td><code>S</code></td>
+<td>
+<p>A <i>(p x p x G)</i> array of weighted covariance matrices.</p>
+</td></tr>
+<tr valign="top"><td><code>W</code></td>
+<td>
+<p>A <i>(p x p x G)</i> array of weighted scattering matrices.</p>
+</td></tr>
+</table>
+
+
+<h3>Author(s)</h3>
+
+<p>M. Fop and L. Scrucca</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+# Z as an indicator matrix
+X &lt;- iris[,1:4]
+Z &lt;- unmap(iris$Species)
+str(covw(X, Z))
+# Z as a matrix of weights
+mod &lt;- Mclust(X, G = 3, modelNames = "VVV")
+str(covw(X, mod$z))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>mclust</em> version 5.4.2 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Reactive polling</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for reactivePoll {shiny}"><tr><td>reactivePoll {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Reactive polling</h2>
+
+<h3>Description</h3>
+
+<p>Used to create a reactive data source, which works by periodically polling a
+non-reactive data source.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+reactivePoll(intervalMillis, session, checkFunc, valueFunc)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>intervalMillis</code></td>
+<td>
+<p>Approximate number of milliseconds to wait between
+calls to <code>checkFunc</code>. This can be either a numeric value, or a
+function that returns a numeric value.</p>
+</td></tr>
+<tr valign="top"><td><code>session</code></td>
+<td>
+<p>The user session to associate this file reader with, or
+<code>NULL</code> if none. If non-null, the reader will automatically stop when
+the session ends.</p>
+</td></tr>
+<tr valign="top"><td><code>checkFunc</code></td>
+<td>
+<p>A relatively cheap function whose values over time will be
+tested for equality; inequality indicates that the underlying value has
+changed and needs to be invalidated and re-read using <code>valueFunc</code>. See
+Details.</p>
+</td></tr>
+<tr valign="top"><td><code>valueFunc</code></td>
+<td>
+<p>A function that calculates the underlying value. See
+Details.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p><code>reactivePoll</code> works by pairing a relatively cheap &quot;check&quot; function with
+a more expensive value retrieval function. The check function will be
+executed periodically and should always return a consistent value until the
+data changes. When the check function returns a different value, then the
+value retrieval function will be used to re-populate the data.
+</p>
+<p>Note that the check function doesn't return <code>TRUE</code> or <code>FALSE</code> to
+indicate whether the underlying data has changed. Rather, the check function
+indicates change by returning a different value from the previous time it was
+called.
+</p>
+<p>For example, <code>reactivePoll</code> is used to implement
+<code>reactiveFileReader</code> by pairing a check function that simply returns the
+last modified timestamp of a file, and a value retrieval function that
+actually reads the contents of the file.
+</p>
+<p>As another example, one might read a relational database table reactively by
+using a check function that does <code>SELECT MAX(timestamp) FROM table</code> and
+a value retrieval function that does <code>SELECT * FROM table</code>.
+</p>
+<p>The <code>intervalMillis</code>, <code>checkFunc</code>, and <code>valueFunc</code> functions
+will be executed in a reactive context; therefore, they may read reactive
+values and reactive expressions.
+</p>
+
+
+<h3>Value</h3>
+
+<p>A reactive expression that returns the result of <code>valueFunc</code>,
+and invalidates when <code>checkFunc</code> changes.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="reactiveFileReader.html">reactiveFileReader</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+function(input, output, session) {
+
+  data &lt;- reactivePoll(1000, session,
+    # This function returns the time that log_file was last modified
+    checkFunc = function() {
+      if (file.exists(log_file))
+        file.info(log_file)$mtime[1]
+      else
+        ""
+    },
+    # This function returns the content of log_file
+    valueFunc = function() {
+      read.csv(log_file)
+    }
+  )
+
+  output$dataTable &lt;- renderTable({
+    data()
+  })
+}
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

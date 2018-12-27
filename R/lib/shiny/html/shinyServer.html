@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Define Server Functionality</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for shinyServer {shiny}"><tr><td>shinyServer {shiny}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Define Server Functionality</h2>
+
+<h3>Description</h3>
+
+<p>Defines the server-side logic of the Shiny application. This generally
+involves creating functions that map user inputs to various kinds of output.
+In older versions of Shiny, it was necessary to call <code>shinyServer()</code> in
+the <code>server.R</code> file, but this is no longer required as of Shiny 0.10.
+Now the <code>server.R</code> file may simply return the appropriate server
+function (as the last expression in the code), without calling
+<code>shinyServer()</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+shinyServer(func)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>func</code></td>
+<td>
+<p>The server function for this application. See the details section
+for more information.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Call <code>shinyServer</code> from your application's <code>server.R</code>
+file, passing in a &quot;server function&quot; that provides the server-side logic of
+your application.
+</p>
+<p>The server function will be called when each client (web browser) first loads
+the Shiny application's page. It must take an <code>input</code> and an
+<code>output</code> parameter. Any return value will be ignored. It also takes an
+optional <code>session</code> parameter, which is used when greater control is
+needed.
+</p>
+<p>See the <a href="http://rstudio.github.com/shiny/tutorial/">tutorial</a> for more
+on how to write a server function.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## Not run: 
+# A very simple Shiny app that takes a message from the user
+# and outputs an uppercase version of it.
+shinyServer(function(input, output, session) {
+  output$uppercase &lt;- renderText({
+    toupper(input$message)
+  })
+})
+
+
+# It is also possible for a server.R file to simply return the function,
+# without calling shinyServer().
+# For example, the server.R file could contain just the following:
+function(input, output, session) {
+  output$uppercase &lt;- renderText({
+    toupper(input$message)
+  })
+}
+
+## End(Not run)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>shiny</em> version 1.2.0 <a href="00Index.html">Index</a>]</div>
+</body></html>

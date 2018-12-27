@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create a Chronological Object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for chron {chron}"><tr><td>chron {chron}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>
+Create a Chronological Object 
+</h2>
+
+<h3>Description</h3>
+
+<p>Create chronological objects which represent dates and times of day.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+chron(dates., times., format = c(dates = "m/d/y", times = "h:m:s"),
+      out.format, origin.)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dates.</code></td>
+<td>
+<p>character or numeric vector specifying dates.  If
+character, <code>dates.</code> are assumed to be in one of the date
+formats below; if numeric, <code>dates.</code> are assumed to be Julian
+dates, i.e., number of days since <code>origin.</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>times.</code></td>
+<td>
+<p>optional character or numeric vector specifying times of
+day.  If character, <code>times.</code> are assumed to be in one of the
+time formats below; if numeric, <code>times.</code> are assumed to be
+fractions of a day.</p>
+</td></tr>
+<tr valign="top"><td><code>format</code></td>
+<td>
+<p>vector or list specifying the input format of the input.
+The format can be either strings specifying one of the recognized
+formats below or a list of user-supplied functions to convert dates
+from character into Julian dates and vice versa.
+</p>
+<p>The dates format can be any permutation of the characters
+<code>"d"</code>, <code>"m"</code>, or <code>"y"</code> delimited by a separator
+(possibly null), e.g., <code>"m/d/y"</code>, <code>"d-m-y"</code>, <code>"ymd"</code>,
+are all valid; the format can also be permutations of the words
+<code>"day"</code>, <code>"month"</code> and <code>"year"</code> (with non-null
+separator), which produces the month name, e.g., <code>"month day
+      year"</code> produces <code>"April 20 1992"</code>, <code>"day mon year"</code>
+produces <code>"20 Apr 1992"</code>.
+</p>
+<p>The times format can be any permutation of <code>"h"</code>, <code>"m"</code>,
+and <code>"s"</code> separated by any one non-special character.  The
+default is <code>"h:m:s"</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>out.format</code></td>
+<td>
+<p>vector or list specifying date and time format for
+printing and output.  Default is same as <code>format</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>origin.</code></td>
+<td>
+<p>a vector specifying the date with respect to which
+Julian dates are computed.  Default is
+<code>c(month = 1, day = 1, year = 1970)</code>;
+you may set the option <code>chron.origin</code> to specify your own
+default, e.g.,
+<code>options(chron.origin = c(month=1, day=1, year=1990))</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>"times"</code> if only <code>times.</code> were
+specified, <code>"dates"</code> if only <code>dates.</code>, or <code>"chron"</code> if
+both <code>dates.</code> and <code>times.</code> were supplied.  All these inherit
+from class <code>"times"</code>.
+</p>
+<p>These objects represent dates and times of day, and allow the
+following arithmetic and summaries:  subtraction <code>d1-d2</code>,
+constant addition <code>d1+constants</code>, all logical comparisons,
+summaries <code>min()</code>, <code>max()</code>, and <code>range()</code> (which drop
+NAs by default); constants specify days (fractions are converted to
+time-of-day, e.g., 2.5 represents 2 days and 12 hours).  Operations
+such as sorting, differencing, etc., are automatically handled.
+</p>
+<p>There are methods for <code>as.character()</code>, <code>as.numeric()</code>,
+<code>cut()</code>, <code>is.na()</code>, <code>print()</code>, <code>summary()</code>,
+<code>plot()</code>, <code>lines()</code>, <code>lag()</code>, and the usual subsetting
+functions <code>[</code>, <code>[&lt;-</code>.
+The functions <code>days()</code>, <code>months()</code>, <code>quarters()</code>,
+<code>years()</code>, <code>weeks()</code>, <code>weekdays()</code>, <code>hours()</code>,
+<code>minutes()</code>, and <code>seconds()</code> take any <code>chron</code> object as
+input and extract the corresponding time interval. 
+<code>cut()</code> is used to create ordered factors from <code>chron</code>
+objects.  Chronological objects may be used with the modeling software.
+</p>
+<p>If <code>x</code> is <code>character</code> then it will be converted using 
+<code>as.POSIXct</code> (with the <code>format</code> argument, if any, passed to
+<code>as.POSIXct</code>) and <code>tz = "GMT"</code> and then converted
+to <code>chron</code>.  If <code>x</code> is <code>numeric</code> and <code>format</code>
+is not specified then it will be converted to <code>chron</code>
+using <code>chron(x)</code>.  If <code>x</code> is <code>numeric</code> and <code>format</code>
+is <code>specified</code> then <code>x</code> will be converted to character and
+then processed using <code>as.POSIXct</code> as discussed above.  If the
+format is specified as <code>NULL</code> it will be treated the same as if
+it were <code>missing</code>.
+</p>
+<p>The current implementation of <code>chron</code> objects does not handle
+time zones nor daylight savings time.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="dates.html">dates</a></code>,
+<code><a href="dates.html">times</a></code>,
+<code><a href="day.of.week.html">julian.default</a></code>,
+<code><a href="cut.dates.html">cut.dates</a></code>,
+<code><a href="seq.dates.html">seq.dates</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+dts &lt;- dates(c("02/27/92", "02/27/92", "01/14/92",
+               "02/28/92", "02/01/92"))
+dts
+# [1] 02/27/92 02/27/92 01/14/92 02/28/92 02/01/92
+tms &lt;- times(c("23:03:20", "22:29:56", "01:03:30",
+               "18:21:03", "16:56:26"))
+tms
+# [1] 23:03:20 22:29:56 01:03:30 18:21:03 16:56:26
+x &lt;- chron(dates = dts, times = tms)
+x
+# [1] (02/27/92 23:03:19) (02/27/92 22:29:56) (01/14/92 01:03:30)
+# [4] (02/28/92 18:21:03) (02/01/92 16:56:26)
+
+# We can add or subtract scalars (representing days) to dates or
+# chron objects:
+c(dts[1], dts[1] + 10)
+# [1] 02/27/92 03/08/92
+dts[1] - 31
+# [1] 01/27/92
+
+# We can substract dates which results in a times object that
+# represents days between the operands:
+dts[1] - dts[3]
+# Time in days:
+# [1] 44
+
+# Logical comparisons work as expected:
+dts[dts &gt; "01/25/92"]
+# [1] 02/27/92 02/27/92 02/28/92 02/01/92
+dts &gt; dts[3]
+# [1]  TRUE  TRUE FALSE  TRUE  TRUE
+
+# Summary operations which are sensible are permitted and work as
+# expected:
+range(dts)
+# [1] 01/14/92 02/28/92
+diff(x)
+# Time in days:
+# [1]  -0.02319444 -44.89335648  45.72052083 -27.05876157
+sort(dts)[1:3]
+# [1] 01/14/92 02/01/92 02/27/92
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>chron</em> version 2.3-53 <a href="00Index.html">Index</a>]</div>
+</body></html>

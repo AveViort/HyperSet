@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Results of 24 Psychological Test for 8th Grade Students</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for Psych24 {seriation}"><tr><td>Psych24 {seriation}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Results of 24 Psychological Test for 8th Grade Students</h2>
+
+<h3>Description</h3>
+
+<p>A data set collected by Holzinger and Swineford (1939) which consists of the
+results of 24 psychological tests given to 145 seventh and eighth grade
+students in a Chicago suburb. This data set contains the correlation matrix
+for the 24 test results.
+</p>
+<p>The data set was also used as an example for visualization of cluster analysis
+by Ling (1973).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data("Psych24")</pre>
+
+
+<h3>Format</h3>
+
+<p>A 24 x 24 correlation matrix.  
+</p>
+
+
+<h3>References</h3>
+
+<p>Holzinger, K. L., Swineford, F. (1939): 
+A study in factor analysis: The stability of a bi-factor solution.
+<em>Supplementary Educational Monograph,</em> No. <b>48</b>. 
+Chicago: University of Chicago Press.
+</p>
+<p>Ling, R. L. (1973): A computer generated aid for cluster analysis. 
+<em>Communications of the ACM</em>, 
+<b>16</b>(6), pp. 355&ndash;361.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data("Psych24")
+
+## create a dist object and also get rid of the one negative entry in the
+## correlation matrix
+d &lt;- as.dist(1 - abs(Psych24))
+
+pimage(d)
+
+## do hclust as in Ling (1973)
+hc &lt;- hclust(d, method = "complete")
+plot(hc)
+
+pimage(d, hc)
+
+## use seriation
+order &lt;- seriate(d, method = "tsp")
+#order &lt;- seriate(d, method = "tsp", control = list(method = "concorde"))
+pimage(d, order)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>seriation</em> version 1.2-3 <a href="00Index.html">Index</a>]</div>
+</body></html>
