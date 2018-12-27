@@ -350,7 +350,7 @@ $(function() {$( "#vertFGStabs" ).tabs({});});
 #AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS:
 'agsTabHead' => 
 '<div name="analysisStep" id="ags_tb"  class="analysis_step_area" style="width: 100%;">
-<b>Hello!</b>Select experimentally derived list(s) that you want to characterize
+<b>Hello!</b> Select experimentally derived list(s) that you want to characterize
 <span class="next_tab icon-static ui-icon ui-icon-seek-next" title="Next step" onclick="$(\'#analysis_type_ne\').tabs(\'option\', \'active\', HSTabs.subtab.indices [\'Network\']);"></span>
 
 <!--input type="hidden" name="analysis_type" value="###">
