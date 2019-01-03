@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <HTML lang="en-US">
 <HEAD>
-<TITLE>Drug screen data</TITLE>
+
+<!--base id="myBase" href="https://www.evinet.org/dev/HyperSet/" target="_blank"-->
+
+<TITLE>Drug screen data - dev version</TITLE>
 <meta http-equiv="content-type" content="charset=utf-8">
 <META http-equiv="Content-Script-Type" content="application/javascript" >
 <LINK href="hyperset.css" type="text/css" rel="stylesheet">
@@ -38,6 +41,7 @@
 <script src="js/jquery.venn.HS.js" type="text/javascript"></script>
 <script src="js/springy-master/springy.js" type="text/javascript"></script>
 <script src="js/colorpicker-master/js/evol.colorpicker.js"  type="text/javascript" charset="utf-8"></script>
+<script src="js/hello.js"  type="text/javascript" charset="utf-8"></script>
 <!--script src="js/HS.js" type="text/javascript" charset="utf-8"></script-->
 <script  type="text/javascript">
 var AonReady;
@@ -47,6 +51,7 @@ var suggestedTarget;
 var HSonReady;
 		//$(document).ready(
 		$(document).ready(function(){
+		alert(hello_script())
 		HSonReady();
 		 $(function() {
 		 
