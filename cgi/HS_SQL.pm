@@ -33,21 +33,16 @@ BEGIN {
 our ($translated_genes, $dbh,	$data);
 our $session_length = "'24 hours'";
 #SQL connection:
-sub connect2PG {
-my $dsn  = "DBI:Pg:dbname=hyperset";
-my $user = 'hyperset';
-my $ps   = 'SuperSet';
-my $dbh = DBI->connect( $dsn, $user, $ps,  {
-        RaiseError => 1, AutoCommit => 0
-    }) || die "Failed to connect as $dsn, user $user.../n";
-	return($dbh);
-}
-
-
 sub dbh {
-my $dsn  = "DBI:Pg:dbname=hyperset";
-my $user = 'hyperset';
-my $ps   = 'SuperSet';
+my $conf_file = "HS_SQL.conf";
+open(my $conf, $conf_file);
+
+my $dsn  = <$conf>;
+chomp $dsn;
+my $user = <$conf>;
+chomp $user;
+my $ps   = <$conf>;
+chomp $ps;
 $dbh = DBI->connect( $dsn, $user, $ps ,  {
         RaiseError => 1, AutoCommit => 0
     }) || die "Failed to connect as $dsn, user $user.../n";

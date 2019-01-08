@@ -159,7 +159,7 @@ exit;
 
 sub create_stat_networks {
 my($mainNet, $org) = @_;
-my $dbh = HS_SQL::connect2PG();
+my $dbh = HS_SQL::dbh();
 execStat("DELETE FROM stat_networks WHERE org = '$org';", $dbh);
 for my $fld(@{listFields($mainNet, $dbh, 'onlynew')}) {
 execStat("CREATE OR REPLACE TEMP VIEW  temp_list as select distinct(prot1) FROM $mainNet as c1 WHERE c1.$fld IS NOT NULL UNION SELECT distinct(prot2) AS prot1 FROM $mainNet AS c2 WHERE c2.$fld IS NOT NULL;", $dbh);
@@ -177,7 +177,7 @@ return undef;
 sub indexMain {
 my($header, $sqltable) = @_;
 my($fl);
-my $dbh = HS_SQL::connect2PG();
+my $dbh = HS_SQL::dbh();
 for $fl(@{$header}) {
 if (defined($indices{$fl})) {
 execStat("DROP  INDEX IF EXISTS $sqltable\_$fl ", $dbh); 
@@ -200,15 +200,22 @@ for $fl(@{$header}) {
 push @fields, $fl . ' ' . (defined($datatypes{$fl}) ? $datatypes{$fl} : 'real');
 }
 print $sqltable."\n"; 
-my $dbh = HS_SQL::connect2PG();
+my $dbh = HS_SQL::dbh();
 $dbh->do("DROP TABLE IF EXISTS $sqltable CASCADE");
 print STDERR "Commit...\n"; $dbh->commit or print STDERR "Failed!..\n"; 
 #exit; 
 execStat("CREATE TABLE $sqltable (".join(', ', @fields).")", $dbh); 
 print STDERR "Commit...\n"; $dbh->commit or print STDERR "Failed!..\n";
 
-$meta = "PGPASSWORD=\"SuperSet\" psql -d hyperset -U hyperset -w -c \"\\copy $sqltable from \'"."$inputDir"."$table\'  delimiter as E\'\\t\' null as \'\'\"";
-#'psql -d hyperset -U hyperset -c '."\copy $sqltable from \'$inputDir/$table\' delimiter as E\'\t\' null as \'\'";
+my $conf_file = "HS_SQL.conf";
+open(my $conf, $conf_file);
+my $dsn  = <$conf>;
+chomp $dsn;
+my $user = <$conf>;
+chomp $user;
+my $ps   = <$conf>;
+chomp $ps;
+$meta = "PGPASSWORD=".$ps." psql -d ".$dsn." -U ".$user." -w -c \"\\copy $sqltable from \'"."$inputDir"."$table\'  delimiter as E\'\\t\' null as \'NULL\'\"";
 print STDERR $meta."\n"; 
 # print STDERR "Commit...\n"; $dbh->commit or print STDERR "Failed!..\n"; exit; 
 print STDERR "Failed!..\n" if system($meta) < 0;
@@ -320,69 +327,5 @@ $cp->{$tbl}->{$arr[$aa]} = $cp->{$tbl}->{$aa};
 }
 return undef;
 }
-
-
-# \timing
-# CREATE TABLE net_all_hsa AS select * FROM net_fc_hsa;
-# ALTER TABLE merged_hsa ADD COLUMN phosphosite boolean DEFAULT 'FALSE';
-# CREATE INDEX merged_hsa_prot1 ON merged_hsa (prot1);
-# CREATE INDEX merged_hsa_prot2 ON merged_hsa (prot2);
-
-# CREATE TABLE temp_copy ( prot1 varchar(64), prot2 varchar(64));
-# \copy temp_copy (prot1, prot2) FROM '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/Kinase_Substrate.2015.human.2col'
-# CREATE INDEX temp_prot1 ON temp_copy (prot1);
-# CREATE INDEX temp_prot2 ON temp_copy (prot2);
-# ALTER TABLE temp_copy ADD COLUMN overlap boolean DEFAULT 'FALSE';
-
-# UPDATE merged_hsa SET phosphosite='TRUE' FROM merged_hsa m, temp_copy t  WHERE  (t.prot1 = m.prot1 AND t.prot2 = m.prot2);
-# select count(*) from merged_hsa m, temp_copy t  WHERE  (t.prot1 = m.prot1 AND t.prot2 = m.prot2);
-# UPDATE merged_hsa m SET phosphosite='TRUE' FROM temp_copy t  WHERE  (t.prot1 = m.prot1 AND t.prot2 = m.prot2);
-# ALTER TABLE temp_copy ADD COLUMN overlap boolean;
-# UPDATE temp_copy m SET overlap='TRUE' FROM temp_copy t  WHERE  (t.prot1 = m.prot1 AND t.prot2 = m.prot2);
- 
-# > c ~/.psql_history
-# > c ~/hyperset_db
-# Database: hyperset
-# Username: hyperset
-
-
-# > psql -d hyperset -U hyperset
-# http://www.postgresql.org/docs/8.4/static/libpq-pgpass.html
-
-# >  cat  ~/.pgpass
-# localhost:*:database:hyperset:SuperSet
-
-# >  FC.awk /home/proj/func/NW/hsa/FC.2010.fc.joined 1 6 7 24 8-12 14-21 | grep -v FBS_max > /var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_hsa.txt
-
-
-
- 
-# CREATE TABLE shownames1 (hsname varchar(64), description varchar(1024), org_id varchar(64));
-# CREATE TABLE
-# \copy shownames1 from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/shownames1.txt'
-
-# CREATE TABLE optnames1 (hsname varchar(64), optname varchar(64), org_id varchar(64), source varchar(64));
-# \copy optnames1 from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/optnames1.txt' delimiter as E'\t' null as ''
-
-
-
-# DROP  TABLE net_fc_hsa; 
-# CREATE TABLE net_fc_hsa (fbs float4, prot1 varchar(64), prot2 varchar(64), blast_score float4, hsa float4, mmu float4, rno float4, dme float4, cel float4, pearson float4, ppi float4, coloc float4, phylo float4, mirna float4, tf float4, hpa float4, domain float4);
-# \copy net_fc_hsa from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_hsa.txt' delimiter as E'\t' null as ''
-# CREATE INDEX p1ind_hsa ON net_fc_hs a (prot1);
-# CREATE INDEX
-# CREATE INDEX p2ind_hsa ON net_fc_hsa (prot2);
-# CREATE INDEX
-# CREATE INDEX fbsind_hsa ON net_fc_hsa (fbs);
-
-
-# CREATE TABLE net_fc_mmu (fbs float4, prot1 varchar(64), prot2 varchar(64), blast_score float4, hsa float4, mmu float4, rno float4, dme float4, cel float4, pearson float4, ppi float4, coloc float4, phylo float4, mirna float4, tf float4, hpa float4, domain float4);
-# CREATE TABLE
-# hyperset=> \copy net_fc_mmu from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_mmu.txt' delimiter as E'\t' null as ''
-
-# CREATE TABLE net_fc_rno (fbs float4, prot1 varchar(64), prot2 varchar(64), blast_score float4, hsa float4, mmu float4, rno float4, dme float4, cel float4, pearson float4, ppi float4, coloc float4, phylo float4, mirna float4, tf float4, hpa float4, domain float4);
- # \copy net_fc_rno from '/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/net_fc_rno.txt' delimiter as E'\t' null as ''
-
- 
 
  

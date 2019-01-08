@@ -65,7 +65,7 @@ my $output = $main; #($mode eq 'add') ? $input : $main;
 # my $output = $input; 
 # $output =~ s/\.withheader//; 
 # $output .= '.sql'; 
-our $dbh = HS_SQL::connect2PG();
+our $dbh = HS_SQL::dbh();
 
 if ($mode eq 'new') { 
 uploadToSQL($input, $mode, $output);
@@ -96,7 +96,6 @@ return undef;
 sub indexMain {
 my($sqltable) = @_;
 my($fl);
-# my $dbh = HS_SQL::connect2PG();
 for $fl(keys(%indices)) {
 execStat("CREATE INDEX $sqltable\_$fl on $sqltable ($fl)", $dbh); 
 execStat("CREATE INDEX $sqltable\_$fl\_uc on $sqltable (upper($fl))", $dbh);
@@ -115,7 +114,6 @@ for $fl((0..$#datatypes)) {
 push @fields, $datatypes[$fl];
 }
 print $sqltable."\n"; 
-# my $dbh = HS_SQL::connect2PG();
 if ($mode eq 'new') {
 $dbh->do("DROP TABLE IF EXISTS $sqltable CASCADE");
 print STDERR "Commit...\n"; $dbh->commit or print STDERR "Failed!..\n"; 
@@ -125,7 +123,15 @@ execStat($sm, $dbh);
 print STDERR "Commit...\n"; $dbh->commit or print STDERR "Failed!..\n";
 # exit;
 
-$meta = "PGPASSWORD=\"SuperSet\" psql -d hyperset -U hyperset -w -c \"\\copy $sqltable from \'"."$inputDir"."$table\'  delimiter as E\'\\t\' null as \'NULL\'\"";
+my $conf_file = "HS_SQL.conf";
+open(my $conf, $conf_file);
+my $dsn  = <$conf>;
+chomp $dsn;
+my $user = <$conf>;
+chomp $user;
+my $ps   = <$conf>;
+chomp $ps;
+$meta = "PGPASSWORD=".$ps." psql -d ".$dsn." -U ".$user." -w -c \"\\copy $sqltable from \'"."$inputDir"."$table\'  delimiter as E\'\\t\' null as \'NULL\'\"";
 print STDERR $meta."\n"; 
 print STDERR "Failed!..\n" if system($meta) < 0;
 }

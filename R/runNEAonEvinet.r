@@ -7,7 +7,7 @@ sink(file(paste(usedDir, "runNEAonEvinet.", usedSink, ".message.Rout", sep=""), 
 options(warn = -1); # options(warn = 0);
 source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/HS.R.config.r");
 # .libPaths("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib");
-library(RODBC);
+# library(RODBC);
 source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/NEArender.r");
 
 Debug = 1;

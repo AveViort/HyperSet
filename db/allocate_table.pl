@@ -70,7 +70,7 @@ $sqltable = "temporal_switch";
 print $sqltable."\n";
 # return;
 my $feature_length = ($sqltable =~ m/_nea_/) ? 1024 : 64;
-$dbh = HS_SQL::connect2PG();
+$dbh = HS_SQL::dbh();
 $dbh->do("DROP TABLE IF EXISTS $sqltable");
 if ($inputTable eq "Temp_switch.2014.DE.SQL.v3.Limit.txt") {
 @indexOn = ('condition1', 'condition2', 'gene');
@@ -83,8 +83,16 @@ print STDERR $stat."\n";
 $dbh->do($stat); 
 $dbh->commit;
 $dbh->disconnect;
-system("PGPASSWORD=\"SuperSet\" psql -d hyperset -U hyperset -w -c \"\\copy $sqltable from \'"."$inputDir"."$inputTable\'  delimiter as E\'\\t\' null as NA\"");
-$dbh = HS_SQL::connect2PG();
+my $conf_file = "HS_SQL.conf";
+open(my $conf, $conf_file);
+my $dsn  = <$conf>;
+chomp $dsn;
+my $user = <$conf>;
+chomp $user;
+my $ps   = <$conf>;
+chomp $ps;
+system("PGPASSWORD=".$ps." psql -d ".$dsn." -U ".$user." -w -c \"\\copy $sqltable from \'"."$inputDir"."$table\'  delimiter as E\'\\t\' null as \'NULL\'\"");
+$dbh = HS_SQL::dbh();
 for my $field(@indexOn) {
 my $index = join('_', ($field, $sqltable));
 $stat = "CREATE INDEX $index ON $sqltable ($field);";
@@ -135,7 +143,7 @@ for $COL(keys(%datatype)) {
 push @flds, $COL.' '.$datatype{$COL} if $COL;
 } 
 $SQL .= join(', ', @flds).');';
-my $dbh = connect2PG();
+my $dbh = dbh();
 $dbh->do("DROP TABLE IF EXISTS ".$SQLtableName);
 # $dbh->do(<<'SQL');
 print $SQL;
@@ -150,9 +158,15 @@ my($table, $header) = @_;
 my($i);
 # $dbh->do("DROP TABLE IF EXISTS temporal_switch");
 # $dbh->do(<<'SQL');
-my $dbh = connect2PG();
+my $dbh = dbh();
 $dbh->do("CREATE OR REPLACE TABLE temporal_switch (gene varchar(64), fc float4, p float4, fdr float4)"); 
-system('psql -d hyperset -U hyperset -c '."\copy temporal_switch from 'input_files/Temp_switch.2014.DE.SQL.txt' delimiter as E'\t'");
+my $conf_file = "HS_SQL.conf";
+open(my $conf, $conf_file);
+my $dsn  = <$conf>;
+chomp $dsn;
+my $user = <$conf>;
+chomp $user;
+system('psql -d '.$dsn.' -U '.$user.' -c '."\copy temporal_switch from 'input_files/Temp_switch.2014.DE.SQL.txt' delimiter as E'\t'");
 $dbh->commit;
 $dbh->disconnect;
 
