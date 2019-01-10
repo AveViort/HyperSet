@@ -10,7 +10,7 @@ use HStextProcessor;
 use Aconfig;
 # use HS_html_gen;
 # use HS_cytoscapeJS_gen;
-use lib "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/NETwork_analysis";
+use lib "NETwork_analysis";
 use NET;
 use HS_SQL;
 $ENV{'PATH'} = '/bin:/usr/bin:';
@@ -21,45 +21,29 @@ $debug = 0;
 our $q = new CGI; print $q->header().'<br>' ; 
 print '<br>Submitted form values: <br>'.$q->query_string.'<br>' if $debug;  
 $step = 'showAll'; # $step = 'login';
-#($q->param("username") ne $q->param("auth_user")) or 
-if ((!$q->param("username") and !$q->param("auth_user")) or (lc(auth_user($q->param("auth_user"))) ne 'ok')) {
-($step, $param) = ('auth1', undef);
-} else {
+my $content = '<div id="analysis_total">
+	<div id = "Rplot"></div>
+	<div id="progressbar"></div>
+	<div id="tabs" ><ul>
+	<li><a href="#showAvailable">Significant results</a></li>
+	<li><a href="#showMenu">Look up</a></li>
+	</ul><div id="containmentWrapper"></div></div></div>
+	<script type="text/javascript">
+	$( "#progressbar" ).progressbar({
+	value: false
+	});
+	$( "#progressbar" ).css({"visibility": "hidden"});
+	$( "#tabs" ).css({"visibility": "hidden"});
+	//HSonReady(); 
+	</script>';
+print $content;
 $step = $q->param("pressed-button") if $q->param("pressed-button");
 # $step="Rplot-CTD-GNEA-gneatop400affymetrix1-Basu-PRIMA1-TERF2###0.614#4e-14#4.47e-11#115"; 
 $step = $q->param("step") if defined($q->param("step"));
 ($step, $param) = ($1, lc($2)) if $step =~ m/(Rplot)-(.+)$/i;
-}
 print &$step($param);
 
 sub logout {}
-
-sub auth1 {
-return '<div id="authbegin">
-<form id="loginForm" name="loginForm" method="POST" action="cgi/a.cgi">
-	<fieldset> <legend>Enter information</legend>
-    <p>   <label for="username">Username</label>      <br />
-	<input type="text" id="username" name="username" size="20" />
-    </p>    <p>      <label for="password">Password</label>      <br />
-    <input type="password" id="password" name="password" size="20"/>
-    </p>    <p>
-	<input type="submit" id="login-login"  name="pressed-button" value="login"/>
-    <input type="button" id="login-cancel" name="cancel" value="cancel"/>
-    </p>  </fieldset>
-</form></div>
-<script type="text/javascript">
-		HSonReady();
-        $("#authbegin").dialog({
-		resizable: false,        modal: false,        title: "Login",        width:  "300px",
-        height: "auto",		autoOpen: true,
-		position: { my: "center center", at: "center center" }, 
-		});
-		$("input[id^=\'login-\']").click(function () {
-		$("#authbegin").dialog("close");
-		}		);
-</script>'
-		.formTotal(); 
-		} 
 		
 sub showAll {
 # my $file = '';
@@ -83,71 +67,13 @@ $("#tabs").tabs().addClass( "ui-helper-clearfix" );
 } 
 
 sub login {
-
-my $username = $q->param("username");
-my $password = $q->param("password");
-# print "TEST\n";
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
-#$stat = qq{SELECT id FROM users WHERE username=? and password=?};
-$stat = qq{SELECT check_hash(?, ?)};
-print $stat if $debug;
-my $sth = $dbh->prepare($stat) or die $dbh->errstr;
-$sth->execute($username, $password) or die $sth->errstr;
-my $userID = $sth->fetchrow_array;
-if ($userID) {
-my($current, $expires);
-$sth = $dbh->prepare( "SELECT LOCALTIMESTAMP, expires from sessions where ip='".$q->remote_addr()."' AND username='$username';" );
-$sth->execute(  );
-$sth->bind_columns(\$current, \$expires);
-my $ok; undef $ok;
-while ( $sth->fetch ) {
-$ok = $expires if ($current > $expires);
-}
-if (!$ok or !$expires) {
-$stat = "INSERT INTO sessions (id, username, ip, started, expires) VALUES (default, '$username', '".$q->remote_addr()."', LOCALTIMESTAMP, LOCALTIMESTAMP + interval ".$HS_SQL::session_length.")";
-$sth = $dbh->do($stat);    # or die $dbh->errstr;
-$sth = $dbh->do('COMMIT;');# or die $dbh->errstr;
-}
-#$sth->execute(, , ) or die $sth->errstr;
-return 'Logged in as: <br><b><input type="text" readonly id="uid" value="'.$username.'"></b>    
-<br>
+return '<br>
 <!--a href="'.$Aconfig::Rplots->{dir}.'3js.widget7.html'.'" target="_blank" class="clickable">a 3D plot</a-->
-<input type="submit" id="logout" name="pressed-button" value="logout"/>
 <script type="text/javascript">
 $("#login_again").css("visibility", "hidden");
-$("#logout").button();
-$("#logout").click(function() {
-$("#auth_user").	remove();
-$("#login").html(\'<input type="button" id="login_again" name="login_again" value="login"/>\');
-$("#main"). 		html("");
-//$("#login_again").button();
-		HSonReady();
-$("#login_again").		css("visibility", "visible");
-$("#login_again").click(function() {
-    location.reload();
-});
-});
 $("#uid").css("width", $("#logout").css("width"));
 $("#uid").css("background-color", $("#logout").css("background-color"));
-$("#form_total").append(\'<input type="hidden" id="auth_user" name="auth_user" value="'.$username.'"/>\');
 </script>'.showAll();
-} 
-else {
-return  '<script type="text/javascript">
-        $("#autherror").dialog({
-		resizable: false,
-        modal: false,
-        title: "Authentication error",
-        width:  "300px",
-        height: "auto",
-		position: { 		my: "center center", at: "center center"}, 
-		autoOpen: true,
-        buttons: {"Close": 
-		function () {
-		$(this).dialog("close");
-		}}
-		});
-		</script>';		}
 }
 
 sub auth_user  {
