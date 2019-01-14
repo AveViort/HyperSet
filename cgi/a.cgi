@@ -29,6 +29,7 @@ my $content = '<div id="analysis_total">
 	<li><a href="#showMenu">Look up</a></li>
 	</ul><div id="containmentWrapper"></div></div></div>
 	<script type="text/javascript">
+	//console.log("a.cgi invoked");
 	$( "#progressbar" ).progressbar({
 	value: false
 	});

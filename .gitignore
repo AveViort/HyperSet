@@ -2,3 +2,8 @@ db/input_files
 db/input_folders
 Ashwini
 HS_SQL.conf
+Specifications.txt
+calc.html
+cgi/calc.pl
+R/calc.r
+js/calc.js
