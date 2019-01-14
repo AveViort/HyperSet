@@ -11,7 +11,7 @@ var fileType = { //tabindex should match values of %fileType in HS_config.pm
 	gs 		: {tabindex: 1, icon: "ui-icon-bullets", 			caption: "Gene set file. Click to use or redefine."},
 	net 	: {tabindex: 2, icon: "ui-icon-vcs-pull-request", 	caption: "Network file. Click to use or redefine."} 
 , 	mtr 	: {tabindex: 3, icon: "ui-icon-grid", 				caption: "Matrix file. Click to use or redefine."}
-};   
+};    
 
 
 
