@@ -8,7 +8,8 @@ use CGI::Carp qw ( fatalsToBrowser );
 use HS_SQL;
 
 $ENV{'PATH'} = '/bin:/usr/bin:';
-$CGI::POST_MAX=102400000; our ($dbh, $stat);
+$CGI::POST_MAX=102400000;
+our ($dbh, $stat);
 
 my $query = new CGI;
 my $uname = $query->param('username');
