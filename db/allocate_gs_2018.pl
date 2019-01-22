@@ -11,10 +11,12 @@ use HS_SQL;
 
 # cd /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/
  # cat /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/db/FGS_update/*/*/rearr* | grep -vw -e wikipathways -e reactome -e kegg | gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {print $1, $2, tolower($3), $4, $6}}' | sort -u > fgs2018.sql
+  # cat input_files/fgs2018.sql | sed "{s/[\']/_/g}" > input_files/fgs2018_noQW.sql
+
 
 # cd /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/db/
-# ./allocate_gs.pl new fgs2018.sql
-# ./allocate_gs_2018.pl  stat fgs2018.sql
+# ./allocate_gs_2018.pl new fgs2018_noQW.sql
+# ./allocate_gs_2018.pl  stat fgs2018_noQW.sql
 
 our $main = 'fgs_current'; #the SQL table
 #####################
@@ -65,7 +67,7 @@ my $output = $main; #($mode eq 'add') ? $input : $main;
 # my $output = $input; 
 # $output =~ s/\.withheader//; 
 # $output .= '.sql'; 
-our $dbh = HS_SQL::dbh();
+our $dbh = dbh();
 
 if ($mode eq 'new') { 
 uploadToSQL($input, $mode, $output);
@@ -76,6 +78,23 @@ exit;
 else {
 create_stat_fgs($main);
  exit;
+}
+
+sub dbh {
+my $conf_file = "/home/proj/func/FGS_update/HS_SQL.LOCAL.conf";
+
+open(my $conf, $conf_file);
+
+my $dsn  = <$conf>;
+chomp $dsn;
+my $user = <$conf>;
+chomp $user;
+my $ps   = <$conf>;
+chomp $ps;
+$dbh = DBI->connect( $dsn, $user, $ps ,  {
+        RaiseError => 1, AutoCommit => 0
+    }) || die "Failed to connect as $dsn, user $user.../n";
+return $dbh;
 }
 
 sub create_stat_fgs {
@@ -123,7 +142,7 @@ execStat($sm, $dbh);
 print STDERR "Commit...\n"; $dbh->commit or print STDERR "Failed!..\n";
 # exit;
 
-my $conf_file = "HS_SQL.conf";
+my $conf_file = "/home/proj/func/FGS_update/HS_SQL.LOCAL.conf";
 open(my $conf, $conf_file);
 my $dsn  = <$conf>;
 chomp $dsn;
@@ -131,7 +150,7 @@ my $user = <$conf>;
 chomp $user;
 my $ps   = <$conf>;
 chomp $ps;
-$meta = "PGPASSWORD=".$ps." psql -d ".$dsn." -U ".$user." -w -c \"\\copy $sqltable from \'"."$inputDir"."$table\'  delimiter as E\'\\t\' null as \'NULL\'\"";
+$meta = "PGPASSWORD=".$ps." psql -d hyperset -U ".$user." -w -c \"\\copy $sqltable from \'"."$inputDir"."$table\'  delimiter as E\'\\t\' null as \'NULL\'\"";
 print STDERR $meta."\n"; 
 print STDERR "Failed!..\n" if system($meta) < 0;
 }
