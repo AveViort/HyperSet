@@ -1046,7 +1046,8 @@ $network_links -> {$AGS} -> {$FGS} -> {integerWeight} = ($network_links -> {$AGS
 
 
 for $gs(($AGS, $FGS)) {
-@mem = split(' ', $ar[$pl->{($gs eq $AGS) ? 'ags_genes1' : 'fgs_genes1'}]);
+@mem = split(', ', $ar[$pl->{($gs eq $AGS) ? 'ags_genes1' : 'fgs_genes1'}]);
+# print($mem[11]);
 for $mm(@mem) {
 $node_features->{$gs}->{memberGenes}->{$mm} = 1;
 $node_features->{$mm}->{parent} = $gs;
@@ -1085,7 +1086,7 @@ $gs_edges->{$AGS}->{$FGS} = processLinks(
 				if $network_links -> {$AGS} -> {$FGS} -> {NlinksReal_AGS_to_FGS};
 				}
 }
-my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
+ my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
 
 for $nn(sort {$a cmp $b} keys(%{$node_features})) { 
 if (!defined($node_features->{$nn}->{parent})) { 
