@@ -1,5 +1,0 @@
-Network	Filename	No.of genes	No. of groups
-GO biological process 	GO.BP.ath.N3-N1000.groups	8539	1298
-GO cellular compartment 	GO.CC.ath.N3-N1000.groups	6093	231
-GO molecular function 	GO.MF.ath.N3-N1000.groups	4396	540
-KEGG pathways, all 	KEGG.ath	2212	100

@@ -1,0 +1,30 @@
+#!/bin/bash
+echo "File for setting FS for git-permissions script test"
+echo "Root folder"
+mkdir test
+cd ./test
+echo $(pwd)
+touch index.html
+touch help.html
+#echo $(ls -la)
+ls -la
+echo "JS folder"
+mkdir js
+cd ./js
+echo $(pwd)
+touch lib1.js
+touch lib2.js
+mkdir subfolder_lib1
+ls -la
+cd ./subfolder_lib1
+echo $(pwd)
+touch lib1_additional.js
+ls -la
+cd ../..
+echo "CGI folder"
+mkdir cgi
+cd ./cgi
+echo $(pwd)
+touch script1.cgi
+touch script2.cgi
+ls -la

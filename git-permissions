@@ -1,0 +1,50 @@
+#!/bin/bash
+cd ./test
+echo $(pwd)
+echo "Setting permissions for files in git repo"
+
+chmod 775 ./js
+cd ./js
+echo $(pwd)
+find ./ -type f -exec chmod 664 {} \;
+
+chmod 775 ../cgi
+cd ../cgi
+echo $(pwd)
+find ./ -type f -exec chmod 775 {} \;
+
+chmod 775 ../R
+cd ../R
+echo $(pwd)
+find ./ -type d -exec chmod 775 {} \;
+find ./ -type f -exec chmod 664 {} \;
+
+chmod 775 ../db
+cd ../db
+echo $(pwd)
+chmod 770 ./druggable
+chmod 770 ./AuthAndSession
+find ./ -name '*.sql' -exec chmod 660 {} \;
+
+chmod 775 ../help
+cd ../help
+echo $(pwd)
+find ./ -type d -exec chmod 775 {} \;
+find ./ -type f -exec chmod 664 {} \;
+
+chmod 770 ../offline_scripts
+cd ../offline_scripts
+echo $(pwd)
+find ./ -type f -exec chmod 775 {} \;
+
+chmod 775 ../druggable
+cd ../drugable
+echo $(pwd)
+find ./ -type f -exec chmod 664 {} \;
+
+cd ..
+echo $(pwd)
+find ./ -name '*.html' -maxdepth 0 -exec chmod 664 {} \;
+find ./ -name '*.css' -maxdepth 0 -exec chmod 664 {} \;
+chmod 770 git-permissions
+chmod 770 test-folder-git-permissions
