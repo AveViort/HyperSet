@@ -11,7 +11,7 @@ message("TEST0");
 #sink(file = NULL);
 source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/HS.R.config.r");
 #print(library());
-
+library(RODBC);
 Debug = 1;
 rch <- odbcConnect("hs_pg", uid = "hyperset", pwd = "SuperSet"); 
 # print (rch);

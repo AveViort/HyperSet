@@ -1143,47 +1143,49 @@ elsif (
 ($type eq 'net') or 
 ($type eq 'fgs') or 
 ($type eq 'sbm')) {
-if (($type eq 'net') or ($type eq 'fgs')) {
-my ($spe, $stat, %statfile, @fields, $fi, @ar, $i);
-for $spe('hsa', 'mmu', 'ath', 'rno') {
-%statfile = (
-"NET" => $HSconfig::netDir.'/'.$spe.'/'.'NW.stats.txt', 
-"FGS" => $HSconfig::fgsDir.'/'.$spe.'/'.'FG.stats.txt'
-);
-for $stat(("FGS", "NET")) {
-if ($stat eq "FGS") {
-@fields = ('ngenes', 'ngroups');
-$pl->{$statfile{$stat}}->{'filename'} = 1;
-$pl->{$statfile{$stat}}->{'ngenes'} = 2;
-$pl->{$statfile{$stat}}->{'ngroups'} = 3;
-$i = 0;
- open  IN, $statfile{$stat} or die "Could not re-open $statfile{$stat} ...\n";
- while ($_ = <IN>) {
- next if ++$i == 1 ;
-chomp;
-@ar = split("\t", $_);
-for $fi(@fields) {
-$HSconfig::fgsDescription -> {$spe}->{$ar[$pl->{$statfile{$stat}}->{'filename'}]} ->{$fi} = $ar[$pl->{$statfile{$stat}}->{$fi}];
- }}
- close IN;
-}
+# if (($type eq 'net') or ($type eq 'fgs')) {
+# my ($spe, $stat, %statfile, @fields, $fi, @ar, $i);
+# for $spe('hsa', 'mmu', 'ath', 'rno') {
+# %statfile = (
+# "NET" => $HSconfig::netDir.'/'.$spe.'/'.'NW.stats.txt', 
+# "FGS" => $HSconfig::fgsDir.'/'.$spe.'/'.'FG.stats.txt'
+# );
+# for $stat(("FGS", "NET")) {
+# if ($stat eq "FGS") {
+# @fields = ('ngenes', 'ngroups');
+# $pl->{$statfile{$stat}}->{'filename'} = 1;
+# $pl->{$statfile{$stat}}->{'ngenes'} = 2;
+# $pl->{$statfile{$stat}}->{'ngroups'} = 3;
+# $i = 0;
+ # open  IN, $statfile{$stat} or die "Could not re-open $statfile{$stat} ...\n";
+ # while ($_ = <IN>) {
+ # next if ++$i == 1 ;
+# chomp;
+# @ar = split("\t", $_);
+# for $fi(@fields) {
+# $HSconfig::fgsDescription -> {$spe}->{$ar[$pl->{$statfile{$stat}}->{'filename'}]} ->{$fi} = $ar[$pl->{$statfile{$stat}}->{$fi}];
+ # }}
+ # close IN;
+# }
 
-if ($stat eq "NET") {
-@fields = ('ngenes', 'nlinks');
-$pl->{$statfile{$stat}}->{'filename'} = 1;
-$pl->{$statfile{$stat}}->{'ngenes'} = 3;
-$pl->{$statfile{$stat}}->{'nlinks'} = 2;
-$i = 0;
- open  IN, $statfile{$stat} or die "Could not re-open $statfile{$stat} ...\n";
- while ($_ = <IN>) {
- next if ++$i == 1 ;
-chomp;
-@ar = split("\t", $_);
-for $fi(@fields) {
-$HSconfig::netDescription -> {$spe}->{$ar[$pl->{$statfile{$stat}}->{'filename'}]} ->{$fi} = $ar[$pl->{$statfile{$stat}}->{$fi}];
- }}
-  close IN;
- }}}}
+# if ($stat eq "NET") {
+# @fields = ('ngenes', 'nlinks');
+# $pl->{$statfile{$stat}}->{'filename'} = 1;
+# $pl->{$statfile{$stat}}->{'ngenes'} = 3;
+# $pl->{$statfile{$stat}}->{'nlinks'} = 2;
+# $i = 0;
+ # open  IN, $statfile{$stat} or die "Could not re-open $statfile{$stat} ...\n";
+ # while ($_ = <IN>) {
+ # next if ++$i == 1 ;
+# chomp;
+# @ar = split("\t", $_);
+# for $fi(@fields) {
+# $HSconfig::netDescription -> {$spe}->{$ar[$pl->{$statfile{$stat}}->{'filename'}]} ->{$fi} = $ar[$pl->{$statfile{$stat}}->{$fi}];
+ # }}
+  # close IN;
+ # }}}}
+ 
+ 
 $content .= HS_html_gen::ajaxSubTab($type, $species).HS_html_gen::ajaxJScode($type);
 } 
 else {
