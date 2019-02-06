@@ -13,7 +13,7 @@ my $uname = $query->param('username');
 my $sign = $query->param('signature');
 my $sid = $query->param('session_id');
 
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 $stat = qq/SELECT notifications_queue(\'$uname'\, \'$sign'\, \'$sid'\)/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
@@ -21,3 +21,4 @@ my $notifications = $sth->fetchrow_array;
 print "Content-type: text/html\n\n";
 print $notifications;
 $sth->finish;
+$dbh->disconnect;

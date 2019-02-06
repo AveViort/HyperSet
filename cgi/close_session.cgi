@@ -14,7 +14,7 @@ my $query = new CGI;
 my $uname = $query->param('username');
 my $sign = $query->param('signature');
 my $sid = $query->param('session_id');
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 $stat = qq{SELECT close_session(?, ?, ?)};
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute($uname, $sign, $sid) or die $sth->errstr;

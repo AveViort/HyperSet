@@ -17,7 +17,7 @@ my $sid = $query->param('session_id');
 my $newsign = $query->param('new_signature');
 my $session_length = $query->param('session_length');
 my $project_id = $query->param('project_id');
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 $stat = qq/SELECT check_permission(\'$uname'\, \'$sign'\, \'$sid'\, \'$newsign'\, \'$session_length'\, \'$project_id'\)/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;

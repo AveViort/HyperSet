@@ -15,7 +15,7 @@ my $uname = $query->param('username');
 my $sign = $query->param('signature');
 my $sid = $query->param('sid');
 my $jid = $query->param('jid');
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 $stat = qq/SELECT session_valid(\'$uname'\, \'$sign'\, \'$sid'\)/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;

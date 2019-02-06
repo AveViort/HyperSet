@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/speedy -w
 
 #file for displaying different matrices from result.html
 use CGI; # qw(-no_xhtml);
@@ -15,7 +15,7 @@ my $query = new CGI;
 my $project = $query->param('project_id');
 my $table = $query->param('table_id');
 my $uname = $query->param('username');
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 print CGI::header();
 if ($uname ne "Anonymous") {
 	$sign = $query->param('signature');

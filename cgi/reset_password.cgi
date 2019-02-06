@@ -14,7 +14,7 @@ my $query = new CGI;
 my $uname = $query->param('username');
 my $pass = $query->param('password');
 my $key = $query->param('key');
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 $stat = qq/SELECT reset_password(\'$uname'\, \'$pass'\, \'$key'\)/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;

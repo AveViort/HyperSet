@@ -6,11 +6,13 @@ echo "Setting permissions for files in git repo"
 chmod 775 ./js
 cd ./js
 echo $(pwd)
+find ./ -type d -exec chmod 775 {} \; &> /dev/null
 find ./ -type f -exec chmod 664 {} \; &> /dev/null
 
 chmod 775 ../cgi
 cd ../cgi
 echo $(pwd)
+find ./ -type d -exec chmod 775 {} \; &> /dev/null
 find ./ -type f -exec chmod 775 {} \; &> /dev/null
 
 chmod 775 ../R

@@ -164,7 +164,7 @@ if ( !$submitted_species || !defined $genes->[0] || $#{$genes} < 0 ) {
 	print_noquery_dialog();
 }
 #SQL connection:
-$dbh = HS_SQL::dbh() || die "Failed to connect via HS_SQL.../n";
+$dbh = HS_SQL::dbh('hyperset') || die "Failed to connect via HS_SQL.../n";
 #end of SQL connection
 
 #funcoupweb::define_common_data();
@@ -707,7 +707,7 @@ sub nea_links { #sub-network retrieval of a link behind NEA.
 		$name_cond, $pnum, $s,  $i, $scorecol_as, $prot1,
 		$prot2,     $pair, $fc_cl);
 #SQL connection:
-$dbh = HS_SQL::dbh() || die "Failed to connect via HS_SQL.../n";
+$dbh = HS_SQL::dbh('hyperset') || die "Failed to connect via HS_SQL.../n";
 
 undef $data;
 my(%ids, $k, @pm);  
@@ -744,7 +744,7 @@ sub nea_links1 { #sub-network retrieval of a link behind NEA.
 		$name_cond, $pnum, $s,  $i, $scorecol_as, $prot1,
 		$prot2,     $pair, $fc_cl);
 #SQL connection:
-$dbh = HS_SQL::dbh() || die "Failed to connect via HS_SQL.../n";
+$dbh = HS_SQL::dbh('hyperset') || die "Failed to connect via HS_SQL.../n";
 
 undef $data;
 my(%ids, $k, @pm);  

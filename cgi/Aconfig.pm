@@ -221,7 +221,7 @@ $datasetLabels{maxlength} = length($datasetLabels{$i}) if (!defined($datasetLabe
 }
 
 sub availableCorrelations {
-my $dbh = HS_SQL::dbh();
+my $dbh = HS_SQL::dbh('druggable');
 # @{$src->{sset}} = ('CTD');
 my $ss = 'CTD';
 # my $stat = " SELECT distinct dataset, datatype, platform, screen from best_drug limit 10;";
@@ -247,7 +247,7 @@ return $crs; #$src->{CTD};
 }
 
 sub dataSourcesForAnalysis {
-my $dbh = HS_SQL::dbh();
+my $dbh = HS_SQL::dbh('druggable');
 @{$src->{sset}} = ('CTD');
 #for 
 my $ss = 'CTD';

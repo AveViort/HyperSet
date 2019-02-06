@@ -34,19 +34,24 @@ our ($translated_genes, $dbh,	$data);
 our $session_length = "'24 hours'";
 #SQL connection:
 sub dbh {
+my $database_name = @_[0];
 my $conf_file = "HS_SQL.conf";
 open(my $conf, $conf_file);
-
-my $dsn  = <$conf>;
-chomp $dsn;
-my $user = <$conf>;
-chomp $user;
-my $ps   = <$conf>;
-chomp $ps;
-$dbh = DBI->connect( $dsn, $user, $ps ,  {
-        RaiseError => 1, AutoCommit => 0
-    }) || die "Failed to connect as $dsn, user $user.../n";
-return $dbh;
+my @params;
+while (my $str = <$conf>) {
+	chomp $str;
+	@params = split / /, $str;
+	if (@params[0] eq $database_name) {
+		last;
+	}
+}
+if (@params[0] eq $database_name) {
+	$dbh = DBI->connect( @params[1], @params[2], @params[3] ,  {
+			RaiseError => 1, AutoCommit => 0
+		}) || die "Failed to connect as @params[1], user $params[2].../n";
+	return $dbh;	
+	}
+return undef;
 }
 
 sub genes_available { # for submitted ARBITRARY gene/protein/enzime IDs, finds reference IDs (normally  gene symbols)

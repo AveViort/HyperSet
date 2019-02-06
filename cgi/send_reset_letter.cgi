@@ -14,7 +14,7 @@ $CGI::POST_MAX=102400000; our ($dbh, $stat);
 # first part - check, if less than 3 mails were sent
 my $query = new CGI;
 my $uname = $query->param('username');
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 $stat = qq/SELECT check_reset_notifications(\'$uname'\)/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;

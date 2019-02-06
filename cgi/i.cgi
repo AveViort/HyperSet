@@ -21,7 +21,7 @@ use venn_click_points;
 use constant SPACE => ' ';
 no warnings;
 
-our $dbh = HS_SQL::dbh();
+our $dbh = HS_SQL::dbh('hyperset');
 $CGI::POST_MAX=102400000;
 our $q = new CGI;
 our $species = $q->param("species") ? $q->param("species") : '';

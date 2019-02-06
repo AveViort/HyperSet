@@ -20,7 +20,7 @@ my $selectedDrug = $query->param("drugList");
 #my $selectedDrug = $query->param("drugList_".$query->param("screenList")) if $query->param("screenList") ne 'all';
 $condition .=  " AND drug=\'".$selectedDrug."\'" if $selectedDrug ne 'all'; 
 my( $row , $rows, @r, $col, $tbl, $pl, $gene);
-$dbh = HS_SQL::dbh();
+$dbh = HS_SQL::dbh('druggable');
 my $stat = "select * from $sqltable where $condition order by  $order limit 10000;";
 print "Content-type: text/html\n\n";
 print $stat."<br>";

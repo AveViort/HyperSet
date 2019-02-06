@@ -723,7 +723,8 @@ function changeSpecies(tb) { //reloads the species-specific tabs
 
 function genesAvailable (species) {
 // console.log("New species, genesAvailable: " + species);
-Href = "cgi/i.cgi?" + dynamicHref() + ";action=genes-available" + ";species=" + species + ";"; 
+Href = "cgi/i.cgi?" + dynamicHref() + ";action=genes-available" + ";species=" + species + ";";
+//console.log(Href); 
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", Href);
 	xmlhttp.onreadystatechange = function() {
@@ -742,8 +743,9 @@ if (this.readyState == 4 && this.status == 200) {
 }
 
 function FGSAvailable (species) {
-console.log("New species, FGSAvailable: " + species);
+//console.log("New species, FGSAvailable: " + species);
 Href = "cgi/i.cgi?" + dynamicHref() + ";action=fgs-available" + ";species=" + species + ";"; 
+//console.log(Href); 
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", Href);
 	xmlhttp.onreadystatechange = function() {

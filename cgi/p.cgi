@@ -19,7 +19,7 @@ print $loginresult;
 
 sub login {
 	my ($uname, $password) = @_ ;
-	$dbh = HS_SQL::dbh() or die $DBI::errstr;
+	$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 	$stat = qq/SELECT check_hash(\'$uname\', \'$password\')/;
 	my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 	$sth->execute( ) or die $sth->errstr;

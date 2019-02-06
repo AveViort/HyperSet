@@ -13,7 +13,7 @@ my $query = new CGI;
 my $uname = $query->param('username');
 my $project = $query->param('project_id');
 my ($sign, $sid, $newsign, $session_length, $exists, $status, $sth);
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 if ($uname ne "Anonymous") {
 	$sign = $query->param('signature');
 	$sid = $query->param('session_id');

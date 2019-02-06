@@ -11,7 +11,7 @@ $ENV{'PATH'} = '/bin:/usr/bin:';
 $CGI::POST_MAX=102400000;
 our ($dbh, $stat);
 
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
 print "Content-type: text/html\n\n";
 $stat = qq/SELECT sources_and_drugs()/;
 #my $sth = $dbh->prepare($stat) or die $dbh->errstr;

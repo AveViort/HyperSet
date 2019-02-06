@@ -203,7 +203,7 @@ $condition .=  " AND drug=\'".$selectedDrug."\'" if $selectedDrug ne 'all';
 
 
 my( $row , $rows, @r, $col, $tbl, $pl, $gene);
-my $dbh = HS_SQL::dbh();
+my $dbh = HS_SQL::dbh('druggable');
 # return "AAAAAAAAAAAAAAAAAAAAAA"; exit:
 
 my $stat = "select * from $sqltable where $condition order by  $order limit 10000;";
@@ -340,7 +340,7 @@ return($plotFile);
 
 sub geneList {
 my($con, $stat, @tables, $i, $features, $drugs);
-my $dbh = HS_SQL::dbh();
+my $dbh = HS_SQL::dbh('druggable');
 
 if ($q->param("t2") =~ m/_clin_/i) {
 for $i(('1', '2', '3')) {

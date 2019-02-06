@@ -12,7 +12,7 @@ $CGI::POST_MAX=102400000; our ($dbh, $stat);
 my $query = new CGI;
 my $project = $query->param('project_id');
 my ($status, $sth, $projectlc);
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 
 print "Content-type: text/html\n\n";
 $projectlc = lc($project);

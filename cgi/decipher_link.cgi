@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/speedy -w
 # use warnings;
 
 # file for creating normal links from shareable
@@ -12,7 +12,7 @@ $CGI::POST_MAX=102400000; our ($dbh, $stat);
 
 my $query = new CGI;
 my $shared = $query->param('shared');
-$dbh = HS_SQL::dbh() or die $DBI::errstr;
+$dbh = HS_SQL::dbh('hyperset') or die $DBI::errstr;
 $stat = qq/SELECT jid FROM projectarchives WHERE share_hash LIKE \'$shared'\ /;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;

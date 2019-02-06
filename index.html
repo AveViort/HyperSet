@@ -484,8 +484,8 @@ close: function() {}
 <div id="login" style="display: none; visibility: hidden">
 <div id="ltabs">
   <ul>
-    <li><a href="https://www.evinet.org#signup_tab">Sign up</a></li>
-    <li><a href="https://www.evinet.org#login_tab">Log in</a></li>
+    <li><a href="#signup_tab">Sign up</a></li>
+    <li><a href="#login_tab">Log in</a></li>
    </ul>
    
 <div id="signup_tab">
@@ -551,6 +551,7 @@ close: function() {}
 <script  type="text/javascript">
 window.onload = function init()
 {
+	window.setTimeout(alert("10 seconds"), 10000);
 	combobox_init();
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
@@ -756,16 +757,16 @@ $("#project_id_ne").removeClass("inputareahighlight");
 		$("[id*='selectradio-table'][id*='ele']").val("");
 		restoreSpecies();
 		writeHref();
-	//changeSpecies("usr");
-	changeSpecies("fgs");
-	changeSpecies("net");
-	//changeSpecies("sbm");
+		//changeSpecies("usr");
+		changeSpecies("fgs");
+		changeSpecies("net");
+		//changeSpecies("sbm");
 
-	if (project_id) {
-		$("#listbutton-table-ags-ele").click();
+		if (project_id) {
+			$("#listbutton-table-ags-ele").click();
 		} 
 		else {
-		$("div[id*='list']").filter(function(){  return $(this).attr("id").match(/list_.+_files/);}).html("No project selected...")
+			$("div[id*='list']").filter(function(){  return $(this).attr("id").match(/list_.+_files/);}).html("No project selected...")
 		}
 
 		$("#display-archive").css("display", "inline-block");
