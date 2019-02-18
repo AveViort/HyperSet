@@ -81,6 +81,12 @@ if ((defined($projectID)) && ($projectID ne "")) {
 	# if no ownership rights or session is not valid - terminate i.cgi
 	if (not($sessionstat) or not($ownership)) {
 		print "Content-type: text/html\n\n";
+		if (not ($sessionstat) and ($ownership)) {
+			print '<script>
+				usetCookie("project_id", "'.$projectID.'", 168);
+				prepare_relogin();
+				showLoginForm();</script>';
+		}
 		print "Permission denied. Project: ".$projectID." User: ".$uname." Signature: ".$sign." SID: ".$sid." Session status: ".$sessionstat." Ownership status: ".$ownership;
 		exit 0;}
 		

@@ -12,27 +12,9 @@ $CGI::POST_MAX=102400000;
 our ($dbh, $stat);
 
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
-print "Content-type: text/html\n\n";
-# write it as an SQL function! Temporal solution
-$stat = "SELECT * from best_drug_corrs_counts;";
-my  ($key_field, $tag);
-@{ $key_field} = ('dataset', 'datatype', 'platform', 'screen', 'drug', 'count');
-my $tables = $dbh->selectall_arrayref($stat);
-$dbh->disconnect;
-my ($crs, $tt, @ar, $item, $pls, $tag);
-foreach my $tt(@$tables) {
-	$tag = $tt->[2];
-	$tag =~ s/\.//g;
-	$crs->{screen}->{$tt->[3]} = 1;
-	$crs->{drug}->{$tt->[3]}->{$tt->[4]} = 1;
-	if (lc($tt->[1]) eq 'nea') {
-		$tt->[1] = 'pw'.$tt->[1];
-	}
-	$crs->{lc($tt->[1])}->{lc($tag)} = $tt->[2];
-}
 
-$dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
-$stat = qq/SELECT sources_and_drugs()/;
+
+$stat = qq/SELECT sources_and_drugs_old()/;
 $tables = $dbh->selectcol_arrayref($stat);
 $dbh->disconnect;
 for $tt(@{$tables}) {

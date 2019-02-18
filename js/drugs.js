@@ -1,5 +1,5 @@
 function drug_sources() {
-	var sources, sources_with_drugs;
+	var sources;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/druggable_sources.cgi", false);
 	xmlhttp.onreadystatechange = function() {
@@ -8,18 +8,9 @@ function drug_sources() {
 		}
 	xmlhttp.send();
 	sources = sources.split("|");
-	var temp = [];
-	var i = 0;
-	sources_with_drugs = sources.filter(function(val) {
-		i = i + 1;
-        if (val.indexOf("drugs") === -1)
-            return false;
-		temp.push(i-1);
-		return true;
-	});
 	var sources_array = [];
-	for (i in sources_with_drugs) {
-		sources_array.push({code: sources[temp[i]-1], name: sources_with_drugs[i]});
+	for (i in sources) {
+		sources_array.push({code: sources[i], name: sources[i]});
 	}
 	return sources_array;
 }

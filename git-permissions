@@ -3,32 +3,32 @@
 echo $(pwd)
 echo "Setting permissions for files in git repo"
 
-chmod 775 ./js
+chmod 775 ./js &> /dev/null
 cd ./js
 echo $(pwd)
 find ./ -type d -exec chmod 775 {} \; &> /dev/null
 find ./ -type f -exec chmod 664 {} \; &> /dev/null
 
-chmod 775 ../cgi
+chmod 775 ../cgi &> /dev/null
 cd ../cgi
 echo $(pwd)
 find ./ -type d -exec chmod 775 {} \; &> /dev/null
 find ./ -type f -exec chmod 775 {} \; &> /dev/null
 
-chmod 775 ../R
+chmod 775 ../R &> /dev/null
 cd ../R
 echo $(pwd)
 find ./ -type d -exec chmod 775 {} \; &> /dev/null
 find ./ -type f -exec chmod 664 {} \; &> /dev/null
 
-chmod 775 ../db
+chmod 775 ../db &> /dev/null
 cd ../db
 echo $(pwd)
-chmod 770 ./druggable
-chmod 770 ./AuthAndSession
+chmod 770 ./druggable &> /dev/null
+chmod 770 ./AuthAndSession &> /dev/null
 find ./ -name '*.sql' -exec chmod 660 {} \; &> /dev/null
 
-chmod 775 ../help
+chmod 775 ../help &> /dev/null
 cd ../help
 echo $(pwd)
 find ./ -type d -exec chmod 775 {} \; &> /dev/null
@@ -39,7 +39,7 @@ cd ../offline_scripts
 echo $(pwd)
 find ./ -type f -exec chmod 775 {} \; &> /dev/null
 
-chmod 775 ../druggable
+chmod 775 ../druggable &> /dev/null
 cd ../druggable
 echo $(pwd)
 find ./ -type f -exec chmod 664 {} \; &> /dev/null
@@ -48,5 +48,5 @@ cd ..
 echo $(pwd)
 find ./ -maxdepth 1 -name '*.html' -exec chmod 664 {} \; &> /dev/null
 find ./ -maxdepth 1 -name '*.css' -exec chmod 664 {} \; &> /dev/null
-chmod 770 git-permissions
-chmod 770 test-folder-git-permissions
+chmod 770 git-permissions &> /dev/null
+chmod 770 test-folder-git-permissions &> /dev/null

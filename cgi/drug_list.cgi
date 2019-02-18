@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/speedy -w
 # use warnings;
 
 # script for retrieving drug list for each source
@@ -13,30 +13,25 @@ our ($dbh, $stat);
 
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
 print "Content-type: text/html\n\n";
-# write it as an SQL function! Temporal solution
-$stat = "SELECT * from best_drug_corrs_counts;";
-my  ($key_field, $tag);
-@{ $key_field} = ('dataset', 'datatype', 'platform', 'screen', 'drug', 'count');
-my $tables = $dbh->selectall_arrayref($stat);
-$dbh->disconnect;
-my ($crs, $tt, @ar, $item);
-foreach my $tt(@$tables) {
-	$tag = $tt->[2];
-	$tag =~ s/\.//g;
-	$crs->{screen}->{$tt->[3]} = 1;
-	$crs->{drug}->{$tt->[3]}->{$tt->[4]} = 1;
-	if (lc($tt->[1]) eq 'nea') {
-		$tt->[1] = 'pw'.$tt->[1];
-	}
-	$crs->{lc($tt->[1])}->{lc($tag)} = $tt->[2];
-}
-for $screen(sort {$a cmp $b} keys %{$crs->{drug}}) {
-	next if (!defined($Aconfig::datasetLabels{$screen}));
-	print $Aconfig::datasetLabels{$screen};
-	print "|";
-	for $drug(sort {$a cmp $b} keys %{$crs->{drug}->{$screen}}) {
-		print $drug;
+$stat = qq/SELECT drug_list()/;
+$sth = $dbh->prepare($stat) or die $dbh->errstr;
+$sth->execute( ) or die $sth->errstr;
+my $temp = '';
+my @string, @response;
+my ($source, $drug);
+while (@response = $sth->fetchrow_array) {
+		my $Text = @response[0];
+		$Text =~ s/[()]//g;
+		$Text =  substr($Text, 1);
+		$Text =~ m|([^"]*)",(.*)|;
+		if ($1 ne $temp) {
+			print "!";
+			print $1;
+			print "|";
+			$temp = $1;
+		}
+		print $2;
 		print "|";
-	}
-	print "!";
 }
+$sth->finish;
+$dbh->disconnect;

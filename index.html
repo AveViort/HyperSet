@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <HTML lang="en-US">
 <HEAD>  
-<base id="myBase" href="https://www.evinet.org/" target="_blank">
+<base id="myBase" href="https://dev.evinet.org/" target="_blank">
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="pagetype" content="StartPage">
 <meta name="description" content="Network enrichment analysis; Gene set enrichment; Pathway enrichment; Exploratory functional analysis; Driver versus passenger mutations">
@@ -506,7 +506,7 @@ close: function() {}
 </div>
 <!--/////////////////////////////////////-->
   <div id="login_tab">
-  Log into your account with email address 
+  <div id="login_tab_text">Log into your account with email address</div> 
   <!--br><button id="google-button" class="authent ui-widget-header ui-corner-all"> Log in with <img src="pics/Google.png" width="95" height="35"></button-->
  <table>	
 	<tr><td class="smaller_font">Username</td><td><input type="text" name="login_userid" value="" id="login-userid-box" class="ui-corner-all"></td></tr>
@@ -551,7 +551,6 @@ close: function() {}
 <script  type="text/javascript">
 window.onload = function init()
 {
-	window.setTimeout(alert("10 seconds"), 10000);
 	combobox_init();
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
@@ -739,6 +738,28 @@ function display_login (username)
 	$("#profile_settings_button").css("display", "block");
 }
 
+// because of some problems with Perl, it is better to have this here
+function prepare_relogin()
+{
+	$("#login_tab_text").text("Your session has expired. Please log in again to continue or reload the page to sign out");
+	// hide "signup" tab
+	$($("#ltabs").find("li")[0]).hide();
+	// disable closing login dialog on <esc> button
+	$("login").dialog("option", "closeOnEscape", false);
+	$("button[title='Close']").hide();
+	// hide "Forgot password?"
+	$("#forgot").hide();
+	$("#login_button-login_form").attr("onclick", "relogin()");
+}
+
+function relogin() {
+	authenticate();
+	var username, sid, signature, sessionlength;
+	var project_id = (getCookie("project_id").split("|"))[0];
+	[username, sid, signature, sessionlength] = get_name_sid_sign_length(false);
+	reload_project(project_id, sessionlength, username, signature, sid);
+}
+
 function reload_project(project_id, sessionlength, username, signature, sid)
 {
 $("#project_id_ne").removeClass("inputareahighlight");
@@ -821,12 +842,11 @@ function reset_project (ProjectID) {
 		$("#display-archive").css("display", "inline-block");
 		$("[id*='display-filetable']").css("display", "inline-block");
 		writeHref();
-	//changeSpecies("usr");
-	changeSpecies("fgs");
-	changeSpecies("net");
-	//changeSpecies("sbm");
+		//changeSpecies("usr");
+		changeSpecies("fgs");
+		changeSpecies("net");
+		//changeSpecies("sbm");
 		$("#listbutton-table-ags-ele").click();
-
 		updatechecksbmAll();
  $('[name="FGScollection"][dft="yes"]').click(); 
  $('[name="NETselector"][dft="yes"]').click(); 
@@ -850,6 +870,7 @@ function showLoginForm() {
 	});
 	$("[id*='button-login_form']").button();
 	$("#signup_button-login_form").button("disable");
+	$("#login_button-login_form").button("disable");
 }
 
 function hideLoginForm() {
@@ -1144,7 +1165,7 @@ function authenticate() {
 		var username = (($("[name='login_userid']").val()).trim()).toLowerCase();
 		var sid = prepare_session(username, $("#login-password-box").val());
 		if (sid!="Fail") {
-			erase_user_cookies();
+			//erase_user_cookies();
 			// by default session lasts for 8 hours
 			var sessionlength=8;
 			// if "keep me logged in" option is chosen - remember for 1 month
@@ -1650,6 +1671,22 @@ function verify_project_name(projectid)
 	}
 	return response;
 }
+
+// event - button released in "login_userid" field
+$(function()
+{
+	$('[name="login_userid"]').keyup(
+	function() {
+		var valueSoFar = $('[name="login_userid"]').val();
+		var emailVailidity = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		if (emailVailidity.test(valueSoFar)) {
+			$("#login_button-login_form").button("enable");
+		}
+		else {
+			$("#login_button-login_form").button("disable");
+		}
+	});
+})
 
 // event - button released in "signup_userid" field	
 $(function()
