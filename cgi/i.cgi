@@ -861,8 +861,8 @@ $text = $arr[$pl->{$table}->{ags}];
 $text = substr($text, 0, 40);
 $ol = $HS_html_gen::OLbox1.$arr[$pl->{$table}->{ags}].$HS_html_gen::OLbox2 if length($arr[$pl->{$table}->{ags}]) > 41;
 $content .= "\n".'<tr><td name="firstcol" class="AGSout">'.$ol.$text.'</a>'.'</td>';
-
-@a2 = split("\t", $genesAGS);
+ 
+@a2 = split(",", $genesAGS);
 $content .= "\n".'<td class="AGSout">'.
 $HS_html_gen::OLbox1.
 # '<b>AGS genes that contributed to the relation</b><br>(followed with and sorted by the number of links):<br>'.
@@ -902,7 +902,7 @@ else{
 
 $content .= "\n".'<td class="FGSout">'.$ol2.$pwh.$text.$pwt.'</a>'.'</td>';
 #CGIVENN#
-@a2 = split("\t", $genesFGS);
+@a2 = split(",", $genesFGS);
 $content .= "\n".'<td class="FGSout">'.$HS_html_gen::OLbox1.
 # '<b>FGS genes that contributed to the relation</b><br>(followed with and sorted by the number of links):<br>'.
 '<b>FGS genes that contributed to the relation ('.($#a2 + 1).' out of '.$arr[$pl->{$table}->{n_genes_fgs}].')</b>:<br>'.
