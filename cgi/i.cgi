@@ -833,7 +833,7 @@ return (HS_cytoscapeJS_gen::printNEA_JSON($neaData, $pl->{$table}, $subnet_url))
 
 sub printTabTable {
 my($neaData, $pl, $table, $subnet_url, $jid) = @_;
-my($i,$genesAGS, $genesFGS, $genesAGS2, $genesFGS2, $text, $ol, $ol2, $signGSEA, $key, @arr, $AGS, $FGS, $pwKey, $pwID, $pwt, $pwh);
+my($i,$genesAGS, $genesFGS, $genesAGS2, $genesFGS2, $text, $ol, $ol2, $signGSEA, $key, @arr, @a2, $AGS, $FGS, $pwKey, $pwID, $pwt, $pwh);
 
 my $content = '<div id="nea_matrix">'.insertMatrixURLs($jid).'</div>';
 my $species = retrieveJobInfo($jid, 'species');
@@ -861,10 +861,12 @@ $text = $arr[$pl->{$table}->{ags}];
 $text = substr($text, 0, 40);
 $ol = $HS_html_gen::OLbox1.$arr[$pl->{$table}->{ags}].$HS_html_gen::OLbox2 if length($arr[$pl->{$table}->{ags}]) > 41;
 $content .= "\n".'<tr><td name="firstcol" class="AGSout">'.$ol.$text.'</a>'.'</td>';
+
+@a2 = split("\t", $genesAGS);
 $content .= "\n".'<td class="AGSout">'.
 $HS_html_gen::OLbox1.
 # '<b>AGS genes that contributed to the relation</b><br>(followed with and sorted by the number of links):<br>'.
-'<b>AGS genes that contributed to the relation</b>:<br>'.
+'<b>AGS genes that contributed to the relation ('.($#a2 + 1).' out of '.$arr[$pl->{$table}->{n_genes_ags}].')</b>:<br>'.
 $genesAGS.
 $HS_html_gen::OLbox2.
 $arr[$pl->{$table}->{n_genes_ags}].'</a>'.'</td>';
@@ -900,10 +902,10 @@ else{
 
 $content .= "\n".'<td class="FGSout">'.$ol2.$pwh.$text.$pwt.'</a>'.'</td>';
 #CGIVENN#
-
+@a2 = split("\t", $genesFGS);
 $content .= "\n".'<td class="FGSout">'.$HS_html_gen::OLbox1.
 # '<b>FGS genes that contributed to the relation</b><br>(followed with and sorted by the number of links):<br>'.
-'<b>FGS genes that contributed to the relation</b>:<br>'.
+'<b>FGS genes that contributed to the relation ('.($#a2 + 1).' out of '.$arr[$pl->{$table}->{n_genes_fgs}].')</b>:<br>'.
 $genesFGS.$HS_html_gen::OLbox2.$arr[$pl->{$table}->{'n_genes_fgs'}].'</a>'.'</td>';
 $content .= "\n".'<td class="FGSout">'.$arr[$pl->{$table}->{lc('N_linksTotal_FGS')}].'</td>';
 $content .= "\n".'<td>'.$arr[$pl->{$table}->{lc('NlinksReal_AGS_to_FGS')}].'</td>';
