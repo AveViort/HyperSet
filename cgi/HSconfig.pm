@@ -4,6 +4,7 @@ package HSconfig;
 use CGI qw(:standard);
 #use CGI::Carp qw(fatalsToBrowser);
 use strict;
+use Cwd;
 BEGIN { 
 	require Exporter;
 	use Exporter;
@@ -15,8 +16,9 @@ BEGIN {
 	%EXPORT_TAGS = 	();
 	@EXPORT_OK	 =	qw();
 }
- 
-our $BASE = 'https://www.evinet.org/';
+
+my $wd = getcwd; 
+our $BASE = index($wd, 'dev') != -1 ? 'https://dev.evinet.org/' : 'https://www.evinet.org/';
 our $usersDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_upload/';
 our $usersTMP = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
 our $usersPNG = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/display_tmp/';
@@ -196,7 +198,7 @@ our $matrixTab;
 # globally via options(DT.options = list(...)), and global options will be merged into this options argument if set
 
 our $PubMedURL = 'http://www.ncbi.nlm.nih.gov/pubmed/';
-our $indexFile = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/index.html'; #DEV# 
+our $indexFile = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/dev/HyperSet/index.html'; #DEV# 
 our $parameters4vennGen = 'parameters4vennGen';
 our $matrixHTML = '_tmpNEA.matrix';
 our $safe_filename_characters = "a-zA-Z0-9_.-";

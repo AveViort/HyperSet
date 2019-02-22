@@ -5,6 +5,7 @@ use CGI::Carp qw(fatalsToBrowser);
 use HStextProcessor;
 use HSconfig;
 use HS_SQL;
+use Cwd;
  
 BEGIN {
 	require Exporter; 
@@ -36,7 +37,7 @@ our $actionFieldDelimiter2 = '___';
  our $webLinkPage_AGS2FGS_FC3_link = 'http://funcoup.sbc.su.se/search/network.action?query.confidenceThreshold=0.1&query.expansionAlgorithm=group&query.prioritizeNeighbors=true&__checkbox_query.prioritizeNeighbors=true&query.addKnownCouplings=true&__checkbox_query.addKnownCouplings=true&query.individualEvidenceOnly=true&__checkbox_query.individualEvidenceOnly=true&query.categoryID=-1&query.constrainEvidence=no&query.restriction=none&query.showAdvanced=true'; 
  
 our $OLbox1 = "\<a onmouseover\=\"return overlib\(\'";
-our $OLbox2 = "\'\, CENTER \)\;\" onmouseout\=\"nd\(\)\;\"\>";
+our $OLbox2 = "\'\, CENTER\, STICKY\, TIMEOUT\, 3000\)\;\" onmouseout\=\"nd\(\)\;\"\>";
 our %pwURLhead = (
 'R-H' => '<a href="https://reactome.org/PathwayBrowser/#/'
 , 'HSA' => '<a href="https://www.genome.jp/dbget-bin/www_bget?'
@@ -482,18 +483,24 @@ return($testStart);
 
 sub mainStart {
 $mainStart = '';
+my $wd = getcwd;
 open IN, $HSconfig::indexFile or die "$HSconfig::indexFile not found...".'<br>';
 do {
 $_ = <IN>;
+if (index($_, '<HEAD>') != -1) {
+	$_ .= index($wd, 'dev') != -1 ? '<base id="myBase" href="https://dev.evinet.org/" target="_blank">' : '<base id="myBase" href="https://www.evinet.org/" target="_blank">';
+}
 $mainStart .= $_;
 } while ($_ !~ m/endofindexpageimport/);
  # =~ s//<base href="http://www.w3schools.com/images/" target="_blank">/;
 # $mainStart =~ s/(document\.write\(unescape\(\"\%3Cscript)/\/\/$1/;
+
 $mainStart .= '</HEAD>
 <BODY class="ui-state-default ui-corner-all">
   <div id="error"><div id="showError" class="error"></div></div>
 <div id="load" class="modal"></div>
 <div id="main-nea"></div>';
+
 return($mainStart);
 }
 
@@ -589,14 +596,14 @@ sub ajaxMenu {
 my $sp; 
 my $con = '<table><tr>';
 $con .= '
-<td title="Create an example heatmap">
+<!--td title="Create an example heatmap">
 <div id="run-exploratory-heatmap" class="showme clickable demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"></div>
 </td>
 <td title="Run a PCA example">
 <div id="run-exploratory-pca" class="showme clickable demo_button sbm-controls"> 
 <img src="pics/eres.png" class="showme" ></div>
-</td>
+</td-->
 <td>
 				<div id="help-'.$main::ajax_help_id++.'" class="showme clickable demo_button sbm-controls" onclick="demo1(
 \''.$HSconfig::examples->{'1'}->{'proj'}.'\',

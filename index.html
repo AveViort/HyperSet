@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <HTML lang="en-US">
 <HEAD>  
-<base id="myBase" href="https://www.evinet.org/" target="_blank">
+<!--base id="myBase" href="https://dev.evinet.org/" target="_blank"-->
 <!--BASE VERSION: base id="myBase" href="https://www.evinet.org/" target="_blank"-->
 <!--DEV VERSION: base id="myBase" href="https://dev.evinet.org/" target="_blank"-->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -22,7 +22,7 @@
 	<meta property="og:url" content="https://www.evinet.org">
     <meta property="og:image" content="https://www.evinet.org/pics/evinet-main-screenshot.png" />
     <meta property="og:type" content="website" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content="en_US" /> 
 
  
   <meta name="twitter:card" value="summary_large_image">
@@ -227,7 +227,6 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
 <div id="archive-dialog-ajax" ></div>
 <div id="filetable-uni-ajax" ></div>
 
-
 <FORM id="form_ne"  action="cgi/i.cgi" method="POST" enctype="multipart/form-data" autocomplete="on" onsubmit="setJID()"  >
 
 <input type="hidden" id="username" name="username" value="">
@@ -283,10 +282,15 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
 	<span id="logout_button" class="ui-icon ui-icon-logoff settings_tip" style="display: none;" title="Log out"></span>
 </a>
 </td>
-</tr></table>
+</tr>
+</table>
 </div>
-<div id="warning"><span style="color: red; font-size: 150%; display: none">The web site is under maintenance. Please be patient and return later...</span></div>		
 
+<div id="warning"><span style="color: red; font-size: 150%; display: none">The web site is under maintenance. Please be patient and return later...</span></div>		
+<!--div id = "popular" style="display: inline-block; float: left; margin-top: 8px; margin-bottom: 16px; margin-right: 30px; margin-left: 30px;">
+<a href="https://dev.evinet.org/cgi/i.cgi?mode=standalone;action=sbmRestore;table=table;graphics=graphics;archive=archive;sbm-layout=spread;showself=showself;project_id=test;species=hsa;jid=304402972932;username=Anonymous;signature=168;sid=" style="text-align:center;">TTN versus KEGG</a>
+<a href="https://dev.evinet.org/cgi/i.cgi?mode=standalone;action=sbmRestore;table=table;graphics=graphics;archive=archive;sbm-layout=spread;showself=showself;project_id=myveryfirstproject;species=hsa;jid=314542284388;username=Anonymous;signature=168;sid=">MDM4 vs MSigDB</a>
+</div-->
 <div class="main_nea" id="main-nea"></div>
 
 </FORM>
@@ -481,7 +485,6 @@ close: function() {}
 });
 }
 </script>
-
 
 <div id="login" style="display: none; visibility: hidden">
 <div id="ltabs">

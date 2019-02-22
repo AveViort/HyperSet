@@ -21,7 +21,8 @@ function show()
 	var table_id = params.split("/")[1];
 	//alert("ProjectID: " + project_id + " TableID: " + table_id);
 	//url = url + ";username=" + uname + ";signature=" + signature + ';sid=' + sid;
-	var url = "https://www.evinet.org/cgi/show_table.cgi?project_id=" + project_id + "&table_id=" + table_id + "&username=" + uname + "&signature=" + signature + "&session_id=" + sid;
+	var url = window.location.protocol + "//" + window.location.hostname + "/cgi/show_table.cgi?project_id=" + project_id + "&table_id=" + table_id + "&username=" + uname + "&signature=" + signature + "&session_id=" + sid;
+	console.log(url);
 	document.getElementById("result").height=window.innerHeight*0.9;
 	document.getElementById("result").width=window.innerWidth;
 	//alert("Current height: " + window.innerHeight + " current width: " + window.innerWidth);

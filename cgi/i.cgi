@@ -866,7 +866,7 @@ $content .= "\n".'<tr><td name="firstcol" class="AGSout">'.$ol.$text.'</a>'.'</t
 $content .= "\n".'<td class="AGSout">'.
 $HS_html_gen::OLbox1.
 # '<b>AGS genes that contributed to the relation</b><br>(followed with and sorted by the number of links):<br>'.
-'<b>AGS genes that contributed to the relation ('.($#a2 + 1).' out of '.$arr[$pl->{$table}->{n_genes_ags}].')</b>:<br>'.
+'<b>АGS genes behind the relation ('.($#a2 + 1).' out of '.$arr[$pl->{$table}->{n_genes_ags}].')</b>:<br>'.
 $genesAGS.
 $HS_html_gen::OLbox2.
 $arr[$pl->{$table}->{n_genes_ags}].'</a>'.'</td>';
@@ -905,7 +905,7 @@ $content .= "\n".'<td class="FGSout">'.$ol2.$pwh.$text.$pwt.'</a>'.'</td>';
 @a2 = split(",", $genesFGS);
 $content .= "\n".'<td class="FGSout">'.$HS_html_gen::OLbox1.
 # '<b>FGS genes that contributed to the relation</b><br>(followed with and sorted by the number of links):<br>'.
-'<b>FGS genes that contributed to the relation ('.($#a2 + 1).' out of '.$arr[$pl->{$table}->{n_genes_fgs}].')</b>:<br>'.
+'<b>FGS genes behind the relation ('.($#a2 + 1).' out of '.$arr[$pl->{$table}->{n_genes_fgs}].')</b>:<br>'.
 $genesFGS.$HS_html_gen::OLbox2.$arr[$pl->{$table}->{'n_genes_fgs'}].'</a>'.'</td>';
 $content .= "\n".'<td class="FGSout">'.$arr[$pl->{$table}->{lc('N_linksTotal_FGS')}].'</td>';
 $content .= "\n".'<td>'.$arr[$pl->{$table}->{lc('NlinksReal_AGS_to_FGS')}].'</td>';
@@ -973,7 +973,7 @@ my $content = '<div style="width:100%; text-align: right; ">
 	# this is the old direct link
 	# $tableID = $HSconfig::tmpVennHTML.$projectID.'/'.$HSconfig::matrixHTML.'.'.$jid.'.'.$lst[$i].'.html';
 	# this is the new version
-	$tableID = 'https://www.evinet.org/table.html#'.$projectID.'/'.$HSconfig::matrixHTML.'.'.$jid.'.'.$lst[$i].'.html';
+	$tableID = $HSconfig::BASE.'/table.html#'.$projectID.'/'.$HSconfig::matrixHTML.'.'.$jid.'.'.$lst[$i].'.html';
 	$content .= '<option class="clickable" value="'.$tableID.'">'. $HSconfig::matrixTab -> {caption} -> {$lst[$i]} .'</option>';
 }
 $content .= '</select></div>
