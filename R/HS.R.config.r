@@ -1,4 +1,4 @@
-.libPaths("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib");
+.libPaths("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/dev/HyperSet/R/lib");
 library(RODBC);
 
 ########################################################################################

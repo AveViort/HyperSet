@@ -13,7 +13,7 @@ source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/
 #print(library());
 library(RODBC);
 Debug = 1;
-rch <- odbcConnect("hs_pg", uid = "hyperset", pwd = "SuperSet"); 
+rch <- odbcConnect("dg_pg", uid = "hyperset", pwd = "SuperSet"); 
 # print (rch);
 # png("/var/www/html/research/andrej_alexeyenko/users_tmp/test/test.png");
 # plot(1,1,main=p_val, xlab=f_val, ylab=num_comp);
@@ -65,7 +65,7 @@ stop("Analysis of two drug screens against each other is not yet possible...");
 #if (Debug>0) {print("AAAAAAAAAAAAAAAAAAA");}
 
 d1 <- sqlQuery(rch, "DROP VIEW IF EXISTS used_samples;");
-stat <- paste("create view used_samples (sample) as select ", table1, "_samples.sample from ", table1, "_samples inner join ", table2, "_samples on ", table1, "_samples.sample = ", table2, "_samples.sample;", sep="");
+stat <- paste("create view used_samples (sample) as select distinct(", table1, ".sample) from ", table1, " inner join ", table2, " on ", table1, ".sample = ", table2, ".sample;", sep="");
  if (Debug>0) {print(stat);}
  u1 <- sqlQuery(rch, stat);
 #print(table3);

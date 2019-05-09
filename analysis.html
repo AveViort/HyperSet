@@ -2,14 +2,12 @@
 <HTML lang="en-US">
 <HEAD>
 
-<base id="myBase" href="https://www.evinet.org/dev/HyperSet/" target="_blank">
-
 <TITLE>Drug screen data - dev version</TITLE>
 <LINK href="pics/favicon.ico" rel="shortcut icon">
 <meta http-equiv="content-type" content="charset=utf-8">
 <META http-equiv="Content-Script-Type" content="application/javascript" >
 <LINK href="hyperset.css" type="text/css" rel="stylesheet">
-<LINK href="js/jquery-ui-themes-1.11.2/themes/smoothness/jquery-ui.min.css" type="text/css" rel="stylesheet">
+<LINK href="js/jquery-ui-themes-1.12.1/themes/redmond/jquery-ui.min.css" type="text/css" rel="stylesheet">
 <LINK href="js/qTip/jquery.qtip.min.css" type="text/css" rel="stylesheet">
 <link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
 <link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
@@ -71,6 +69,16 @@ li.tab:hover ul {
 }
 
 .ui-menu { width: 150px; }
+
+.ui-dialog {
+    padding: 0;
+    margin: 0;
+}
+.ui-dialog .ui-dialog-content {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
 </style>
 </HEAD>
 
@@ -108,6 +116,52 @@ li.tab:hover ul {
 		</table>
 	</div>
 	<div id="tab-lookup"> Tab with content from a.cgi<br>
+	<img id="plot_view">
+	<br>
+	<table>
+		<tr>
+		<td>
+		<select id="source_selector" class="ui-helper" style="width: 40ch;">
+		</td>
+		<td>
+		<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
+		</td>
+		</tr>
+	</table>
+	<br>
+	<table id = "plot_options">
+		<tr>
+		<td>
+		<select id="type1_selector" class="ui-helper" style="width: 40ch;">
+		</td>
+		<td>
+		<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
+		</td>
+		<td>
+		<input id="id1_input">
+		</td>
+		<td>
+		<select id="axis1_selector" class="ui-helper" style="width: 40ch;">
+		</td>
+		<td>
+		<button id="add_row1" max=3 onclick="add_plot_options_row(1)">+</button>
+		</td>
+		<td>
+		<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
+		</td>
+		</tr>
+	</table>
+	<br>
+	<table>
+	<tr>
+	<td>
+	<select id="plot-type">
+	</td>
+	<td>
+	<button id="plot-button" onclick="plot()">Plot</button>
+	</td>
+	</tr>
+	</table>
 	</div>
 	<div id="tab-plot">This tab shows the most recent plot or (if none) - instruction</div>
 </div>
@@ -167,6 +221,8 @@ li.tab:hover ul {
 			</div>
 	</div>
 </div>
+
+<div id="dock" spot=0></div>
 		
 <P style="width:34%;"><a href="https://www.evinet.org/">EviNet.org main site</a></P>
 <P style="width:34%;"><a href="http://funcoup2.sbc.su.se/index.TEST01.html">FunCoup v.1-LE (requires Java)</a></P>
@@ -175,6 +231,9 @@ li.tab:hover ul {
 <P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
 
 <script>
+var loadingIndicator = 'ui-icon-loading-status-balls';
+var loadingClasses = 'ui-icon ' + loadingIndicator + ' rotate';
+
 $(document).ready(function(){
 	$(function() {
 		$( "#showScales" ).dialog({
@@ -247,10 +306,132 @@ $(document).ready(function(){
 	}	
 		
 	$("#submit-populate").button();
+	var sources = get_plot_sources();
+	options = [];
+	for (i in sources) {
+		options.push("<option value='"+ sources[i] + "'>" + sources[i] + "</option>");
+	}
+	$("#source_selector").append(options.join("")).selectmenu();
+	$('#source_selector').on( "selectmenuchange", function( event, ui ) {update_source()} );
+	init_cohortselector();
+	$("#plot-button").button();
+	$("#dock").accordion({
+      collapsible: true
+    });
 });
 
-function plot(type) {
-	document.getElementById("tab-plot").innerHTML = "This tab is supposed to show " + type + " plot";
+function plot() {
+	var type = $('#plot-type option:selected').val();
+	//document.getElementById("tab-plot").innerHTML = "This tab is supposed to show " + type + " plot";
+	//var plot_filename = rplot(type);
+	var n = $('#plot_options tr').length;
+	var cohort = $("#cohort_selector option:selected").val();
+	var datatypes = [];
+	var ids = [];
+	var platforms = [];
+	var scales = [];
+	for (i=1; i<=n; i++) {
+		datatypes.push($("#type" + i + "_selector option:selected").val());
+		platforms.push($("#platform" + i + "_selector option:selected").val());
+		ids.push($("#id" + i + "_input").val());
+		scales.push($("#axis" + i + "_selector option:selected").val());
+	}
+	var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|scales:" + scales;
+	var plot_filename = find_plot_in_history(plot_description);
+	var plot_id;
+	if (plot_filename == "no") {
+		$("#progressbar").css({"visibility": "visible"});
+		plot_filename = rplot(type, cohort, datatypes, platforms, ids, scales);
+		plot_id = plot_filename.substring(0, plot_filename.length-4);
+		// save plot in session history
+		sessionStorage.setItem(plot_filename, plot_description);
+		//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
+		var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '"></div>';
+		$(graph_window).dialog({
+			title: type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')',
+			buttons: [
+				{
+					text: "Minimize",
+					icon: "ui-icon-minus",
+					click: function() {plot_minimize(this)},
+				},
+				{
+					text: "Dock",
+					icon: "ui-icon-arrowthickstop-1-s",
+					click: function() {
+						// can't use graph_window, since we need to specify height and width
+						dock_plot(this, '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
+						$( this ).dialog( "close" );
+					},
+					showText: false
+				}
+			],
+			height: 'auto',
+			width: 'auto',
+			modal: false,
+			resize: function( event, ui ) {
+					//if (ui.size.width-ui.originalSize.width > ui.size.height-ui.originalSize.height) {
+					//	$(this).height($(this).width());
+					//}
+					//else {
+					//	$(this).width($(this).height())
+					//}
+					//$(this).dialog( "refresh" );
+					($(this).children('img'))[0].setAttribute("height", $(this).height());
+					($(this).children('img'))[0].setAttribute("width", $(this).width());
+				},
+			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+		});
+		$("#progressbar").css({"visibility": "hidden"});
+	}
+	else {
+		console.log("No need to do it again!");
+		plot_id = plot_filename.substring(0, plot_filename.length-4);
+		if (document.getElementById("plot_window_" + plot_id)) {
+			console.log("We already have a window: move it to the top!");
+			$("#plot_window_" + plot_id + ".ui-dialog-content.ui-widget-content").dialog("moveToTop");
+		}
+		else {
+			console.log("Plot was closed");
+			var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '"></div>';
+			//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
+			$(graph_window).dialog({
+				title: type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')', 
+				buttons: [
+					{
+						text: "Minimize",
+						icon: "ui-icon-minus",
+						click: function() {plot_minimize(this)}
+					},
+					{
+						text: "Dock",
+						icon: "ui-icon-arrowthickstop-1-s",
+						click: function() {
+							dock_plot(this, '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
+							$( this ).dialog( "close" );
+						}
+					}
+				],
+				height: 'auto',
+				width: 'auto',
+				modal: false,
+				//resizable: false,
+				resize: function( event, ui ) {
+					($(this).children('img'))[0].setAttribute("height", $(this).height());
+					($(this).children('img'))[0].setAttribute("width", $(this).width());
+				},
+				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+			});
+			/*.resizable({
+				aspectRatio: true,
+				minWidth: 100,
+				resize: function (evt, ui) {
+					ui.element.parent().css({width:'',height:''});
+        }
+    });*/
+		}
+	}
+	//document.getElementById("plot_view").setAttribute("src", "https://www.evinet.org/pics/plots/"+plot_filename);
 }
 
 function retrieve_correlations() {
@@ -259,6 +440,468 @@ function retrieve_correlations() {
 	var feature = $("#featuresList option:selected").val();
 	console.log(screen + " " + compound + " " + feature);
 	retreive_drug_correlations(screen, compound, feature);
+}
+
+function add_plot_options_row(i) {
+	// current number of rows
+	var n = $('#plot_options tr').length;
+	for (j=i+1; j<=n; j++) {
+		$('#type' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update_type(j+1)} );
+		$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update_platform(j+1)} );
+		document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j+1) +'_selector');
+		document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j+1) +'_selector');
+		document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j+1) +'_input');
+		document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j+1) +'_selector');
+		document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j+1));
+		document.getElementById('add_row' + (j+1)).setAttribute("onclick", 'add_plot_options_row(' + (j+1) + ')');
+		document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j+1));
+		document.getElementById('delete_row' + (j+1)).setAttribute("onclick", 'delete_plot_options_row(' + (j+1) + ')');
+	}
+	
+	sessionStorage.setItem("updates_triggered", 0);
+	sessionStorage.setItem("add_row", 1);
+	
+	var table = document.getElementById("plot_options");
+	var row = table.insertRow(i);
+	var TypeSelectorCell = row.insertCell(0);
+	TypeSelectorCell.innerHTML = '<select id="type' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
+	var for_delete = false;
+	var flag = init_dataselector('type'+(i+1)+'_selector');
+	if (flag) {
+		alert('No more compatible datatypes!');
+		for_delete = true;
+	}
+	var PlatformSelectorCell = row.insertCell(1);
+	PlatformSelectorCell.innerHTML = '<select id="platform' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
+	var IdInput = row.insertCell(2);
+	IdInput.innerHTML = '<input id="id'+ (i+1) +'_input">';
+	flag = init_platformselector('platform'+(i+1)+'_selector');
+	if (flag & !for_delete) {
+		alert('No more compatible platforms!');
+		for_delete = true;
+	}
+	var AxisSelector = row.insertCell(3);
+	AxisSelector.innerHTML = '<select id="axis' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
+	init_axis_type_selector('axis' + (i+1) + '_selector');
+	var AddButton = row.insertCell(4);
+	AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=3 onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
+	var DeleteButton = row.insertCell(5);
+	DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=3 onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
+	update_plot_types();
+	$("#add_row" + (i+1)).button();
+	$("#delete_row" + (i+1)).button();
+	if (n+1 >= document.getElementById("add_row" + i).getAttribute("max")) {
+		for (j=1; j<=n+1; j++) {
+			$("#add_row" + j).button("disable");
+		}
+	}
+	for (j=1; j<=n; j++) {
+			$("#delete_row" + j).button("enable");
+		}
+	$("#source_selector").selectmenu("disable");
+	$("#cohort_selector").selectmenu("disable");
+	if (for_delete) {
+		delete_plot_options_row(i+1);
+	}
+	sessionStorage.removeItem("add_row");
+}
+
+function delete_plot_options_row(i) {
+	var n = $('#plot_options tr').length;
+	for (j=i+1; j<=n; j++) {
+		$('#type' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update_type(j-1)} );
+		$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update_platform(j-1)} );
+		document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j-1) +'_selector');
+		document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j-1) +'_selector');
+		document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j-1) +'_input');
+		document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j-1) +'_selector');
+		document.getElementById('add_row' + j).setAttribute("onclick", 'add_plot_options_row(' + (j-1) + ')');
+		document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j-1));
+		document.getElementById('delete_row' + j).setAttribute("onclick", 'delete_plot_options_row(' + (j-1) + ')');
+		document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j-1));
+	}
+	document.getElementById("plot_options").deleteRow(i-1);
+	for (j=1; j<n; j++) {
+		$("#add_row" + j).button("enable");
+	}
+	if (n-1 == 1) {
+		$("#delete_row1").button("disable");
+		$("#source_selector").selectmenu("enable");
+		$("#cohort_selector").selectmenu("enable");
+	}
+	if (i == 1) {
+		$('#type1_selector').find('option').remove().end();
+		$('#type1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_dataselector('type1_selector');
+		$('#type1_selector').selectmenu( "refresh" );
+		$('#platform1_selector').find('option').remove().end();
+		$('#platform1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_platformselector('platform1_selector');
+		$('#platform1_selector').selectmenu( "refresh" );
+	}
+	if (sessionStorage.getItem("cascade_delete") == null) {
+		update_plot_types();
+		if (i <n) {
+			update_type(i);
+		}
+	}
+}
+
+function init_cohortselector() {
+	sessionStorage.setItem("updates_triggered", 0);
+	var cohorts = get_plot_cohorts($("#source_selector option:selected").val());
+	options = [];
+	for (i in cohorts) {
+		options.push("<option value='"+ cohorts[i] + "'>" + cohorts[i] + "</option>");
+	}
+	$("#cohort_selector").append(options.join("")).selectmenu();
+	$('#cohort_selector').on( "selectmenuchange", function( event, ui ) {update_cohort()} );
+	$('#cohort_selector').selectmenu( "refresh" );
+	sessionStorage.setItem("add_row", 1);
+	init_dataselector("type1_selector");
+	init_platformselector("platform1_selector");
+	init_axis_type_selector("axis1_selector");
+	init_plot_type_selector();
+	$("#add_row1").button();
+	$("#delete_row1").button();
+	$("#delete_row1").button("disable");
+	sessionStorage.removeItem("add_row");
+}
+
+function init_dataselector(selector_id) {
+	var total = $('#plot_options tr').length;
+	var n = parseInt(selector_id.substr(4, selector_id.indexOf("_")-4));
+	var previous_datatypes = [];
+	for (j=1; j<n; j++) {
+		console.log(j);
+		previous_datatypes.push($("#type" + j +"_selector option:selected").val());
+	}
+	var datatypes = get_cohort_datatypes($("#cohort_selector option:selected").val(), previous_datatypes);
+	var empty = (datatypes.length == 0);
+	if (!empty) {
+		options = [];
+		for (i in datatypes) {
+			options.push("<option value='"+ datatypes[i] + "'>" + datatypes[i] + "</option>");
+		}
+		$("#" + selector_id).append(options.join("")).selectmenu();
+		var previous_selection = sessionStorage.getItem(selector_id);
+		if (datatypes.includes(previous_selection)) {
+			$("#" + selector_id).val(previous_selection);
+			$("#" + selector_id).selectmenu( "refresh" );
+		}
+		sessionStorage.removeItem(selector_id);
+		var k = parseInt(sessionStorage.getItem("updates_triggered"));
+		if (k == 0) {
+			$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {console.log("dataselector " + selector_id + " selectmenuchange");update_type(n)} );
+		}
+		update_type(n);
+	}
+	else {
+		for (i = total; i>n; i--) {
+			delete_plot_options_row(i);
+		}
+	}
+	return empty;
+}
+
+function init_platformselector(selector_id) {
+	var total = $('#plot_options tr').length;
+	var n = parseInt(selector_id.substr(8, selector_id.indexOf("_")-8));
+	var previous_platforms = [];
+	console.log(n);
+	for (j=1; j<n; j++) {
+		console.log(j);
+		previous_platforms.push($("#platform" + j +"_selector option:selected").val());
+	}
+	console.log('previous platforms: ' + previous_platforms);
+	console.log($("#cohort_selector option:selected").val() + ' ' + $("#type" + n + "_selector option:selected").val() + ' ' + previous_platforms);
+	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_platforms);
+	console.log(platforms);
+	var empty = (platforms.length == 1);
+	console.log(empty);
+	if (!empty) {
+		// check if we have ids or no for the chosen datatype;
+		var flag = parseInt(platforms.shift());
+		document.getElementById("id" + n + "_input").disabled = !(flag);
+		document.getElementById("id" + n + "_input").hidden = !(flag);
+		options = [];
+		for (i in platforms) {
+			options.push("<option value='"+ platforms[i] + "'>" + platforms[i] + "</option>");
+		}
+		$("#" + selector_id).append(options.join("")).selectmenu();
+		var previous_selection = sessionStorage.getItem(selector_id);
+		if (platforms.includes(previous_selection)) {
+			$("#" + selector_id).val(previous_selection);
+			$("#" + selector_id).selectmenu( "refresh" );
+		}
+		sessionStorage.removeItem(selector_id);
+		autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
+		$("#id" + n + "_input").autocomplete({
+			source: autocomplete_ids,
+			minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
+		});
+		var k = parseInt(sessionStorage.getItem("updates_triggered"));
+		if (k == 0) {
+			$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {console.log("platformselector selectmenuchange");update_platform(selector_id.substr(8, selector_id.indexOf("_")-8))} );
+		}
+		sessionStorage.setItem("updates_triggered", k+1);
+		console.log("updates triggered: " + (k+1));
+		console.log("Update triggered by init_platformselector(" + selector_id + ")");
+		update_platform(n);
+	}
+	return empty;
+}
+
+function init_axis_type_selector(selector_id) {
+	var n = selector_id.substr(4, selector_id.indexOf("_")-4);
+	var axis_types = get_axis_types($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
+	options = [];
+	for (i in axis_types) {
+		options.push("<option value='"+ axis_types[i] + "'>" + axis_types[i] + "</option>");
+	}
+	$("#" + selector_id).append(options.join("")).selectmenu();
+}
+
+function init_plot_type_selector() {
+	console.log('init_plot_type_selector() invoked');
+	var datatypes = [];
+	var n = $('#plot_options tr').length;
+	for (i=1; i<=n; i++) {
+		datatypes.push($("#type" + i + "_selector option:selected").val());
+	}
+	options = [];
+	var plot_types = get_plot_types(datatypes);
+	for (i in plot_types) {
+		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
+	}
+	$('#plot-type').append(options.join("")).selectmenu();
+}
+
+function update_source() {
+	$('#cohort_selector').find('option').remove().end();
+	$('#cohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_cohortselector();
+	update_cohort();
+}
+
+function update_cohort() {
+	console.log('update_cohort() invoked');
+	$('#type1_selector').find('option').remove().end();
+	$('#type1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	sessionStorage.setItem("add_row", 1);
+	$('#type1_selector').find('option').remove().end();
+	$('#type1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_dataselector('type1_selector');
+	$('#type1_selector').selectmenu( "refresh" );
+	$('#platform1_selector').find('option').remove().end();
+	$('#platform1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_platformselector('platform1_selector');
+	$('#platform1_selector').selectmenu( "refresh" );
+	sessionStorage.removeItem("add_row");
+}
+
+function update_type(n) {
+	if (sessionStorage.getItem("add_row") == null) {
+		console.log('update_type(' + n + ') invoked');
+		n = parseInt(n);
+		sessionStorage.setItem("platform" + n + "_selector", $("#platform" + n + "_selector option:selected").val());
+		$('#platform'+ n + '_selector').find('option').remove().end();
+		$('#platform'+ n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		var empty = init_platformselector('platform' + n + '_selector');
+		$('#platform'+ n + '_selector').selectmenu( "refresh" );
+		var total = $('#plot_options tr').length;
+		if (empty) {
+			alert("No more compatible platforms");
+			sessionStorage.setItem("cascade_delete", 1);
+			for (i=total; i>=n; i--) {
+				console.log("Cascade delete invoked. Removing row " + i + " (removing from " + total + " till " + n + ")");
+				delete_plot_options_row(i);
+			}
+			sessionStorage.removeItem("cascade_delete");
+		}
+		else {
+			if (n<total) {
+				sessionStorage.setItem("type" + (n+1) + "_selector", $("#type" + (n+1) + "_selector option:selected").val());
+				$('#type'+ (n+1) + '_selector').find('option').remove().end();
+				$('#type'+ (n+1) + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+				var flag = init_dataselector('type' + (n+1) + '_selector');
+				$('#type' + (n+1) + '_selector').selectmenu( "refresh" );
+				if (flag) {
+					alert("No more compatible datatypes");
+					sessionStorage.setItem("cascade_delete", 1);
+					for (i=total; i>n; i--) {
+						delete_plot_options_row(i);
+					}
+					sessionStorage.removeItem("cascade_delete");
+				}
+			}
+		}
+		update_plot_types();
+	}
+}
+
+function update_platform(n) {
+	if (sessionStorage.getItem("add_row") == null) {
+		var k = parseInt(sessionStorage.getItem("updates_triggered"));
+		sessionStorage.setItem("updates_triggered", k+1);
+		console.log("updates triggered: " + (k+1));
+		console.log("Update triggered by update_platform(" + n + ")");
+		$("#id" + n + "_input").autocomplete({
+			source: get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val()),
+			minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
+		});
+		$('#axis'+ n + '_selector').find('option').remove().end();
+		$('#axis'+ n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_axis_type_selector('axis'+ n + '_selector');
+		$('#axis'+ n + '_selector').selectmenu( "refresh" );
+		var total = $('#plot_options tr').length;
+		if (n<total) {
+			$('#platform' + (n+1) + '_selector').find('option').remove().end();
+			$('#platform' + (n+1) + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+			sessionStorage.setItem("platform" + (n+1) + "_selector", $("#platform" + (n+1) + "_selector option:selected").val());
+			var flag = init_platformselector('platform' + (n+1) + '_selector');
+			if (flag) {
+				alert("No more compatible platforms");
+				sessionStorage.setItem("cascade_delete", 1);
+				for (i=total; i>n; i--) {
+					delete_plot_options_row(i);
+				}
+				sessionStorage.removeItem("cascade_delete");
+			}
+			$('#platform' + (n+1) + '_selector').selectmenu( "refresh" );
+		}
+	}
+}
+
+function update_plot_types() {
+	$('#plot-type').find('option').remove().end();
+	$('#plot-type').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_plot_type_selector()
+	$('#plot-type').selectmenu( "refresh" );
+}
+
+function history() {
+	var keys = Object.keys(sessionStorage);
+	for (key in keys) {
+		if (keys[i].includes("tmp")) {
+			console.log(keys[key] + " : " + sessionStorage.getItem(keys[key]));
+		}
+	}
+}
+
+function find_plot_in_history(plot_description) {
+	var keys = Object.keys(sessionStorage);
+	var res = "no";
+	for (i in keys) {
+		if (keys[i].includes("tmp")) {
+			if (sessionStorage.getItem(keys[i]) == plot_description) {
+				res = keys[i];
+			}
+		}
+	}
+	return res;
+}
+
+function plot_minimize(graph_window) {
+	$(graph_window).dialog({"height": $( ".ui-dialog > .ui-dialog-titlebar" )[1].clientHeight});
+	$(graph_window).dialog( "option", "buttons", 
+		[
+			{
+			text: "Maximize",
+			icon: "ui-icon-arrow-4-diag",
+			click: function() {plot_maximize(graph_window)},
+			},
+			{	
+			text: "Dock",
+			icon: "ui-icon-arrowthickstop-1-s",
+			click: function() {
+				// we cannot use just graph_window variable, or we'll get a strange result after minimize-dock
+				dock_plot(this, '<div id="' + graph_window.getAttribute("id") + '">' + graph_window.innerHTML + '</div>');
+				$( this ).dialog( "close" );
+			}
+			}
+		]
+	);
+}
+
+function plot_maximize(graph_window) {
+	$( graph_window ).dialog({"height": 560});
+	$( graph_window ).dialog({"width": 520});
+	$(graph_window).dialog( "option", "buttons",
+		[
+			{
+			text: "Minimize",
+			icon: "ui-icon-minus",
+			click: function() {plot_minimize(graph_window)},
+			},
+			{
+			text: "Dock",
+			icon: "ui-icon-arrowthickstop-1-s",
+			click: function() {
+				dock_plot(this, '<div id="' + graph_window.getAttribute("id") + '">' + graph_window.innerHTML + '</div>');
+				$( this ).dialog( "close" );
+			}
+			}
+		]
+	);
+}
+
+function dock_plot(graph_window, plot) {
+	var title = $( graph_window ).dialog( "option", "title");
+	var id = ($("#dock").children().length)/2;
+	console.log(graph_window);
+	//console.log('<h3>' + title + '</h3>' + '<div id = "sample">' + plot + '<br><button id="undock_' + id + '" onclick="undock_plot(' + id + ',"' + plot + '")">Undock</button><button id="dock_close_' + id + '" onclick="close_dock_plot(' + id + ')">Close</button></div>');
+	$("#dock").append('<h3>' + title + '</h3>' + '<div>' + plot + '<br><button id="undock_' + id + '" onclick="undock_plot(' + id + ')">Undock</button><button id="dock_close_' + id + '" onclick="close_dock_plot(' + id + ')">Close</button></div>');
+	$("#undock_" + id).button();
+	$("#dock_close_" + id).button();
+	$("#dock").accordion( "refresh" );
+}
+
+function undock_plot(id) {
+	// this will give strange result after "undock"-"dock"
+	//var plot = ($("#dock").children('div').eq(id)).children('div').eq(0)[0];
+	var plot = '<div id="' + ($("#dock").children('div').eq(id)).children('div').eq(0)[0].getAttribute("id") + '">' + ($("#dock").children('div').eq(id)).children('div').eq(0)[0].innerHTML + '</div>';
+	console.log(plot);
+	var plot_title = $("#dock").children('h3').eq(id)[0].innerText;
+	console.log(plot_title);
+	close_dock_plot(id);
+	$(plot).dialog({
+				title: plot_title, 
+				buttons: [
+				{
+					text: "Minimize",
+					icon: "ui-icon-minus",
+					click: function() {plot_minimize(this)},
+				},
+				{
+					text: "Dock",
+					icon: "ui-icon-arrowthickstop-1-s",
+					click: function() {
+						dock_plot(this, plot);
+						$( this ).dialog( "close" );
+					}
+				}
+				],
+				height: 'auto',
+				width: 'auto',
+				modal: false,
+				create: function() {
+					($(this).children('img'))[0].setAttribute("height", 480);
+					($(this).children('img'))[0].setAttribute("width", 480);
+				},
+				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+			});
+}
+
+function close_dock_plot(id) {
+	$("#dock").children('div').eq(id).remove();
+	$("#dock").children('h3').eq(id).remove();
+	for (i = id+1; i<=($("#dock").children().length)/2; i++) {
+		document.getElementById('undock_' + i).setAttribute("onclick", 'undock_plot(' + (i-1) + ')');
+		document.getElementById('undock_' + i).setAttribute("id", 'undock_' + (i-1));
+		document.getElementById('dock_close_' + i).setAttribute("onclick", 'close_dock_plot(' + (i-1) + ')');
+		document.getElementById('dock_close_' + i).setAttribute("id", 'dock_close_' + (i-1));
+	}
 }
 </script>
 </BODY>

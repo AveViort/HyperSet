@@ -18,7 +18,6 @@ $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 my $temp = '';
 my @string, @response;
-my ($source, $drug);
 while (@response = $sth->fetchrow_array) {
 		my $Text = @response[0];
 		$Text =~ s/[()]//g;

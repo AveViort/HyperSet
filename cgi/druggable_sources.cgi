@@ -13,7 +13,7 @@ our ($dbh, $stat);
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
 print "Content-type: text/html\n\n";
 $stat = qq/SELECT sources_and_drugs()/;
-$sth = $dbh->prepare($stat) or die $dbh->errstr;
+my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 while (@source = $sth->fetchrow_array) {
 		print @source;
