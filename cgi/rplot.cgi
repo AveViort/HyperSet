@@ -12,14 +12,17 @@ my $platforms = $query->param('platforms');
 my $ids = $query->param('ids');
 my $scales = $query->param('scales');
 print "Content-type: text/html\n\n";
-#print "Rscript ../R/plotData.r --vanilla --args table1=$t1  table2=$t2 gene=$gene drug=$drug out=$file<br>";
-#system("Rscript ../R/plotData.r --vanilla --args table1=$t1  table2=$t2 gene=$gene drug=$drug out=$file");
 srand(); my $r = rand();
 my $file = 'tmp'.$1.'.png' if $r =~  m/0\.([0-9]{12})/;
-if ($ids eq '') {
-	system("Rscript ../R/plotData_without_ids.r --vanilla --args type=$type cohort=$cohort datatypes=$datatypes platforms=$platforms out=$file");
+if ($type eq 'box') {
+	system("Rscript ../R/boxplots.r --vanilla --args cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids scales=$scales out=$file");
 }
 else {
-	system("Rscript ../R/plotData_test.r --vanilla --args type=$type cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids scales=$scales out=$file");
+	if (($ids eq '') || ($ids eq ',') || ($ids eq ',,')) {
+		system("Rscript ../R/plotData_without_ids.r --vanilla --args type=$type cohort=$cohort datatypes=$datatypes platforms=$platforms scales=$scales out=$file");
+	}
+	else {
+		system("Rscript ../R/plotData_with_ids.r --vanilla --args type=$type cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids scales=$scales out=$file");
+	}
 }
 print $file;

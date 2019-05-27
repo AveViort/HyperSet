@@ -149,13 +149,19 @@ function get_platforms(cohort, datatype, previous_platforms) {
 		}
 	xmlhttp.send();
 	platforms = platforms.split("|");
-	return platforms.slice(0, platforms.length-1);
+	//return platforms.slice(0, platforms.length-1);
+	var platforms_array = [];
+	for (i=1; i<platforms.length-1; i=i+2) {
+		platforms_array.push({platform: platforms[i], name: platforms[i+1]});
+	}
+	return [platforms[0], platforms_array];
 }
 
-function get_plot_types(datatypes) {
+function get_plot_types(platforms) {
 	var plot_types;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/types_of_plots.cgi?datatypes=" + encodeURIComponent(datatypes.join()), false);
+	console.log("cgi/types_of_plots.cgi?platforms=" + platforms.join());
+	xmlhttp.open("GET", "cgi/types_of_plots.cgi?platforms=" + encodeURIComponent(platforms.join()), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			plot_types = this.responseText;}

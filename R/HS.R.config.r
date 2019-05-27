@@ -11,5 +11,10 @@ r.plots = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tm
 RscriptParameterDelimiter = '###'; 
 RscriptKeyValueDelimiter = "=";
 RscriptfieldRdelimiter = "+";
-
-
+##########################################################################################
+# options for plots
+druggable.cex = 2;
+druggable.cex.error = 10;
+druggable.cex.main = 3;
+druggable.cex.axis = 1.5;
+druggable.cex.lab = 2;

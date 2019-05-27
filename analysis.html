@@ -115,7 +115,7 @@ li.tab:hover ul {
 		</td>
 		</table>
 	</div>
-	<div id="tab-lookup"> Tab with content from a.cgi<br>
+	<div id="tab-lookup"><br>
 	<img id="plot_view">
 	<br>
 	<table>
@@ -144,7 +144,7 @@ li.tab:hover ul {
 		<select id="axis1_selector" class="ui-helper" style="width: 40ch;">
 		</td>
 		<td>
-		<button id="add_row1" max=3 onclick="add_plot_options_row(1)">+</button>
+		<button id="add_row1" max=2 onclick="add_plot_options_row(1)">+</button>
 		</td>
 		<td>
 		<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
@@ -322,8 +322,6 @@ $(document).ready(function(){
 
 function plot() {
 	var type = $('#plot-type option:selected').val();
-	//document.getElementById("tab-plot").innerHTML = "This tab is supposed to show " + type + " plot";
-	//var plot_filename = rplot(type);
 	var n = $('#plot_options tr').length;
 	var cohort = $("#cohort_selector option:selected").val();
 	var datatypes = [];
@@ -339,6 +337,21 @@ function plot() {
 	var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|scales:" + scales;
 	var plot_filename = find_plot_in_history(plot_description);
 	var plot_id;
+	var plot_title;
+		switch (type) {
+			case "scatter": plot_title = type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')';
+				break;
+			case "histogram": plot_title = type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')';
+				break;
+			case "box": plot_title = type + ' of ' + cohort;
+				break;
+			case "KM": plot_title = type + ' of ' + cohort;
+				break;
+			case "piechart": plot_title = type + ' of ' + cohort;
+				break;
+			case "box": plot_title = type + ' of ' + cohort;
+				break;
+		}
 	if (plot_filename == "no") {
 		$("#progressbar").css({"visibility": "visible"});
 		plot_filename = rplot(type, cohort, datatypes, platforms, ids, scales);
@@ -346,9 +359,9 @@ function plot() {
 		// save plot in session history
 		sessionStorage.setItem(plot_filename, plot_description);
 		//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
-		var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '"></div>';
+		var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="480" height="480"></div>';
 		$(graph_window).dialog({
-			title: type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')',
+			title: plot_title,
 			buttons: [
 				{
 					text: "Minimize",
@@ -393,10 +406,10 @@ function plot() {
 		}
 		else {
 			console.log("Plot was closed");
-			var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '"></div>';
+			var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="480" height="480"></div>';
 			//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
 			$(graph_window).dialog({
-				title: type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')', 
+				title: plot_title, 
 				buttons: [
 					{
 						text: "Minimize",
@@ -534,10 +547,10 @@ function delete_plot_options_row(i) {
 		$('#type1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 		init_dataselector('type1_selector');
 		$('#type1_selector').selectmenu( "refresh" );
-		$('#platform1_selector').find('option').remove().end();
-		$('#platform1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_platformselector('platform1_selector');
-		$('#platform1_selector').selectmenu( "refresh" );
+		//$('#platform1_selector').find('option').remove().end();
+		//$('#platform1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		//init_platformselector('platform1_selector');
+		//$('#platform1_selector').selectmenu( "refresh" );
 	}
 	if (sessionStorage.getItem("cascade_delete") == null) {
 		update_plot_types();
@@ -589,12 +602,19 @@ function init_dataselector(selector_id) {
 			$("#" + selector_id).val(previous_selection);
 			$("#" + selector_id).selectmenu( "refresh" );
 		}
+		else {
+			if (previous_selection != null) {
+				alert("Data row " + n + ": unable to set up datatype " + previous_selection + " due to incompatibility with previous rows");
+			}
+		}
 		sessionStorage.removeItem(selector_id);
 		var k = parseInt(sessionStorage.getItem("updates_triggered"));
 		if (k == 0) {
 			$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {console.log("dataselector " + selector_id + " selectmenuchange");update_type(n)} );
 		}
-		update_type(n);
+		if (!(datatypes.includes(previous_selection))) {
+			update_type(n);
+		}
 	}
 	else {
 		for (i = total; i>n; i--) {
@@ -626,15 +646,26 @@ function init_platformselector(selector_id) {
 		document.getElementById("id" + n + "_input").hidden = !(flag);
 		options = [];
 		for (i in platforms) {
-			options.push("<option value='"+ platforms[i] + "'>" + platforms[i] + "</option>");
+			for (j in platforms[i]) {
+				options.push("<option value='"+ platforms[i][j].platform + "'>" + platforms[i][j].name + "</option>");
+			}
 		}
 		$("#" + selector_id).append(options.join("")).selectmenu();
-		var previous_selection = sessionStorage.getItem(selector_id);
-		if (platforms.includes(previous_selection)) {
-			$("#" + selector_id).val(previous_selection);
-			$("#" + selector_id).selectmenu( "refresh" );
+		var temp_array = sessionStorage.getItem(selector_id);
+		if (temp_array != null) {
+			var previous_type = temp_array[0];
+			var previous_selection = temp_array[1];
+			if (platforms.includes(previous_selection)) {
+				$("#" + selector_id).val(previous_selection);
+				$("#" + selector_id).selectmenu( "refresh" );
+			}
+			else {
+				if ((previous_selection != null) & (previous_type == $("#type" + n + "_selector option:selected").val())) {
+					alert("Data row " + n + ": unable to set up platform " + previous_selection + " due to incompatibility with previous rows");
+				}
+			}
+			sessionStorage.removeItem(selector_id);
 		}
-		sessionStorage.removeItem(selector_id);
 		autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
 		$("#id" + n + "_input").autocomplete({
 			source: autocomplete_ids,
@@ -647,30 +678,39 @@ function init_platformselector(selector_id) {
 		sessionStorage.setItem("updates_triggered", k+1);
 		console.log("updates triggered: " + (k+1));
 		console.log("Update triggered by init_platformselector(" + selector_id + ")");
-		update_platform(n);
+		if (!(platforms.includes(previous_selection))) {
+			update_platform(n);
+		}
 	}
 	return empty;
 }
 
 function init_axis_type_selector(selector_id) {
 	var n = selector_id.substr(4, selector_id.indexOf("_")-4);
-	var axis_types = get_axis_types($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
-	options = [];
-	for (i in axis_types) {
-		options.push("<option value='"+ axis_types[i] + "'>" + axis_types[i] + "</option>");
-	}
-	$("#" + selector_id).append(options.join("")).selectmenu();
+	//var flag = document.getElementById("id" + n + "_input").disabled;
+	//if (!flag) {
+		var axis_types = get_axis_types($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
+		options = [];
+		for (i in axis_types) {
+			options.push("<option value='"+ axis_types[i] + "'>" + axis_types[i] + "</option>");
+		}
+		var flag = (axis_types.length == 0);
+		$("#" + selector_id).append(options.join("")).selectmenu();
+	//}
+	$("#" + selector_id).selectmenu({
+		disabled: flag
+	});
 }
 
 function init_plot_type_selector() {
 	console.log('init_plot_type_selector() invoked');
-	var datatypes = [];
+	var platforms = [];
 	var n = $('#plot_options tr').length;
 	for (i=1; i<=n; i++) {
-		datatypes.push($("#type" + i + "_selector option:selected").val());
+		platforms.push($("#platform" + i + "_selector option:selected").val());
 	}
 	options = [];
-	var plot_types = get_plot_types(datatypes);
+	var plot_types = get_plot_types(platforms);
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
 	}
@@ -703,8 +743,9 @@ function update_cohort() {
 function update_type(n) {
 	if (sessionStorage.getItem("add_row") == null) {
 		console.log('update_type(' + n + ') invoked');
+		//sessionStorage.setItem("type" + n + "_changed", 1);
 		n = parseInt(n);
-		sessionStorage.setItem("platform" + n + "_selector", $("#platform" + n + "_selector option:selected").val());
+		sessionStorage.setItem("platform" + n + "_selector", [$("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val()]);
 		$('#platform'+ n + '_selector').find('option').remove().end();
 		$('#platform'+ n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 		var empty = init_platformselector('platform' + n + '_selector');
@@ -742,6 +783,8 @@ function update_type(n) {
 
 function update_platform(n) {
 	if (sessionStorage.getItem("add_row") == null) {
+		n = parseInt(n);
+		$("#id" + n + "_input").val("");
 		var k = parseInt(sessionStorage.getItem("updates_triggered"));
 		sessionStorage.setItem("updates_triggered", k+1);
 		console.log("updates triggered: " + (k+1));
@@ -770,6 +813,7 @@ function update_platform(n) {
 			}
 			$('#platform' + (n+1) + '_selector').selectmenu( "refresh" );
 		}
+		update_plot_types();
 	}
 }
 
