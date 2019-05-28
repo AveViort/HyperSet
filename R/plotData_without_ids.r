@@ -146,6 +146,18 @@ switch(Par["type"],
 		text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error);
 		print("Done");
 	},
+	"bar" = {
+		print(paste0("SELECT plot_data_without_id('", fname, "','", toupper(Par["cohort"]), "','", toupper(datatypes[1]), "','", platforms[1], "');"));
+		status <- sqlQuery(rch, paste0("SELECT plot_data_without_id('", fname, "','", toupper(Par["cohort"]), "','", toupper(datatypes[1]), "','", platforms[1], "');"));
+		if (status != 'ok') {
+			plot(0,type='n',axes=FALSE,ann=FALSE);
+			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error);
+		} else {
+			res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
+			barplot(table(res), main=paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2]), cex = druggable.cex, cex.main = druggable.cex.main, cex.axis = druggable.cex.axis, cex.lab = druggable.cex.lab);
+		}
+		sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
+	},
 	"histogram" = {
 		print(paste0("SELECT plot_data_without_id('", fname, "','", toupper(Par["cohort"]), "','", toupper(datatypes[1]), "','", platforms[1], "');"));
 		status <- sqlQuery(rch, paste0("SELECT plot_data_without_id('", fname, "','", toupper(Par["cohort"]), "','", toupper(datatypes[1]), "','", platforms[1], "');"));

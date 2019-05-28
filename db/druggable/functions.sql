@@ -347,7 +347,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- function for boxplot: one axis with ids, the other without
-CREATE OR REPLACE FUNCTION boxplot_data (fname text, cohort text, type1 text, platform1 text, id1 text, type2 text, platform2 text) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION boxplot_data (fname text, cohort text, type1 text, platform1 text, id1 text, type2 text, platform2 text, id2 text) RETURNS text AS $$
 DECLARE
 res text;
 n integer;
@@ -356,18 +356,34 @@ table2 text;
 BEGIN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type1 || E'\';' INTO table1; 
 IF (id1='') THEN
+IF (id2 = '') THEN
+-- same table, no ids
 IF (type1 = type2) THEN
 EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL);';
+-- different tables, no ids
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
 EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
 END IF;
-ELSE
-IF (type1 = type2) THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL);';
+-- platform1 does not have ids, platform2 does
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+END IF;
+ELSE
+-- same table, ids are present
+IF (type1 = type2) THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (A.' || platform1 || E' IS NOT NULL) AND (B.id=\'' || id2 || E'\') AND (B.' || platform2 ||' IS NOT NULL);';
+ELSE
+-- platform1 has ids, platform2 does not
+IF (id2='') THEN
+EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
 EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+-- different tables, ids are present
+ELSE
+EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL AND ' || table2 || E'.id=\'' || id2 || E'\';';
+END IF;
 END IF;
 END IF;
 EXECUTE E'SELECT COUNT (\*) FROM temp_view' || fname || ';' INTO n;
@@ -375,6 +391,77 @@ IF (n = 0) THEN
 res := 'error';
 ELSE
 res := 'ok';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function for special types of boxplots (or other plots which are in need of binary data): when we have many categories and want to categorize results as "TRUE/FALSE"
+-- e.g. instead of having all types of mutations for TP53 from MUT-MAF, we will have TRUE if mutation is present and FALSE if mutation is absent
+-- note: binarization ALWAYS occurs for the second platform, except for 1D cases!
+CREATE OR REPLACE FUNCTION boxplot_data_binary_categories (fname text, cohort text, type1 text, platform1 text, id1 text default '', type2 text default '', platform2 text default '', id2 text default '') RETURNS text AS $$
+DECLARE
+res text;
+n integer;
+table1 text;
+table2 text;
+BEGIN
+EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type1 || E'\';' INTO table1; 
+IF (type2 = '') THEN
+IF (id1='') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT binarize(' || platform1 || ') FROM ' || table1 || ';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT binarize(' || platform1 || ') FROM ' || table1 || E' WHERE id=\'' || id1 || E'\';';
+END IF;
+ELSE
+IF (type1 = type2) THEN
+-- case when table1 has no ids and table2=table1
+IF (id1 = '') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || ' B WHERE (A.sample=B.sample);';
+-- table1 has ids
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1, binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (B.id =\'' || id2 || E'\');';
+END IF;
+ELSE
+EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
+IF (id1='') THEN
+-- both tables has no ids
+IF (id2='') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample;';
+-- table1 has no ids, table2 has
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\';';
+END IF;
+ELSE
+-- table1 has ids, table2 does not
+IF (id2='') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\';';
+-- bot tables have ids
+ELSE 
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id =\'' || id2 || E'\';';
+END IF;
+END IF;
+END IF;
+END IF;
+EXECUTE E'SELECT COUNT (\*) FROM temp_view' || fname || ';' INTO n;
+IF (n = 0) THEN
+res := 'error';
+ELSE
+res := 'ok';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- additional function for transforming values into TRUE/FALSE
+CREATE OR REPLACE FUNCTION binarize (t_value text) RETURNS text AS $$
+DECLARE
+res text;
+BEGIN
+IF ((t_value = '') OR (t_value IS NULL)) THEN
+res := 'FALSE';
+ELSE
+res := 'TRUE';
 END IF;
 RETURN res;
 END;

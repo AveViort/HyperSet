@@ -18,3 +18,6 @@ druggable.cex.error = 10;
 druggable.cex.main = 3;
 druggable.cex.axis = 1.5;
 druggable.cex.lab = 2;
+druggable.precision.cor.legend=3;
+druggable.precision.pval.legend=2;
+druggable.cex.legend = 0.75;

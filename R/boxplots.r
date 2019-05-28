@@ -60,12 +60,12 @@ k = 0;
 temp_datatypes = c();
 temp_platforms = c();
 temp_scales = c();
-temp_id = '';
+temp_ids = c();
 # we can have up to 2 rows, but still
 n <- ifelse(length(ids)>length(scales), length(ids), length(scales));
 for (i in 1:n) {
 	print(paste0("id[", i, "]: ", ids[i], " scales[", i, "]: ", scales[i]));
-	if (((ids[i] != '') & !is.na(ids[i])) | ((scales[i] != '') & !is.na(scales[i]))) {
+	if ((scales[i] != '') & !is.na(scales[i])) {
 		k <- i;
 	}
 }
@@ -73,7 +73,10 @@ print(paste0("Found id at the following position: ", k));
 if (k != 0) {
 	print("k!=0");
 	if (!is.na(ids[k])) {
-		temp_id <- ids[k];
+		temp_ids <- ids[k];
+	}
+	else {
+		temp_ids <- '';
 	}
 	temp_datatypes <- datatypes[k];
 	temp_platforms <- platforms[k];
@@ -83,6 +86,12 @@ if (k != 0) {
 			temp_datatypes <- c(temp_datatypes, datatypes[i]);
 			temp_platforms <- c(temp_platforms, platforms[i]);
 			temp_scales <- c(temp_scales, scales[i]);
+			if (!is.na(ids[i])) {
+				temp_ids <- c(temp_ids, ids[i]);
+			}
+			else {
+				temp_ids <- c(temp_ids, '');
+			}
 		}
 	}
 } else {
@@ -90,11 +99,19 @@ if (k != 0) {
 	temp_datatypes <- datatypes;
 	temp_platforms <- platforms;
 	temp_scales <- scales;
+	temp_ids <- ids;
 }
 print(temp_datatypes);
 print(temp_platforms);
-print(paste0("SELECT boxplot_data('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_id, "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"))
-status <- sqlQuery(rch, paste0("SELECT boxplot_data('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_id, "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"));
+print(temp_ids);
+status <- '';
+if (temp_platforms[2] != "maf") {
+	print(paste0("SELECT boxplot_data('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"));
+	status <- sqlQuery(rch, paste0("SELECT boxplot_data('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "','", temp_ids[2],"');"));
+} else {
+	print(paste0("SELECT boxplot_data_binary_categories('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"));
+	status <- sqlQuery(rch, paste0("SELECT boxplot_data_binary_categories('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"));
+}
 if (status != 'ok') {
 			plot(0,type='n',axes=FALSE,ann=FALSE);
 			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error);
@@ -109,8 +126,8 @@ if (status != 'ok') {
 	y_axis_name = '';
 	x_axis_name = paste0(temp_datatypes[2], ":", readable_platforms[temp_platforms[2],2]);
 	if (length(temp_scales) != 0) {
-		if (temp_id != '') {
-			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", temp_id, ",", temp_scales[1], ")");
+		if (temp_ids[1] != '') {
+			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", temp_ids[1], ",", temp_scales[1], ")");
 		} else {
 			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", temp_scales[1], ")");
 		}

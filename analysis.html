@@ -138,7 +138,7 @@ li.tab:hover ul {
 		<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
 		</td>
 		<td>
-		<input id="id1_input">
+		<input id="id1_input" onkeyup = "id_keyup()">
 		</td>
 		<td>
 		<select id="axis1_selector" class="ui-helper" style="width: 40ch;">
@@ -315,6 +315,7 @@ $(document).ready(function(){
 	$('#source_selector').on( "selectmenuchange", function( event, ui ) {update_source()} );
 	init_cohortselector();
 	$("#plot-button").button();
+	$("#plot-button").button("disable");
 	$("#dock").accordion({
       collapsible: true
     });
@@ -487,7 +488,7 @@ function add_plot_options_row(i) {
 	var PlatformSelectorCell = row.insertCell(1);
 	PlatformSelectorCell.innerHTML = '<select id="platform' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
 	var IdInput = row.insertCell(2);
-	IdInput.innerHTML = '<input id="id'+ (i+1) +'_input">';
+	IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup()">';
 	flag = init_platformselector('platform'+(i+1)+'_selector');
 	if (flag & !for_delete) {
 		alert('No more compatible platforms!');
@@ -513,10 +514,15 @@ function add_plot_options_row(i) {
 		}
 	$("#source_selector").selectmenu("disable");
 	$("#cohort_selector").selectmenu("disable");
+	var id_input_enabled = ($("#id" + (i+1) + "_input").is(":enabled"));
+	if (id_input_enabled) {
+		$("#plot-button").button("disable"); 
+	}
 	if (for_delete) {
 		delete_plot_options_row(i+1);
 	}
 	sessionStorage.removeItem("add_row");
+	id_keyup();
 }
 
 function delete_plot_options_row(i) {
@@ -558,6 +564,9 @@ function delete_plot_options_row(i) {
 			update_type(i);
 		}
 	}
+	// artificially trigger onkeyup event for all available inputs
+	// so if the deleted row was the reason why plot-button was disabled - the button would become enabled
+	id_keyup();
 }
 
 function init_cohortselector() {
@@ -814,6 +823,7 @@ function update_platform(n) {
 			$('#platform' + (n+1) + '_selector').selectmenu( "refresh" );
 		}
 		update_plot_types();
+		id_keyup();
 	}
 }
 
@@ -945,6 +955,28 @@ function close_dock_plot(id) {
 		document.getElementById('undock_' + i).setAttribute("id", 'undock_' + (i-1));
 		document.getElementById('dock_close_' + i).setAttribute("onclick", 'close_dock_plot(' + (i-1) + ')');
 		document.getElementById('dock_close_' + i).setAttribute("id", 'dock_close_' + (i-1));
+	}
+}
+
+function id_keyup() {
+	var n = $('#plot_options tr').length;
+	var flag = true;
+	for (i = 1; i<=n; i++) {
+		if ($("#id" + i + "_input").is(":enabled")) {
+			var valueSoFar = ($("#id" + i + "_input").val()).toLowerCase();
+			$("#id" + i + "_input").val(valueSoFar);
+			var available_ids = $( "#id" + n + "_input" ).autocomplete("option", "source");
+			flag = flag*available_ids.includes(valueSoFar);
+		}
+		else {
+			flag = flag*true;
+		}
+	}
+	if (flag) {
+		$("#plot-button").button("enable");
+	}
+	else {
+		$("#plot-button").button("disable");
 	}
 }
 </script>

@@ -81,11 +81,24 @@ switch(Par["type"],
 			res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
 			x_data <- transformVars(res[,1], scales[1]);
 			y_data <- transformVars(res[,2], scales[2]);
+		
 			par(mar=c(5.1,5.1,4.1,2.1));
 			plot(x = x_data, y = y_data, main = paste0("Correlation between ", datatypes[1] , " of ", ids[1], " (", readable_platforms[platforms[1],2], ") and ", datatypes[2], " of ", ids[2], " (", readable_platforms[platforms[2],2], ")"), 
 				xlab = paste0(datatypes[1], " of ", ids[1], "(", readable_platforms[platforms[1],2], ",", scales[1], ")"), 
 				ylab = paste0(datatypes[2], " of ",ids[2], "(", readable_platforms[platforms[2],2], ",", scales[2], ")"), 
 				cex = druggable.cex, cex.main = druggable.cex.main, cex.axis = druggable.cex.axis, cex.lab = druggable.cex.lab);
+			cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
+			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
+			ck = cor(x_data, y_data, use="pairwise.complete.obs", method="kendall");
+			t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
+			f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
+			legend("topleft", legend=paste(
+			ifelse(is.na(fl), "", paste0("Fisher's exact test\nenrichment statistic\n(median-centered)=", round(f1$estimate, digits=precision.cor.legend))), 
+			ifelse(is.na(fl), "", paste0("P(Fisher's \nexact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
+			paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
+			paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
+			paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), 
+			sep="\n"), bty="n", cex=druggable.cex.legend * 1.25);  	
 		}
 		sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
 	}
