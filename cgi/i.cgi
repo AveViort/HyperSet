@@ -21,14 +21,15 @@ use venn_click_points;
 use constant SPACE => ' ';
 no warnings;
 
+
 our $dbh = HS_SQL::dbh('hyperset');
 $CGI::POST_MAX=102400000;
 our $q = new CGI;
 our $species = $q->param("species") ? $q->param("species") : '';
 # print STDERR '###########Species: '.$species .'<br>';
 # system('');
-# system('rm /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_upload/myv*/fgfr1_list.N.100.topPWs.groups');
-# system('rm /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_upload/myveryfirstproject/ANOVA.p_and_q-values.S01...S04.v4.txt');
+# system('rm /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/eryfirstprojectmyveryfirstproject/*');
+# system('cp /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/_tmpNEA*RData /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_upload/offline/');
 # exit;
 my $debug = 0;
 $ENV{'PATH'} = '/bin:/usr/bin:';
@@ -506,7 +507,7 @@ $stat .= $va .', ';
 $stat .= "\'" . $va . "\', "; 
 }
 }}
-$stat =~ s/\,\s$/\)\;/;
+$stat =~ s/\,\s$/\)\;/; 
 print $stat.'<br>' if $debug;
 $dbh->do("BEGIN;");
 $dbh->do($stat);

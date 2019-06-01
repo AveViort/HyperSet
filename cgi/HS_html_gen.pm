@@ -872,7 +872,7 @@ chdir($main::usersTMP);
 open ( LS, 'ls  _tmpNEA.*.RData | ') or print "Could not list previously generated project files... $!";
 while ($filename = <LS> ) {
 chomp($filename);
-$storedFiles{$1} = 1 if $filename =~ m/_tmpNEA\.([0-9]+)\.RData/;
+$storedFiles{$1} = 1 if $filename =~ m/_tmpNEA\.(.+)\.RData/; #([0-9A-Za-z\-\.]+)
 }
 print STDERR join(" ", keys(%storedFiles));
 

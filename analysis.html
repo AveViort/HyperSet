@@ -138,7 +138,7 @@ li.tab:hover ul {
 		<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
 		</td>
 		<td>
-		<input id="id1_input" onkeyup = "id_keyup()">
+		<input id="id1_input" onkeyup="id_keyup()" onchange = "id_keyup()">
 		</td>
 		<td>
 		<select id="axis1_selector" class="ui-helper" style="width: 40ch;">
@@ -329,6 +329,8 @@ function plot() {
 	var ids = [];
 	var platforms = [];
 	var scales = [];
+	// this is temp!
+	var tcga_codes = ["all", "all"];
 	for (i=1; i<=n; i++) {
 		datatypes.push($("#type" + i + "_selector option:selected").val());
 		platforms.push($("#platform" + i + "_selector option:selected").val());
@@ -355,7 +357,7 @@ function plot() {
 		}
 	if (plot_filename == "no") {
 		$("#progressbar").css({"visibility": "visible"});
-		plot_filename = rplot(type, cohort, datatypes, platforms, ids, scales);
+		plot_filename = rplot(type, cohort, datatypes, platforms, ids, tcga_codes, scales);
 		plot_id = plot_filename.substring(0, plot_filename.length-4);
 		// save plot in session history
 		sessionStorage.setItem(plot_filename, plot_description);
@@ -488,7 +490,7 @@ function add_plot_options_row(i) {
 	var PlatformSelectorCell = row.insertCell(1);
 	PlatformSelectorCell.innerHTML = '<select id="platform' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
 	var IdInput = row.insertCell(2);
-	IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup()">';
+	IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup()" onchange="id_keyup()">';
 	flag = init_platformselector('platform'+(i+1)+'_selector');
 	if (flag & !for_delete) {
 		alert('No more compatible platforms!');
@@ -564,7 +566,7 @@ function delete_plot_options_row(i) {
 			update_type(i);
 		}
 	}
-	// artificially trigger onkeyup event for all available inputs
+	// artificially trigger change event for all available inputs
 	// so if the deleted row was the reason why plot-button was disabled - the button would become enabled
 	id_keyup();
 }
@@ -965,7 +967,7 @@ function id_keyup() {
 		if ($("#id" + i + "_input").is(":enabled")) {
 			var valueSoFar = ($("#id" + i + "_input").val()).toLowerCase();
 			$("#id" + i + "_input").val(valueSoFar);
-			var available_ids = $( "#id" + n + "_input" ).autocomplete("option", "source");
+			var available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
 			flag = flag*available_ids.includes(valueSoFar);
 		}
 		else {

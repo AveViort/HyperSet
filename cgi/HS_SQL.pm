@@ -41,14 +41,14 @@ my @params;
 while (my $str = <$conf>) {
 	chomp $str;
 	@params = split / /, $str;
-	if (@params[0] eq $database_name) {
+	if ($params[0] eq $database_name) {
 		last;
 	}
 }
-if (@params[0] eq $database_name) {
-	$dbh = DBI->connect( @params[1], @params[2], @params[3] ,  {
+if ($params[0] eq $database_name) {
+	$dbh = DBI->connect( $params[1], $params[2], $params[3] ,  {
 			RaiseError => 1, AutoCommit => 0
-		}) || die "Failed to connect as @params[1], user $params[2].../n";
+		}) || die "Failed to connect as $params[1], user $params[2].../n";
 	return $dbh;	
 	}
 return undef;

@@ -217,63 +217,83 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- this function creates views which should be read in R
--- fname is file name - used for unique tables 
-CREATE OR REPLACE FUNCTION plot_data_by_id (fname text, cohort text, type1 text, platform1 text, id1 text, tcga_code1 text default '%', type2 text default '', platform2 text default '', id2 text default '', tcga_code2 text default '%', type3 text default '', platform3 text default '', id3 text default '', tcga_code3 text default '%') RETURNS text AS $$
+-- fname is file name - used for unique tables
+-- returns 3 columns, first column is samples 
+CREATE OR REPLACE FUNCTION plot_data_by_id (fname text, cohort text, type1 text, platform1 text, id1 text, tcga_code1 text default '', type2 text default '', platform2 text default '', id2 text default '', tcga_code2 text default '',  type3 text default '', platform3 text default '', id3 text default '', tcga_code3 text default '') RETURNS text AS $$
 DECLARE
-source_type text;
 res text;
 n integer;
 table1 text;
 table2 text;
 table3 text;
+source text;
 BEGIN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type1 || E'\';' INTO table1; 
-SELECT source INTO source_type FROM guide_table WHERE table_name LIKE table1;
+EXECUTE E'SELECT source FROM guide_table WHERE table_name LIKE\'' || table1 || E'\';' INTO source;
 IF (type3 = '') THEN
 IF (type2 = '') THEN
-IF (source_type = 'TCGA') THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || platform1 || ' FROM ' || table1 || E' WHERE (id=\'' || id1 || E'\') AND (sample LIKE \'%-' || tcga_code1 || '\');';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,' || platform1 || ' FROM ' || table1 || E' WHERE id=\'' || id1 || E'\' AND sample LIKE \'' || tcga_code1 || E'\';';
 ELSE
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || platform1 || ' FROM ' || table1 || E' WHERE id=\'' || id1 || E'\';';
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,' || platform1 || ' FROM ' || table1 || E' WHERE id=\'' || id1 || E'\';';
 END IF;
 ELSE
 -- have to do this, otherwise will get error table name "..." specified more than once
 IF (type1 = type2) THEN
 -- need expressions 2 and 3 to exclude situation when user have chosen "all" for both rows
-IF ((source_type = 'TCGA') AND NOT(tcga_code1 = '%')) THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND ((SELECT right_trim(A.sample,2)) = (SELECT right_trim(B.sample,2))) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 || E' IS NOT NULL) AND (A.sample LIKE \'%-' || tcga_code1 || E'\') AND (B.sample LIKE \'%-' || tcga_code2 || E'\');';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample, A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 || E' IS NOT NULL) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
 ELSE
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL);';
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample, A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 || ' IS NOT NULL);';
 END IF;
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2;
-IF ((source_type = 'TCGA') AND NOT(tcga_code1 = tcga_code2) AND NOT(tcga_code1 = '%')) THEN
--- edit from here and below
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ((SELECT right_trim(' || table1 || '.sample, 2)) = (SELECT right_trim(' || table2 || '.sample, 2))) AND (' || table1 || E'.id=\'' || id1 || E'\') AND (' || table2 || E'.id=\'' || id2 || E'\') AND (' || table2 || '.' || platform2 ||' IS NOT NULL) AND ;';
-ELSE 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id=\'' || id2 || E'\' AND '|| table2 || '.' || platform2 ||' IS NOT NULL;';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id=\'' || id2 || E'\' AND '|| table2 || '.' || platform2 ||' IS NOT NULL AND ' || table1 ||  E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id=\'' || id2 || E'\' AND '|| table2 || '.' || platform2 ||' IS NOT NULL;';
 END IF;
 END IF;
 END IF;
 ELSE
 IF ((type1 = type2) AND (type1 = type3)) THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || ' B,' || table1 || ' C ' || E' WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\') AND (A.sample=B.sample) AND (A.sample=C.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) AND (C.' || platform3 || ' IS NOT NULL);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || ' B,' || table1 || ' C ' || E' WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\') AND (A.sample=B.sample) AND (A.sample=C.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) AND (C.' || platform3 || E' IS NOT NULL) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || ' B,' || table1 || ' C ' || E' WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\') AND (A.sample=B.sample) AND (A.sample=C.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) AND (C.' || platform3 || ' IS NOT NULL);';
+END IF;
 ELSE
 IF (type1 = type2) THEN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type3 || E'\';' INTO table3; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1  || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) ' || ' JOIN ' || table3 || ' ON (A.sample='|| table3 || '.sample) AND (' || table3 || E'.id=\'' || id3 || E'\') AND (' || table3 || '.' || platform3 || ' IS NOT NULL);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1  || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) ' || ' JOIN ' || table3 || ' ON (A.sample='|| table3 || '.sample) AND (' || table3 || E'.id=\'' || id3 || E'\') AND (' || table3 || '.' || platform3 || ' IS NOT NULL) AND (' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1  || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) ' || ' JOIN ' || table3 || ' ON (A.sample='|| table3 || '.sample) AND (' || table3 || E'.id=\'' || id3 || E'\') AND (' || table3 || '.' || platform3 || ' IS NOT NULL);';
+END IF;
 ELSE
 IF (type1 = type3) THEN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2;
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || ' A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\');';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\') AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\');';
+END IF;
 ELSE
 IF (type2 = type3) THEN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2;
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' ||  ' A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table2 || ' C,' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\');';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table2 || ' C,' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\') AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table2 || ' C,' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.id=\'' || id1 || E'\') AND (B.id=\'' || id2 || E'\') AND (C.id=\'' || id3 || E'\');';
+END IF;
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2;
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type3 || E'\';' INTO table3; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 || '1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id=\'' || id2 || E'\' JOIN ' || table3 || ' ON ' || table1 || '.sample=' || table3 || '.sample AND ' || table3 || E'.id=\'' || id3 || E'\';';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 || '1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id=\'' || id2 || E'\' JOIN ' || table3 || ' ON ' || table1 || '.sample=' || table3 || '.sample AND ' || table3 || E'.id=\'' || id3 || E'\' AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 || '1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id=\'' || id2 || E'\' JOIN ' || table3 || ' ON ' || table1 || '.sample=' || table3 || '.sample AND ' || table3 || E'.id=\'' || id3 || E'\';';
+END IF;
 END IF;
 END IF;
 END IF;
@@ -290,47 +310,81 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- this version does not use ids, it is just a  function for CLIN and IMMUNO data
-CREATE OR REPLACE FUNCTION plot_data_without_id (fname text, cohort text, type1 text, platform1 text, type2 text default '', platform2 text default '', type3 text default '', platform3 text default '') RETURNS text AS $$
+CREATE OR REPLACE FUNCTION plot_data_without_id (fname text, cohort text, type1 text, platform1 text, tcga_code1 text default '', type2 text default '', platform2 text default '', tcga_code2 text default '', type3 text default '', platform3 text default '', tcga_code3 text default '') RETURNS text AS $$
 DECLARE
 res text;
 n integer;
 table1 text;
 table2 text;
 table3 text;
+source text;
 BEGIN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type1 || E'\';' INTO table1; 
+EXECUTE E'SELECT source FROM guide_table WHERE table_name LIKE\'' || table1 || E'\';' INTO source;
 IF (type3 = '') THEN
 IF (type2 = '') THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || platform1 || ' FROM ' || table1 || ';';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,' || platform1 || ' FROM ' || table1 || E' WHERE sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,' || platform1 || ' FROM ' || table1 || ';';
+END IF;
 ELSE
 -- have to do this, otherwise will get error table name "..." specified more than once
 IF (type1 = type2) THEN
 -- have to do this, otherwise will receive ERROR:  column "..." specified more than once
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 || E' IS NOT NULL) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 || ' IS NOT NULL);';
+END IF;
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || '.' || platform2 || ' IS NOT NULL AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || '.' || platform2 || ' IS NOT NULL;';
+END IF;
 END IF;
 END IF;
 ELSE
 IF ((type1 = type2) AND (type1 = type3)) THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (A.sample=C.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) AND (C.' || platform3 || ' IS NOT NULL);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (A.sample=C.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) AND (C.' || platform3 || E' IS NOT NULL) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (A.sample=C.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) AND (C.' || platform3 || ' IS NOT NULL);';
+END IF;
 ELSE
 IF (type1 = type2) THEN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type3 || E'\';' INTO table3; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1  || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) ' || ' JOIN ' || table3 || ' ON (A.sample='|| table3 || '.sample) AND (' || table3 || '.' || platform3 || ' IS NOT NULL);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1  || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) ' || ' JOIN ' || table3 || ' ON (A.sample='|| table3 || '.sample) AND (' || table3 || '.' || platform3 || ' IS NOT NULL) AND (' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1  || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL) ' || ' JOIN ' || table3 || ' ON (A.sample='|| table3 || '.sample) AND (' || table3 || '.' || platform3 || ' IS NOT NULL);';
+END IF;
 ELSE
 IF (type1 = type3) THEN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2;
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || ' A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table1 || ' C ' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table1 || ' C ' || ' WHERE (A.sample=B.sample) AND (C.sample=A.sample);';
+END IF;
 ELSE
 IF (type2 = type3) THEN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2;
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' ||  ' A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table2 || ' C,' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table2 || ' C,' || E' WHERE (A.sample=B.sample) AND (C.sample=A.sample) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS ' || platform2 || '2,C.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' A,' || table2 || ' B,' || table2 || ' C,' || ' WHERE (A.sample=B.sample) AND (C.sample=A.sample);';
+END IF;
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2;
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type3 || E'\';' INTO table3; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 || '1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample' || ' JOIN ' || table3 || ' ON ' || table1 || '.sample=' || table3 || '.sample;';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 || '1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample' || ' JOIN ' || table3 || ' ON ' || table1 || '.sample=' || table3 || '.sample AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 || '1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2,' || table3 || '.' || platform3 || ' AS ' || platform3 || '3 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample' || ' JOIN ' || table3 || ' ON ' || table1 || '.sample=' || table3 || '.sample;';
+END IF;
 END IF;
 END IF;
 END IF;
@@ -346,43 +400,69 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
--- function for boxplot: one axis with ids, the other without
-CREATE OR REPLACE FUNCTION boxplot_data (fname text, cohort text, type1 text, platform1 text, id1 text, type2 text, platform2 text, id2 text) RETURNS text AS $$
+-- function for boxplot: ids are optional for both axises
+CREATE OR REPLACE FUNCTION boxplot_data (fname text, cohort text, type1 text, platform1 text, id1 text, tcga_code1 text, type2 text, platform2 text, id2 text,  tcga_code2 text) RETURNS text AS $$
 DECLARE
 res text;
 n integer;
 table1 text;
 table2 text;
+source text;
 BEGIN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type1 || E'\';' INTO table1; 
+EXECUTE E'SELECT source FROM guide_table WHERE table_name LIKE\'' || table1 || E'\';' INTO source;
 IF (id1='') THEN
 IF (id2 = '') THEN
 -- same table, no ids
 IF (type1 = type2) THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 ||' IS NOT NULL);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 || E' IS NOT NULL) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.' || platform1 || ' IS NOT NULL) AND (B.' || platform2 || E' IS NOT NULL);';
+END IF;
 -- different tables, no ids
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || '.' || platform2 || ' IS NOT NULL AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || '.' || platform2 || ' IS NOT NULL;';
+END IF;
 END IF;
 -- platform1 does not have ids, platform2 does
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+END IF;
 END IF;
 ELSE
 -- same table, ids are present
 IF (type1 = type2) THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (A.' || platform1 || E' IS NOT NULL) AND (B.id=\'' || id2 || E'\') AND (B.' || platform2 ||' IS NOT NULL);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (A.' || platform1 || E' IS NOT NULL) AND (B.id=\'' || id2 || E'\') AND (B.' || platform2 || E' IS NOT NULL) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,B.' || platform2 || ' AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (A.' || platform1 || E' IS NOT NULL) AND (B.id=\'' || id2 || E'\') AND (B.' || platform2 || E' IS NOT NULL);';
+END IF;
 ELSE
 -- platform1 has ids, platform2 does not
 IF (id2='') THEN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 || ' IS NOT NULL AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL;';
+END IF;
 -- different tables, ids are present
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL AND ' || table2 || E'.id=\'' || id2 || E'\';';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL AND ' || table2 || E'.id=\'' || id2 || E'\' AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,' || table2 || '.' || platform2 || ' AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || '.' || platform2 ||' IS NOT NULL AND ' || table2 || E'.id=\'' || id2 || E'\';';
+END IF;
 END IF;
 END IF;
 END IF;
@@ -399,51 +479,117 @@ $$ LANGUAGE plpgsql;
 -- function for special types of boxplots (or other plots which are in need of binary data): when we have many categories and want to categorize results as "TRUE/FALSE"
 -- e.g. instead of having all types of mutations for TP53 from MUT-MAF, we will have TRUE if mutation is present and FALSE if mutation is absent
 -- note: binarization ALWAYS occurs for the second platform, except for 1D cases!
-CREATE OR REPLACE FUNCTION boxplot_data_binary_categories (fname text, cohort text, type1 text, platform1 text, id1 text default '', type2 text default '', platform2 text default '', id2 text default '') RETURNS text AS $$
+-- Caution! Autocomplement is a special parameter, use it with great caution! If autocomplement=true, than all samples which are present in table1 but not present in
+-- table2 which is being binarized are considered to be FALSE
+-- this function can pick up TCGA samples by TCGA-codes: all samples, all healthy, all cancer etc.
+CREATE OR REPLACE FUNCTION boxplot_data_binary_categories (fname text, cohort text, type1 text, platform1 text, id1 text, tcga_code1 text, type2 text, platform2 text, id2 text, tcga_code2 text, autocomplement boolean default false) RETURNS text AS $$
 DECLARE
 res text;
 n integer;
 table1 text;
 table2 text;
+source text;
 BEGIN
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type1 || E'\';' INTO table1; 
+EXECUTE E'SELECT source FROM guide_table WHERE table_name LIKE\'' || table1 || E'\';' INTO source;
+-- 1D-case
 IF (type2 = '') THEN
+-- 1D without ids
 IF (id1='') THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT binarize(' || platform1 || ') FROM ' || table1 || ';';
+-- ignore samples according to tcga_code IF data from TCGA and specific flag is set
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,binarize(' || platform1 || ') FROM ' || table1 || E' WHERE sample LIKE \'' || tcga_code1 || E'\';';
+-- when data is not from TCGA OR flag is not set
 ELSE
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT binarize(' || platform1 || ') FROM ' || table1 || E' WHERE id=\'' || id1 || E'\';';
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,binarize(' || platform1 || ') FROM ' || table1 || ';';
 END IF;
+-- 1D with IDs
 ELSE
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,binarize(' || platform1 || ') FROM ' || table1 || E' WHERE (id=\'' || id1 || E'\') AND (sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT sample,binarize(' || platform1 || ') FROM ' || table1 || E' WHERE id=\'' || id1 || E'\';';
+END IF;
+END IF;
+-- 2D-case
+ELSE
+-- data comes from one table
 IF (type1 = type2) THEN
 -- case when table1 has no ids and table2=table1
 IF (id1 = '') THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1,binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || ' B WHERE (A.sample=B.sample);';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1,binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || ' B WHERE (A.sample=B.sample);';
+END IF;
 -- table1 has ids
 ELSE
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.' || platform1 || ' AS ' || platform1 || '1, binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (B.id =\'' || id2 || E'\');';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1, binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (B.id =\'' || id2 || E'\') AND (A.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT A.sample,A.' || platform1 || ' AS ' || platform1 || '1, binarize(B.' || platform2 || ') AS '|| platform2 || '2 FROM ' || table1 || ' A,' || table1 || E' B WHERE (A.sample=B.sample) AND (A.id=\'' || id1 || E'\') AND (B.id =\'' || id2 || E'\');';
 END IF;
+END IF;
+-- data comes from different tables
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || type2 || E'\';' INTO table2; 
 IF (id1='') THEN
 -- both tables has no ids
 IF (id2='') THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample;';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON (' || table1 || '.sample=' || table2 || '.sample) AND (' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\');';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample;';
+END IF;
 -- table1 has no ids, table2 has
 ELSE
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\';';
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\' AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table2 || E'.id=\'' || id2 || E'\';';
+END IF;
 END IF;
 ELSE
 -- table1 has ids, table2 does not
 IF (id2='') THEN
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\';';
--- bot tables have ids
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\';';
+END IF;
+-- both tables have ids
+ELSE
+IF (source='TCGA') THEN
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id =\'' || id2 || E'\' AND ' || table1 || E'.sample LIKE \'' || tcga_code1 || E'\';';
 ELSE 
-EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id =\'' || id2 || E'\';';
+EXECUTE 'CREATE VIEW temp_view' || fname || ' AS SELECT ' || table1 || '.sample,' || table1 || '.' || platform1 || ' AS ' || platform1 ||'1,binarize(' || table2 || '.' || platform2 || ') AS ' || platform2 || '2 FROM ' || table1 || ' JOIN ' || table2 || ' ON ' || table1 || '.sample=' || table2 || '.sample AND ' || table1 || E'.id=\'' || id1 || E'\' AND ' || table2 || E'.id =\'' || id2 || E'\';';
+END IF;
+END IF;
+END IF;
+-- autocomplement
+IF (autocomplement = TRUE) THEN
+EXECUTE 'CREATE TABLE temp_table' || fname || ' AS SELECT * FROM temp_view' || fname || ';';
+IF (id2 = '') THEN
+IF (source='TCGA') THEN
+EXECUTE 'INSERT INTO temp_table' || fname || ' SELECT B.sample,B.'  || platform1 || E',\'FALSE\' FROM ' || table2 || ' A RIGHT JOIN ' || table1 || E' B ON A.sample=B.sample WHERE A.sample IS NULL AND B.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'INSERT INTO temp_table' || fname || ' SELECT B.sample,B.' || platform1 || E',\'FALSE\' FROM ' || table2 || ' A RIGHT JOIN ' || table1 || ' B ON A.sample=B.sample WHERE A.sample IS NULL;';
+END IF;
+ELSE
+IF (source='TCGA') THEN
+EXECUTE 'INSERT INTO temp_table' || fname || ' SELECT B.sample,B.' || platform1 || E',\'FALSE\' FROM ' || table2 || ' A RIGHT JOIN ' || table1 || E' B ON A.sample=B.sample WHERE A.sample IS NULL AND B.id=\'' || id2 || E'\' AND B.sample LIKE \'' || tcga_code1 || E'\';';
+ELSE
+EXECUTE 'INSERT INTO temp_table' || fname || ' SELECT B.sample,B.' || platform1 || E',\'FALSE\' FROM ' || table2 || ' A RIGHT JOIN ' || table1 || E' B ON A.sample=B.sample WHERE A.sample IS NULL AND B.id=\'' || id2 || E'\';';
 END IF;
 END IF;
 END IF;
 END IF;
+END IF;
+IF (autocomplement = FALSE) THEN
 EXECUTE E'SELECT COUNT (\*) FROM temp_view' || fname || ';' INTO n;
+ELSE
+EXECUTE E'SELECT COUNT (\*) FROM temp_table' || fname || ';' INTO n;
+END IF;
 IF (n = 0) THEN
 res := 'error';
 ELSE

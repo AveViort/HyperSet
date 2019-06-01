@@ -77,14 +77,15 @@ function measure_performance() {
 	console.log(t1-t0);
 }
 
-function rplot(type, cohort, datatypes, platforms, ids, scales) {
+function rplot(type, cohort, datatypes, platforms, ids, tcga_codes, scales) {
 	var file;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/rplot.cgi?type="+encodeURIComponent(type) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatypes=" + 
 		encodeURIComponent(datatypes.join()) + "&platforms=" + 
 		encodeURIComponent(platforms.join()) + "&ids=" + 
-		encodeURIComponent(ids.join()) + "&scales=" +
+		encodeURIComponent(ids.join()) + "&tcga_codes=" + 
+		encodeURIComponent(tcga_codes.join()) + "&scales=" +
 		encodeURIComponent(scales.join()), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {

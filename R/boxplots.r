@@ -8,17 +8,10 @@ options(warn = 1); # options(warn = 0);
 message("TEST0");
 
 source("../R/HS.R.config.r");
+source("../R/plot_common_functions.r");
 #print(library());
 library(RODBC);
 Debug = 1;
-
-transformVars <- function (x, axis_scale) {
-return(switch(axis_scale,
-         "sqrt" = if(min(x, na.rm = TRUE)>=0) {sqrt(x)} else {sqrt(x-min(x, na.rm = TRUE))},
-         "log" = if(min(x, na.rm = TRUE)>0) {log(x)} else {if(any(x != 0)) {log(x+1.1*abs(min(x[x!=0], na.rm = TRUE)))} else {x}},
-         "linear" = x
-         ));
-}
 
 Args <- commandArgs(trailingOnly = T);
 if (Debug>0) {print(paste(Args, collapse=" "));}
@@ -32,11 +25,8 @@ Par <- NULL;
   if (Debug>0) {print(paste(p1[1], p1[2], collapse=" "));}
 } }
 
-temp <- read.delim(file = "HS_SQL.conf", header = FALSE, sep = " ", row.names = 1)
-username = as.character(temp["druggable", 2]);
-password = as.character(temp["druggable", 3]);
-rm(temp);
-rch <- odbcConnect("dg_pg", uid = username, pwd = password); 
+credentials <- getDbCredentials();
+rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 
 print("boxplots.r");
 File <- paste0(r.plots, "/", Par["out"])
@@ -106,19 +96,25 @@ print(temp_platforms);
 print(temp_ids);
 status <- '';
 if (temp_platforms[2] != "maf") {
-	print(paste0("SELECT boxplot_data('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"));
+	print(paste0("SELECT boxplot_data('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", createPostgreSQLregex("all"), "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "','", temp_ids[2], "','", createPostgreSQLregex("all"), "');"));
 	status <- sqlQuery(rch, paste0("SELECT boxplot_data('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "','", temp_ids[2],"');"));
 } else {
-	print(paste0("SELECT boxplot_data_binary_categories('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"));
-	status <- sqlQuery(rch, paste0("SELECT boxplot_data_binary_categories('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "');"));
+	print(paste0("SELECT boxplot_data_binary_categories('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", createPostgreSQLregex("cancer"), "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "','", temp_ids[2], "','", createPostgreSQLregex("cancer"), "',true);"));
+	status <- sqlQuery(rch, paste0("SELECT boxplot_data_binary_categories('", fname, "','",  toupper(Par["cohort"]), "','", toupper(temp_datatypes[1]), "','", toupper(temp_platforms[1]), "','", temp_ids[1], "','", createPostgreSQLregex("cancer"), "','", toupper(temp_datatypes[2]), "','", toupper(temp_platforms[2]), "','", temp_ids[2], "','", createPostgreSQLregex("cancer"), "',true);"));
 }
 if (status != 'ok') {
 			plot(0,type='n',axes=FALSE,ann=FALSE);
 			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error);
 } else {
-	res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
-	x_data <- transformVars(res[,1], temp_scales[1]);
-	y_data <- res[,2];
+	res <- '';
+	if (temp_platforms[2] != "maf") {
+		res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
+	} else {
+		res <- sqlQuery(rch, paste0("SELECT * FROM temp_table", fname, ";"));
+		sqlQuery(rch, paste0("DROP VIEW temp_table", fname, ";"));
+	}
+	x_data <- transformVars(res[,2], temp_scales[1]);
+	y_data <- res[,3];
 	par(mar=c(5.1,5.1,4.1,2.1));
 	print(paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(temp_platforms, collapse = "','"), "'"),"]);"));
 	readable_platforms <- sqlQuery(rch, paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(temp_platforms, collapse = "','"), "'"),"]);"));
@@ -135,6 +131,10 @@ if (status != 'ok') {
 		y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2]);
 	}	
 	# in this order! x~y
-	boxplot(x_data ~ y_data, main = paste0("Boxplot of ", Par["cohort"]), xlab = x_axis_name, ylab = y_axis_name, cex = druggable.cex, cex.main = druggable.cex.main, cex.axis = druggable.cex.axis, cex.lab = druggable.cex.lab);
+	if (temp_platforms[2] != "maf") {
+		boxplot(x_data ~ y_data, main = paste0("Boxplot of ", Par["cohort"]), xlab = x_axis_name, ylab = y_axis_name, cex = druggable.cex, cex.main = druggable.cex.main, cex.axis = druggable.cex.axis, cex.lab = druggable.cex.lab);
+	} else {
+		boxplot(x_data ~ factor(y_data, levels=c('FALSE', 'TRUE')), main = paste0("Boxplot of ", Par["cohort"]), xlab = x_axis_name, ylab = y_axis_name, cex = druggable.cex, cex.main = druggable.cex.main, cex.axis = druggable.cex.axis, cex.lab = druggable.cex.lab, names = c("- (WT)", "+ (MUT)"));
+	}
 }
 sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));

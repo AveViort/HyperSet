@@ -275,3 +275,22 @@ function generate_share_link(jid)
 		response = "https://www.evinet.org/share.html#" + response;}
 	return response;
 }
+
+function generate_links_for_all_jobs() {
+	var urls = [];
+	var jobs;
+	var project_id = (getCookie("project_id").split("|"))[0];
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/get_jobs.cgi?project_id="+encodeURIComponent(project_id), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			jobs = this.responseText;}
+	}
+	xmlhttp.send();
+	jobs = jobs.split("|");
+	jobs = jobs.slice(0, jobs.length-1);
+	for (i in jobs) {
+		urls.push(generate_share_link(jobs[i]));
+	}
+	return urls;
+}
