@@ -77,10 +77,12 @@ function measure_performance() {
 	console.log(t1-t0);
 }
 
-function rplot(type, cohort, datatypes, platforms, ids, tcga_codes, scales) {
+function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales) {
 	var file;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/rplot.cgi?type="+encodeURIComponent(type) + "&cohort=" + 
+	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
+		encodeURIComponent(type) + "&source=" +
+		encodeURIComponent(source) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatypes=" + 
 		encodeURIComponent(datatypes.join()) + "&platforms=" + 
 		encodeURIComponent(platforms.join()) + "&ids=" + 

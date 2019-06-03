@@ -482,6 +482,7 @@ $$ LANGUAGE plpgsql;
 -- Caution! Autocomplement is a special parameter, use it with great caution! If autocomplement=true, than all samples which are present in table1 but not present in
 -- table2 which is being binarized are considered to be FALSE
 -- this function can pick up TCGA samples by TCGA-codes: all samples, all healthy, all cancer etc.
+-- this function was originally used for boxplots only, but now it can be used for other purposes as well
 CREATE OR REPLACE FUNCTION boxplot_data_binary_categories (fname text, cohort text, type1 text, platform1 text, id1 text, tcga_code1 text, type2 text, platform2 text, id2 text, tcga_code2 text, autocomplement boolean default false) RETURNS text AS $$
 DECLARE
 res text;

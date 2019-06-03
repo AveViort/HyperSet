@@ -1,4 +1,4 @@
-# this function contains functions which are commonly used by plot functions
+# this file contains functions which are commonly used by plot functions
 transformVars <- function (x, axis_scale) {
 return(switch(axis_scale,
          "sqrt" = if(min(x, na.rm = TRUE)>=0) {sqrt(x)} else {sqrt(x-min(x, na.rm = TRUE))},
@@ -23,5 +23,17 @@ createPostgreSQLregex <- function(tcga_code) {
 		{regex <- paste0("%-",tcga_code);}
 		
 	);
-	return (regex);
+	return(regex);
+}
+
+# adjust cex main - we have approximately 55 symbols for cex=3 and 1280 px
+adjust_cex_main <- function(main_title, cex.main.relative) {
+	cex.adjusted = 0;
+	n <- nchar(main_title);
+	if (n <= 55) {
+		cex.adjusted <- cex.main.relative;
+	} else {
+		cex.adjusted <- cex.main.relative * 55 / n;
+	}
+	return(cex.adjusted);
 }

@@ -21,13 +21,14 @@ my $wd = getcwd;
 our $BASE = index($wd, 'dev') != -1 ? 'https://dev.evinet.org/' : 'https://www.evinet.org/';
 our $usersDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_upload/';
 our $usersTMP = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+# our $usersTMP = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/offline_results/';
 our $usersPNG = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/display_tmp/';
 our $netDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/NW_web/';
 our $fgsDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/FG_web/';
 our $nwDir = 'https://research.scilifelab.se/andrej_alexeyenko/HyperSet/NW_web/';
 our $fgDir = 'https://research.scilifelab.se/andrej_alexeyenko/HyperSet/FG_web/'; 
 our $tmpVennPNG = 'https://research.scilifelab.se/andrej_alexeyenko/display_tmp/';
-our $tmpPath = 'https://research.scilifelab.se/andrej_alexeyenko/users_tmp/';
+our $tmpPath = 'https://research.scilifelab.se/andrej_alexeyenko/offline_results/';
 our $tmpVennHTML = 'https://research.scilifelab.se/andrej_alexeyenko/users_tmp/';
 our $downloadDir = 'http://research.scilifelab.se/andrej_alexeyenko/downloads/';
 our $fieldRdelimiter = '+'; #%3B

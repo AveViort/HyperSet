@@ -41,7 +41,7 @@ my @params;
 while (my $str = <$conf>) {
 	chomp $str;
 	@params = split / /, $str;
-	if ($params[0] eq $database_name) {
+	if ($params[0] eq $database_name) { 
 		last;
 	}
 }

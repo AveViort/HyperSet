@@ -138,7 +138,7 @@ li.tab:hover ul {
 		<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
 		</td>
 		<td>
-		<input id="id1_input" onkeyup="id_keyup()" onchange = "id_keyup()">
+		<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup()">
 		</td>
 		<td>
 		<select id="axis1_selector" class="ui-helper" style="width: 40ch;">
@@ -324,6 +324,7 @@ $(document).ready(function(){
 function plot() {
 	var type = $('#plot-type option:selected').val();
 	var n = $('#plot_options tr').length;
+	var source = $("#source_selector option:selected").val();
 	var cohort = $("#cohort_selector option:selected").val();
 	var datatypes = [];
 	var ids = [];
@@ -340,24 +341,10 @@ function plot() {
 	var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|scales:" + scales;
 	var plot_filename = find_plot_in_history(plot_description);
 	var plot_id;
-	var plot_title;
-		switch (type) {
-			case "scatter": plot_title = type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')';
-				break;
-			case "histogram": plot_title = type + ' of ' + cohort + ' (' + ids + ', ' + scales + ')';
-				break;
-			case "box": plot_title = type + ' of ' + cohort;
-				break;
-			case "KM": plot_title = type + ' of ' + cohort;
-				break;
-			case "piechart": plot_title = type + ' of ' + cohort;
-				break;
-			case "box": plot_title = type + ' of ' + cohort;
-				break;
-		}
+	var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
 	if (plot_filename == "no") {
 		$("#progressbar").css({"visibility": "visible"});
-		plot_filename = rplot(type, cohort, datatypes, platforms, ids, tcga_codes, scales);
+		plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
 		plot_id = plot_filename.substring(0, plot_filename.length-4);
 		// save plot in session history
 		sessionStorage.setItem(plot_filename, plot_description);
@@ -466,6 +453,8 @@ function add_plot_options_row(i) {
 		$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update_platform(j+1)} );
 		document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j+1) +'_selector');
 		document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j+1) +'_selector');
+		document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j+1) +')');
+		document.getElementById('id' + j +'_input').setAttribute("onchange", 'id_keyup(' + (j+1) +')');
 		document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j+1) +'_input');
 		document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j+1) +'_selector');
 		document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j+1));
@@ -490,7 +479,7 @@ function add_plot_options_row(i) {
 	var PlatformSelectorCell = row.insertCell(1);
 	PlatformSelectorCell.innerHTML = '<select id="platform' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
 	var IdInput = row.insertCell(2);
-	IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup()" onchange="id_keyup()">';
+	IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup(' + (i+1) + ')" onchange="id_keyup(' + (i+1) + ')">';
 	flag = init_platformselector('platform'+(i+1)+'_selector');
 	if (flag & !for_delete) {
 		alert('No more compatible platforms!');
@@ -524,7 +513,7 @@ function add_plot_options_row(i) {
 		delete_plot_options_row(i+1);
 	}
 	sessionStorage.removeItem("add_row");
-	id_keyup();
+	id_keyup(i+1);
 }
 
 function delete_plot_options_row(i) {
@@ -534,13 +523,15 @@ function delete_plot_options_row(i) {
 		$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update_platform(j-1)} );
 		document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j-1) +'_selector');
 		document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j-1) +'_selector');
+		document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j-1) +')');
+		document.getElementById('id' + j +'_input').setAttribute("onchange", 'id_keyup(' + (j-1) +')');
 		document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j-1) +'_input');
 		document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j-1) +'_selector');
 		document.getElementById('add_row' + j).setAttribute("onclick", 'add_plot_options_row(' + (j-1) + ')');
 		document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j-1));
 		document.getElementById('delete_row' + j).setAttribute("onclick", 'delete_plot_options_row(' + (j-1) + ')');
 		document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j-1));
-	}
+	}	
 	document.getElementById("plot_options").deleteRow(i-1);
 	for (j=1; j<n; j++) {
 		$("#add_row" + j).button("enable");
@@ -568,7 +559,7 @@ function delete_plot_options_row(i) {
 	}
 	// artificially trigger change event for all available inputs
 	// so if the deleted row was the reason why plot-button was disabled - the button would become enabled
-	id_keyup();
+	id_keyup(i-1);
 }
 
 function init_cohortselector() {
@@ -825,7 +816,7 @@ function update_platform(n) {
 			$('#platform' + (n+1) + '_selector').selectmenu( "refresh" );
 		}
 		update_plot_types();
-		id_keyup();
+		id_keyup(n);
 	}
 }
 
@@ -960,7 +951,7 @@ function close_dock_plot(id) {
 	}
 }
 
-function id_keyup() {
+function id_keyup(k) {
 	var n = $('#plot_options tr').length;
 	var flag = true;
 	for (i = 1; i<=n; i++) {
@@ -976,10 +967,49 @@ function id_keyup() {
 	}
 	if (flag) {
 		$("#plot-button").button("enable");
+		setTimeout(function(){$("#id" + k + "_input").css('border-color', '')}, 500);
+		$("#id" + k + "_input").css('border-color', 'green');
 	}
 	else {
 		$("#plot-button").button("disable");
 	}
+}
+
+function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
+	var plot_title = '';
+	switch (type) {
+			case "scatter": 
+				if (ids.every((val, i, arr) => val === "")) {
+					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ')';
+				}
+				else {
+					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + ids[1] + ':' + scales[1] + ')';
+				}
+				break;
+			case "histogram": 
+				if (ids[1] = "") {
+					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ')';
+				}
+				else {
+					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + scales[0] + ')';
+				}
+				break;
+			case "box": plot_title = type + ' of ' + cohort;
+				break;
+			case "KM": plot_title = type + ' of ' + cohort;
+				break;
+			case "piechart": plot_title = type + ' of ' + cohort;
+				break;
+			case "bar": 
+				if (ids[1] = "") {
+					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ')';
+				}
+				else {
+					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + ')';
+				}
+				break;
+		}
+	return plot_title;
 }
 </script>
 </BODY>
