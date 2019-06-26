@@ -21,16 +21,16 @@ my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 my $sessionstat = $sth->fetchrow_array;
 my $link;
-if ($sessionstat eq 1) {
+#if ($sessionstat eq 1) {
 	$stat = qq/SELECT get_shareable_link(\'$uname'\, \'$jid'\)/;
 	$sth = $dbh->prepare($stat) or die $dbh->errstr;
 	$sth->execute( ) or die $sth->errstr;
 	$link = $sth->fetchrow_array;
 	$dbh->commit;
-}
-else {
-	$link = 'failed';
-}
+#}
+#else {
+#	$link = 'failed';
+#}
 $sth->finish;
 $dbh->disconnect;
 print "Content-type: text/html\n\n";

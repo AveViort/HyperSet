@@ -38,6 +38,7 @@ if (not($sessionstat) or not($ownership)) {
 	}
 else {
 	my $path = $HSconfig::usersTMP;
+	# print "PATH: ".$path;
 	my $html = read_file($path.$project.'/'.$table);
 	# print $path.$project.'/'.$table;
 	print $html;

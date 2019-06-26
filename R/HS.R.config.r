@@ -17,6 +17,7 @@ plotSize = 1280;
 druggable.cex = 2;
 druggable.cex.error = 10;
 druggable.cex.main = 3;
+druggable.cex.sub = 1.5;
 druggable.cex.axis = 1.5;
 druggable.cex.lab = 2;
 druggable.precision.cor.legend = 3;
@@ -26,8 +27,8 @@ druggable.cex.legend = 0.75;
 # options for plots - relative size
 druggable.cex.relative = druggable.cex * plotSize / 1280;
 druggable.cex.error.relative = druggable.cex.error * plotSize / 1280;
-# for 1280 px plot we have approximately 50 symbols
 druggable.cex.main.relative = druggable.cex.main * plotSize / 1280;
+druggable.cex.sub.relative = druggable.cex.sub * plotSize / 1280;
 druggable.cex.axis.relative = druggable.cex.axis * plotSize / 1280;
 druggable.cex.lab.relative = druggable.cex.lab * plotSize / 1280;
 druggable.cex.legend.relative = druggable.cex.lab * plotSize / 1280;

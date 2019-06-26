@@ -577,7 +577,7 @@ BEGIN
 SELECT projectid INTO project FROM projectarchives WHERE jid LIKE sjid; 
 IF (EXISTS (SELECT * FROM projects WHERE (owner LIKE uname) AND (access_level>1) AND (projectid LIKE project))) THEN
 IF (EXISTS (SELECT share_hash FROM projectarchives WHERE (jid LIKE sjid) AND (share_hash <> ''))) THEN
-SELECT share_hash INTO hash FROM projectarchives WHERE jid LIKE sjid;
+SELECT share_hash INTO hash FROM projectarchives WHERE (jid LIKE sjid) AND (share_hash<>'');
 ELSE
 SELECT CURRENT_TIME INTO stimestamp;
 hash := encode(hmac(sjid, stimestamp, 'sha256'), 'hex');

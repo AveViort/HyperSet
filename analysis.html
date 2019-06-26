@@ -138,7 +138,7 @@ li.tab:hover ul {
 		<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
 		</td>
 		<td>
-		<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup()">
+		<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup(1)">
 		</td>
 		<td>
 		<select id="axis1_selector" class="ui-helper" style="width: 40ch;">
@@ -1007,6 +1007,8 @@ function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
 				else {
 					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + ')';
 				}
+				break;
+			case "venn": plot_title = type + ' of ' + cohort;
 				break;
 		}
 	return plot_title;

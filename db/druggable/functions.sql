@@ -812,8 +812,24 @@ IF (string = '') THEN
 res := '';
 ELSE
 SELECT length(string) INTO string_length;
-string_length := string_length - 2;
+string_length := string_length - n;
 EXECUTE E'SELECT substring(\'' || string || E'\' FROM 1 FOR ' || string_length || ');' INTO res;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but trims n symbols from the left
+CREATE OR REPLACE FUNCTION left_trim (string text, n integer) RETURNS text AS $$
+DECLARE 
+res text;
+string_length integer;
+BEGIN
+IF (string = '') THEN
+res := '';
+ELSE
+SELECT length(string) INTO string_length;
+EXECUTE E'SELECT substring(\'' || string || E'\' FROM ' || n+1 || ' FOR ' || string_length || ');' INTO res;
 END IF;
 RETURN res;
 END;
@@ -830,6 +846,8 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- this function fills table plot_types according to internal rules
+-- table should exist before the first function call
 CREATE OR REPLACE FUNCTION autofill_plot_types () RETURNS boolean AS $$
 DECLARE
 table_n text;
@@ -876,6 +894,7 @@ RAISE NOTICE 'Unique platforms found: %', array_length(platforms_array, 1);
 --RAISE NOTICE '%', platforms_type_array;
 FOR i IN 1..array_length(platforms_array, 1)
 LOOP
+-- 1D plots
 -- we have only two datatypes: character and numeric
 IF (platforms_type_array[i] = 'character varying') THEN
 plots := ARRAY ['bar','piechart'::text];
@@ -886,6 +905,7 @@ FOR k IN 1..array_length(plots, 1)
 LOOP
 INSERT INTO plot_types(platform1, plot) VALUES(platforms_array[i], plots[k]);
 END LOOP;
+-- 2D case
 FOR j IN i..array_length(platforms_array, 1)
 LOOP
 plots := ARRAY[]::text[];
@@ -895,8 +915,12 @@ ELSE
 IF ((platforms_type_array[i] = 'numeric') AND (platforms_type_array[j] = 'numeric')) THEN
 plots := ARRAY ['scatter'::text];
 ELSE
+IF ((platforms_type_array[i] = 'character varying') AND (platforms_type_array[j] = 'character varying')) THEN
+plots := ARRAY ['venn'::text];
+ELSE
 IF (((platforms_type_array[i] = 'numeric') AND (platforms_type_array[j] = 'character varying')) OR ((platforms_type_array[j] = 'numeric') AND (platforms_type_array[i] = 'character varying'))) THEN
 plots := ARRAY ['box'::text];
+END IF;
 END IF;
 END IF;
 END IF;

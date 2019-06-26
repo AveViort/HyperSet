@@ -34,7 +34,7 @@ print("druggable.venn.r");
 File <- paste0(r.plots, "/", Par["out"])
 print(File)
 print(names(Par));
-png(file=File, width =  plotSize, height = plotSize, type = "cairo");
+#png(file=File, width =  plotSize, height = plotSize, type = "cairo");
 ids <- unlist(strsplit(Par["ids"], split = ","));
 print(ids);
 datatypes <- unlist(strsplit(Par["datatypes"], split = ","));
@@ -48,50 +48,108 @@ query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shor
 readable_platforms <- sqlQuery(rch, query);
 rownames(readable_platforms) <- readable_platforms[,1];
 
-# here we cannot use SQL function to get one table - since sets can have different size
-query <- paste0("SELECT table_name from guide_table WHERE cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[1]), "';");
-print(query);
-table1 <- sqlQuery(rch, query)[1,1];
-if ((ids[1] == "") | (is.na(ids[1]))) {
-	query <- paste0("SELECT binarize(", platforms[1], ") FROM ", table1, ";");
-} else {
-	query <- paste0("SELECT binarize(", platforms[1], ") FROM ", table1, " WHERE id='", ids[1], "';");
-} 
-print(query);
-first_set <- sqlQuery(rch, query);
+if (datatypes[1] == datatypes[2]) {
+	query <- paste0("SELECT table_name from guide_table WHERE cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[1]), "';");
+	print(query);
+	table1 <- sqlQuery(rch, query)[1,1];
+	# here we cannot use SQL function to get one table - since sets can have different size
+	if ((ids[1] == "") | (is.na(ids[1]))) {
+		query <- paste0("SELECT sample,binarize(", platforms[1], ") FROM ", table1, ";");
+	} else {
+		query <- paste0("SELECT sample,binarize(", platforms[1], ") FROM ", table1, " WHERE id='", ids[1], "';");
+	} 
+	print(query);
+	first_set <- sqlQuery(rch, query);
+	first_set[,1] <- as.character(first_set[,1]);
 
-query <- paste0("SELECT table_name from guide_table WHERE cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[2]), "';");
-print(query);
-table2 <- sqlQuery(rch, query)[1,1];
-if ((ids[2] == "") | (is.na(ids[2]))) {
-	query <- paste0("SELECT binarize(", platforms[2], ") FROM ", table1, ";");
-} else {
-	query <- paste0("SELECT binarize(", platforms[2], ") FROM ", table1, " WHERE id='", ids[2], "';");
-} 
-print(query);
-second_set <- sqlQuery(rch, query);
+	if ((ids[2] == "") | (is.na(ids[2]))) {
+		query <- paste0("SELECT sample,binarize(", platforms[2], ") FROM ", table1, ";");
+	} else {
+		query <- paste0("SELECT sample,binarize(", platforms[2], ") FROM ", table1, " WHERE id='", ids[2], "';");	
+	}
+	print(query);
+	second_set <- sqlQuery(rch, query);
+	second_set[,1] <- as.character(second_set[,1]);
+	
+	print("Before autocomplement:");
+	print(str(first_set));
+	print(str(second_set));
+	#print(table(first_set, second_set));
+	# autocomplement
+	query <- paste0("SELECT DISTINCT sample FROM ", table1, ";");
+	all_samples <- sqlQuery(rch, query);
+	#first_set_missing_samples <- all_samples[which(!all_samples[,1] %in% first_set[,1]),1];
+	#second_set_missing_samples <- all_samples[which(!all_samples[,1] %in% second_set[,1]),1];
+	#for (sample in first_set_missing_samples) {
+	#	first_set <- rbind(first_set, c(sample, FALSE));
+	#}
+	#for (sample in second_set_missing_samples) {
+	#	second_set <- rbind(second_set, c(sample, FALSE));
+	#}
+	
+	#print("After autocomplement:");
+	#print(str(first_set));
+	#print(first_set);
+	#print(str(second_set));
+	#print(second_set);
+	#print(table(first_set, second_set));
 
-first_size <- nrow(first_set);
-second_size <- nrow(second_set);
-intersec_size <- ifelse(first_size > second_size, length(second_set[,1] %in% first_set[,1]), length(first_set[,1] %in% second_set[,1]));
-print(first_size);
-print(first_set[,1]);
-print(second_size);
-print(second_set[,1]);
-print(intersec_size);
-
-first_category <- "";
-second_category <- "";
-if ((ids[1] == "") | (is.na(ids[1]))) {
-	first_category <- paste0(datatypes[1], ": ", readable_platforms[platforms[1],2]);
+	first_category <- "";
+	second_category <- "";
+	if ((ids[1] == "") | (is.na(ids[1]))) {
+		if (platforms[1] != platforms[2]) {
+			first_category <- paste0(readable_platforms[platforms[1],2]);
+		} else {
+			first_category <- "";
+		}
+	} else {
+		if (platforms[1] != platforms[2]) {
+			first_category <- paste0(readable_platforms[platforms[1],2], "(", ids[1], ")");
+		} else {
+			first_category <- ids[1];
+		}
+	}
+	
+	if ((ids[2] == "") | (is.na(ids[2]))) {
+		if (platforms[1] != platforms[2]) {
+			second_category <- paste0(readable_platforms[platforms[2],2]);
+		} else {
+			second_category <- "";
+		}
+	} else {
+		if (platforms[1] != platforms[2]) {
+			second_category <- paste0(readable_platforms[platforms[2],2], "(", ids[2], ")");
+		} else {
+			second_category <- ids[2];
+		}
+	}
+	labels.just <- list();
+	if (nchar(first_category) > nchar(second_category)) {
+		labels.just <- list(c(0,0), c(0.5,0));
+	} else {
+		labels.just <- list(c(0.5,0), c(0,0));
+	}
+	plot_title <- "";
+	if (platforms[1] == platforms[2]) {
+		plot_title <- paste0("VENN of ", toupper(Par["cohort"]), ":", datatypes[1], ":", readable_platforms[platforms[1],2]);
+	} else {	
+		plot_title <- paste0("VENN of ", toupper(Par["cohort"]), ":", datatypes[1]);
+	}
+	plot_subtitle <- paste0("Total population: ", nrow(all_samples));
+	#venn.plot <- draw.pairwise.venn(area1 = first_size, area2 = second_size, cross.area = intersec_size, category = c(first_category, second_category), euler.d = FALSE, scaled = FALSE, cex = druggable.cex.relative);
+	#grid.newpage();
+	#grid.draw(venn.plot);
+	venn.list <- list(paste0(first_set[,1], "-", first_set[,2]), paste0(second_set[,1], "-", second_set[,2]));
+	names(venn.list) <- c(first_category,  second_category);
+	print(venn.list);
+	futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
+	venn.diagram(venn.list, filename = File, height = plotSize, width = plotSize, resolution = 175, imagetype = "png", units = "px", total.population = nrow(all_samples),
+		fill = c('yellow', 'purple'), main = plot_title, sub = plot_subtitle,
+		cex = druggable.cex.relative, main.cex = druggable.cex.main.relative, sub.cex = druggable.cex.sub.relative, cat.cex = druggable.cex.relative, 
+		cat.default.pos = "outer", cat.pos = c(0, 0), cat.just = labels.just, cat.dist = c(0.055, 0.055), 
+		margin = 0.075, lwd = 2, lty = 'blank', euler.d = FALSE, scaled = FALSE);
 } else {
-	first_category <- paste0(datatypes[1], ": ", readable_platforms[platforms[1],2], "(", ids[1], ")");
+	png(file=File, width =  plotSize, height = plotSize, type = "cairo");
+	plot(0,type='n',axes=FALSE,ann=FALSE);
+			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error.relative);
 }
-if ((ids[2] == "") | (is.na(ids[2]))) {
-	second_category <- paste0(datatypes[2], ": ", readable_platforms[platforms[2],2]);
-} else {
-	second_category <- paste0(datatypes[2], ": ", readable_platforms[platforms[2],2], "(", ids[2], ")");
-}
-venn.plot <- draw.pairwise.venn(area1 = first_size, area2 = second_size, cross.area = intersec_size, category = c(first_category, second_category), euler.d = FALSE, scaled = FALSE, cex = druggable.cex.relative);
-grid.newpage();
-grid.draw(venn.plot);

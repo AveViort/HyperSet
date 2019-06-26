@@ -869,12 +869,14 @@ my($projectID, $jobToRemove) = @_;
 my($sth, $rows, $nrow, $projectData, $va, $text, $stat, $i, $key, $content, $url, $Nlimit, %storedFiles, $filename);
 
 chdir($main::usersTMP);
-open ( LS, 'ls  _tmpNEA.*.RData | ') or print "Could not list previously generated project files... $!";
+open ( LS, 'ls  _tmpNEA*.RData | ') or print "Could not list previously generated project files... $!";
+# print ('WE ARE HERE '. $main::usersTMP.' <br>');
 while ($filename = <LS> ) {
 chomp($filename);
+# print($filename);
 $storedFiles{$1} = 1 if $filename =~ m/_tmpNEA\.(.+)\.RData/; #([0-9A-Za-z\-\.]+)
 }
-print STDERR join(" ", keys(%storedFiles));
+# print  join(" --- ", keys(%storedFiles));
 
 if ($jobToRemove) {
 $stat = "DELETE FROM projectarchives WHERE projectid=\'".$projectID."\' and jid=\'".$jobToRemove."\';";
