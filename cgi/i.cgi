@@ -12,10 +12,10 @@ use HS_SQL;
 use HS_html_gen;
 use HS_bring_subnet;
 use HS_cytoscapeJS_gen;
-use Proc::Background;
+#use Proc::Background;
 
-use lib "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/NETwork_analysis";
-use lib "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp";
+use lib "/var/www/html/research/HyperSet/cgi/NETwork_analysis";
+use lib "/var/www/html/research/users_tmp";
 use NET;
 use venn_click_points;
 use constant SPACE => ' ';
