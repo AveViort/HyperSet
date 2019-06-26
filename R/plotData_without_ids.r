@@ -1,4 +1,4 @@
-usedDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;

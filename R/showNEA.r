@@ -1,9 +1,9 @@
 Debug = 0;
-usedDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+usedDir = '/var/www/html/research/users_tmp/';
 usedSink = 'showNEA.log';
 sink(file(paste(usedDir,  usedSink, ".output", ".Rout", sep=""), open = "wt"), type = "output")
 sink(file(paste(usedDir,  usedSink, ".message", ".Rout", sep=""), open = "wt"), type = "message")
-source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/HS.R.config.r");
+source("../R/HS.R.config.r");
 # .libPaths("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib");
 # install.packages("DT", repos="http://cran.us.r-project.org")
 library(DT);

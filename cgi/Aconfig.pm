@@ -25,7 +25,7 @@ $Rplots->{dir} = "pics/plots/";
 $Rplots->{imgSize} = 580;
 ########################################################################################
 
-our $tableDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/';
+our $tableDir = '/var/www/html/research/HyperSet/db/input_files/';
 our $cols;
 @{$cols} = ("dataset", "datatype", "platform", "screen", "drug", "feature", "correlation", "pvalue", "fdr", "validn", "plot");
 our %colTitles = (

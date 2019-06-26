@@ -5,7 +5,7 @@
 # install.packages("crosstalk", lib="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib/", repos="http://cran.us.r-project.org")
 
 
-usedDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;
@@ -16,13 +16,13 @@ options(warn = 1); # options(warn = 0);
 
 Debug = 0;
 
-source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/HS.R.config.r");
+source("../R/HS.R.config.r");
 library("pkgconfig")
 library("igraph")
 library("crosstalk")
 library("threejs")
 setwd(r.plots)
-tmpdir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+tmpdir = '/var/www/html/research/users_tmp/';
 filename = 't1.txt'
 
 readin <- function (file, format="TAB") {

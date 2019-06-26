@@ -8,7 +8,7 @@ print "Content-type: text/html\n\nTesting timeout with background process<br>";
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
 print "Start time: ".$hour.":".$min.":".$sec." <br>";
 print "------<br>";
-my $cmd= "perl /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/wait.cgi";
+my $cmd= "perl /root/var/www/html/research/HyperSet/cgi/wait.cgi";
 print $cmd."<br>";
 my $proc=Proc::Background->new($cmd);
 my $alive=$proc->alive;

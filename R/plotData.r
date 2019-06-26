@@ -1,4 +1,4 @@
-usedDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;
@@ -9,11 +9,13 @@ message("TEST0");
 
 
 #sink(file = NULL);
-source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/HS.R.config.r");
+source("../R/HS.R.config.r");
+source("../R/plot_common_functions.r");
 #print(library());
 library(RODBC);
 Debug = 1;
-rch <- odbcConnect("dg_pg", uid = "hyperset", pwd = "SuperSet"); 
+credentials <- getDbCredentials();
+rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 # print (rch);
 # png("/var/www/html/research/andrej_alexeyenko/users_tmp/test/test.png");
 # plot(1,1,main=p_val, xlab=f_val, ylab=num_comp);

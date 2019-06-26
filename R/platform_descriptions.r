@@ -3,7 +3,7 @@ library(RODBC);
 
 update_platform_descriptions_from_table <- function(table_name) {
   table_data <- read.csv2(table_name, header = FALSE);
-  temp <- read.delim(file = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/dev/HyperSet/cgi/HS_SQL.conf", header = FALSE, sep = " ", row.names = 1)
+  temp <- read.delim(file = "/var/www/html/research/aHyperSet/dev/HyperSet/cgi/HS_SQL.conf", header = FALSE, sep = " ", row.names = 1)
   username = as.character(temp["druggable", 2]);
   password = as.character(temp["druggable", 3]);
   rm(temp);
@@ -16,7 +16,7 @@ update_platform_descriptions_from_table <- function(table_name) {
 
 # table_name = name of desired Excel file
 get_platform_descriptions <- function(table_name) {
-  temp <- read.delim(file = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/dev/HyperSet/cgi/HS_SQL.conf", header = FALSE, sep = " ", row.names = 1)
+  temp <- read.delim(file = "/var/www/html/research/HyperSet/dev/HyperSet/cgi/HS_SQL.conf", header = FALSE, sep = " ", row.names = 1)
   username = as.character(temp["druggable", 2]);
   password = as.character(temp["druggable", 3]);
   rm(temp);

@@ -6,7 +6,7 @@ use strict;
 use CGI qw(-no_xhtml);
 use DBI;
 use Scalar::Util 'looks_like_number';
-use lib "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/";
+use lib "/var/www/html/research/HyperSet/cgi/";
 use HS_SQL;
 
 # cd /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/
@@ -60,7 +60,7 @@ $input = $ARGV[1];
 die "Input file not identified (3rd parameter).\nUse 1st parameter \'all\' in order to run the whole batch...\n" if ($mode ne 'all');
 }
 
-our $inputDir = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_files/";
+our $inputDir = "/var/www/html/research/HyperSet/db/input_files/";
 chdir $inputDir;
 
 my $output = $main; #($mode eq 'add') ? $input : $main;

@@ -105,7 +105,7 @@ die "Input file not identified (3rd parameter).\nUse 1st parameter \'all\' in or
 
 my ($header, $output);
 our ($extraNets);
-our $inputDir = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/db/input_networks/";
+our $inputDir = "/var/www/html/research/HyperSet/db/input_networks/";
 chdir $inputDir;
 our $mainNet = 'net_all_'.$org;
 if ($mode eq 'all') {

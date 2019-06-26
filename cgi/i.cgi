@@ -12,7 +12,7 @@ use HS_SQL;
 use HS_html_gen;
 use HS_bring_subnet;
 use HS_cytoscapeJS_gen;
-#use Proc::Background;
+use Proc::Background;
 
 use lib "/var/www/html/research/HyperSet/cgi/NETwork_analysis";
 use lib "/var/www/html/research/users_tmp";
@@ -1063,7 +1063,7 @@ if (-e $new_venPath && -e $gene_listPath) {
 #print $usersTMP."\n";
 #print q{"$projectID"\n};
 #BEGIN { push @INC, $usersTMP };
-	my $debug_filename = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/myveryfirstproject/debug_i.cgi.txt";
+	my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/debug_i.cgi.txt";
 	open(my $fh, '>', $debug_filename);
 	#print $fh $projectID.'/'.$gTable;
 	require $projectID.'/'.$gTable;

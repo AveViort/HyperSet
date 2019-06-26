@@ -1,17 +1,19 @@
-usedDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;
 sink(file(paste(usedDir, "runNEAonEvinet.", usedSink, ".output.Rout", sep=""), open = "at"), append = F, type = "output")
 sink(file(paste(usedDir, "runNEAonEvinet.", usedSink, ".message.Rout", sep=""), open = "at"), append = F, type = "message")
 options(warn = -1); # options(warn = 0);
-source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/HS.R.config.r");
+source("../R/HS.R.config.r");
+source("../R/plot_common_functions.r");
 # .libPaths("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib");
 # library(RODBC);
-source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/NEArender.r");
+source("../R/NEArender.r");
 
 Debug = 1;
-rch <- odbcConnect("hs_pg", uid = "hyperset", pwd = "SuperSet"); 
+credentials <- getDbCredentials();
+rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 
 #NET##NET##NET##NET##NET##NET##NET##NET##NET##NET#
 import.net.evinet <- function(tbl, select, Lowercase = 1, col.1 = 'prot1', col.2 = 'prot2', echo = 1) { # select="data_kinase_substrate"

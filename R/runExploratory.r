@@ -46,7 +46,7 @@
 # install.packages("registry", lib="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib/", repos="http://cran.us.r-project.org")
 # install.packages("gclus", lib="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib/", repos="http://cran.us.r-project.org")
 
-usedDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;
@@ -57,7 +57,7 @@ options(warn = 1); # options(warn = 0);
 
 Debug = 1;
 
-source("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/HS.R.config.r");
+source("../R/HS.R.config.r");
 setwd(r.plots)
 
 readin <- function (file, format="TAB") {
@@ -113,7 +113,7 @@ if (ss != "") {
 Param[[s1[[1]][1]]] <- c(Param[[ s1[[1]][1] ]], ss);
 }}}}
 if (Debug>0) {print(Param);}
-tmpdir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+tmpdir = '/var/www/html/research/users_tmp/';
 filename = Param$table;
 
 tbl=readin(file=paste0(tmpdir, filename), format="TAB");

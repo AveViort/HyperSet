@@ -19,12 +19,12 @@ BEGIN {
 
 my $wd = getcwd; 
 our $BASE = index($wd, 'dev') != -1 ? 'https://dev.evinet.org/' : 'https://www.evinet.org/';
-our $usersDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_upload/';
-our $usersTMP = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+our $usersDir = '/var/www/html/research/users_upload/';
+our $usersTMP = '/var/www/html/research/users_tmp/';
 # our $usersTMP = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/offline_results/';
-our $usersPNG = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/display_tmp/';
-our $netDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/NW_web/';
-our $fgsDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/FG_web/';
+our $usersPNG = '/var/www/html/research/display_tmp/';
+our $netDir = '/var/www/html/research/HyperSet/NW_web/';
+our $fgsDir = '/var/www/html/research/HyperSet/FG_web/';
 our $nwDir = 'https://research.scilifelab.se/andrej_alexeyenko/HyperSet/NW_web/';
 our $fgDir = 'https://research.scilifelab.se/andrej_alexeyenko/HyperSet/FG_web/'; 
 our $tmpVennPNG = 'https://research.scilifelab.se/andrej_alexeyenko/display_tmp/';
@@ -168,10 +168,10 @@ our $vennColorCode;
 
 #THESE TWO ALTERNATIVES CAN SWITCH BETWEEN R AND PERL IMPLEMENTATIONS:
 # our $nea_software = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/NETwork_analysis/nea.web.pl';
-our $pca_software = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/runExploratory.r'; 
-our $nea_software = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/runNEAonEvinet.r'; 
-our $nea_reader = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/showNEA.r'; 
-our $venn_software = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/vennGen.AA.r';
+our $pca_software = '/var/www/html/research/HyperSet/R/runExploratory.r'; 
+our $nea_software = '/var/www/html/research/HyperSet/R/runNEAonEvinet.r'; 
+our $nea_reader = '/var/www/html/research/HyperSet/R/showNEA.r'; 
+our $venn_software = '/var/www/html/research/HyperSet/R/vennGen.AA.r';
 our $matrixTab; 
 @{$matrixTab -> {displayList}} = ('z', 'chi', 'p', 'q', 
 # 'cumulativeDegrees', 
@@ -199,7 +199,7 @@ our $matrixTab;
 # globally via options(DT.options = list(...)), and global options will be merged into this options argument if set
 
 our $PubMedURL = 'http://www.ncbi.nlm.nih.gov/pubmed/';
-our $indexFile = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/dev/HyperSet/index.html'; #DEV# 
+our $indexFile = '/var/www/html/research/HyperSet/dev/HyperSet/index.html'; #DEV# 
 our $parameters4vennGen = 'parameters4vennGen';
 our $matrixHTML = '_tmpNEA.matrix';
 our $safe_filename_characters = "a-zA-Z0-9_.-";
