@@ -13,7 +13,7 @@ source("../R/NEArender.r");
 
 Debug = 1;
 credentials <- getDbCredentials();
-rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+rch <- odbcConnect("hs_pg", uid = credentials[1], pwd = credentials[2]); 
 
 #NET##NET##NET##NET##NET##NET##NET##NET##NET##NET#
 import.net.evinet <- function(tbl, select, Lowercase = 1, col.1 = 'prot1', col.2 = 'prot2', echo = 1) { # select="data_kinase_substrate"
@@ -82,60 +82,66 @@ print(collection);
 }
 gs.list <- as.list(NULL);
 if (islist) {
-if (isSQL) {
-stop("Parameters islist and isSQL cannot be both set to TRUE...");
-}
-# collection = c("MTHFD2",  "MTHFD1",  "MTFMT",   "MTR",     "MTHFD1L", "MTHFS",   "ATIC",
-  # "ALDH1L1", "AMT",     "GART",    "FTCD",    "MTHFD2L", "TYMS",    "SHMT1",
- # "MTHFR",   "SHMT2" ,  "DHFR" ,   "DHFRP1")
- if (gs.type != 'f') {
-ids = strsplit(collection, split=RscriptfieldRdelimiter, fixed=T)[[1]];
+	if (isSQL) {
+		stop("Parameters islist and isSQL cannot be both set to TRUE...");
+	}
+	# collection = c("MTHFD2",  "MTHFD1",  "MTFMT",   "MTR",     "MTHFD1L", "MTHFS",   "ATIC",
+	# "ALDH1L1", "AMT",     "GART",    "FTCD",    "MTHFD2L", "TYMS",    "SHMT1",
+	# "MTHFR",   "SHMT2" ,  "DHFR" ,   "DHFRP1")
+	if (gs.type != 'f') {
+		ids = strsplit(collection, split=RscriptfieldRdelimiter, fixed=T)[[1]];
+	} else {
+		ids = collection;
+	}
+	gs <-  as.data.frame(cbind(as.vector(unique(ids)), paste("users_list_as_", gs.type, "GS", sep = "")));
+	colnames(gs) <- c(col.name.gene, col.name.set);
 } else {
-ids = collection;
+	# if (grepl(RscriptfieldRdelimiter, collection, fixed = TRUE)) { 
+	# stop("A GS string was submitted instead of a file name or FGS collection. Check parameters 'islist' and 'collection'...");
+	# }
+	if (isSQL) {
+		if (grepl('/', collection, fixed = TRUE)) { 
+			stop("A file name was submitted instead of a set ID. Check parameters islist and collection...");
+		}
+		stat = paste("SELECT ", col.name.gene, ", ", col.name.set, " FROM ", Source, " WHERE org_id='", org, "' AND (source='", paste(collection, collapse="' OR Source='"), "')  AND prot IS NOT NULL AND set IS NOT NULL", sep="");
+		if (Debug>0) {
+			print("Retreaving FGS collection.");
+			print(stat);
+			print(system.time( 
+				gs <- sqlQuery(rch, stat)
+		));
+		} else {
+			gs <- sqlQuery(rch, stat);
+		}
+	} else {
+		gs <- read.table(collection, row.names = NULL, header = FALSE, sep = "\t", quote = "", dec = ".", na.strings = "", skip = 0, colClasses="character");
+		if (is.null(gs)) {stop(paste("Not a proper geneset file: ", collection, "...", sep=" "));}
+		if (nrow(gs) < 1) {stop(paste("Not a proper geneset file: ", collection, "...", sep=" "));}
+		colnames(gs)[c(col.number.gene, col.number.set)] <- c(col.name.gene, col.name.set)
+		if (length(unique(gs[,col.name.gene])) < 1) {stop(paste("Multiple gene IDs are not found: check parameter 'col.name.gene' ", collection, "...", sep=" "));}
+	}
 }
-gs <-  as.data.frame(cbind(as.vector(unique(ids)), paste("users_list_as_", gs.type, "GS", sep = "")));
-colnames(gs) <- c(col.name.gene, col.name.set);
-
-} else {
-# if (grepl(RscriptfieldRdelimiter, collection, fixed = TRUE)) { 
-# stop("A GS string was submitted instead of a file name or FGS collection. Check parameters 'islist' and 'collection'...");
-# }
-if (isSQL) {
-
-if (grepl('/', collection, fixed = TRUE)) { 
-stop("A file name was submitted instead of a set ID. Check parameters islist and collection...");
+print(paste0("Lowercase=" ,Lowercase));
+if (Lowercase) {
+	print(str(gs));
+	print(paste0("gs names: ", names(gs)));
+	print(paste0("col.name.gene=", col.name.gene));
+	print(paste0("col.name.set=", col.name.set));
+	for (i in c(col.name.gene, col.name.set)) {
+		gs[[i]] <- tolower(gs[[i]]);
+	}
 }
-stat = paste("SELECT ", col.name.gene, ", ", col.name.set, " FROM ", Source, " WHERE org_id='", org, "' AND (source='", paste(collection, collapse="' OR Source='"), "')  AND prot IS NOT NULL AND set IS NOT NULL", sep="");
-if (Debug>0) {
-print("Retreaving FGS collection.");
-print(stat);
-print(system.time( 
-gs <- sqlQuery(rch, stat)
-));} else {
-gs <- sqlQuery(rch, stat);
-}
-
-} else {
-
-gs <- read.table(collection, row.names = NULL, header = FALSE, sep = "\t", quote = "", dec = ".", na.strings = "", skip = 0, colClasses="character");
-if (is.null(gs)) {stop(paste("Not a proper geneset file: ", collection, "...", sep=" "));}
-if (nrow(gs) < 1) {stop(paste("Not a proper geneset file: ", collection, "...", sep=" "));}
-colnames(gs)[c(col.number.gene, col.number.set)] <- c(col.name.gene, col.name.set)
-if (length(unique(gs[,col.name.gene])) < 1) {stop(paste("Multiple gene IDs are not found: check parameter 'col.name.gene' ", collection, "...", sep=" "));}
-}}
-if (Lowercase) { 
-for (i in c(col.name.gene, col.name.set)) {
-gs[[i]] <- tolower(gs[[i]]);
-}}
 if (isindividual) {
-gss <- unique(gs[[col.name.gene]]);
-for (gg  in gss) {
-gs.list[[gg]] <- c(gg);
-}} else {
-gss <- unique(gs[[col.name.set]]);
-for (gg  in gss) {
-gs.list[[gg]] <- as.vector(unique(gs[which(gs[[col.name.set]] == gg), col.name.gene]));
-}}
+	gss <- unique(gs[[col.name.gene]]);
+	for (gg  in gss) {
+	gs.list[[gg]] <- c(gg);
+	}
+} else {
+	gss <- unique(gs[[col.name.set]]);
+	for (gg  in gss) {
+		gs.list[[gg]] <- as.vector(unique(gs[which(gs[[col.name.set]] == gg), col.name.gene]));
+	}
+}
 gs.list = as.list(gs.list);
 return(gs.list);
 }
