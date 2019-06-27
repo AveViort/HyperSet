@@ -524,21 +524,29 @@ my($stat);
 #my $debug_filename = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/myveryfirstproject/debug.txt";
 #open(my $fh, '>', $debug_filename);
 #print $fh "Debug report from sub confirmJob\nJID: ".$jid."\n";
+my $debug_filename = "/var/www/html/research/users_tmp/debug.txt";
+open(my $fh, '>', $debug_filename);
+print $fh "Debug report from sub confirmJob\nJID: ".$jid."\n";
 my $outFile = tmpFileName('NEA', $jid);
+print $fh "outFile: ".$outFile."\n";
 open CNT, "wc $outFile | ";
 my $li = <CNT>;
+print $fh "li: ".$li."\n";
 close CNT;
-my $Nlines = $1 if $li =~ m/\s*([0-9]+)/;
+my $Nlines = 0;
+print $fh "Nlines: ".$Nlines."\n";
+$Nlines = $1 if $li =~ m/\s*([0-9]+)/;
  $dbh->do("COMMIT;");
  $dbh->do("BEGIN;");
 
 #print $fh "STAT: ".$stat."\n";
-my $stat = "UPDATE projectarchives SET status='done', finished=LOCALTIME, nlines=$Nlines  where jid=\'".$jid."\';";
+my $stat = "UPDATE projectarchives SET status='done', finished=LOCALTIME, nlines=$Nlines where jid=\'".$jid."\';";
 print $stat.'<br>'  if $debug;
+print $fh "stat: ".$stat."\n";
 $dbh->do($stat);
 $dbh->do("COMMIT;");
-#print $fh "Done.";
-#close $fh;
+print $fh "Done.";
+close $fh;
 return undef;
 }
 
