@@ -1,4 +1,4 @@
-.libPaths("/var/www/html/research/HyperSet/dev/HyperSet/R/lib");
+#.libPaths("/var/www/html/research/HyperSet/dev/HyperSet/R/lib");
 library(RODBC);
 
 ########################################################################################

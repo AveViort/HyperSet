@@ -62,5 +62,6 @@ EviNet FAQ: https://www.evinet.org/help/faq-evi/evi-faq.html';
 	}
 else {
 	$sth->finish;
+	$dbh->disconnect;
 	print 'Fail';
 }
