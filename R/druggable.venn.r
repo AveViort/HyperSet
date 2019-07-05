@@ -1,4 +1,4 @@
-usedDir = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/';
+usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;
@@ -12,6 +12,7 @@ source("../R/plot_common_functions.r");
 #print(library());
 library(RODBC);
 library(VennDiagram);
+library(htmltools);
 
 Debug = 1;
 
@@ -34,7 +35,6 @@ print("druggable.venn.r");
 File <- paste0(r.plots, "/", Par["out"])
 print(File)
 print(names(Par));
-#png(file=File, width =  plotSize, height = plotSize, type = "cairo");
 ids <- unlist(strsplit(Par["ids"], split = ","));
 print(ids);
 datatypes <- unlist(strsplit(Par["datatypes"], split = ","));
@@ -74,25 +74,8 @@ if (datatypes[1] == datatypes[2]) {
 	print("Before autocomplement:");
 	print(str(first_set));
 	print(str(second_set));
-	#print(table(first_set, second_set));
-	# autocomplement
 	query <- paste0("SELECT DISTINCT sample FROM ", table1, ";");
 	all_samples <- sqlQuery(rch, query);
-	#first_set_missing_samples <- all_samples[which(!all_samples[,1] %in% first_set[,1]),1];
-	#second_set_missing_samples <- all_samples[which(!all_samples[,1] %in% second_set[,1]),1];
-	#for (sample in first_set_missing_samples) {
-	#	first_set <- rbind(first_set, c(sample, FALSE));
-	#}
-	#for (sample in second_set_missing_samples) {
-	#	second_set <- rbind(second_set, c(sample, FALSE));
-	#}
-	
-	#print("After autocomplement:");
-	#print(str(first_set));
-	#print(first_set);
-	#print(str(second_set));
-	#print(second_set);
-	#print(table(first_set, second_set));
 
 	first_category <- "";
 	second_category <- "";
@@ -136,20 +119,25 @@ if (datatypes[1] == datatypes[2]) {
 		plot_title <- paste0("VENN of ", toupper(Par["cohort"]), ":", datatypes[1]);
 	}
 	plot_subtitle <- paste0("Total population: ", nrow(all_samples));
-	#venn.plot <- draw.pairwise.venn(area1 = first_size, area2 = second_size, cross.area = intersec_size, category = c(first_category, second_category), euler.d = FALSE, scaled = FALSE, cex = druggable.cex.relative);
-	#grid.newpage();
-	#grid.draw(venn.plot);
 	venn.list <- list(paste0(first_set[,1], "-", first_set[,2]), paste0(second_set[,1], "-", second_set[,2]));
 	names(venn.list) <- c(first_category,  second_category);
 	print(venn.list);
-	futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
-	venn.diagram(venn.list, filename = File, height = plotSize, width = plotSize, resolution = 175, imagetype = "png", units = "px", total.population = nrow(all_samples),
+	futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger");
+	setwd(r.plots);
+	venn.diagram(venn.list, filename = paste0("./", fname, ".png"), height = plotSize, width = plotSize, resolution = 175, imagetype = "png", units = "px", total.population = nrow(all_samples),
 		fill = c('yellow', 'purple'), main = plot_title, sub = plot_subtitle,
 		cex = druggable.cex.relative, main.cex = druggable.cex.main.relative, sub.cex = druggable.cex.sub.relative, cat.cex = druggable.cex.relative, 
 		cat.default.pos = "outer", cat.pos = c(0, 0), cat.just = labels.just, cat.dist = c(0.055, 0.055), 
 		margin = 0.075, lwd = 2, lty = 'blank', euler.d = FALSE, scaled = FALSE);
+	doc <- tags$html(
+		tags$head(
+			tags$title('My first page')
+		),
+		tags$body(
+			img(src=paste0(fname, ".png"), width="100%", height="100%")
+		)
+	);
+	save_html(doc, File, background = "white", libdir = NULL);
 } else {
-	png(file=File, width =  plotSize, height = plotSize, type = "cairo");
-	plot(0,type='n',axes=FALSE,ann=FALSE);
-			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error.relative);
+	system(paste0("ln -s /var/www/html/research/users_tmp/error.html ", File));
 }

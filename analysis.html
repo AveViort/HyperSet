@@ -342,6 +342,7 @@ function plot() {
 	var plot_filename = find_plot_in_history(plot_description);
 	var plot_id;
 	var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
+	// new plot
 	if (plot_filename == "no") {
 		$("#progressbar").css({"visibility": "visible"});
 		plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
@@ -349,7 +350,8 @@ function plot() {
 		// save plot in session history
 		sessionStorage.setItem(plot_filename, plot_description);
 		//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
-		var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="480" height="480"></div>';
+		//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="480" height="480"></div>';
+		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="1280" height="800"></div>';
 		$(graph_window).dialog({
 			title: plot_title,
 			buttons: [
@@ -363,7 +365,7 @@ function plot() {
 					icon: "ui-icon-arrowthickstop-1-s",
 					click: function() {
 						// can't use graph_window, since we need to specify height and width
-						dock_plot(this, '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
+						dock_plot(this, '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
 						$( this ).dialog( "close" );
 					},
 					showText: false
@@ -380,13 +382,14 @@ function plot() {
 					//	$(this).width($(this).height())
 					//}
 					//$(this).dialog( "refresh" );
-					($(this).children('img'))[0].setAttribute("height", $(this).height());
-					($(this).children('img'))[0].setAttribute("width", $(this).width());
+					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+					($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 				},
 			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 		});
 		$("#progressbar").css({"visibility": "hidden"});
 	}
+	// existing plot
 	else {
 		console.log("No need to do it again!");
 		plot_id = plot_filename.substring(0, plot_filename.length-4);
@@ -396,7 +399,7 @@ function plot() {
 		}
 		else {
 			console.log("Plot was closed");
-			var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="480" height="480"></div>';
+			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="1280" height="800"></div>';
 			//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
 			$(graph_window).dialog({
 				title: plot_title, 
@@ -410,7 +413,7 @@ function plot() {
 						text: "Dock",
 						icon: "ui-icon-arrowthickstop-1-s",
 						click: function() {
-							dock_plot(this, '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
+							dock_plot(this, '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
 							$( this ).dialog( "close" );
 						}
 					}
@@ -420,8 +423,8 @@ function plot() {
 				modal: false,
 				//resizable: false,
 				resize: function( event, ui ) {
-					($(this).children('img'))[0].setAttribute("height", $(this).height());
-					($(this).children('img'))[0].setAttribute("width", $(this).width());
+					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+					($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 				},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			});
@@ -872,8 +875,15 @@ function plot_minimize(graph_window) {
 }
 
 function plot_maximize(graph_window) {
-	$( graph_window ).dialog({"height": 560});
-	$( graph_window ).dialog({"width": 520});
+	$(graph_window).dialog({
+		modal: false,
+		resize: function( event, ui ) {
+					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+					($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+				},
+		beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}});
+	$(graph_window).dialog({"height": 800});
+	$(graph_window).dialog({"width": 1280});
 	$(graph_window).dialog( "option", "buttons",
 		[
 			{
@@ -933,8 +943,8 @@ function undock_plot(id) {
 				width: 'auto',
 				modal: false,
 				create: function() {
-					($(this).children('img'))[0].setAttribute("height", 480);
-					($(this).children('img'))[0].setAttribute("width", 480);
+					($(this).children('iframe'))[0].setAttribute("height", 800);
+					($(this).children('iframe'))[0].setAttribute("width", 1280);
 				},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			});
@@ -956,7 +966,7 @@ function id_keyup(k) {
 	var flag = true;
 	for (i = 1; i<=n; i++) {
 		if ($("#id" + i + "_input").is(":enabled")) {
-			var valueSoFar = ($("#id" + i + "_input").val()).toLowerCase();
+			var valueSoFar = ($("#id" + i + "_input").val()).toUpperCase();
 			$("#id" + i + "_input").val(valueSoFar);
 			var available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
 			flag = flag*available_ids.includes(valueSoFar);

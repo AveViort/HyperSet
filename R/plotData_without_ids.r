@@ -11,6 +11,8 @@ source("../R/HS.R.config.r");
 source("../R/plot_common_functions.r");
 #print(library());
 library(RODBC);
+library(plotly);
+library(htmlwidgets);
 Debug = 1;
 
 # from usefull_functions.r
@@ -96,6 +98,8 @@ Par <- NULL;
 credentials <- getDbCredentials();
 rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 
+setwd(r.plots);
+
 print("plotData_without_ids.r");
 File <- paste0(r.plots, "/", Par["out"])
 print(File)
@@ -114,6 +118,7 @@ query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shor
 readable_platforms <- sqlQuery(rch, query);
 rownames(readable_platforms) <- readable_platforms[,1];
 plot_title <- '';
+
 switch(Par["type"],
 	"piechart" = {
 		query <- paste0("SELECT plot_data_without_id('", fname, "','", toupper(Par["cohort"]), "','", 
@@ -121,32 +126,30 @@ switch(Par["type"],
 		print(query);
 		status <- sqlQuery(rch, query);
 		if (status != 'ok') {
-			plot(0,type='n',axes=FALSE,ann=FALSE);
-			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error.relative);
+			system(paste0("ln -s /var/www/html/research/users_tmp/error.html ", File));
 		} else {
 			res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
 			factors <- unique(res[,2])
 			slices <- c()
 			for (ufactor in factors) {
-				slices <- c(slices, length(which(res[,2] == ufactor))/nrow(res)*100);
+				slices <- c(slices, length(which(res[,2] == ufactor)));
 			}
 			if (Par["source"] == "tcga") {
 				plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ' samples: ', tcga_codes[1]);
 			} else {
 				plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2]);
 			}
-			druggable.cex.main.adjusted <- adjust_cex_main(plot_title, druggable.cex.main.relative);
-			pie(slices, labels = factors, main = plot_title, cex = druggable.cex.relative,
-				cex.main = druggable.cex.main.adjusted, cex.axis = druggable.cex.axis.relative,
-				cex.lab = druggable.cex.lab.relative);
+			p <- plot_ly(labels = factors,
+				values = slices,
+				type = 'pie') %>% 
+			layout(title = plot_title);
+			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		}
 		sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
 	},
 	"km" = {
 		print("Drawing an empty plot...");
-		#print(paste0("SELECT plot_data_without_id('", fname, "','", toupper(Par["cohort"]), "','", toupper(datatypes[1]), "','", platforms[1], "','", toupper(datatypes[2]), "','", toupper(platforms[2]), "');"));
-		plot(0,type='n',axes=FALSE,ann=FALSE);
-		text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error.relative);
+		system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
 		print("Done");
 	},
 	"bar" = {
@@ -155,8 +158,7 @@ switch(Par["type"],
 		print(query);
 		status <- sqlQuery(rch, query);
 		if (status != 'ok') {
-			plot(0,type='n',axes=FALSE,ann=FALSE);
-			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error.relative);
+			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
 		} else {
 			res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
 			# exclude column with sample names
@@ -168,9 +170,12 @@ switch(Par["type"],
 			} else {
 				plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2]);
 			}
-			druggable.cex.main.adjusted <- adjust_cex_main(plot_title, druggable.cex.main.relative);
-			barplot(table(res), main = plot_title, cex = druggable.cex.relative, cex.main = druggable.cex.main.adjusted,
-				cex.axis = druggable.cex.axis.relative, cex.lab = druggable.cex.lab.relative);
+			temp <- table(res);
+			p <- plot_ly(x = names(temp),
+				y = temp,
+				type = 'bar') %>% 
+			layout(title = plot_title);
+			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		}
 		sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
 	},
@@ -180,8 +185,7 @@ switch(Par["type"],
 		print(query);
 		status <- sqlQuery(rch, query);
 		if (status != 'ok') {
-			plot(0,type='n',axes=FALSE,ann=FALSE);
-			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error);
+			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
 		} else {
 			res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
 			x_data <- transformVars(res[[platforms[1]]], scales[1]);
@@ -191,9 +195,17 @@ switch(Par["type"],
 			} else {
 				plot_title <- paste0(readable_platforms[platforms[1],2], " (", scales[1], ")");
 			}
-			druggable.cex.main.adjusted <- adjust_cex_main(plot_title, druggable.cex.main.relative);
-			hist(x_data, main = plot_title, xlab = paste0(readable_platforms[platforms[1],2]), cex = druggable.cex.relative,
-				cex.main = druggable.cex.main.adjusted, cex.axis = druggable.cex.axis.relative, cex.lab = druggable.cex.lab.relative);
+			x_axis <- list(
+				title = paste0(readable_platforms[platforms[1],2], ifelse(scales[1] != "linear", paste0(" (", scales[1], ")"), "")),
+				titlefont = font1,
+				showticklabels = TRUE,
+				tickangle = 0,
+				tickfont = font2);
+			p <- plot_ly(x = x_data,
+				type = 'histogram') %>% 
+			layout(title = plot_title,
+				xaxis = x_axis);
+			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		}
 		sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));},
 	"scatter" = {
@@ -203,14 +215,13 @@ switch(Par["type"],
 		print(query);
 		status <- sqlQuery(rch, query);
 		if (status != 'ok') {
-			plot(0,type='n',axes=FALSE,ann=FALSE);
-			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error.relative);
+			#plot(0,type='n',axes=FALSE,ann=FALSE);
+			#text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error.relative);
+			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
 		} else {
 			res <- sqlQuery(rch, paste0("SELECT * FROM temp_view", fname, ";"));
 			x_data <- transformVars(res[,2], scales[1]);
 			y_data <- transformVars(res[,3], scales[2]);
-		
-			par(mar=c(5.1,5.1,4.1,2.1));
 			if (Par["source"] == "tcga") {
 				plot_title <- paste0("Correlation between ", 
 					datatypes[1] , " (", readable_platforms[platforms[1],2], " samples: ", tcga_codes[1], ") and ", 
@@ -220,25 +231,37 @@ switch(Par["type"],
 					datatypes[1] , " (", readable_platforms[platforms[1],2], ") and ", 
 					datatypes[2], " (", readable_platforms[platforms[2],2], ")");
 			}
-			druggable.cex.main.adjusted <- adjust_cex_main(plot_title, druggable.cex.main.relative);
-			plot(x = x_data, y = y_data, main = plot_title, 
-				xlab = paste0(datatypes[1], " (", readable_platforms[platforms[1],2], ",", scales[1], ")"), 
-				ylab = paste0(datatypes[2], " (", readable_platforms[platforms[2],2], ",", scales[2], ")"), 
-				cex = druggable.cex.relative, cex.main = druggable.cex.main.adjusted, 
-				cex.axis = druggable.cex.axis.relative, cex.lab = druggable.cex.lab.relative);
 			cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
 			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
 			ck = cor(x_data, y_data, use="pairwise.complete.obs", method="kendall");
 			t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
 			f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
-			legend("topleft", legend=paste(
-				ifelse(is.na(fl), "", paste0("Fisher's exact test\nenrichment statistic\n(median-centered)=", round(f1$estimate, digits=precision.cor.legend))), 
-				ifelse(is.na(fl), "", paste0("P(Fisher's \nexact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
-				paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
-				paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
-				paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), 
-				sep="\n"), bty="n", cex=druggable.cex.legend * 1.25
-			);  	
+			plot_legend = paste(
+					ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
+					ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
+					paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
+					paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
+					paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), sep="\n");
+			print(plot_legend);
+			x_axis <- list(
+				title = paste0(datatypes[1], " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+				titlefont = font1,
+				showticklabels = TRUE,
+				tickangle = 0,
+				tickfont = font2);
+			y_axis <- list(
+				title = paste0(datatypes[2], " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+				titlefont = font1,
+				showticklabels = TRUE,
+				tickangle = 0,
+				tickfont = font2);
+			p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter',) %>% 
+			layout(title = plot_title,
+				showlegend = TRUE,
+				legend = druggable.plotly.legend.style,
+				xaxis = x_axis,
+				yaxis = y_axis);
+			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		}
 		sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
 	}

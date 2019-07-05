@@ -187,7 +187,7 @@ function get_autocomplete_ids (cohort, platform) {
 		}
 	xmlhttp.send();
 	ids = ids.split("||");
-	return ids.slice(1, ids.length);
+	return (ids.slice(1, ids.length)).map(function(x){ return x.toUpperCase() });
 }
 
 function get_axis_types(cohort, datatype, platform) {

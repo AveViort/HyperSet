@@ -1,5 +1,4 @@
 #.libPaths("/var/www/html/research/HyperSet/dev/HyperSet/R/lib");
-library(RODBC);
 
 ########################################################################################
 # 18:35 b4:/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/pics >>>> ln -s /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/plots/ .
@@ -32,3 +31,29 @@ druggable.cex.sub.relative = druggable.cex.sub * plotSize / 1280;
 druggable.cex.axis.relative = druggable.cex.axis * plotSize / 1280;
 druggable.cex.lab.relative = druggable.cex.lab * plotSize / 1280;
 druggable.cex.legend.relative = druggable.cex.lab * plotSize / 1280;
+
+# options for print
+druggable.precision.cor.legend = 2;
+druggable.precision.pval.legend = 2;
+
+# options for plotly
+font1 <- list(
+  family = "Arial, sans-serif",
+  size = 14,
+  color = "black"
+);
+font2 <- list(
+  family = "Old Standard TT, serif",
+  size = 12,
+  color = "black"
+);
+druggable.plotly.legend.style <- list(
+	x = 1,
+	y = 0.8,
+	font = list(
+		family = "sans-serif",
+		size = 12,
+		color = "#000"),
+	bgcolor = "#E2E2E2",
+	bordercolor = "#FFFFFF",
+	borderwidth = 2)

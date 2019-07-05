@@ -11,6 +11,8 @@ source("../R/HS.R.config.r");
 source("../R/plot_common_functions.r");
 #print(library());
 library(RODBC);
+library(plotly);
+library(htmlwidgets);
 Debug = 1;
 
 Args <- commandArgs(trailingOnly = T);
@@ -28,6 +30,8 @@ Par <- NULL;
 credentials <- getDbCredentials();
 rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 
+setwd(r.plots);
+
 print("boxplots.r");
 File <- paste0(r.plots, "/", Par["out"])
 print(File)
@@ -42,7 +46,6 @@ ids <- unlist(strsplit(Par["ids"], split = ","));
 print(ids);
 scales <- unlist(strsplit(Par["scales"], split = ","));
 print(scales);
-
 
 # we need rearrange variables: if we have id, it should be the first row
 k = 0;
@@ -108,8 +111,7 @@ if (temp_platforms[2] != "maf") {
 	status <- sqlQuery(rch, query);
 }
 if (status != 'ok') {
-			plot(0,type='n',axes=FALSE,ann=FALSE);
-			text(0, y = NULL, labels = c("No data to plot, \nplease choose \nanother analysis"), cex = druggable.cex.error);
+		system(paste0("ln -s /var/www/html/research/users_tmp/error.html ", File));
 } else {
 	res <- '';
 	if (temp_platforms[2] != "maf") {
@@ -136,17 +138,32 @@ if (status != 'ok') {
 	} else {
 		y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2]);
 	}	
-	# in this order! x~y
 	plot_title <- paste0("Boxplot of ", Par["cohort"]);
-	druggable.cex.main.adjusted <- adjust_cex_main(plot_title, druggable.cex.main.relative);
+	x_axis <- list(
+		title = x_axis_name,
+		titlefont = font1,
+		showticklabels = TRUE,
+		tickangle = 0,
+		tickfont = font2);
+	y_axis <- list(
+		title = y_axis_name,
+		titlefont = font1,
+		showticklabels = TRUE,
+		tickangle = 0,
+		tickfont = font2);
 	if (temp_platforms[2] != "maf") {
-		boxplot(x_data ~ y_data, main = plot_title, xlab = x_axis_name, ylab = y_axis_name,
-			cex = druggable.cex.relative, cex.main = druggable.cex.main.adjusted,
-			cex.axis = druggable.cex.axis.relative, cex.lab = druggable.cex.lab.relative);
+		p <- plot_ly(y = x_data, x = y_data, type = "box") %>% 
+		layout(title = plot_title,
+			xaxis = x_axis,
+			yaxis = y_axis);
+		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
-		boxplot(x_data ~ factor(y_data, levels=c('FALSE', 'TRUE')), main = plot_title, xlab = x_axis_name, ylab = y_axis_name,
-			cex = druggable.cex.relative, cex.main = druggable.cex.main.adjusted,
-			cex.axis = druggable.cex.axis.relative, cex.lab = druggable.cex.lab.relative, names = c("- (WT)", "+ (MUT)"));
+		p <- plot_ly(y = x_data, x = factor(y_data, levels=c('FALSE', 'TRUE')), type = "box") %>%
+		layout(boxmode = "group",
+			title = plot_title,
+			xaxis = x_axis,
+			yaxis = y_axis);
+		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	}
 }
 sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
