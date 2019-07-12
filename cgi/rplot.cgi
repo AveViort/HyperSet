@@ -19,6 +19,7 @@ srand(); my $r = rand();
 my $file = 'tmp'.$1.'.html' if $r =~  m/0\.([0-9]{12})/;
 switch($type) {
 	case "box" {system("Rscript ../R/boxplots.r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes scales=$scales out=$file");}
+	case "KM" {system("Rscript ../R/km.r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes scales=$scales out=$file");}
 	case "venn" {system("Rscript ../R/druggable.venn.r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes out=$file");}
 	else {
 		if (($ids eq '') || ($ids eq ',') || ($ids eq ',,')) {

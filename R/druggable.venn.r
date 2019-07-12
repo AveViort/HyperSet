@@ -60,6 +60,7 @@ if (datatypes[1] == datatypes[2]) {
 	} 
 	print(query);
 	first_set <- sqlQuery(rch, query);
+	# factors are returned by default
 	first_set[,1] <- as.character(first_set[,1]);
 
 	if ((ids[2] == "") | (is.na(ids[2]))) {
@@ -139,5 +140,6 @@ if (datatypes[1] == datatypes[2]) {
 	);
 	save_html(doc, File, background = "white", libdir = NULL);
 } else {
-	system(paste0("ln -s /var/www/html/research/users_tmp/error.html ", File));
+	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
 }
+odbcClose(rch)

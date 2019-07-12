@@ -103,7 +103,6 @@ DECLARE
 table_n text;
 platforms_array text array;
 flag boolean;
-offset integer;
 platform_n text;
 description text;
 BEGIN
@@ -750,7 +749,7 @@ table_n text;
 datatype text;
 platform_n text;
 platforms_array text array;
-offset integer;
+offset_v integer;
 i integer;
 j integer;
 BEGIN
@@ -762,11 +761,11 @@ LOOP
 RAISE NOTICE 'Current table: %', table_n;
 SELECT type FROM guide_table WHERE table_name=table_n INTO datatype;
 IF (SELECT check_ids_availability(datatype) = true) THEN
-offset := 2;
+offset_v := 2;
 ELSE
-offset := 1;
+offset_v := 1;
 END IF;
-FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset || ';'
+FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
 LOOP
 --RAISE NOTICE 'Platform: %', platform_n;
 IF NOT (SELECT platform_n = ANY (platforms_array))
@@ -787,10 +786,31 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION make_platforms_incompatible(platform_n1 text, platform_n2 text) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION make_platforms_compatible(platform_n1 text, platform_n2 text) RETURNS boolean AS $$
+DECLARE
+res boolean;
 BEGIN
+IF EXISTS (SELECT * FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1))) THEN
+res := FALSE;
+ELSE
+INSERT INTO platforms_compatibility VALUES(platform_n1, platform_n2);
+res := TRUE;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION make_platforms_incompatible(platform_n1 text, platform_n2 text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+IF EXISTS (SELECT * FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1))) THEN
 DELETE FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1));
-RETURN true;
+res := TRUE;
+ELSE
+res := FALSE;
+END IF;
+RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -859,7 +879,8 @@ platforms_type_array text array;
 -- need this array to check if we should offer KM plot
 km_array text array;
 plots text array;
-offset integer;
+-- name 'offset' cannot be used anymore!
+offset_v integer;
 i integer;
 j integer;
 k integer;
@@ -875,11 +896,11 @@ LOOP
 RAISE NOTICE 'Current table: %', table_n;
 SELECT type FROM guide_table WHERE table_name=table_n INTO datatype;
 IF (SELECT check_ids_availability(datatype) = true) THEN
-offset := 2;
+offset_v := 2;
 ELSE
-offset := 1;
+offset_v := 1;
 END IF;
-FOR platform_n, platform_type  IN EXECUTE E'SELECT column_name, data_type FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset || ';'
+FOR platform_n, platform_type  IN EXECUTE E'SELECT column_name, data_type FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
 LOOP
 --RAISE NOTICE 'Platform: %', platform_n;
 IF NOT (SELECT platform_n = ANY (platforms_array))
@@ -936,15 +957,62 @@ END LOOP;
 RETURN true;
 END;
 $$ LANGUAGE plpgsql;
+
+-- it is probably better to pass an array, but there are potential problems
+-- see this: https://stackoverflow.com/questions/570393/postgres-integer-arrays-as-parameters
+-- example of args: 'snp6,affymetrix,,scatter'
+-- example of condition: '((platform1='snp6') AND (platform2='affymetrix') AND (plot='scatter')) OR ((platform1='affymetrix') AND (platform2='snp6') AND (plot='scatter'))'
+-- pay attention: no need in escape symbols when passing string from R
+CREATE OR REPLACE FUNCTION add_plot_type(args text, condition text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+args_array text array;
+BEGIN
+args_array := string_to_array(args, ',');
+-- check if record already exists
+EXECUTE 'SELECT EXISTS (SELECT * FROM plot_types WHERE ' || condition || ');' INTO res;
+IF (res = FALSE) THEN 
+--RAISE NOTICE 'args_array[1] = %', args_array[1];
+IF (args_array[2] = '') THEN
+-- 1D plot 
+EXECUTE E'INSERT INTO plot_types(platform1,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[4] || E'\');';
+ELSE
+--RAISE NOTICE 'args_array[2] = %', args_array[2];
+IF (args_array[3] = '') THEN
+-- 2D plot
+EXECUTE E'INSERT INTO plot_types(platform1,platform2,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[2] || E'\',\'' || args_array[4] || E'\');';
+ELSE
+-- 3D plot
+EXECUTE E'INSERT INTO plot_types(platform1,platform2,platform3,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[2] || E'\',\'' || args_array[3] || E'\',\'' || args_array[4] || E'\');';
+--RAISE NOTICE 'args_array[3] = %', args_array[3];
+END IF;
+END IF;
+res := TRUE;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function is intended to be used from R
+-- example of condition: 'E((platform1='snp6') AND (platform2='affymetrix') AND (plot='scatter')) OR ((platform1='affymetrix') AND (platform2='snp6') AND (plot='scatter'))'
+CREATE OR REPLACE FUNCTION remove_plot_type(condition text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+EXECUTE 'SELECT EXISTS (SELECT * FROM plot_types WHERE ' || condition || ';' INTO res;
+EXECUTE 'DELETE FROM plot_types WHERE ' || condition || ';';
+RETURN flag;
+END;
+$$ LANGUAGE plpgsql;
  
 -- this functions adds ALL platforms to platform_descriptions and makes them visible
--- use ONLY for initial initialization!
+-- use ONLY for initialization!
 CREATE OR REPLACE FUNCTION import_platforms() RETURNS boolean AS $$
 DECLARE
 table_n text;
 platform_n text;
 data_type text;
-offset integer;
+offset_v integer;
 platforms_array text array;
 i integer;
 BEGIN
@@ -954,11 +1022,11 @@ FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
 LOOP
 EXECUTE E'SELECT type FROM guide_table WHERE table_name=\'' || table_n || E'\';' INTO data_type;
 IF (SELECT check_ids_availability(data_type) = true) THEN
-offset := 2;
+offset_v := 2;
 ELSE
-offset := 1;
+offset_v := 1;
 END IF;
-FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset || ';'
+FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
 LOOP
 IF NOT (SELECT platform_n = ANY (platforms_array))
 THEN

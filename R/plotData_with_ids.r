@@ -158,12 +158,12 @@ switch(Par["type"],
 			y_data <- transformVars(res[,3], scales[2]);
 			if (Par["source"] == "tcga") {
 				plot_title <- paste0("Correlation between ", 
-					datatypes[1], " of ", ids[1], " (", readable_platforms[platforms[1],2], " samples: ", tcga_codes[1], ") and ", 
-					datatypes[2], " of ", ids[2], " (", readable_platforms[platforms[2],2], " samples: ", tcga_codes[2], ")");
+					readable_platforms[platforms[1],2], " (samples: ", tcga_codes[1], ") and ", 
+					readable_platforms[platforms[2],2], " samples: ", tcga_codes[2], ")");
 			} else {
 				plot_title <- paste0("Correlation between ", 
-					datatypes[1], " of ", ids[1], " (", readable_platforms[platforms[1],2], ") and ", 
-					datatypes[2], " of ", ids[2], " (", readable_platforms[platforms[2],2], ")");
+					readable_platforms[platforms[1],2], " and ", 
+					readable_platforms[platforms[2],2]);
 			}
 			cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
 			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
@@ -189,7 +189,14 @@ switch(Par["type"],
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
-			p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter') %>% 
+			p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', text = ~paste("Patient: ", res[,1])) %>% 
+			onRender("
+				function(el) { 
+					el.on('plotly_hover', function(d) { console.log('Hover: ', d) });
+					el.on('plotly_click', function(d) { window.open('https://www.evinet.org/share.html#8ca697060e94e0388d182977ae514a414192464a550c82fac5733c0db0787773','_blank'); });
+					el.on('plotly_selected', function(d) { console.log('Select: ', d) });
+				}
+			") %>%
 			layout(title = plot_title,
 				legend = druggable.plotly.legend.style,
 				showlegend = TRUE,
@@ -200,3 +207,4 @@ switch(Par["type"],
 		sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
 	}
 )
+odbcClose(rch)

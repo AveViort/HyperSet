@@ -111,7 +111,7 @@ if (temp_platforms[2] != "maf") {
 	status <- sqlQuery(rch, query);
 }
 if (status != 'ok') {
-		system(paste0("ln -s /var/www/html/research/users_tmp/error.html ", File));
+		system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
 } else {
 	res <- '';
 	if (temp_platforms[2] != "maf") {
@@ -167,3 +167,4 @@ if (status != 'ok') {
 	}
 }
 sqlQuery(rch, paste0("DROP VIEW temp_view", fname, ";"));
+odbcClose(rch)

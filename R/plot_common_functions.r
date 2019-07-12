@@ -7,8 +7,8 @@ return(switch(axis_scale,
          ));
 }
 
-getDbCredentials <- function() {
-	temp <- read.delim(file = "HS_SQL.conf", header = FALSE, sep = " ", row.names = 1)
+getDbCredentials <- function(key_file = "HS_SQL.conf") {
+	temp <- read.delim(file = key_file, header = FALSE, sep = " ", row.names = 1)
 	username = as.character(temp["druggable", 2]);
 	password = as.character(temp["druggable", 3]);
 	return(c(username, password));
