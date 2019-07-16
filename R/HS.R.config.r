@@ -13,6 +13,8 @@ RscriptfieldRdelimiter = "+";
 ##########################################################################################
 # options for plots - absolute values
 plotSize = 1280;
+plotHeight = 720;
+plotWidth = 1280;
 druggable.cex = 2;
 druggable.cex.error = 10;
 druggable.cex.main = 3;

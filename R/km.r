@@ -21,100 +21,110 @@ Debug = 1;
 plotSurvival  <- function (
 	fe, #feature: a dependent variable, formatted as a vector of named elements
 	clin, # modified! 3 columns: sample, xx, xx.time
-	printName=NA, 
-	main=NA,
+	datatype, # COPY, GE, PE etc.
+	id, # gene name etc. Can be empty string, but cannot be NA
 	s.type="os", # survival type : OS, RFS, DFI, DSS, RFI
 	fu.length=NA, # length of follow-up time at which to cut, in respective time units
 	estimateIntervals=TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
 	usedSamples=NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))
 	return.p=c("coefficient", "logtest", "sctest", "waldtest")[1], #which type p-value from coxph
-	mark.time=FALSE
 ) {
 	if (is.na(usedSamples)) {usedSamples <- intersect(names(fe), rownames(clin));}
-	print("usedSamples (inside of plotSurvival):")
-	print(str(usedSamples));
+	#print("usedSamples (inside of plotSurvival):")
+	#print(str(usedSamples));
 	fe <- fe[usedSamples];
-	print("fe(inside of plotSurvival):")
-	print(str(fe));
-	N.discrete = 12;
-	if (mode(fe) == "numeric" & length(unique(fe)) > N.discrete) { 
-		Zs <- median(fe, na.rm=TRUE);
-		if (Zs == names(sort(table(fe), decreasing = T))[1]) {Zs <- mean(fe, na.rm=TRUE);}
-		Pat.vector = (fe >= Zs); 
-		map.col = c("green", "red"); 
+	#print("fe(inside of plotSurvival):")
+	#print(str(fe));
+	if (mode(fe) == "numeric") {
+		label1 <- '';
+		label2 <- '';
+		Pat.vector <- fe;
+		if (datatype == "copy") {
+			label1_col <- length(which(fe < 0));
+			label2_col <- length(which(fe > 0));
+			label3_col <- length(which(fe == 0));
+			label1 <- paste0("N(", toupper(id), "<0)=", label1_col);
+			label2 <- paste0("N(", toupper(id), ">0)=", label2_col);
+			label3 <- paste0("N(", toupper(id), "=0)=", label3_col);
+			print(label1);
+			print(label2);
+			print(label3);
+			Pat.vector[which(fe < 0)] <- label1;
+			Pat.vector[which(fe > 0)] <- label2;
+			Pat.vector[which(fe == 0)] <- label3;
+		}
+		else {
+			Zs <- quantile(fe, 0.5, na.rm = TRUE);
+			label1_col <- length(which(fe < Zs));
+			label2_col <- length(which(fe >= Zs));
+			if (id == '') {
+				label1 <- paste0("[", min(fe, na.rm=TRUE), "...", Zs, ")");
+				label2 <- paste0("[", Zs, "...", max(fe, na.rm=TRUE), "]");
+			} else {
+				label1 <- paste0("N(", toupper(id), " < ", Zs, ")=", label1_col);
+				label2 <- paste0("N(", toupper(id), " >= ", Zs, ")=", label2_col);
+			}
+			Pat.vector[which(fe < Zs)] <- label1;
+			Pat.vector[which(fe >= Zs)] <- label2;
+		}
 	} 
 	else {
-		Pat.vector = fe;
-		#map.col = rainbow(length(unique(Pat.vector)));
-		# map.col = c("green", "red", "blue", "wheat3", "cyan")[1:N.discrete];
+		if (datatype == "mut") {
+			label1_col <- length(which(is.na(fe)));
+			label2_col <- length(which(!is.na(fe)));
+			label1 <- paste0("N(", toupper(id), " mut=negative)=", label1_col);
+			label2 <- paste0("N(", toupper(id), " mut=positive)=", label2_col);
+			Pat.vector = fe;
+			Pat.vector[which(is.na(fe))] <- label1;
+			Pat.vector[which(!is.na(fe))] <- label2;
+		} else {
+			Pat.vector = fe;
+		}
 	}
 	names(Pat.vector) <- usedSamples;
+	#print(Pat.vector);
 	vec = as.factor(Pat.vector);
+	#print(vec);
 	
 	cu <- cutFollowup.full(clin, usedSamples, s.type, po=NA);
-	print("cu (inside of plotSurvival):")
-	print(str(cu));
+	#print("cu (inside of plotSurvival):")
+	#print(str(cu));
 	# cu <- cu[which(!is.na(cu$Stat) & !is.na(cu$Time)),]
 	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm=T);}
 	if (estimateIntervals) {POs <- round(c(fu.length/4, fu.length/2, fu.length/1));} else {POs <- c(fu.length);}
 	pval <- NULL;
-	print("POs:");
-	print(POs);
+	#print("POs:");
+	#print(POs);
 	for (po in POs) {
-		# print(paste(">>>>>>>>>>>>>>>>", fa, s.type, po, sep=" "));
-		print("po:");
-		print(po);
+		#print("po:");
+		#print(po);
 		cu <- cutFollowup.full(clin, usedSamples, s.type, po);
-		# print(sus(cu, vec, return.p));
 		pval[as.character(po)] = sus(cu, vec, return.p);
 		# print(pval[as.character(po)]);
 	}
-	# map.col = 
-	#map.leg = rep(NA, times=length(levels(vec)));
-	#map.lty = 1; 
-	#if (paste(unique(sort(vec)), collapse="")=="FALSETRUE") {
-    #map.leg = paste(c(paste0(printName, "< ", round(Zs, digits=2)),  paste0(printName, ">= ", round(Zs, digits=2))), "; N=", table(vec), "", sep="");
-	#}
-	#else {
-    #map.leg = paste(names(table(vec)), "; N=", table(vec), "", sep="");
-	#}
-	#names(map.col)[1:length(levels(vec))] = names(map.leg) = levels(vec)
 	fit = survfit(Surv(cu$Time, cu$Stat) ~ vec);
-	#plot(fit, mark.time=mark.time, lty=map.lty, col=map.col, xlab='Follow-up', ylab=ifelse((s.type == "OS"), 'Overall survival', 'Relapse-free survival'), main=ifelse(is.na(main), paste(s.type, sep = "; "), main), cex.main=ifelse(is.na(main), 1.0, 0.75), ylim=c(0,1.05));
-	#legend(x="bottomleft", map.leg, 
-	#       # title=paste(paste("follow-up", POs, ": ", sep = " "), paste0("p=", pval), collapse="\n"), 
-	#       lty=map.lty, col=map.col, bty="n", cex=0.75);
- 
-	#if (estimateIntervals) {
-    #ofs = 0.25; col.p = "grey2";
-    #for (po in POs[1:3]) {
-    #  abline(v=po, lty=3, col=col.p, lwd = 0.75);
-    #  text(po - ofs, 0.25, labels=paste0("p(FU=", po, ") = ", signif(pval[as.character(po)], 3)), cex=0.75, srt=90, col=col.p);
-    #}
-	#}
-	#return(pval);
 	return(fit)
 }
 
 cutFollowup.full <- function(clin, usedSamples, s.type, po=NA) {
-	print("clin (inside of cutFollowup.full):")
-	print(str(clin));
+	#print("clin (inside of cutFollowup.full):")
+	#print(str(clin));
 	#print(rownames(clin));
 	Ti = clin[which(clin[,"sample"] %in% usedSamples), c("sample", paste(s.type, "time", sep="_"))];
 	Ti <- Ti[order(Ti$sample),];
-	print("Ti (inside of cutFollowup.full):")
-	print(str(Ti));
+	#print("Ti (inside of cutFollowup.full):")
+	#print(str(Ti));
 	# CLIN tables were imported from d1$CLIN$BIOTAB_CDR_2018, we have "os" instead of "os.event"
 	St = clin[which(clin[,"sample"] %in% usedSamples), c("sample", s.type)];
 	St <- St[order(St$sample),];
 	St[,2] <- as.numeric(St[,2]);
-	print("St (inside of cutFollowup.full):")
-	print(str(St));
+	#print("St (inside of cutFollowup.full):")
+	#print(str(St));
 	if (is.na(po)) {po = max(Ti[,2], na.rm=T) + 1;}
-	print(po);
+	#print(po);
 	Cu <- data.frame(Stat=ifelse((Ti[,2] > po), 0, St[,2]), Time=ifelse((Ti[,2] > po), po, Ti[,2]), row.names = St$sample);
-	print("Cu (inside of cutFollowup.full):")
-	print(str(Cu));
+	#print("Cu (inside of cutFollowup.full):")
+	#print(str(Cu));
 	#print(rownames(Cu));
 	return(Cu[usedSamples,]);
 }
@@ -125,9 +135,7 @@ sus <- function (cu, fe, return.p=c("anova", "coefficient", "logtest", "sctest",
 	# print(return.p);
 	ti <- cu[,"Time"];
 	st <- cu[,"Stat"];
-	# if (length(table(st)) < 2) {return(NA);}
 	if (length(table(fe)) < 2) {return(NA);}
-	# if (min(table(fe)) < 3) {return(NA);}
 	Formula <- as.formula(paste("Surv(as.numeric(ti), st) ~ ", "fe"))
 	t1 <- try(coxph(Formula, control=coxph.control(iter.max = 10)), silent=T);
 	if (!grepl("fitter|levels", t1[1])) {
@@ -196,9 +204,8 @@ ggsurv <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
                        ylab = 'Survival', main = '') {
     n <- s$strata
     
-    groups <- factor(unlist(strsplit(names
-                                     (s$strata), '='))[seq(2, 2*strata, by = 2)])
-    gr.name <-  unlist(strsplit(names(s$strata), '='))[1]
+	groups <- factor(unlist(lapply(names(s$strata), function(x) sub("vec=", '', x))));
+	gr.name <- ylab;
     gr.df <- vector('list', strata)
     ind <- vector('list', strata)
     n.ind <- c(0,n); n.ind <- cumsum(n.ind)
@@ -333,28 +340,55 @@ query <- paste0("SELECT table_name from guide_table WHERE cohort='", toupper(Par
 print(query);
 second_set_table <- sqlQuery(rch, query)[1,1];
 
-# TODO: TCGA codes!
-# we need patients, not samples! If source is TCGA - choose patients with the specified code and remove codes
 # also, binarization: MUT and ...
 query <- paste0("SELECT sample,", first_set_platform, ",", first_set_platform, "_time FROM ", first_set_table, ";")
 first_set <- sqlQuery(rch, query);
 rownames(first_set) <- as.character(first_set[,1]);
 print(str(first_set));
 
-if ((second_set_id == "") | (is.na(second_set_id))) {
-	query <- paste0("SELECT sample,", second_set_platform, " FROM ", second_set_table, ";");
-} else {
-	query <- paste0("SELECT sample,", second_set_platform, " FROM ", second_set_table, " WHERE id='", second_set_id, "';");
-} 
+# we need patients, not samples! If source is TCGA - choose patients with the specified code and remove codes
+query <- paste0("SELECT sample,", second_set_platform, " FROM ", second_set_table);
+if ((second_set_id != "") & (!is.na(second_set_id))) {
+	query <- paste0(query, " WHERE id='", second_set_id, "'");
+}
+if (Par["source"]=="tcga") {
+	query <- paste0(query, " AND sample LIKE '", createPostgreSQLregex(tcga_codes[m]),"'");
+}
+query <- paste0(query, ";");
 print(query);
 second_set <- sqlQuery(rch, query);
+odbcClose(rch);
 fe <- as.character(second_set[,2]);
-names(fe) <- as.character(second_set[,1]);
+# we also have numeric data
+x <- suppressWarnings(all(!is.na(as.numeric(fe[which(!is.na(fe))])))); 
+if ((length(x) != 0) & (x == TRUE)) {
+	fe <- as.numeric(fe);
+}
+if (grepl("tcga-[0-9a-z]{2}-[0-9a-z]{4}-[0-9]{2}$", as.character(second_set[1,1]))) {
+	names(fe) <- unlist(lapply(as.character(second_set[,1]), function(x) regmatches(x, regexpr("tcga-[0-9a-z]{2}-[0-9a-z]{4}", x))));
+} else {
+	names(fe) <- as.character(second_set[,1]);
+}
+if (second_set_datatype == "mut") {
+	# add mising patients
+	missing_patients <- setdiff(rownames(first_set), names(fe));
+	print(paste0("Adding ", length(missing_patients), " missing patients to fe"));
+	temp <- rep(NA, length(missing_patients));
+	names(temp) <- missing_patients;
+	fe <- c(fe, temp);
+}
 print(str(fe));
 
-print(first_set_platform);
-surv.data <- plotSurvival(fe, first_set, s.type = first_set_platform);
+plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
+if ((second_set_id != "") & (!is.na(second_set_id))) {
+	plot_title <- paste0(plot_title, "(", toupper(second_set_id), ")");
+}
+surv.data <- plotSurvival(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
+#print("surv.data:");
+#print(str(surv.data));
 
-a <- ggsurv(surv.data);
+a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = plot_title);
+#print("a:");
+#print(str(a));
 p <- ggplotly(a);
 htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");

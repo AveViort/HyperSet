@@ -37,9 +37,9 @@ DELETE FROM drugs;
 ELSE
 -- have to use "source" and "compound" names, otherwise will get an error like that:
 -- ERROR:  syntax error at or near "$1"
--- LINE 1: CREATE TEMP TABLE drugs ( $1  character varying(64),  $2  ch...
+-- LINE 1: CREATE TABLE drugs ( $1  character varying(64),  $2  ch...
 -- This is because "screen" and "drug" are already used
-CREATE TEMP TABLE drugs (source character varying(64), compound character varying(64));
+CREATE TABLE drugs (source character varying(64), compound character varying(64));
 END IF;
 INSERT INTO drugs SELECT DISTINCT screen, drug FROM best_drug_corrs_counts ORDER BY screen;
 UPDATE drugs SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE drugs.source=subquery.source_name;
@@ -60,7 +60,7 @@ WHERE tablename  = 'features')
 THEN
 DELETE FROM features;
 ELSE
-CREATE TEMP TABLE features (source character varying(64), feature character varying(256));
+CREATE TABLE features (source character varying(64), feature character varying(256));
 END IF;
 INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts ORDER BY screen;
 UPDATE features SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE features.source=subquery.source_name;
@@ -83,7 +83,7 @@ AND tablename  = 'features')
 THEN
 DELETE FROM features;
 ELSE
-CREATE TEMP TABLE features (source character varying(64), feature character varying(256));
+CREATE TABLE features (source character varying(64), feature character varying(256));
 END IF;
 IF (source_n = 'all') THEN
 INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts ORDER BY screen;
@@ -113,9 +113,11 @@ WHERE tablename  = 'platforms')
 THEN
 DELETE FROM platforms;
 ELSE
-CREATE TEMP TABLE platforms (platform character varying(256), visible_name character varying(256));
+CREATE TABLE platforms (platform character varying(256), visible_name character varying(256));
 END IF;
 SELECT table_name INTO table_n FROM guide_table WHERE (cohort=cohort_n) AND (type=data_type);
+-- if table exists
+IF (table_n IS NOT NULL) THEN
 EXECUTE E'INSERT INTO platforms SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
 FOR platform_n, description IN SELECT * FROM platforms 
 LOOP
@@ -130,6 +132,11 @@ ELSE
 RETURN NEXT platform_n || '|' || description;
 END IF;
 END LOOP;
+-- if table does not exist
+ELSE
+platform_n := '|';
+RETURN NEXT platform_n;
+END IF;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -988,6 +995,8 @@ EXECUTE E'INSERT INTO plot_types(platform1,platform2,platform3,plot) VALUES(\'' 
 END IF;
 END IF;
 res := TRUE;
+ELSE
+res := FALSE;
 END IF;
 RETURN res;
 END;
