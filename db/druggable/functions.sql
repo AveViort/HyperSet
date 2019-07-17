@@ -222,6 +222,7 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- FUNCTION DEPRICATED! Problems with combining TCGA data from patients and samples
 -- this function creates views which should be read in R
 -- fname is file name - used for unique tables
 -- returns 3 columns, first column is samples 
@@ -315,6 +316,7 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- FUNCTION DEPRICATED! Problems with combining TCGA data from patients and samples
 -- this version does not use ids, it is just a  function for CLIN and IMMUNO data
 CREATE OR REPLACE FUNCTION plot_data_without_id (fname text, cohort text, type1 text, platform1 text, tcga_code1 text default '', type2 text default '', platform2 text default '', tcga_code2 text default '', type3 text default '', platform3 text default '', tcga_code3 text default '') RETURNS text AS $$
 DECLARE
@@ -406,6 +408,7 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- FUNCTION DEPRICATED! Problems with combining TCGA data from patients and samples
 -- function for boxplot: ids are optional for both axises
 CREATE OR REPLACE FUNCTION boxplot_data (fname text, cohort text, type1 text, platform1 text, id1 text, tcga_code1 text, type2 text, platform2 text, id2 text,  tcga_code2 text) RETURNS text AS $$
 DECLARE
@@ -482,6 +485,7 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- FUNCTION DEPRICATED! Problems with combining TCGA data from patients and samples
 -- function for special types of boxplots (or other plots which are in need of binary data): when we have many categories and want to categorize results as "TRUE/FALSE"
 -- e.g. instead of having all types of mutations for TP53 from MUT-MAF, we will have TRUE if mutation is present and FALSE if mutation is absent
 -- note: binarization ALWAYS occurs for the second platform, except for 1D cases!
@@ -630,11 +634,16 @@ BEGIN
 temp_array := string_to_array(platforms, ',');
 n := array_length(temp_array, 1);
 plots_array := ARRAY[]::text[];
+-- 1D plots
 IF (n =1) THEN
 plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=ANY(temp_array)) AND (plot_types.platform2 IS NULL));
 ELSE
+-- 2D plots
 IF (n=2) THEN
 plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[2]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[1]));
+ELSE
+-- 3D plots
+plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[2]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[2]));
 END IF;
 END IF;
 FOR i IN 1..array_length(plots_array, 1)
@@ -1074,5 +1083,28 @@ ELSE
 EXECUTE E'INSERT INTO platform_descriptions VALUES (\'' || platform_n || E'\', \'' || description || E'\', ' || display || ');';
 END IF;
 RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to return platform types
+-- used by 3D scatter to decide: if z axis is numeric or character
+CREATE OR REPLACE FUNCTION get_platform_types(cohort text, datatype1 text, platform1 text, datatype2 text DEFAULT '', platform2 text DEFAULT '', datatype3 text DEFAULT '', platform3 text DEFAULT '') RETURNS setof text AS $$
+DECLARE
+table_n text;
+res text;
+BEGIN
+table_n := cohort || '_' || datatype1;
+SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform1;
+RETURN NEXT res;
+IF (datatype2 <> '') THEN
+table_n := cohort || '_' || datatype2;
+SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform2;
+RETURN NEXT res;
+IF (datatype3 <> '') THEN
+table_n := cohort || '_' || datatype3;
+SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform3;
+RETURN NEXT res;
+END IF;
+END IF;
 END;
 $$ LANGUAGE plpgsql;

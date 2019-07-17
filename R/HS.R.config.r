@@ -59,3 +59,5 @@ druggable.plotly.legend.style <- list(
 	bgcolor = "#E2E2E2",
 	bordercolor = "#FFFFFF",
 	borderwidth = 2)
+	
+druggable.plotly.marker_shapes <- c("circle", "triangle-up", "square", "diamond", "x", "star", "cross", "hexagon", "octagon");

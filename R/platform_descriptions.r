@@ -97,7 +97,7 @@ update_plot_types  <- function(table_name, key_file = "HS_SQL.conf") {
 	odbcClose(rch);
 }
 
-# this function adds plot types
+# this function adds plot types from the specified table
 # function avoids doubles
 # REMEBER! Always 4 (four) columns
 # platform1-platform2-platform3-plot
@@ -108,7 +108,7 @@ add_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
 	print(paste0("Added ", k, " records"));
 }
 
-# 
+# this function removes plot types specified in the given table 
 remove_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
 	k <- change_plot_types(table_name, "remove", key_file);
 	print(paste0("Removed ", k, " records"));
@@ -117,7 +117,7 @@ remove_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
 
 # basic function used by add_plot_types and remove_plot_types
 # op = operation "add"/"remove"
-change_plot_types <- function() {
+change_plot_types <- function(table_name, op, key_file = "HS_SQL.conf") {
 	table_data <- read.csv2(table_name, header = FALSE);
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
@@ -137,8 +137,26 @@ generate_condition <- function(cond_args) {
 	# we always have 4 columns, which means for 1/2D plots we have 2/1 empty values
 	# we have to delete '' values
 	platforms <- platforms[which(platforms != '')];
-	temp <- permutations(n=length(platforms), r=length(platforms), v=platforms, repeats.allowed=FALSE);
 	condition <- '';
+	temp <- c();
+	# check if we have all different values in platforms, otherwise we will get error 'too few different elements'
+	if (length(platforms) == length(unique(platforms))) {
+		temp <- permutations(n=length(platforms), r=length(platforms), v=platforms, repeats.allowed=FALSE);
+	} else {
+		# only 1 unique platform
+		if (length(unique(platforms)) == 1) {
+			temp <- rbind(temp, platforms);
+		}
+		# 3D case, 2 unique platforms
+		else {
+			# after this we will have 2x2 table
+			temp <- permutations(n=2, r=2, v=unique(platforms), repeats.allowed=FALSE);
+			# add duplicated platform as the third column
+			temp <- cbind(temp, rep(platforms[duplicated(platforms)], 2));
+			# add last row - two duplicated platforms as first two columns, unique as last
+			temp <- rbind(temp, c(rep(platforms[duplicated(platforms)], 2), platforms[which(platforms != platforms[duplicated(platforms)])]));
+		}
+	}
 	for (i in 1:nrow(temp)) {
 		condition <- ifelse(i == 1, '(', paste0(condition,' OR ('));
 		for (j in 1:ncol(temp)) {
@@ -159,10 +177,48 @@ supported_plots <- function(key_file = "HS_SQL.conf") {
 	odbcClose(rch);
 }
 
+# add plot type from console: 1/2/3D plots
+# drch is an open RODBC channel
+add_plot_type <- function(platform1, platform2 = '', platform3 = '', plot_type, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	query <- '';
+	# 1D case
+	if (platform2 == '') {
+		query <- paste0("SELECT add_plot_type('", platform1, ",,,", plot_type, "',E'", generate_condition(c(platform1, '', '', plot_type)), "');");
+	} else {
+		# 2D case
+		if (platform3 == '') {
+			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",,", plot_type, "',E'", generate_condition(c(platform1, platform2, '', plot_type)), "');");
+		} else {
+			# 3D case
+			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",", platform3, ",", plot_type, "',E'", generate_condition(c(platform1, platform2, platform3, plot_type)), "');");
+		}
+	}
+	#print(query);
+	stat <- sqlQuery(rch, query);
+	#print(stat);
+	# if we have opened new connection - close it
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	return(stat[1,1]);
+}
+
 # create plot type for platform with all platforms from the specified type
 add_plot_type_platform_vs_datatype <- function(platform, datatype, plot_type, key_file = "HS_SQL.conf") {
-	credentials <- getDbCredentials(key_file);
-	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
 	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
 	cohorts <- as.character(cohorts[,1]);
 	#print(cohorts);
@@ -181,20 +237,24 @@ add_plot_type_platform_vs_datatype <- function(platform, datatype, plot_type, ke
 	#print(platforms);
 	k <- 0;
 	for (platform2 in platforms) {
-		query <- paste0("SELECT add_plot_type('", platform, ",", platform2, ",,", plot_type, "',E'", generate_condition(c(platform, platform2, '', plot_type)), "');");
-		#print(query);
-		stat <- sqlQuery(rch, query);
-		#print(stat);
-		if (stat[1,1] == TRUE) {k <- k+1;}
+		stat <- add_plot_type(platform, platform2, '', plot_type, key_file, rch); 
+		if (stat == TRUE) {k <- k+1;}
 	}
-	odbcClose(rch);
+	if (drch == '') {
+		odbcClose(rch);
+	}
 	print(paste0(platform, " vs ", datatype, ": added ", k, " records"));
 	return(k);
 }
 
-add_plot_type_datatype_vs_datatype <- function(datatype1, datatype2, plot_type, key_file = "HS_SQL.conf") {
-	credentials <- getDbCredentials(key_file);
-	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+add_plot_type_datatype_vs_datatype <- function(datatype1, datatype2, plot_type, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
 	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
 	cohorts <- as.character(cohorts[,1]);
 	#print(cohorts);
@@ -205,18 +265,75 @@ add_plot_type_datatype_vs_datatype <- function(datatype1, datatype2, plot_type, 
 		platforms1 <- c(platforms1, as.character(temp[,1]));
 	}
 	platforms1 <- unique(platforms1);
-	platforms1 <- platforms[which(platforms1!='')];
+	platforms1 <- platforms1[which(platforms1!='')];
 	# delete platform descriptions
 	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
 	platforms1 <- unlist(platforms1);
-	#print(platforms);
+	#print(platforms1);
 	k <- 0;
 	for (platform1 in platforms1) {
-		n <- add_plot_type_platform_vs_datatype(platform1, datatype2, plot_type, key_file);
+		n <- add_plot_type_platform_vs_datatype(platform1, datatype2, plot_type, key_file, rch);
 		k <- k+n;
 	}
-	odbcClose(rch);
+	if (drch == '') {
+		odbcClose(rch);
+	}
 	print(paste0(datatype1, " vs ", datatype2, ": added ", k, " records"));
+	return(k);
+}
+
+add_plot_type_datatypes_3D <- function(datatype1, datatype2, datatype3, plot_type, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
+	cohorts <- as.character(cohorts[,1]);
+	platforms1 <- c();
+	platforms2 <- c();
+	platforms3 <- c();
+	for (cohort in cohorts) {
+		# use SQL function to get platforms
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype1,"', '');"));
+		platforms1 <- c(platforms1, as.character(temp[,1]));
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype2,"', '');"));
+		platforms2 <- c(platforms2, as.character(temp[,1]));
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype3,"', '');"));
+		platforms3 <- c(platforms3, as.character(temp[,1]));
+	}
+	platforms1 <- unique(platforms1);
+	platforms2 <- unique(platforms2);
+	platforms3 <- unique(platforms3);
+	platforms1 <- platforms1[which(platforms1!='')];
+	platforms2 <- platforms2[which(platforms2!='')];
+	platforms3 <- platforms3[which(platforms3!='')];
+	# delete platform descriptions
+	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms1 <- unlist(platforms1);
+	platforms2 <- lapply(platforms2, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms2 <- unlist(platforms2);
+	platforms3 <- lapply(platforms3, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms3 <- unlist(platforms3);
+	#print(platforms1);
+	#print(platforms2);
+	#print(platforms3);
+	k <- 0;
+	for (platform1 in platforms1) {
+		for (platform2 in platforms2) {
+			for (platform3 in platforms3) {
+				stat <- add_plot_type(platform1, platform2, platform3, plot_type, key_file, rch);
+				#print(stat);
+				if (stat == TRUE) {k <- k+1;}
+			}
+		}
+	}
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	print(paste0(datatype1, " vs ", datatype2, " vs ", datatype3, ": added ", k, " records"));
 	return(k);
 }
 
@@ -224,10 +341,16 @@ add_plot_type_datatype_vs_datatype <- function(datatype1, datatype2, plot_type, 
 
 # basic function, reads data from sql table to csv
 # file_name - output csv file 
-druggable_get_table <- function(sql_table, key_file = "HS_SQL.conf") {
-	credentials <- getDbCredentials(key_file);
-	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+# drch is an open RODBC channel
+druggable_get_table <- function(sql_table, key_file = "HS_SQL.conf", rch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+	}
 	temp <- sqlQuery(rch, paste0("SELECT * FROM ", sql_table,";"));
-	odbcClose(rch);
+	if (drch == '') {
+		odbcClose(rch);
+	}
 	return(temp);
 }

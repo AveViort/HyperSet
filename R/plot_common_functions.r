@@ -39,3 +39,14 @@ adjust_cex_main <- function(main_title, cex.main.relative) {
 	}
 	return(cex.adjusted);
 }
+
+# make fefr shift in vectors
+left_shift <- function(original_vector, n) {
+	transformed_vector <- c();
+	if ((n > length(original_vector)) | (n <= 0)) {
+		transformed_vector <- original_vector;
+	} else {
+		transformed_vector <- c(tail(original_vector, -n), head(original_vector, n));
+	}
+	return(transformed_vector);
+}

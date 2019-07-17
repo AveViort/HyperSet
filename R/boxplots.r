@@ -138,7 +138,7 @@ if (status != 'ok') {
 	} else {
 		y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2]);
 	}	
-	plot_title <- paste0("Boxplot of ", Par["cohort"]);
+	plot_title <- paste0("Boxplot of ", Par["cohort"], "(N=", length(y_data), ")");
 	x_axis <- list(
 		title = x_axis_name,
 		titlefont = font1,
