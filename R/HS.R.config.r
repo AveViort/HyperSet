@@ -12,7 +12,6 @@ RscriptKeyValueDelimiter = "=";
 RscriptfieldRdelimiter = "+";
 ##########################################################################################
 # options for plots - absolute values
-plotSize = 1280;
 plotHeight = 720;
 plotWidth = 1280;
 druggable.cex = 2;
@@ -60,4 +59,7 @@ druggable.plotly.legend.style <- list(
 	bordercolor = "#FFFFFF",
 	borderwidth = 2)
 	
-druggable.plotly.marker_shapes <- c("circle", "triangle-up", "square", "diamond", "x", "star", "cross", "hexagon", "octagon");
+druggable.plotly.marker_shapes <- c("circle", "triangle-up", "square", "diamond", "x", "star", "cross", "triangle-down", "hexagon", "octagon");
+
+# datatypes which use patients, not samples
+druggable.patient.datatypes <- c("clin", "immuno", "drug");

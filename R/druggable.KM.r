@@ -1,21 +1,5 @@
-usedDir = '/var/www/html/research/users_tmp/';
-apacheSink = 'apache';
-localSink = 'log'; # usedSink = apacheSink;
-usedSink = localSink;
-sink(file(paste(usedDir, "plotData.", usedSink, ".output.Rout", sep=""), open = "wt"), append = F, type = "output")
-sink(file(paste(usedDir, "plotData.", usedSink, ".message.Rout", sep=""), open = "wt"), append = F, type = "message")
-options(warn = 1); # options(warn = 0);
-message("TEST0");
-
-source("../R/HS.R.config.r");
-source("../R/plot_common_functions.r");
-#print(library());
-library(RODBC);
-library(plotly);
-library(htmlwidgets);
+source("../R/init_plot.r");
 library(survival);
-
-Debug = 1;
 
 # from usefull_functions.r
 plotSurvival  <- function (
@@ -27,7 +11,7 @@ plotSurvival  <- function (
 	fu.length=NA, # length of follow-up time at which to cut, in respective time units
 	estimateIntervals=TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
 	usedSamples=NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))
-	return.p=c("coefficient", "logtest", "sctest", "waldtest")[1], #which type p-value from coxph
+	return.p=c("coefficient", "logtest", "sctest", "waldtest")[1] #which type p-value from coxph
 ) {
 	if (is.na(usedSamples)) {usedSamples <- intersect(names(fe), rownames(clin));}
 	#print("usedSamples (inside of plotSurvival):")
@@ -278,41 +262,7 @@ ggsurv <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
   pl
 }
 
-Args <- commandArgs(trailingOnly = T);
-if (Debug>0) {print(paste(Args, collapse=" "));}
-Par <- NULL;
- for (a in Args) {
- if (grepl('=', a)) {
- p1 <- strsplit(a, split = '=', fixed = T)[[1]];
- if (length(p1) > 1) {
- Par[p1[1]] = tolower(p1[2]);
- } 
-  if (Debug>0) {print(paste(p1[1], p1[2], collapse=" "));}
-} }
-
-credentials <- getDbCredentials();
-rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
-
-setwd(r.plots);
-
-print("km.r");
-File <- paste0(r.plots, "/", Par["out"])
-print(File)
-print(names(Par));
-datatypes <- unlist(strsplit(Par["datatypes"], split = ","));
-print(datatypes);
-platforms <- unlist(strsplit(Par["platforms"], split = ","));
-print(platforms);
-ids <- unlist(strsplit(Par["ids"], split = ","));
-print(ids);
-scales <- unlist(strsplit(Par["scales"], split = ","));
-print(scales);
-tcga_codes <- unlist(strsplit(Par["tcga_codes"], split = ","));
-print(tcga_codes);
-fname <- substr(Par["out"], 4, gregexpr(pattern = "\\.", Par["out"])[[1]][1]-1);
-query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(platforms, collapse = "','"), "'"),"]);");
-readable_platforms <- sqlQuery(rch, query);
-rownames(readable_platforms) <- readable_platforms[,1];
+print("druggable.km.r");
 
 # markers
 Cov = c("os", "os_time", "pfs", "pfs_time", "rfs", "rfs_time", "dss", "dss_time", "dfi", "dfi_time", "pfi", "pfi_time");
@@ -351,7 +301,7 @@ query <- paste0("SELECT sample,", second_set_platform, " FROM ", second_set_tabl
 if ((second_set_id != "") & (!is.na(second_set_id))) {
 	query <- paste0(query, " WHERE id='", second_set_id, "'");
 }
-if (Par["source"]=="tcga") {
+if ((Par["source"]=="tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))) {
 	query <- paste0(query, " AND sample LIKE '", createPostgreSQLregex(tcga_codes[m]),"'");
 }
 query <- paste0(query, ";");

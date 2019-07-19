@@ -17,17 +17,5 @@ my $scales = $query->param('scales');
 print "Content-type: text/html\n\n";
 srand(); my $r = rand();
 my $file = 'tmp'.$1.'.html' if $r =~  m/0\.([0-9]{12})/;
-switch($type) {
-	case "box" {system("Rscript ../R/boxplots.r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes scales=$scales out=$file");}
-	case "KM" {system("Rscript ../R/km.r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes scales=$scales out=$file");}
-	case "venn" {system("Rscript ../R/druggable.venn.r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes out=$file");}
-	else {
-		if (($ids eq '') || ($ids eq ',') || ($ids eq ',,')) {
-			system("Rscript ../R/plotData_without_ids.r --vanilla --args type=$type source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms tcga_codes=$tcga_codes scales=$scales out=$file");
-		}
-		else {
-			system("Rscript ../R/plotData_with_ids.r --vanilla --args type=$type source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes scales=$scales out=$file");
-		}
-	}
-}
+system("Rscript ../R/druggable.".$type.".r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes scales=$scales out=$file");
 print $file;

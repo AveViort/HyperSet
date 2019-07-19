@@ -50,3 +50,8 @@ left_shift <- function(original_vector, n) {
 	}
 	return(transformed_vector);
 }
+
+# check if value is equal to empty string or is NA
+empty_value <- function(value) {
+	return((is.na(value)) | (value == ""));
+}
