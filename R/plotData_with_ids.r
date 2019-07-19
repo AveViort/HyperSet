@@ -246,6 +246,10 @@ switch(Par["type"],
 					yaxis = y_axis);
 				htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 			} else {
+				plot_title <- paste0("Correlation between ", 
+						readable_platforms[platforms[1],2], " and ", 
+						readable_platforms[platforms[2],2], " and ",
+						readable_platforms[platforms[3],2]);
 				# in case with 3D plots we have not only numeric datatypes
 				# x and y must be numeric, but z can be character
 				# at the moment we cannot decide types of variables beforehand
@@ -291,8 +295,9 @@ switch(Par["type"],
 					tickangle = 0,
 					tickfont = font2);
 				z_axis <- paste0(datatypes[3], " of ",ids[3], "(", readable_platforms[platforms[3],2], ",", scales[3], ")");
-				p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', 
+				p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter',
 					text = ~paste("Patient: ", common_samples), color = z_data) %>% 
+				colorbar(title = z_axis) %>%
 				onRender("
 					function(el) { 
 						el.on('plotly_hover', function(d) { console.log('Hover: ', d) });
@@ -324,6 +329,18 @@ switch(Par["type"],
 					z_data <- as.character(temp[[axis_index[3]]][,2]);
 					print("str(z_data):");
 					print(str(z_data));
+					x_axis <- list(
+						title = paste0(datatypes[axis_index[1]], " of ", ids[axis_index[1]], "(", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
+						titlefont = font1,
+						showticklabels = TRUE,
+						tickangle = 0,
+						tickfont = font2);
+					y_axis <- list(
+						title = paste0(datatypes[axis_index[2]], " of ",ids[axis_index[2]], "(", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
+						titlefont = font1,
+						showticklabels = TRUE,
+						tickangle = 0,
+						tickfont = font2);
 					types <- unique(z_data);
 					marker_shapes <- druggable.plotly.marker_shapes[1:length(types)];
 					names(marker_shapes) <- types;
@@ -334,18 +351,15 @@ switch(Par["type"],
 					for (i in types) {
 						x_val <- paste(x_data[which(z_data == i)], collapse = ",");
 						y_val <- paste(y_data[which(z_data == i)], collapse = ",");
-						script_line <- paste0("add_markers(x = c(", x_val, 
-												"), y = c(", y_val,
-												"), name='", i, "', marker = list(color = 'black', symbol = '",
+						script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
+												name='", i, "', marker = list(color = 'black', symbol = '",
 												marker_shapes[i], "')) %>%");
 						write(script_line, file = script_file, append = TRUE);
 					}
-					plot_title <- paste0("Correlation between ", 
-						readable_platforms[platforms[1],2], " and ", 
-						readable_platforms[platforms[2],2], " and ",
-						readable_platforms[platforms[3],2]);
 					script_line <- paste0("layout(title = '", plot_title, "',showlegend = TRUE,
-					legend = druggable.plotly.legend.style);");
+						legend = druggable.plotly.legend.style,
+						xaxis = x_axis,
+						yaxis = y_axis);");
 					write(script_line, file = script_file, append = TRUE);
 					close(script_file)
 					source(script_file_name)

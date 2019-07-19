@@ -1108,3 +1108,81 @@ END IF;
 END IF;
 END;
 $$ LANGUAGE plpgsql;
+
+-- function to get TCGA sample codes 
+-- if datatype uses patients (not samples) - return emplty string
+-- it also takes previous datatypes into account: if one of the chose datatypes
+-- uses patients - do not allow meta-codes ("all", "cancer", "healthy")
+CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, previous_datatypes text) RETURNS text AS $$
+DECLARE
+res text;
+table_n text;
+datatypes_array text array;
+source_n text;
+i integer;
+flag boolean;
+BEGIN
+res := '';
+SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
+IF (source_n = 'TCGA') THEN
+SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
+SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n;
+flag := TRUE;
+END IF;
+IF (previous_datatypes <> '') THEN
+datatypes_array := string_to_array(previous_datatypes, ',');
+FOR i IN 1 .. array_length(datatypes_array, 1)
+LOOP
+SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
+flag := flag AND TRUE;
+ELSE
+flag := FALSE;
+END IF;
+END LOOP;
+END IF;
+IF (flag = TRUE) THEN
+res := 'all,healthy,cancer,' || res;
+END IF;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to create table with sample codes available for TCGA tables
+-- if table contains patients - it is not present here
+CREATE OR REPLACE FUNCTION create_tcga_codes_table() RETURNS boolean AS $$
+DECLARE
+table_n text;
+table_codes text;
+-- this variable is used to test if table contains patients or samples
+table_sample text;
+flag boolean;
+temp_array text array;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'tcga_codes')
+THEN
+DELETE FROM tcga_codes;
+ELSE
+CREATE TABLE tcga_codes (table_name character varying(256), codes character varying(256));
+END IF;
+FOR table_n IN SELECT table_name FROM guide_table WHERE source = 'TCGA'
+LOOP
+table_codes := '';
+RAISE NOTICE 'Table: %', table_n;
+EXECUTE 'SELECT sample FROM ' || table_n || ' LIMIT 1;' INTO table_sample;
+--RAISE NOTICE 'Chosen sample: %', table_sample;
+-- tables with samples have two digits in the end
+SELECT table_sample LIKE '%-__' INTO flag;
+IF (flag = TRUE) THEN
+EXECUTE 'SELECT ARRAY(SELECT DISTINCT (left_trim(sample, 13)) FROM ' || table_n || ');' INTO temp_array;
+table_codes := array_to_string(temp_array, ',');
+INSERT INTO tcga_codes(table_name, codes) VALUES (table_n, table_codes);
+END IF;
+RAISE NOTICE 'table_codes: %', table_codes;
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;

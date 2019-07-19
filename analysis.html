@@ -978,8 +978,10 @@ function id_keyup(k) {
 	}
 	if (flag) {
 		$("#plot-button").button("enable");
-		setTimeout(function(){$("#id" + k + "_input").css('border-color', '')}, 500);
-		$("#id" + k + "_input").css('border-color', 'green');
+		setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
+								$("#id" + k + "_input").css('background-color', '')}, 500);
+		$("#id" + k + "_input").css('border-color', 'chartreuse');
+		$("#id" + k + "_input").css('background-color', 'chartreuse');
 	}
 	else {
 		$("#plot-button").button("disable");
