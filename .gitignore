@@ -1,7 +1,7 @@
 db/input_networks
 db/input_files
 db/input_folders
-R/lib
+R/lib/*
 Ashwini
 HS_SQL.conf
 <<<<<<< Updated upstream

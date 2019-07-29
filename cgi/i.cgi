@@ -292,7 +292,7 @@ $dbh->disconnect;
 
 sub generateTabContent {
 my($tab) = @_;
-my @ar = split('_', $tab); my $main_type = $ar[2];
+my @ar = split('_', $tab); my $main_type = $ar;
 my $content = 
 '<div id="analysis_type_'.$main_type.'"  class="main_ajax_menu form '.$main_type.'" >'.
 HS_html_gen::ajaxSubTabList($main_type).
@@ -635,7 +635,7 @@ $i = 0;
 while ($_ = <NEA>) {
 chomp; 
 @arr = split("\t", uc($_));
-next if lc($arr[0]) ne 'prd';
+next if lc($arr) ne 'prd';
 next if ($current_usr_mask and $arr[$pl->{$table}->{'ags'}] !~ m/$current_usr_mask/i);
 next if ($current_fgs_mask and $arr[$pl->{$table}->{'fgs'}] !~ m/$current_fgs_mask/i);
 next if (($arr[$pl->{$table}->{$HSconfig::pivotal_nea_score}] < $HSconfig::min_pivotal_nea_score) or 
@@ -869,7 +869,7 @@ for $i(0..$#{$neaData}) {
 $genesAGS = $arr[$pl->{$table}->{ags_genes1}]; 
 $genesFGS = $arr[$pl->{$table}->{fgs_genes1}]; 
 $text = $arr[$pl->{$table}->{ags}];
-$text = substr($text, 0, 40);
+# $text = substr($text, 0, 40);
 $ol = $HS_html_gen::OLbox1.$arr[$pl->{$table}->{ags}].$HS_html_gen::OLbox2 if length($arr[$pl->{$table}->{ags}]) > 41;
 $content .= "\n".'<tr><td name="firstcol" class="AGSout">'.$ol.$text.'</a>'.'</td>';
  
@@ -883,7 +883,7 @@ $HS_html_gen::OLbox2.
 $arr[$pl->{$table}->{n_genes_ags}].'</a>'.'</td>';
 $content .= "\n".'<td class="AGSout">'.$arr[$pl->{$table}->{lc('N_linksTotal_AGS')}].'</td>';
 $text = $arr[$pl->{$table}->{fgs}];
-$text = substr($text, 0, 40);
+# $text = substr($text, 0, 40);
 # $ol = $HS_html_gen::OLbox1.$arr[$pl->{$table}->{fgs}].$HS_html_gen::OLbox2 if length($arr[$pl->{$table}->{fgs}]) > 41;
 
 # $content .= "\n".'<td class="FGSout">'.$ol.$text.'</a>'.'</td>';
@@ -898,12 +898,12 @@ $pwh = '';
 $pwt = '';
 }
 #CGIVENN#
-if (length($arr[$pl->{$table}->{fgs}]) > 41) {
-$ol2 = $HS_html_gen::OLbox1.$arr[$pl->{$table}->{fgs}].$HS_html_gen::OLbox2;
-}
-else{
+# if (length($arr[$pl->{$table}->{fgs}]) > 41) {
+# $ol2 = $HS_html_gen::OLbox1.$arr[$pl->{$table}->{fgs}].$HS_html_gen::OLbox2;
+# }
+# else{
 	$ol2 = "\<a\>";
-}
+# }
 # if ($text =~ /^KEGG_([0-9]*)[^0-9].*$/){ # && $ol =~ /^[^\s*]$/ && $species ne 'ath'){
 	# my $kid = $1;
 	# my $khref = "href\=\"$HS_html_gen::kegg_url$species$kid\" class\=\"clickable\"";
@@ -911,7 +911,7 @@ else{
 	
 # }
 
-$content .= "\n".'<td class="FGSout">'.$ol2.$pwh.$text.$pwt.'</a>'.'</td>';
+$content .= "\n".'<td class="FGSout" style="word-wrap: break-word;">'.$ol2.$pwh.$text.$pwt.'</a>'.'</td>';
 #CGIVENN#
 @a2 = split(",", $genesFGS);
 $content .= "\n".'<td class="FGSout">'.$HS_html_gen::OLbox1.
@@ -943,8 +943,8 @@ $content .= '</tr>';
 $content .="\n".'</table>
 <script   type="text/javascript">HSonReady();
  var table = $("#'.$tableID.'").DataTable('.HS_html_gen::DTparameters(1).');
-table.buttons().container().appendTo( $("#'.$tableID.'_wrapper").children()[0], table.table().container() ) ; 
-table.buttons().container().prependTo($($("#'.$tableID.'_wrapper").children()[0]) ) ; 
+table.buttons().container().appendTo( $("#'.$tableID.'_wrapper").children(), table.table().container() ) ; 
+table.buttons().container().prependTo($($("#'.$tableID.'_wrapper").children()) ) ; 
 $("a[qtip-content]").qtip({
      show: "mousedown",
      hide: "unfocus",
@@ -1293,8 +1293,8 @@ while ($filename = <LS> ) {  # <- rows
 $stcontent = $stat_info_qtip = $stat_info_div = '';
 
 @a2 = split(/\s+/, $filename);
-$name = $a2[8];
-if ($a2[4]) { 
+$name = $a2;
+if ($a2) { 
 # my($stname, $stpath, $stext) = fileparse ($name, '\..*');
 $cleanName = HStextProcessor::JavascriptCompatibleID($name);
 my $stfile = $name.$HSconfig::file_stat_ext; #$location.$stname.$HSconfig::file_stat_ext;
@@ -1313,7 +1313,7 @@ $stcontent .= '</p></div>';
 $stat_info_qtip = '<span class="vennhdlineOpener stat_info" title=\''.$stcontent.'\'"> &#9432 </span>';
 }
 $row = '<tr id="row-'.$cleanName.'">'; # http://outbottle.com/jquery-ui-specifying-different-button-icon-colors-using-only-css-classes/
-# print 'i: 3 '.join(' ', keys(%{$HSconfig::uploadedFile->[3]})).'<br>';
+# print 'i: 3 '.join(' ', keys(%{$HSconfig::uploadedFile->})).'<br>';
 
 for $i(0..$#{$HSconfig::uploadedFile}) { # <- columns
 # for $i(0..3) {
@@ -1321,8 +1321,8 @@ $row .= '<td>';
 if ($i < 3) {
 $text = ${$HSconfig::uploadedFile->[$i]}{text};
 $text = $name.$stat_info_div if ($text eq 'File');
-$text = join(' ', ($a2[5], $1)) if ($text eq 'Date' and ($a2[6] =~ m/([0-9\:]+)\./));
-$text = $a2[4] if ($text eq 'Size');
+$text = join(' ', ($a2, $1)) if ($text eq 'Date' and ($a2 =~ m/([0-9\:]+)\./));
+$text = $a2 if ($text eq 'Size');
 $row .= $text;
 }  
 else { 
@@ -1408,7 +1408,7 @@ $content .= '</table>'.
 
    $(".assumed-icon").each( 
 	   function () {
-		   var savedType = (getCookie($(this).attr("id").replace("icon-", "tabs-") + "_filetype").split("|"))[0];
+		   var savedType = (getCookie($(this).attr("id").replace("icon-", "tabs-") + "_filetype").split("|"));
 		   //console.log($(this).attr("id") + " savedType: " + savedType);
 		   var typeList = Object.keys(fileType);
 		   if (savedType == "") {

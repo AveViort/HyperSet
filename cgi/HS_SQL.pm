@@ -34,7 +34,7 @@ our ($translated_genes, $dbh,	$data);
 our $session_length = "'24 hours'";
 #SQL connection:
 sub dbh {
-my $database_name = @_[0];
+my $database_name = $_[0];
 my $conf_file = "HS_SQL.conf";
 open(my $conf, $conf_file);
 my @params;
