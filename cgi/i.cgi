@@ -292,7 +292,7 @@ $dbh->disconnect;
 
 sub generateTabContent {
 my($tab) = @_;
-my @ar = split('_', $tab); my $main_type = $ar;
+my @ar = split('_', $tab); my $main_type = $ar[2];
 my $content = 
 '<div id="analysis_type_'.$main_type.'"  class="main_ajax_menu form '.$main_type.'" >'.
 HS_html_gen::ajaxSubTabList($main_type).
@@ -635,7 +635,7 @@ $i = 0;
 while ($_ = <NEA>) {
 chomp; 
 @arr = split("\t", uc($_));
-next if lc($arr) ne 'prd';
+next if lc($arr[0]) ne 'prd';
 next if ($current_usr_mask and $arr[$pl->{$table}->{'ags'}] !~ m/$current_usr_mask/i);
 next if ($current_fgs_mask and $arr[$pl->{$table}->{'fgs'}] !~ m/$current_fgs_mask/i);
 next if (($arr[$pl->{$table}->{$HSconfig::pivotal_nea_score}] < $HSconfig::min_pivotal_nea_score) or 
@@ -1293,8 +1293,8 @@ while ($filename = <LS> ) {  # <- rows
 $stcontent = $stat_info_qtip = $stat_info_div = '';
 
 @a2 = split(/\s+/, $filename);
-$name = $a2;
-if ($a2) { 
+$name = $a2[8];
+if ($a2[4]) { 
 # my($stname, $stpath, $stext) = fileparse ($name, '\..*');
 $cleanName = HStextProcessor::JavascriptCompatibleID($name);
 my $stfile = $name.$HSconfig::file_stat_ext; #$location.$stname.$HSconfig::file_stat_ext;
@@ -1321,8 +1321,8 @@ $row .= '<td>';
 if ($i < 3) {
 $text = ${$HSconfig::uploadedFile->[$i]}{text};
 $text = $name.$stat_info_div if ($text eq 'File');
-$text = join(' ', ($a2, $1)) if ($text eq 'Date' and ($a2 =~ m/([0-9\:]+)\./));
-$text = $a2 if ($text eq 'Size');
+$text = join(' ', ($a2[5], $1)) if ($text eq 'Date' and ($a2[6] =~ m/([0-9\:]+)\./));
+$text = $a2[4] if ($text eq 'Size');
 $row .= $text;
 }  
 else { 
