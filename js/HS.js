@@ -1248,7 +1248,7 @@ function generateJID () {
 }
 
 function createPermURL (pid, spe, jid) {
-	thisURL = window.location.protocol + "://" + window.location.hostname + '/' + 'cgi/i.cgi?mode=standalone;action=sbmRestore;table=table;graphics=graphics;archive=archive;sbm-layout=' + 
+	thisURL = window.location.protocol + "//" + window.location.hostname + '/' + 'cgi/i.cgi?mode=standalone;action=sbmRestore;table=table;graphics=graphics;archive=archive;sbm-layout=' + 
 		$("#sbm-layout").val() +
 		';showself=showself' +   
 		';project_id' + '=' + 

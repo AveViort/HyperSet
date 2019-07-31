@@ -6,6 +6,7 @@ k = 0;
 temp_datatypes = c();
 temp_platforms = c();
 temp_scales = c();
+temp_tcga_codes = c();
 temp_ids = c();
 # we can have up to 2 rows, but still
 n <- ifelse(length(ids)>length(scales), length(ids), length(scales));
@@ -24,6 +25,12 @@ if (k != 0) {
 	else {
 		temp_ids <- '';
 	}
+	if (!is.na(tcga_codes[k])) {
+		temp_tcga_codes <- tcga_codes[k];
+	}
+	else {
+		temp_tcga_codes <- '';
+	}
 	temp_datatypes <- datatypes[k];
 	temp_platforms <- platforms[k];
 	temp_scales <- scales[k];
@@ -32,6 +39,7 @@ if (k != 0) {
 			temp_datatypes <- c(temp_datatypes, datatypes[i]);
 			temp_platforms <- c(temp_platforms, platforms[i]);
 			temp_scales <- c(temp_scales, scales[i]);
+			temp_tcga_codes <- c(temp_tcga_codes, tcga_codes[i]);
 			if (!is.na(ids[i])) {
 				temp_ids <- c(temp_ids, ids[i]);
 			}
@@ -45,37 +53,36 @@ if (k != 0) {
 	temp_datatypes <- datatypes;
 	temp_platforms <- platforms;
 	temp_scales <- scales;
+	temp_tcga_codes <- tcga_codes;
 	temp_ids <- ids;
 }
 print(temp_datatypes);
 print(temp_platforms);
 print(temp_ids);
+print(temp_tcga_codes);
 
 temp <- list();
 common_samples <- c();
 for (i in 1:length(temp_datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(temp_datatypes[i] %in% druggable.patient.datatypes))) {
-		#condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex("cancer"), "'");
-		condition <- paste0(condition, "sample LIKE '%-01'");
+		condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(temp_tcga_codes[i]), "'");
 	}
-	if (!empty_value(ids[i])) {
+	if (!empty_value(temp_ids[i])) {
 		# check if this is the first term in condition or not
 		condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
-		condition <- paste0(condition, "id='", ids[i], "'");
+		condition <- paste0(condition, "id='", temp_ids[i], "'");
 	}
 	query <- paste0("SELECT sample,", temp_platforms[i], " FROM ", Par["cohort"], "_", temp_datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
 	print(query);
 	temp[[i]] <- sqlQuery(rch, query);
-	#print(str(temp[[i]]));
-	#print(length(unique(temp[[i]][,1])));
-	# cannot use ifelse, it returns only one value
-	temp_rownames <- c();
+	print(str(temp[[i]]));
+	print(length(unique(temp[[i]][,1])));
+	temp_rownames <- as.character(temp[[i]][,1]);
 	if ((Par["source"] == "tcga") & (any(temp_datatypes %in% druggable.patient.datatypes))) {
-		temp_rownames <- unlist(lapply(as.character(temp[[i]][,1]), function(x) regmatches(x, regexpr("tcga-[0-9a-z]{2}-[0-9a-z]{4}", x))));
-	} else {
-		temp_rownames <- as.character(temp[[i]][,1]);
+		temp_rownames <- unlist(lapply(temp_rownames, function(x) regmatches(x, regexpr("tcga-[0-9a-z]{2}-[0-9a-z]{4}", x))));
 	}
+	print(length(temp_rownames));
 	#print(length(unique(temp_rownames)));
 	#print(temp_rownames);
 	rownames(temp[[i]]) <- temp_rownames;

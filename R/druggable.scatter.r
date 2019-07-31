@@ -12,8 +12,7 @@ common_samples <- c();
 for (i in 1:length(datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(datatypes[i] %in% druggable.patient.datatypes))) {
-		#condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex("cancer"), "'");
-		condition <- paste0(condition, "sample LIKE '%-01'");
+		condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[i]), "'");
 	}
 	if (!empty_value(ids[i])) {
 		# check if this is the first term in condition or not

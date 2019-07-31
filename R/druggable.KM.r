@@ -83,7 +83,7 @@ plotSurvival  <- function (
 		#print("po:");
 		#print(po);
 		cu <- cutFollowup.full(clin, usedSamples, s.type, po);
-		pval[as.character(po)] = sus(cu, vec, return.p);
+		#pval[as.character(po)] = sus(cu, vec, return.p);
 		# print(pval[as.character(po)]);
 	}
 	fit = survfit(Surv(cu$Time, cu$Stat) ~ vec);
@@ -120,6 +120,9 @@ sus <- function (cu, fe, return.p=c("anova", "coefficient", "logtest", "sctest",
 	ti <- cu[,"Time"];
 	st <- cu[,"Stat"];
 	if (length(table(fe)) < 2) {return(NA);}
+	print(str(ti));
+	print(str(st));
+	print(str(fe));
 	Formula <- as.formula(paste("Surv(as.numeric(ti), st) ~ ", "fe"))
 	t1 <- try(coxph(Formula, control=coxph.control(iter.max = 10)), silent=T);
 	if (!grepl("fitter|levels", t1[1])) {

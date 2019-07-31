@@ -206,6 +206,21 @@ function get_axis_types(cohort, datatype, platform) {
 	return types.slice(0, types.length-1);
 }
 
+function get_tcga_codes(cohort, datatype, previous_datatypes) {
+	var codes;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/tcga_codes.cgi?cohort=" + 
+		encodeURIComponent(cohort) + "&datatype=" + 
+		encodeURIComponent(datatype) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			codes = this.responseText;}
+		}
+	xmlhttp.send();
+	codes = codes.split(",");
+	return codes;
+}
 function foo() {
 	var res;
 	var xmlhttp = new XMLHttpRequest();

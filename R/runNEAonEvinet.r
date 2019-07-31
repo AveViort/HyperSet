@@ -8,7 +8,7 @@ options(warn = -1); # options(warn = 0);
 source("../R/HS.R.config.r");
 source("../R/plot_common_functions.r");
 # .libPaths("/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib");
-# library(RODBC);
+library(RODBC);
 source("../R/NEArender.r");
 
 Debug = 1;

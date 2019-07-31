@@ -1,4 +1,5 @@
 source("../R/init_plot.r");
+library(VennDiagram);
 
 print("druggable.venn.r");
 

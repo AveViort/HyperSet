@@ -6,8 +6,7 @@ status <- '';
 plot_title <- '';
 condition <- " WHERE ";
 if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes))) {
-	#condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex("cancer"), "'");
-	condition <- paste0(condition, "sample LIKE '%-01'");
+	condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
 }
 if (!empty_value(ids[1])) {
 	# check if this is the first term in condition or not
