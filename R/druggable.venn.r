@@ -8,20 +8,26 @@ if (datatypes[1] == datatypes[2]) {
 	print(query);
 	table1 <- sqlQuery(rch, query)[1,1];
 	# here we cannot use SQL function to get one table - since sets can have different size
-	if ((ids[1] == "") | (is.na(ids[1]))) {
+	if (empty_value(ids[1])) {
 		query <- paste0("SELECT sample,binarize(", platforms[1], ") FROM ", table1, ";");
 	} else {
-		query <- paste0("SELECT sample,binarize(", platforms[1], ") FROM ", table1, " WHERE id='", ids[1], "';");
+		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[1], "';"); 
+		print(query);
+		internal_id <- sqlQuery(rch, query)[1,1];
+		query <- paste0("SELECT sample,binarize(", platforms[1], ") FROM ", table1, " WHERE id='", internal_id, "';");
 	} 
 	print(query);
 	first_set <- sqlQuery(rch, query);
 	# factors are returned by default
 	first_set[,1] <- as.character(first_set[,1]);
 
-	if ((ids[2] == "") | (is.na(ids[2]))) {
+	if (empty_value(ids[2])) {
 		query <- paste0("SELECT sample,binarize(", platforms[2], ") FROM ", table1, ";");
 	} else {
-		query <- paste0("SELECT sample,binarize(", platforms[2], ") FROM ", table1, " WHERE id='", ids[2], "';");	
+		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[1], "';"); 
+		print(query);
+		internal_id <- sqlQuery(rch, query)[1,1];
+		query <- paste0("SELECT sample,binarize(", platforms[2], ") FROM ", table1, " WHERE id='", internal_id, "';");	
 	}
 	print(query);
 	second_set <- sqlQuery(rch, query);

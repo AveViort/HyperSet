@@ -9,6 +9,15 @@ y_data <- NULL;
 z_data <- NULL;
 temp <- list();
 common_samples <- c();
+internal_ids <- ids;
+for (i in 1:length(ids)) {
+	if (!empty_value(ids[i])) {
+		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[1], "';"); 
+		print(query);
+		internal_ids[i] <- sqlQuery(rch, query)[1,1];
+	}
+}
+
 for (i in 1:length(datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(datatypes[i] %in% druggable.patient.datatypes))) {
@@ -17,9 +26,19 @@ for (i in 1:length(datatypes)) {
 	if (!empty_value(ids[i])) {
 		# check if this is the first term in condition or not
 		condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
-		condition <- paste0(condition, "id='", ids[i], "'");
+		if (platforms[i] == "drug") {
+			condition <- paste0(condition, "drug='", internal_ids[i], "'");
+		} else {
+			condition <- paste0(condition, "id='", internal_ids[i], "'");
+		}
 	}
-	query <- paste0("SELECT sample,", platforms[i], " FROM ", Par["cohort"], "_", datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
+	query <- "SELECT ";
+	# for drugs - binarize patients!
+	if ((empty_value(ids[i])) & (platforms[i] == "drug")) {
+		query <- paste0(query, "DISTINCT sample,TRUE FROM ", Par["cohort"], "_", datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
+	} else {
+		query <- paste0(query, "sample,", platforms[i], " FROM ", Par["cohort"], "_", datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
+	}
 	print(query);
 	temp[[i]] <- sqlQuery(rch, query);
 	#print(str(temp[[i]]));

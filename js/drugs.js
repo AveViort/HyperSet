@@ -70,13 +70,6 @@ function retreive_drug_correlations(screen, compound, feature) {
 	//xmlhttp.open("GET", "cgi/correlations.cgi?screenList=" + encodeURIComponent(screen) + "&drugList=" + encodeURIComponent(compound) + "&corrTabList=" + encodeURIComponent(feature), false);
 }
 
-function measure_performance() {
-	var t0 = performance.now();
-	drug_list();
-	var t1 = performance.now();
-	console.log(t1-t0);
-}
-
 function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales) {
 	var file;
 	var xmlhttp = new XMLHttpRequest();
@@ -126,7 +119,7 @@ function get_plot_cohorts(source) {
 	return cohorts.slice(0, cohorts.length-1);
 }
 
-function get_cohort_datatypes (cohort, previous_datatypes) {
+function get_cohort_datatypes(cohort, previous_datatypes) {
 	var datatypes;
 	console.log('previous datatypes: ' + previous_datatypes);
 	var xmlhttp = new XMLHttpRequest();
@@ -174,7 +167,7 @@ function get_plot_types(platforms) {
 	return plot_types.slice(0, plot_types.length-1);
 }
 
-function get_autocomplete_ids (cohort, platform) {
+function get_autocomplete_ids(cohort, datatype, platform) {
 	var ids;
 	var xmlhttp = new XMLHttpRequest();
 	console.log("cgi/autocomplete_ids.cgi?cohort=" + cohort + "&platform=" + platform);
@@ -187,7 +180,13 @@ function get_autocomplete_ids (cohort, platform) {
 		}
 	xmlhttp.send();
 	ids = ids.split("||");
-	return (ids.slice(1, ids.length)).map(function(x){ return x.toUpperCase() });
+	// WARNING! This function uses variable capitalized_datatypes from druggable_config.js
+	// this file is loaded by analysis.html
+	ids = ids.slice(1, ids.length);
+	if (capitalized_datatypes.includes(datatype)) {
+		ids = ids.map(function(x){ return x.toUpperCase() });
+	}
+	return ids;
 }
 
 function get_axis_types(cohort, datatype, platform) {
@@ -220,15 +219,4 @@ function get_tcga_codes(cohort, datatype, previous_datatypes) {
 	xmlhttp.send();
 	codes = codes.split(",");
 	return codes;
-}
-function foo() {
-	var res;
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/druggable_test.cgi", false);
-	xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			res = this.responseText;}
-		}
-	xmlhttp.send();
-	return res;
 }

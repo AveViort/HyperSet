@@ -9,9 +9,12 @@ if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes)
 	condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
 }
 if (!empty_value(ids[1])) {
+	query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[1], "';"); 
+	print(query);
+	internal_id <- sqlQuery(rch, query)[1,1];
 	# check if this is the first term in condition or not
 	condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
-	condition <- paste0(condition, "id='", ids[1], "'");
+	condition <- paste0(condition, "id='", internal_id, "'");
 }
 query <- paste0("SELECT ", platforms[1], " FROM ", Par["cohort"], "_", datatypes[1], ifelse(condition == " WHERE ", "", condition), ";");
 print(query);

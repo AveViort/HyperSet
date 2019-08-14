@@ -91,7 +91,20 @@ update_plot_types  <- function(table_name, key_file = "HS_SQL.conf") {
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
 	sqlQuery(rch, "DELETE FROM plot_types;");	
 	for (i in 1:nrow(table_data)) {
-		sqlQuery(rch, paste0());
+		query <- "INSERT INTO plot_types(";
+		for (j in 1:3) {
+			if (!empty_value(table_data[i,j])) {
+				query <- paste0(query, "platform", j, ",");
+			}
+		}
+		query <- paste0(query, "plot) VALUES(");
+		for (j in 1:3) {
+			if (!empty_value(table_data[i,j])) {
+				query <- paste0(query, table_data[i,j], ",");
+			}
+		}
+		query <- paste0(query, table_data[i,4],");");
+		sqlQuery(rch, query);
 	}
 	print(paste0("Created/updated ", i, " records"));
 	odbcClose(rch);
@@ -337,6 +350,38 @@ add_plot_type_datatypes_3D <- function(datatype1, datatype2, datatype3, plot_typ
 	return(k);
 }
 
+# WORKING WITH SYNONYMS
+
+get_synonims <- function(table_name, key_file = "HS_SQL.conf") {
+	temp <- druggable_get_table("synonims", key_file);
+	View(temp);
+	write.table(temp, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = ";", file = table_name);
+}
+
+update_synonyms  <- function(table_name, key_file = "HS_SQL.conf") {
+	table_data <- read.csv2(table_name, header = FALSE);
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	sqlQuery(rch, "DELETE FROM synonims;");	
+	for (i in 1:nrow(table_data)) {
+		sqlQuery(rch, paste0("INSERT INTO synonyms(external_id, internal_id, id_type, annotation) VALUES ('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "','", table_data[i,4], "');"));
+	}
+	print(paste0("Created/updated ", i, " records"));
+	odbcClose(rch);
+}
+
+add_synonyms <- function(table_name, key_file = "HS_SQL.conf") {
+	table_data <- read.csv2(table_name, header = FALSE);
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	k <- 0;
+	for (i in 1:nrow(table_data)) {
+		stat <- sqlQuery(rch, paste0("SELECT add_synonym('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "','", table_data[i,4], "');"));
+		if (stat[1,1] == TRUE) {k <- k+1;}
+	}
+	odbcClose(rch);
+	print(paste0("Created/updated ", k, " records"));
+}
 # COMMON FUNCTIONS
 
 # basic function, reads data from sql table to csv

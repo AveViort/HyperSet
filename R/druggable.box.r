@@ -71,13 +71,27 @@ for (i in 1:length(temp_datatypes)) {
 	if (!empty_value(temp_ids[i])) {
 		# check if this is the first term in condition or not
 		condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
-		condition <- paste0(condition, "id='", temp_ids[i], "'");
+		temp_query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", temp_ids[i], "';"); 
+		print(temp_query);
+		internal_id <- sqlQuery(rch, temp_query)[1,1];
+		# drugs are special case!
+		condition <- paste0(condition, ifelse(temp_platforms[i] == "drug", "drug='","id='"), internal_id, "'");
 	}
-	query <- paste0("SELECT sample,", temp_platforms[i], " FROM ", Par["cohort"], "_", temp_datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
+	query <- paste0("SELECT ", ifelse(temp_platforms[i] == "drug", " DISTINCT ", ""),"sample,", ifelse(temp_platforms[i] == "drug", "TRUE", temp_platforms[i]), " FROM ", Par["cohort"], "_", temp_datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
 	print(query);
+	time1 <- Sys.time();
 	temp[[i]] <- sqlQuery(rch, query);
+	time2 <- Sys.time();
+	time3 <- time2 - time1;
+	print(paste0("Query took ", round(time3, digits=2), " seconds"));
 	print(str(temp[[i]]));
 	print(length(unique(temp[[i]][,1])));
+	# we can have several drugs for one patinet, so we have to binarize data
+	# but only if the drug is not specified!
+	if ((Par["source"] == "tcga") & (temp_platforms[i] == "drugs")) {
+		temp[[i]] <- temp[[i]][!duplicated(temp[[i]][,1]),];
+		temp[[i]][,2] <- "TRUE";
+	}
 	temp_rownames <- as.character(temp[[i]][,1]);
 	if ((Par["source"] == "tcga") & (any(temp_datatypes %in% druggable.patient.datatypes))) {
 		temp_rownames <- unlist(lapply(temp_rownames, function(x) regmatches(x, regexpr("tcga-[0-9a-z]{2}-[0-9a-z]{4}", x))));
@@ -104,19 +118,31 @@ if (status != 'ok') {
 	print("str(x_data):");
 	print(str(x_data));
 	y_data <- NULL;
-	if (temp_platforms[2] != "maf") {
+	if ((temp_platforms[2] != "maf") & (temp_platforms[2] != "drug")) {
 		y_data <- temp[[2]][common_samples,2];
 	} else {
 		y_data <- rep(NA, length(common_samples));
 		for (i in 1:length(common_samples)) {
-			y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("MUT(", temp_ids[2], ")=pos"), paste0("MUT(", temp_ids[2], ")=neg"));
+			if (temp_platforms[2] == "maf") {
+				y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("MUT(", temp_ids[2], ")=pos"), paste0("MUT(", temp_ids[2], ")=neg"));
+			} else {
+				# if drug was specified
+				if (!empty_value(temp_ids[2])) {
+					y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("Drug(", temp_ids[2], ")=pos"), paste0("Drug(", temp_ids[2], ")=neg"));
+				} else {
+				# drug name was not specified
+					y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]),"Drugs=pos", "Drugs=neg");
+				}
+			}
 		}
 	}
 	names(y_data) <- common_samples;
 	print("str(y_data):");
 	print(str(y_data));
 	y_axis_name = '';
-	x_axis_name = paste0(temp_datatypes[2], ":", readable_platforms[temp_platforms[2],2]);
+	print(readable_platforms);
+	print(ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", readable_platforms[temp_platforms[2],2]));
+	x_axis_name = paste0(temp_datatypes[2], ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", readable_platforms[temp_platforms[2],2]));
 	if (length(temp_scales) != 0) {
 		if (!empty_value(temp_ids[1])) {
 			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", temp_ids[1], ",", temp_scales[1], ")");
@@ -143,6 +169,10 @@ if (status != 'ok') {
 	layout(title = plot_title,
 		xaxis = x_axis,
 		yaxis = y_axis);
+	time1 <- Sys.time();
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
+	time2 <- Sys.time();
+	time3 <- time2 - time1;
+	print(paste0("Plotting and saving took ", round(time3, digits=2), " seconds"));
 }
 odbcClose(rch)

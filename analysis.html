@@ -33,6 +33,7 @@
 <script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script>
 <script src="js/Cytoscape.js/cytoscape.js-edgehandles.js" type="text/javascript"></script>
 
+<script src="js/druggable_config.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/HS.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/drugs.js" type="text/javascript"></script>
 <script src="js/cookies.js" type="text/javascript"></script>
@@ -250,6 +251,7 @@ var loadingIndicator = 'ui-icon-loading-status-balls';
 var loadingClasses = 'ui-icon ' + loadingIndicator + ' rotate';
 
 $(document).ready(function(){
+	safe_clear();
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
 		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
@@ -336,6 +338,8 @@ $(document).ready(function(){
 	init_cohortselector();
 	$("#plot-button").button();
 	$("#plot-button").button("disable");
+	// need to call it manually because some types of plots need no additional parameters 
+	id_keyup(1);
 	$("#dock").accordion({
       collapsible: true
     });
@@ -352,7 +356,6 @@ function plot() {
 		var ids = [];
 		var platforms = [];
 		var scales = [];
-		// this is temp!
 		var tcga_codes = [];
 		for (i=1; i<=n; i++) {
 			datatypes.push($("#type" + i + "_selector option:selected").val());
@@ -361,7 +364,7 @@ function plot() {
 			scales.push($("#axis" + i + "_selector option:selected").val());
 			tcga_codes.push($("#tcga" + i + "_selector option:selected").val())
 		}
-		var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|scales:" + scales;
+		var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
 		var plot_filename = find_plot_in_history(plot_description);
 		var plot_id;
 		var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
@@ -664,7 +667,6 @@ function init_platformselector(selector_id) {
 	var n = parseInt(selector_id.substr(8, selector_id.indexOf("_")-8));
 	var previous_platforms = [];
 	for (j=1; j<n; j++) {
-		//console.log(j);
 		previous_platforms.push($("#platform" + j +"_selector option:selected").val());
 	}
 	//console.log('previous platforms: ' + previous_platforms);
@@ -672,10 +674,15 @@ function init_platformselector(selector_id) {
 	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_platforms);
 	//console.log(platforms);
 	var empty = (platforms.length == 1);
-	console.log(empty);
+	//console.log(empty);
 	if (!empty) {
 		// check if we have ids or no for the chosen datatype;
+		// cannot use ?...:... here, because we need to shift platforms anyway
 		var flag = parseInt(platforms.shift());
+		// drugs are special case
+		if (platforms[0][0].platform == "drug") {
+			flag = 1;
+		}
 		document.getElementById("id" + n + "_input").disabled = !(flag);
 		document.getElementById("id" + n + "_input").hidden = !(flag);
 		options = [];
@@ -696,12 +703,14 @@ function init_platformselector(selector_id) {
 				//alert("Data row " + n + ": unable to set up platform " + previous_selection + " due to incompatibility with previous rows");
 			}
 		}
-		
-		autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
-		$("#id" + n + "_input").autocomplete({
-			source: autocomplete_ids,
-			minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
-		});
+		// get autocomplete_ids only if it is enabled
+		if (flag) {
+			var autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
+			$("#id" + n + "_input").autocomplete({
+				source: autocomplete_ids,
+				minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
+			});
+		}
 		$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {update(selector_id)} );
 	}
 	return empty;
@@ -724,7 +733,7 @@ function init_axis_type_selector(selector_id) {
 function init_tcga_code_selector(selector_id) {
 	var n = selector_id.substr(4, selector_id.indexOf("_")-4);
 	var total = $('#plot_options tr').length;
-	// in this case 'previous' meen 'previous in time', not 'in order'
+	// in this case 'previous' mean 'previous in time', not 'in order'
 	// e.g. tcga3_selector can be set before tcga1_selector
 	var previous_datatypes = [];
 	for (j=1; j<=total; j++) {
@@ -759,6 +768,8 @@ function init_plot_type_selector() {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
 	}
 	$('#plot-type').append(options.join("")).selectmenu();
+	$('#plot-type').on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
+	plot_type_changed();
 }
 
 function update_source() {
@@ -788,6 +799,7 @@ function update_cohort() {
 	sessionStorage.removeItem("add_row");
 	$('#id1_input').val("");
 	update_plot_types();
+	plot_type_changed();
 }
 
 function update_type(n) {
@@ -842,8 +854,9 @@ function update_platform(n) {
 			n = parseInt(n);
 			$("#id" + n + "_input").val("");
 			if (sessionStorage.getItem("update_autocomplete") == null) {
+				var autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
 				$("#id" + n + "_input").autocomplete({
-					source: get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val()),
+					source: autocomplete_ids,
 					minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
 				});
 			}
@@ -884,6 +897,24 @@ function update_platform(n) {
 				}
 			}
 			id_keyup(n);
+			plot_type_changed();
+		}
+	}
+}
+
+// WARNING! Use this function with extreme caution! It is a potential source of bugs
+// e.g. it can hide input, but cannot set it visible back
+// however, it is ok for current conditions
+function plot_type_changed() {
+	var total = $('#plot_options tr').length;
+	// see druggable_config.js for variable definition
+	var platforms = hidden_inputs.get($('#plot-type option:selected').val());
+	if (typeof(platforms) != 'undefined') {
+		for (i=1; i<=total; i++) {
+			if (platforms.includes($("#platform" + i + "_selector option:selected").val())) {
+				$("#id" + i + "_input").val("");
+				document.getElementById("id" + i + "_input").hidden = true;
+			}
 		}
 	}
 }
@@ -897,7 +928,7 @@ function update_plot_types() {
 
 // this function has to be called by nearly every selector
 // instead of using update chain
-function update (initiator) {
+function update(initiator) {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
 		// if update in process - do nothing
@@ -1096,8 +1127,12 @@ function id_keyup(k) {
 	var flag = true;
 	for (i = 1; i<=n; i++) {
 		if ($("#id" + i + "_input").is(":enabled")) {
-			var valueSoFar = ($("#id" + i + "_input").val()).toUpperCase();
-			$("#id" + i + "_input").val(valueSoFar);
+			var valueSoFar = $("#id" + i + "_input").val();
+			// this variable declared in druggable_config.js
+			if (capitalized_datatypes.includes($("#type" + i + "_selector option:selected").val())) {
+				valueSoFar = valueSoFar.toUpperCase();
+				$("#id" + i + "_input").val(valueSoFar);
+			}
 			var available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
 			flag = flag*available_ids.includes(valueSoFar);
 		}
@@ -1122,7 +1157,12 @@ function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
 	switch (type) {
 			case "scatter": 
 				if (ids.every((val, i, arr) => val === "")) {
-					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ')';
+					if (ids.length == 3) {
+						plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ' vs ' + datatypes[2] + ':' + platforms[2] + ':' + scales[2] + ')';
+					}
+					else {
+						plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ')';
+					}
 				}
 				else {
 					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + ids[1] + ':' + scales[1] + ')';
@@ -1154,6 +1194,15 @@ function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
 				break;
 		}
 	return plot_title;
+}
+
+// function for technical purposes - use this to safely clear the sessionStorage, affects only SOME druggable.evinet values
+function safe_clear() {
+	sessionStorage.removeItem("add_row");
+	sessionStorage.removeItem("updates_triggered");
+	sessionStorage.removeItem("cascade_delete");
+	sessionStorage.removeItem("update_autocomplete");
+	
 }
 </script>
 </BODY>

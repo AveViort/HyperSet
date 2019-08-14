@@ -10,7 +10,7 @@ use HS_SQL;
 my ($dbh, $stat, $sth, $ids, @data);
 
 my $query = new CGI;
-my $cohort= $query->param('cohort');
+my $cohort = $query->param('cohort');
 my $platform = $query->param('platform');
 print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
@@ -21,6 +21,5 @@ while (@data = $sth->fetchrow_array()) {
     $ids = $data[0];
     print($ids);
 }
-print $ids;
 $sth->finish;
 $dbh->disconnect;

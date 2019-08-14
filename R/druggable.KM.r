@@ -293,16 +293,27 @@ query <- paste0("SELECT table_name from guide_table WHERE cohort='", toupper(Par
 print(query);
 second_set_table <- sqlQuery(rch, query)[1,1];
 
-# also, binarization: MUT and ...
 query <- paste0("SELECT sample,", first_set_platform, ",", first_set_platform, "_time FROM ", first_set_table, ";")
 first_set <- sqlQuery(rch, query);
 rownames(first_set) <- as.character(first_set[,1]);
 print(str(first_set));
 
 # we need patients, not samples! If source is TCGA - choose patients with the specified code and remove codes
-query <- paste0("SELECT sample,", second_set_platform, " FROM ", second_set_table);
-if ((second_set_id != "") & (!is.na(second_set_id))) {
-	query <- paste0(query, " WHERE id='", second_set_id, "'");
+query <- "SELECT ";
+if ((empty_value(ids[i])) & (platforms[i] == "drug")) {
+	query <- paste0(query, "DISTINCT sample,TRUE FROM ", second_set_table);
+} else {
+	query <- paste0(query, "sample,", second_set_platform, " FROM ", second_set_table);
+}
+if (!empty_value(second_set_id)) {
+	temp_query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", second_set_id, "';"); 
+	print(temp_query);
+	internal_id <- sqlQuery(rch, temp_query)[1,1];
+	if (second_set_datatype == "drug") {
+		query <- paste0(query, " WHERE drug='", internal_id, "'");
+	} else {
+		query <- paste0(query, " WHERE id='", internal_id, "'");
+	}
 }
 if ((Par["source"]=="tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))) {
 	query <- paste0(query, " AND sample LIKE '", createPostgreSQLregex(tcga_codes[m]),"'");
@@ -322,7 +333,8 @@ if (grepl("tcga-[0-9a-z]{2}-[0-9a-z]{4}-[0-9]{2}$", as.character(second_set[1,1]
 } else {
 	names(fe) <- as.character(second_set[,1]);
 }
-if (second_set_datatype == "mut") {
+
+if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
 	# add mising patients
 	missing_patients <- setdiff(rownames(first_set), names(fe));
 	print(paste0("Adding ", length(missing_patients), " missing patients to fe"));

@@ -1,3 +1,5 @@
+-- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
+
 -- return all sources with drug sensitivity
 CREATE OR REPLACE FUNCTION sources_and_drugs() RETURNS setof text AS $$
 DECLARE
@@ -165,6 +167,26 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- function to get available transformations for plot axis. Note that "linear" in fact means "no transformations"
+CREATE OR REPLACE FUNCTION get_available_transformations(cohort text, datatype text, platform text) RETURNS setof text AS $$
+DECLARE
+table_name text;
+column_type text;
+res text;
+BEGIN
+EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO table_name;
+EXECUTE E'SELECT data_type FROM information_schema.columns WHERE table_name=\'' || table_name || E'\' AND column_name=\'' || platform || E'\';' INTO column_type;
+FOR res IN EXECUTE E'SELECT transform_type FROM data_transform_types WHERE variable_type=\'' || column_type || E'\';' 
+LOOP
+RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTIONS TO WORK WITH COMPATIBILITY
+
 CREATE OR REPLACE FUNCTION check_datatypes_compatibility(datatype text, previous_datatypes text array) RETURNS boolean
 AS $$
 DECLARE
@@ -201,6 +223,686 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION make_all_platforms_compatible() RETURNS boolean AS $$
+DECLARE
+table_n text;
+datatype text;
+platform_n text;
+platforms_array text array;
+offset_v integer;
+i integer;
+j integer;
+BEGIN
+DELETE FROM platforms_compatibility;
+platforms_array := ARRAY[]::text[];
+RAISE NOTICE 'Collecting platforms...';
+FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
+LOOP
+RAISE NOTICE 'Current table: %', table_n;
+SELECT type FROM guide_table WHERE table_name=table_n INTO datatype;
+IF (SELECT check_ids_availability(datatype) = true) THEN
+offset_v := 2;
+ELSE
+offset_v := 1;
+END IF;
+FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
+LOOP
+--RAISE NOTICE 'Platform: %', platform_n;
+IF NOT (SELECT platform_n = ANY (platforms_array))
+THEN
+SELECT array_append(platforms_array, platform_n) INTO platforms_array;
+END IF;
+END LOOP;
+END LOOP;
+RAISE NOTICE 'Unique platforms found: %', array_length(platforms_array, 1);
+FOR i IN 1..array_length(platforms_array, 1)
+LOOP
+FOR j IN i..array_length(platforms_array, 1)
+LOOP
+INSERT INTO platforms_compatibility VALUES(platforms_array[i], platforms_array[j]);
+END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION make_platforms_compatible(platform_n1 text, platform_n2 text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+IF EXISTS (SELECT * FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1))) THEN
+res := FALSE;
+ELSE
+INSERT INTO platforms_compatibility VALUES(platform_n1, platform_n2);
+res := TRUE;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION make_platforms_incompatible(platform_n1 text, platform_n2 text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+IF EXISTS (SELECT * FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1))) THEN
+DELETE FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1));
+res := TRUE;
+ELSE
+res := FALSE;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTION TO WORK WITH PLOTS 
+
+CREATE OR REPLACE FUNCTION available_plot_types(platforms text) RETURNS setof text AS $$
+DECLARE
+n integer;
+temp_array text array; 
+plots_array text array;
+i integer;
+BEGIN
+temp_array := string_to_array(platforms, ',');
+n := array_length(temp_array, 1);
+plots_array := ARRAY[]::text[];
+-- 1D plots
+IF (n =1) THEN
+plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=ANY(temp_array)) AND (plot_types.platform2 IS NULL));
+ELSE
+-- 2D plots
+IF (n=2) THEN
+plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[2]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[1]));
+ELSE
+-- 3D plots
+plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[2]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[2]));
+END IF;
+END IF;
+FOR i IN 1..array_length(plots_array, 1)
+LOOP
+RETURN NEXT plots_array[i];
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function fills table plot_types according to internal rules
+-- table should exist before the first function call
+CREATE OR REPLACE FUNCTION autofill_plot_types () RETURNS boolean AS $$
+DECLARE
+table_n text;
+datatype text;
+platform_n text;
+platform_type text;
+platforms_array text array;
+platforms_type_array text array;
+-- need this array to check if we should offer KM plot
+km_array text array;
+plots text array;
+-- name 'offset' cannot be used anymore!
+offset_v integer;
+i integer;
+j integer;
+k integer;
+n integer;
+BEGIN
+DELETE FROM plot_types;
+platforms_array := ARRAY[]::text[];
+platforms_type_array := ARRAY[]::text[];
+km_array := ARRAY ['os', 'dss', 'dfi', 'pfs', 'pfi':: text];
+RAISE NOTICE 'Collecting platforms...';
+FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
+LOOP
+RAISE NOTICE 'Current table: %', table_n;
+SELECT type FROM guide_table WHERE table_name=table_n INTO datatype;
+IF (SELECT check_ids_availability(datatype) = true) THEN
+offset_v := 2;
+ELSE
+offset_v := 1;
+END IF;
+FOR platform_n, platform_type  IN EXECUTE E'SELECT column_name, data_type FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
+LOOP
+--RAISE NOTICE 'Platform: %', platform_n;
+IF NOT (SELECT platform_n = ANY (platforms_array))
+THEN
+SELECT array_append(platforms_array, platform_n) INTO platforms_array;
+SELECT array_append(platforms_type_array, platform_type) INTO platforms_type_array;
+END IF;
+END LOOP;
+END LOOP;
+RAISE NOTICE 'Unique platforms found: %', array_length(platforms_array, 1);
+--RAISE NOTICE '%', platforms_array;
+--RAISE NOTICE '%', platforms_type_array;
+FOR i IN 1..array_length(platforms_array, 1)
+LOOP
+-- 1D plots
+-- we have only two datatypes: character and numeric
+IF (platforms_type_array[i] = 'character varying') THEN
+plots := ARRAY ['bar','piechart'::text];
+ELSE 
+plots := ARRAY ['histogram'::text];
+END IF;
+FOR k IN 1..array_length(plots, 1)
+LOOP
+INSERT INTO plot_types(platform1, plot) VALUES(platforms_array[i], plots[k]);
+END LOOP;
+-- 2D case
+FOR j IN i..array_length(platforms_array, 1)
+LOOP
+plots := ARRAY[]::text[];
+IF ((platforms_array[i] = ANY(km_array)) OR (platforms_array[j] = ANY(km_array)) AND NOT (platforms_array[i] = ANY(km_array) AND platforms_array[j] = ANY(km_array))) THEN
+plots := ARRAY ['KM'::text];
+ELSE
+IF ((platforms_type_array[i] = 'numeric') AND (platforms_type_array[j] = 'numeric')) THEN
+plots := ARRAY ['scatter'::text];
+ELSE
+IF ((platforms_type_array[i] = 'character varying') AND (platforms_type_array[j] = 'character varying')) THEN
+plots := ARRAY ['venn'::text];
+ELSE
+IF (((platforms_type_array[i] = 'numeric') AND (platforms_type_array[j] = 'character varying')) OR ((platforms_type_array[j] = 'numeric') AND (platforms_type_array[i] = 'character varying'))) THEN
+plots := ARRAY ['box'::text];
+END IF;
+END IF;
+END IF;
+END IF;
+SELECT array_length(plots, 1) INTO n;
+IF (n>0) THEN
+FOR k IN 1..n
+LOOP
+INSERT INTO plot_types(platform1, platform2, plot) VALUES(platforms_array[i],  platforms_array[j], plots[k]);
+END LOOP;
+END IF;
+END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- it is probably better to pass an array, but there are potential problems
+-- see this: https://stackoverflow.com/questions/570393/postgres-integer-arrays-as-parameters
+-- example of args: 'snp6,affymetrix,,scatter'
+-- example of condition: '((platform1='snp6') AND (platform2='affymetrix') AND (plot='scatter')) OR ((platform1='affymetrix') AND (platform2='snp6') AND (plot='scatter'))'
+-- pay attention: no need in escape symbols when passing string from R
+CREATE OR REPLACE FUNCTION add_plot_type(args text, condition text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+args_array text array;
+BEGIN
+args_array := string_to_array(args, ',');
+-- check if record already exists
+EXECUTE 'SELECT EXISTS (SELECT * FROM plot_types WHERE ' || condition || ');' INTO res;
+IF (res = FALSE) THEN 
+--RAISE NOTICE 'args_array[1] = %', args_array[1];
+IF (args_array[2] = '') THEN
+-- 1D plot 
+EXECUTE E'INSERT INTO plot_types(platform1,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[4] || E'\');';
+ELSE
+--RAISE NOTICE 'args_array[2] = %', args_array[2];
+IF (args_array[3] = '') THEN
+-- 2D plot
+EXECUTE E'INSERT INTO plot_types(platform1,platform2,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[2] || E'\',\'' || args_array[4] || E'\');';
+ELSE
+-- 3D plot
+EXECUTE E'INSERT INTO plot_types(platform1,platform2,platform3,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[2] || E'\',\'' || args_array[3] || E'\',\'' || args_array[4] || E'\');';
+--RAISE NOTICE 'args_array[3] = %', args_array[3];
+END IF;
+END IF;
+res := TRUE;
+ELSE
+res := FALSE;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function is intended to be used from R
+-- example of condition: 'E((platform1='snp6') AND (platform2='affymetrix') AND (plot='scatter')) OR ((platform1='affymetrix') AND (platform2='snp6') AND (plot='scatter'))'
+CREATE OR REPLACE FUNCTION remove_plot_type(condition text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+EXECUTE 'SELECT EXISTS (SELECT * FROM plot_types WHERE ' || condition || ';' INTO res;
+EXECUTE 'DELETE FROM plot_types WHERE ' || condition || ';';
+RETURN flag;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to return platform types
+-- used by 3D scatter to decide: if z axis is numeric or character
+CREATE OR REPLACE FUNCTION get_platform_types(cohort text, datatype1 text, platform1 text, datatype2 text DEFAULT '', platform2 text DEFAULT '', datatype3 text DEFAULT '', platform3 text DEFAULT '') RETURNS setof text AS $$
+DECLARE
+table_n text;
+res text;
+BEGIN
+table_n := cohort || '_' || datatype1;
+SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform1;
+RETURN NEXT res;
+IF (datatype2 <> '') THEN
+table_n := cohort || '_' || datatype2;
+SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform2;
+RETURN NEXT res;
+IF (datatype3 <> '') THEN
+table_n := cohort || '_' || datatype3;
+SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform3;
+RETURN NEXT res;
+END IF;
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTIONS TO WORK WITH AUTOCOMPLETE
+
+-- function returns ids for autocomplete in web interface
+CREATE OR REPLACE FUNCTION autocomplete_ids(cohort text, platform text) RETURNS setof text AS $$
+BEGIN
+RETURN QUERY EXECUTE 'SELECT ' || platform || E' FROM druggable_ids WHERE cohort=\''|| cohort || E'\' AND ' || platform || ' IS NOT NULL;';
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to create strings for autocomplete. Note that all ids are stored as a string with separators for the given cohort, datatype and platform
+CREATE OR REPLACE FUNCTION create_ids_for_platform(cohort text, datatype text, platform text) RETURNS text AS $$
+DECLARE
+res text;
+id_string text;
+data_table text;
+flag boolean;
+query_string text;
+id_synonym text;
+BEGIN
+res := '';
+EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO data_table;
+EXECUTE E'SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name=\'druggable_ids\' AND column_name=\'' || platform || E'\');' INTO flag;
+IF (flag=false) THEN
+EXECUTE 'ALTER TABLE druggable_ids ADD ' || platform || ' text;';
+END IF;
+IF (datatype='DRUG') THEN
+query_string := 'SELECT DISTINCT(drug) FROM ' || data_table || ';';
+ELSE
+query_string := 'SELECT DISTINCT(id) FROM ' || data_table || ' WHERE ' || platform || ' IS NOT NULL;';
+END IF;
+FOR id_string IN EXECUTE query_string
+LOOP
+FOR id_synonym IN EXECUTE E'SELECT external_id FROM synonyms WHERE internal_id=\'' || id_string || E'\';'
+LOOP
+res := res || '||' || id_synonym;
+END LOOP;
+END LOOP;
+-- very special case - for drugs empty value is also legitimate
+IF (platform='drug')
+THEN
+res := res || '||';
+END IF;
+-- check if we have values already
+EXECUTE E'SELECT EXISTS(SELECT ' || platform || E' FROM druggable_ids WHERE cohort=\''|| cohort || E'\' AND ' || platform || ' IS NOT NULL);' INTO flag;
+-- if we have - delete old value
+IF (flag=true) THEN
+EXECUTE 'UPDATE druggable_ids SET ' || platform || E'=\'' || res || E'\' WHERE cohort=\''|| cohort || E'\';';
+ELSE
+EXECUTE 'INSERT INTO druggable_ids(cohort,'|| platform || E') VALUES(\'' || cohort || E'\',\'' || res || E'\');';
+END IF;
+RETURN 'ok';
+END;
+$$ LANGUAGE plpgsql;
+
+-- automatically run the previous function
+CREATE OR REPLACE FUNCTION autocreate_ids(target_cohort text) RETURNS boolean AS $$
+DECLARE
+datatable text;
+datatype text;
+platform text;
+flag boolean;
+temp text;
+BEGIN
+FOR datatable,datatype IN SELECT table_name,type FROM guide_table WHERE (cohort=target_cohort)
+LOOP
+SELECT check_ids_availability(datatype) INTO flag;
+IF (flag=true) THEN
+FOR platform IN SELECT column_name FROM information_schema.columns WHERE table_name=datatable OFFSET 2
+LOOP
+raise notice 'table name: % datatype: % platform: %', datatable, datatype, platform;
+SELECT create_ids_for_platform(target_cohort, datatype, platform) INTO temp;
+raise notice 'status: %', temp;
+END LOOP;
+END IF;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to check if dataset has ids or not
+CREATE OR REPLACE FUNCTION check_ids_availability(datatype text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+SELECT has_ids INTO res FROM type_ids WHERE data_type=datatype;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTIONS TO WORK WITH PLATFORM DESCRIPTIONS, VISIBILITY ETC.
+
+-- this functions adds ALL platforms to platform_descriptions and makes them visible
+-- use ONLY for initialization!
+CREATE OR REPLACE FUNCTION import_platforms() RETURNS boolean AS $$
+DECLARE
+table_n text;
+platform_n text;
+data_type text;
+offset_v integer;
+platforms_array text array;
+i integer;
+BEGIN
+platforms_array := ARRAY[]::text[];
+DELETE FROM platform_descriptions;
+FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
+LOOP
+EXECUTE E'SELECT type FROM guide_table WHERE table_name=\'' || table_n || E'\';' INTO data_type;
+IF (SELECT check_ids_availability(data_type) = true) THEN
+offset_v := 2;
+ELSE
+offset_v := 1;
+END IF;
+FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
+LOOP
+IF NOT (SELECT platform_n = ANY (platforms_array))
+THEN
+SELECT array_append(platforms_array, platform_n) INTO platforms_array;
+END IF;
+END LOOP;
+END LOOP;
+RAISE NOTICE 'Unique platforms found: %', array_length(platforms_array, 1);
+FOR i IN 1..array_length(platforms_array, 1)
+LOOP
+INSERT INTO platform_descriptions VALUES(platforms_array[i], platforms_array[i], true);
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function switches platform visibility
+CREATE OR REPLACE FUNCTION display_platform(platform_n text, display boolean) RETURNS boolean AS $$
+BEGIN
+EXECUTE 'UPDATE platform_descriptions SET visibility=' || display || E' WHERE shortname=\'' || platform_n || E'\';';
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to create/update records in platform_descriptions
+-- can be used standalone or from R code
+CREATE OR REPLACE FUNCTION update_platform_description (platform_n text, description text, display boolean) RETURNS boolean AS $$
+DECLARE
+flag boolean;
+BEGIN
+EXECUTE E'SELECT EXISTS (SELECT * FROM platform_descriptions WHERE shortname=\'' || platform_n || E'\');' INTO flag;
+IF (flag = true)
+THEN
+EXECUTE E'UPDATE platform_descriptions SET fullname=\'' || description || E'\',visibility='|| display || E' WHERE shortname=\'' || platform_n || E'\';';
+ELSE
+EXECUTE E'INSERT INTO platform_descriptions VALUES (\'' || platform_n || E'\', \'' || description || E'\', ' || display || ');';
+END IF;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTIONS TO WORK WITH TCGA DATA
+
+-- function to get TCGA sample codes 
+-- if datatype uses patients (not samples) - return emplty string
+-- it also takes previous datatypes into account: if one of the chose datatypes
+-- uses patients - do not allow meta-codes ("all", "cancer", "healthy")
+CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, previous_datatypes text) RETURNS text AS $$
+DECLARE
+res text;
+table_n text;
+datatypes_array text array;
+source_n text;
+i integer;
+flag boolean;
+BEGIN
+res := '';
+SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
+IF (source_n = 'TCGA') THEN
+SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
+SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n;
+flag := TRUE;
+END IF;
+IF (previous_datatypes <> '') THEN
+datatypes_array := string_to_array(previous_datatypes, ',');
+FOR i IN 1 .. array_length(datatypes_array, 1)
+LOOP
+SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
+flag := flag AND TRUE;
+ELSE
+flag := FALSE;
+END IF;
+END LOOP;
+END IF;
+IF (flag = TRUE) THEN
+res := 'all,healthy,cancer,' || res;
+END IF;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to create table with sample codes available for TCGA tables
+-- if table contains patients - it is not present here
+CREATE OR REPLACE FUNCTION create_tcga_codes_table() RETURNS boolean AS $$
+DECLARE
+table_n text;
+table_codes text;
+-- this variable is used to test if table contains patients or samples
+table_sample text;
+flag boolean;
+temp_array text array;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'tcga_codes')
+THEN
+DELETE FROM tcga_codes;
+ELSE
+CREATE TABLE tcga_codes (table_name character varying(256), codes character varying(256));
+END IF;
+FOR table_n IN SELECT table_name FROM guide_table WHERE source = 'TCGA'
+LOOP
+table_codes := '';
+RAISE NOTICE 'Table: %', table_n;
+EXECUTE 'SELECT sample FROM ' || table_n || ' LIMIT 1;' INTO table_sample;
+--RAISE NOTICE 'Chosen sample: %', table_sample;
+-- tables with samples have two digits in the end
+SELECT table_sample LIKE '%-__' INTO flag;
+IF (flag = TRUE) THEN
+EXECUTE 'SELECT ARRAY(SELECT DISTINCT (left_trim(sample, 13)) FROM ' || table_n || ');' INTO temp_array;
+table_codes := array_to_string(temp_array, ',');
+INSERT INTO tcga_codes(table_name, codes) VALUES (table_n, table_codes);
+END IF;
+RAISE NOTICE 'table_codes: %', table_codes;
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTIONS TO WORK WITH SYNONYMS
+
+-- function to create basic synonyms table
+CREATE OR REPLACE FUNCTION create_synonyms_table() RETURNS boolean AS $$
+DECLARE
+table_n text;
+id_n text;
+datatype text;
+synonym_type text;
+ids_array text array;
+query_string text;
+i integer;
+j integer;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'synonyms')
+THEN
+DELETE FROM synonyms;
+ELSE
+CREATE TABLE synonyms (external_id character varying(256), internal_id character varying(256), id_type character varying(256), annotation character varying(256));
+END IF;
+ids_array := ARRAY[]::text[];
+FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
+LOOP
+SELECT type FROM guide_table WHERE table_name=table_n INTO datatype;
+-- we exclude CLIN and IMMUNO completely
+IF ((datatype<>'CLIN') AND (datatype<>'IMMUNO')) THEN
+RAISE NOTICE 'Current table: %', table_n;
+IF (datatype='DRUG') THEN
+query_string := 'SELECT DISTINCT drug FROM ' || table_n || ';';
+ELSE
+query_string := 'SELECT DISTINCT id FROM ' || table_n || ';';
+END IF;
+FOR id_n IN EXECUTE query_string
+LOOP
+IF NOT (SELECT id_n = ANY (ids_array)) THEN
+SELECT array_append(ids_array, id_n) INTO ids_array;
+IF (datatype='DRUG') THEN
+synonym_type := 'drug';
+ELSE
+synonym_type := 'gene';
+END IF;
+INSERT INTO synonyms(external_id, internal_id, id_type) VALUES(id_n, id_n, synonym_type);
+END IF;
+END LOOP;
+END IF;
+END LOOP;
+RAISE NOTICE 'Unique ids found: %', array_length(ids_array, 1);
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION add_synonym(visible_name text, internal_name text, syn_type text, annot text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+IF EXISTS (SELECT * FROM synonyms WHERE (external_id=visible_name) AND (internal_id=internal_name)) THEN
+res := FALSE;
+ELSE
+INSERT INTO synonyms VALUES(visible_name, internal_name, syn_type, annot);
+res := TRUE;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- ADDITIONAL FUNCTIONS
+
+
+-- additional function for transforming values into TRUE/FALSE
+CREATE OR REPLACE FUNCTION binarize (t_value text) RETURNS text AS $$
+DECLARE
+res text;
+BEGIN
+IF ((t_value = '') OR (t_value IS NULL)) THEN
+res := 'FALSE';
+ELSE
+res := 'TRUE';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION forget_platform(platform_n text) RETURNS boolean AS $$
+BEGIN
+DELETE FROM platforms_compatibility WHERE (platform1=platform_n) OR (platform2=platform_n);
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- remove this function after migration to the newer version of PostgreSQL!
+-- this function trims n symbols from the right (equal to left(string, -n))
+CREATE OR REPLACE FUNCTION right_trim (string text, n integer) RETURNS text AS $$
+DECLARE 
+res text;
+string_length integer;
+BEGIN
+IF (string = '') THEN
+res := '';
+ELSE
+SELECT length(string) INTO string_length;
+string_length := string_length - n;
+EXECUTE E'SELECT substring(\'' || string || E'\' FROM 1 FOR ' || string_length || ');' INTO res;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but trims n symbols from the left
+CREATE OR REPLACE FUNCTION left_trim (string text, n integer) RETURNS text AS $$
+DECLARE 
+res text;
+string_length integer;
+BEGIN
+IF (string = '') THEN
+res := '';
+ELSE
+SELECT length(string) INTO string_length;
+EXECUTE E'SELECT substring(\'' || string || E'\' FROM ' || n+1 || ' FOR ' || string_length || ');' INTO res;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- autocreate indices for all tables registered in guide_table
+CREATE OR REPLACE FUNCTION autocreate_indices_all() RETURNS boolean AS $$
+DECLARE
+table_n text;
+col_n text; 
+flag boolean;
+BEGIN
+FOR table_n in SELECT table_name FROM guide_table
+LOOP
+FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\';'
+LOOP
+RAISE NOTICE 'Creating ids for table % platform %', table_n, col_n;
+EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_' || col_n || E'_ind\');' INTO flag;
+IF (flag=false)
+THEN
+EXECUTE E'CREATE INDEX ' || table_n || '_' || col_n || '_ind ON ' || table_n || '(' || col_n || ');';
+ELSE
+RAISE NOTICE 'Index already exists';
+END IF;
+END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- DEPRICATED FUNCTIONS
+
+-- DEPRICATED
+CREATE OR REPLACE FUNCTION all_indexes_size () RETURNS setof text AS $$
+DECLARE
+res text;
+BEGIN
+DROP VIEW IF EXISTS indexes_size;
+CREATE VIEW indexes_size AS SELECT indexname, tablename FROM pg_indexes;
+FOR res IN SELECT * FROM  indexes_size
+LOOP
+RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- FUNCTION DEPRICATED!
 -- data for the given sample from the specified datatable, can use TCGA codes
 CREATE OR REPLACE FUNCTION select_by_sample (data_table text, sample_name text, tcga_code text default '%') RETURNS setof text AS $$
 DECLARE 
@@ -607,582 +1309,5 @@ ELSE
 res := 'ok';
 END IF;
 RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
--- additional function for transforming values into TRUE/FALSE
-CREATE OR REPLACE FUNCTION binarize (t_value text) RETURNS text AS $$
-DECLARE
-res text;
-BEGIN
-IF ((t_value = '') OR (t_value IS NULL)) THEN
-res := 'FALSE';
-ELSE
-res := 'TRUE';
-END IF;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION available_plot_types(platforms text) RETURNS setof text AS $$
-DECLARE
-n integer;
-temp_array text array; 
-plots_array text array;
-i integer;
-BEGIN
-temp_array := string_to_array(platforms, ',');
-n := array_length(temp_array, 1);
-plots_array := ARRAY[]::text[];
--- 1D plots
-IF (n =1) THEN
-plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=ANY(temp_array)) AND (plot_types.platform2 IS NULL));
-ELSE
--- 2D plots
-IF (n=2) THEN
-plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[2]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[1]));
-ELSE
--- 3D plots
-plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[2]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[2]));
-END IF;
-END IF;
-FOR i IN 1..array_length(plots_array, 1)
-LOOP
-RETURN NEXT plots_array[i];
-END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-
--- function returns ids for autocomplete in web interface
-CREATE OR REPLACE FUNCTION autocomplete_ids(cohort text, platform text) RETURNS setof text AS $$
-BEGIN
-RETURN QUERY EXECUTE 'SELECT ' || platform || E' FROM druggable_ids WHERE cohort=\''|| cohort || E'\';';
-END;
-$$ LANGUAGE plpgsql;
-
--- function to create strings for autocomplete. Note that all ids are stored as a string with separators for the given cohort, datatype and platform
-CREATE OR REPLACE FUNCTION create_ids_for_platform (cohort text, datatype text, platform text) RETURNS text AS $$
-DECLARE
-res text;
-id_string text;
-data_table text;
-flag boolean;
-BEGIN
-res := '';
-EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO data_table;
-EXECUTE E'SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name=\'druggable_ids\' AND column_name=\'' || platform || E'\');' INTO flag;
-IF (flag=false) THEN
-EXECUTE 'ALTER TABLE druggable_ids ADD ' || platform || ' text;';
-END IF;
-FOR id_string IN EXECUTE 'SELECT DISTINCT(id) FROM ' || data_table ||' WHERE ' || platform || ' IS NOT NULL;'
-LOOP
-res := res || '||' || id_string;
-END LOOP;
-EXECUTE 'INSERT INTO druggable_ids(cohort,'|| platform || E') VALUES(\'' || cohort || E'\',\'' || res || E'\');';
-RETURN 'ok';
-END;
-$$ LANGUAGE plpgsql;
-
--- automatically run the previous function
-CREATE OR REPLACE FUNCTION autocreate_ids(target_cohort text) RETURNS boolean AS $$
-DECLARE
-datatable text;
-datatype text;
-platform text;
-flag boolean;
-temp text;
-BEGIN
-FOR datatable,datatype IN SELECT table_name,type FROM guide_table WHERE (cohort=target_cohort)
-LOOP
-SELECT check_ids_availability(datatype) INTO flag;
-IF (flag=true) THEN
-FOR platform IN SELECT column_name FROM information_schema.columns WHERE table_name=datatable OFFSET 2
-LOOP
-raise notice 'table name: % datatype: % platform: %', datatable, datatype, platform;
-SELECT create_ids_for_platform(target_cohort, datatype, platform) INTO temp;
-raise notice 'status: %', temp;
-END LOOP;
-END IF;
-END LOOP;
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
--- function to get available transformations for plot axis. Note that "linear" in fact means "no transformations"
-CREATE OR REPLACE FUNCTION get_available_transformations(cohort text, datatype text, platform text) RETURNS setof text AS $$
-DECLARE
-table_name text;
-column_type text;
-res text;
-BEGIN
-EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO table_name;
-EXECUTE E'SELECT data_type FROM information_schema.columns WHERE table_name=\'' || table_name || E'\' AND column_name=\'' || platform || E'\';' INTO column_type;
-FOR res IN EXECUTE E'SELECT transform_type FROM data_transform_types WHERE variable_type=\'' || column_type || E'\';' 
-LOOP
-RETURN NEXT res;
-END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-
--- function to check if dataset has ids or not
-CREATE OR REPLACE FUNCTION check_ids_availability(datatype text) RETURNS boolean AS $$
-DECLARE
-res boolean;
-BEGIN
-SELECT has_ids INTO res FROM type_ids WHERE data_type=datatype;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
--- autocreate indices for all tables registered in guide_table
-CREATE OR REPLACE FUNCTION autocreate_indices_all() RETURNS boolean AS $$
-DECLARE
-table_n text;
-col_n text; 
-flag boolean;
-BEGIN
-FOR table_n in SELECT table_name FROM guide_table
-LOOP
-FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\';'
-LOOP
-RAISE NOTICE 'Creating ids for table % platform %', table_n, col_n;
-EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_' || col_n || E'_ind\');' INTO flag;
-IF (flag=false)
-THEN
-EXECUTE E'CREATE INDEX ' || table_n || '_' || col_n || '_ind ON ' || table_n || '(' || col_n || ');';
-ELSE
-RAISE NOTICE 'Index already exists';
-END IF;
-END LOOP;
-END LOOP;
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION make_all_platforms_compatible() RETURNS boolean AS $$
-DECLARE
-table_n text;
-datatype text;
-platform_n text;
-platforms_array text array;
-offset_v integer;
-i integer;
-j integer;
-BEGIN
-DELETE FROM platforms_compatibility;
-platforms_array := ARRAY[]::text[];
-RAISE NOTICE 'Collecting platforms...';
-FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
-LOOP
-RAISE NOTICE 'Current table: %', table_n;
-SELECT type FROM guide_table WHERE table_name=table_n INTO datatype;
-IF (SELECT check_ids_availability(datatype) = true) THEN
-offset_v := 2;
-ELSE
-offset_v := 1;
-END IF;
-FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
-LOOP
---RAISE NOTICE 'Platform: %', platform_n;
-IF NOT (SELECT platform_n = ANY (platforms_array))
-THEN
-SELECT array_append(platforms_array, platform_n) INTO platforms_array;
-END IF;
-END LOOP;
-END LOOP;
-RAISE NOTICE 'Unique platforms found: %', array_length(platforms_array, 1);
-FOR i IN 1..array_length(platforms_array, 1)
-LOOP
-FOR j IN i..array_length(platforms_array, 1)
-LOOP
-INSERT INTO platforms_compatibility VALUES(platforms_array[i], platforms_array[j]);
-END LOOP;
-END LOOP;
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION make_platforms_compatible(platform_n1 text, platform_n2 text) RETURNS boolean AS $$
-DECLARE
-res boolean;
-BEGIN
-IF EXISTS (SELECT * FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1))) THEN
-res := FALSE;
-ELSE
-INSERT INTO platforms_compatibility VALUES(platform_n1, platform_n2);
-res := TRUE;
-END IF;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION make_platforms_incompatible(platform_n1 text, platform_n2 text) RETURNS boolean AS $$
-DECLARE
-res boolean;
-BEGIN
-IF EXISTS (SELECT * FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1))) THEN
-DELETE FROM platforms_compatibility WHERE ((platform1=platform_n1) AND (platform2=platform_n2)) OR ((platform1=platform_n2) AND (platform2=platform_n1));
-res := TRUE;
-ELSE
-res := FALSE;
-END IF;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION forget_platform(platform_n text) RETURNS boolean AS $$
-BEGIN
-DELETE FROM platforms_compatibility WHERE (platform1=platform_n) OR (platform2=platform_n);
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
--- remove this function after migration to the newer version of PostgreSQL!
--- this function trims n symbols from the right (equal to left(string, -n))
-CREATE OR REPLACE FUNCTION right_trim (string text, n integer) RETURNS text AS $$
-DECLARE 
-res text;
-string_length integer;
-BEGIN
-IF (string = '') THEN
-res := '';
-ELSE
-SELECT length(string) INTO string_length;
-string_length := string_length - n;
-EXECUTE E'SELECT substring(\'' || string || E'\' FROM 1 FOR ' || string_length || ');' INTO res;
-END IF;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
--- same, but trims n symbols from the left
-CREATE OR REPLACE FUNCTION left_trim (string text, n integer) RETURNS text AS $$
-DECLARE 
-res text;
-string_length integer;
-BEGIN
-IF (string = '') THEN
-res := '';
-ELSE
-SELECT length(string) INTO string_length;
-EXECUTE E'SELECT substring(\'' || string || E'\' FROM ' || n+1 || ' FOR ' || string_length || ');' INTO res;
-END IF;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION all_indexes_size () RETURNS setof text AS $$
-BEGIN
-DROP VIEW IF EXISTS indexes_size;
-CREATE VIEW indexes_size AS SELECT indexname, tablename FROM pg_indexes;
-FOR res IN SELECT * FROM  indexes_size
-LOOP
-RETURN NEXT res;
-END LOOP;
-END;
-$$ LANGUAGE plpgsql;
-
--- this function fills table plot_types according to internal rules
--- table should exist before the first function call
-CREATE OR REPLACE FUNCTION autofill_plot_types () RETURNS boolean AS $$
-DECLARE
-table_n text;
-datatype text;
-platform_n text;
-platform_type text;
-platforms_array text array;
-platforms_type_array text array;
--- need this array to check if we should offer KM plot
-km_array text array;
-plots text array;
--- name 'offset' cannot be used anymore!
-offset_v integer;
-i integer;
-j integer;
-k integer;
-n integer;
-BEGIN
-DELETE FROM plot_types;
-platforms_array := ARRAY[]::text[];
-platforms_type_array := ARRAY[]::text[];
-km_array := ARRAY ['os', 'dss', 'dfi', 'pfs', 'pfi':: text];
-RAISE NOTICE 'Collecting platforms...';
-FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
-LOOP
-RAISE NOTICE 'Current table: %', table_n;
-SELECT type FROM guide_table WHERE table_name=table_n INTO datatype;
-IF (SELECT check_ids_availability(datatype) = true) THEN
-offset_v := 2;
-ELSE
-offset_v := 1;
-END IF;
-FOR platform_n, platform_type  IN EXECUTE E'SELECT column_name, data_type FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
-LOOP
---RAISE NOTICE 'Platform: %', platform_n;
-IF NOT (SELECT platform_n = ANY (platforms_array))
-THEN
-SELECT array_append(platforms_array, platform_n) INTO platforms_array;
-SELECT array_append(platforms_type_array, platform_type) INTO platforms_type_array;
-END IF;
-END LOOP;
-END LOOP;
-RAISE NOTICE 'Unique platforms found: %', array_length(platforms_array, 1);
---RAISE NOTICE '%', platforms_array;
---RAISE NOTICE '%', platforms_type_array;
-FOR i IN 1..array_length(platforms_array, 1)
-LOOP
--- 1D plots
--- we have only two datatypes: character and numeric
-IF (platforms_type_array[i] = 'character varying') THEN
-plots := ARRAY ['bar','piechart'::text];
-ELSE 
-plots := ARRAY ['histogram'::text];
-END IF;
-FOR k IN 1..array_length(plots, 1)
-LOOP
-INSERT INTO plot_types(platform1, plot) VALUES(platforms_array[i], plots[k]);
-END LOOP;
--- 2D case
-FOR j IN i..array_length(platforms_array, 1)
-LOOP
-plots := ARRAY[]::text[];
-IF ((platforms_array[i] = ANY(km_array)) OR (platforms_array[j] = ANY(km_array)) AND NOT (platforms_array[i] = ANY(km_array) AND platforms_array[j] = ANY(km_array))) THEN
-plots := ARRAY ['KM'::text];
-ELSE
-IF ((platforms_type_array[i] = 'numeric') AND (platforms_type_array[j] = 'numeric')) THEN
-plots := ARRAY ['scatter'::text];
-ELSE
-IF ((platforms_type_array[i] = 'character varying') AND (platforms_type_array[j] = 'character varying')) THEN
-plots := ARRAY ['venn'::text];
-ELSE
-IF (((platforms_type_array[i] = 'numeric') AND (platforms_type_array[j] = 'character varying')) OR ((platforms_type_array[j] = 'numeric') AND (platforms_type_array[i] = 'character varying'))) THEN
-plots := ARRAY ['box'::text];
-END IF;
-END IF;
-END IF;
-END IF;
-SELECT array_length(plots, 1) INTO n;
-IF (n>0) THEN
-FOR k IN 1..n
-LOOP
-INSERT INTO plot_types(platform1, platform2, plot) VALUES(platforms_array[i],  platforms_array[j], plots[k]);
-END LOOP;
-END IF;
-END LOOP;
-END LOOP;
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
--- it is probably better to pass an array, but there are potential problems
--- see this: https://stackoverflow.com/questions/570393/postgres-integer-arrays-as-parameters
--- example of args: 'snp6,affymetrix,,scatter'
--- example of condition: '((platform1='snp6') AND (platform2='affymetrix') AND (plot='scatter')) OR ((platform1='affymetrix') AND (platform2='snp6') AND (plot='scatter'))'
--- pay attention: no need in escape symbols when passing string from R
-CREATE OR REPLACE FUNCTION add_plot_type(args text, condition text) RETURNS boolean AS $$
-DECLARE
-res boolean;
-args_array text array;
-BEGIN
-args_array := string_to_array(args, ',');
--- check if record already exists
-EXECUTE 'SELECT EXISTS (SELECT * FROM plot_types WHERE ' || condition || ');' INTO res;
-IF (res = FALSE) THEN 
---RAISE NOTICE 'args_array[1] = %', args_array[1];
-IF (args_array[2] = '') THEN
--- 1D plot 
-EXECUTE E'INSERT INTO plot_types(platform1,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[4] || E'\');';
-ELSE
---RAISE NOTICE 'args_array[2] = %', args_array[2];
-IF (args_array[3] = '') THEN
--- 2D plot
-EXECUTE E'INSERT INTO plot_types(platform1,platform2,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[2] || E'\',\'' || args_array[4] || E'\');';
-ELSE
--- 3D plot
-EXECUTE E'INSERT INTO plot_types(platform1,platform2,platform3,plot) VALUES(\'' || args_array[1] || E'\',\'' || args_array[2] || E'\',\'' || args_array[3] || E'\',\'' || args_array[4] || E'\');';
---RAISE NOTICE 'args_array[3] = %', args_array[3];
-END IF;
-END IF;
-res := TRUE;
-ELSE
-res := FALSE;
-END IF;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
--- this function is intended to be used from R
--- example of condition: 'E((platform1='snp6') AND (platform2='affymetrix') AND (plot='scatter')) OR ((platform1='affymetrix') AND (platform2='snp6') AND (plot='scatter'))'
-CREATE OR REPLACE FUNCTION remove_plot_type(condition text) RETURNS boolean AS $$
-DECLARE
-res boolean;
-BEGIN
-EXECUTE 'SELECT EXISTS (SELECT * FROM plot_types WHERE ' || condition || ';' INTO res;
-EXECUTE 'DELETE FROM plot_types WHERE ' || condition || ';';
-RETURN flag;
-END;
-$$ LANGUAGE plpgsql;
- 
--- this functions adds ALL platforms to platform_descriptions and makes them visible
--- use ONLY for initialization!
-CREATE OR REPLACE FUNCTION import_platforms() RETURNS boolean AS $$
-DECLARE
-table_n text;
-platform_n text;
-data_type text;
-offset_v integer;
-platforms_array text array;
-i integer;
-BEGIN
-platforms_array := ARRAY[]::text[];
-DELETE FROM platform_descriptions;
-FOR table_n IN SELECT table_name FROM guide_table WHERE cohort IS NOT NULL
-LOOP
-EXECUTE E'SELECT type FROM guide_table WHERE table_name=\'' || table_n || E'\';' INTO data_type;
-IF (SELECT check_ids_availability(data_type) = true) THEN
-offset_v := 2;
-ELSE
-offset_v := 1;
-END IF;
-FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
-LOOP
-IF NOT (SELECT platform_n = ANY (platforms_array))
-THEN
-SELECT array_append(platforms_array, platform_n) INTO platforms_array;
-END IF;
-END LOOP;
-END LOOP;
-RAISE NOTICE 'Unique platforms found: %', array_length(platforms_array, 1);
-FOR i IN 1..array_length(platforms_array, 1)
-LOOP
-INSERT INTO platform_descriptions VALUES(platforms_array[i], platforms_array[i], true);
-END LOOP;
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
--- this function switches platform visibility
-CREATE OR REPLACE FUNCTION display_platform(platform_n text, display boolean) RETURNS boolean AS $$
-BEGIN
-EXECUTE 'UPDATE platform_descriptions SET visibility=' || display || E' WHERE shortname=\'' || platform_n || E'\';';
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
--- function to create/update records in platform_descriptions
--- can be used standalone or from R code
-CREATE OR REPLACE FUNCTION update_platform_description (platform_n text, description text, display boolean) RETURNS boolean AS $$
-DECLARE
-flag boolean;
-BEGIN
-EXECUTE E'SELECT EXISTS (SELECT * FROM platform_descriptions WHERE shortname=\'' || platform_n || E'\');' INTO flag;
-IF (flag = true)
-THEN
-EXECUTE E'UPDATE platform_descriptions SET fullname=\'' || description || E'\',visibility='|| display || E' WHERE shortname=\'' || platform_n || E'\';';
-ELSE
-EXECUTE E'INSERT INTO platform_descriptions VALUES (\'' || platform_n || E'\', \'' || description || E'\', ' || display || ');';
-END IF;
-RETURN true;
-END;
-$$ LANGUAGE plpgsql;
-
--- function to return platform types
--- used by 3D scatter to decide: if z axis is numeric or character
-CREATE OR REPLACE FUNCTION get_platform_types(cohort text, datatype1 text, platform1 text, datatype2 text DEFAULT '', platform2 text DEFAULT '', datatype3 text DEFAULT '', platform3 text DEFAULT '') RETURNS setof text AS $$
-DECLARE
-table_n text;
-res text;
-BEGIN
-table_n := cohort || '_' || datatype1;
-SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform1;
-RETURN NEXT res;
-IF (datatype2 <> '') THEN
-table_n := cohort || '_' || datatype2;
-SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform2;
-RETURN NEXT res;
-IF (datatype3 <> '') THEN
-table_n := cohort || '_' || datatype3;
-SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform3;
-RETURN NEXT res;
-END IF;
-END IF;
-END;
-$$ LANGUAGE plpgsql;
-
--- function to get TCGA sample codes 
--- if datatype uses patients (not samples) - return emplty string
--- it also takes previous datatypes into account: if one of the chose datatypes
--- uses patients - do not allow meta-codes ("all", "cancer", "healthy")
-CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, previous_datatypes text) RETURNS text AS $$
-DECLARE
-res text;
-table_n text;
-datatypes_array text array;
-source_n text;
-i integer;
-flag boolean;
-BEGIN
-res := '';
-SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
-IF (source_n = 'TCGA') THEN
-SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
-IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
-SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n;
-flag := TRUE;
-END IF;
-IF (previous_datatypes <> '') THEN
-datatypes_array := string_to_array(previous_datatypes, ',');
-FOR i IN 1 .. array_length(datatypes_array, 1)
-LOOP
-SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
-IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
-flag := flag AND TRUE;
-ELSE
-flag := FALSE;
-END IF;
-END LOOP;
-END IF;
-IF (flag = TRUE) THEN
-res := 'all,healthy,cancer,' || res;
-END IF;
-END IF;
-RETURN res;
-END;
-$$ LANGUAGE plpgsql;
-
--- function to create table with sample codes available for TCGA tables
--- if table contains patients - it is not present here
-CREATE OR REPLACE FUNCTION create_tcga_codes_table() RETURNS boolean AS $$
-DECLARE
-table_n text;
-table_codes text;
--- this variable is used to test if table contains patients or samples
-table_sample text;
-flag boolean;
-temp_array text array;
-BEGIN
-IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
-WHERE tablename  = 'tcga_codes')
-THEN
-DELETE FROM tcga_codes;
-ELSE
-CREATE TABLE tcga_codes (table_name character varying(256), codes character varying(256));
-END IF;
-FOR table_n IN SELECT table_name FROM guide_table WHERE source = 'TCGA'
-LOOP
-table_codes := '';
-RAISE NOTICE 'Table: %', table_n;
-EXECUTE 'SELECT sample FROM ' || table_n || ' LIMIT 1;' INTO table_sample;
---RAISE NOTICE 'Chosen sample: %', table_sample;
--- tables with samples have two digits in the end
-SELECT table_sample LIKE '%-__' INTO flag;
-IF (flag = TRUE) THEN
-EXECUTE 'SELECT ARRAY(SELECT DISTINCT (left_trim(sample, 13)) FROM ' || table_n || ');' INTO temp_array;
-table_codes := array_to_string(temp_array, ',');
-INSERT INTO tcga_codes(table_name, codes) VALUES (table_n, table_codes);
-END IF;
-RAISE NOTICE 'table_codes: %', table_codes;
-END LOOP;
-RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
