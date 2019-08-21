@@ -302,12 +302,12 @@ $(document).ready(function(){
 	$("#screenList").append(options.join("")).selectmenu();
 	
 	var drugs = drug_list();
-	//$("#compoundsList").menu();
-	//for (i in drugs) {
-	//	 $("<li><a href='#'>"+drugs[i].source+"</a></li>").appendTo("#compoundsList");
-	//	 console.log(drugs[i].source);
-    //  $("#compoundsList").menu("refresh");
-	//}
+	$("#compoundsList").menu();
+	for (i in drugs) {
+		 $("<li><a href='#'>"+drugs[i].source+"</a></li>").appendTo("#compoundsList");
+		 console.log(drugs[i].source);
+      $("#compoundsList").menu("refresh");
+	}
 	options = [];
 	$("#compoundsList").append("<option value='all'>All compounds</option>").selectmenu();
 	for (i in drugs) {
@@ -340,9 +340,9 @@ $(document).ready(function(){
 	$("#plot-button").button("disable");
 	// need to call it manually because some types of plots need no additional parameters 
 	id_keyup(1);
-	$("#dock").accordion({
-      collapsible: true
-    });
+	if (sessionStorage.getItem("docked_plots") == null) {
+		sessionStorage.setItem("docked_plots", 0);
+	}
 });
 
 function plot() {
@@ -372,11 +372,9 @@ function plot() {
 		if (plot_filename == "no") {
 			$("#progressbar").css({"visibility": "visible"});
 			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
-			plot_id = plot_filename.substring(0, plot_filename.length-4);
+			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			// save plot in session history
 			sessionStorage.setItem(plot_filename, plot_description);
-			//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
-			//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="480" height="480"></div>';
 			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="1280" height="800"></div>';
 			$(graph_window).dialog({
 				title: plot_title,
@@ -390,9 +388,7 @@ function plot() {
 						text: "Dock",
 						icon: "ui-icon-arrowthickstop-1-s",
 						click: function() {
-							// can't use graph_window, since we need to specify height and width
-							dock_plot(this, '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
-							$( this ).dialog( "close" );
+							dock_plot(this, plot_id);
 						},
 						showText: false
 					}
@@ -401,13 +397,6 @@ function plot() {
 				width: 'auto',
 				modal: false,
 				resize: function( event, ui ) {
-						//if (ui.size.width-ui.originalSize.width > ui.size.height-ui.originalSize.height) {
-						//	$(this).height($(this).width());
-						//}
-						//else {
-						//	$(this).width($(this).height())
-						//}
-						//$(this).dialog( "refresh" );
 						($(this).children('iframe'))[0].setAttribute("height", $(this).height());
 						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 					},
@@ -418,7 +407,7 @@ function plot() {
 		// existing plot
 		else {
 			console.log("No need to do it again!");
-			plot_id = plot_filename.substring(0, plot_filename.length-4);
+			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			if (document.getElementById("plot_window_" + plot_id)) {
 				console.log("We already have a window: move it to the top!");
 				$("#plot_window_" + plot_id + ".ui-dialog-content.ui-widget-content").dialog("moveToTop");
@@ -426,9 +415,8 @@ function plot() {
 			else {
 				console.log("Plot was closed");
 				var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="1280" height="800"></div>';
-				//var graph_window = '<div id="plot_window_' + plot_id +'"><img src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="100%" height="auto"></div>';
 				$(graph_window).dialog({
-					title: plot_title, 
+					title: plot_title,
 					buttons: [
 						{
 							text: "Minimize",
@@ -439,8 +427,7 @@ function plot() {
 							text: "Dock",
 							icon: "ui-icon-arrowthickstop-1-s",
 							click: function() {
-								dock_plot(this, '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" height=240 width=240></div>');
-								$( this ).dialog( "close" );
+								dock_plot(this, plot_id);
 							}
 						}
 					],
@@ -1015,111 +1002,36 @@ function find_plot_in_history(plot_description) {
 
 function plot_minimize(graph_window) {
 	$(graph_window).dialog({"height": $( ".ui-dialog > .ui-dialog-titlebar" )[1].clientHeight});
-	$(graph_window).dialog( "option", "buttons", 
-		[
-			{
+	// we need to change just first button, no need to do modify others
+	var buttons = $(graph_window).dialog("option", "buttons");
+	buttons[0] = {
 			text: "Maximize",
 			icon: "ui-icon-arrow-4-diag",
 			click: function() {plot_maximize(graph_window)},
-			},
-			{	
-			text: "Dock",
-			icon: "ui-icon-arrowthickstop-1-s",
-			click: function() {
-				// we cannot use just graph_window variable, or we'll get a strange result after minimize-dock
-				dock_plot(this, '<div id="' + graph_window.getAttribute("id") + '">' + graph_window.innerHTML + '</div>');
-				$( this ).dialog( "close" );
-			}
-			}
-		]
-	);
+		},
+	$(graph_window).dialog( "option", "buttons", buttons);
 }
 
 function plot_maximize(graph_window) {
-	$(graph_window).dialog({
-		modal: false,
-		resize: function( event, ui ) {
-					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
-					($(this).children('iframe'))[0].setAttribute("width", $(this).width());
-				},
-		beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}});
 	$(graph_window).dialog({"height": 800});
 	$(graph_window).dialog({"width": 1280});
-	$(graph_window).dialog( "option", "buttons",
-		[
-			{
+	var buttons = $(graph_window).dialog("option", "buttons");
+	buttons[0] = {
 			text: "Minimize",
 			icon: "ui-icon-minus",
 			click: function() {plot_minimize(graph_window)},
-			},
-			{
-			text: "Dock",
-			icon: "ui-icon-arrowthickstop-1-s",
-			click: function() {
-				dock_plot(this, '<div id="' + graph_window.getAttribute("id") + '">' + graph_window.innerHTML + '</div>');
-				$( this ).dialog( "close" );
-			}
-			}
-		]
-	);
+		},
+	$(graph_window).dialog( "option", "buttons", buttons);
 }
 
-function dock_plot(graph_window, plot) {
-	var title = $( graph_window ).dialog( "option", "title");
-	var id = ($("#dock").children().length)/2;
-	console.log(graph_window);
-	//console.log('<h3>' + title + '</h3>' + '<div id = "sample">' + plot + '<br><button id="undock_' + id + '" onclick="undock_plot(' + id + ',"' + plot + '")">Undock</button><button id="dock_close_' + id + '" onclick="close_dock_plot(' + id + ')">Close</button></div>');
-	$("#dock").append('<h3>' + title + '</h3>' + '<div>' + plot + '<br><button id="undock_' + id + '" onclick="undock_plot(' + id + ')">Undock</button><button id="dock_close_' + id + '" onclick="close_dock_plot(' + id + ')">Close</button></div>');
-	$("#undock_" + id).button();
-	$("#dock_close_" + id).button();
-	$("#dock").accordion( "refresh" );
-}
-
-function undock_plot(id) {
-	// this will give strange result after "undock"-"dock"
-	//var plot = ($("#dock").children('div').eq(id)).children('div').eq(0)[0];
-	var plot = '<div id="' + ($("#dock").children('div').eq(id)).children('div').eq(0)[0].getAttribute("id") + '">' + ($("#dock").children('div').eq(id)).children('div').eq(0)[0].innerHTML + '</div>';
-	console.log(plot);
-	var plot_title = $("#dock").children('h3').eq(id)[0].innerText;
-	console.log(plot_title);
-	close_dock_plot(id);
-	$(plot).dialog({
-				title: plot_title, 
-				buttons: [
-				{
-					text: "Minimize",
-					icon: "ui-icon-minus",
-					click: function() {plot_minimize(this)},
-				},
-				{
-					text: "Dock",
-					icon: "ui-icon-arrowthickstop-1-s",
-					click: function() {
-						dock_plot(this, plot);
-						$( this ).dialog( "close" );
-					}
-				}
-				],
-				height: 'auto',
-				width: 'auto',
-				modal: false,
-				create: function() {
-					($(this).children('iframe'))[0].setAttribute("height", 800);
-					($(this).children('iframe'))[0].setAttribute("width", 1280);
-				},
-				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-			});
-}
-
-function close_dock_plot(id) {
-	$("#dock").children('div').eq(id).remove();
-	$("#dock").children('h3').eq(id).remove();
-	for (i = id+1; i<=($("#dock").children().length)/2; i++) {
-		document.getElementById('undock_' + i).setAttribute("onclick", 'undock_plot(' + (i-1) + ')');
-		document.getElementById('undock_' + i).setAttribute("id", 'undock_' + (i-1));
-		document.getElementById('dock_close_' + i).setAttribute("onclick", 'close_dock_plot(' + (i-1) + ')');
-		document.getElementById('dock_close_' + i).setAttribute("id", 'dock_close_' + (i-1));
+function dock_plot(graph_window, plot_id) {
+	console.log($(graph_window).dialog( "option", "position" ));
+	if (sessionStorage.getItem(plot_id + "_docked") == null) {
+		var n = sessionStorage.getItem("docked_plots");
+		sessionStorage.setItem("docked_plots", n+1);
+		sessionStorage.setItem(plot_id + "_docked", n+1);	
 	}
+	
 }
 
 function id_keyup(k) {

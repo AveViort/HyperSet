@@ -1,14 +1,13 @@
 -- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
 
 -- return all sources with drug sensitivity
-CREATE OR REPLACE FUNCTION sources_and_drugs() RETURNS setof text AS $$
-DECLARE
-res text;
+CREATE OR REPLACE FUNCTION sources_and_drugs() RETURNS
+TABLE (
+code character varying(64),
+visible_name character varying(256))
+AS $$
 BEGIN
-FOR res IN SELECT display_name FROM guide_table  WHERE type LIKE 'Drug sensitivity'
-LOOP
-RETURN NEXT res;
-END LOOP;
+RETURN QUERY SELECT table_name, display_name FROM guide_table  WHERE type LIKE 'Drug sensitivity';
 END;
 $$ LANGUAGE plpgsql;
 
@@ -44,7 +43,7 @@ ELSE
 CREATE TABLE drugs (source character varying(64), compound character varying(64));
 END IF;
 INSERT INTO drugs SELECT DISTINCT screen, drug FROM best_drug_corrs_counts ORDER BY screen;
-UPDATE drugs SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE drugs.source=subquery.source_name;
+--UPDATE drugs SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE drugs.source=subquery.source_name;
 RETURN QUERY SELECT * FROM drugs;
 END;
 $$ LANGUAGE plpgsql;
@@ -65,7 +64,7 @@ ELSE
 CREATE TABLE features (source character varying(64), feature character varying(256));
 END IF;
 INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts ORDER BY screen;
-UPDATE features SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE features.source=subquery.source_name;
+--UPDATE features SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE features.source=subquery.source_name;
 UPDATE features SET feature=subquery.show_name FROM (SELECT DISTINCT short_name, full_name FROM feature_table) AS subquery(short,show_name) WHERE features.feature=subquery.short;
 RETURN QUERY SELECT * FROM features WHERE feature IN (SELECT full_name FROM feature_table) ORDER BY source;
 END;

@@ -9,8 +9,8 @@ function drug_sources() {
 	xmlhttp.send();
 	sources = sources.split("|");
 	var sources_array = [];
-	for (i in sources) {
-		sources_array.push({code: sources[i], name: sources[i]});
+	for (i = 0; i< sources.length-2; i = i+2) {
+		sources_array.push({code: sources[i], name: sources[i+1]});
 	}
 	return sources_array;
 }
@@ -27,7 +27,7 @@ function drug_list() {
 		}
 	xmlhttp.send();
 	var drugs_with_sources = plain_text.split("!");
-	drugs_with_sources.pop();
+	drugs_with_sources.shift();
 	for (i in drugs_with_sources) {
 		var drugs_with_header = drugs_with_sources[i].split("|");
 		drugs_with_header.pop();
@@ -48,14 +48,14 @@ function feature_list() {
 		}
 	xmlhttp.send();
 	var features_with_sources = plain_text.split("!");
-	features_with_sources.pop();
+	features_with_sources.shift();
 	for (i in features_with_sources) {
 		var features_with_header = features_with_sources[i].split("|");
 		features_with_header.pop();
 		var feature = features_with_header.shift();
 		var codes = [];
 		var names = [];
-		for (j = 0; j < features_with_header.length; j = j+2) {
+		for (j = 0; j < features_with_header.length-2; j = j+2) {
 			codes.push(features_with_header[j]);
 			names.push(features_with_header[j+1]);
 		}

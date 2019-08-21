@@ -20,17 +20,15 @@ my @string, @response;
 while (@response = $sth->fetchrow_array) {
 		my $Text = @response[0];
 		$Text =~ s/[()]//g;
-		$Text =  substr($Text, 1);
-		$Text =~ m|([^"]*)",(.*)|;
+		$Text =~ m|^(.*),"(.*)"|;
 		if ($1 ne $temp) {
 			print "!";
 			print $1;
 			print "|";
 			$temp = $1;
 		}
-		print substr($2, 1, length($2)-2);
+		print $2;
 		print "|";
 }
 $sth->finish;
 $dbh->disconnect;
-			

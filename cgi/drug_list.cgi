@@ -21,8 +21,7 @@ my @string, @response;
 while (@response = $sth->fetchrow_array) {
 		my $Text = @response[0];
 		$Text =~ s/[()]//g;
-		$Text =  substr($Text, 1);
-		$Text =~ m|([^"]*)",(.*)|;
+		$Text =~ m|^(.*),(.*)|;
 		if ($1 ne $temp) {
 			print "!";
 			print $1;

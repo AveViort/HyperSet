@@ -16,8 +16,10 @@ $stat = qq/SELECT sources_and_drugs()/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 while (@source = $sth->fetchrow_array) {
-		print @source;
-		print "|";
+		my $Text = @source[0];
+		$Text =~ s/[()]//g;
+		$Text =~ m|^(.*),"(.*)"|;
+		print $1."|".$2."|";
 }
 $sth->finish;
 $dbh->disconnect;
