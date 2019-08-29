@@ -179,70 +179,7 @@ li.tab:hover ul {
 	</tr>
 	</table>
 	</div>
-	<div id="tab-plot">This tab shows the most recent plot or (if none) - instruction</div>
-</div>
-
-<div id="ssOpener" style="width: 14%; text-align: left;  cursor: pointer;" title="How the four screens measured drug activity?">
-	<b>Drug response scales
-	<div style="width: 7%; text-align: left;" id="help-0" class="js_ui_help">[?]</div></b>
-</div>    
-<div id="showScales" >
-	<div id="ssAcc"> 
-		<h3>ACT</h3>
-			<div>
-				<p>
-				The units stand for 1:300 dilution steps, so that '6' corresponds to the highest dilution.
-				Sensitivity to compounds is expressed as IC50 value, so that: 
-				<ul><li>
-					0 means 'insensitive to compound' and 
-				</li><li>
-					6 means 'fully sensitive to compound' 
-				</li></ul>
-				</p>
-			</div>
-		<h3>CCLE (Barretina et al., 2012), 24 drugs</h3>
-			<div>
-				<p>
-				These authors considered a range of metrics for their analysis, but finally preferred s.c. 'normalized activity areas'. These original units were calculated as areas under compound response curves where higher values corresponded to higher sensitivity so that 0 stood for 'insensitive to compound' and 8 stood for 'full sensitivity'.<br>
-				Further, the activity area values were normalized for unequal luminiscence in the assay, and we rendered them normally distributed by log-transformation. Hence finally the values range from 
-				<ul><li>
-					-3: 'insensitive to compound' to 
-				</li><li>
-					+2.31: 'maximal sensitivity'
-				</li></ul>
-				</p>
-			</div>
-		<h3>CTD2 (Basu et al., 2013), 354 drugs <font  color="red"> <b>(NOTE: INVERTED SCALE!)</b></font ></h3>
-			<div>
-				<p>
-				The authors mainly used area under curve (AUC) for the quantitative analyses - so did we, too.
-				In completely insensitive cases the full area under 8 experimental points reached 8, whereas 0 stood for  full sensitivity. Thus, the scale of this screen <b>is INVERTED compared to the three other screens!</b> We did not transform the values further.
-				<ul><li>
-					0: 'maximal sensitivity', whereas
-				</li><li>
-					8 or (sometimes) higher: 'insensitive to compound' 
-				</li></ul>
-				</p>
-			</div>
-		<h3>CGP (Garnett et al., 2012), 138 drugs</h3>
-			<div>
-				<p>
-				Since these authors used a combination of IC50 and the slope parameter to achieve the most complete description of responses, we decided to use the area under curve (AUC) as a single feature that reflects the both above values. AUC was originally provided in the same table and ranged from 0% (fully sensitive) to 100% (insensitive). To approach the normal distribution, we transformed the values as log(1 - AUC), so that now they range from 
-				<ul><li>
-					-8.11: 'insensitive to compound' to 
-				</li><li>
-					0: 'maximal sensitivity'
-				</li></ul>
-				</p>
-			</div>
-	</div>
-</div>
-
-<div id="dock" spot=0></div>
-		
-<P style="width:34%;"><a href="https://www.evinet.org/">EviNet.org main site</a></P>
-<P style="width:34%;"><a href="http://funcoup2.sbc.su.se/index.TEST01.html">FunCoup v.1-LE (requires Java)</a></P>
-<P style="width:34%;"><a href="http://funcoup.sbc.su.se/search/">FunCoup v.4.0 </a></P>
+</div>   
 
 <P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
 

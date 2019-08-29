@@ -21,7 +21,7 @@ my $selectedDrug = $query->param("drugList");
 $condition .=  " AND drug=\'".$selectedDrug."\'" if $selectedDrug ne 'ALL'; 
 my( $row , $rows, @r, $col, $tbl, $pl, $gene);
 #$dbh = HS_SQL::dbh('druggable');
-my $stat = "SELECT * from $sqltable WHERE $condition ORDER BY  $order LIMIT 10000;";
+my $stat = "SELECT * FROM $sqltable WHERE $condition ORDER BY  $order LIMIT 10000;";
 print "Content-type: text/html\n\n";
 print $stat."<br>";
 
