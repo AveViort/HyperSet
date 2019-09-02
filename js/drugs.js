@@ -1,3 +1,57 @@
+function get_correlation_datatypes() {
+	var datatypes;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/correlation_datatypes.cgi", false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			datatypes = this.responseText;}
+		}
+	xmlhttp.send();
+	datatypes = datatypes.split("|");
+	return datatypes.slice(0, datatypes.length-1);
+}
+
+function get_correlation_platforms(datatype) {
+	var platforms;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/correlation_platforms.cgi?datatype=" + encodeURIComponent(datatype), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			platforms = this.responseText;}
+		}
+	xmlhttp.send();
+	platforms = platforms.split("|");
+	return platforms.slice(0, platforms.length-1);
+}
+
+function get_correlation_screens(datatype, platform) {
+	var screens;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/correlation_screens.cgi?datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			screens = this.responseText;}
+		}
+	xmlhttp.send();
+	screens = screens.split("|");
+	return screens.slice(0, screens.length-1);
+}
+
+function get_correlation_features_and_genes(datatype, platform, screen) {
+	var features_and_genes;
+	var xmlhttp = new XMLHttpRequest();
+	// Pay attention! This function is called by web worker in JS folder, that's why we have .. in relative path 
+	xmlhttp.open("GET", "../cgi/correlation_features_and_genes.cgi?datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			features_and_genes = this.responseText;}
+		}
+	xmlhttp.send();
+	features_and_genes = features_and_genes.split("|");
+	// in this case we allow "" value - because user don't have to specify feature or gene
+	return features_and_genes;
+}
+
 function drug_sources() {
 	var sources;
 	var xmlhttp = new XMLHttpRequest();
@@ -64,10 +118,22 @@ function feature_list() {
 	return feature_array;
 }
 
-function retreive_drug_correlations(screen, compound, feature) {
+function retrieve_drug_correlations(datatype, platform, screen, id, fdr) {
+	var table_data;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/correlations.cgi?screenList=" + screen.toUpperCase() + "&drugList=" + compound.toUpperCase() + "&corrTabList=" + feature.toUpperCase());
-	//xmlhttp.open("GET", "cgi/correlations.cgi?screenList=" + encodeURIComponent(screen) + "&drugList=" + encodeURIComponent(compound) + "&corrTabList=" + encodeURIComponent(feature), false);
+	console.log("cgi/correlations.cgi?datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr);
+	xmlhttp.open("GET", "cgi/correlations.cgi?datatype=" + encodeURIComponent(datatype) + 
+		"&platform=" + encodeURIComponent(platform) + 
+		"&screen=" + encodeURIComponent(screen) + 
+		"&id=" + encodeURIComponent(id) + 
+		"&fdr=" + encodeURIComponent(fdr), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			table_data = this.responseText;}
+		}
+	xmlhttp.send();
+	table_data = table_data.split("|");
+	return table_data.slice(0, table_data.length-1);
 }
 
 function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales) {
@@ -121,7 +187,7 @@ function get_plot_cohorts(source) {
 
 function get_cohort_datatypes(cohort, previous_datatypes) {
 	var datatypes;
-	console.log('previous datatypes: ' + previous_datatypes);
+	// console.log('previous datatypes: ' + previous_datatypes);
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/plot_datatypes.cgi?cohort=" + encodeURIComponent(cohort) + "&previous_datatypes=" + encodeURIComponent(previous_datatypes), false);
 	xmlhttp.onreadystatechange = function() {

@@ -8,36 +8,29 @@ use HS_SQL;
 use Aconfig;
 
 $ENV{'PATH'} = '/bin:/usr/bin:';
-$CGI::POST_MAX=102400000;
 our ($dbh, $stat);
+my @row;
 
 my $query = new CGI;
-my($sqltable, $order ) = ('best_drug_corrs', ' abs(correlation) DESC ');
-my $condition = "  dataset=\'CTD\' ";
-$condition .=  " AND screen=\'".$query->param("screenList")."\'" if $query->param("screenList") ne 'ALL'; 
-$condition .=  " AND platform=\'".$query->param("corrTabList")."\'" if $query->param("corrTabList") ne 'ALL';
-my $selectedDrug = $query->param("drugList"); 
-#my $selectedDrug = $query->param("drugList_".$query->param("screenList")) if $query->param("screenList") ne 'all';
-$condition .=  " AND drug=\'".$selectedDrug."\'" if $selectedDrug ne 'ALL'; 
-my( $row , $rows, @r, $col, $tbl, $pl, $gene);
-#$dbh = HS_SQL::dbh('druggable');
-my $stat = "SELECT * FROM $sqltable WHERE $condition ORDER BY  $order LIMIT 10000;";
+my $datatype = $query->param("datatype"); 
+my $platform = $query->param("platform");
+my $screen = $query->param("screen");
+my $id = $query->param("id");
+my $fdr = $query->param("fdr");
+
+$datatype	= "%" if $datatype	eq "all";
+$platform	= "%" if $platform	eq "all";
+$screen 	= "%" if $screen	eq "all";
+$id 		= "%" if $id 		eq "";
+
+$dbh = HS_SQL::dbh('druggable');
+$stat = qq/SELECT retrieve_correlations(\'$datatype'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m'\, \'$id'\, \'$fdr'\);/;
 print "Content-type: text/html\n\n";
-print $stat."<br>";
 
-#for $col(@{$Aconfig::cols}) { 
-#$tbl .= '<th>'.$Aconfig::colTitles{$col}.'</th>';
-#}
-#$tbl .= '</tr></thead>';
-#$rows = $dbh->selectall_arrayref($stat);
-
-#for  $row (@{$rows}) { #id="submit-'.join('-', @{$row}[0..5]).'" 
-#$pl = $row->[2];
-#$pl =~ s/\.//g;
-#$pl =~ s/pwnea//g;
-#$gene = $row->[5];
-#$gene =~ s/-/@@@/g;
-#print $pl." ".$gene."<br>";
-#}
-
-#$dbh->disconnect;
+my $sth = $dbh->prepare($stat) or die $dbh->errstr;
+$sth->execute( ) or die $sth->errstr;
+while (@row = $sth->fetchrow_array()) {
+    print(@row);
+}
+$sth->finish;
+$dbh->disconnect;

@@ -1,99 +1,47 @@
 -- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
 
--- return all sources with drug sensitivity
-CREATE OR REPLACE FUNCTION sources_and_drugs() RETURNS
-TABLE (
-code character varying(64),
-visible_name character varying(256))
-AS $$
+-- return all drugs/features and genes for given combination of parameters
+CREATE OR REPLACE FUNCTION feature_gene_list(data_type text, platform_n text, screen_name text, sensitivity_m text) RETURNS setof text AS $$
+DECLARE
+table_name text;
+res text;
+res_array text array;
+i numeric;
 BEGIN
-RETURN QUERY SELECT table_name, display_name FROM guide_table  WHERE type LIKE 'Drug sensitivity';
-END;
-$$ LANGUAGE plpgsql;
-
--- return data for given table (passed as string)
-CREATE OR REPLACE FUNCTION data_for_cohort(cohort regclass) RETURNS 
-TABLE (
-feature character varying(64),
-sample character varying(64),
-value real)
-AS $$
-BEGIN
-RETURN QUERY EXECUTE 'SELECT * FROM ' || cohort;
-END;
-$$ LANGUAGE plpgsql;
-
--- return all drugs
-CREATE OR REPLACE FUNCTION drug_list() RETURNS
-TABLE (
-screen_name character varying(64),
-drug_name character varying(64))
-AS $$
-BEGIN
-IF
-EXISTS (SELECT * FROM pg_catalog.pg_tables 
-WHERE tablename  = 'drugs')
+res_array = ARRAY[]::text[];
+FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table WHERE datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_name || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
+LOOP
+FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_name || ';'
+LOOP
+IF NOT (SELECT res = ANY (res_array))
 THEN
-DELETE FROM drugs;
-ELSE
--- have to use "source" and "compound" names, otherwise will get an error like that:
--- ERROR:  syntax error at or near "$1"
--- LINE 1: CREATE TABLE drugs ( $1  character varying(64),  $2  ch...
--- This is because "screen" and "drug" are already used
-CREATE TABLE drugs (source character varying(64), compound character varying(64));
+SELECT array_append(res_array, res) INTO res_array;
 END IF;
-INSERT INTO drugs SELECT DISTINCT screen, drug FROM best_drug_corrs_counts ORDER BY screen;
---UPDATE drugs SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE drugs.source=subquery.source_name;
-RETURN QUERY SELECT * FROM drugs;
+END LOOP;
+FOR res IN EXECUTE 'SELECT DISTINCT gene FROM ' || table_name || ';'
+LOOP
+IF NOT (SELECT res = ANY (res_array))
+THEN
+SELECT array_append(res_array, res) INTO res_array;
+END IF;
+END LOOP;
+END LOOP;
+FOR i IN 1..array_length(res_array, 1)
+LOOP
+RETURN NEXT res_array[i];
+END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
--- return features
-CREATE OR REPLACE FUNCTION feature_list() RETURNS
-TABLE (
-screen_name character varying(64),
-feature_name character varying(256))
-AS $$
+-- return available screens for correlation tables
+CREATE OR REPLACE FUNCTION screen_list(data_type text, platform_n text) RETURNS setof text AS $$
+DECLARE
+res text;
 BEGIN
-IF
-EXISTS (SELECT * FROM pg_catalog.pg_tables 
-WHERE tablename  = 'features')
-THEN
-DELETE FROM features;
-ELSE
-CREATE TABLE features (source character varying(64), feature character varying(256));
-END IF;
-INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts ORDER BY screen;
---UPDATE features SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE features.source=subquery.source_name;
-UPDATE features SET feature=subquery.show_name FROM (SELECT DISTINCT short_name, full_name FROM feature_table) AS subquery(short,show_name) WHERE features.feature=subquery.short;
-RETURN QUERY SELECT * FROM features WHERE feature IN (SELECT full_name FROM feature_table) ORDER BY source;
-END;
-$$ LANGUAGE plpgsql;
-
--- this version uses tables specific for data type, one table can store results for multiple platforms
-CREATE OR REPLACE FUNCTION feature_list_source (source_n text) RETURNS
-TABLE (
-screen_name character varying(64),
-feature_name character varying(256))
-AS $$
-BEGIN
-IF
-EXISTS (SELECT * FROM pg_catalog.pg_tables 
-WHERE schemaname = 'pg_temp_1'
-AND tablename  = 'features')
-THEN
-DELETE FROM features;
-ELSE
-CREATE TABLE features (source character varying(64), feature character varying(256));
-END IF;
-IF (source_n = 'all') THEN
-INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts ORDER BY screen;
-ELSE
-INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts WHERE (screen = source_n) ORDER BY screen;
-END IF;
-UPDATE features SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE features.source=subquery.source_name;
-UPDATE features SET feature=subquery.show_name FROM (SELECT DISTINCT short_name, full_name FROM feature_table) AS subquery(short,show_name) WHERE features.feature=subquery.short;
-RETURN QUERY SELECT * FROM features WHERE feature IN (SELECT full_name FROM feature_table) ORDER BY source;
+FOR res IN SELECT DISTINCT screen FROM cor_guide_table WHERE datatype LIKE data_type AND platform LIKE platform_n
+LOOP
+RETURN NEXT res;
+END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -141,6 +89,20 @@ END IF;
 END;
 $$ LANGUAGE plpgsql;
 
+-- same, but for correlations
+CREATE OR REPLACE FUNCTION cor_platform_list (data_type text) RETURNS setof text
+AS $$
+DECLARE
+res text;
+BEGIN
+-- NOTE that we have to use LIKE, not =, because user can ask for platforms for all datatypes 
+FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE datatype LIKE data_type
+LOOP
+RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 -- return data types for the given source (takes previous datatypes into account)
 CREATE OR REPLACE FUNCTION datatype_list (cohort_n text, previous_datatypes text) RETURNS setof text
 AS $$
@@ -162,6 +124,19 @@ END IF;
 ELSE
 RETURN NEXT res;
 END IF;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but for correlations
+CREATE OR REPLACE FUNCTION cor_datatype_list () RETURNS setof text
+AS $$
+DECLARE
+res text;
+BEGIN
+FOR res IN SELECT DISTINCT datatype FROM cor_guide_table 
+LOOP
+RETURN NEXT res;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -295,7 +270,7 @@ $$ LANGUAGE plpgsql;
 
 
 
--- FUNCTION TO WORK WITH PLOTS 
+-- FUNCTIONs TO WORK WITH PLOTS 
 
 CREATE OR REPLACE FUNCTION available_plot_types(platforms text) RETURNS setof text AS $$
 DECLARE
@@ -487,6 +462,35 @@ SELECT data_type INTO res FROM information_schema.columns WHERE table_name = tab
 RETURN NEXT res;
 END IF;
 END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTIONS TO WORK WITH CORRELATIONS
+
+CREATE OR REPLACE FUNCTION retrieve_correlations(data_type text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric) RETURNS setof text AS $$
+DECLARE
+gene_n text;
+feature_n text;
+p1 numeric;
+p2 numeric;
+p3 numeric;
+q numeric;
+table_name text;
+datatype_name text;
+platform_name text;
+screen_name text;
+res text;
+BEGIN
+FOR table_name, datatype_name, platform_name, screen_name IN EXECUTE E'SELECT table_name,datatype,platform,screen FROM cor_guide_table WHERE datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_n || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
+LOOP
+FOR gene_n,feature_n,p1,p2,p3,q IN EXECUTE 'SELECT gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (ancova_q_2x_feature<=' || fdr || ') ORDER BY ancova_q_2x_feature DESC;'
+LOOP
+res := gene_n || '|' || feature_n || '|' || datatype_name || '|' || platform_name || '|' || screen_name || '|' || p1 || '|' || p2 || '|' || p3 || '|' || q || '|';
+RETURN NEXT res;
+END LOOP;
+END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -866,6 +870,31 @@ col_n text;
 flag boolean;
 BEGIN
 FOR table_n in SELECT table_name FROM guide_table
+LOOP
+FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\';'
+LOOP
+RAISE NOTICE 'Creating ids for table % platform %', table_n, col_n;
+EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_' || col_n || E'_ind\');' INTO flag;
+IF (flag=false)
+THEN
+EXECUTE E'CREATE INDEX ' || table_n || '_' || col_n || '_ind ON ' || table_n || '(' || col_n || ');';
+ELSE
+RAISE NOTICE 'Index already exists';
+END IF;
+END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same for correlations
+CREATE OR REPLACE FUNCTION autocreate_indices_cor() RETURNS boolean AS $$
+DECLARE
+table_n text;
+col_n text; 
+flag boolean;
+BEGIN
+FOR table_n in SELECT table_name FROM cor_guide_table
 LOOP
 FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\';'
 LOOP
@@ -1308,5 +1337,54 @@ ELSE
 res := 'ok';
 END IF;
 RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION data_for_cohort(cohort regclass) RETURNS 
+TABLE (
+feature character varying(64),
+sample character varying(64),
+value real)
+AS $$
+BEGIN
+RETURN QUERY EXECUTE 'SELECT * FROM ' || cohort;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this version uses tables specific for data type, one table can store results for multiple platforms
+CREATE OR REPLACE FUNCTION feature_list_source (source_n text) RETURNS
+TABLE (
+screen_name character varying(64),
+feature_name character varying(256))
+AS $$
+BEGIN
+IF
+EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'features')
+THEN
+DELETE FROM features;
+ELSE
+CREATE TABLE features (source character varying(64), feature character varying(256));
+END IF;
+IF (source_n = 'all') THEN
+INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts ORDER BY screen;
+ELSE
+INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts WHERE (screen = source_n) ORDER BY screen;
+END IF;
+UPDATE features SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE features.source=subquery.source_name;
+UPDATE features SET feature=subquery.show_name FROM (SELECT DISTINCT short_name, full_name FROM feature_table) AS subquery(short,show_name) WHERE features.feature=subquery.short;
+RETURN QUERY SELECT * FROM features WHERE feature IN (SELECT full_name FROM feature_table) ORDER BY source;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- return all sources with drug sensitivity
+CREATE OR REPLACE FUNCTION sources_and_drugs() RETURNS
+TABLE (
+code character varying(64),
+visible_name character varying(256))
+AS $$
+BEGIN
+RETURN QUERY SELECT table_name, display_name FROM guide_table  WHERE type LIKE 'Drug sensitivity';
 END;
 $$ LANGUAGE plpgsql;
