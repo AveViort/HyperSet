@@ -18,7 +18,7 @@ THEN
 SELECT array_append(res_array, res) INTO res_array;
 END IF;
 END LOOP;
-FOR res IN EXECUTE 'SELECT DISTINCT gene FROM ' || table_name || ';'
+FOR res IN EXECUTE 'SELECT DISTINCT upper(gene) FROM ' || table_name || ';'
 LOOP
 IF NOT (SELECT res = ANY (res_array))
 THEN
@@ -485,7 +485,7 @@ res text;
 BEGIN
 FOR table_name, datatype_name, platform_name, screen_name IN EXECUTE E'SELECT table_name,datatype,platform,screen FROM cor_guide_table WHERE datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_n || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
 LOOP
-FOR gene_n,feature_n,p1,p2,p3,q IN EXECUTE 'SELECT gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (ancova_q_2x_feature<=' || fdr || ') ORDER BY ancova_q_2x_feature DESC;'
+FOR gene_n,feature_n,p1,p2,p3,q IN EXECUTE 'SELECT upper(gene),feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (ancova_q_2x_feature<=' || fdr || ') ORDER BY ancova_q_2x_feature DESC;'
 LOOP
 res := gene_n || '|' || feature_n || '|' || datatype_name || '|' || platform_name || '|' || screen_name || '|' || p1 || '|' || p2 || '|' || p3 || '|' || q || '|';
 RETURN NEXT res;

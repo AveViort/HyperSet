@@ -121,11 +121,11 @@ function feature_list() {
 function retrieve_drug_correlations(datatype, platform, screen, id, fdr) {
 	var table_data;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/correlations.cgi?datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr);
+	console.log("cgi/correlations.cgi?datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id.toLowerCase() + "&fdr=" + fdr);
 	xmlhttp.open("GET", "cgi/correlations.cgi?datatype=" + encodeURIComponent(datatype) + 
 		"&platform=" + encodeURIComponent(platform) + 
 		"&screen=" + encodeURIComponent(screen) + 
-		"&id=" + encodeURIComponent(id) + 
+		"&id=" + encodeURIComponent(id.toLowerCase()) + 
 		"&fdr=" + encodeURIComponent(fdr), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {

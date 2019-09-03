@@ -127,7 +127,7 @@ li.tab:hover ul {
 			<input name="corGeneFeature_input" id="corGeneFeature_input">
 			</td>
 			<td>
-			<input name="FDR_input" id="FDR_input"  min=0 max=1 value=0.05>
+			<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
 			<td>
 			<button type="submit" id="retrieve-cor-button" name="retrieve-cor-button" onclick = retrieve_correlations() style="width: 150; visibility: visible;">Retrieve correlations</button>
 			</td>
@@ -366,19 +366,20 @@ function plot() {
 }
 
 function retrieve_correlations() {
-	// clear result table each time
-	document.getElementById("cor_result_table").innerHTML = '<table></table>';
+	var n = $('#cor_result_table tr').length;
+	if (n > 0) {
+		$('#cor_result_table').DataTable().destroy();
+	}
 	var datatype = $("#corDatatype_selector option:selected").val();
 	var platform = $("#corPlatform_selector option:selected").val();
 	var screen = $("#corScreen_selector option:selected").val();
 	var id = $("#corGeneFeature_input").val();
 	var fdr = $("#FDR_input").val();
+	// clear result table each time
+	document.getElementById("cor_result_table").innerHTML = '<table></table>';
 	var correlations = retrieve_drug_correlations(datatype, platform, screen, id, fdr);
-	console.log(correlations);
-	// offset is the number of cells
-	// by default: gene, feature/drug, p (3 different), q
-	// additional cells: datatype (if datatype == 'all') etc. to indicate source
-	var offset = 9;
+	// offset is the number of cells, defined in druggable_config.js
+	var offset = cor_headers.length;
 	for (i=0; i<correlations.length-offset; i=i+offset) {
 		var row = document.getElementById("cor_result_table").insertRow(Math.floor(i/offset));
 		var j = 0;
@@ -406,12 +407,21 @@ function retrieve_correlations() {
 		// we have 3 p-values
 		for (k=1; k<=3; k++) {
 			var PValueCell = row.insertCell(j);
-			PValueCell.innerHTML = '<p>' + correlations[i+4+k] + '</p>';
+			// parseFloat often returns numbers in scientific format, but it cannot deal with numbers like 0.0358930769230769
+			PValueCell.innerHTML = '<p>' + (correlations[i+4+k].length < 5 ? parseFloat(correlations[i+4+k]) : parseFloat(correlations[i+4+k]).toExponential(2)) + '</p>';
 			j = j+1;
 		}
 		var QValueCell = row.insertCell(j);
-		QValueCell.innerHTML = '<p>' + correlations[i+8] + '</p>';
+		QValueCell.innerHTML = '<p>' + (correlations[i+8].length < 5 ? parseFloat(correlations[i+8]) : parseFloat(correlations[i+8]).toExponential(2)) + '</p>';
 	}
+	// we have to add caption last, strangely
+	var table_head = document.getElementById("cor_result_table").createTHead();
+	table_head.innerHTML = '<tr>' + 
+		cor_headers[0] + cor_headers[1] + (datatype == "all" ? cor_headers[2] : '') + 
+		(platform == "all" ? cor_headers[3] : '') + (screen == "all" ? cor_headers[4] : '') +
+		cor_headers[5] + cor_headers[6] + cor_headers[7] + cor_headers[8]
+		'</tr>';
+	$('#cor_result_table').DataTable();
 }
 
 function add_plot_options_row(i) {
