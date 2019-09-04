@@ -33,6 +33,20 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- get annotations for all genes and drugs/features, this function is used for qtips
+CREATE OR REPLACE FUNCTION annotation_list() RETURNS setof text AS $$
+DECLARE
+res_id text;
+res_annot text;
+BEGIN
+FOR res_id,res_annot IN SELECT internal_id,annotation FROM synonyms
+LOOP
+RETURN NEXT res_id || '|' || res_annot;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- return available screens for correlation tables
 CREATE OR REPLACE FUNCTION screen_list(data_type text, platform_n text) RETURNS setof text AS $$
 DECLARE

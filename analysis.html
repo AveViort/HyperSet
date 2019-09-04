@@ -124,7 +124,7 @@ li.tab:hover ul {
 			<select name="corScreen_selector" id="corScreen_selector" class="ui-helper" style="width: 40ch;" >
 			</td>
 			<td>
-			<input name="corGeneFeature_input" id="corGeneFeature_input">
+			<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name">
 			</td>
 			<td>
 			<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
@@ -241,7 +241,7 @@ $(document).ready(function(){
 	init_cor_datatype_selector();
 	init_cor_platform_selector();
 	init_cor_screen_selector();
-		
+	$("#retrieve-cor-button").button();	
 		
 	$("#submit-populate").button();
 	var sources = get_plot_sources();
@@ -249,7 +249,9 @@ $(document).ready(function(){
 	for (i in sources) {
 		options.push("<option value='"+ sources[i] + "'>" + sources[i] + "</option>");
 	}
-	$("#source_selector").append(options.join("")).selectmenu();
+	$("#source_selector").append(options.join("")).selectmenu({
+        width: "100px"
+    });
 	$('#source_selector').on( "selectmenuchange", function( event, ui ) {update_source()} );
 	init_cohortselector();
 	$("#plot-button").button();
@@ -385,9 +387,19 @@ function retrieve_correlations() {
 		var j = 0;
 		var GeneCell = row.insertCell(j);
 		GeneCell.innerHTML = '<p>' + correlations[i] + '</p>';
+		$( GeneCell ).qtip({ 
+			content: {
+				text: annotations.get(correlations[i].toLowerCase())
+			}
+		});
 		j = j+1;
 		var FeatureCell = row.insertCell(j);
 		FeatureCell.innerHTML = '<p>' + correlations[i+1] + '</p>';
+		$( FeatureCell ).qtip({ 
+			content: {
+				text: annotations.get(correlations[i+1].toLowerCase())
+			}
+		});
 		j = j+1;
 		if (datatype == "all") {
 			var DatatypeLabelCell = row.insertCell(j);
@@ -421,7 +433,10 @@ function retrieve_correlations() {
 		(platform == "all" ? cor_headers[3] : '') + (screen == "all" ? cor_headers[4] : '') +
 		cor_headers[5] + cor_headers[6] + cor_headers[7] + cor_headers[8]
 		'</tr>';
-	$('#cor_result_table').DataTable();
+	$('#cor_result_table').DataTable({
+		columnDefs: [
+			{ className: "dt-right", targets: "_all" }
+		]});
 }
 
 function add_plot_options_row(i) {
@@ -565,7 +580,9 @@ function init_cohortselector() {
 	for (i in cohorts) {
 		options.push("<option value='"+ cohorts[i] + "'>" + cohorts[i] + "</option>");
 	}
-	$("#cohort_selector").append(options.join("")).selectmenu();
+	$("#cohort_selector").append(options.join("")).selectmenu({
+        width: "100px"
+    });
 	$('#cohort_selector').on( "selectmenuchange", function( event, ui ) {update_cohort()} );
 	$('#cohort_selector').selectmenu( "refresh" );
 	sessionStorage.setItem("add_row", 1);
@@ -595,7 +612,9 @@ function init_dataselector(selector_id) {
 		for (i in datatypes) {
 			options.push("<option value='"+ datatypes[i] + "'>" + datatypes[i] + "</option>");
 		}
-		$("#" + selector_id).append(options.join("")).selectmenu();
+		$("#" + selector_id).append(options.join("")).selectmenu({
+			width: "100px"
+		});
 		var previous_selection = (getCookie(selector_id).split("|"))[0];
 		if (datatypes.includes(previous_selection)) {
 			$("#" + selector_id).val(previous_selection);
@@ -642,13 +661,20 @@ function init_platformselector(selector_id) {
 		}
 		document.getElementById("id" + n + "_input").disabled = !(flag);
 		document.getElementById("id" + n + "_input").hidden = !(flag);
+		// set placeholder text if ids exist
+		if (flag == 1) {
+			// placeholders are defined in druggable_config.js
+			document.getElementById("id" + n + "_input").setAttribute("placeholder", ids_placeholders.get($("#type" + n + "_selector option:selected").val()));
+		}
 		options = [];
 		for (i in platforms) {
 			for (j in platforms[i]) {
 				options.push("<option value='"+ platforms[i][j].platform + "'>" + platforms[i][j].name + "</option>");
 			}
 		}
-		$("#" + selector_id).append(options.join("")).selectmenu();
+		$("#" + selector_id).append(options.join("")).selectmenu({
+			width: "120px"
+		});
 		var previous_type = (getCookie("type" + n + "_selector").split("|"))[0];
 		var previous_selection = (getCookie(selector_id).split("|"))[0];;
 		if (platforms.includes(previous_selection)) {
@@ -689,7 +715,9 @@ function init_axis_type_selector(selector_id) {
 		options.push("<option value='"+ axis_types[i] + "'>" + axis_types[i] + "</option>");
 	}
 	var flag = (axis_types.length == 0);
-	$("#" + selector_id).append(options.join("")).selectmenu();
+	$("#" + selector_id).append(options.join("")).selectmenu({
+        width: "95px"
+    });
 	$("#" + selector_id).selectmenu({
 		disabled: flag
 	});
@@ -714,7 +742,9 @@ function init_tcga_code_selector(selector_id) {
 	}
 	// in case if we have 0 codes tcga_codes is [""]
 	var flag = (($("#source_selector option:selected").val() != "TCGA") || (tcga_codes[0] == ""));
-	$("#" + selector_id).append(options.join("")).selectmenu();
+	$("#" + selector_id).append(options.join("")).selectmenu({
+        width: "100px"
+    });
 	$("#" + selector_id).selectmenu({
 		disabled: flag
 	});
@@ -732,7 +762,10 @@ function init_plot_type_selector() {
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
 	}
-	$('#plot-type').append(options.join("")).selectmenu();
+	$('#plot-type').append(options.join("")).selectmenu(
+	{
+        width: "125px"
+    });
 	$('#plot-type').on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
 	plot_type_changed();
 }
@@ -744,7 +777,10 @@ function init_cor_datatype_selector() {
 	for (i in datatypes) {
 		options.push("<option value='" + datatypes[i] + "'>" + datatypes[i] +"</option>");
 	}
-	$("#corDatatype_selector").append(options.join("")).selectmenu();
+	$("#corDatatype_selector").append(options.join("")).selectmenu(
+	{
+        width: "150px"
+    });
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corDatatype_selector option:selected").val();
 	usetCookie("corDatatype_selector", selector_value, accepted_time);
@@ -758,7 +794,9 @@ function init_cor_platform_selector() {
 	for (i in platforms) {
 		options.push("<option value='" + platforms[i] + "'>" + platforms[i] +"</option>");
 	}
-	$("#corPlatform_selector").append(options.join("")).selectmenu();
+	$("#corPlatform_selector").append(options.join("")).selectmenu({
+        width: "150px"
+    });
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corPlatform_selector option:selected").val();
 	usetCookie("corPlatform_selector", selector_value, accepted_time);
@@ -776,7 +814,9 @@ function init_cor_screen_selector() {
 	for (i in screens) {
 		options.push("<option value='" + screens[i] + "'>" + screens[i] +"</option>");
 	}
-	$("#corScreen_selector").append(options.join("")).selectmenu();
+	$("#corScreen_selector").append(options.join("")).selectmenu({
+        width: "150px"
+    });
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corScreen_selector option:selected").val();
 	usetCookie("corScreen_selector", selector_value, accepted_time);
@@ -943,7 +983,9 @@ function update_plot_type_selector() {
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
 	}
-	$('#plot-type').append(options.join("")).selectmenu();
+	$('#plot-type').append(options.join("")).selectmenu({
+        width: "120px"
+    });
 	$('#plot-type').on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
 	plot_type_changed();
 }

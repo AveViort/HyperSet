@@ -52,6 +52,20 @@ function get_correlation_features_and_genes(datatype, platform, screen) {
 	return features_and_genes;
 }
 
+function get_annotations() {
+	var annotations;
+	var xmlhttp = new XMLHttpRequest();
+	// Pay attention! This function is called by web worker in JS folder, that's why we have .. in relative path 
+	xmlhttp.open("GET", "../cgi/annotations.cgi", false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			annotations = this.responseText;}
+		}
+	xmlhttp.send();
+	annotations = annotations.split("|");
+	return annotations.slice(0, annotations.length-1);
+}
+
 function drug_sources() {
 	var sources;
 	var xmlhttp = new XMLHttpRequest();
