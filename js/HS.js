@@ -824,19 +824,28 @@ var Type = null;
 		Type = iconspan.substr(16,3);
 		contentID = 'url-' + Type + '-ajax';
 		keepAnimating = 300; 
-		Href = "cgi/i.cgi?" + dynamicHref() + ";action=run-exploratory-" + Type; 
-		Title = Type + 'plot';
+		var cs = table.columns().visible();
+		var cids = [];
+		var j = 0;
+		for (i = 0; i < cs.length; i++) {
+			console.log(i);
+			if (cs[i]) {
+				cids[j++] = i;
+				}
+		}
+
+		Href = "cgi/i.cgi?" + dynamicHref() + 
+			";action=run-exploratory-" + Type + 
+			";colnames=" + cids.join("***") + 
+			";rownames=" +  $('[name="sgs_list"]').val().replace(/\s/g, "***") + 
+			";table=" + $("#selectradio-table-ags-ele").attr("value") + ";"; 
+		Title = Type + 'plots';
 		Width = 'auto';
 		Height = 'auto';
 		Icon = "calculator-b";
 	} 
 	
 	$('#' + iconspan + '').addClass(ajaxAnimate);
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", Href);
-	xmlhttp.onreadystatechange = function() {
-if (this.readyState == 4 && this.status == 200) {
-	$("#" + contentID).html(this.responseText);}
 	
 	if (Type == 'pca' || Type == 'hea') {
 	$("#" + contentID).dialog({
@@ -852,15 +861,23 @@ if (this.readyState == 4 && this.status == 200) {
 	});
 $('[aria-describedby="' + contentID + '"]').find( '.ui-dialog-title' ).prepend("<span class='ui-icon icon-static ui-icon-" + Icon + "' ></span>");	
 	}
+	
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", Href);
+	xmlhttp.onreadystatechange = function() {
+if (this.readyState == 4 && this.status == 200) {
+	$("#" + contentID).html(this.responseText);}
+	
+
 	var Box = "[aria-describedby='" + contentID + "']";
 setTimeout(function () {
 			$(Box).removeClass("ui-state-default").addClass("projecthighlight")
 			}, keepAnimating);
-		setTimeout(function () {
+setTimeout(function () {
 			$(Box).removeClass("projecthighlight", keepAnimating * 4, "swing"); 
 			$(Box).addClass("ui-state-default");
 			}, keepAnimating * 5);
-	setTimeout(function() {	$('#' + iconspan + '').removeClass(ajaxAnimate);},keepAnimating);
+setTimeout(function() {	$('#' + iconspan + '').removeClass(ajaxAnimate);},keepAnimating);
 }
 	xmlhttp.send();
 }
@@ -1074,7 +1091,7 @@ function openFileDialog (div, type, Title) {
 			var selCtrl 	= "[id*='" + div.replace("#dialog", "") + "'].qtip-select.ctrl-" + type;
 	//function restoreFormValues (div, type, Title) {}
 
-			$(div).dialog({ 
+$(div).dialog({ 
 	modal: false,
 	title: "File: " + Title,
 	show: {effect: "blind", duration: 750},
@@ -1130,7 +1147,8 @@ function openFileDialog (div, type, Title) {
 			$("#" + tabID).tabs({ 
 			heightStyle: "auto",
 			active: tabValue, 
-			disabled: ((type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"],,fileType["mtr"]["tabindex"]]), 
+//			disabled: ((type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"],,fileType["mtr"]["tabindex"]]), 
+			disabled: ((type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"],,]), 
 			// disabled: ((type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"]]), 
 			activate: function(event, ui) {
 			tabIndex = ui.newTab.index();

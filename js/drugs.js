@@ -1,7 +1,20 @@
-function get_correlation_datatypes() {
+function get_correlation_sources() {
+	var sources;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/correlation_sources.cgi", false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			sources = this.responseText;}
+		}
+	xmlhttp.send();
+	sources = sources.split("|");
+	return sources.slice(0, sources.length-1);
+}
+
+function get_correlation_datatypes(source) {
 	var datatypes;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/correlation_datatypes.cgi", false);
+	xmlhttp.open("GET", "cgi/correlation_datatypes.cgi?source=" + encodeURIComponent(source), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			datatypes = this.responseText;}
@@ -11,10 +24,10 @@ function get_correlation_datatypes() {
 	return datatypes.slice(0, datatypes.length-1);
 }
 
-function get_correlation_platforms(datatype) {
+function get_correlation_platforms(source, datatype) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/correlation_platforms.cgi?datatype=" + encodeURIComponent(datatype), false);
+	xmlhttp.open("GET", "cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			platforms = this.responseText;}
@@ -24,10 +37,10 @@ function get_correlation_platforms(datatype) {
 	return platforms.slice(0, platforms.length-1);
 }
 
-function get_correlation_screens(datatype, platform) {
+function get_correlation_screens(source, datatype, platform) {
 	var screens;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/correlation_screens.cgi?datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform), false);
+	xmlhttp.open("GET", "cgi/correlation_screens.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			screens = this.responseText;}
@@ -37,11 +50,11 @@ function get_correlation_screens(datatype, platform) {
 	return screens.slice(0, screens.length-1);
 }
 
-function get_correlation_features_and_genes(datatype, platform, screen) {
+function get_correlation_features_and_genes(source, datatype, platform, screen) {
 	var features_and_genes;
 	var xmlhttp = new XMLHttpRequest();
 	// Pay attention! This function is called by web worker in JS folder, that's why we have .. in relative path 
-	xmlhttp.open("GET", "../cgi/correlation_features_and_genes.cgi?datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen), false);
+	xmlhttp.open("GET", "../cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			features_and_genes = this.responseText;}
@@ -132,11 +145,12 @@ function feature_list() {
 	return feature_array;
 }
 
-function retrieve_drug_correlations(datatype, platform, screen, id, fdr) {
+function retrieve_drug_correlations(source, datatype, platform, screen, id, fdr) {
 	var table_data;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/correlations.cgi?datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id.toLowerCase() + "&fdr=" + fdr);
-	xmlhttp.open("GET", "cgi/correlations.cgi?datatype=" + encodeURIComponent(datatype) + 
+	console.log("cgi/correlations.cgi?source=" + source + "&datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id.toLowerCase() + "&fdr=" + fdr);
+	xmlhttp.open("GET", "cgi/correlations.cgi?source=" + encodeURIComponent(source) +
+		"&datatype=" + encodeURIComponent(datatype) + 
 		"&platform=" + encodeURIComponent(platform) + 
 		"&screen=" + encodeURIComponent(screen) + 
 		"&id=" + encodeURIComponent(id.toLowerCase()) + 
@@ -299,4 +313,9 @@ function get_tcga_codes(cohort, datatype, previous_datatypes) {
 	xmlhttp.send();
 	codes = codes.split(",");
 	return codes;
+}
+
+function foo (argument) {
+	argument = argument == undefined ? 'Not defined' : 'Defined'
+	return argument;
 }

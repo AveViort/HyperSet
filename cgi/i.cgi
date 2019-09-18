@@ -304,18 +304,28 @@ sub generateMenuContent {
 return(HS_html_gen::ajaxMenu('menu'));
 }
 
-sub generateJID {return(sprintf("%u", rand(10**15)));}
 
 sub executeExploratory {
 my($mode) = @_;
 my($content, $outfile);
+
 if ($mode eq 'pca') {
-$outfile = '3js.widget7.html';
-system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=t1.txt out=$outfile delimiter=TAB");
+# $outfile = '3js.widget7.html';
+# system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." out=$outfile delimiter=TAB");
+$outfile = 'pca'.HStextProcessor::generateJID().'.html';
+system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." colnames=".$q->param('colnames')." rownames=".$q->param('rownames')." out=$outfile delimiter=TAB"); # start=4 end=11 
 $content = '<a href="'.$HSconfig::Rplots->{dir}.$outfile.'" target="_blank" class="clickable">3D PCA plot</a>';
 } elsif ($mode eq 'hea') {
-$outfile = 'heatmap7.html';
-system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=t1.txt out=$outfile delimiter=TAB");
+$outfile = 'heatmap'.HStextProcessor::generateJID().'.html';
+my($pg, $lst);
+
+my($rnms);
+push @{$rnms}, @{HStextProcessor::parseGenes($q->param('sgs_list'), SPACE)};
+# print $q->param('rownames');
+# print "Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." rownames=".$q->param('rownames')." start=4 end=11 out=$outfile delimiter=TAB";
+# print join("###", @{$rnms});
+# print  join("###", @{$pg}); 
+system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." colnames=".$q->param('colnames')." rownames=".$q->param('rownames')." out=$outfile delimiter=TAB"); # start=4 end=11 
 $content = '<a href="'.$HSconfig::Rplots->{dir}.$outfile.'" target="_blank" class="clickable">Heatmap</a>';
 }
 return $content;
@@ -943,8 +953,9 @@ $content .= '</tr>';
 $content .="\n".'</table>
 <script   type="text/javascript">HSonReady();
  var table = $("#'.$tableID.'").DataTable('.HS_html_gen::DTparameters(1).');
-table.buttons().container().appendTo( $("#'.$tableID.'_wrapper").children(), table.table().container() ) ; 
-table.buttons().container().prependTo($($("#'.$tableID.'_wrapper").children()) ) ; 
+table.buttons().container().appendTo( $("#'.$tableID.'_wrapper").children()[0], table.table().container() ) ; 
+table.buttons().container().prependTo($($("#'.$tableID.'_wrapper").children()[0]) ) ; 
+//table.buttons().container().prependTo($($("#'.$tableID.'_length").children()) ) ; 
 $("a[qtip-content]").qtip({
      show: "mousedown",
      hide: "unfocus",
@@ -1047,7 +1058,7 @@ $criteria->{order}->[$order] = $cntr;
 # my $pval = $q->param("pvalue1");
 # my $fval = $q->param("fc1");
 my $comp = scalar(keys(%{$criteria})) - 1;
-my $tm = generateJID();
+my $tm = HStextProcessor::generateJID();
 my $venName = "venn".$tm.".png";
 my $gTable = "vennGenes".$tm.".pm";
 my $new_venPath = $HSconfig::usersPNG.$venName;
@@ -1358,7 +1369,7 @@ $row = $row.'<ul>'.$heads.'</ul>'.$cons.'</div>
 	</span>
 	 
 	 <span style=\'padding: 8px;\'>First line is a header <input type=\'checkbox\' name=\'display-file-header\' id=\'display-file-header-###typeplaceholder###-###filenameplaceholder###\' value=\'yes\' class=\'venn_box_control\'></span></p>
-<span style="font-weight: bold;">File content <span style="color: red;">(just for reference purposes)</span>:</span>
+<span style="font-weight: bold;">Data preview:</span>
 <div id=\'display-qtip-###typeplaceholder###-'.$cleanName.'\'></div>
 </td>
 <td>
@@ -1423,6 +1434,7 @@ $content .= '</table>'.
 				for (var i = 0; i < typeList.length; i++) {
 					$(this).removeClass(fileType[typeList[i]]["icon"]);
 				}
+				//console.log(savedType);
 			   var newIcon = fileType[savedType]["icon"];
 			   $(this).addClass(newIcon);
 			   $(this).attr("title", fileType[savedType]["caption"])

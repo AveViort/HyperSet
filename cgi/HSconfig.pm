@@ -1,5 +1,5 @@
 package HSconfig;
- 
+   
 #use DBI;
 use CGI qw(:standard);
 #use CGI::Carp qw(fatalsToBrowser);
@@ -61,7 +61,7 @@ my $i = 0;
   $uploadedFile -> [$i] -> {text} = 'File content'; 
  
  %{$uploadedFile -> [$i] -> {mtr}} = (
- 'caption'  => 'A "gene X sample" matrix',
+ 'caption'  => 'Matrix "gene X sample"',
  'icon' => 'ui-icon-grid',
  'parentclass' => 'sbm-icon icon-ok',
  'mask' => '.+', 

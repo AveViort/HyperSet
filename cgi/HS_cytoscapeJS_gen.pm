@@ -775,7 +775,7 @@ my($data, $node_features, $callerNo, $FGS, $AGS) = @_;
 
 my(@ar, $aa, $nn, $i, $ff, $signature, %copied_edge, $conn, $JSONcode);
 	my ($pp, $dd);
-my $instanceID = 'cy_'.main::generateJID(); 
+my $instanceID = 'cy_'.HStextProcessor::generateJID(); 
 my $network_links = processLinks($data);
 	$HS_bring_subnet::timing .= ( time() - $HS_bring_subnet::time ) . ' sec to generate the web page.<br>' . "\n";
 	$HS_bring_subnet::time = time();

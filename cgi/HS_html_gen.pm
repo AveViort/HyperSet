@@ -596,12 +596,12 @@ sub ajaxMenu {
 my $sp; 
 my $con = '<table><tr>';
 $con .= '
-<!--td title="Create an example heatmap">
-<div id="run-exploratory-heatmap" class="showme clickable demo_button sbm-controls"> 
+<!--td title="Heatmap">
+<div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"></div>
 </td>
-<td title="Run a PCA example">
-<div id="run-exploratory-pca" class="showme clickable demo_button sbm-controls"> 
+<td title="PCA (principal component analysis)">
+<div id="run-exploratory-pca" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/eres.png" class="showme" ></div>
 </td-->
 <td>
@@ -905,7 +905,7 @@ $url -> [$i] = createPermURL($projectData -> [$i]);
 						$i++;
 		}
 		$sth->finish;
-		my $tableID = 'nea_archivetable_'.sprintf("%u", rand(10**5));
+		my $tableID = 'nea_archivetable_'.HStextProcessor::generateJID();
 $content = '<table id="'.$tableID.'"  class="display ui-corner-all" cellspacing="0" width="100%" 
 style="font-size: '.$HSconfig::font->{project}->{size}.'px"
 ><thead>'; 
@@ -1646,7 +1646,7 @@ return $cc;
 sub listGS {
 my($GS, $type, $hasGroup, $file, $usersDir) = @_;
 my($ff, $gs, $text, $groupN, $gs_js_friendly);
-my $id = sprintf("%u", rand(10**5));
+my $id = HStextProcessor::generateJID();
 my $cc =  '
 <div class="select_draggable">
 <span class="select-close-'.lc($type).' venn_box_control ui-icon ui-icon-closethick ui-state-default ui-corner-all"   title="Closing this will cancel gene set selection" style="background-color: #E87009"></span><span class="ui-state-default ui-corner-all" style="cursor: move;">Input '.uc($type).' file<br><input id="selected-table-file-'.$id.'" name="pseudoradio-table-'.lc($type).'-ele-'.$id.'" value="'.$file.'" style="color: #cc8866; cursor: move;" size="'.(length($file) + 1).'em" readonly="" class="ui-corner-all" type="text"></span>
@@ -1734,7 +1734,7 @@ return($cc);
 sub displayUserTable {
 my($file, $usersDir, $delimiter, $withHeader) = @_;
 return undef if !defined($usersDir);
-return(HS_html_gen::textTable2dataTables_JS(
+return(HStextProcessor::textTable2dataTables_JS(
 $file, 
 $usersDir, 
 HStextProcessor::JavascriptCompatibleID($file),  
@@ -1745,83 +1745,6 @@ $HSconfig::maxLinesDisplay
 }
 
 
-sub textTable2dataTables_JS {
-my($table, $dir, $name, $hasHeader, $DELIM, $maxLines) = @_;
-my( $tp, $i, $row, @ar, $oldLength, $wrong, $tb, $cn, $hf);
-# print $table.' SHOW1 '.$dir.'<br>';
-
-# $maxLines =25;
-my $id = $name.'-'.sprintf("%u", rand(10**5));
-open IN, $dir.'/'.$table;
-if ($hasHeader) {
-my $header = <IN>;
-HStextProcessor::readHeader ($header, $table, $DELIM) ;
-}
-$tb = '<table  id="'.$id.'" class="ui-state-default ui-corner-all" style="width: 100%; font-size: xx-small;">';
-# my $i;  and $i++ < 5
-$cn = '<tbody >';
-while ($row = <IN>) {
-last if $i++ > $maxLines;
-chomp($row);
-$row = HStextProcessor::JavascriptCompatibleID($row);
-@ar = split($DELIM, $row);
-$oldLength = $#ar if (!defined($oldLength));
-if ($#ar != $oldLength) {
-$wrong++ ;
-} 
-else {
-if (length($row) > ($#ar + 1)) {
-$cn .= '<tr>'."\n";
-for $i(0..$#ar) {
-$cn .= '<td style="padding: 2px;">'.$ar[$i].'</td>';
-}
-$oldLength = $#ar;
-$cn .= '</tr>'."\n";
-}
-}
-}
-my @thead_foot = ('thead', 'tfoot');
-
-if ($hasHeader) {
-for $tp(($thead_foot[0])) {
-$hf = '<'.$tp.'><tr>'."\n";
-for $i(sort {$a <=> $b} keys(%{$main::nm->{$table}})) {
-$hf .= '<th>'.$main::nm->{$table}->{$i}.'</th>'."\n";
-}
-$hf .= '</'.$tp.'></tr>'."\n";
-}} else {
-for $tp(($thead_foot[0])) {
-$hf .= '<'.$tp.'><tr>'."\n";
-for $i(0..$oldLength) {
-$hf .= '<th>Col#'.($i + 1).'</th>'."\n";
-}
-$hf .= '</'.$tp.'></tr>'."\n";
-}} 
-if ($wrong) { 
-print "<p style='color: red;'>Unequal number of columns in the input table rows...</p>";
-}
-$cn = $tb.$hf.$cn.'</tbody></table>';
-$cn .= '<script   type="text/javascript">
-var table = $("#'.$id.'").DataTable({
- "order": false,
- responsive: true, 
- buttons: [        {
-            extend: "colvis",
-            columns: ":gt(0)"
-        }    ], 
- colReorder: {        realtime: true    }	
-	, fixedHeader: true
-	, "processing": true
-/*	, select: true
-	, rowReorder: {
-        selector: ":last-child"
-    }*/
- });
- table.buttons().container().appendTo( $("#'.$id.'_wrapper").children()[0], table.table().container() ) ;
- $(".dt-buttons").css({"margin-left": "10px"});
- </script>';
-return $cn;
-}
 
 sub DTparameters {
 my($return) = @_;

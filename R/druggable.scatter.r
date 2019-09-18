@@ -12,9 +12,10 @@ common_samples <- c();
 internal_ids <- ids;
 for (i in 1:length(ids)) {
 	if (!empty_value(ids[i])) {
-		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[1], "';"); 
+		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[i], "';"); 
 		print(query);
-		internal_ids[i] <- sqlQuery(rch, query)[1,1];
+		#internal_ids[i] <- sqlQuery(rch, query)[1,1];
+		print(sqlQuery(rch, query)[1,1]);
 	}
 }
 
@@ -26,7 +27,8 @@ for (i in 1:length(datatypes)) {
 	if (!empty_value(ids[i])) {
 		# check if this is the first term in condition or not
 		condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
-		if (platforms[i] == "drug") {
+		# check datatype instead of platform now - because CTD drug table has many platforms
+		if (datatypes[i] == "drug") {
 			condition <- paste0(condition, "drug='", internal_ids[i], "'");
 		} else {
 			condition <- paste0(condition, "id='", internal_ids[i], "'");

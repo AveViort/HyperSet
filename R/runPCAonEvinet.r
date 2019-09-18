@@ -1,10 +1,3 @@
-
-# install.packages("threejs", lib="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib/", repos="http://cran.us.r-project.org")
-# install.packages("igraph", lib="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib/", repos="http://cran.us.r-project.org")
-# install.packages("pkgconfig", lib="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib/", repos="http://cran.us.r-project.org")
-# install.packages("crosstalk", lib="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib/", repos="http://cran.us.r-project.org")
-
-
 usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;

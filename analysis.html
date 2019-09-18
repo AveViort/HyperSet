@@ -119,6 +119,9 @@ li.tab:hover ul {
 		<table id="select_layout">
 			<tr>
 			<td>
+			<select name="corSource_selector" id="corSource_selector" class="ui-helper" style="width: 40ch;" >
+			</td>
+			<td>
 			<select name="corDatatype_selector" id="corDatatype_selector" class="ui-helper" style="width: 40ch;" >
 			</td>
 			<td>
@@ -140,7 +143,7 @@ li.tab:hover ul {
 		
 		<br>
 		<div class="container">
-			<table id="cor_result_table" class="display">
+			<table id="cor_result_table" class="ui-state-default ui-corner-all" style="width: 100%; font-size: xx-small;">
 			</table>
 		</div>
 	</div>
@@ -246,6 +249,7 @@ $(document).ready(function(){
 	$($("#tabs").find("li")[3]).hide()
 	
 	$("#retrieve-cor-button").button();
+	init_cor_source_selector();
 	init_cor_datatype_selector();
 	init_cor_platform_selector();
 	init_cor_screen_selector();
@@ -270,24 +274,27 @@ $(document).ready(function(){
 	}
 });
 
-function plot() {
+function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
-		var type = $('#plot-type option:selected').val();
-		var n = $('#plot_options tr').length;
-		var source = $("#source_selector option:selected").val();
-		var cohort = $("#cohort_selector option:selected").val();
-		var datatypes = [];
-		var ids = [];
-		var platforms = [];
-		var scales = [];
-		var tcga_codes = [];
-		for (i=1; i<=n; i++) {
-			datatypes.push($("#type" + i + "_selector option:selected").val());
-			platforms.push($("#platform" + i + "_selector option:selected").val());
-			ids.push($("#id" + i + "_input").val());
-			scales.push($("#axis" + i + "_selector option:selected").val());
-			tcga_codes.push($("#tcga" + i + "_selector option:selected").val())
+		// variables are initialised when this function is called from correlations table, otherwise - initialise them
+		if (type == undefined) {
+			type = $('#plot-type option:selected').val();
+			var n = $('#plot_options tr').length;
+			source = $("#source_selector option:selected").val();
+			cohort = $("#cohort_selector option:selected").val();
+			datatypes = [];
+			ids = [];
+			platforms = [];
+			scales = [];
+			tcga_codes = [];
+			for (i=1; i<=n; i++) {
+				datatypes.push($("#type" + i + "_selector option:selected").val());
+				platforms.push($("#platform" + i + "_selector option:selected").val());
+				ids.push($("#id" + i + "_input").val());
+				scales.push($("#axis" + i + "_selector option:selected").val());
+				tcga_codes.push($("#tcga" + i + "_selector option:selected").val());
+			}
 		}
 		var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
 		var plot_filename = find_plot_in_history(plot_description);
@@ -379,6 +386,7 @@ function retrieve_correlations() {
 	if (n > 0) {
 		$('#cor_result_table').DataTable().destroy();
 	}
+	var source = $("#corSource_selector option:selected").val();
 	var datatype = $("#corDatatype_selector option:selected").val();
 	var platform = $("#corPlatform_selector option:selected").val();
 	var screen = $("#corScreen_selector option:selected").val();
@@ -386,7 +394,7 @@ function retrieve_correlations() {
 	var fdr = $("#FDR_input").val();
 	// clear result table each time
 	document.getElementById("cor_result_table").innerHTML = '<table></table>';
-	var correlations = retrieve_drug_correlations(datatype, platform, screen, id, fdr);
+	var correlations = retrieve_drug_correlations(source, datatype, platform, screen, id, fdr);
 	// offset is the number of cells, defined in druggable_config.js
 	var offset = cor_headers.length;
 	for (i=0; i<correlations.length-offset; i=i+offset) {
@@ -442,13 +450,20 @@ function retrieve_correlations() {
 		}
 		var QValueCell = row.insertCell(j);
 		QValueCell.innerHTML = correlations[i+8].length < 5 ? parseFloat(correlations[i+8]) : parseFloat(correlations[i+8]).toExponential(2);
+		j = j+1;
+		if (datatype != "MUT") {
+			var PlotButtonCell = row.insertCell(j);
+			// have to do it because of different type of backets
+			var plot_function = 'plot("scatter", "ccle", "ctd", ["' + correlations[i+2] + '", "drug"], ["' + correlations[i+3] + '", "' + correlations[i+4] + '"], ["' + correlations[i] + '", "' + correlations[i+1] + '"], ["linear", "linear"], ["all", "all"])';
+			PlotButtonCell.innerHTML = correlations[i+2] == "MUT" ? "" : "<button onclick='" + plot_function + "'>Plot</button>";
+		}
 	}
 	// we have to add caption last, strangely
 	var table_head = document.getElementById("cor_result_table").createTHead();
 	table_head.innerHTML = '<tr>' + 
 		cor_headers[0] + cor_headers[1] + (datatype == "all" ? cor_headers[2] : '') + 
 		(platform == "all" ? cor_headers[3] : '') + (screen == "all" ? cor_headers[4] : '') +
-		cor_headers[5] + cor_headers[6] + cor_headers[7] + cor_headers[8]
+		cor_headers[5] + cor_headers[6] + cor_headers[7] + cor_headers[8] + (datatype == "MUT" ? "" : "<th></th>") +
 		'</tr>';
 	var data_table = $('#cor_result_table').DataTable({
 		buttons: [
@@ -694,7 +709,7 @@ function init_platformselector(selector_id) {
 			}
 		}
 		$("#" + selector_id).append(options.join("")).selectmenu({
-			width: "120px"
+			width: "175px"
 		});
 		var previous_type = (getCookie("type" + n + "_selector").split("|"))[0];
 		var previous_selection = (getCookie(selector_id).split("|"))[0];;
@@ -791,89 +806,98 @@ function init_plot_type_selector() {
 	plot_type_changed();
 }
 
-function init_cor_datatype_selector() {
-	var datatypes = get_correlation_datatypes();
+function init_cor_source_selector() {
+	var sources = get_correlation_sources();
 	var options = [];
-	options.push("<option value='all'>All datatypes</option>");
-	for (i in datatypes) {
-		options.push("<option value='" + datatypes[i] + "'>" + datatypes[i] +"</option>");
+	options.push("<option value='undef' disabled selected>Choose source</option>");
+	for (i in sources) {
+		options.push("<option value='" + sources[i] + "'>" + sources[i] +"</option>");
 	}
-	$("#corDatatype_selector").append(options.join("")).selectmenu(
+	$("#corSource_selector").append(options.join("")).selectmenu(
 	{
         width: "150px"
     });
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corDatatype_selector option:selected").val();
+	usetCookie("corSource_selector", selector_value, accepted_time);
+	$('#corSource_selector').on( "selectmenuchange", function( event, ui ) {update("corSource_selector")} );
+}
+
+function init_cor_datatype_selector() {
+	var options = [];
+	options.push("<option value='undef' disabled selected>Choose datatype</option>");
+	var cor_source = $("#corSource_selector option:selected").val();
+	if (cor_source != "undef") {
+		options.push("<option value='all'>All datatypes</option>");
+		var datatypes = get_correlation_datatypes(cor_source);
+		for (i in datatypes) {
+			options.push("<option value='" + datatypes[i] + "'>" + datatypes[i] +"</option>");
+		}
+	}
+	$("#corDatatype_selector").append(options.join("")).selectmenu(
+	{
+        width: "150px",
+		disabled: cor_source == "undef"
+    });
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	var selector_value = $("#corDatatype_selector option:selected").val();
 	usetCookie("corDatatype_selector", selector_value, accepted_time);
-	$('#corDatatype_selector').on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
+	if (sessionStorage.getItem("cor_datatype") == null) {
+		sessionStorage.setItem("cor_datatype", 1);
+		$('#corDatatype_selector').on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
+	}
 }
 
 function init_cor_platform_selector() {
-	var platforms = get_correlation_platforms($("#corDatatype_selector option:selected").val());
 	var options = [];
-	options.push("<option value='all'>All platforms</option>");
-	for (i in platforms) {
-		options.push("<option value='" + platforms[i] + "'>" + platforms[i] +"</option>");
+	options.push("<option value='undef' disabled selected>Choose platform</option>");
+	var cor_datatype = $("#corDatatype_selector option:selected").val();
+	if (cor_datatype != "undef") {
+		var platforms = get_correlation_platforms($("#corSource_selector option:selected").val(), cor_datatype);
+		options.push("<option value='all'>All platforms</option>");
+		for (i in platforms) {
+			options.push("<option value='" + platforms[i] + "'>" + platforms[i] +"</option>");
+		}
 	}
 	$("#corPlatform_selector").append(options.join("")).selectmenu({
-        width: "175px"
+        width: "175px",
+		disabled: cor_datatype == "undef"
     });
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corPlatform_selector option:selected").val();
 	usetCookie("corPlatform_selector", selector_value, accepted_time);
 	// for some reason events for platforms and screens fire multiple times
-	if (sessionStorage.getItem("cor_once") == null) {
+	if (sessionStorage.getItem("cor_platform") == null) {
+		sessionStorage.setItem("cor_platform", 1);
 		$('#corPlatform_selector').on( "selectmenuchange", function( event, ui ) {update("corPlatform_selector")} );
 	}
 }
 
 // this function is also used for gene/feature autocomplete init
 function init_cor_screen_selector() {
-	// do not allow input until refresh is over
-	document.getElementById("corGeneFeature_input").disabled = true;
-	$("#corGeneFeature_input").val("");
-	// also - do not allow changing datatype/platform/screen etc. until this request is not complete
-	$("#corDatatype_selector").selectmenu("disable");
-	$("#corPlatform_selector").selectmenu("disable");
-	document.getElementById("FDR_input").disabled = true;
-	var screens = get_correlation_screens($("#corDatatype_selector option:selected").val(), $("#corPlatform_selector option:selected").val());
 	var options = [];
-	options.push("<option value='all'>All screens</option>");
-	for (i in screens) {
-		options.push("<option value='" + screens[i] + "'>" + screens[i] +"</option>");
+	options.push("<option value='undef' disabled selected>Choose screen</option>");
+	var cor_platform = $("#corPlatform_selector option:selected").val();
+	if (cor_platform != "undef") {
+		var screens = get_correlation_screens($("#corSource_selector option:selected").val(), $("#corDatatype_selector option:selected").val(), cor_platform);
+		options.push("<option value='all'>All screens</option>");
+		for (i in screens) {
+			options.push("<option value='" + screens[i] + "'>" + screens[i] +"</option>");
+		}
 	}
 	$("#corScreen_selector").append(options.join("")).selectmenu({
-        width: "150px"
+		width: "150px",
+		disabled: cor_platform == "undef"
     });
-	$("#corScreen_selector").selectmenu("disable");
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corScreen_selector option:selected").val();
+	$("#retrieve-cor-button").button("disable");
 	usetCookie("corScreen_selector", selector_value, accepted_time);
 	setInputFilter(document.getElementById("FDR_input"), function(value) {
 		return /^\d*\.?\d*$/.test(value);
 	});
-	worker = new Worker("js/drug_id_grubber.js");
-	console.log("Starting worker " + Date.now());
-	worker.postMessage([$("#corDatatype_selector option:selected").val(), $("#corPlatform_selector option:selected").val(), $("#corScreen_selector option:selected").val()]);
-	worker.onmessage = function(event) {
-		console.log("Received message from worker " + Date.now());
-		var autocomplete_ids = event.data;
-		$("#corGeneFeature_input").autocomplete({
-			source: autocomplete_ids,
-			minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
-		});
-		$("#corDatatype_selector").selectmenu("enable");
-		$("#corPlatform_selector").selectmenu("enable");
-		$("#corScreen_selector").selectmenu("enable");
-		$("#retrieve-cor-button").button("enable");
-		document.getElementById("corGeneFeature_input").disabled = false;
-		document.getElementById("FDR_input").disabled = false;
-		cor_id_keyup();
-		worker.terminate();
-    };
-	$("#retrieve-cor-button").button("disable");
-	if (sessionStorage.getItem("cor_once") == null) {
-		sessionStorage.setItem("cor_once", 1);
+	if (sessionStorage.getItem("cor_screen") == null) {
+		sessionStorage.setItem("cor_screen", 1);
 		$('#corScreen_selector').on( "selectmenuchange", function( event, ui ) {update("corScreen_selector")} );
 		document.getElementById('FDR_input').setAttribute("onkeyup", 'cor_id_keyup()');
 		document.getElementById('FDR_input').setAttribute("onchange", 'cor_id_keyup()');
@@ -1031,6 +1055,19 @@ function update_plot_type_selector() {
 	plot_type_changed();
 }
 
+function update_cor_source_selector() {
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	var selector_value = $("#corSource_selector option:selected").val();
+	var previous_value = (getCookie("corSource_selector").split("|"))[0];
+	if (selector_value != previous_value) {
+		usetCookie("corSource_selector", selector_value, accepted_time);
+		$('#corDatatype_selector').find('option').remove().end();
+		$('#corDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_cor_datatype_selector();
+		$('#corDatatype_selector').selectmenu( "refresh" );
+	}
+}
+
 function update_cor_datatype_selector() {
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corDatatype_selector option:selected").val();
@@ -1056,21 +1093,38 @@ function update_cor_platform_selector() {
 }
 
 function update_cor_screen_selector() {
+	// do not allow input in any case (normal selector value or "undef")
+	document.getElementById("corGeneFeature_input").disabled = true;
+	$("#corGeneFeature_input").val("");
+	document.getElementById("FDR_input").disabled = true;
+	$("#retrieve-cor-button").button("disable");
 	var selector_value = $("#corScreen_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("corScreen_selector", selector_value, accepted_time);
-	worker = new Worker("js/drug_id_grubber.js");
-	console.log("Starting worker " + Date.now());
-	worker.postMessage([$("#corDatatype_selector option:selected").val(), $("#corPlatform_selector option:selected").val(), $("#corScreen_selector option:selected").val()]);
-	worker.onmessage = function(event) {
-		console.log("Received message from worker " + Date.now());
-		var autocomplete_ids = event.data;
-		$("#corGeneFeature_input").autocomplete({
-			source: autocomplete_ids,
-			minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
-		});
-		worker.terminate();
-	};
+	if (selector_value != "undef") {
+		// do not allow changing datatype/platform/screen etc. until this request is not complete
+		$("#corDatatype_selector").selectmenu("disable");
+		$("#corPlatform_selector").selectmenu("disable");
+		$("#corScreen_selector").selectmenu("disable");
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("corScreen_selector", selector_value, accepted_time);
+		worker = new Worker("js/drug_id_grubber.js");
+		console.log("Starting worker " + Date.now());
+		worker.postMessage([$("#corSource_selector option:selected").val(), $("#corDatatype_selector option:selected").val(), $("#corPlatform_selector option:selected").val(), $("#corScreen_selector option:selected").val()]);
+		worker.onmessage = function(event) {
+			console.log("Received message from worker " + Date.now());
+			var autocomplete_ids = event.data;
+			$("#corGeneFeature_input").autocomplete({
+				source: autocomplete_ids,
+				minLength: (Math.log10(autocomplete_ids.length) > 2) ? 3 : 2
+			});
+			$("#corDatatype_selector").selectmenu("enable");
+			$("#corPlatform_selector").selectmenu("enable");
+			$("#corScreen_selector").selectmenu("enable");
+			document.getElementById("corGeneFeature_input").disabled = false;
+			document.getElementById("FDR_input").disabled = false;
+			cor_id_keyup();
+			worker.terminate();
+		};
+	}
 }
 
 // WARNING! Use this function with extreme caution! It is a potential source of bugs
@@ -1148,6 +1202,13 @@ function update(initiator) {
 						}
 					}
 					update_plot_types();
+					break;
+				case "corSource":
+					update_cor_source_selector();
+					if (current_value != previous_value) {
+						update_cor_datatype_selector();
+						update_cor_platform_selector();
+					}
 					break;
 				case "corDatatype":
 					update_cor_datatype_selector();
@@ -1263,7 +1324,7 @@ function cor_id_keyup() {
 	var available_ids = $( "#corGeneFeature_input" ).autocomplete("option", "source");
 	flag = flag*available_ids.includes(valueSoFar);
 	var fdr = $("#FDR_input").val();
-	flag = flag * (fdr > 0.001) * (fdr<1);
+	flag = flag * (fdr >= 0.001) * (fdr<1);
 	if (flag) {
 		$("#retrieve-cor-button").button("enable");
 	}
@@ -1322,7 +1383,9 @@ function safe_clear() {
 	sessionStorage.removeItem("updates_triggered");
 	sessionStorage.removeItem("cascade_delete");
 	sessionStorage.removeItem("update_autocomplete");
-	sessionStorage.removeItem("cor_once");
+	sessionStorage.removeItem("cor_datatype");
+	sessionStorage.removeItem("cor_platform");
+	sessionStorage.removeItem("cor_screen");
 }
 
 // function provided by https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input

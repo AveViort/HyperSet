@@ -273,6 +273,7 @@ cursor: pointer;
 
 .icon-ok:hover { 
 	box-shadow: 	4px 3px #00dd00;
+	-webkit-border-radius: 3px;
 }
 
 /*.upload-button-inactive {

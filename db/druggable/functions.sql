@@ -1,7 +1,7 @@
 -- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
 
 -- return all drugs/features and genes for given combination of parameters
-CREATE OR REPLACE FUNCTION feature_gene_list(data_type text, platform_n text, screen_name text, sensitivity_m text) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION feature_gene_list(source_n text, data_type text, platform_n text, screen_name text, sensitivity_m text) RETURNS setof text AS $$
 DECLARE
 table_name text;
 res text;
@@ -9,7 +9,7 @@ res_array text array;
 i numeric;
 BEGIN
 res_array = ARRAY[]::text[];
-FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table WHERE datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_name || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
+FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table WHERE source=\'' || source_n ||  E'\' AND datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_name || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
 LOOP
 FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_name || ';'
 LOOP
@@ -48,11 +48,11 @@ $$ LANGUAGE plpgsql;
 
 
 -- return available screens for correlation tables
-CREATE OR REPLACE FUNCTION screen_list(data_type text, platform_n text) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION screen_list(source_n text, data_type text, platform_n text, sensitivity_m text) RETURNS setof text AS $$
 DECLARE
 res text;
 BEGIN
-FOR res IN SELECT DISTINCT screen FROM cor_guide_table WHERE datatype LIKE data_type AND platform LIKE platform_n
+FOR res IN SELECT DISTINCT screen FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND platform LIKE platform_n AND sensitivity_measure=sensitivity_m
 LOOP
 RETURN NEXT res;
 END LOOP;
@@ -104,13 +104,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- same, but for correlations
-CREATE OR REPLACE FUNCTION cor_platform_list (data_type text) RETURNS setof text
+CREATE OR REPLACE FUNCTION cor_platform_list (source_n text, data_type text, sensitivity_m text) RETURNS setof text
 AS $$
 DECLARE
 res text;
 BEGIN
 -- NOTE that we have to use LIKE, not =, because user can ask for platforms for all datatypes 
-FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE datatype LIKE data_type
+FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND sensitivity_measure=sensitivity_m 
 LOOP
 RETURN NEXT res;
 END LOOP;
@@ -143,12 +143,12 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- same, but for correlations
-CREATE OR REPLACE FUNCTION cor_datatype_list () RETURNS setof text
+CREATE OR REPLACE FUNCTION cor_datatype_list (source_n text, sensitivity_m text) RETURNS setof text
 AS $$
 DECLARE
 res text;
 BEGIN
-FOR res IN SELECT DISTINCT datatype FROM cor_guide_table 
+FOR res IN SELECT DISTINCT datatype FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=sensitivity_m 
 LOOP
 RETURN NEXT res;
 END LOOP;

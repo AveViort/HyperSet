@@ -626,6 +626,92 @@ die 'The NET file is empty...<br>'."\n" if !$i;
 return($tmpNet);
 }
 
+
+sub textTable2dataTables_JS {
+my($table, $dir, $name, $hasHeader, $DELIM, $maxLines) = @_;
+my( $tp, $i, $row, @ar, $oldLength, $wrong, $tb, $cn, $hf);
+# print $table.' SHOW1 '.$dir.'<br>';
+
+# $maxLines =25;
+my $id = $name.'-'.HStextProcessor::generateJID();
+open IN, $dir.'/'.$table;
+if ($hasHeader) {
+my $header = <IN>;
+HStextProcessor::readHeader($header, $table, $DELIM);
+}
+$tb = '<table  id="'.$id.'" class="ui-state-default ui-corner-all" style="width: 100%; font-size: xx-small;">';
+# my $i;  and $i++ < 5
+$cn = '<tbody >';
+while ($row = <IN>) {
+last if $i++ > $maxLines;
+chomp($row);
+# $row = HStextProcessor::JavascriptCompatibleID($row);
+@ar = split($DELIM, $row);
+$oldLength = $#ar if (!defined($oldLength));
+if ($#ar != $oldLength) {
+$wrong++ ;
+} 
+else {
+if (length($row) > ($#ar + 1)) {
+$cn .= '<tr>'."\n";
+for $i(0..$#ar) {
+$cn .= '<td style="padding: 2px;">'.$ar[$i].'</td>';
+}
+$oldLength = $#ar;
+$cn .= '</tr>'."\n";
+}
+}
+}
+my @thead_foot = ('thead', 'tfoot');
+
+if ($hasHeader) {
+for $tp(($thead_foot[0])) {
+$hf = '<'.$tp.'><tr>'."\n";
+my @hl = keys(%{$main::nm->{$table}});
+# $tb = "header".$#hl.$tb; $tb = "oldLength".$oldLength.$tb;
+if ($#hl + 1 == $oldLength) {$hf .= '<th>Row ID</th>';}
+for $i(sort {$a <=> $b} keys(%{$main::nm->{$table}})) {
+$hf .= '<th>'.$main::nm->{$table}->{$i}.'</th>'."\n";
+}
+$hf .= '</'.$tp.'></tr>'."\n";
+}} else {
+for $tp(($thead_foot[0])) {
+$hf .= '<'.$tp.'><tr>'."\n";
+for $i(0..$oldLength) {
+$hf .= '<th>Col#'.($i + 1).'</th>'."\n";
+}
+$hf .= '</'.$tp.'></tr>'."\n";
+}} 
+if ($wrong) { 
+print "<p style='color: red;'>Unequal number of columns in the input table rows...</p>";
+}
+$cn = $tb.$hf.$cn.'</tbody></table>';
+$cn .= '<script   type="text/javascript">
+var table = $("#'.$id.'").DataTable({
+ "order": [],
+ //"order": false,
+ responsive: true, 
+ buttons: [        {
+            extend: "colvis",
+            columns: ":gt(0)"
+			//, columnText: function ( dt, idx, title ) {return (idx+1)+\': \'+title;}
+        }    ], 
+ colReorder: {        realtime: true    }	
+	, fixedHeader: true
+	, "processing": true
+	, select: true
+	, rowReorder: {        selector: "tr"    }
+//	, rowReorder: {        selector: ":last-child"    }
+ });
+ table.buttons().container().appendTo( $("#'.$id.'_wrapper").children()[0], table.table().container() ) ;
+ $(".dt-buttons").css({"margin-left": "10px"});
+ $(".buttons-colvis[aria-controls*=\''.$name.'\']").children()[0].textContent = "Select columns";
+ </script>';
+return $cn;
+}
+
+sub generateJID {return(sprintf("%u", rand(10**15)));}
+
 1;
 __END__
 
