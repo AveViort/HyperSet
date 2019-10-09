@@ -842,7 +842,7 @@ die "Input: the program requires a number of parameters defining input files (3)
   The output file name will be printed to STDOUT. It contains info about all input parameters.
   In case input files contained tags and file extentions like .geneGroups, .groups, .txt, these will not appear in the output file name.
   An example line to run NEA.pl with the input files from 
-  http://research.scilifelab.se/andrej_alexeyenko/downloads.html
+  https://research.scilifelab.se/andrej_alexeyenko/downloads.html
   quickly, without extra details and iterative network randomization runs: 
   
   > NEA.pl -ag SomaticMutations.GBM_OV.groups -fg CAN_MET_SIG_GO2.groups -nw merged6_and_wir1_HC2 -do 1 -it 0 -nd 1 

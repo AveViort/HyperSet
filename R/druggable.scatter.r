@@ -109,13 +109,39 @@ if (status != 'ok') {
 			tickangle = 0,
 			tickfont = font2);
 		p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples)) %>% 
-		onRender("
+		onRender(paste0("
 			function(el) { 
-				el.on('plotly_hover', function(d) { console.log('Hover: ', d) });
-				el.on('plotly_click', function(d) { window.open('https://www.evinet.org/share.html#8ca697060e94e0388d182977ae514a414192464a550c82fac5733c0db0787773','_blank'); });
+				el.on('plotly_hover', function(d) {
+						var cohort='", Par["cohort"], "';
+						var datatype='", datatypes[1], "';
+						var platform='", platforms[1], "';
+						var id = ((d.points[0].text).split(' '))[1];
+						console.log('Datatype: ', datatype);
+						console.log('Platform: ', platform);
+						console.log('ID: ', id);
+						console.log('FGS: ', ((d.yaxes[0].title.text).split(' '))[0]);
+						var genes;
+						var startTime = new Date();
+						var xmlhttp = new XMLHttpRequest();
+						xmlhttp.open('GET', 'https://www.evinet.org/dev/HyperSet/cgi/get_ags_genes.cgi?cohort=' + encodeURIComponent(cohort) + '&datatype=' + encodeURIComponent(datatype) + '&platform=' + encodeURIComponent(platform) + '&id=' + encodeURIComponent(id), false);
+						xmlhttp.onreadystatechange = function() {
+							if (this.readyState == 4 && this.status == 200) {
+							genes = this.responseText;}
+						}
+						xmlhttp.send();
+						genes = genes.split('|');
+						genes.slice(0, genes.length-1);
+						var endTime = new Date();
+						console.log('AGS genes: ', genes);
+						console.log('Request and processing took ', endTime - startTime, ' ms');
+						//console.log('Hover: ', d) 
+					});
+				el.on('plotly_click', function(d) { 
+						window.open('https://dev.evinet.org/subnet.html','_blank');
+					});
 				el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 			}
-		") %>%
+		")) %>%
 		layout(title = plot_title,
 			legend = druggable.plotly.legend.style,
 			showlegend = TRUE,
@@ -170,13 +196,19 @@ if (status != 'ok') {
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
 				text = ~paste("Patient: ", common_samples), color = z_data) %>% 
 			colorbar(title = z_axis) %>%
-			onRender("
+			onRender(paste0("
 				function(el) { 
-					el.on('plotly_hover', function(d) { console.log('Hover: ', d) });
+					el.on('plotly_hover', function(d) { 
+						var datatype='", datatypes[1],"';
+						var platform='", platforms[1],"';
+						console.log('Datatype: ', datatype);
+						console.log('Platform: ', platform);
+						console.log('ID: ', d[0].text);
+						//console.log('Hover: ', d) });
 					el.on('plotly_click', function(d) { window.open('https://www.evinet.org/share.html#8ca697060e94e0388d182977ae514a414192464a550c82fac5733c0db0787773','_blank'); });
 					el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 				}
-			") %>%
+			")) %>%
 			layout(title = plot_title,
 				legend = druggable.plotly.legend.style,
 				showlegend = TRUE,

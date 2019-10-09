@@ -109,7 +109,7 @@ my($ss);
 $time = time();
 $q = new CGI; #new instance of the CGI object passed from the query page index.html
 #  $HS_html_gen::fieldURLdelimiter = ';'; $HS_html_gen::keyvalueURLdelimiter = '=';  $HS_html_gen::actionFieldDelimiter1 = '###';  $HS_html_gen::actionFieldDelimiter2 = '___'; $arrayURLdelimiter = '%0D%0A';
-our $q; my $fld;
+my $fld;
 # print 'AAA';
 my @flds = split($HS_html_gen::fieldURLdelimiter, $URL);
 
@@ -117,11 +117,19 @@ for $fld(@flds) {
 $q->{$1} = $2 if $fld =~ m/([A-Za-z0-9\:\_\-\.]+)$HS_html_gen::keyvalueURLdelimiter([A-Za-z0-9\:\_\-\.\%]+)/i;
 }
 #READING CGI PARAMETERS:
-$genes = HStextProcessor::parseGenes($q->{genes}, $HS_html_gen::arrayURLdelimiter);
-$context_genes = HStextProcessor::parseGenes($q->{context_genes}, $HS_html_gen::arrayURLdelimiter);
-@{$networks} = split($HS_html_gen::arrayURLdelimiter, $q->{'networks'});
+if (defined($q->param("direct_link"))) {
+	$genes = HStextProcessor::parseGenes($q->param("genes"), $HS_html_gen::arrayURLdelimiter);
+	$context_genes = HStextProcessor::parseGenes($q->param("context_genes"), $HS_html_gen::arrayURLdelimiter);
+	@{$networks} = split($HS_html_gen::arrayURLdelimiter, $q->param('networks'));
+	$submitted_species = $q->param("species");
+}
+else {
+	$genes = HStextProcessor::parseGenes($q->{genes}, $HS_html_gen::arrayURLdelimiter);
+	$context_genes = HStextProcessor::parseGenes($q->{context_genes}, $HS_html_gen::arrayURLdelimiter);
+	@{$networks} = split($HS_html_gen::arrayURLdelimiter, $q->{'networks'});
+	$submitted_species = $q -> {species}; 
+}
 
-$submitted_species = $q -> {species}; 
 die $URL."Species not defined...\n " if !$submitted_species;
 die $genestring." - genes not defined...\n" if !defined($genes) or !$genes or $#{$genes} < 0;
 	$pw                = ''; # $q->{'pw'};
@@ -138,15 +146,30 @@ $fgs_genes = [@{$context_genes}];
 print STDERR "Genes: ". join(" ", @{$genes})."\n";
 
 	# $base         						=	$q->{'base'};
-	$keep_query                         = 	$q->{'keep_query'};
-	$submitted_coff                     = 	$q->{'coff'};
-	$order                              = 	$q->{'order'}; #network order
-	$reduce  =  $q->{'reduce'}; #choice of algorithm to reduce too large networks
-	if ($reduce) {
-		$reduce_by           = $q->{'reduce_by'};
-		$desired_links_total = $q->{'no_of_links'};
-		$qvotering           = $q->{'qvotering'};
-	}	else {$desired_links_total = 1000000;}
+	if (defined($q->param("direct_link"))) {
+		$keep_query                         = 	$q->param('keep_query');
+		$submitted_coff                     = 	$q->param('coff');
+		$order                              = 	$q->param('order'); #network order
+		$reduce  =  $q->param('reduce'); #choice of algorithm to reduce too large networks
+		if ($reduce) {
+			$reduce_by           = $q->param('reduce_by');
+			$desired_links_total = $q->param('no_of_links');
+			$qvotering           = $q->param('qvotering');
+		}
+		else {$desired_links_total = 1000000;}
+	}
+	else {
+		$keep_query                         = 	$q->{'keep_query'};
+		$submitted_coff                     = 	$q->{'coff'};
+		$order                              = 	$q->{'order'}; #network order
+		$reduce  =  $q->{'reduce'}; #choice of algorithm to reduce too large networks
+		if ($reduce) {
+			$reduce_by           = $q->{'reduce_by'};
+			$desired_links_total = $q->{'no_of_links'};
+			$qvotering           = $q->{'qvotering'};
+		}
+		else {$desired_links_total = 1000000;}
+	}
 
 #END OF READING CGI PARAMETERS
 #PARAMETERS TO REPLACE CGI IN DEBUG MODE:

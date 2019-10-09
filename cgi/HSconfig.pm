@@ -30,10 +30,10 @@ our $fgDir = 'https://www.evinet.org/FG_web/';
 our $tmpVennPNG = 'https://research.scilifelab.se/display_tmp/';
 our $tmpPath = 'https://research.scilifelab.se/users_tmp/';
 our $tmpVennHTML = 'https://research.scilifelab.se/users_tmp/';
-our $downloadDir = 'http://research.scilifelab.se/andrey_alexeyenko/downloads/';
+our $downloadDir = 'https://research.scilifelab.se/andrey_alexeyenko/downloads/';
 our $fieldRdelimiter = '+'; #%3B
 our $file_stat_ext = ".file_stat";
-our $maxLinesDisplay = 100;
+our $maxLinesDisplay = 500;
 our $Rplots;
 ########################################################################################
 # 18:35 b4:/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/pics >>>> ln -s /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/plots/ .

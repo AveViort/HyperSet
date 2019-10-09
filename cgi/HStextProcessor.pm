@@ -699,8 +699,8 @@ var table = $("#'.$id.'").DataTable({
  colReorder: {        realtime: true    }	
 	, fixedHeader: true
 	, "processing": true
-	, select: true
-	, rowReorder: {        selector: "tr"    }
+//	, select: true
+	//, rowReorder: {        selector: "tr"    }
 //	, rowReorder: {        selector: ":last-child"    }
  });
  table.buttons().container().appendTo( $("#'.$id.'_wrapper").children()[0], table.table().container() ) ;

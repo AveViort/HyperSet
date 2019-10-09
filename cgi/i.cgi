@@ -46,6 +46,15 @@ our $restoreSpecial = 0; # see sub tmpFileName()
 $fileUploadTag = "_table";
 #return 0;
 
+my $parname;
+my $pcont = '';
+my @parnames = $q->param;
+foreach $parname ( @parnames ) {$pcont =  $pcont.$parname."=".$q->param($parname).";\n";}  
+my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-2.txt";
+open(my $fh, '>', $debug_filename);
+print $fh "Params: ".$pcont."\n";
+close $fh;
+
 our $uname = $q->param("username");
 $uname = 'Anonymous' if ((!defined($uname)) || ($uname eq ''));
 our $sign = $q->param("signature");
@@ -151,6 +160,10 @@ elsif ($q->param("action") eq 'sbmSubmit') {$step = 'executeNEA';}
 if (($q->param("action") =~  m/^subnet\-([0-9]+)$HS_html_gen::actionFieldDelimiter1([0-9A-Z_\;\:\.\-\(\)\=]+)$HS_html_gen::actionFieldDelimiter1([0-9A-Z_\;\:\.\-\(\)\=]+)$/) or ($q->param("action") =~  m/^subnet\-([0-9]+)$HS_html_gen::actionFieldDelimiter2([0-9A-Z_\-]+)$HS_html_gen::actionFieldDelimiter2([0-9A-Z_\-]+)/)) {
 $step = 'shownet';
 ($quasyURL, $callerNo, $AGS, $FGS) = ($q->param("subneturlbox"), $1, $2, $3);
+my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
+open(my $fh, '>', $debug_filename);
+print $fh "subneturlbox=".$quasyURL."\n";
+close $fh;
 } 
 if ($q->param("action") =~  m/^subnet\-ags/) {
 $step = 'shownet';
@@ -161,6 +174,10 @@ $step = 'shownet';
 		$HSconfig::netfieldprefix.join($HS_html_gen::fieldURLdelimiter.$HSconfig::netfieldprefix, $q->param('NETselector'))
 	), 
 undef, undef, undef);
+my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
+open(my $fh, '>', $debug_filename);
+print $fh "not.subneturlbox=".$quasyURL."\n";
+close $fh;
 } 
 elsif ($q->param("action") =~ m/vennsubmitbutton-table-ags-/i) {$step = 'create_venn';} 
 elsif ($q->param("action") eq 'updatebutton2-venn-ags-ele') { $step = 'update_venn';} 
@@ -625,8 +642,12 @@ my($data, $node);
 
 print $bsURLstring."\n"   if $debug;
 ($data, $node) = HS_bring_subnet::bring_subnet($bsURLstring);
+my $parname;
+my $pcont = '';
+my @parnames = $q->param;
+foreach $parname ( @parnames ) {$pcont =  $pcont.$parname."=".$q->param($parname).";";}  
 return(	
-	'<div id="net_graph" style="width: '.
+	'<div id="net_graph" customfield='.$bsURLstring.' style="width: '.
 		$HSconfig::cy_size->{net}->{width}.'px; height: '.$HSconfig::cy_size->{net}->{height}.'px;">'.
 		HS_cytoscapeJS_gen::printNet_JSON($data, $node, $callerNo, $AGS, $FGS).
 	'</div><!--/div-->');
@@ -990,7 +1011,7 @@ my $executeStatement = "Rscript $HSconfig::nea_reader  --vanilla --args nea=".
 	# print $executeStatement.'<br>';
 system($executeStatement); #
 my $content = '<div style="width:100%; text-align: right; ">
-<span style="vertical-align: middle; padding-bottom: 20px;">Open rectangular matrix: </span><select name="matrix_select" id="matrix_select">';
+<span style="vertical-align: middle; padding-bottom: 20px;">Open detailed matrix: </span><select name="matrix_select" id="matrix_select">';
 	for $i(0..$#lst) {
 	# this is the old direct link
 	# $tableID = $HSconfig::tmpVennHTML.$projectID.'/'.$HSconfig::matrixHTML.'.'.$jid.'.'.$lst[$i].'.html';

@@ -141,8 +141,8 @@ if (status != 'ok') {
 	print(str(y_data));
 	y_axis_name = '';
 	print(readable_platforms);
-	print(ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", readable_platforms[temp_platforms[2],2]));
-	x_axis_name = paste0(temp_datatypes[2], ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", readable_platforms[temp_platforms[2],2]));
+	print(ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
+	x_axis_name = paste0(temp_datatypes[2], ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
 	if (length(temp_scales) != 0) {
 		if (!empty_value(temp_ids[1])) {
 			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", temp_ids[1], ",", temp_scales[1], ")");

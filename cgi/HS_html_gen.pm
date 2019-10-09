@@ -106,11 +106,11 @@ our %elementContent = (
 <ol>
 <li> a file with pre-compiled s.c. altered gene sets (AGS). Specify table format and columns that contain gene/protein IDs and group IDs. The latter should represent multiple AGS which you want to characterize. 
 <br>More details: <a href=\'https://www.evinet.org/help/HyperSet.Demo.Expl.pdf\' class=\'clickable\'><span class=\'ui-icon ui-icon-file-pdf\'></span></a>   
-Example file: <a href=\'http://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/example.groups\' class=\'clickable\'>example.groups</a>
+Example file: <a href=\'https://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/example.groups\' class=\'clickable\'>example.groups</a>
 </li>
 <li> a file with results of differential expression analysis, from which you could extract AGS defined under flexible cutoffs. 
 <br>More details: <a href=\'https://www.evinet.org/help/HyperSet.Demo.Venn.pdf\' class=\'clickable\'><span class=\'ui-icon ui-icon-file-pdf\'></span></a>. 
-Example file: <a href=\'http://research.scilifelab.se/andrej_alexeyenko/downloads/P.matrix.NoModNodiff_wESC.DE.VENN.txt\' class=\'clickable\'>P.matrix.NoModNodiff_wESC.VENN.txt</a>
+Example file: <a href=\'https://research.scilifelab.se/andrej_alexeyenko/downloads/P.matrix.NoModNodiff_wESC.DE.VENN.txt\' class=\'clickable\'>P.matrix.NoModNodiff_wESC.VENN.txt</a>
 </li>
 </ol>
 <br>
@@ -591,19 +591,24 @@ $con .= $elementContent{$cc};
 }
 return $con;
 }
-  
+
 sub ajaxMenu {
 my $sp; 
 my $con = '<table><tr>';
 $con .= '
-<!--td title="Heatmap">
+<td title="Ten simple rules to create network figures">
+<div id="tenrules" class="showme icon-ok demo_button sbm-controls"> 
+<a href="https://doi.org/10.1371/journal.pcbi.1007244" target="_blank"><img src="pics/ten.jpeg"  class="showme"></a></div>
+</td>
+
+<td title="Heatmap">
 <div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"></div>
 </td>
 <td title="PCA (principal component analysis)">
 <div id="run-exploratory-pca" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/eres.png" class="showme" ></div>
-</td-->
+</td>
 <td>
 				<div id="help-'.$main::ajax_help_id++.'" class="showme clickable demo_button sbm-controls" onclick="demo1(
 \''.$HSconfig::examples->{'1'}->{'proj'}.'\',

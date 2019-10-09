@@ -625,15 +625,15 @@ $pre .=   '
 <hr>
 Download:
 <br>
-<a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/NEArender/NEArender_1.1.tar.gz">R package NEArender for linux</a>
+<a href="https://research.scilifelab.se/andrej_alexeyenko/downloads/NEArender/NEArender_1.1.tar.gz">R package NEArender for linux</a>
 <br>
-<a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/NEArender/NEArender_1.1.zip">R package NEArender for Windows</a>
+<a href="https://research.scilifelab.se/andrej_alexeyenko/downloads/NEArender/NEArender_1.1.zip">R package NEArender for Windows</a>
 <br>
-<a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/NEA.pl">perl script NEA.pl </a> from <a href="http://www.biomedcentral.com/1471-2105/13/226" target="_blank"> Alexeyenko et al. (2012) </a>
+<a href="https://research.scilifelab.se/andrej_alexeyenko/downloads/NEA.pl">perl script NEA.pl </a> from <a href="http://www.biomedcentral.com/1471-2105/13/226" target="_blank"> Alexeyenko et al. (2012) </a>
 <hr>
 Example of a user data file (should be submitted via "Altered gene sets"):
 <br>
-<a href="http://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/SomaticMutations.GBM_OV.example">SomaticMutations.TCGA-2008</a>
+<a href="https://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/SomaticMutations.GBM_OV.example">SomaticMutations.TCGA-2008</a>
 
 
 </div>' ;

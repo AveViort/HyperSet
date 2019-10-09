@@ -106,13 +106,6 @@ li.tab:hover ul {
 		<li><a href="#tab-home">Home</a></li>
 		<li><a href="#tab-signif">Significant results</a></li>
 		<li><a href="#tab-lookup">Look up</a></li>
-		<li class="tab"><a href="#tab-plot">Plots</a>
-			<ul class="tabsubmenu">
-				<li onclick = plot("2D")>2D</li>
-				<li onclick = plot("3D")>3D</li>
-				<li onclick = plot("Box")>Box</li>
-			</ul>
-		</li>
 	</ul>
 	<div id="tab-home">This is a home tab</div>
 	<div id="tab-signif">
@@ -131,7 +124,7 @@ li.tab:hover ul {
 			<select name="corScreen_selector" id="corScreen_selector" class="ui-helper" style="width: 40ch;" >
 			</td>
 			<td>
-			<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name">
+			<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name" disabled>
 			</td>
 			<td>
 			<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
@@ -151,16 +144,30 @@ li.tab:hover ul {
 	<br>
 	<table>
 		<tr>
+		<th>Source</th>
+		<th>Cohort</th>
+		<th>Code</th>
+		</tr>
+		<tr>
 		<td>
 		<select id="source_selector" class="ui-helper" style="width: 40ch;">
 		</td>
 		<td>
 		<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
 		</td>
+		<td>
+		<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
+		</td>
 		</tr>
 	</table>
 	<br>
 	<table id = "plot_options">
+		<tr>
+		<th>Datatype</th>
+		<th>Platform</th>
+		<th>ID</th>
+		<th>Scale</th>
+		</tr>
 		<tr>
 		<td>
 		<select id="type1_selector" class="ui-helper" style="width: 40ch;">
@@ -173,9 +180,6 @@ li.tab:hover ul {
 		</td>
 		<td>
 		<select id="axis1_selector" class="ui-helper" style="width: 20ch;">
-		</td>
-		<td>
-		<select id="tcga1_selector" class="ui-helper" style="width: 10ch;">
 		</td>
 		<td>
 		<button id="add_row1" max=3 onclick="add_plot_options_row(1)">+</button>
@@ -245,8 +249,6 @@ $(document).ready(function(){
 	});
 	$("#progressbar").css({"visibility": "hidden"});
 	$("#tabs").tabs({});
-	// hide "Plots" tab by default
-	$($("#tabs").find("li")[3]).hide()
 	
 	$("#retrieve-cor-button").button();
 	init_cor_source_selector();
@@ -269,10 +271,24 @@ $(document).ready(function(){
 	$("#plot-button").button("disable");
 	// need to call it manually because some types of plots need no additional parameters 
 	id_keyup(1);
+	// reload from cookies if we had more than 1 row
+	if (getCookie("type2_selector") != "") {
+		reload_analysis_options();
+	}
 	if (sessionStorage.getItem("docked_plots") == null) {
 		sessionStorage.setItem("docked_plots", 0);
 	}
 });
+
+// this function is used to reload rows on the third tab from cookies
+function reload_analysis_options() {
+	var n = parseInt(document.getElementById("add_row1").getAttribute("max"))-1;
+	for (var i=1; i<=n; i++) {
+		if (getCookie("type" + i + "_selector") != "") {
+			add_plot_options_row(i);
+		}
+	} 
+}
 
 function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
 	var cookies = checkCookiesAccepted();
@@ -280,7 +296,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		// variables are initialised when this function is called from correlations table, otherwise - initialise them
 		if (type == undefined) {
 			type = $('#plot-type option:selected').val();
-			var n = $('#plot_options tr').length;
+			var n = $('#plot_options tr').length-1;
 			source = $("#source_selector option:selected").val();
 			cohort = $("#cohort_selector option:selected").val();
 			datatypes = [];
@@ -293,7 +309,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				platforms.push($("#platform" + i + "_selector option:selected").val());
 				ids.push($("#id" + i + "_input").val());
 				scales.push($("#axis" + i + "_selector option:selected").val());
-				tcga_codes.push($("#tcga" + i + "_selector option:selected").val());
+				tcga_codes.push($("#tcga_selector option:selected").val());
 			}
 		}
 		var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
@@ -478,8 +494,8 @@ function retrieve_correlations() {
 function add_plot_options_row(i) {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
-		// current number of rows
-		var n = $('#plot_options tr').length;
+		// current number of rows (-1 because of header)
+		var n = $('#plot_options tr').length-1;
 		for (j=i+1; j<=n; j++) {
 			$('#type' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('type' + (j+1) + '_selector')} );
 			$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('platform' + (j+1) + '_selector')} );
@@ -489,7 +505,6 @@ function add_plot_options_row(i) {
 			document.getElementById('id' + j +'_input').setAttribute("onchange", 'id_keyup(' + (j+1) +')');
 			document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j+1) +'_input');
 			document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j+1) +'_selector');
-			document.getElementById('tcga' + j +'_selector').setAttribute("id", 'tcga' + (j+1) +'_selector');
 			document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j+1));
 			document.getElementById('add_row' + (j+1)).setAttribute("onclick", 'add_plot_options_row(' + (j+1) + ')');
 			document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j+1));
@@ -499,7 +514,7 @@ function add_plot_options_row(i) {
 		sessionStorage.setItem("add_row", 1);
 		
 		var table = document.getElementById("plot_options");
-		var row = table.insertRow(i);
+		var row = table.insertRow(i+1);
 		var TypeSelectorCell = row.insertCell(0);
 		TypeSelectorCell.innerHTML = '<select id="type' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
 		var for_delete = false;
@@ -520,12 +535,9 @@ function add_plot_options_row(i) {
 		var AxisSelector = row.insertCell(3);
 		AxisSelector.innerHTML = '<select id="axis' + (i+1) +'_selector" class="ui-helper" style="width: 20ch;">';
 		init_axis_type_selector('axis' + (i+1) + '_selector');
-		var TCGASelector = row.insertCell(4);
-		TCGASelector.innerHTML = '<select id="tcga' + (i+1) +'_selector" class="ui-helper" style="width: 10ch;">';
-		init_tcga_code_selector('tcga' + (i+1) + '_selector');
-		var AddButton = row.insertCell(5);
+		var AddButton = row.insertCell(4);
 		AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=3 onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
-		var DeleteButton = row.insertCell(6);
+		var DeleteButton = row.insertCell(5);
 		DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=3 onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
 		update_plot_types();
 		$("#add_row" + (i+1)).button();
@@ -548,15 +560,10 @@ function add_plot_options_row(i) {
 			delete_plot_options_row(i+1);
 		}
 		else {
-			for (j=1; j<=n+1; j++) {
-				// re-initiate all other codes selectors, because we can have new selector without meta-codes - in this case they have to be removed from other selectors as well
-				if (j != i+1) {
-					$('#tcga'+ j + '_selector').find('option').remove().end();
-					$('#tcga'+ j + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-					init_tcga_code_selector('tcga'+ j + '_selector');
-					$('#tcga'+ j + '_selector').selectmenu( "refresh" );
-				}
-			}
+			$('#tcga_selector').find('option').remove().end();
+			$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+			init_tcga_code_selector('tcga_selector');
+			$('#tcga_selector').selectmenu( "refresh" );
 		}
 		sessionStorage.removeItem("add_row");
 		id_keyup(i+1);
@@ -568,7 +575,7 @@ function add_plot_options_row(i) {
 
 function delete_plot_options_row(i) {
 	// no need to check cookies in this function - you cannot add row without accepting cookies
-	var n = $('#plot_options tr').length;
+	var n = $('#plot_options tr').length-1;
 	for (j=i+1; j<=n; j++) {
 		$('#type' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('type' + (j-1) + '_selector')} );
 		$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('platform' + (j-1) + '_selector')} );
@@ -578,13 +585,16 @@ function delete_plot_options_row(i) {
 		document.getElementById('id' + j +'_input').setAttribute("onchange", 'id_keyup(' + (j-1) +')');
 		document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j-1) +'_input');
 		document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j-1) +'_selector');
-		document.getElementById('tcga' + j +'_selector').setAttribute("id", 'tcga' + (j-1) +'_selector');
 		document.getElementById('add_row' + j).setAttribute("onclick", 'add_plot_options_row(' + (j-1) + ')');
 		document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j-1));
 		document.getElementById('delete_row' + j).setAttribute("onclick", 'delete_plot_options_row(' + (j-1) + ')');
 		document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j-1));
 	}	
-	document.getElementById("plot_options").deleteRow(i-1);
+	document.getElementById("plot_options").deleteRow(i);
+	
+	deleteCookie("type" + i + "_selector");
+	deleteCookie("platform" + i + "_selector");
+	
 	for (j=1; j<n; j++) {
 		$("#add_row" + j).button("enable");
 	}
@@ -601,7 +611,7 @@ function delete_plot_options_row(i) {
 	}
 	if (sessionStorage.getItem("cascade_delete") == null) {
 		update_plot_types();
-		if (i <n) {
+		if (i<n) {
 			update_type(i);
 		}
 	}
@@ -625,7 +635,7 @@ function init_cohortselector() {
 	init_dataselector("type1_selector");
 	init_platformselector("platform1_selector");
 	init_axis_type_selector("axis1_selector");
-	init_tcga_code_selector("tcga1_selector");
+	init_tcga_code_selector("tcga_selector");
 	init_plot_type_selector();
 	$("#add_row1").button();
 	$("#delete_row1").button();
@@ -634,11 +644,11 @@ function init_cohortselector() {
 }
 
 function init_dataselector(selector_id) {
-	var total = $('#plot_options tr').length;
+	var total = $('#plot_options tr').length-1;
 	var n = parseInt(selector_id.substr(4, selector_id.indexOf("_")-4));
 	var previous_datatypes = [];
 	for (j=1; j<n; j++) {
-		console.log(j);
+		//console.log(j);
 		previous_datatypes.push($("#type" + j +"_selector option:selected").val());
 	}
 	var datatypes = get_cohort_datatypes($("#cohort_selector option:selected").val(), previous_datatypes);
@@ -649,7 +659,7 @@ function init_dataselector(selector_id) {
 			options.push("<option value='"+ datatypes[i] + "'>" + datatypes[i] + "</option>");
 		}
 		$("#" + selector_id).append(options.join("")).selectmenu({
-			width: "100px"
+			width: "120px"
 		});
 		var previous_selection = (getCookie(selector_id).split("|"))[0];
 		if (datatypes.includes(previous_selection)) {
@@ -675,7 +685,7 @@ function init_dataselector(selector_id) {
 }
 
 function init_platformselector(selector_id) {
-	var total = $('#plot_options tr').length;
+	var total = $('#plot_options tr').length-1;
 	var n = parseInt(selector_id.substr(8, selector_id.indexOf("_")-8));
 	var previous_platforms = [];
 	for (j=1; j<n; j++) {
@@ -712,8 +722,12 @@ function init_platformselector(selector_id) {
 			width: "175px"
 		});
 		var previous_type = (getCookie("type" + n + "_selector").split("|"))[0];
-		var previous_selection = (getCookie(selector_id).split("|"))[0];;
-		if (platforms.includes(previous_selection)) {
+		var previous_selection = (getCookie(selector_id).split("|"))[0];
+		var platforms_ids = [];
+		for (i=0; i<platforms[0].length; i++) {
+			platforms_ids.push(platforms[0][i]["platform"]);
+		}
+		if (platforms_ids.includes(previous_selection)) {
 			$("#" + selector_id).val(previous_selection);
 			$("#" + selector_id).selectmenu( "refresh" );
 		}
@@ -752,26 +766,21 @@ function init_axis_type_selector(selector_id) {
 	}
 	var flag = (axis_types.length == 0);
 	$("#" + selector_id).append(options.join("")).selectmenu({
-        width: "95px"
-    });
-	$("#" + selector_id).selectmenu({
+        width: "95px",
 		disabled: flag
-	});
+    });
 }
 
 function init_tcga_code_selector(selector_id) {
-	var n = selector_id.substr(4, selector_id.indexOf("_")-4);
-	var total = $('#plot_options tr').length;
+	var total = $('#plot_options tr').length-1;
 	// in this case 'previous' mean 'previous in time', not 'in order'
-	// e.g. tcga3_selector can be set before tcga1_selector
+	// e.g. platform3_selector can be set before platform1_selector
 	var previous_datatypes = [];
 	for (j=1; j<=total; j++) {
-		if (j != n) {
-			//console.log(j);
-			previous_datatypes.push($("#type" + j +"_selector option:selected").val());
-		}
+		previous_datatypes.push($("#type" + j +"_selector option:selected").val());
 	}
-	var tcga_codes = get_tcga_codes($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_datatypes);
+	// this can be modified - we don't need second variable anymore
+	var tcga_codes = get_tcga_codes($("#cohort_selector option:selected").val(), $("#type" + 1 + "_selector option:selected").val(), previous_datatypes);
 	options = [];
 	for (i in tcga_codes) {
 		options.push("<option value='"+ tcga_codes[i] + "'>" + tcga_codes[i] + "</option>");
@@ -779,17 +788,16 @@ function init_tcga_code_selector(selector_id) {
 	// in case if we have 0 codes tcga_codes is [""]
 	var flag = (($("#source_selector option:selected").val() != "TCGA") || (tcga_codes[0] == ""));
 	$("#" + selector_id).append(options.join("")).selectmenu({
-        width: "100px"
-    });
-	$("#" + selector_id).selectmenu({
+        width: "100px",
 		disabled: flag
-	});
+    });
+	$('#tcga'+ j + '_selector').selectmenu( "refresh" );
 }
 
 function init_plot_type_selector() {
 	console.log('init_plot_type_selector() invoked');
 	var platforms = [];
-	var n = $('#plot_options tr').length;
+	var n = $('#plot_options tr').length-1;
 	for (i=1; i<=n; i++) {
 		platforms.push($("#platform" + i + "_selector option:selected").val());
 	}
@@ -839,9 +847,6 @@ function init_cor_datatype_selector() {
         width: "150px",
 		disabled: cor_source == "undef"
     });
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	var selector_value = $("#corDatatype_selector option:selected").val();
-	usetCookie("corDatatype_selector", selector_value, accepted_time);
 	if (sessionStorage.getItem("cor_datatype") == null) {
 		sessionStorage.setItem("cor_datatype", 1);
 		$('#corDatatype_selector').on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
@@ -853,6 +858,8 @@ function init_cor_platform_selector() {
 	options.push("<option value='undef' disabled selected>Choose platform</option>");
 	var cor_datatype = $("#corDatatype_selector option:selected").val();
 	if (cor_datatype != "undef") {
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("corDatatype_selector", cor_datatype, accepted_time);
 		var platforms = get_correlation_platforms($("#corSource_selector option:selected").val(), cor_datatype);
 		options.push("<option value='all'>All platforms</option>");
 		for (i in platforms) {
@@ -863,9 +870,6 @@ function init_cor_platform_selector() {
         width: "175px",
 		disabled: cor_datatype == "undef"
     });
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	var selector_value = $("#corPlatform_selector option:selected").val();
-	usetCookie("corPlatform_selector", selector_value, accepted_time);
 	// for some reason events for platforms and screens fire multiple times
 	if (sessionStorage.getItem("cor_platform") == null) {
 		sessionStorage.setItem("cor_platform", 1);
@@ -879,6 +883,8 @@ function init_cor_screen_selector() {
 	options.push("<option value='undef' disabled selected>Choose screen</option>");
 	var cor_platform = $("#corPlatform_selector option:selected").val();
 	if (cor_platform != "undef") {
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("corPlatform_selector", cor_platform, accepted_time);
 		var screens = get_correlation_screens($("#corSource_selector option:selected").val(), $("#corDatatype_selector option:selected").val(), cor_platform);
 		options.push("<option value='all'>All screens</option>");
 		for (i in screens) {
@@ -891,8 +897,8 @@ function init_cor_screen_selector() {
     });
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corScreen_selector option:selected").val();
-	$("#retrieve-cor-button").button("disable");
 	usetCookie("corScreen_selector", selector_value, accepted_time);
+	$("#retrieve-cor-button").button("disable");
 	setInputFilter(document.getElementById("FDR_input"), function(value) {
 		return /^\d*\.?\d*$/.test(value);
 	});
@@ -928,7 +934,7 @@ function update_cohort() {
 	$('#platform1_selector').selectmenu( "refresh" );
 	$('#tcga1_selector').find('option').remove().end();
 	$('#tcga1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_tcga_code_selector('tcga1_selector');
+	init_tcga_code_selector('tcga_selector');
 	$('#tcga1_selector').selectmenu( "refresh" );
 	sessionStorage.removeItem("add_row");
 	$('#id1_input').val("");
@@ -944,11 +950,18 @@ function update_type(n) {
 		if (selector_value != previous_value) {
 			usetCookie("type" + n + "_selector", selector_value, accepted_time);
 			n = parseInt(n);
-			$('#platform'+ n + '_selector').find('option').remove().end();
-			$('#platform'+ n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+			if ($("#source_selector").val() == "TCGA") {
+				//console.log("Updating TCGA selector number " + i + " out of " + total + " Initator: platform" + n + "_selector");
+				$('#tcga_selector').find('option').remove().end();
+				$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+				init_tcga_code_selector('tcga_selector');
+				$('#tcga_selector').selectmenu( "refresh" );
+			}
+			$('#platform' + n + '_selector').find('option').remove().end();
+			$('#platform' + n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 			var empty = init_platformselector('platform' + n + '_selector');
 			$('#platform'+ n + '_selector').selectmenu( "refresh" );
-			var total = $('#plot_options tr').length;
+			var total = $('#plot_options tr').length-1;
 			if (empty) {
 				alert("No more compatible platforms");
 				sessionStorage.setItem("cascade_delete", 1);
@@ -999,7 +1012,7 @@ function update_platform(n) {
 			init_axis_type_selector('axis'+ n + '_selector');
 			$('#axis'+ n + '_selector').selectmenu( "refresh" );
 			var source = $("#source_selector option:selected").val();
-			var total = $('#plot_options tr').length;
+			var total = $('#plot_options tr').length-1;
 			print
 			if (n<total) {
 				$('#platform' + (n+1) + '_selector').find('option').remove().end();
@@ -1020,26 +1033,17 @@ function update_platform(n) {
 					$("#id" + (n+1) + "_input").val("");
 				}
 			}
-			// we need to update ALL tcga selectors because of meta-codes
-			if (source == "TCGA") {
-				for (var i = 1; i<=total; i++) {
-					//console.log("Updating TCGA selector number " + i + " out of " + total + " Initator: platform" + n + "_selector");
-					$('#tcga'+ i + '_selector').find('option').remove().end();
-					$('#tcga'+ i + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-					init_tcga_code_selector('tcga'+ i + '_selector');
-					$('#tcga'+ i + '_selector').selectmenu( "refresh" );
-				}
-			}
-			id_keyup(n);
 			plot_type_changed();
 		}
+		// do not move this operation - othe will cause bug
+		id_keyup(n);
 	}
 }
 
 function update_plot_type_selector() {
 	console.log('update_plot_type_selector() invoked');
 	var platforms = [];
-	var n = $('#plot_options tr').length;
+	var n = $('#plot_options tr').length-1;
 	for (i=1; i<=n; i++) {
 		platforms.push($("#platform" + i + "_selector option:selected").val());
 	}
@@ -1131,7 +1135,7 @@ function update_cor_screen_selector() {
 // e.g. it can hide input, but cannot set it visible back
 // however, it is ok for current conditions
 function plot_type_changed() {
-	var total = $('#plot_options tr').length;
+	var total = $('#plot_options tr').length-1;
 	// see druggable_config.js for variable definition
 	var platforms = hidden_inputs.get($('#plot-type option:selected').val());
 	if (typeof(platforms) != 'undefined') {
@@ -1164,8 +1168,11 @@ function update(initiator) {
 			console.log("Update succesfully invoked by initiator: " + initiator);
 			sessionStorage.setItem("updates_triggered", 1);
 			var previous_value = (getCookie(initiator).split("|"))[0];
+			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+			usetCookie(initiator, selector_value, accepted_time);
+			var selector_value = $("#" + initiator + " option:selected").val();
 			var initiator_type = (initiator.split("_"))[0];
-			var total = $('#plot_options tr').length;
+			var total = $('#plot_options tr').length-1;
 			var n = parseInt(initiator_type[initiator_type.length - 1]);
 			// type, platform etc. selectors contain numbers, but source selector does not
 			if (!isNaN(n)) {
@@ -1289,21 +1296,26 @@ function dock_plot(graph_window, plot_id) {
 }
 
 function id_keyup(k) {
-	var n = $('#plot_options tr').length;
+	var n = $('#plot_options tr').length-1;
 	var flag = true;
-	for (i = 1; i<=n; i++) {
-		if ($("#id" + i + "_input").is(":enabled")) {
-			var valueSoFar = $("#id" + i + "_input").val();
-			// this variable declared in druggable_config.js
-			if (capitalized_datatypes.includes($("#type" + i + "_selector option:selected").val())) {
-				valueSoFar = valueSoFar.toUpperCase();
-				$("#id" + i + "_input").val(valueSoFar);
+	if (typeof $("#plot-type option:selected").val() == 'undefined') {
+		flag = false;
+	}
+	else {
+		for (i = 1; i<=n; i++) {
+			if ($("#id" + i + "_input").is(":enabled")) {
+				var valueSoFar = $("#id" + i + "_input").val();
+				// this variable declared in druggable_config.js
+				if (capitalized_datatypes.includes($("#type" + i + "_selector option:selected").val())) {
+					valueSoFar = valueSoFar.toUpperCase();
+					$("#id" + i + "_input").val(valueSoFar);
+				}
+				var available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
+				flag = flag*available_ids.includes(valueSoFar);
 			}
-			var available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
-			flag = flag*available_ids.includes(valueSoFar);
-		}
-		else {
-			flag = flag*true;
+			else {
+				flag = flag*true;
+			}
 		}
 	}
 	if (flag) {

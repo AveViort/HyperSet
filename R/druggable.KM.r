@@ -300,7 +300,7 @@ print(str(first_set));
 
 # we need patients, not samples! If source is TCGA - choose patients with the specified code and remove codes
 query <- "SELECT ";
-if ((empty_value(ids[i])) & (platforms[i] == "drug")) {
+if ((empty_value(ids[m])) & (platforms[m] == "drug")) {
 	query <- paste0(query, "DISTINCT sample,TRUE FROM ", second_set_table);
 } else {
 	query <- paste0(query, "sample,", second_set_platform, " FROM ", second_set_table);

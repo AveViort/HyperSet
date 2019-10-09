@@ -31,6 +31,10 @@ function usetCookie(cname, cvalue, cvaltime)
 	document.cookie = cname + "=" + cvalue + "|" + cvaltime + "; secure;" + expires + "; path=/";
 }
 
+function deleteCookie(cname) {
+	document.cookie = cname + "=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
+
 // returns value, signature, timestamp and cvaltime of cookie with the given cname. For unsigned cookies - only value and cvaltime
 function getCookie(cname) {
     var name = cname + "=";
