@@ -182,7 +182,7 @@ li.tab:hover ul {
 		<select id="axis1_selector" class="ui-helper" style="width: 20ch;">
 		</td>
 		<td>
-		<button id="add_row1" max=3 onclick="add_plot_options_row(1)">+</button>
+		<button id="add_row1" onclick="add_plot_options_row(1)">+</button>
 		</td>
 		<td>
 		<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
@@ -257,6 +257,9 @@ $(document).ready(function(){
 	init_cor_screen_selector();
 		
 	$("#submit-populate").button();
+	// max_rows defined in druggable_config.js
+	document.getElementById('add_row1').setAttribute("max", max_rows);
+	
 	var sources = get_plot_sources();
 	options = [];
 	for (i in sources) {
@@ -267,6 +270,16 @@ $(document).ready(function(){
     });
 	$('#source_selector').on( "selectmenuchange", function( event, ui ) {update_source()} );
 	init_cohortselector();
+	$("#add_row1").qtip({ 
+			content: {
+				text: "Add a new row (under this one)"
+			}
+	});
+	$("#delete_row1").qtip({ 
+			content: {
+				text: "Delete this row"
+			}
+	});
 	$("#plot-button").button();
 	$("#plot-button").button("disable");
 	// need to call it manually because some types of plots need no additional parameters 
@@ -349,7 +362,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 					},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-			});
+			}).parent().appendTo("#tab-lookup");
 			$("#progressbar").css({"visibility": "hidden"});
 		}
 		// existing plot
@@ -388,7 +401,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 					},
 					beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-				});
+				}).parent().appendTo("#tab-lookup");
 			}
 		}
 	}
@@ -536,9 +549,20 @@ function add_plot_options_row(i) {
 		AxisSelector.innerHTML = '<select id="axis' + (i+1) +'_selector" class="ui-helper" style="width: 20ch;">';
 		init_axis_type_selector('axis' + (i+1) + '_selector');
 		var AddButton = row.insertCell(4);
-		AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=3 onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
+		// max number of rows defined in druggable_config.js
+		AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=' + max_rows + ' onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
+		$( AddButton ).qtip({ 
+			content: {
+				text: "Add a new row (under this one)"
+			}
+		});
 		var DeleteButton = row.insertCell(5);
-		DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=3 onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
+		DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=' + max_rows + 'onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
+		$( DeleteButton ).qtip({ 
+			content: {
+				text: "Delete this row"
+			}
+		});
 		update_plot_types();
 		$("#add_row" + (i+1)).button();
 		$("#delete_row" + (i+1)).button();
@@ -624,7 +648,7 @@ function init_cohortselector() {
 	var cohorts = get_plot_cohorts($("#source_selector option:selected").val());
 	options = [];
 	for (i in cohorts) {
-		options.push("<option value='"+ cohorts[i] + "'>" + cohorts[i] + "</option>");
+		options.push("<option value='" + cohorts[i] + "'>" + cohorts[i] + "</option>");
 	}
 	$("#cohort_selector").append(options.join("")).selectmenu({
         width: "100px"
@@ -769,6 +793,12 @@ function init_axis_type_selector(selector_id) {
         width: "95px",
 		disabled: flag
     });
+	// does not work properly
+	$("#" + selector_id).qtip({ 
+			content: {
+				text: "Choose scale for this axis: linea"
+			}
+	});
 }
 
 function init_tcga_code_selector(selector_id) {
@@ -950,6 +980,7 @@ function update_type(n) {
 		if (selector_value != previous_value) {
 			usetCookie("type" + n + "_selector", selector_value, accepted_time);
 			n = parseInt(n);
+			$('#id' + n + '_input').val("");
 			if ($("#source_selector").val() == "TCGA") {
 				//console.log("Updating TCGA selector number " + i + " out of " + total + " Initator: platform" + n + "_selector");
 				$('#tcga_selector').find('option').remove().end();
@@ -1262,7 +1293,7 @@ function find_plot_in_history(plot_description) {
 }
 
 function plot_minimize(graph_window) {
-	$(graph_window).dialog({"height": $( ".ui-dialog > .ui-dialog-titlebar" )[1].clientHeight});
+	$(graph_window).dialog({"height": $( ".ui-dialog > .ui-dialog-titlebar" )[0].clientHeight});
 	// we need to change just first button, no need to do modify others
 	var buttons = $(graph_window).dialog("option", "buttons");
 	buttons[0] = {

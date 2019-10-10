@@ -20,6 +20,9 @@ ids_placeholders.set("DRUG", "Drug name");
 var cor_max_column_number = 9;
 var cor_headers = ["<th>Gene</th>", "<th>Feature</th>", "<th>Datatype</th>", "<th>Platform</th>", "<th>Screen</th>", "<th>p1</th>", "<th>p2</th>",  "<th>p3</th>", "<th>q</th>"];
 
+// maximum number of rows for "Look up" tab (number of plot dimensions
+var max_rows = 3;
+
 // get annotations here
 var annotations = new Map();
 annot_worker = new Worker("js/drug_annot_grubber.js");

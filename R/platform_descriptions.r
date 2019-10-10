@@ -117,7 +117,7 @@ update_plot_types  <- function(table_name, key_file = "HS_SQL.conf") {
 # for 2D plots it will be platform1-platform2-''-plot
 # for 1D plots it will be platform1-''-''-plot
 add_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
-	k <- change_plot_types(table_name, "remove", key_file);
+	k <- change_plot_types(table_name, "add", key_file);
 	print(paste0("Added ", k, " records"));
 }
 
@@ -134,13 +134,20 @@ change_plot_types <- function(table_name, op, key_file = "HS_SQL.conf") {
 	table_data <- read.csv2(table_name, header = FALSE);
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
-	func <- ifelse(op == "add", "add_plot_type", "remove_plot_type");
 	k <- 0;
 	for (i in 1:nrow(table_data)) {
-		#stat <- sqlQuery(rch, paste0("SELECT ", func, " ('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "','", table_data[i,4], "');"));
-		if (stat[1,1] == TRUE) {k <- k+1;}
+		stat <- c();
+		if (op == "add") {
+			stat <- add_plot_type(table_data[i,1], table_data[i,2], table_data[i,3], table_data[i,4], keyfile, rch);
+		} else {
+			# WRITE FUNCTION FOR REMOVING PLOT!
+			stat <- FALSE;
+		}
+		if (stat == TRUE) {k <- k+1;}
 	}
-	odbcClose(rch);}
+	odbcClose(rch);
+	return(k);
+}
 
 # this function create condition for 1/2/3 dim plots
 # cond_args is a vector of 4 elements: 3 for platforms and 1 for plot type
@@ -203,14 +210,14 @@ add_plot_type <- function(platform1, platform2 = '', platform3 = '', plot_type, 
 	query <- '';
 	# 1D case
 	if (platform2 == '') {
-		query <- paste0("SELECT add_plot_type('", platform1, ",,,", plot_type, "',E'", generate_condition(c(platform1, '', '', plot_type)), "');");
+		query <- paste0("SELECT add_plot_type('", platform1, ",,,", plot_type, "',E'", generate_condition(c(as.character(platform1), '', '', as.character(plot_type))), "');");
 	} else {
 		# 2D case
 		if (platform3 == '') {
-			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",,", plot_type, "',E'", generate_condition(c(platform1, platform2, '', plot_type)), "');");
+			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",,", plot_type, "',E'", generate_condition(c(as.character(platform1), as.character(platform2), '', as.character(plot_type))), "');");
 		} else {
 			# 3D case
-			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",", platform3, ",", plot_type, "',E'", generate_condition(c(platform1, platform2, platform3, plot_type)), "');");
+			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",", platform3, ",", plot_type, "',E'", generate_condition(c(as.character(platform1), as.character(platform2), as.character(platform3), as.character(plot_type))), "');");
 		}
 	}
 	#print(query);
