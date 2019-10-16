@@ -23,6 +23,19 @@ var cor_headers = ["<th>Gene</th>", "<th>Feature</th>", "<th>Datatype</th>", "<t
 // maximum number of rows for "Look up" tab (number of plot dimensions
 var max_rows = 3;
 
+// get synonyms here
+var synonyms = new Map();
+syn_worker = new Worker("js/synonyms_grubber.js");
+console.log("Starting syn_worker " + Date.now());
+syn_worker.onmessage = function(event) {
+	console.log("Received message from syn_worker " + Date.now());
+		var syn_proto = event.data;
+		for (i=0; i<=syn_proto.length-2; i=i+2) {
+			synonyms.set(syn_proto[i], syn_proto[i+1]);
+		}
+		syn_worker.terminate();
+};
+
 // get annotations here
 var annotations = new Map();
 annot_worker = new Worker("js/drug_annot_grubber.js");
@@ -34,4 +47,4 @@ annot_worker.onmessage = function(event) {
 			annotations.set(annot_proto[i], annot_proto[i+1]);
 		}
 		annot_worker.terminate();
-    };
+};

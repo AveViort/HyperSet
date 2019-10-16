@@ -46,6 +46,23 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- get synonyms
+CREATE OR REPLACE FUNCTION synonyms_list() RETURNS setof text AS $$
+DECLARE
+id text;
+syn text;
+BEGIN
+FOR syn,id IN SELECT external_id,internal_id FROM synonyms WHERE id_type='gene'
+LOOP
+RETURN NEXT syn || '|' || id;
+END LOOP;
+-- drugs are special case! We use external_id for them
+FOR syn,id IN SELECT external_id,external_id FROM synonyms WHERE id_type='drug'
+LOOP
+RETURN NEXT syn || '|' || id;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
 
 -- return available screens for correlation tables
 CREATE OR REPLACE FUNCTION screen_list(source_n text, data_type text, platform_n text, sensitivity_m text) RETURNS setof text AS $$
@@ -584,6 +601,21 @@ SELECT create_ids_for_platform(target_cohort, datatype, platform) INTO temp;
 raise notice 'status: %', temp;
 END LOOP;
 END IF;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- create ids for ALL cohorts
+CREATE OR REPLACE FUNCTION autocreate_ids_all() RETURNS boolean AS $$
+DECLARE
+cohort_n text;
+BEGIN
+FOR cohort_n IN SELECT DISTINCT cohort FROM guide_table WHERE cohort<>''
+LOOP
+raise notice 'Current cohort: %', cohort_n;
+PERFORM autocreate_ids(cohort_n);
+raise notice '------------';
 END LOOP;
 RETURN true;
 END;

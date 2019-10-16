@@ -79,6 +79,19 @@ function get_annotations() {
 	return annotations.slice(0, annotations.length-1);
 }
 
+function get_synonyms() {
+	var synonyms;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "../cgi/synonyms.cgi", false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			synonyms = this.responseText;}
+		}
+	xmlhttp.send();
+	synonyms = synonyms.split("|");
+	return synonyms.slice(0, synonyms.length-1);
+}
+
 function drug_sources() {
 	var sources;
 	var xmlhttp = new XMLHttpRequest();
