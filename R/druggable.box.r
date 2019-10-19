@@ -124,11 +124,11 @@ if (status != 'ok') {
 		y_data <- rep(NA, length(common_samples));
 		for (i in 1:length(common_samples)) {
 			if (temp_platforms[2] == "maf") {
-				y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("MUT(", temp_ids[2], ")=pos"), paste0("MUT(", temp_ids[2], ")=neg"));
+				y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("MUT(", ifelse(grepl(":", temp_ids[2]), strsplit(temp_ids[2], ":")[[1]][1], temp_ids[2]), ")=pos"), paste0("MUT(", temp_ids[2], ")=neg"));
 			} else {
 				# if drug was specified
 				if (!empty_value(temp_ids[2])) {
-					y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("Drug(", temp_ids[2], ")=pos"), paste0("Drug(", temp_ids[2], ")=neg"));
+					y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("Drug(", ifelse(grepl(":", temp_ids[2]), strsplit(temp_ids[2], ":")[[1]][1], temp_ids[2]), ")=pos"), paste0("Drug(", temp_ids[2], ")=neg"));
 				} else {
 				# drug name was not specified
 					y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]),"Drugs=pos", "Drugs=neg");
@@ -141,11 +141,11 @@ if (status != 'ok') {
 	print(str(y_data));
 	y_axis_name = '';
 	print(readable_platforms);
-	print(ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
+	#print(ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
 	x_axis_name = paste0(temp_datatypes[2], ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
 	if (length(temp_scales) != 0) {
 		if (!empty_value(temp_ids[1])) {
-			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", temp_ids[1], ",", temp_scales[1], ")");
+			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", ifelse(grepl(":", temp_ids[1]), strsplit(temp_ids[1], ":")[[1]][1], temp_ids[1]), ",", temp_scales[1], ")");
 		} else {
 			y_axis_name <- paste0(temp_datatypes[1], ":", readable_platforms[temp_platforms[1], 2], " (", temp_scales[1], ")");
 		}

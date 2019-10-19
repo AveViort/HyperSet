@@ -49,7 +49,7 @@ if (datatypes[1] == datatypes[2]) {
 		}
 	} else {
 		if (platforms[1] != platforms[2]) {
-			first_category <- paste0(readable_platforms[platforms[1],2], "(", ids[1], ")");
+			first_category <- paste0(readable_platforms[platforms[1],2], "(", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1]), ")");
 		} else {
 			first_category <- ids[1];
 		}
@@ -63,7 +63,7 @@ if (datatypes[1] == datatypes[2]) {
 		}
 	} else {
 		if (platforms[1] != platforms[2]) {
-			second_category <- paste0(readable_platforms[platforms[2],2], "(", ids[2], ")");
+			second_category <- paste0(readable_platforms[platforms[2],2], "(", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2]), ")");
 		} else {
 			second_category <- ids[2];
 		}

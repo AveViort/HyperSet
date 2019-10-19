@@ -345,8 +345,8 @@ if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
 print(str(fe));
 
 plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
-if ((second_set_id != "") & (!is.na(second_set_id))) {
-	plot_title <- paste0(plot_title, "(", toupper(second_set_id), ")");
+if (!empty_value(second_set_id)) {
+	plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
 }
 surv.data <- plotSurvival(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
 #print("surv.data:");

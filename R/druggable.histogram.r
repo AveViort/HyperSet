@@ -27,9 +27,9 @@ if (status != 'ok') {
 			
 	x_data <- transformVars(x_data[[platforms[1]]], scales[1]);
 	if (Par["source"] == "tcga") {
-		plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ids[1]), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
+		plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1]), '')), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
 	} else {
-		plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ids[1]), ''));
+		plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''));
 	}
 	x_axis <- list(
 		title = paste0(readable_platforms[platforms[1],2], ifelse(scales[1] != "linear", paste0(" (", scales[1], ")"), "")),

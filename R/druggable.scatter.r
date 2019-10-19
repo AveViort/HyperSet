@@ -14,10 +14,11 @@ for (i in 1:length(ids)) {
 	if (!empty_value(ids[i])) {
 		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[i], "';"); 
 		print(query);
-		#internal_ids[i] <- sqlQuery(rch, query)[1,1];
-		print(sqlQuery(rch, query)[1,1]);
+		internal_ids[i] <- as.character(sqlQuery(rch, query)[1,1]);
 	}
 }
+print("Internal ids:");
+print(internal_ids);
 
 for (i in 1:length(datatypes)) {
 	condition <- " WHERE ";
@@ -97,13 +98,13 @@ if (status != 'ok') {
 					paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), sep="\n");
 		print(plot_legend);
 		x_axis <- list(
-			title = paste0(datatypes[1], ifelse(!empty_value(ids[1]), paste0(" of ", ids[1]), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+			title = paste0(datatypes[1], ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
 			tickfont = font2);
 		y_axis <- list(
-			title = paste0(datatypes[2], ifelse(!empty_value(ids[2]), paste0(" of ", ids[2]), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+			title = paste0(datatypes[2], ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
@@ -181,18 +182,18 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(datatypes[1], ifelse(!empty_value(ids[1]), paste0(" of ", ids[1]), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+				title = paste0(datatypes[1], ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(datatypes[2], ifelse(!empty_value(ids[2]), paste0(" of ", ids[2]), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+				title = paste0(datatypes[2], ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
-			z_axis <- paste0(datatypes[3], ifelse(!empty_value(ids[3]), paste0(" of ", ids[3]), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")");
+			z_axis <- paste0(datatypes[3], ifelse(!empty_value(ids[3]), paste0(" of ", ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")");
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
 				text = ~paste("Patient: ", common_samples), color = z_data) %>% 
 			colorbar(title = z_axis) %>%
@@ -235,7 +236,7 @@ if (status != 'ok') {
 				# create basic vector
 				z_data <- rep(NA, length(common_samples));
 				for (i in 1:length(common_samples)) {
-					z_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[axis_index[3]]]), paste0("MUT(", ids[axis_index[3]], ")=pos"), paste0("MUT(", ids[axis_index[3]], ")=neg"));
+					z_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[axis_index[3]]]), paste0("MUT(", ifelse(grepl(":", ids[axis_index[3]]), strsplit(ids[axis_index[3]], ":")[[1]][1], ids[axis_index[3]]), ")=pos"), paste0("MUT(", ifelse(grepl(":", ids[axis_index[3]]), strsplit(ids[axis_index[3]], ":")[[1]][1], ids[axis_index[3]]), ")=neg"));
 				}
 			} else {
 				z_data <- as.character(temp[[axis_index[3]]][common_samples,2]);
@@ -243,13 +244,13 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(datatypes[axis_index[1]], ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ids[axis_index[1]]), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
+				title = paste0(datatypes[axis_index[1]], ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[1]]), strsplit(ids[axis_index[1]], ":")[[1]][1], ids[axis_index[1]])), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(datatypes[axis_index[2]], ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ids[axis_index[1]]), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
+				title = paste0(datatypes[axis_index[2]], ifelse(!empty_value(ids[axis_index[2]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[2]]), strsplit(ids[axis_index[2]], ":")[[1]][1], ids[axis_index[2]])), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,

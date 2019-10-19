@@ -44,7 +44,10 @@
 <script type="text/javascript">
 function show()
 {
-		var subnet_params = localStorage.getItem("subnet_params");
+		//var context_genes = localStorage.getItem("context_genes");
+		//var genes = localStorage.getItem("genes");
+		//localStorage.removeItem("context_genes");
+		//localStorage.removeItem("genes");
 		var context_genes = ['PAX6','AISL1','ASLC2A2','ADCX','AFOXA2','AGCK','AINS','APDX1','AFOXO1','AGCG','APAX4','AHNF1A','ASTXBP1','ALMO2'];
 		var genes= ['SNTG1','ALECT1','AFGFBP3','ALPAR4','ASLC2A1','ASPRY4','AGATA6','ACACNG4','AOTX2','APOU3F1','AHS3ST4'];
 		var div_content = '';
@@ -63,7 +66,6 @@ function show()
 		doc.open();
 		doc.write(div_content);
 		doc.close();
-		localStorage.removeItem("subnet_params");
 }
 
 window.onresize = function()

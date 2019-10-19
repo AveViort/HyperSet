@@ -818,7 +818,15 @@ function init_platformselector(selector_id) {
 						console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 					}
-				}
+				},
+				search: function( event, ui ) {
+					var value = $("#" + event.target.getAttribute("id")).val();
+					console.log("Search triggered, value: " + value);
+					if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
+						console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+						event.preventDefault();
+					}
+				} 
 			});
 		}
 		$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {update(selector_id)} );
@@ -1096,7 +1104,15 @@ function update_platform(n) {
 							console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
 							$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 						}
-					}
+					},
+					search: function( event, ui ) {
+						var value = $("#" + event.target.getAttribute("id")).val();
+						console.log("Search triggered, value: " + value);
+						if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
+							console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+							event.preventDefault();
+						}
+					} 
 				});
 			}
 			$('#axis'+ n + '_selector').find('option').remove().end();
@@ -1216,7 +1232,15 @@ function update_cor_screen_selector() {
 						console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 					}
-				}
+				},
+				search: function( event, ui ) {
+					var value = $("#" + event.target.getAttribute("id")).val();
+					console.log("Search triggered, value: " + value);
+					if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
+						console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+						event.preventDefault();
+					}
+				} 
 			});
 			$("#corDatatype_selector").selectmenu("enable");
 			$("#corPlatform_selector").selectmenu("enable");
@@ -1420,7 +1444,8 @@ function id_keyup(k) {
 	if (flag) {
 		$("#plot-button").button("enable");
 		$("#plot-button-wrapper").qtip("disable");
-		$("#id" + k + "_confirmed").val(synonyms.get($("#id" + k + "_input").val()));
+		var confirmed = synonyms.get($("#id" + k + "_input").val())
+		$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
 		setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
 								$("#id" + k + "_input").css('background-color', '')}, 500);
 		$("#id" + k + "_input").css('border-color', 'chartreuse');

@@ -22,7 +22,11 @@ for (a in Args) {
 	if (grepl('=', a)) {
 		p1 <- strsplit(a, split = '=', fixed = T)[[1]];
 		if (length(p1) > 1) {
-			Par[p1[1]] = tolower(p1[2]);
+			if (p1[1] == "ids") {
+				Par[p1[1]] = p1[2];
+			} else {
+				Par[p1[1]] = tolower(p1[2]);
+			}
 		} 
 		if (Debug>0) {print(paste(p1[1], p1[2], collapse=" "));}
 	}
