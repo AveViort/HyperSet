@@ -8,17 +8,17 @@ hidden_inputs.set("piechart", ["drug"]);
 
 // placeholder text for different datatypes
 var ids_placeholders = new Map();
-ids_placeholders.set("GE", "Gene name");
-ids_placeholders.set("MUT", "Gene name");
-ids_placeholders.set("MIRNA", "Gene name");
-ids_placeholders.set("COPY", "Gene name");
-ids_placeholders.set("METH", "Gene name");
-ids_placeholders.set("PE", "Protein name");
-ids_placeholders.set("DRUG", "Drug name");
+ids_placeholders.set("GE", "Gene name or ID");
+ids_placeholders.set("MUT", "Gene name or ID");
+ids_placeholders.set("MIRNA", "Gene name or ID");
+ids_placeholders.set("COPY", "Gene name or ID");
+ids_placeholders.set("METH", "Gene name or ID");
+ids_placeholders.set("PE", "Protein name or ID");
+ids_placeholders.set("DRUG", "Drug name or ID");
 
 // maximum number of correlations in correlations results
 var cor_max_column_number = 9;
-var cor_headers = ["<th>Gene</th>", "<th>Feature</th>", "<th>Datatype</th>", "<th>Platform</th>", "<th>Screen</th>", "<th>p1</th>", "<th>p2</th>",  "<th>p3</th>", "<th>q</th>"];
+var cor_headers = ["<th>Gene</th>", "<th>Feature</th>", "<th>Data type</th>", "<th>Platform</th>", "<th>Screen</th>", "<th>p1</th>", "<th>p2</th>",  "<th>p3</th>", "<th>q</th>"];
 
 // maximum number of rows for "Look up" tab (number of plot dimensions
 var max_rows = 3;

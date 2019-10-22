@@ -315,6 +315,10 @@ function get_axis_types(cohort, datatype, platform) {
 function get_tcga_codes(cohort, datatype, previous_datatypes) {
 	var codes;
 	var xmlhttp = new XMLHttpRequest();
+	console.log("cgi/tcga_codes.cgi?cohort=" + 
+		encodeURIComponent(cohort) + "&datatype=" + 
+		encodeURIComponent(datatype) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes));
 	xmlhttp.open("GET", "cgi/tcga_codes.cgi?cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
 		encodeURIComponent(datatype) + "&previous_datatypes=" + 

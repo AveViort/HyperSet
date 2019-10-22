@@ -85,6 +85,8 @@ platforms_array text array;
 flag boolean;
 platform_n text;
 description text;
+nrows numeric;
+notempty numeric;
 BEGIN
 platforms_array := string_to_array(previous_platforms, ',');
 IF
@@ -106,10 +108,34 @@ THEN
 SELECT check_platforms_compatibility(platform_n, platforms_array) INTO flag;
 IF (flag)
 THEN 
+IF NOT (data_type = 'CLIN')
+THEN
 RETURN NEXT platform_n || '|' || description;
+ELSE
+-- for CLIN - show platform only if we have data for platform for more than 1/4 of all patients
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ';' INTO nrows;
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ' WHERE ' || platform_n || ' IS NOT NULL;' INTO notempty;
+-- Pay attention to CAST! Otherwise int/int=int
+IF (SELECT CAST(notempty AS FLOAT)/nrows > 0.25)
+THEN
+RETURN NEXT platform_n || '|' || description;
+END IF;  
+END IF;
 END IF;
 ELSE
+IF NOT (data_type = 'CLIN')
+THEN
 RETURN NEXT platform_n || '|' || description;
+ELSE
+-- for CLIN - show platform only if we have data for platform for more than 1/4 of all patients
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ';' INTO nrows;
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ' WHERE ' || platform_n || ' IS NOT NULL;' INTO notempty;
+-- Pay attention to CAST! Otherwise int/int=int
+IF (SELECT CAST(notempty AS FLOAT)/nrows > 0.25)
+THEN
+RETURN NEXT platform_n || '|' || description;
+END IF;  
+END IF;
 END IF;
 END LOOP;
 -- if table does not exist
@@ -504,6 +530,7 @@ CREATE OR REPLACE FUNCTION retrieve_correlations(data_type text, platform_n text
 DECLARE
 gene_n text;
 feature_n text;
+visible_feature_name text;
 p1 numeric;
 p2 numeric;
 p3 numeric;
@@ -518,7 +545,8 @@ FOR table_name, datatype_name, platform_name, screen_name IN EXECUTE E'SELECT ta
 LOOP
 FOR gene_n,feature_n,p1,p2,p3,q IN EXECUTE 'SELECT upper(gene),feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (ancova_q_2x_feature<=' || fdr || ') ORDER BY ancova_q_2x_feature DESC;'
 LOOP
-res := gene_n || '|' || feature_n || '|' || datatype_name || '|' || platform_name || '|' || screen_name || '|' || p1 || '|' || p2 || '|' || p3 || '|' || q || '|';
+SELECT external_id INTO visible_feature_name FROM synonyms WHERE internal_id=feature_n AND id_type='drug';
+res := gene_n || '|' || visible_feature_name || '|' || datatype_name || '|' || platform_name || '|' || screen_name || '|' || p1 || '|' || p2 || '|' || p3 || '|' || q || '|';
 RETURN NEXT res;
 END LOOP;
 END LOOP;
@@ -559,7 +587,7 @@ query_string := 'SELECT DISTINCT(id) FROM ' || data_table || ' WHERE ' || platfo
 END IF;
 FOR id_string IN EXECUTE query_string
 LOOP
-FOR id_synonym IN EXECUTE E'SELECT external_id FROM synonyms WHERE internal_id=\'' || id_string || E'\';'
+FOR id_synonym IN EXECUTE E'SELECT external_id FROM synonyms WHERE internal_id=\'' || id_string || E'\' AND source=ANY(ARRAY(SELECT source FROM autocomplete_sources WHERE datatype=\'' || datatype || E'\'));'
 LOOP
 res := res || '||' || id_synonym;
 END LOOP;
@@ -908,6 +936,23 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- either adds new row or updates the existing row
+-- pay attention! val is numeric!
+-- true = update, false = insert
+CREATE OR REPLACE FUNCTION insert_or_update(table_name text, column_name text, sample_name text, gene_name text, val numeric) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+EXECUTE 'SELECT EXISTS (SELECT * FROM ' || table_name || E' WHERE (sample=\'' || sample_name || E'\') AND (id=\'' || gene_name || E'\') AND (' || column_name || ' IS NULL));' INTO res;
+IF (res = FALSE) THEN 
+EXECUTE 'INSERT INTO ' || table_name || '(sample,id,' || column_name || E') VALUES(\'' || sample_name || E'\',\'' || gene_name || E'\',' || val || ');';
+ELSE
+EXECUTE 'UPDATE ' || table_name || ' SET ' || column_name || '=' || val || E' WHERE (sample=\'' || sample_name || E'\') AND (id=\'' || gene_name || E'\');';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
 -- autocreate indices for all tables registered in guide_table
 CREATE OR REPLACE FUNCTION autocreate_indices_all() RETURNS boolean AS $$
 DECLARE
@@ -958,6 +1003,33 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
+-- this function is designed to control number of empty values in each column of CLIN tables
+CREATE OR REPLACE FUNCTION control_clin_columns() RETURNS boolean AS $$
+DECLARE
+table_n text;
+platform_n text;
+offset_v numeric;
+nrows numeric;
+nempty numeric;
+ndistinct numeric;
+BEGIN
+offset_v := 1;
+FOR table_n IN SELECT table_name FROM guide_table WHERE type='CLIN'
+LOOP
+raise notice 'Table: %', table_n;
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ';' INTO nrows;
+raise notice 'Rows: %', nrows;
+FOR platform_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET ' || offset_v || ';'
+LOOP
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ' WHERE ' || platform_n || ' IS NULL;' INTO nempty;
+EXECUTE 'SELECT COUNT (DISTINCT ' || platform_n || ') FROM ' || table_n || ';' INTO ndistinct; 
+raise notice '% empty rows: % distinct values: %', platform_n, nempty, ndistinct;
+END LOOP;
+raise notice '---------------';
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
 
 
 -- DEPRICATED FUNCTIONS

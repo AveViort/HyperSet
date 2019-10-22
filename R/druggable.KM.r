@@ -343,17 +343,21 @@ if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
 	fe <- c(fe, temp);
 }
 print(str(fe));
+if (all(is.na(fe))) {
+	print("All NAs, shutting down");
+	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+} else {
+	plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
+	if (!empty_value(second_set_id)) {
+		plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
+	}
+	surv.data <- plotSurvival(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
+	#print("surv.data:");
+	#print(str(surv.data));
 
-plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
-if (!empty_value(second_set_id)) {
-	plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
+	a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = plot_title);
+	#print("a:");
+	#print(str(a));
+	p <- ggplotly(a);
+	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 }
-surv.data <- plotSurvival(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
-#print("surv.data:");
-#print(str(surv.data));
-
-a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = plot_title);
-#print("a:");
-#print(str(a));
-p <- ggplotly(a);
-htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");

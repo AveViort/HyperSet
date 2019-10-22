@@ -163,7 +163,7 @@ li.tab:hover ul {
 	<br>
 	<table id = "plot_options">
 		<tr>
-		<th>Datatype</th>
+		<th>Data type</th>
 		<th>Platform</th>
 		<th>ID</th>
 		<th></th>
@@ -328,6 +328,11 @@ function reload_analysis_options() {
 function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
+		// get all child nodes of #tabs
+		var nodes = $("#tabs").tabs()[0].childNodes;
+		// this is the node used to attach plot - pay attention to 3+2*!
+		var parent_tab = "#" + nodes[3+2*$("#tabs").tabs("option", "active")].getAttribute("id");
+		console.log(parent_tab);
 		// variables are initialised when this function is called from correlations table, otherwise - initialise them
 		if (type == undefined) {
 			type = $('#plot-type option:selected').val();
@@ -384,7 +389,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 					},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-			}).parent().appendTo("#tab-lookup");
+			}).parent().appendTo(parent_tab);
 			$("#progressbar").css({"visibility": "hidden"});
 		}
 		// existing plot
@@ -423,7 +428,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 					},
 					beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-				}).parent().appendTo("#tab-lookup");
+				}).parent().appendTo(parent_tab);
 			}
 		}
 	}
@@ -456,7 +461,7 @@ function retrieve_correlations() {
 		// annotations defined in druggable_config.js
 		$( GeneCell ).qtip({ 
 			content: {
-				text: annotations.get(correlations[i].toLowerCase())
+				text: annotations.get(correlations[i])
 			},
 			position: {
 				my: 'top left',  
@@ -823,11 +828,27 @@ function init_platformselector(selector_id) {
 					var value = $("#" + event.target.getAttribute("id")).val();
 					console.log("Search triggered, value: " + value);
 					if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
-						console.log("Looks like ENSEMBL and it is too short. Preventing search.");
-						event.preventDefault();
+						// check if we have > 2 symbols
+						if (value.length > 2) {
+							// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
+							if (value[2] == "S") {
+								console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+								event.preventDefault();
+							}
+						}
+						else {
+							event.preventDefault();
+						}
 					}
 				} 
 			});
+		}
+		// needed to exclude bug: CLIN:race -> GE:agilent = disabled axis selector
+		if ($('#axis'+ n + '_selector').data("uiSelectmenu")) {
+			$('#axis'+ n + '_selector').find('option').remove().end();
+			$('#axis'+ n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+			init_axis_type_selector('axis'+ n + '_selector');
+			$('#axis'+ n + '_selector').selectmenu( "refresh" );
 		}
 		$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {update(selector_id)} );
 	}
@@ -1109,8 +1130,17 @@ function update_platform(n) {
 						var value = $("#" + event.target.getAttribute("id")).val();
 						console.log("Search triggered, value: " + value);
 						if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
-							console.log("Looks like ENSEMBL and it is too short. Preventing search.");
-							event.preventDefault();
+							// check if we have > 2 symbols
+							if (value.length > 2) {
+								// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
+								if (value[2] == "S") {
+									console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+									event.preventDefault();
+								}
+							}
+							else {
+								event.preventDefault();
+							}
 						}
 					} 
 				});
@@ -1121,7 +1151,6 @@ function update_platform(n) {
 			$('#axis'+ n + '_selector').selectmenu( "refresh" );
 			var source = $("#source_selector option:selected").val();
 			var total = $('#plot_options tr').length-1;
-			print
 			if (n<total) {
 				$('#platform' + (n+1) + '_selector').find('option').remove().end();
 				$('#platform' + (n+1) + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
@@ -1143,7 +1172,7 @@ function update_platform(n) {
 			}
 			plot_type_changed();
 		}
-		// do not move this operation - othe will cause bug
+		// do not move this operation - otherwise will cause bug
 		id_keyup(n);
 	}
 }
@@ -1237,8 +1266,17 @@ function update_cor_screen_selector() {
 					var value = $("#" + event.target.getAttribute("id")).val();
 					console.log("Search triggered, value: " + value);
 					if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
-						console.log("Looks like ENSEMBL and it is too short. Preventing search.");
-						event.preventDefault();
+						// check if we have > 2 symbols
+						if (value.length > 2) {
+							// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
+							if (value[2] == "S") {
+								console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+								event.preventDefault();
+							}
+						}
+						else {
+							event.preventDefault();
+						}
 					}
 				} 
 			});

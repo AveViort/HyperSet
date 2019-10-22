@@ -17,6 +17,7 @@ update_platform_descriptions_from_table <- function(table_name, key_file = "HS_S
 	odbcClose(rch);
 }
 
+
 # table_name = name of desired Excel (csv) file
 get_platform_descriptions <- function(table_name, key_file = "HS_SQL.conf") {
 	temp <- druggable_get_table("platform_descriptions", key_file);
