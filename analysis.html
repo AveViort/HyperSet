@@ -150,10 +150,14 @@ li.tab:hover ul {
 		</tr>
 		<tr>
 		<td>
+		<div id="source_selector-wrapper">
 		<select id="source_selector" class="ui-helper" style="width: 40ch;">
+		</div>
 		</td>
 		<td>
+		<div id="cohort_selector-wrapper">
 		<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
+		</div>
 		</td>
 		<td>
 		<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
@@ -303,7 +307,7 @@ $(document).ready(function(){
 		content: {
 			text: "Please fill all IDs"
 		}
-	})
+	});
 	// need to call it manually because some types of plots need no additional parameters 
 	id_keyup(1);
 	// reload from cookies if we had more than 1 row
@@ -609,7 +613,17 @@ function add_plot_options_row(i) {
 				$("#delete_row" + j).button("enable");
 			}
 		$("#source_selector").selectmenu("disable");
+		$("#source_selector-wrapper").qtip({ 
+			content: {
+				text: "Please delete all but one row to change source"
+			}
+		});
 		$("#cohort_selector").selectmenu("disable");
+		$("#cohort_selector-wrapper").qtip({ 
+			content: {
+				text: "Please delete all but one row to change cohort"
+			}
+		});
 		var id_input_enabled = ($("#id" + (i+1) + "_input").is(":enabled"));
 		if (id_input_enabled) {
 			$("#plot-button").button("disable"); 
@@ -664,7 +678,9 @@ function delete_plot_options_row(i) {
 	if (n-1 == 1) {
 		$("#delete_row1").button("disable");
 		$("#source_selector").selectmenu("enable");
+		$("#source_selector-wrapper").qtip("disable");
 		$("#cohort_selector").selectmenu("enable");
+		$("#cohort_selector-wrapper").qtip("disable");
 	}
 	if (i == 1) {
 		$('#type1_selector').find('option').remove().end();

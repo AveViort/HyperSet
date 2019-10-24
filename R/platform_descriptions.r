@@ -366,13 +366,14 @@ get_synonims <- function(table_name, key_file = "HS_SQL.conf") {
 	write.table(temp, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = ";", file = table_name);
 }
 
+# warning! This function will delete all current records and adds new from the given table
 update_synonyms  <- function(table_name, key_file = "HS_SQL.conf") {
 	table_data <- read.csv2(table_name, header = FALSE);
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
 	sqlQuery(rch, "DELETE FROM synonims;");	
 	for (i in 1:nrow(table_data)) {
-		sqlQuery(rch, paste0("INSERT INTO synonyms(external_id, internal_id, id_type, annotation) VALUES ('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "','", table_data[i,4], "');"));
+		sqlQuery(rch, paste0("INSERT INTO synonyms(external_id, internal_id, id_type, annotation) VALUES ('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "','", table_data[i,4], "','", table_data[i,5], "');"));
 	}
 	print(paste0("Created/updated ", i, " records"));
 	odbcClose(rch);
@@ -384,12 +385,38 @@ add_synonyms <- function(table_name, key_file = "HS_SQL.conf") {
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
 	k <- 0;
 	for (i in 1:nrow(table_data)) {
-		stat <- sqlQuery(rch, paste0("SELECT add_synonym('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "','", table_data[i,4], "');"));
+		stat <- sqlQuery(rch, paste0("SELECT add_synonym('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "','", table_data[i,4], "','", table_data[i,5], "');"));
 		if (stat[1,1] == TRUE) {k <- k+1;}
 	}
 	odbcClose(rch);
 	print(paste0("Created/updated ", k, " records"));
 }
+
+# WORKING WITH EXCLUSIONS
+# exclusions are platforms which should not be shown for certain datatype and/or cohort
+# i.e.: do not show OS for IMMUNO; do not show PFI for BRCA IMMUNO
+
+get_exclusions <- function(table_name, key_file = "HS_SQL.conf") {
+	temp <- druggable_get_table("no_show_exclusions", key_file);
+	View(temp);
+	write.table(temp, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = ";", file = table_name);
+}
+
+add_exclusions <- function(table_name, key_file = "HS_SQL.conf") {
+	table_data <- read.csv2(table_name, header = FALSE);
+	# table format: cohort;datatype;platform
+	# for cohort and datatype value 'all' can be used
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	k <- 0;
+	for (i in 1:nrow(table_data)) {
+		stat <- sqlQuery(rch, paste0("SELECT add_exclusion('", table_data[i,1], "','", table_data[i,2], "','", table_data[i,3], "');"));
+		if (stat[1,1] == TRUE) {k <- k+1;}
+	}
+	odbcClose(rch);
+	print(paste0("Created/updated ", k, " records"));
+}
+
 # COMMON FUNCTIONS
 
 # basic function, reads data from sql table to csv

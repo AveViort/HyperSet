@@ -83,11 +83,16 @@ DECLARE
 table_n text;
 platforms_array text array;
 flag boolean;
+exclude boolean;
 platform_n text;
 description text;
 nrows numeric;
 notempty numeric;
+data_types text array;
+cohorts text array;
 BEGIN
+data_types := ARRAY['all', data_type];
+cohorts := ARRAY['all', cohort_n];
 platforms_array := string_to_array(previous_platforms, ',');
 IF
 EXISTS (SELECT * FROM pg_catalog.pg_tables 
@@ -103,10 +108,11 @@ IF (table_n IS NOT NULL) THEN
 EXECUTE E'INSERT INTO platforms SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
 FOR platform_n, description IN SELECT * FROM platforms 
 LOOP
+SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
 IF NOT (previous_platforms = '')
 THEN
 SELECT check_platforms_compatibility(platform_n, platforms_array) INTO flag;
-IF (flag)
+IF (flag AND NOT exclude)
 THEN 
 IF NOT (data_type = 'CLIN')
 THEN
@@ -123,6 +129,8 @@ END IF;
 END IF;
 END IF;
 ELSE
+IF NOT (exclude)
+THEN
 IF NOT (data_type = 'CLIN')
 THEN
 RETURN NEXT platform_n || '|' || description;
@@ -135,6 +143,7 @@ IF (SELECT CAST(notempty AS FLOAT)/nrows > 0.25)
 THEN
 RETURN NEXT platform_n || '|' || description;
 END IF;  
+END IF;
 END IF;
 END IF;
 END LOOP;
@@ -726,6 +735,23 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
+-- function to add an exclusion
+-- exclusions are platforms which are not shown for specific cohort and/or datatype
+CREATE OR REPLACE FUNCTION add_exclusion (cohort_n text, datatype_n text, platform_n text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+-- pay attention! We don't add a new record if we have more general record existing, i.e. if platform was disabled for all cohorts 
+IF EXISTS (SELECT * FROM no_show_exclusions WHERE (cohort=ANY(ARRAY['all', cohort_n])) AND (datatype=ANY(ARRAY['all', datatype_n])) AND (platform=platform_n)) THEN
+res := FALSE;
+ELSE
+INSERT INTO no_show_exclusions VALUES(cohort_n, datatype_n, platform_n);
+res := TRUE;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 -- FUNCTIONS TO WORK WITH TCGA DATA
@@ -862,11 +888,11 @@ RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION add_synonym(visible_name text, internal_name text, syn_type text, annot text) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION add_synonym(visible_name text, internal_name text, syn_type text, annot text, source_n text) RETURNS boolean AS $$
 DECLARE
 res boolean;
 BEGIN
-IF EXISTS (SELECT * FROM synonyms WHERE (external_id=visible_name) AND (internal_id=internal_name)) THEN
+IF EXISTS (SELECT * FROM synonyms WHERE (external_id=visible_name) AND (internal_id=internal_name) AND (source=source_n)) THEN
 res := FALSE;
 ELSE
 INSERT INTO synonyms VALUES(visible_name, internal_name, syn_type, annot);
