@@ -16,11 +16,40 @@ ids_placeholders.set("METH", "Gene name or ID");
 ids_placeholders.set("PE", "Protein name or ID");
 ids_placeholders.set("DRUG", "Drug name or ID");
 
-// maximum number of correlations in correlations results
-var cor_max_column_number = 9;
-var cor_headers = ["<th>Gene</th>", "<th>Feature</th>", "<th>Data type</th>", "<th>Platform</th>", "<th>Screen</th>", "<th>p1</th>", "<th>p2</th>",  "<th>p3</th>", "<th>q</th>"];
+// correlation tables settings
+// headers
+var cor_headers = new Map();
+cor_headers.set("CCLE", "<tr><th>Gene</th><th>Feature</th><th>Data type</th><th>Platform</th><th>Screen</th><th>p1</th><th>p2</th><th>p3</th><th>q</th><th></th><th>Cohorts</th><th></th></tr>");
+// column names to retrieve from SQL
+var cor_sql_columns = new Map();
+cor_sql_columns.set("CCLE", "gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature");
+// visible columns
+var cor_visible_columns = new Map();
+cor_visible_columns.set("CCLE", [
+            { "data": "gene" },
+            { "data": "feature" },
+            { "data": "datatype" },
+            { "data": "platform" },
+            { "data": "screen" },
+            { "data": "ancova_p_1x",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "ancova_p_2x_cov1",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "ancova_p_2x_feature",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "ancova_q_2x_feature",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "plot" },
+			{ "data": "cohort-selector" },
+			{ "data": "KM-button" }
+        ]
+);
 
-// maximum number of rows for "Look up" tab (number of plot dimensions
+// maximum number of rows for "Look up" tab (number of plot dimensions)
 var max_rows = 3;
 
 // get synonyms here
@@ -48,3 +77,6 @@ annot_worker.onmessage = function(event) {
 		}
 		annot_worker.terminate();
 };
+
+// minimal number of patients with specified drug in cohort to display (for "Significant results" tab)
+var min_pat_drug_number = 10;

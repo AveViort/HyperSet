@@ -39,21 +39,23 @@ $ENV{'PATH'} = '/bin:/usr/bin:';
 our ($conditions, $pl, $nm, $conditionPairs, $pre_NEAoptions, $itemFeatures, 
 $savedFiles,  $fileUploadTag, $usersDir, $usersTMP, $sn, $URL);
 our $NN = 0;
-my(@genes, $Genes, $type, $step, $NEAfile, $mm, $quasyURL, $callerNo, $AGS, $FGS);
+my(@genes, 
+# $Genes, 
+$type, $step, $NEAfile, $mm, $quasyURL, $callerNo, $AGS, $FGS);
 our($AGSselected, $FGSselected, $FGScollected, $NETselected);
 my @names = $q->param;
 our $restoreSpecial = 0; # see sub tmpFileName()
 $fileUploadTag = "_table";
 #return 0;
 
-my $parname;
-my $pcont = '';
-my @parnames = $q->param;
-foreach $parname ( @parnames ) {$pcont =  $pcont.$parname."=".$q->param($parname).";\n";}  
-my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-2.txt";
-open(my $fh, '>', $debug_filename);
-print $fh "Params: ".$pcont."\n";
-close $fh;
+# my $parname;
+# my $pcont = '';
+# my @parnames = $q->param;
+# foreach $parname ( @parnames ) {$pcont =  $pcont.$parname."=".$q->param($parname).";\n";}  
+# my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-2.txt";
+# open(my $fh, '>', $debug_filename);
+# print $fh "Params: ".$pcont."\n";
+# close $fh;
 
 our $uname = $q->param("username");
 $uname = 'Anonymous' if ((!defined($uname)) || ($uname eq ''));
@@ -106,8 +108,6 @@ if ((defined($projectID)) && ($projectID ne "")) {
 }
 my ($err_stat, $err_msg);
 our $GSEA_pvalue_coff = 0.01;
-our $NEA_FDR_coff = $q->param("fdr") ? $q->param("fdr") : 1.99;
-our $NEA_Nlinks_coff = $q->param("nlinks") eq "" ? 1 : $q->param("nlinks");
 
 $HSconfig::printMemberGenes = $q->param("printMemberGenes");
 if ((defined($projectID)) && ($projectID ne "")) {
@@ -160,24 +160,27 @@ elsif ($q->param("action") eq 'sbmSubmit') {$step = 'executeNEA';}
 if (($q->param("action") =~  m/^subnet\-([0-9]+)$HS_html_gen::actionFieldDelimiter1([0-9A-Z_\;\:\.\-\(\)\=]+)$HS_html_gen::actionFieldDelimiter1([0-9A-Z_\;\:\.\-\(\)\=]+)$/) or ($q->param("action") =~  m/^subnet\-([0-9]+)$HS_html_gen::actionFieldDelimiter2([0-9A-Z_\-]+)$HS_html_gen::actionFieldDelimiter2([0-9A-Z_\-]+)/)) {
 $step = 'shownet';
 ($quasyURL, $callerNo, $AGS, $FGS) = ($q->param("subneturlbox"), $1, $2, $3);
-my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
-open(my $fh, '>', $debug_filename);
-print $fh "subneturlbox=".$quasyURL."\n";
-close $fh;
+# my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
+# open(my $fh, '>', $debug_filename);
+# print $fh "subneturlbox=".$quasyURL."\n";
+# close $fh;
 } 
 if ($q->param("action") =~  m/^subnet\-ags/) {
 $step = 'shownet';
 ($quasyURL, $callerNo, $AGS, $FGS) = (
 	HStextProcessor::subnetURL(
 		$AGSselected, 
+		$AGSselected, 
 		$species, 
-		$HSconfig::netfieldprefix.join($HS_html_gen::fieldURLdelimiter.$HSconfig::netfieldprefix, $q->param('NETselector'))
-	), 
+		$HSconfig::netfieldprefix.join($HS_html_gen::fieldURLdelimiter.$HSconfig::netfieldprefix, $q->param('NETselector')),
+		1000, 
+		0, 
+		1), 
 undef, undef, undef);
-my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
-open(my $fh, '>', $debug_filename);
-print $fh "not.subneturlbox=".$quasyURL."\n";
-close $fh;
+# my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
+# open(my $fh, '>', $debug_filename);
+# print $fh "not.subneturlbox=".$quasyURL."\n";
+# close $fh;
 } 
 elsif ($q->param("action") =~ m/vennsubmitbutton-table-ags-/i) {$step = 'create_venn';} 
 elsif ($q->param("action") eq 'updatebutton2-venn-ags-ele') { $step = 'update_venn';} 
@@ -205,24 +208,6 @@ $type = $step if ($step eq 'save_json_into_project')
  or ($step eq 'wrong_upload_format')
  or ($q->param("step") =~ m/ags_select|fgs_select|net_select/i); # eq 'ags_select')
 
-# @{$AGSselected} = $q->param("AGSselector") if $q->param("AGSselector");
-# @{$FGSselected} = $q->param("FGSselector") if $q->param("FGSselector");
-# @{$FGScollected} = ($q->param("FGScollection")) if $q->param("FGScollection");
-# @{$NETselected} = $q->param('NETselector') if $q->param('NETselector');
-# print STDERR "NETselected: ". $NETselected ;
-# my($pg, $lst);
-# for $lst('sgs_list', 'cpw_list') {
-# if ($q->param($lst)) {
-# $pg = HStextProcessor::parseGenes($q->param($lst), SPACE);
-# if (ref($pg) eq 'ARRAY') {
-# push @{$AGSselected}, @{$pg} if ($lst eq "sgs_list"); #parse the IDs in the AGS text  box
-# push @{$FGSselected}, @{$pg} if ($lst eq "cpw_list"); #parse the IDs in the FGS text  box
-# } 
-# else {
-# print HS_html_gen::errorDialog('error', $HSconfig::listName{$lst}, $q->param($lst).": this was invalid input.<br>Gene/protein IDs shall only contain letters, digits, dash, underscore, and dot", $HSconfig::listName{$lst}); exit;
-# }
-# }}
-# print STDERR '<br>AGSselected1: '.join(' ', @{$AGSselected}) if $debug;	
 my $fl;	
 if ($q->param("use-venn")) {
 for $fl($q->param("from-venn")) {
@@ -233,6 +218,8 @@ our $delimiter;
 my $currentAGS = $usersDir.$savedFiles -> {data} -> {"ags_table"};
 $pl->{$currentAGS}->{gene} = $q->param("gene_column_id_ags")  - 1;
 $pl->{$currentAGS}->{group} = $q->param("group_column_id_ags") - 1;
+$pl->{$currentAGS}->{score} = $q->param("score_column_id_ags") - 1;
+$pl->{$currentAGS}->{subset} = $q->param("subset_column_id_ags") - 1;
 $pl->{$currentAGS}->{delimiter} = $q->param("delimiter_ags");
 $delimiter = $pl->{$currentAGS}->{delimiter};
 $delimiter = "\t" if lc($delimiter) eq 'tab';
@@ -327,8 +314,6 @@ my($mode) = @_;
 my($content, $outfile);
 
 if ($mode eq 'pca') {
-# $outfile = '3js.widget7.html';
-# system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." out=$outfile delimiter=TAB");
 $outfile = 'pca'.HStextProcessor::generateJID().'.html';
 system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." colnames=".$q->param('colnames')." rownames=".$q->param('rownames')." out=$outfile delimiter=TAB"); # start=4 end=11 
 $content = '<a href="'.$HSconfig::Rplots->{dir}.$outfile.'" target="_blank" class="clickable">3D PCA plot</a>';
@@ -338,10 +323,6 @@ my($pg, $lst);
 
 my($rnms);
 push @{$rnms}, @{HStextProcessor::parseGenes($q->param('sgs_list'), SPACE)};
-# print $q->param('rownames');
-# print "Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." rownames=".$q->param('rownames')." start=4 end=11 out=$outfile delimiter=TAB";
-# print join("###", @{$rnms});
-# print  join("###", @{$pg}); 
 system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." colnames=".$q->param('colnames')." rownames=".$q->param('rownames')." out=$outfile delimiter=TAB"); # start=4 end=11 
 $content = '<a href="'.$HSconfig::Rplots->{dir}.$outfile.'" target="_blank" class="clickable">Heatmap</a>';
 }
@@ -388,16 +369,25 @@ my $jid = $q -> param("jid"); #generateJID();
 	'Altered gene set(s) not defined.<br>Use one of the alternative input options or run one of our Demos.', 
 	"Altered gene sets");
 	}
+	
+	my($textFileFields);
+%{$textFileFields} = (
+	 'group'  => $q->param('group_column_id_ags') - 1,
+	 'id'  => $q->param('gene_column_id_ags') - 1,
+	 'score'  => ($q->param('score_column_id_ags') ? $q->param('score_column_id_ags') - 1 : undef),
+	 'subset'  => ($q->param('score_column_id_ags') ? $q->param('subset_column_id_ags') - 1 : undef)
+ );
+ 
 	print STDERR 'sbm_selected_ags: '.join(' ', @{$jobParameters -> {sbm_selected_ags}})."\n" if $debug;	
-	$agsSource = HStextProcessor::compileGS('ags', 
+	$agsSource = HStextProcessor::compileGS2('ags', 
 	$jid, 
 	$ags, 
 	$jobParameters -> {sbm_selected_ags}, 
-	$q->param("gene_column_id_ags")  - 1,
-	$q->param("group_column_id_ags") - 1,
+	$textFileFields,
 	$jobParameters -> {genewiseAGS},
 	$species, 
 	0);
+	# return HS_html_gen::errorDialog('error', "Input", $agsSource);
 	return HS_html_gen::errorDialog('error', "Input", 
 	'Altered gene set input was not usable.<br>This might be caused by submitting incompatible gene/protein IDs <br>or using irrelevant input category (File/Text box/Venn diagram).<span  class=\'clickable dialogOpener\' onclick=\'openDialog(\"acceptedIDs\");\'>Accepted IDs</span>', 
 	"Altered gene sets") if $agsSource eq 'empty';
@@ -420,12 +410,17 @@ my $jid = $q -> param("jid"); #generateJID();
 	} 
 
 	if (defined($fgs))  {
-	$fgsSource = HStextProcessor::compileGS('fgs', 
+%{$textFileFields} = (
+	 'group'  => $q->param('group_column_id_fgs') - 1,
+	 'id'  => $q->param('gene_column_id_fgs') - 1,
+	 'score'  => ($q->param('score_column_id_fgs') ? $q->param('score_column_id_fgs') - 1 : undef),
+	 'subset'  => ($q->param('score_column_id_fgs') ? $q->param('subset_column_id_fgs') - 1 : undef)
+ );	
+ $fgsSource = HStextProcessor::compileGS2('fgs', 
 	$jid, 
 	$fgs, 
 	$jobParameters -> {sbm_selected_fgs}, 
-	$q->param("gene_column_id_fgs") - 1,
-	$q->param("group_column_id_fgs") - 1,
+	$textFileFields,
 	$jobParameters -> {genewiseFGS},
 	$species, 
 	1);
@@ -451,20 +446,28 @@ if ($#{$NETselected} >= 0) {
 	$IND{ags} = ($jobParameters -> {genewiseAGS} eq 'TRUE') ? 'T' : 'F';
 	$COL{colgeneags} = 2;
 	$COL{colsetags} = 3;
+	$COL{colscoreags} = 4;
+	$COL{colsubsetags} = 5;
 
 	$LST{fgs} = 'F'; 
 	$SQL{fgs} = (defined($FGScollected)) ? 'T' : 'F'; 
 	$IND{fgs} = ($jobParameters -> {genewiseFGS} eq 'TRUE') ? 'T' : 'F';
 	$COL{colgenefgs} = 2;
 	$COL{colsetfgs} = 3;
-
+	$COL{colscorefgs} = 4;
+	$COL{colsubsetfgs} = 5;
+	
 	$executeStatement = "Rscript $HSconfig::nea_software --vanilla --args ntb=".$HSconfig::network->{$species}." fgs=".$fgsSource." net=".$netSource." ags=".$agsSource." out=".$outFile." org=".$species
 	." sqlags=".$SQL{ags}." lstags=".$LST{ags}." indags=".$IND{ags}
 	." sqlfgs=".$SQL{fgs}." lstfgs=".$LST{fgs}." indfgs=".$IND{fgs}
 	." colgeneags=".$COL{colgeneags}
 	." colsetags=".$COL{colsetags}
+	." colscoreags=".$COL{colscoreags}
+	." colsubsetags=".$COL{colsubsetags}
 	." colgenefgs=".$COL{colgenefgs}
-	." colsetfgs=".$COL{colsetfgs};
+	." colsetfgs=".$COL{colsetfgs}
+	." colscorefgs=".$COL{colscorefgs}
+	." colsubsetfgs=".$COL{colsubsetfgs};
 	# print($executeStatement."\n");
 
 	$jobParameters -> {commandline} = HS_html_gen::showCommandLine($executeStatement);
@@ -656,8 +659,6 @@ return(
 sub readNEA {
 my($table) = @_;
 my($key, $i, @arr, $neaData);
-my $current_usr_mask = $q->param('ags_mask');
-my $current_fgs_mask = $q->param('fgs_mask');
 print "OPEN NEA FILE: $table".'<br>' if $debug;
 open NEA, $table or return("deleted");
 $_ = <NEA>;
@@ -667,14 +668,11 @@ while ($_ = <NEA>) {
 chomp; 
 @arr = split("\t", uc($_));
 next if lc($arr[0]) ne 'prd';
-next if ($current_usr_mask and $arr[$pl->{$table}->{'ags'}] !~ m/$current_usr_mask/i);
-next if ($current_fgs_mask and $arr[$pl->{$table}->{'fgs'}] !~ m/$current_fgs_mask/i);
+next if ($arr[$pl->{$table}->{lc('NlinksReal_AGS_to_FGS')}] < 1);
 next if (($arr[$pl->{$table}->{$HSconfig::pivotal_nea_score}] < $HSconfig::min_pivotal_nea_score) or 
 ($arr[$pl->{$table}->{$HSconfig::pivotal_confidence}] eq "") or 
-$arr[$pl->{$table}->{$HSconfig::pivotal_confidence}] > $NEA_FDR_coff or 
 $arr[$pl->{$table}->{$HSconfig::nea_fdr}] > $HSconfig::min_nea_fdr or 
 $arr[$pl->{$table}->{$HSconfig::nea_p}] > $HSconfig::min_nea_p );
-next if ($arr[$pl->{$table}->{lc('NlinksReal_AGS_to_FGS')}] < $NEA_Nlinks_coff);
 $neaData->[$i]->{wholeLine} = $_;
 for $key(keys(%HSconfig::neaHeader)) {
 $neaData->[$i]->{$HSconfig::neaHeader{$key}} = $arr[$pl->{$table}->{lc($HSconfig::neaHeader{$key})}];
@@ -682,13 +680,12 @@ $neaData->[$i]->{$HSconfig::neaHeader{$key}} = $arr[$pl->{$table}->{lc($HSconfig
 $i++;
 }
 close NEA;
-return("empty") if (1 == 2 or !$i);
+return("empty") if !$i;
 return($neaData);
 }
 
 sub jobFromArchive {
 my($proj, $job) = @_;
-
 my $content = '
 <div id="net_message" ></div>
 <div id="net_up" ></div>
@@ -701,11 +698,9 @@ value: false
 $( "#ne-up-progressbar" ).css({"visibility": "hidden", "display": "none"});
 });
 </script> 
-
 <div id="nea_archive_tabs">
 '.printJobTabs($proj, $job).'
 </div>';
-
 $content = '
 <FORM id="form_ne" action="cgi/i.cgi" method="POST" enctype="multipart/form-data" autocomplete="on" >
 <input type="hidden" name="selectradio-table-ags-ele" id="selectradio-table-ags-ele"  value="">	 <!-- name of file selected via AGS tab -->
@@ -717,10 +712,7 @@ $content = '
 <input type="hidden" name="neafile" id="neafile" value="default">
 <input type="hidden" name="step" id="step" value="default">
 <input type="hidden" name="subneturlbox" id="subneturlbox" value="">
-
 <input type="hidden" name="action" id="action"  value="default">	
-
-
 <h3>Project: "'.$proj.'", analysis: #'.$job.'</h3>'.$content.'</FORM>';
 $content .= '<script type="text/javascript">
 $(function() {
@@ -1170,8 +1162,15 @@ my %JSJobType = ("ags" => "ags", "fgf" => "fgs");
 print  STDERR "Type: ".$type; # if $debug;
 my $file = $q->param('selectradio-table-'.$JSJobType{$type}.'-ele') ? $q->param('selectradio-table-'.$JSJobType{$type}.'-ele') : $savedFiles -> {data} -> {$type."_table"}; #
 $table = $usersDir.$file; #
-#  
-$GS{readin} = HStextProcessor::read_group_list2($table, 0, $q->param('gene_column_id'.'_'.$JSJobType{$type}) - 1, $q->param('group_column_id'.'_'.$JSJobType{$type}) - 1, "\t", '_AGS', $q->param('display-file-header')); #
+my($textFileFields);
+%{$textFileFields} = (
+ 'group'  => $q->param('group_column_id'.'_'.$JSJobType{$type}) - 1,
+ 'id'  => $q->param('gene_column_id'.'_'.$JSJobType{$type}) - 1,
+ 'score'  => $q->param('score_column_id'.'_'.$JSJobType{$type}) - 1,
+ 'subset'  => $q->param('subset_column_id'.'_'.$JSJobType{$type}) - 1
+ );
+
+$GS{readin} = HStextProcessor::read_group_list3($table, 0, $textFileFields, "\t", '_AGS', $q->param('display-file-header')); #
 $pre_NEAoptions -> {$type} -> {$species} -> {ne} =  HS_html_gen::listGS(
 	$GS{readin}, uc($JSJobType{$type}), 
 	(($type =~ m/sgs|cpw/) ? 0 : 1), # <- $hasGroup
@@ -1188,55 +1187,11 @@ $content .= '<div>'.HS_html_gen::displayUserTable($q->param('selectradio-table-'
 
 elsif (
 ($type eq 'arc') or 
-# ($type eq 'hlp') or 
 ($type eq 'res') or 
 ($type eq 'usr') or 
 ($type eq 'net') or 
 ($type eq 'fgs') or 
 ($type eq 'sbm')) {
-# if (($type eq 'net') or ($type eq 'fgs')) {
-# my ($spe, $stat, %statfile, @fields, $fi, @ar, $i);
-# for $spe('hsa', 'mmu', 'ath', 'rno') {
-# %statfile = (
-# "NET" => $HSconfig::netDir.'/'.$spe.'/'.'NW.stats.txt', 
-# "FGS" => $HSconfig::fgsDir.'/'.$spe.'/'.'FG.stats.txt'
-# );
-# for $stat(("FGS", "NET")) {
-# if ($stat eq "FGS") {
-# @fields = ('ngenes', 'ngroups');
-# $pl->{$statfile{$stat}}->{'filename'} = 1;
-# $pl->{$statfile{$stat}}->{'ngenes'} = 2;
-# $pl->{$statfile{$stat}}->{'ngroups'} = 3;
-# $i = 0;
- # open  IN, $statfile{$stat} or die "Could not re-open $statfile{$stat} ...\n";
- # while ($_ = <IN>) {
- # next if ++$i == 1 ;
-# chomp;
-# @ar = split("\t", $_);
-# for $fi(@fields) {
-# $HSconfig::fgsDescription -> {$spe}->{$ar[$pl->{$statfile{$stat}}->{'filename'}]} ->{$fi} = $ar[$pl->{$statfile{$stat}}->{$fi}];
- # }}
- # close IN;
-# }
-
-# if ($stat eq "NET") {
-# @fields = ('ngenes', 'nlinks');
-# $pl->{$statfile{$stat}}->{'filename'} = 1;
-# $pl->{$statfile{$stat}}->{'ngenes'} = 3;
-# $pl->{$statfile{$stat}}->{'nlinks'} = 2;
-# $i = 0;
- # open  IN, $statfile{$stat} or die "Could not re-open $statfile{$stat} ...\n";
- # while ($_ = <IN>) {
- # next if ++$i == 1 ;
-# chomp;
-# @ar = split("\t", $_);
-# for $fi(@fields) {
-# $HSconfig::netDescription -> {$spe}->{$ar[$pl->{$statfile{$stat}}->{'filename'}]} ->{$fi} = $ar[$pl->{$statfile{$stat}}->{$fi}];
- # }}
-  # close IN;
- # }}}}
- 
- 
 $content .= HS_html_gen::ajaxSubTab($type, $species).HS_html_gen::ajaxJScode($type);
 } 
 else {
@@ -1440,7 +1395,7 @@ $content .= '</table>'.
 
    $(".assumed-icon").each( 
 	   function () {
-		   var savedType = (getCookie($(this).attr("id").replace("icon-", "tabs-") + "_filetype").split("|"));
+		   var savedType = (getCookie($(this).attr("id").replace("icon-", "tabs-") + "_filetype").split("|"))[0];
 		   //console.log($(this).attr("id") + " savedType: " + savedType);
 		   var typeList = Object.keys(fileType);
 		   if (savedType == "") {

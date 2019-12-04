@@ -8,7 +8,7 @@ source("../R/HS.R.config.r");
 # install.packages("DT", repos="http://cran.us.r-project.org")
 library(DT);
 
-Precision <- list(z=3, q=2, p=2, chi=2, n.expected=3);
+Precision <- list(z=4, q=3, p=3, chi=4, n.expected=3);
 Args <- commandArgs(trailingOnly = T); 
 print(Args);
 paramNames <- c("nea", "tables", "htmlmask");

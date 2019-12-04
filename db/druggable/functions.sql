@@ -9,6 +9,13 @@ res_array text array;
 i numeric;
 BEGIN
 res_array = ARRAY[]::text[];
+IF (data_type = '%') AND (platform_n = '%') AND (screen_name = '%')
+THEN
+FOR res IN SELECT id FROM cor_all_ids
+LOOP
+SELECT array_append(res_array, res) INTO res_array;
+END LOOP;
+ELSE
 FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table WHERE source=\'' || source_n ||  E'\' AND datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_name || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
 LOOP
 FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_name || ';'
@@ -26,6 +33,7 @@ SELECT array_append(res_array, res) INTO res_array;
 END IF;
 END LOOP;
 END LOOP;
+END IF;
 FOR i IN 1..array_length(res_array, 1)
 LOOP
 RETURN NEXT res_array[i];
@@ -535,30 +543,148 @@ $$ LANGUAGE plpgsql;
 
 -- FUNCTIONS TO WORK WITH CORRELATIONS
 
-CREATE OR REPLACE FUNCTION retrieve_correlations(data_type text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION foo(b text) RETURNS setof text AS $$
+DECLARE
+a text array;
+b_array text array;
+query text;
+i numeric;
+BEGIN
+b_array := string_to_array(b, ',');
+query := 'SELECT ARRAY (SELECT ' || b_array[1];
+FOR i IN 2..array_length(b_array, 1)
+LOOP
+query := query || E' \|\| \'\|\' \|\| ' || b_array[i]; 
+END LOOP;
+query := query || ' FROM guide_table)'; 
+RAISE notice 'query: %', query;
+EXECUTE query INTO a;
+FOR i in 1..array_length(a, 1)
+LOOP
+RETURN NEXT a[i];
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- creates table with ALL unique ids from correlations
+CREATE OR REPLACE FUNCTION bar() RETURNS setof text AS $$
+DECLARE
+table_name text;
+res text;
+res_array text array;
+i numeric;
+BEGIN
+CREATE TABLE cor_all_ids (id text);
+res_array = ARRAY[]::text[];
+FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table ;'
+LOOP
+RAISE NOTICE 'Table: %', table_name;
+FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_name || ';'
+LOOP
+IF NOT (SELECT res = ANY (res_array))
+THEN
+SELECT array_append(res_array, res) INTO res_array;
+END IF;
+END LOOP;
+FOR res IN EXECUTE 'SELECT DISTINCT upper(gene) FROM ' || table_name || ';'
+LOOP
+IF NOT (SELECT res = ANY (res_array))
+THEN
+SELECT array_append(res_array, res) INTO res_array;
+END IF;
+END LOOP;
+END LOOP;
+FOR i IN 1..array_length(res_array, 1)
+LOOP
+INSERT INTO cor_all_ids(id) VALUES (res_array[i]);
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to retrieve correlations
+-- mindrug is a min number of patients which have to be treated with the specific drug to offer KM plot for this drug
+-- cor_columns is a string with comma-separated columns to use for query 
+-- first column is ALWAYS gene
+-- second column is ALWAYS feature
+-- last column is ALWAYS q
+CREATE OR REPLACE FUNCTION retrieve_correlations(data_type text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text) RETURNS setof text AS $$
 DECLARE
 gene_n text;
 feature_n text;
 visible_feature_name text;
-p1 numeric;
-p2 numeric;
-p3 numeric;
-q numeric;
 table_name text;
 datatype_name text;
 platform_name text;
 screen_name text;
-res text;
+cohorts text;
+res text array;
+columns_array text array;
+query text;
+i numeric;
 BEGIN
+columns_array := string_to_array(cor_columns, ',');
 FOR table_name, datatype_name, platform_name, screen_name IN EXECUTE E'SELECT table_name,datatype,platform,screen FROM cor_guide_table WHERE datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_n || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
 LOOP
-FOR gene_n,feature_n,p1,p2,p3,q IN EXECUTE 'SELECT upper(gene),feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (ancova_q_2x_feature<=' || fdr || ') ORDER BY ancova_q_2x_feature DESC;'
+RAISE notice 'table name: %', table_name;
+query := 'SELECT ARRAY (SELECT upper(' || columns_array[1] || E') \|\| \'\|\' \|\| drug_synonym(' || columns_array[2] || E') \|\| \'\|\' \|\| \'' || datatype_name || E'\' \|\| \'\|\' \|\| \'' || platform_name || E'\' \|\| \'\|\' \|\| \'' || screen_name || E'\'';
+FOR i IN 3..array_length(columns_array, 1)
 LOOP
-SELECT external_id INTO visible_feature_name FROM synonyms WHERE internal_id=feature_n AND id_type='drug';
-res := gene_n || '|' || visible_feature_name || '|' || datatype_name || '|' || platform_name || '|' || screen_name || '|' || p1 || '|' || p2 || '|' || p3 || '|' || q || '|';
-RETURN NEXT res;
+query := query || E' \|\| \'\|\' \|\| ' || columns_array[i]; 
+-- i does not save it's value! Reassign
+RAISE notice '%: query: %', i, query;
 END LOOP;
+i := array_length(columns_array, 1);
+query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[2] || ',' || mindrug || ') FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
+RAISE notice '%: query: %', i, query;
+--FOR gene_n,feature_n,p1,p2,p3,q IN EXECUTE 'SELECT upper(gene),feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (ancova_q_2x_feature<=' || fdr || ') ORDER BY ancova_q_2x_feature DESC;'
+--LOOP
+--SELECT external_id INTO visible_feature_name FROM synonyms WHERE internal_id=feature_n AND id_type='drug';
+--SELECT retrieve_cohorts_for_drug(feature_n, mindrug) INTO cohorts;
+--res := gene_n || '|' || visible_feature_name || '|' || datatype_name || '|' || platform_name || '|' || screen_name || '|' || p1 || '|' || p2 || '|' || p3 || '|' || q || '|' || cohorts || '|';
+--RETURN NEXT res;
+--END LOOP;
+EXECUTE query INTO res;
+RAISE notice 'Query complete, number of rows: %', array_length(res,1);
+IF array_length(res,1) > 0
+THEN
+FOR i in 1..array_length(res, 1)
+LOOP
+RETURN NEXT res[i];
 END LOOP;
+END IF;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to get TCGA cohorts for retrieve_correlations
+CREATE OR REPLACE FUNCTION retrieve_cohorts_for_drug(drug_name character varying, mindrug numeric) RETURNS text AS $$
+DECLARE
+cohort_n text;
+res text;
+n_pats numeric;
+BEGIN
+res := '';
+FOR cohort_n, n_pats IN SELECT cohort,counts FROM drug_counts WHERE drug=drug_name
+LOOP
+IF (n_pats > mindrug)
+THEN
+res := res || cohort_n || ',';
+END IF;
+END LOOP;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION drug_synonym(drug text) RETURNS text AS $$
+DECLARE
+res text;
+syn text;
+BEGIN
+FOR syn IN SELECT external_id FROM synonyms WHERE internal_id=drug AND id_type='drug'
+LOOP
+res := syn;
+END LOOP;
+RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -665,6 +791,21 @@ res boolean;
 BEGIN
 SELECT has_ids INTO res FROM type_ids WHERE data_type=datatype;
 RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function updates table which is used for connection between "Significant results" tab and TCGA data
+CREATE OR REPLACE FUNCTION tcga_count_drugs() RETURNS boolean AS $$
+DECLARE
+table_n text;
+cohort_n text;
+BEGIN
+DELETE FROM drug_counts;
+FOR table_n, cohort_n IN SELECT table_name,cohort FROM guide_table WHERE (source='TCGA') AND (type='DRUG')
+LOOP
+EXECUTE E'INSERT INTO drug_counts SELECT drug,\'' || cohort_n || E'\',count(drug) FROM ' || table_n || ' GROUP BY drug;';
+END LOOP;
+RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 

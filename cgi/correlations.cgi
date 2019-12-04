@@ -17,6 +17,7 @@ my $platform = $query->param("platform");
 my $screen = $query->param("screen");
 my $id = $query->param("id");
 my $fdr = $query->param("fdr");
+my $mindrug = $query->param("mindrug");
 
 $datatype	= "%" if $datatype	eq "all";
 $platform	= "%" if $platform	eq "all";
@@ -24,7 +25,7 @@ $screen 	= "%" if $screen	eq "all";
 $id 		= "%" if $id 		eq "";
 
 $dbh = HS_SQL::dbh('druggable');
-$stat = qq/SELECT retrieve_correlations(\'$datatype'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m'\, \'$id'\, \'$fdr'\);/;
+$stat = qq/SELECT retrieve_correlations(\'$datatype'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m'\, \'$id'\, $fdr, $mindrug);/;
 print "Content-type: text/html\n\n";
 
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;

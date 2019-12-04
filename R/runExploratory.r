@@ -55,17 +55,24 @@ library(RColorBrewer)
 Col<-colorRampPalette(colors=c("blue","white","red"))(20)
 # cCol = Colors[["ProteinClass"]][proteinClasses[rownames(c1)]]; names(cCol) <- rownames(pre1);
 # tbl <- apply(tbl, 1, function (x) {x[which(is.na(x))] <- 0; return(x);});
-
-heatmaply(as.matrix(tbl), 
+#####################################################
+heatmaply(
+normalize(as.matrix(tbl)), 
+# distfun="spearman", 
+distfun="pearson", 
+# hclustfun="hclust", 
 colors = Col, 
 k_col = 1, k_row = 1, 
 na.value = "grey50", 
 # RowSideColors=cCol, ColSideColors=cCol, 
-xaxis_font_size=0.05, yaxis_font_size=0.10, 
+# xaxis_font_size=0.025, yaxis_font_size=0.10, 
+column_text_angle = 90,
+# cexRow=0.1, 
+cexCol=0.60, 
 scale="none", margins=c(80,80)
 ) %>% saveWidget(file=out,selfcontained = F, libdir="heatmaply_dependencies");
 }
-
+#####################################################
 Args <- commandArgs(trailingOnly = T);
 paramNames <- c("table", "out");
 Param <- vector("list", length(paramNames));

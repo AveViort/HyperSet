@@ -33,7 +33,7 @@ our $tmpVennHTML = 'https://research.scilifelab.se/users_tmp/';
 our $downloadDir = 'https://research.scilifelab.se/andrey_alexeyenko/downloads/';
 our $fieldRdelimiter = '+'; #%3B
 our $file_stat_ext = ".file_stat";
-our $maxLinesDisplay = 500;
+our $maxLinesDisplay = 5000;
 our $Rplots;
 ########################################################################################
 # 18:35 b4:/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/pics >>>> ln -s /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/plots/ .
@@ -80,7 +80,23 @@ my $i = 0;
  'mask' => '.+', 
  'keyword' => 'group|.ags',
   'title' => '  <div>Open the uploaded collection of gene sets and select gene sets for the current analysis: <###submitbuttonplaceholder###></button><br> 
-  <p>Gene/protein ID column is <input id=\'genecolumnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' class=\'qtip-spinner ctrl-###typeplaceholder###\' title="Select column with gene/protein IDs compatible with network node IDs" > and set ID column is  <input id=\'groupcolumnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' title="Select column with arbitrary set (group) IDs.<br>NOTE: setting 0 enables merging all gene/protein IDs into one set." class=\'qtip-spinner ctrl-###typeplaceholder###\'></p>
+  <p>Gene/protein ID column is <input id=\'genecolumnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' class=\'qtip-spinner ctrl-###typeplaceholder###\' title="Select column with gene/protein IDs compatible with network node IDs" > and set ID column is  <input id=\'groupcolumnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' title="Select column with arbitrary set (group) IDs.<br>NOTE: setting 0 enables merging all gene/protein IDs into one set." class=\'qtip-spinner ctrl-###typeplaceholder###\'></p>  
+  <p>Optional score column is <input id=\'scorecolumnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' class=\'qtip-spinner ctrl-###typeplaceholder###\' title="Value of e.g. gene expression to be used for node coloring (range -1...1 for blue...red)"> and node category column: <input id=\'subsetcolumnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' title="Category (subset) to be reflected as node shape; use one of: 
+<ul >
+    <li>ellipse [shown as circle]</li>
+    <li>triangle</li>
+<li>rectangle [shown as square]</li>
+<li>roundrectangle </li> 
+<li>rhomboid [shown as parallelogram] </li>
+<li>diamond  </li>
+<li>pentagon  </li>
+<li>hexagon  </li>
+<li>heptagon  </li>
+<li>octagon  </li>
+<li>star  </li>
+<li>vee [V] </li>
+<li>polygon [shown as square]</li>
+</ul>" class=\'qtip-spinner ctrl-###typeplaceholder###\'></p>
 </div>
   '	 ,
  'empty' => 'In order to be treated as a gene set collection, the file content must satisfy the format <a href=\'https://www.evinet.org/help/part1.html\'>criteria</a>', 
@@ -228,17 +244,13 @@ our $NlinksExpected = lc('NlinksAnalyticRnd_AGS_to_FGS');
 our ($pivotal_nea_score, $nea_p, $nea_fdr, $min_nea_fdr, $min_nea_p, $min_pivotal_nea_score);
 $nea_p = lc('ChiSquare_p-value');
 $nea_fdr = lc('ChiSquare_FDR');
-$min_nea_fdr = 0.25; 
-$min_nea_p = 0.05;
-$min_pivotal_nea_score = 0;
-# $min_nea_fdr = 1.99; 
-# $min_nea_p = 1.99;
-# $min_pivotal_nea_score = -10;
- if ($nea_software =~ m/runNEAonEvinet/i) {
 $pivotal_nea_score = lc('NEA_Zscore');
-} else {
-$pivotal_nea_score = lc('ChiSquare_value');
-}
+# $min_nea_fdr = 0.25; 
+# $min_nea_p = 0.05;
+# $min_pivotal_nea_score = 0;
+$min_nea_fdr = 1.99; 
+$min_nea_p = 1.99;
+$min_pivotal_nea_score = -10;
 our $uppic =   'pics/sort_up16.png';
 our $dnpic =   'pics/sort_down16.png';
 our $showmepic =   'pics/showme.png';
@@ -1020,7 +1032,7 @@ our %neaHeader = (
 '#genes FGS' 	=> 'N_genes_FGS', 
 '#links FGS' 	=> 'N_linksTotal_FGS',
 '#linksAGS2FGS' => 'NlinksReal_AGS_to_FGS', 
-'Score' 		=> lc($HSconfig::pivotal_nea_score) eq lc('ChiSquare_value') ? 'ChiSquare_value' :  'NEA_Zscore',  
+'Score' 		=> 'ChiSquare_value',  
 'FDR' 			=> 'ChiSquare_FDR', 
 'Shared genes' 	=> 'GSEA_overlap'
 );

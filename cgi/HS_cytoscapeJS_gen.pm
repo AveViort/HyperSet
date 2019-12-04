@@ -26,14 +26,19 @@ our (%define,  $cs_menu_buttons, $toAdd);
 
 our $nodeScaleFactor = 2.0;
 our $edgeScaleFactor = 4;
-our $borderWidthScheme = 0;
-our $borderStyleScheme = '"double"';
+our $borderWidthScheme = 1.5;
+# our $borderStyleScheme = '"double"';
+our $borderStyleScheme = '"solid"';
+our $borderColoringScheme = '"border-color": "data(groupColor)"';
 our $nodeColoringScheme = '"background-color": "data(nodeShade)"';
+our $nodeShapingScheme = '"shape": "data(subSet)"';
 our $arrowHeadScheme = '"triangle"';
 our $edgeColoringScheme = '"data(confidence2opacity)"';
 our $nodeSizeScheme = '"mapData(weight, 0, 9, '. 1 * $nodeScaleFactor .', '. 40 * $nodeScaleFactor .')"';
 our $edgeWeightScheme = '"width": "data(integerWeight)"';
 our $edgeOpacityScheme = '"opacity" : 1.0';
+our %nodeType; $nodeType{'cy_ags'} = 'diamond'; $nodeType{'cy_fgs'} = 'roundrectangle';
+our %nodeGroupColor; $nodeGroupColor{'cy_ags'} = '#ffc000'; $nodeGroupColor{'cy_fgs'} = '#ff3399'; $nodeGroupColor{'cy_both'} = '#ff6600';
 
 our @NEAusedFields = (
 'N_linksTotal_AGS', 
@@ -329,11 +334,13 @@ applyTo = \'node:selected\';
 $("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
 break;
     case "alter-nodes-color-system":
- cy'.$instanceID.'.elements(\'node[type = "cy_ags"]\').css({"background-color": "yellow"});
- cy'.$instanceID.'.elements(\'node[type = "cy_fgs"]\').css({"background-color": "magenta"});
+ cy'.$instanceID.'.elements(\'node[type = "cy_ags"]\').css({"background-color": "'.$nodeGroupColor{"cy_ags"}.'"});
+ cy'.$instanceID.'.elements(\'node[type = "cy_fgs"]\').css({"background-color": "'.$nodeGroupColor{"cy_fgs"}.'"});
+ cy'.$instanceID.'.elements(\'node[type = "cy_ags"]\').css({"shape": "'.$nodeType{'cy_ags'}.'"});
+ cy'.$instanceID.'.elements(\'node[type = "cy_fgs"]\').css({"shape": "'.$nodeType{'cy_fgs'}.'"});
+ 
  cy'.$instanceID.'.elements("node").each(
   function () {
-  //console.log(this.data("groupColor"));  
   this.style({"background-color": this.data("groupColor")});
   }
 );
@@ -341,12 +348,13 @@ break;
     case "alter-nodes-color-activity":
 	 cy'.$instanceID.'.elements("node").each(
   function () {
-  //console.log(this.data("nodeShade"));  
-  this.style({"background-color": this.data("nodeShade")});
+	this.style({"background-color": this.data("nodeShade")});
+	this.style({"shape": this.data("subSet")});
+	this.style({'.$borderColoringScheme.'});
+	//this.style({"border-color": "'.$nodeGroupColor{"cy_ags"}.'"});
   }
 );
- //cy'.$instanceID.'.elements(\'node[type = "cy_fgs"]\').css({'.$nodeColoringScheme.'}); 
- break;
+break;
 	case "alter-edges-color-all":
 applyTo = \'edge\';
 $("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
@@ -392,8 +400,13 @@ max: 50,
 min: 5, 
 value: 20,
 slide:  function(){
-cy'.$instanceID.'.elements(\'node\').css({"width": $( this ).slider( "value" )});
-cy'.$instanceID.'.elements(\'node\').css({"height": $( this ).slider( "value" )});
+if (cy'.$instanceID.'.elements(\'node:selected\').length  > 0) {
+	cy'.$instanceID.'.elements(\'node:selected\').css({"width": $( this ).slider( "value" )});
+	cy'.$instanceID.'.elements(\'node:selected\').css({"height": $( this ).slider( "value" )});
+} else {
+	cy'.$instanceID.'.elements(\'node\').css({"width": $( this ).slider( "value" )});
+	cy'.$instanceID.'.elements(\'node\').css({"height": $( this ).slider( "value" )});
+}
 }
 });
 });
@@ -407,8 +420,11 @@ max: 28,
 min: 4, 
 value: 12,
 slide:  function(){
-cy'.$instanceID.'.elements(\'node\').css({"font-size": $( this ).slider( "value" )});
-}
+if (cy'.$instanceID.'.elements(\'node:selected\').length  > 0) {
+	cy'.$instanceID.'.elements(\'node:selected\').css({"font-size": $( this ).slider( "value" )});
+} else {
+	cy'.$instanceID.'.elements(\'node\').css({"font-size": $( this ).slider( "value" )});
+}}
 });
 
 });
@@ -522,9 +538,11 @@ max: 28,
 min: 4, 
 value: 12,
 slide:  function(){
+if (cy'.$instanceID.'.elements(\'edge:selected\').length  > 0) {
+cy'.$instanceID.'.elements(\'edge:selected\').css({"font-size": $( this ).slider( "value" )});
+} else {
 cy'.$instanceID.'.elements(\'edge\').css({"font-size": $( this ).slider( "value" )});
-//cy'.$instanceID.'.elements(\'edge\').css({"opacity": 1.0});
-//cy'.$instanceID.'.elements(\'edge\').css({"font-size": 12});
+}
 } }); });
 ';
 $define{EdgeLabelSwitch}	= '
@@ -533,9 +551,14 @@ $( "#edgeLabel'.$instanceID.'" ).click(
 function() {
 var Action = ($(this).prop( "checked" )) ? "enable":"disable";
 var State  = ($(this).prop( "checked" )) ? 1:0;
-$("#fontEdgeCySlider'.$instanceID.'").slider(Action);
+
+if (cy'.$instanceID.'.elements(\'edge:selected\').length  > 0) {
+cy'.$instanceID.'.elements(\'edge:selected\').css({"text-opacity": State});
+} else {
 cy'.$instanceID.'.elements(\'edge\').css({"text-opacity": State});
-//cy'.$instanceID.'.elements(\'edge\').css({"text-opacity": 1.0});
+$("#fontEdgeCySlider'.$instanceID.'").slider(Action);
+}
+
 }
 );
 });
@@ -783,11 +806,13 @@ my $network_links = processLinks($data);
 my $maxConnectivity = 0; my $minConnectivity = 10000000;
 $nodeScaleFactor = 1.25;
 $edgeScaleFactor = 4;
-$borderWidthScheme = 0;
+$borderWidthScheme = 3;
 $borderStyleScheme = '"solid"';
 $nodeColoringScheme = '"background-color": "data(groupColor)"';
+$borderColoringScheme = '"border-color": "data(groupColor)"';
 $arrowHeadScheme = '"none"';
-$edgeColoringScheme = '"data(confidence2opacity)"';
+# $edgeColoringScheme = '"data(confidence2opacity)"';
+$edgeColoringScheme = '"#b8cce4"';
 $nodeSizeScheme = '"mapData(weight, 0, 9, '. 10 * $nodeScaleFactor .', '. 40 * $nodeScaleFactor .')"';
 $edgeWeightScheme = '"width": "data(integerWeight)"';#, 0, 6, '. 0.5 * $edgeScaleFactor .', '. 4 * $edgeScaleFactor .' 
 $edgeOpacityScheme = '"opacity" : 1.0';
@@ -800,7 +825,8 @@ $node_features->{$nn}->{description} =
 				$nf->{ $nn }->{name} : 
 				$nn);
 $node_features->{$nn}->{description} .= '; deg='. $node_features->{$nn}->{degree} ;		
-$node_features->{$nn}->{weight} = log($node_features->{ $nn }->{degree} + 1) / log(3);
+# $node_features->{$nn}->{weight} = log($node_features->{ $nn }->{degree} + 1) / log(3);
+$node_features->{$nn}->{weight} = 0.1 * log($node_features->{ $nn }->{degree} + 1) ** 2;
 }
 my($cs_menu_def) = define_menu('net', $instanceID);
 my $tbl = HS_html_gen::GeneGeneTable($network_links, $data, $node_features);
@@ -912,114 +938,22 @@ console.log(\'#\' + lis[0].attributes["aria-controls"].value);
 </script>');
 } 
   
-sub printPlot_JSON {
-my($neaSorted, $pl, $subnet_url) = @_; 
-
-my($gs_edges, $node_features, $network_links, $gs, $mm, @mem, $node_members, 
-@ar, $aa, $nn, $i, $ff, $signature, %copied_edge, $FGS, $AGS, $GS, $conn, $coef, $nfld);
-my $maxConnectivity = 5000; #my $minConnectivity = 1;
-for $i(0..$#{$neaSorted}) { 
-@ar = split("\t", uc($neaSorted->[$i]->{wholeLine}));
-#next if $ar[$pl{MODE}] ne 'prd';
-#next if $ar[$pl{NlinksReal_AGS_to_FGS}] < $minNlinks;
-$AGS = $ar[$pl->{ags}];
-$FGS = $ar[$pl->{fgs}];
-next if !$AGS or !$FGS;
-$signature = join('-#-#-#-', (sort {$a cmp $b} ($AGS, $FGS))); #prevents importing duplicated edges
-next if defined($copied_edge{$signature});
-$copied_edge{$signature} = 1;
-$network_links -> {$AGS} -> {$FGS} -> {confidence} = 
-($ar[$pl->{$HSconfig::pivotal_confidence}] > 0 ? 
--log ($ar[$pl->{$HSconfig::pivotal_confidence}]) / log(10) : 24);
-for $ff(@NEAusedFields) {
-$network_links -> {$AGS} -> {$FGS} -> {$ff} = $ar[$pl->{lc($ff)}];
-}
-$network_links -> {$AGS} -> {$FGS} -> {label} = 
-		$network_links -> {$AGS} -> {$FGS} -> {NlinksReal_AGS_to_FGS};
-
-$network_links -> {$AGS} -> {$FGS} -> {weight} = 		
-sprintf("%.2f", log($network_links -> {$AGS} -> {$FGS} -> {label}));
-$network_links -> {$AGS} -> {$FGS} -> {integerWeight} = sprintf("%.1f", sqrt($network_links -> {$AGS} -> {$FGS} -> {label} + 0.1));
-$network_links -> {$AGS} -> {$FGS} -> {integerWeight} = ($network_links -> {$AGS} -> {$FGS} -> {integerWeight} > 24) ? 24 : $network_links -> {$AGS} -> {$FGS} -> {integerWeight};
-
-
-for $gs(($AGS, $FGS)) {
-@mem = split(' ', $ar[$pl->{($gs eq $AGS) ? 'ags_genes1' : 'fgs_genes1'}]);
-for $mm(@mem) {
-$node_features->{$gs}->{memberGenes}->{$mm} = 1;
-$node_features->{$mm}->{parent} = $gs;
-$node_members->{$mm} = 1; #????
-}
-}
-
-$node_features->{$AGS}->{N_links} = $ar[$pl->{lc('N_linksTotal_AGS')}];
-$node_features->{$FGS}->{N_links} = $ar[$pl->{lc('N_linksTotal_FGS')}];
-$node_features->{$FGS}->{fgs} = 1;
-$node_features->{$AGS}->{ags} = 1;
-$node_features->{$AGS}->{count}++;
-$node_features->{$FGS}->{count}++;
-$node_features->{$AGS}->{name} = $AGS;
-$node_features->{$FGS}->{name} = $FGS;
-$node_features->{$AGS}->{type} = 'cy_ags';
-$node_features->{$FGS}->{type} = 'cy_fgs' if !$node_features->{$FGS}->{ags};
-$node_features->{$AGS}->{weight} = sprintf("%.1f", log($ar[$pl->{n_genes_ags}]) + 1);
-$node_features->{$FGS}->{weight} = sprintf("%.1f", log($ar[$pl->{n_genes_fgs}]) + 1);
-
-for $gs(('AGS', 'FGS')) {
-$GS = ($gs eq 'AGS') ? $AGS : $FGS;
-$nfld = $ar[$pl->{lc('N_linksTotal_'.$gs)}];
-if ($nfld) {
-$coef = $nfld > $maxConnectivity ? 'ff' :
-sprintf("%x", 255 * ( sqrt($nfld / $maxConnectivity) ));
-$coef = '0'.$coef if length($coef) == 1;
-		} else {$coef = '00';} 
-$node_features->{$GS}->{nodeShade} = '#'.$coef.'0000';
-}
-
-if ($HSconfig::printMemberGenes ) {
-$gs_edges->{$AGS}->{$FGS} = processLinks(
-	HS_bring_subnet::nea_links(
-		$node_features->{$AGS}->{memberGenes}, 
-		$node_features->{$FGS}->{memberGenes}, 
-		$main::species)) 
-				if $network_links -> {$AGS} -> {$FGS} -> {NlinksReal_AGS_to_FGS};
-				}
-}
-my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
-
-for $nn(sort {$a cmp $b} keys(%{$node_features})) { 
-if (!defined($node_features->{$nn}->{parent})) { #print $node_features->{$nn}->{N_links};
-$conn = sprintf("%3f", log($node_features->{$nn}->{N_links}));
-$node_features->{$nn}->{description} = $nf->{ $nn }->{description} ? $nf->{ $nn }->{description} : ($nf->{ $nn }->{name} ? $nf->{ $nn }->{name} : $nn);
-}}
-if ($HSconfig::printMemberGenes ) {
-$nf = HS_SQL::gene_descriptions($node_members, $main::species);
-for $mm(sort {$a cmp $b} keys(%{$node_features})) {
-$node_features->{$mm}->{description} = $nf->{ $mm }->{description} ? $nf->{ $mm }->{description} : ($nf->{ $mm }->{name} ? $nf->{ $mm }->{name} : $mm);
-$node_features->{$mm}->{name} = $nf->{ $mm }->{name};
-$node_features->{$mm}->{weight} = 1;
-}
-}
-
-my $content =  '';
-my $instanceID = 'cy_plot';
-my($cs_menu_def) = define_menu('nea', $instanceID);
-
-$content .= 
-'<div id="cyMenu_plot" class="cyMenu ui-widget-content ui-corner-all ui-helper-clearfix">'.$cs_menu_buttons.'</div>'.CyNMobject($network_links, $node_features, 'nea', $instanceID, $subnet_url, $gs_edges).
-'<script type="text/javascript">
- $(function () { '.$cs_menu_def.'});
- </script>';
-
-return($content);
+sub node_shade {
+my($sc, $mode) = @_;
+if ($mode eq "byExpression") {
+my $intensity = sprintf("%.2x", 255 * (1 - abs($sc)));
+return('#'.($sc > 0 ? 'ff'.$intensity.$intensity : $intensity.'ffff'));
 } 
+return(undef);
+}
+
 
 sub printNEA_JSON {
 my($neaSorted, $pl, $subnet_url) = @_; 
 
 my($gs_edges, $node_features, $network_links, $gs, $mm, @mem, $node_members, 
 @ar, $aa, $nn, $i, $ff, $signature, %copied_edge, $FGS, $AGS, $GS, $conn, $coef, $nfld);
-my $maxConnectivity = 5000; #my $minConnectivity = 1;
+my $maxConnectivity = 1; #my $minConnectivity = 1;
 for $i(0..$#{$neaSorted}) { 
 @ar = split("\t", uc($neaSorted->[$i]->{wholeLine}));
 #next if $ar[$pl{MODE}] ne 'prd';
@@ -1047,7 +981,6 @@ $network_links -> {$AGS} -> {$FGS} -> {integerWeight} = ($network_links -> {$AGS
 
 for $gs(($AGS, $FGS)) {
 @mem = split(', ', $ar[$pl->{($gs eq $AGS) ? 'ags_genes1' : 'fgs_genes1'}]);
-# print($mem[11]);
 for $mm(@mem) {
 $node_features->{$gs}->{memberGenes}->{$mm} = 1;
 $node_features->{$mm}->{parent} = $gs;
@@ -1056,27 +989,23 @@ $node_members->{$mm} = 1; #????
 }
 $node_features->{$AGS}->{N_links} = $ar[$pl->{lc('N_linksTotal_AGS')}];
 $node_features->{$FGS}->{N_links} = $ar[$pl->{lc('N_linksTotal_FGS')}];
+$maxConnectivity = $node_features->{$AGS}->{N_links} if $maxConnectivity < $node_features->{$AGS}->{N_links};
+$maxConnectivity = $node_features->{$FGS}->{N_links} if $maxConnectivity < $node_features->{$FGS}->{N_links};
 $node_features->{$FGS}->{fgs} = 1;
 $node_features->{$AGS}->{ags} = 1;
 $node_features->{$AGS}->{count}++;
 $node_features->{$FGS}->{count}++;
-$node_features->{$AGS}->{name} = $AGS;
+$node_features->{$AGS}->{name} = $AGS; 
 $node_features->{$FGS}->{name} = $FGS;
 $node_features->{$AGS}->{type} = 'cy_ags';
 $node_features->{$FGS}->{type} = 'cy_fgs' if !$node_features->{$FGS}->{ags};
+$node_features->{$AGS}->{groupColor} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'};
+$node_features->{$FGS}->{groupColor} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'} if !$node_features->{$FGS}->{ags};
+
 $node_features->{$AGS}->{weight} = sprintf("%.1f", log($ar[$pl->{n_genes_ags}]) + 1);
 $node_features->{$FGS}->{weight} = sprintf("%.1f", log($ar[$pl->{n_genes_fgs}]) + 1);
-
-for $gs(('AGS', 'FGS')) {
-$GS = ($gs eq 'AGS') ? $AGS : $FGS;
-$nfld = $ar[$pl->{lc('N_linksTotal_'.$gs)}];
-if ($nfld) {
-$coef = $nfld > $maxConnectivity ? 'ff' :
-sprintf("%x", 255 * ( sqrt($nfld / $maxConnectivity) ));
-$coef = '0'.$coef if length($coef) == 1;
-		} else {$coef = '00';} 
-$node_features->{$GS}->{nodeShade} = '#'.$coef.'0000';
-}
+$node_features->{$AGS}->{AGS_genes2}  = $ar[$pl->{lc('AGS_genes2')}];
+$node_features->{$FGS}->{FGS_genes2}  = $ar[$pl->{lc('FGS_genes2')}];
 if ($HSconfig::printMemberGenes ) {
 $gs_edges->{$AGS}->{$FGS} = processLinks(
 	HS_bring_subnet::nea_links(
@@ -1089,6 +1018,18 @@ $gs_edges->{$AGS}->{$FGS} = processLinks(
  my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
 
 for $nn(sort {$a cmp $b} keys(%{$node_features})) { 
+my $type = uc($node_features->{$nn}->{type});
+$type =~ s/^CY_//;
+$node_features->{$nn}->{nodeShade} = '#'.sprintf("%.2x", 255 * ( sqrt( sqrt($node_features->{$nn}->{N_links} / $maxConnectivity) ))).'0000';
+$node_features->{$nn}->{subSet} = $nodeType{$node_features->{$nn}->{type}};
+# if ($main::jobParameters -> {'genewise'.$type }) {
+my($id, $score, $subset) = split(':', $node_features->{$nn}->{uc($type).'_genes2'});
+if (uc($id) eq uc($nn)) {
+$node_features->{$nn}->{nodeShade} =  HS_cytoscapeJS_gen::node_shade($score, "byExpression") if $score;
+$node_features->{$nn}->{subSet} =  lc($subset) if $subset;
+}
+# }
+
 if (!defined($node_features->{$nn}->{parent})) { 
 $node_features->{$nn}->{description} = $nf->{ $nn }->{description} ? $nf->{ $nn }->{description} : ($nf->{ $nn }->{name} ? $nf->{ $nn }->{name} : $nn);
 }}
@@ -1175,8 +1116,8 @@ my($node_features, $netType, $ID, $gs_edges) = @_;
 my($content, $nn, $mm, $pr, $property);
 my $property_list;
 @{$property_list->{member}} = 	('name', 'description', 'weight', 'parent');
-@{$property_list->{gs}} = 		('name', 'description', 'weight', 'nodeShade', 'groupColor', 'shape', 'type');
-@{$property_list->{gene}} = 	('name', 'description', 'weight', 'nodeShade', 'groupColor'); 
+@{$property_list->{gs}} = 		('name', 'description', 'weight', 'nodeShade', 'groupColor', 'subSet', 'shape', 'type');
+@{$property_list->{gene}} = 	('name', 'description', 'weight', 'nodeShade', 'groupColor', 'subSet'); 
 
 $content = 'nodes: [';
 for $nn(keys(%{$node_features})) {
@@ -1206,7 +1147,6 @@ return($content);
 
 sub CyNMnode {
 my($id, $property_list, $property, $prefix, $postfix) = @_;
-# my($id, $property_list, $label, $weight, $nodeShade, $shape, $type, $parent) = @_;
 my($pr, $qw);
  return '' if defined($property->{'groupColor'}) and ($property->{'groupColor'}  eq '#888888'); ###################
 
@@ -1322,7 +1262,37 @@ return($content);
 
 sub CyNMheader {
 my($netType, $ID) = @_;
-my $content =   '
+ 
+# ellipse + 
+# triangle + 
+# rectangle + 
+# roundrectangle + 
+# rhomboid + 
+# diamond + 
+# pentagon + 
+# hexagon + 
+# heptagon + 
+# octagon + 
+# star + 
+# vee + 
+# polygon +
+
+# round-triangle - 
+# roundtriangle - 
+# round-rectangle - 
+# round-pentagon - 
+# round-diamond - 
+# bottom-round-rectangle - 
+# cut-rectangle - 
+# barrel - 
+# tag - 
+# round-tag - 
+# round-octagon - 
+# round-heptagon - 
+# round-hexagon - 
+# concave-hexagon - 
+
+ my $content =   '
 <div id="' . $ID . '" class="cy_main ui-widget-content ui-corner-all ui-helper-clearfix"></div>
 <script type="text/javascript">
  $(function(){ 
@@ -1336,8 +1306,7 @@ wheelSensitivity: 0.35,
 layout: {name: "'	.$cs_selected_layout.	'"}, 
 //layout: {name: "grid", columns: 3}, 
 	style: cytoscape.stylesheet()
-    .selector("node")
-      .css({
+    .selector("node").css({ 
         "content": "data(name)", //
 		"font-family": "arial",
         "text-valign": "bottom",
@@ -1346,8 +1315,9 @@ layout: {name: "'	.$cs_selected_layout.	'"},
 		"border-style" : '	.$borderStyleScheme.',
         "text-outline-width": 0,
 		"color" : "black", 
+		"shape" : "ellipse",
         "text-outline-color": "black",
-        '.$nodeColoringScheme.' , 
+        '.$nodeColoringScheme.' ,
         "height": '	.$nodeSizeScheme.', 
         "width": '	.$nodeSizeScheme.'
       })
@@ -1373,20 +1343,16 @@ layout: {name: "'	.$cs_selected_layout.	'"},
         "source-arrow-color": "#eeee99", 
         "target-arrow-color": "#eeee99" 
       })
-      .selector("node[type = \'cy_gene\']")
-  .css({
-       "background-color": "green",
-       "text-outline-color": "blue",
-       "height": 7, 
-       "width": 7,
-    "font-style":"oblique",
-    "font-size": 8
-      })
+      .selector("[subSet]").css({'.$nodeShapingScheme.' })      
+	  .selector("[groupColor]").css({'.$borderColoringScheme.'})	  
   .selector("node[type = \'cy_fgs\']")
   .css({
-    "shape": "roundrectangle",
+    "shape": "'.$nodeType{'cy_fgs'}.'",
 	"text-valign": "top", 
-    "font-size": '. 10 * $nodeScaleFactor .'	/*, 
+    "font-size": '. 10 * $nodeScaleFactor .',
+	"background-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'}.'",
+	"border-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'}.'"
+	/*, 
     "height": 200, 
     "width": 400 */
       })
@@ -1394,11 +1360,14 @@ layout: {name: "'	.$cs_selected_layout.	'"},
   .css({
 	"text-valign": "top", 
 	"font-size": '. 10 * $nodeScaleFactor .', 
-    "shape": "roundrectangle",
+	"background-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'}.'",
+	"border-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'}.'", 
+    "shape": "'.$nodeType{'cy_ags'}.'"
+	/*,
   	"border-width": 5,
 	"border-color": "green"
-    , "background-color": "yellow"
-    /*, "height": 200, 
+    , "background-color": "#ffc000"
+    , "height": 200, 
     "width": 200*/
     })
 	.selector("$node > node") // compound (parent) node properties
@@ -1406,7 +1375,7 @@ layout: {name: "'	.$cs_selected_layout.	'"},
     /*"width": "auto",
     "height": "auto",
     "shape": "roundrectangle",
-   "border-width": 0,
+   "border-width": 3,
    "content": "data(name)",
    "font-weight": "bold"*/
    })

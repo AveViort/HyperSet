@@ -1048,6 +1048,7 @@ function show_result(url) {
 function setFormValue (id, value, type) {
 	var formid = '';
 	var ty = id.substring(0, 8)	;	
+	// console.log(ty);
 	switch (ty) {
 		case 'gene1col':
 			formid = 'gene1columnid-table-ele';
@@ -1061,12 +1062,21 @@ function setFormValue (id, value, type) {
 		case 'groupcol':
 			formid = 'groupcolumnid-table-ele-' + type;
 		break;
+		case 'scorecol':
+			formid = 'scorecolumnid-table-ele-' + type;
+		break;
+		case 'subsetco':
+			formid = 'subsetcolumnid-table-ele-' + type;
+		break;
 		case 'delimite':
 			formid = 'delimiter-table-ele';
 		break;
 	}
 	if (formid != '') {
 		$("#" + formid).val(value);
+	} 
+	else {
+		$("#" + formid).val(null);
 	}
 }
 
@@ -1179,10 +1189,14 @@ $(div).dialog({
 				var value = columnCookie.split("|")[0];
 				if (value == "") {
 				value = 1;
-				if (thisid.indexOf("groupcolumn") > -1) {value = 3;}
+				if (thisid.indexOf("groupcolumn") > -1) {value = 2;}
+				if (thisid.indexOf("subsetcolumn") > -1) {value = 0;}
+				if (thisid.indexOf("scorecolumn") > -1) {value = 0;}
 				if (thisid.indexOf("gene2col") > -1) {value = 2;}
 				}
 				$(this).val(value);
+				//console.log(thisid);
+				
 				setFormValue(thisid, value, type);
 			},
 		stop: function( event, ui ) {
@@ -1209,6 +1223,11 @@ $(spinCtrl).css({"width": "6em", "height": "1.75em", "font-weight": "bold", "fon
 				var value = $(this).val();
 				usetCookie($(this).attr("id"), value, 1000);
 				setFormValue($(this).attr("id"), value, type);
+				// if (value < 1000) {
+					// $(this).css({"background-color": "#cccccc", "color": "#333333"});
+				// } else {
+					// $(this).css({"background-color": "#ffffff", "color": "#111111"});
+				// }
 					});
        },
 	   create: function(event, api) {}

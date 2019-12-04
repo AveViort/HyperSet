@@ -39,7 +39,7 @@ $dbh,	$data,        $order,            $node,
 	       $jsquid_screen,
 	$structured_table,        $single_table,
 	$tmpfile,   $coff_class, 
-   %GOlocation, $genes,    $context_genes,
+   %GOlocation, $genes,    $context_genes, $gsAttr, $cgsAttr, 
 	            $max_links, $pathwayName,
 	$pathwaySize,             $pathwayMembership,
 	$kegg_id_url,             $FCtypeLinkPrintCutoff,
@@ -102,7 +102,58 @@ our $graf_path        = 'pics/';
 # $scorecol   = 'fbs'; 
 our $q; 
 our($reduce, $time, $show_names, $desired_links_total, $reduce_by);
+		$species{'human'}       = 'hsa';
+		$species{'mouse'}       = 'mmu';
+		$species{'rat'}         = 'rno';
+		$species{'chicken'}     = 'gga';
+		$species{'zfish'}       = 'dre';
+		$species{'fly'}         = 'dme';
+		$species{'worm'}        = 'cel';
+		$species{'yeast'}       = 'sce';
+		$species{'Arabidopsis'} = 'ath';
+		$species{'Ciona'}       = 'cin';
+		$species{'hsa'}         = 'hsa';
+		$species{'mmu'}         = 'mmu';
+		$species{'rno'}         = 'rno';
+		$species{'gga'}         = 'gga';
+		$species{'dme'}         = 'dme';
+		$species{'dre'}         = 'dre';
+		$species{'cel'}         = 'cel';
+		$species{'sce'}         = 'sce';
+		$species{'ath'}         = 'ath';
+		$species{'cin'}         = 'cin';
 
+		$org{'cin'} = 'Ciona';
+		$org{'hsa'} = 'human';
+		$org{'mmu'} = 'mouse';
+		$org{'rno'} = 'rat';
+		$org{'gga'} = 'chicken';
+		$org{'dre'} = 'zfish';
+		$org{'dme'} = 'fly';
+		$org{'cel'} = 'worm';
+		$org{'sce'} = 'yeast';
+		$org{'ath'} = 'Arabidopsis';
+############################
+		$org{'cin'} = 'C. intestinalis';
+		$org{'hsa'} = 'H. sapiens';
+		$org{'mmu'} = 'M. musculus';
+		$org{'gga'} = 'G. gallus';
+		$org{'dre'} = 'D. rerio';
+		$org{'rno'} = 'R. norvegicus';
+		$org{'dme'} = 'D. melanogaster';
+		$org{'cel'} = 'C. elegans';
+		$org{'sce'} = 'S. cerevisiae';
+		$org{'ath'} = 'A. thaliana';
+		$DBtag->{ENSEMBL}->{hsa} = 'Homo_sapiens';
+		$DBtag->{ENSEMBL}->{cel} = 'Caenorhabditis_elegans';
+		$DBtag->{ENSEMBL}->{gga} = 'Gallus_gallus';
+		$DBtag->{ENSEMBL}->{dre} = 'Danio_rerio';
+		$DBtag->{ENSEMBL}->{mmu} = 'Mus_musculus';
+		$DBtag->{ENSEMBL}->{cin} = 'Ciona_intestinalis';
+		$DBtag->{ENSEMBL}->{rno} = 'Rattus_norvegicus';
+		$DBtag->{ENSEMBL}->{dme} = 'Drosophila_melanogaster';
+		$DBtag->{ENSEMBL}->{sce} = 'Saccharomyces_cerevisiae';
+		
 sub bring_subnet {
 my ($URL) = @_;
 my($ss);
@@ -116,26 +167,28 @@ my @flds = split($HS_html_gen::fieldURLdelimiter, $URL);
 for $fld(@flds) {
 $q->{$1} = $2 if $fld =~ m/([A-Za-z0-9\:\_\-\.]+)$HS_html_gen::keyvalueURLdelimiter([A-Za-z0-9\:\_\-\.\%]+)/i;
 }
-#READING CGI PARAMETERS:
-if (defined($q->param("direct_link"))) {
-	$genes = HStextProcessor::parseGenes($q->param("genes"), $HS_html_gen::arrayURLdelimiter);
-	$context_genes = HStextProcessor::parseGenes($q->param("context_genes"), $HS_html_gen::arrayURLdelimiter);
-	@{$networks} = split($HS_html_gen::arrayURLdelimiter, $q->param('networks'));
-	$submitted_species = $q->param("species");
-}
-else {
-	$genes = HStextProcessor::parseGenes($q->{genes}, $HS_html_gen::arrayURLdelimiter);
-	$context_genes = HStextProcessor::parseGenes($q->{context_genes}, $HS_html_gen::arrayURLdelimiter);
+	$gsAttr = HStextProcessor::parseGenesWithAttributes($q->{genes}, $HS_html_gen::arrayURLdelimiter);
+	$cgsAttr = HStextProcessor::parseGenesWithAttributes($q->{context_genes}, $HS_html_gen::arrayURLdelimiter);
+	$genes = [keys(%{$gsAttr->{id}})]; #->{attr};
+	$context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
+my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-2.txt";
+open(my $fh, '>', $debug_filename);
+print $fh join("", keys(%{$gsAttr->{id}}))."\n";
+print $fh join("", values(%{$gsAttr->{id}}))."\n";
+print $fh join("", keys(%{$gsAttr->{score}}))."\n";
+print $fh join("", values(%{$gsAttr->{score}}))."\n";
+print $fh join("", keys(%{$gsAttr->{subset}}))."\n";
+print $fh join("", values(%{$gsAttr->{subset}}))."\n";
+close $fh;
+
 	@{$networks} = split($HS_html_gen::arrayURLdelimiter, $q->{'networks'});
 	$submitted_species = $q -> {species}; 
-}
+# }
 
 die $URL."Species not defined...\n " if !$submitted_species;
 die $genestring." - genes not defined...\n" if !defined($genes) or !$genes or $#{$genes} < 0;
 	$pw                = ''; # $q->{'pw'};
 	$show_context = 'yes' if defined($context_genes); 
-	# print join('<br>', @{$genes});
-	# fillREST('subneturlbox', 'fc_class=all;Run=Run;base=all;ortho_render=no;reduce=yes;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;structured_table=no;single_table=yes;coff=-0.5;ags_fgs=yes;species=hsa;context_genes=AR%0D%0AAURKA%0D%0ACAMK2A%0D%0ACAMK2B%0D%0ACAMK2D%0D%0ACAMK2G%0D%0AIGF1R%0D%0AMAD2L1%0D%0APLK1%0D%0APPP1CA%0D%0APPP2CA%0D%0APPP2CB%0D%0APPP2R1A%0D%0APPP2R1B%0D%0AYWHAE%0D%0AYWHAH%0D%0AYWHAQ;genes=MDM2;order=0;networks=pwc8%0D%0Aproteincomplex%0D%0Ainnatedb%0D%0Afc_lim;action=subnet-2;no_of_links=1000;')
 	if ($q->{'ags_fgs'} ) {
 	$show_context = 0; 
 $ags_genes = [@{$genes}];
@@ -145,20 +198,7 @@ $fgs_genes = [@{$context_genes}];
 	print STDERR "SBMURL: ". $URL."\n";
 print STDERR "Genes: ". join(" ", @{$genes})."\n";
 
-	# $base         						=	$q->{'base'};
-	if (defined($q->param("direct_link"))) {
-		$keep_query                         = 	$q->param('keep_query');
-		$submitted_coff                     = 	$q->param('coff');
-		$order                              = 	$q->param('order'); #network order
-		$reduce  =  $q->param('reduce'); #choice of algorithm to reduce too large networks
-		if ($reduce) {
-			$reduce_by           = $q->param('reduce_by');
-			$desired_links_total = $q->param('no_of_links');
-			$qvotering           = $q->param('qvotering');
-		}
-		else {$desired_links_total = 1000000;}
-	}
-	else {
+
 		$keep_query                         = 	$q->{'keep_query'};
 		$submitted_coff                     = 	$q->{'coff'};
 		$order                              = 	$q->{'order'}; #network order
@@ -169,7 +209,7 @@ print STDERR "Genes: ". join(" ", @{$genes})."\n";
 			$qvotering           = $q->{'qvotering'};
 		}
 		else {$desired_links_total = 1000000;}
-	}
+	# }
 
 #END OF READING CGI PARAMETERS
 #PARAMETERS TO REPLACE CGI IN DEBUG MODE:
@@ -186,36 +226,16 @@ print $submitted_species if ($main::debug);
 if ( !$submitted_species || !defined $genes->[0] || $#{$genes} < 0 ) {
 	print_noquery_dialog();
 }
-#SQL connection:
 $dbh = HS_SQL::dbh('hyperset') || die "Failed to connect via HS_SQL.../n";
-#end of SQL connection
-
-#funcoupweb::define_common_data();
-define_data();
+# define_data();
 $submitted_species = $species{$submitted_species};
 
-# @{$shape_list} = ( 'query', 'context' ); #which shapes to use to highlight submitted IDs etc.
-# push @{$shape_list}, 'a KEGG pathway member' if $show_neighbor eq 'pathway';
-# push @{$shape_list}, 'other';
-# @{$spec_list} = ();
-# @{$type_list} = ();
-# push @{$spec_list}, @species_of_evidence;
-# push @{$type_list}, @types_of_evidence;
-
-# if ( lc($ortho_render) ne 'yes' ) {
 	@{$render_list} = $submitted_species;
 	if ( !$HSconfig::network->{$submitted_species} ) { #error processing when no correct network file is defined for the SQL database
-		print "\nNo functional coupling network defined for $org{$submitted_species}.\n";
+		print "\nNo functional coupling network defined for $submitted_species.\n";
 		$end_it = 1;
 		goto END_IT1;
 	}
-	# }
-# else { #define the list of species for simultaneous display
-	# for $ss (@neis) { push @{$render_list}, $species{$ss}; }}
-
-#THIS LINE RETURNS MOST OF THE DATA TO GENERATE THE RESULT PAGE:
- #\$genes
- # nealink
 data( $genes, $submitted_coff, $order, $networks );
 return ($data, $node);
 }
@@ -254,124 +274,43 @@ sub data { #brings most of the data to display the sub-network
 
 	@{$initial_gene_set} = keys( %{ $found_genes->{$start_species} } );
 	for my $ge(@{$initial_gene_set}) {	$ge = uc($ge);	}
-	# if ( grep( /$start_species/, @{$render_list} ) ) {
 	fc_links($initial_gene_set, $start_species, $fcgenes, $networks);
-	# }
-	# $timing .= ( time() - $time ) . ' sec to retrieve FC links.<br>' . "\n";
-	# $time = time();
-	# for $current_species ( @{$render_list} ) {
-		# next if ( $current_species eq $start_species );
-		# @{$temp_gene_set} =
-		# orthologs( $initial_gene_set, $start_species, $current_species );
-		# fc_links($temp_gene_set, $current_species, $fcgenes);
-		# @{$temp_gene_set} = keys( %{ $found_genes->{$start_species} } );
-		# @{$temp_gene_set} =
-		# orthologs( $temp_gene_set, $start_species, $current_species );
-	# }
-	# print '<br> PUBMED'.defined($allPubMed);
 	pubmed() if defined($allPubMed);
-	# nonconventional() if $use_nonconventional;
 	descriptions($fcgenes);
 	group_labels($ags_genes,	$fgs_genes);
 	hubbiness2($initial_gene_set, $start_species, $networks);
-#$timing .= (time() - $time).' sec to retrieve descriptions.<br>'."\n"; $time = time();
-	# hubbiness( $node, $coff_class );
-	# uniprot_ids() if $show_ihop;
-#$timing .= (time() - $time).' sec to define hubbiness.<br>'."\n"; $time = time();
-	# pathway() if $show_neighbor eq 'pathway';
-#$timing .= (time() - $time).' sec for pathway members.<br>'."\n"; $time = time();
-	# GOs() if $show_GO;
-#$timing .= (time() - $time).' sec for GO terms.<br>'."\n"; $time = time();
 	extra_data() if $show_extra_data;
-	# ppi_refs();
-	# $timing .= ( time() - $time ) . ' sec to retrieve extra data.<br>' . "\n";
-	# $time = time();
 	return undef;
 }
 
+
 sub group_labels {
 my($group1, $group2) = @_;
-my $ge;
+my($ge, $intensity);
+
+	# $genes = [keys(%{$gsAttr->{id}})]; #->{attr};
+	# $context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
 for $ge(@{$group1}) {
-$node->{ $ge }->{'groupColor'} = '#eeee22';
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($gsAttr->{score}->{ $ge }, "byExpression") if (defined($gsAttr->{score}->{ $ge }));
+	$node->{ $ge }->{'subSet'} =  lc($gsAttr->{subset}->{ $ge }) if (defined($gsAttr->{subset}->{ $ge }));
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'};
 }
 for $ge(@{$group2}) {
-if (defined($node->{ $ge }->{'groupColor'})) {
-$node->{ $ge }->{'groupColor'} = '#e36c09';
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($cgsAttr->{score}->{ $ge }, "byExpression") if (defined($cgsAttr->{score}->{ $ge }));
+	$node->{ $ge }->{'subSet'} =  lc($cgsAttr->{subset}->{ $ge }) if (defined($cgsAttr->{subset}->{ $ge }));
+
+if ($node->{ $ge }->{'groupColor'}) {
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_both'};
 } else {
-$node->{ $ge }->{'groupColor'} = '#ee22ee';
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'};
 }
 }
 for $ge(keys % {$node}) {
-if (!$node->{ $ge }->{'name'}) {
-$node->{ $ge }->{'name'} = $node->{ $ge }->{'id'};
+	$node->{ $ge }->{'name'} = $node->{ $ge }->{'id'} if (!$node->{ $ge }->{'name'});
+	$node->{ $ge }->{'groupColor'} = '#888888' if (!defined($node->{ $ge }->{'groupColor'}));
 }
-if (!defined($node->{ $ge }->{'groupColor'})) {
-$node->{ $ge }->{'groupColor'} = '#888888';
-}}
 return undef;
 }
-
-# sub orthologs { 
-###establishes which orthologs should be displayed (in the multi-species mode). If an ortholog does not have relavant links, it won't appear - so it is not a substitute to InParanoid.sbc.su.se
-	# my ( $genes, $from, $to ) = @_;
-	# my ( $gene, $rows1, $rows2, @new_genes, $sm1, $sm2 );
-
-	# $sm1 =
-# "SELECT cluster_id from $inparanoid_table inner join optnames1 on optnames1.optname = $inparanoid_table\.fc_name where (pair = ? or pair = ?) and (optname = ? or hsname = ?)";
-	# $sm2 =
-# "SELECT hsname from $inparanoid_table  inner join optnames1 on optnames1.optname = $inparanoid_table\.fc_name where (pair = ? or pair = ?) and $inparanoid_table\.org_id = ? and cluster_id = ?";
-	# my $sth1 = $dbh->prepare_cached($sm1)
-	  # || die "Failed to prepare SELECT ORTHOLOG CLUSTER_ID statement";
-	# my $sth2 = $dbh->prepare_cached($sm2)
-	  # || die "Failed to prepare SELECT ORTHOLOG NAMES statement";
-	# for $gene ( @{$genes} ) {
-		# $sth1->execute(
-			# $species{$from} . '-' . $species{$to},
-			# $species{$to} . '-' . $species{$from},
-			# $gene, $gene
-		# );
-		# while ( $rows1 = $sth1->fetchrow_hashref ) {
-			# $sth2->execute(
-				# $species{$from} . '-' . $species{$to},
-				# $species{$to} . '-' . $species{$from},
-				# $species{$to}, $rows1->{'cluster_id'}
-			# );
-			# while ( $rows2 = $sth2->fetchrow_hashref ) {
-				# push @{ $orthologs->{ $species{$from} }->{$gene} },
-				  # $rows2->{'hsname'};
-				# push @new_genes, $rows2->{'hsname'};
-			# }
-		# }
-	# }
-	# return (@new_genes);
-# }
-
-# sub hubbiness {
-	# my ( $node, $coff ) = @_;
-	# my ( $sm, $sth, @genelist, $spec, $genearr, $rows );
-
-	# for $spec ( keys( %{$found_genes} ) ) {
-		# @genelist = keys( %{ $found_genes->{$spec} } );
-		# $genearr  = "\'" . join( "\', \'", @genelist ) . "\'";
-		# $sm       =
-# 'select prot as hsname, hubbiness from hubbiness_counts  where version = \''
-		  # . $HSconfig::network->{$spec}
-		  # . '\' and org_id = \''
-		  # . $spec
-		  # . '\' and cutoff = \''
-		  # . $coff
-		  # . '\' and prot IN ('
-		  # . $genearr . ')';
-		# $sth = $dbh->prepare_cached($sm)
-		  # || die "Failed to prepare SELECT statement HUBBINESS\n";
-		# $sth->execute();
-		# while ( $rows = $sth->fetchrow_hashref ) {
-			# $node->{ $rows->{'hsname'} }->{'hubbiness'} = $rows->{'hubbiness'};
-		# }
-	# }
-	# return ($node);
-# }
 
 sub reduce_subnet { #implements a number of alternative algorithms to reduce too complex networks before displaying them. For description of the algorithms, see http://funcoup.sbc.su.se/algo.html
 
@@ -636,26 +575,12 @@ sub fc_links { #the main procedure of sub-network retrieval. Note that it iterat
 		  $presence_cond
 		  # ." order by $scorecol desc"
 		  ;
-		 # $timing .= '<br>'.$sm.'<br>';
-		 # print STDERR ''.$sm.'<br>'; # if $main::debug;
 		 $sm =~ s/data_pwc8/data_pwc9/g;
 		my $sth = $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT statement FC\n";
 		$sth->execute();
 		$j = 0;
-		# print  $sth->fetchrow_hashref;
 		while ($rows = $sth->fetchrow_hashref) {
-				 # print '<br>'.$rows.'<br>'; # if $main::debug;
-			# next
-			  # if ( $found_pairs->{$spec}->{ $rows->{prot1} }->{ $rows->{prot2} }
-				# and
-				# $found_pairs->{$spec}->{ $rows->{prot2} }->{ $rows->{prot1} } );
-			# if ( $base ne 'all' ) {
-				# $sum = 0;
-				# for $ee ( keys(%filter) ) {
-					# $sum += $rows->{$ee} if defined( $rows->{$ee} );
-				# }
-				# next if $sum < $submitted_coff;
-			# }
+
 processLink($rows, $spec, $fc_cl);			
 			$j++;
 			$scored_pairs->{$spec}->{ $rows->{prot1} }->{ $rows->{prot2} }
@@ -671,7 +596,6 @@ processLink($rows, $spec, $fc_cl);
 			$found_pairs->{$spec}->{ $rows->{prot2} }->{ $rows->{prot1} }++;
 		}
 		$sth->finish;
-		# print join('<br>', keys(%{$data}));
 		next if scalar( keys( %{$data} ) ) < 0;
 		$found_number += $j;
 		$cnts->{$spec}->{$oo}->{before} = scalar( keys( %{$data} ) );
@@ -708,10 +632,6 @@ sub hubbiness2 {
 $name_cond = " upper( $pc ) IN \( \'" . join( "\', \'", @{$gene_list} ) . "\' \) ";
 $presence_cond = ($fc_cl =~ 'net_all_') ? ' AND (('.join(' IS NOT NULL) OR (', (@{$networks})).' IS NOT NULL)) ' : " AND $scorecol > $submitted_coff ";
 		$sm = "SELECT $pc , count(*) FROM $fc_cl WHERE ". $name_cond . $presence_cond . " group by $pc";
-		
-		# SELECT prot2, count(*)  FROM net_all_hsa WHERE upper(prot2) IN ( 'PTTG1', 'CDC25C', 'YWHAZ', 'PPP1CC', 'PPP2CA', 'AURKA', 'CDC2', 'CDK2', 'PPP1CA', 'TP53', 'MAPK1' )  AND data_fc_lim IS NOT NULL group by prot2
-		
-	# print '<br>'.$sm.'<br>'; # if $main::debug;
 	$sm =~ s/data_pwc8/data_pwc9/g;
 		my $sth = $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT statement FC\n";
 		$sth->execute();
@@ -740,8 +660,6 @@ my(%ids, $k, @pm);
 	undef @fld_list;
 	# push @fld_list, ( $scorecol . ' as confidence ' );
 	push @fld_list, '*';
-# $gene_arr = "\'" . join( "\', \'", @{$gene_list} ) . "\'";
-# $name_cond = " \(prot1 IN \( \'" . join( "\', \'", keys(%{$gene_list1} )) . "\' \) AND prot2 IN \( \'" . join( "\', \'", keys(%{$gene_list2})) . "\' \)\)";
 $name_cond = " \(
 \(prot1 IN \( \'" . join( "\', \'", keys(%{$gene_list1} )) . "\' \) AND prot2 IN \( \'" . join( "\', \'", keys(%{$gene_list2})) . "\' \)\)
  OR 
@@ -777,8 +695,6 @@ my(%ids, $k, @pm);
 	undef @fld_list;
 	# push @fld_list, ( $scorecol . ' as confidence ' );
 	push @fld_list, '*';
-# $gene_arr = "\'" . join( "\', \'", @{$gene_list} ) . "\'";
-# $name_cond = " \(prot1 IN \( \'" . join( "\', \'", keys(%{$gene_list1} )) . "\' \) AND prot2 IN \( \'" . join( "\', \'", keys(%{$gene_list2})) . "\' \)\)";
 $name_cond = " \(
 \(prot1 IN \( \'" . join( "\', \'", keys(%{$gene_list1} )) . "\' \) OR prot2 IN \( \'" . join( "\', \'", keys(%{$gene_list1})) . "\' \)\)
 \)";
@@ -864,7 +780,6 @@ $allPubMed->{$va} = 1;
 @{$data->{$i}->{all}->{databases}} = sort {$a cmp $b} keys(%{$unique_src_all});
 
 }
-# print join(' ---', ($rows->{'prot1'}.'<===>'.$rows->{'prot2'}, @{$data->{$i}->{all}->{interaction_types}}, @{$data->{$i}->{all}->{pubmed_ids}} , @{$data->{$i}->{all}->{databases}})).'<br>';# if (($fnm eq 'innatedb') and ($rows->{'prot1'} eq 'NFATC2') and ($rows->{'prot2'} eq 'NFATC2'));
 
 }
 	else {
@@ -958,45 +873,6 @@ my $gg;
 
 	return undef;
 }
-
-# sub pathway { #retrieves KEGG (normally) pathway membership and defines respective variables
-	# my ( %node_type_ID, $rows, @gene_list, $spec, $sm );
-
-	# for $spec ( keys( %{$found_genes} ) ) {
-		# push @gene_list, keys( %{ $found_genes->{$spec} } );
-	# }
-	# my $gene_arr = uc( "\'" . join( "\', \'", @gene_list ) . "\'" );
-	# $sm =
-# "SELECT hsname as hsname, pathway, ec, org_id, kegg_id, description FROM $HSconfig::pathway_table WHERE hsname IN ("
-	  # . $gene_arr . ")";
-	# my $sth = $dbh->prepare_cached($sm)
-	  # || die "Failed to prepare SELECT PATHWAY statement";
-	# $sth->execute;
-	# my $n = 0;
-	# while ( $rows = $sth->fetchrow_hashref ) {
-		# next if $rows->{'pathway'} !~ m/[0-9]/;
-		# $rows->{'description'} =~ s/[\>\<\&\'\"]//g;
-
-		# if ( 1 == 1 or !$node->{ $rows->{hsname} }->{'node_type'} ) {
-			# $node_type_ID{ $rows->{'pathway'} } = ++$n
-			  # if !$node_type_ID{ $rows->{'pathway'} };
-			# $node_type_ID{ $rows->{'pathway'} } = $rows->{'pathway'};
-			# $node->{ $rows->{'hsname'} }->{'node_type'} = $rows->{'pathway'}
-			  # if !$node->{ $rows->{'hsname'} }->{'node_type'};
-
-			# $rows->{'pathway'} =~ s/KEGG//i;
-			# $pathwaySize->{ $rows->{'pathway'} }++;
-			# $pathwayName->{ $rows->{'pathway'} } = $rows->{'description'};
-			# %{ $pathwayMembership->{ $rows->{'hsname'} }->{'pathway'}
-				  # ->{ $rows->{'pathway'} } } =
-			  # ( 'description', $rows->{'description'}, 'ec', $rows->{'ec'} );
-			# $pathwayMembership->{ $rows->{'hsname'} }->{'kegg_id'}
-			  # ->{ $rows->{'kegg_id'} } = 1;
-		# }
-	# }
-# $sth->finish();
-	# return undef;
-# }
 
 # sub GOs { #retrieves GO category membership and defines respective variables
 	# my ($node) = @_;
@@ -2906,51 +2782,9 @@ if ($text) {
 		# @{ $defined_FC_types{'ath'} } = ( 'fbs_met_mt', 'fbs_sig_mt' );
 		# @{ $defined_FC_types{'dre'} } = ('fbs_allpat');
 		# @{ $defined_FC_types{'cin'} } = ( 'fbs_kegg_hc', 'fbs_kegg_signal_hc' );
-		$species{'human'}       = 'hsa';
-		$species{'mouse'}       = 'mmu';
-		$species{'rat'}         = 'rno';
-		$species{'chicken'}     = 'gga';
-		$species{'zfish'}       = 'dre';
-		$species{'fly'}         = 'dme';
-		$species{'worm'}        = 'cel';
-		$species{'yeast'}       = 'sce';
-		$species{'Arabidopsis'} = 'ath';
-		$species{'Ciona'}       = 'cin';
-		$species{'hsa'}         = 'hsa';
-		$species{'mmu'}         = 'mmu';
-		$species{'rno'}         = 'rno';
-		$species{'gga'}         = 'gga';
-		$species{'dme'}         = 'dme';
-		$species{'dre'}         = 'dre';
-		$species{'cel'}         = 'cel';
-		$species{'sce'}         = 'sce';
-		$species{'ath'}         = 'ath';
-		$species{'cin'}         = 'cin';
 
-		$org{'cin'} = 'Ciona';
-		$org{'hsa'} = 'human';
-		$org{'mmu'} = 'mouse';
-		$org{'rno'} = 'rat';
-		$org{'gga'} = 'chicken';
-		$org{'dre'} = 'zfish';
-		$org{'dme'} = 'fly';
-		$org{'cel'} = 'worm';
-		$org{'sce'} = 'yeast';
-		$org{'ath'} = 'Arabidopsis';
 		$itag      = ( $output eq 'webgraph' ) ? '<i>'  : '';
 		$itagClose = ( $output eq 'webgraph' ) ? '</i>' : '';
-############################
-		$org{'cin'} = 'C. intestinalis';
-		$org{'hsa'} = 'H. sapiens';
-		$org{'mmu'} = 'M. musculus';
-		$org{'gga'} = 'G. gallus';
-		$org{'dre'} = 'D. rerio';
-		$org{'rno'} = 'R. norvegicus';
-		$org{'dme'} = 'D. melanogaster';
-		$org{'cel'} = 'C. elegans';
-		$org{'sce'} = 'S. cerevisiae';
-		$org{'ath'} = 'A. thaliana';
-
 		$tag{'no species found'} = 'no species found';
 		$tag{'cin'}              = 'Ciona';
 		$tag{'hsa'}              = 'human';
@@ -3945,15 +3779,7 @@ $tag{'fbs'}              = 'Summary score';
 		$maxPartialFBS{neg}      = -4;
 		$maxLmxContrast{pos}     = 10;
 		$maxLmxContrast{neg}     = -10;
-		$DBtag->{ENSEMBL}->{hsa} = 'Homo_sapiens';
-		$DBtag->{ENSEMBL}->{cel} = 'Caenorhabditis_elegans';
-		$DBtag->{ENSEMBL}->{gga} = 'Gallus_gallus';
-		$DBtag->{ENSEMBL}->{dre} = 'Danio_rerio';
-		$DBtag->{ENSEMBL}->{mmu} = 'Mus_musculus';
-		$DBtag->{ENSEMBL}->{cin} = 'Ciona_intestinalis';
-		$DBtag->{ENSEMBL}->{rno} = 'Rattus_norvegicus';
-		$DBtag->{ENSEMBL}->{dme} = 'Drosophila_melanogaster';
-		$DBtag->{ENSEMBL}->{sce} = 'Saccharomyces_cerevisiae';
+
 ##########################################################
 
 		for $oo ( keys(%org) ) {

@@ -124,7 +124,7 @@ li.tab:hover ul {
 			<select name="corScreen_selector" id="corScreen_selector" class="ui-helper" style="width: 40ch;" >
 			</td>
 			<td>
-			<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name" disabled>
+			<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name">
 			</td>
 			<td>
 			<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
@@ -216,8 +216,6 @@ li.tab:hover ul {
 <P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
 
 <script>
-var loadingIndicator = 'ui-icon-loading-status-balls';
-var loadingClasses = 'ui-icon ' + loadingIndicator + ' rotate';
 
 $(document).ready(function(){
 	safe_clear();
@@ -257,7 +255,8 @@ $(document).ready(function(){
 	$("#progressbar").progressbar({
 		value: false
 	});
-	$("#progressbar").css({"visibility": "hidden"});
+	//$("#progressbar").css({"visibility": "hidden"});
+	$("#progressbar").hide();
 	$("#tabs").tabs({});
 	
 	$("#retrieve-cor-button").button();
@@ -265,7 +264,44 @@ $(document).ready(function(){
 	init_cor_datatype_selector();
 	init_cor_platform_selector();
 	init_cor_screen_selector();
-		
+	
+	// move this code!
+	worker = new Worker("js/drug_id_grubber.js");
+	console.log("Starting worker " + Date.now());
+	worker.postMessage(["CCLE", "all", "all", "all"]);
+	worker.onmessage = function(event) {
+		console.log("Received message from worker " + Date.now());
+		var autocomplete_ids = event.data;
+		$("#corGeneFeature_input").autocomplete({
+			source: autocomplete_ids,
+			minLength: 2,
+			response: function( event, ui ) {
+				if (ui.content.length > 20) {
+					console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
+					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+				}
+			},
+			search: function( event, ui ) {
+				var value = $("#" + event.target.getAttribute("id")).val();
+				console.log("Search triggered, value: " + value);
+				if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
+					// check if we have > 2 symbols
+					if (value.length > 2) {
+						// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
+						if (value[2] == "S") {
+							console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+							event.preventDefault();
+						}
+					}
+					else {
+						event.preventDefault();
+					}
+				}
+			} 
+		});
+		document.getElementById("corGeneFeature_input").disabled = false;
+	}
+	
 	$("#submit-populate").button();
 	// max_rows defined in druggable_config.js
 	document.getElementById('add_row1').setAttribute("max", max_rows);
@@ -329,6 +365,15 @@ function reload_analysis_options() {
 	} 
 }
 
+function toggle_progress_bar(show) {
+	if (show) {
+		$("#progressbar").show();
+	}
+	else {
+		$("#progressbar").hide();
+	}
+}
+
 function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
@@ -336,7 +381,6 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		var nodes = $("#tabs").tabs()[0].childNodes;
 		// this is the node used to attach plot - pay attention to 3+2*!
 		var parent_tab = "#" + nodes[3+2*$("#tabs").tabs("option", "active")].getAttribute("id");
-		console.log(parent_tab);
 		// variables are initialised when this function is called from correlations table, otherwise - initialise them
 		if (type == undefined) {
 			type = $('#plot-type option:selected').val();
@@ -362,7 +406,16 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
 		// new plot
 		if (plot_filename == "no") {
-			$("#progressbar").css({"visibility": "visible"});
+			$("#progressbar").show();
+			var sel = document.getElementById("progressbar");
+			sel.style.display='none';
+			sel.offsetHeight; // no need to store this anywhere, the reference is enough
+			sel.style.display='';
+			dummy_worker = new Worker("js/dummy_worker.js");
+			dummy_worker.onmessage = function(event) {
+				$("#progressbar").hide();
+				dummy_worker.terminate();
+			}
 			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			// save plot in session history
@@ -394,7 +447,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 					},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			}).parent().appendTo(parent_tab);
-			$("#progressbar").css({"visibility": "hidden"});
+			dummy_worker.postMessage("ping");
 		}
 		// existing plot
 		else {
@@ -454,86 +507,26 @@ function retrieve_correlations() {
 	var fdr = $("#FDR_input").val();
 	// clear result table each time
 	document.getElementById("cor_result_table").innerHTML = '<table></table>';
-	var correlations = retrieve_drug_correlations(source, datatype, platform, screen, id, fdr);
-	// offset is the number of cells, defined in druggable_config.js
-	var offset = cor_headers.length;
-	for (i=0; i<correlations.length-offset; i=i+offset) {
-		var row = document.getElementById("cor_result_table").insertRow(Math.floor(i/offset));
-		var j = 0;
-		var GeneCell = row.insertCell(j);
-		GeneCell.innerHTML = correlations[i];
-		// annotations defined in druggable_config.js
-		$( GeneCell ).qtip({ 
-			content: {
-				text: annotations.get(correlations[i])
-			},
-			position: {
-				my: 'top left',  
-				at: 'bottom center', 
-				target: $(GeneCell) 
-			}
-		});
-		j = j+1;
-		var FeatureCell = row.insertCell(j);
-		FeatureCell.innerHTML = correlations[i+1];
-		$( FeatureCell ).qtip({ 
-			content: {
-				text: annotations.get(correlations[i+1].toLowerCase())
-			},
-			position: {
-				my: 'top left',  
-				at: 'bottom center', 
-				target: $(FeatureCell) 
-			}
-		});
-		j = j+1;
-		if (datatype == "all") {
-			var DatatypeLabelCell = row.insertCell(j);
-			DatatypeLabelCell.innerHTML = correlations[i+2];
-			j = j+1;
-		}
-		if (platform == "all") {
-			var PlatformLabelCell = row.insertCell(j);
-			PlatformLabelCell.innerHTML = correlations[i+3];
-			j = j+1;
-		}
-		if (screen == "all") {
-			var ScreenLabelCell = row.insertCell(j);
-			ScreenLabelCell.innerHTML = correlations[i+4];
-			j = j+1;
-		}
-		// we have 3 p-values
-		for (k=1; k<=3; k++) {
-			var PValueCell = row.insertCell(j);
-			// parseFloat often returns numbers in scientific format, but it cannot deal with numbers like 0.0358930769230769
-			PValueCell.innerHTML = correlations[i+4+k].length < 5 ? parseFloat(correlations[i+4+k]) : parseFloat(correlations[i+4+k]).toExponential(2);
-			j = j+1;
-		}
-		var QValueCell = row.insertCell(j);
-		QValueCell.innerHTML = correlations[i+8].length < 5 ? parseFloat(correlations[i+8]) : parseFloat(correlations[i+8]).toExponential(2);
-		j = j+1;
-		if (datatype != "MUT") {
-			var PlotButtonCell = row.insertCell(j);
-			// have to do it because of different type of backets
-			var plot_function = 'plot("scatter", "ccle", "ctd", ["' + correlations[i+2] + '", "drug"], ["' + correlations[i+3] + '", "' + correlations[i+4] + '"], ["' + correlations[i] + '", "' + correlations[i+1] + '"], ["linear", "linear"], ["all", "all"])';
-			PlotButtonCell.innerHTML = correlations[i+2] == "MUT" ? "" : "<button onclick='" + plot_function + "'>Plot</button>";
-		}
-	}
-	// we have to add caption last, strangely
-	var table_head = document.getElementById("cor_result_table").createTHead();
-	table_head.innerHTML = '<tr>' + 
-		cor_headers[0] + cor_headers[1] + (datatype == "all" ? cor_headers[2] : '') + 
-		(platform == "all" ? cor_headers[3] : '') + (screen == "all" ? cor_headers[4] : '') +
-		cor_headers[5] + cor_headers[6] + cor_headers[7] + cor_headers[8] + (datatype == "MUT" ? "" : "<th></th>") +
-		'</tr>';
+	// variable min_pat_drug_number defined in druggable_config.js and used for defining if TCGA cohort should be offered for KM plot
+	// i.e. if min_pat_drug_number=10 and BRCA has 12 patients with drug A - BRCA will be offered
+	console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source));
 	var data_table = $('#cor_result_table').DataTable({
+		"ajax": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source),
+        "columns": cor_visible_columns.get(source),
 		buttons: [
             'excel', 'copy', 'csv'
         ],
 		columnDefs: [
 			{ className: "dt-center", targets: "_all" }
 		]});
-		data_table.buttons().container().prependTo( $("#cor_result_table_wrapper")) ;
+		data_table.buttons().container().prependTo( $("#cor_result_table_wrapper"));
+		var table_head = document.getElementById("cor_result_table").createTHead();
+		table_head.innerHTML = cor_headers.get(source);
+}
+
+function tcga_km_from_cor(i, drug) {
+	var cohort = $("#TCGAcohortSelector" + i + " option:selected").val();
+	plot("KM", "tcga", cohort, ["drug", "clin"], ["drug", "os"], [drug, ""], ["linear", "linear"], ["all", "all"]);
 }
 
 function add_plot_options_row(i) {
@@ -942,7 +935,7 @@ function init_plot_type_selector() {
 function init_cor_source_selector() {
 	var sources = get_correlation_sources();
 	var options = [];
-	options.push("<option value='undef' disabled selected>Choose source</option>");
+	//options.push("<option value='undef' disabled selected>Choose source</option>");
 	for (i in sources) {
 		options.push("<option value='" + sources[i] + "'>" + sources[i] +"</option>");
 	}
@@ -955,7 +948,7 @@ function init_cor_source_selector() {
 
 function init_cor_datatype_selector() {
 	var options = [];
-	options.push("<option value='undef' disabled selected>Choose datatype</option>");
+	//options.push("<option value='undef' disabled selected>Choose datatype</option>");
 	var cor_source = $("#corSource_selector option:selected").val();
 	if (cor_source != "undef") {
 		options.push("<option value='all'>All datatypes</option>");
@@ -977,7 +970,7 @@ function init_cor_datatype_selector() {
 
 function init_cor_platform_selector() {
 	var options = [];
-	options.push("<option value='undef' disabled selected>Choose platform</option>");
+	//options.push("<option value='undef' disabled selected>Choose platform</option>");
 	var cor_datatype = $("#corDatatype_selector option:selected").val();
 	if (cor_datatype != "undef") {
 		var cookies = checkCookiesAccepted();
@@ -1005,7 +998,7 @@ function init_cor_platform_selector() {
 // this function is also used for gene/feature autocomplete init
 function init_cor_screen_selector() {
 	var options = [];
-	options.push("<option value='undef' disabled selected>Choose screen</option>");
+	//options.push("<option value='undef' disabled selected>Choose screen</option>");
 	var cor_platform = $("#corPlatform_selector option:selected").val();
 	if (cor_platform != "undef") {
 		var cookies = checkCookiesAccepted();
@@ -1023,7 +1016,7 @@ function init_cor_screen_selector() {
 		width: "150px",
 		disabled: cor_platform == "undef"
     });
-	$("#retrieve-cor-button").button("disable");
+	$("#retrieve-cor-button").button();
 	setInputFilter(document.getElementById("FDR_input"), function(value) {
 		return /^\d*\.?\d*$/.test(value);
 	});
@@ -1128,6 +1121,11 @@ function update_platform(n) {
 		var selector_value = $("#platform" + n + "_selector option:selected").val();
 		var previous_value = (getCookie("platform" + n + "_selector").split("|"))[0];
 		if (selector_value != previous_value) {
+			// this works in FF, but not in Chrome - it decides to "cut the corner" when not in debug mode
+			//$( "#platform" + n + "_selector" ).selectmenu( "option", "icons", { button: "ui-icon ui-icon-loading-status-balls rotate" } );
+			// instead, we have to use this awkward solution
+			var x = $("#platform" + n + "_selector-button").children()[0];
+			x.className = "ui-icon ui-icon-loading-status-balls rotate";
 			usetCookie("platform" + n + "_selector", selector_value, accepted_time);
 			n = parseInt(n);
 			$("#id" + n + "_input").val("");
@@ -1186,6 +1184,9 @@ function update_platform(n) {
 					$("#id" + (n+1) + "_input").val("");
 				}
 			}
+			// this works in FF, but not in Chrome - it decides to "cut the corner" when not in debug mode
+			//$( "#platform" + n + "_selector" ).selectmenu( "option", "icons", { button: "ui-icon ui-icon-triangle-1-s" } );
+			x.className = "ui-icon ui-icon-triangle-1-s";
 			plot_type_changed();
 		}
 		// do not move this operation - otherwise will cause bug
@@ -1254,7 +1255,6 @@ function update_cor_screen_selector() {
 	document.getElementById("corGeneFeature_input").disabled = true;
 	$("#corGeneFeature_input").val("");
 	document.getElementById("FDR_input").disabled = true;
-	$("#retrieve-cor-button").button("disable");
 	var selector_value = $("#corScreen_selector option:selected").val();
 	if (selector_value != "undef") {
 		// do not allow changing datatype/platform/screen etc. until this request is not complete
@@ -1515,7 +1515,7 @@ function cor_id_keyup() {
 	var flag = true;
 	var valueSoFar = $("#corGeneFeature_input").val();
 	var available_ids = $( "#corGeneFeature_input" ).autocomplete("option", "source");
-	flag = flag*available_ids.includes(valueSoFar);
+	flag = flag*(available_ids.includes(valueSoFar) + (valueSoFar == ""));
 	var fdr = $("#FDR_input").val();
 	flag = flag * (fdr >= 0.001) * (fdr<1);
 	if (flag) {

@@ -29,6 +29,7 @@ our $tableDir = '/var/www/html/research/HyperSet/db/input_files/';
 # use this variable to set, which sensitivity measure should be used for correlations
 our $sensitivity_m = 'LN_IC50_INVNORM_ROW';
 
+# do we need this?
 our $cols;
 @{$cols} = ("dataset", "datatype", "platform", "screen", "drug", "feature", "correlation", "pvalue", "fdr", "validn", "plot");
 our %colTitles = (

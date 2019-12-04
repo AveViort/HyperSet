@@ -158,16 +158,17 @@ function feature_list() {
 	return feature_array;
 }
 
-function retrieve_drug_correlations(source, datatype, platform, screen, id, fdr) {
+function retrieve_drug_correlations(source, datatype, platform, screen, id, fdr, min_drug_number) {
 	var table_data;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/correlations.cgi?source=" + source + "&datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id.toLowerCase() + "&fdr=" + fdr);
+	console.log("cgi/correlations.cgi?source=" + source + "&datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id.toLowerCase() + "&fdr=" + fdr + "&mindrug=", min_drug_number);
 	xmlhttp.open("GET", "cgi/correlations.cgi?source=" + encodeURIComponent(source) +
 		"&datatype=" + encodeURIComponent(datatype) + 
 		"&platform=" + encodeURIComponent(platform) + 
 		"&screen=" + encodeURIComponent(screen) + 
 		"&id=" + encodeURIComponent(id.toLowerCase()) + 
-		"&fdr=" + encodeURIComponent(fdr), false);
+		"&fdr=" + encodeURIComponent(fdr) +
+		"&mindrug=" + encodeURIComponent(min_drug_number), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			table_data = this.responseText;}
