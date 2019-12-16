@@ -45,27 +45,13 @@ foreach $i(2..$colnumber-1) {
 }
 while (@row = $sth->fetchrow_array()) {
 	print "{";
-    #my ($gene, $drug, $visible_datatype, $visible_platform, $visible_screen, $p1, $p2, $p3, $q, $cohorts) = split /\|/, @row[0];
 	my @field_values = split /\|/, @row[0];
-	# @field_list = split("");
-	# for $i(@field_list) {
-	# $out .= '"'.$field.'": "'.$i.'"';
-	# }
 	print '"id":"',$row_id,'",';
 	# all columns except for the last one - which has to be transformed into HTML element
 	$colnumber = @field_values;
 	foreach $i(0..$colnumber-2) {
 		print '"'.@field_names[$i].'":"'.@field_values[$i].'",';
 	}
-	##print '"gene":"'.$gene.'",';
-	##print '"drug":"'.$drug.'",';
-	##print '"datatype":"'.$visible_datatype.'",';
-	##print '"platform":"'.$visible_platform.'",';
-	##print '"screen":"'.$visible_screen.'",';
-	##print '"p1":"'.$p1.'",';
-	##print '"p2":"'.$p2.'",';
-	##print '"p3":"'.$p3.'",';
-	##print '"q":"'.$q.'",';
 	my $plot = "";
 	if ($visible_datatype ne "MUT") {
 		$plot = '<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.@field_values[2].'\', \'drug\'], [\''.@field_values[3].'\', \''.@field_values[4].'\'], [\''.@field_values[0].'\', \''.@field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';

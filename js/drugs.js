@@ -158,28 +158,13 @@ function feature_list() {
 	return feature_array;
 }
 
-function retrieve_drug_correlations(source, datatype, platform, screen, id, fdr, min_drug_number) {
-	var table_data;
-	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/correlations.cgi?source=" + source + "&datatype=" + datatype + "&platform=" + platform + "&screen=" + screen + "&id=" + id.toLowerCase() + "&fdr=" + fdr + "&mindrug=", min_drug_number);
-	xmlhttp.open("GET", "cgi/correlations.cgi?source=" + encodeURIComponent(source) +
-		"&datatype=" + encodeURIComponent(datatype) + 
-		"&platform=" + encodeURIComponent(platform) + 
-		"&screen=" + encodeURIComponent(screen) + 
-		"&id=" + encodeURIComponent(id.toLowerCase()) + 
-		"&fdr=" + encodeURIComponent(fdr) +
-		"&mindrug=" + encodeURIComponent(min_drug_number), false);
-	xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			table_data = this.responseText;}
-		}
-	xmlhttp.send();
-	table_data = table_data.split("|");
-	return table_data.slice(0, table_data.length-1);
-}
-
 function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales) {
-	var file;
+	var file; 
+	//var target = '#tab-lookup';
+	// $(target).html('<span class="' + loadingClasses + '"></span>');
+	//$("#progressbar").css({"visibility": "visible"});
+	$("#displayindicator").html('<span class="' + loadingClasses + '"></span>');
+	console.log("Before: " + $("#displayindicator").css("visibility"));
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
 		encodeURIComponent(type) + "&source=" +
@@ -192,7 +177,11 @@ function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scal
 		encodeURIComponent(scales.join()), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-			file = this.responseText;}
+			file = this.responseText;
+			//$("#progressbar").css({"visibility": "hidden"});
+				//$("#displayindicator").html('');
+	console.log("After: " + $("#displayindicator").css("visibility"));
+			}
 		}
 	xmlhttp.send();
 	return file;
@@ -244,6 +233,9 @@ function get_cohort_datatypes(cohort, previous_datatypes) {
 function get_platforms(cohort, datatype, previous_platforms) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
+	console.log("cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
+		"&datatype=" + encodeURIComponent(datatype) +
+		"&previous_platforms=" + encodeURIComponent(previous_platforms));
 	xmlhttp.open("GET", "cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
 		"&datatype=" + encodeURIComponent(datatype) +
 		"&previous_platforms=" + encodeURIComponent(previous_platforms), false);
@@ -252,6 +244,7 @@ function get_platforms(cohort, datatype, previous_platforms) {
 			platforms = this.responseText;}
 		}
 	xmlhttp.send();
+	console.log(platforms);
 	platforms = platforms.split("|");
 	//return platforms.slice(0, platforms.length-1);
 	var platforms_array = [];

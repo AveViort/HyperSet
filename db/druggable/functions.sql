@@ -60,7 +60,7 @@ DECLARE
 id text;
 syn text;
 BEGIN
-FOR syn,id IN SELECT external_id,internal_id FROM synonyms WHERE id_type='gene'
+FOR syn,id IN SELECT external_id,internal_id FROM synonyms WHERE (id_type='gene') OR (id_type='pathway') OR (id_type='antibody')
 LOOP
 RETURN NEXT syn || '|' || id;
 END LOOP;
@@ -609,9 +609,6 @@ $$ LANGUAGE plpgsql;
 -- last column is ALWAYS q
 CREATE OR REPLACE FUNCTION retrieve_correlations(data_type text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text) RETURNS setof text AS $$
 DECLARE
-gene_n text;
-feature_n text;
-visible_feature_name text;
 table_name text;
 datatype_name text;
 platform_name text;
@@ -625,24 +622,17 @@ BEGIN
 columns_array := string_to_array(cor_columns, ',');
 FOR table_name, datatype_name, platform_name, screen_name IN EXECUTE E'SELECT table_name,datatype,platform,screen FROM cor_guide_table WHERE datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_n || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
 LOOP
-RAISE notice 'table name: %', table_name;
+--RAISE notice 'table name: %', table_name;
 query := 'SELECT ARRAY (SELECT upper(' || columns_array[1] || E') \|\| \'\|\' \|\| drug_synonym(' || columns_array[2] || E') \|\| \'\|\' \|\| \'' || datatype_name || E'\' \|\| \'\|\' \|\| \'' || platform_name || E'\' \|\| \'\|\' \|\| \'' || screen_name || E'\'';
 FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || E' \|\| \'\|\' \|\| ' || columns_array[i]; 
 -- i does not save it's value! Reassign
-RAISE notice '%: query: %', i, query;
+--RAISE notice '%: query: %', i, query;
 END LOOP;
 i := array_length(columns_array, 1);
 query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[2] || ',' || mindrug || ') FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
-RAISE notice '%: query: %', i, query;
---FOR gene_n,feature_n,p1,p2,p3,q IN EXECUTE 'SELECT upper(gene),feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (ancova_q_2x_feature<=' || fdr || ') ORDER BY ancova_q_2x_feature DESC;'
---LOOP
---SELECT external_id INTO visible_feature_name FROM synonyms WHERE internal_id=feature_n AND id_type='drug';
---SELECT retrieve_cohorts_for_drug(feature_n, mindrug) INTO cohorts;
---res := gene_n || '|' || visible_feature_name || '|' || datatype_name || '|' || platform_name || '|' || screen_name || '|' || p1 || '|' || p2 || '|' || p3 || '|' || q || '|' || cohorts || '|';
---RETURN NEXT res;
---END LOOP;
+--RAISE notice '%: query: %', i, query;
 EXECUTE query INTO res;
 RAISE notice 'Query complete, number of rows: %', array_length(res,1);
 IF array_length(res,1) > 0

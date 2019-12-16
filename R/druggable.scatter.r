@@ -7,6 +7,8 @@ plot_title <- '';
 x_data <- NULL;
 y_data <- NULL;
 z_data <- NULL;
+pathway <- NA;
+nea_platform <- NA;
 temp <- list();
 common_samples <- c();
 internal_ids <- ids;
@@ -15,6 +17,10 @@ for (i in 1:length(ids)) {
 		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[i], "';"); 
 		print(query);
 		internal_ids[i] <- as.character(sqlQuery(rch, query)[1,1]);
+		if ((datatypes[i] == 'nea_ge') | (datatypes[i] == 'nea_mut')) {
+			pathway <- ids[i];
+			nea_platform <- platforms[i];
+		}
 	}
 }
 print("Internal ids:");
@@ -120,25 +126,26 @@ if (status != 'ok') {
 						console.log('Datatype: ', datatype);
 						console.log('Platform: ', platform);
 						console.log('ID: ', id);
-						console.log('FGS: ', ((d.yaxes[0].title.text).split(' '))[0]);
-						var genes;
-						var startTime = new Date();
-						var xmlhttp = new XMLHttpRequest();
-						xmlhttp.open('GET', 'https://www.evinet.org/dev/HyperSet/cgi/get_ags_genes.cgi?cohort=' + encodeURIComponent(cohort) + '&datatype=' + encodeURIComponent(datatype) + '&platform=' + encodeURIComponent(platform) + '&id=' + encodeURIComponent(id), false);
-						xmlhttp.onreadystatechange = function() {
-							if (this.readyState == 4 && this.status == 200) {
-							genes = this.responseText;}
-						}
-						xmlhttp.send();
-						genes = genes.split('|');
-						genes.slice(0, genes.length-1);
-						var endTime = new Date();
-						console.log('AGS genes: ', genes);
-						console.log('Request and processing took ', endTime - startTime, ' ms');
+						//console.log('FGS: ', ((d.yaxes[0].title.text).split(' '))[0]);
+						//var genes;
+						//var startTime = new Date();
+						//var xmlhttp = new XMLHttpRequest();
+						//xmlhttp.open('GET', 'https://www.evinet.org/dev/HyperSet/cgi/get_ags_genes.cgi?cohort=' + encodeURIComponent(cohort) + '&datatype=' + encodeURIComponent(datatype) + '&platform=' + encodeURIComponent(platform) + '&id=' + encodeURIComponent(id), false);
+						//xmlhttp.onreadystatechange = function() {
+						//	if (this.readyState == 4 && this.status == 200) {
+						//	genes = this.responseText;}
+						//}
+						//xmlhttp.send();
+						//genes = genes.split('|');
+						//genes.slice(0, genes.length-1);
+						//var endTime = new Date();
+						//console.log('AGS genes: ', genes);
+						//console.log('Request and processing took ', endTime - startTime, ' ms');
 						//console.log('Hover: ', d) 
 					});
 				el.on('plotly_click', function(d) { 
-						window.open('https://dev.evinet.org/subnet.html','_blank');
+						var id = ((d.points[0].text).split(' '))[1];
+						window.open('https://dev.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
 					});
 				el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 			}

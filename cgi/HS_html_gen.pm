@@ -603,7 +603,16 @@ $con .= '
 
 <td title="Heatmap">
 <div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
-<img src="pics/heatmap.png" class="showme"></div>
+<img src="pics/heatmap.png" class="showme"> 
+</div>
+
+	<select name="hclust_method" id="hclust_method">
+      <option selected="selected">ward.D2</option>
+      <option>complete</option>
+      <option>average</option>
+      <option>centroid</option>
+    </select>
+
 </td>
 <td title="PCA (principal component analysis)">
 <div id="run-exploratory-pca" class="showme icon-ok demo_button sbm-controls"> 
@@ -629,7 +638,7 @@ $con .= '
 \''.$HSconfig::examples->{'3'}->{'species'}.'\',
 \''.$HSconfig::examples->{'3'}->{'file_div'}.'\',
 \''.$HSconfig::examples->{'3'}->{'net'}.'\',
-\''.$HSconfig::examples->{'3'}->{'fgs'}.'\'
+\''.$HSconfig::examples->{'3'}->{'fgs'}.'\' 
 )" 
  title="Demo for Venn diagrams.Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
 <img src="pics/venn627483358680368.png" class="showme"></div>
@@ -679,6 +688,12 @@ $con .= '<option value="'.$sp.'" >'.$HSconfig::spe{$sp}.'</option>';
 $con .= '</select>
 </td></tr></table>
 	<script type="text/javascript">
+	
+
+  $( function() {
+    $( "#hclust_method" ).selectmenu();
+  } );
+
 $( function() {
 var opts = $("#species-ele").prop("options");
 var maxl = 0;

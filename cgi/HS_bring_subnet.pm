@@ -159,7 +159,7 @@ my ($URL) = @_;
 my($ss);
 $time = time();
 $q = new CGI; #new instance of the CGI object passed from the query page index.html
-#  $HS_html_gen::fieldURLdelimiter = ';'; $HS_html_gen::keyvalueURLdelimiter = '=';  $HS_html_gen::actionFieldDelimiter1 = '###';  $HS_html_gen::actionFieldDelimiter2 = '___'; $arrayURLdelimiter = '%0D%0A';
+
 my $fld;
 # print 'AAA';
 my @flds = split($HS_html_gen::fieldURLdelimiter, $URL);
@@ -169,17 +169,37 @@ $q->{$1} = $2 if $fld =~ m/([A-Za-z0-9\:\_\-\.]+)$HS_html_gen::keyvalueURLdelimi
 }
 	$gsAttr = HStextProcessor::parseGenesWithAttributes($q->{genes}, $HS_html_gen::arrayURLdelimiter);
 	$cgsAttr = HStextProcessor::parseGenesWithAttributes($q->{context_genes}, $HS_html_gen::arrayURLdelimiter);
+	# my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-3.txt";
+	# open(my $fh, '>', $debug_filename);
+	# print $fh $q."\n";
+	# my @list = $q->param();
+    # foreach my $parameter (@list) {
+		# print $fh $parameter.' = '.$q->param($parameter)."\n";
+   # }
+   # print $fh "Genes: ".$q->{genes}."\n";
+   # print $fh "Genes (parsed): ".$gsAttr."\n";
+   # print $fh "Context genes: ".$q->{context_genes}."\n";
+   # print $fh "Context genes (parsed): ".$cgsAttr."\n";
+# print $fh join(" ", keys(%{$gsAttr->{id}}))."\n";
+# print $fh join(" ", values(%{$gsAttr->{id}}))."\n";
+# print $fh join(" ", keys(%{$cgsAttr->{id}}))."\n";
+# print $fh join(" ", values(%{$cgsAttr->{id}}))."\n";
+# print $fh join(" ", keys(%{$gsAttr->{score}}))."\n";
+# print $fh join(" ", values(%{$gsAttr->{score}}))."\n";
+# print $fh join(" ", keys(%{$gsAttr->{subset}}))."\n";
+# print $fh join(" ", values(%{$gsAttr->{subset}}))."\n";
+# close $fh;
 	$genes = [keys(%{$gsAttr->{id}})]; #->{attr};
 	$context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
-my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-2.txt";
-open(my $fh, '>', $debug_filename);
-print $fh join("", keys(%{$gsAttr->{id}}))."\n";
-print $fh join("", values(%{$gsAttr->{id}}))."\n";
-print $fh join("", keys(%{$gsAttr->{score}}))."\n";
-print $fh join("", values(%{$gsAttr->{score}}))."\n";
-print $fh join("", keys(%{$gsAttr->{subset}}))."\n";
-print $fh join("", values(%{$gsAttr->{subset}}))."\n";
-close $fh;
+# my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-2.txt";
+# open(my $fh, '>', $debug_filename);
+# print $fh join("", keys(%{$gsAttr->{id}}))."\n";
+# print $fh join("", values(%{$gsAttr->{id}}))."\n";
+# print $fh join("", keys(%{$gsAttr->{score}}))."\n";
+# print $fh join("", values(%{$gsAttr->{score}}))."\n";
+# print $fh join("", keys(%{$gsAttr->{subset}}))."\n";
+# print $fh join("", values(%{$gsAttr->{subset}}))."\n";
+# close $fh;
 
 	@{$networks} = split($HS_html_gen::arrayURLdelimiter, $q->{'networks'});
 	$submitted_species = $q -> {species}; 

@@ -354,12 +354,15 @@ my(@ga, @arr, $genesAGS, $genesFGS, $genesAGS2, $genesFGS2, $or, $Nl, $i, $subne
 my $sn = 0;
 for $i(0..$#{$neaData}) { 
 @arr = split("\t", uc($neaData->[$i]->{wholeLine}));
-@{$genesAGS2} = split(/\s+/, $arr[$pl->{$table}->{ags_genes2}]);
-@{$genesFGS2} = split(/\s+/, $arr[$pl->{$table}->{fgs_genes2}]);
+my $agsList = $pl->{$table}->{ags_genes2} ? 'ags_genes2' : 'ags_genes1';
+my $fgsList = $pl->{$table}->{fgs_genes2} ? 'fgs_genes2' : 'fgs_genes1';
+@{$genesAGS2} = split(/\s+/, $arr[$pl->{$table}->{$agsList}]);
+@{$genesFGS2} = split(/\s+/, $arr[$pl->{$table}->{$fgsList}]);
 # $ga[0] .= ':0:AGS-GE';
 # $ga[1] .= ':+6.931472e-11:MGS';
 # $genesAGS2 = join($HS_html_gen::arrayURLdelimiter, @ga);
 # $genesFGS2 = join($HS_html_gen::arrayURLdelimiter, split(/\s+/, $arr[$pl->{$table}->{fgs_genes1}]));
+# print($arr[$pl->{$table}->{ags_genes2}]);
 $or = 0;
 if ($or) {
 $Nl = $arr[$pl->{$table}->{n_genes_ags}] * 2;

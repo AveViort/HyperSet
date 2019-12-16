@@ -1,5 +1,5 @@
 // ids (if available) for these datatypes will be capitalized (in drugs.js and analysis.html)
-var capitalized_datatypes = ["COPY", "GE", "PE", "METH", "MIRNA", "MUT"];
+var capitalized_datatypes = ["COPY", "GE", "METH", "MIRNA", "MUT"];
 
 // for some combinations of plot type and platform ids should be hidden
 var hidden_inputs = new Map();
@@ -13,8 +13,10 @@ ids_placeholders.set("MUT", "Gene name or ID");
 ids_placeholders.set("MIRNA", "Gene name or ID");
 ids_placeholders.set("COPY", "Gene name or ID");
 ids_placeholders.set("METH", "Gene name or ID");
-ids_placeholders.set("PE", "Protein name or ID");
+ids_placeholders.set("PE", "Gene/protein/antibody name or ID");
 ids_placeholders.set("DRUG", "Drug name or ID");
+ids_placeholders.set("NEA_GE", "Pathway name");
+ids_placeholders.set("NEA_MUT", "Pathway name");
 
 // correlation tables settings
 // headers

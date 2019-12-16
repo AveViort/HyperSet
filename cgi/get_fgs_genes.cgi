@@ -11,11 +11,10 @@ our ($dbh, $stat);
 my $genes;
 
 my $query = new CGI;
-my $platform = $query->param("platform");
-my $id = $query->param("id");
+my $fgs = $query->param("fgs");
 $dbh = HS_SQL::dbh('druggable');
 print "Content-type: text/html\n\n";
-$stat = qq/SELECT $platform FROM ags WHERE sample=\'$id'\;/;
+$stat = qq/SELECT genes FROM fgs WHERE pathway=\'$fgs'\;/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 $genes = $sth->fetchrow_array;

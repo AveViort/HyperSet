@@ -102,17 +102,6 @@ export_ccle_cor <- function() {
   print(paste0("Job finished: ", Sys.time()))
 }
 
-# nea contains values for top.x, top.y etc.
-# see example here: load("/home/proj/func/Druggable/nea.druggable.BRCA.GE.2019-10-12.RData")
-export_nea_cor <- function(nea) {
-  cohort <- names(nea);
-  for (topn in names(nea.druggable[[cohort]])) {
-    print(topn);
-    # topn is in format ge.topn, we have to make it SQL-friendly
-    datatype <- strsplit(topn, split = "\\.")[[1]][1];
-    #print(datatype);
-    platform <- tolower(strsplit(topn, split = "\\.")[[1]][2]);
-    #print(platform);
-    
-  }
+export_surc_cor <- function() {
+  
 }

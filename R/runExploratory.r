@@ -41,7 +41,8 @@ names(Rnb) <- as.character(0:length.rnb);
 Col = Rnb[as.character(round(10*(w-Min)/(Max - Min)))];
 }
 names(Col) <- NULL;
-print(Col)
+# print(Col)
+# print(colnames(tbl))
 htmlwidgets::saveWidget(scatterplot3js(x,y,z, color=Col, labels=rownames(p1$loadings), brush=TRUE), out, selfcontained=F, libdir = "3js_dependencies")
 # return(NULL);
 }
@@ -55,12 +56,17 @@ library(RColorBrewer)
 Col<-colorRampPalette(colors=c("blue","white","red"))(20)
 # cCol = Colors[["ProteinClass"]][proteinClasses[rownames(c1)]]; names(cCol) <- rownames(pre1);
 # tbl <- apply(tbl, 1, function (x) {x[which(is.na(x))] <- 0; return(x);});
+hcm <- Param$hclust_method;
+if (Debug>0) {print(Param$hclust_method);}
 #####################################################
 heatmaply(
 normalize(as.matrix(tbl)), 
 # distfun="spearman", 
 distfun="pearson", 
-# hclustfun="hclust", 
+# hclust_method="ward.D2", 
+# hclust_method="complete", 
+# hclust_method="average", 
+hclust_method=hcm, 
 colors = Col, 
 k_col = 1, k_row = 1, 
 na.value = "grey50", 
@@ -74,10 +80,11 @@ scale="none", margins=c(80,80)
 }
 #####################################################
 Args <- commandArgs(trailingOnly = T);
-paramNames <- c("table", "out");
+paramNames <- c("table", "out", "hclust_method");
 Param <- vector("list", length(paramNames));
 names(Param) <- paramNames;
 for (aa in Args) {
+# print(aa);
 s1 <- strsplit(aa, split=RscriptKeyValueDelimiter);
 if (length(s1[[1]]) > 1) {
 s2 <- strsplit(s1[[1]][[2]], split=RscriptParameterDelimiter);
@@ -91,16 +98,17 @@ tmpdir = '';
 filename = Param$table;
 
 tbl=readin(file=paste0(tmpdir, filename), format="TAB");
-print(Param$rownames);
+# print(Param$rownames);
 rnms <- intersect(
 toupper(strsplit(Param$rownames, split="***", fixed=T)[[1]]), 
 rownames(tbl));
+		 # rnms <- rownames(tbl)[which(tbl[,2] > 10)];
 cnms <- strsplit(Param$colnames, split="***", fixed=T)[[1]];
 if (0 %in% cnms) {cnms <- cnms[-which(cnms == 0)];}
 # cnms <- 5:11;
 # tbl <- as.matrix(tbl[rnms,Param$start:Param$end])
-print(rnms)
-print(as.numeric(cnms))
+# print(rnms)
+# print(as.numeric(cnms))
 tbl <- as.matrix(tbl[rnms,as.numeric(cnms)])
 
 ########################

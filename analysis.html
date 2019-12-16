@@ -91,6 +91,7 @@ li.tab:hover ul {
 
 <BODY class="ui-state-default ui-corner-all">
 <div id="progressbar"></div>
+<div id="displayindicator">progress</div>
 
 <div id="cookiewarning">
 	<div role="alert" class="ui-widget-header ui-corner-all" style=" margin: 5px; padding: 5px;">
@@ -136,67 +137,69 @@ li.tab:hover ul {
 		
 		<br>
 		<div class="container">
-			<table id="cor_result_table" class="ui-state-default ui-corner-all" style="width: 100%; font-size: xx-small;">
+			<table id="cor_result_table" class="ui-state-default ui-corner-all" style="width: 100%; font-size: x-small;">
 			</table>
 		</div>
 	</div>
 	<div id="tab-lookup"><br>
 	<br>
-	<table>
-		<tr>
-		<th>Source</th>
-		<th>Cohort</th>
-		<th>Code</th>
-		</tr>
-		<tr>
-		<td>
-		<div id="source_selector-wrapper">
-		<select id="source_selector" class="ui-helper" style="width: 40ch;">
-		</div>
-		</td>
-		<td>
-		<div id="cohort_selector-wrapper">
-		<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
-		</div>
-		</td>
-		<td>
-		<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
-		</td>
-		</tr>
-	</table>
-	<br>
-	<table id = "plot_options">
-		<tr>
-		<th>Data type</th>
-		<th>Platform</th>
-		<th>ID</th>
-		<th></th>
-		<th>Scale</th>
-		</tr>
-		<tr>
-		<td>
-		<select id="type1_selector" class="ui-helper" style="width: 40ch;">
-		</td>
-		<td>
-		<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
-		</td>
-		<td>
-		<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup(1)">
-		</td>
-		<td>
-		<input id="id1_confirmed" disabled>
-		</td>
-		<td>
-		<select id="axis1_selector" class="ui-helper" style="width: 20ch;">
-		</td>
-		<td>
-		<button id="add_row1" onclick="add_plot_options_row(1)">+</button>
-		</td>
-		<td>
-		<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
-		</td>
-		</tr>
-	</table>
+	<div id="plot-options-filters">
+		<table>
+			<tr>
+				<th>Source</th>
+				<th>Cohort</th>
+				<th>Code</th>
+			</tr>
+			<tr>
+				<td>
+					<div id="source_selector-wrapper">
+						<select id="source_selector" class="ui-helper" style="width: 40ch;">
+					</div>
+				</td>
+				<td>
+					<div id="cohort_selector-wrapper">
+						<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
+					</div>
+				</td>
+				<td>
+					<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
+				</td>
+			</tr>
+		</table>
+		<br>
+		<table id = "plot_options">
+			<tr>
+				<th>Data type</th>
+				<th>Platform</th>
+				<th>ID</th>
+				<th></th>
+				<th>Scale</th>
+			</tr>
+			<tr>
+				<td>
+					<select id="type1_selector" class="ui-helper" style="width: 40ch;">
+				</td>
+				<td>
+					<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
+				</td>
+				<td>
+					<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup(1)">
+				</td>
+				<td>
+					<input id="id1_confirmed" disabled>
+				</td>
+				<td>
+					<select id="axis1_selector" class="ui-helper" style="width: 20ch;">
+				</td>
+				<td>
+					<button id="add_row1" onclick="add_plot_options_row(1)">+</button>
+				</td>
+				<td>
+					<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
+				</td>
+			</tr>
+		</table>
+	</div>
 	<br>
 	<table>
 	<tr>
@@ -210,6 +213,7 @@ li.tab:hover ul {
 	</td>
 	</tr>
 	</table>
+	</div>
 	</div>
 </div>   
 
@@ -255,8 +259,8 @@ $(document).ready(function(){
 	$("#progressbar").progressbar({
 		value: false
 	});
-	//$("#progressbar").css({"visibility": "hidden"});
-	$("#progressbar").hide();
+	$("#progressbar").css({"visibility": "hidden"});
+	//$("#progressbar").hide();
 	$("#tabs").tabs({});
 	
 	$("#retrieve-cor-button").button();
@@ -276,8 +280,8 @@ $(document).ready(function(){
 			source: autocomplete_ids,
 			minLength: 2,
 			response: function( event, ui ) {
-				if (ui.content.length > 20) {
-					console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
+				if (ui.content.length > 50) {
+					console.log("We have " + ui.content.length + " elements, but cannot show more than 50: closing autocomplete")
 					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 				}
 			},
@@ -365,15 +369,6 @@ function reload_analysis_options() {
 	} 
 }
 
-function toggle_progress_bar(show) {
-	if (show) {
-		$("#progressbar").show();
-	}
-	else {
-		$("#progressbar").hide();
-	}
-}
-
 function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
@@ -406,16 +401,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
 		// new plot
 		if (plot_filename == "no") {
-			$("#progressbar").show();
-			var sel = document.getElementById("progressbar");
-			sel.style.display='none';
-			sel.offsetHeight; // no need to store this anywhere, the reference is enough
-			sel.style.display='';
-			dummy_worker = new Worker("js/dummy_worker.js");
-			dummy_worker.onmessage = function(event) {
-				$("#progressbar").hide();
-				dummy_worker.terminate();
-			}
+			//$("#progressbar").css({"visibility": "visible"});
 			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			// save plot in session history
@@ -447,7 +433,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 					},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			}).parent().appendTo(parent_tab);
-			dummy_worker.postMessage("ping");
+			//$("#progressbar").css({"visibility": "hidden"});
 		}
 		// existing plot
 		else {
@@ -459,7 +445,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 			}
 			else {
 				console.log("Plot was closed");
-				var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="1280" height="800"></div>';
+				var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="550" height="400"></div>';
 				$(graph_window).dialog({
 					title: plot_title,
 					buttons: [
@@ -1479,6 +1465,21 @@ function id_keyup(k) {
 		flag = false;
 	}
 	else {
+		var available_ids = $( "#id" + k + "_input" ).autocomplete("option", "source");
+		var valueSoFar = $("#id" + k + "_input").val();
+		if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
+			valueSoFar = valueSoFar.toUpperCase();
+			$("#id" + i + "_input").val(valueSoFar);
+		}
+		var temp_flag = available_ids.includes(valueSoFar);
+		if (temp_flag) {
+					var confirmed = synonyms.get($("#id" + k + "_input").val());
+					$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
+					setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
+								$("#id" + k + "_input").css('background-color', '')}, 500);
+					$("#id" + k + "_input").css('border-color', 'chartreuse');
+					$("#id" + k + "_input").css('background-color', 'chartreuse');
+		}
 		for (i = 1; i<=n; i++) {
 			if ($("#id" + i + "_input").is(":enabled")) {
 				var valueSoFar = $("#id" + i + "_input").val();
@@ -1487,8 +1488,9 @@ function id_keyup(k) {
 					valueSoFar = valueSoFar.toUpperCase();
 					$("#id" + i + "_input").val(valueSoFar);
 				}
-				var available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
-				flag = flag*available_ids.includes(valueSoFar);
+				available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
+				temp_flag = available_ids.includes(valueSoFar);
+				flag = flag*temp_flag;
 			}
 			else {
 				flag = flag*true;
@@ -1498,12 +1500,6 @@ function id_keyup(k) {
 	if (flag) {
 		$("#plot-button").button("enable");
 		$("#plot-button-wrapper").qtip("disable");
-		var confirmed = synonyms.get($("#id" + k + "_input").val())
-		$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
-		setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
-								$("#id" + k + "_input").css('background-color', '')}, 500);
-		$("#id" + k + "_input").css('border-color', 'chartreuse');
-		$("#id" + k + "_input").css('background-color', 'chartreuse');
 	}
 	else {
 		$("#plot-button").button("disable");

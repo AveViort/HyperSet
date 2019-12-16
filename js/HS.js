@@ -833,11 +833,11 @@ var Type = null;
 				cids[j++] = i;
 				}
 		}
-
 		Href = "cgi/i.cgi?" + dynamicHref() + 
 			";action=run-exploratory-" + Type + 
 			";colnames=" + cids.join("***") + 
 			";rownames=" +  $('[name="sgs_list"]').val().replace(/\s/g, "***") + 
+			";hclust_method=" +  $('[name="hclust_method"]').val() + 
 			";table=" + $("#selectradio-table-ags-ele").attr("value") + ";"; 
 		Title = Type + 'plots';
 		Width = 'auto';
@@ -2047,8 +2047,8 @@ $(function() {
 	ui.panel.html('<span class="' + loadingClasses + '"></span>');
 	},*/
 		beforeLoad: function( event, ui ) {
-			console.log("HS, ID: " + ui.panel.attr("id"))
-			ui.panel.html('<span class="' + loadingClasses + '"></span>');
+			// console.log("HS, ID: " + ui.panel.attr("id"))
+			//ui.panel.html('<span class="' + loadingClasses + '"></span>');
 			if ( ui.tab.data( "loaded" ) ) {
 				event.preventDefault();
 			 	return;
