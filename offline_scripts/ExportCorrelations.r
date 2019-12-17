@@ -1,7 +1,6 @@
 # export re to SQL - global variable!
-export_ccle_cor <- function() {
+export_ccle_cor <- function(rch) {
   print(paste0("Job started: ", Sys.time()))
-  rch <- odbcConnect("dg_pg", uid = "hyperset", pwd = "SuperSet");
   data_types <- c("MUT");
   for (data_type in data_types) {
     inner_datatype <- tolower(data_type);
@@ -102,6 +101,90 @@ export_ccle_cor <- function() {
   print(paste0("Job finished: ", Sys.time()))
 }
 
-export_surc_cor <- function() {
-  
+# /home/proj/func/Druggable/EXPORT/survXdrug.NEA.TCGA.2019-12-10.RData
+# source is TCGA, CCLE etc.
+export_surv_cor <- function(file_name, source, rch) {
+  print(Sys.time());
+  query <- "";
+  load(file_name);
+  cohorts <- names(survXdrug);
+  for (cohort in cohorts) {
+    print(cohort);
+    datatypes <- names(survXdrug[[cohort]]);
+    for (datatype in datatypes) {
+      print(datatype);
+      platforms <- names(survXdrug[[cohort]][[datatype]]);
+      for (platform in platforms) {
+        print(platform);
+        measures <- names(survXdrug[[cohort]][[datatype]][[platform]]);
+        for (measure in measures) {
+          print(measure);
+          table_name <- paste0("cor_", tolower(cohort), "_", tolower(gsub("\\.", "\\_", datatype)), "_", tolower(gsub("\\.", "\\_", platform)), "_", tolower(measure))
+          query <- paste0("CREATE TABLE ", table_name," (gene character varying(256), feature character varying(256), followup_part numeric, interaction numeric, drug numeric, expr numeric, n_patients numeric, n_treated numeric, followup numeric);");
+          print(query);
+          stat <- sqlQuery(rch, query);
+          #if (length(stat) != 0) {
+          #  print(paste0("Error. Query: ", query));
+          #  print(stat);
+          #}
+          query <- paste0("INSERT INTO cor_guide_table(table_name,source,cohort,datatype,platform,formation_method,screen,sensitivity_measure) VALUES('", table_name, "','", source, "','", cohort, "','", gsub("\\.", "\\_", datatype), "','", gsub("\\.", "\\_", platform), "','all_data','all_data','", tolower(measure),"');")
+          print(query);
+          stat <- sqlQuery(rch, query);
+          if (length(stat) != 0) {
+            print(paste0("Error. Query: ", query));
+          }
+          followup_parts <- names(survXdrug[[cohort]][[datatype]][[platform]][[measure]]);
+          for (followup_part in followup_parts) {
+            print(followup_part);
+            genes <- rownames(survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["drug"]]);
+            features <- colnames(survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["drug"]]);
+            for (gene in genes) {
+              for (feature in features) {
+                columns <- "gene,feature,followup_part";
+                values <- paste0("'", gsub("\\'", "", gene), "','", gsub("\\'", "", feature), "',",followup_part);
+                drug <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["drug"]][gene,feature];
+                if (!is.na(drug)) {
+                  columns <- paste0(columns,",drug");
+                  values <- paste0(values,",",drug);
+                }
+                interaction <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["interaction"]][gene,feature];
+                if (!is.na(interaction)) {
+                  columns <- paste0(columns,",interaction");
+                  values <- paste0(values,",",interaction);
+                }
+                expr <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["expr"]][gene,feature];
+                if (!is.na(expr)) {
+                  columns <- paste0(columns,",expr");
+                  values <- paste0(values,",",expr);
+                }
+                n_patients <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["meta"]][["N.patients"]];
+                if (!is.na(n_patients)) {
+                  columns <- paste0(columns,",n_patients");
+                  values <- paste0(values,",",n_patients);
+                }
+                n_treated <-survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["meta"]][["N.treated"]][feature];
+                if (!is.na(n_treated)) {
+                  columns <- paste0(columns,",n_treated");
+                  values <- paste0(values,",",n_treated);
+                }
+                followup <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["meta"]][["follow.up"]];
+                if (!is.na(followup)) {
+                  columns <- paste0(columns,",followup");
+                  values <- paste0(values,",",followup);
+                }
+                query <- paste0("INSERT INTO ", table_name, "(", columns, ") VALUES(", values, ");");
+                stat <- sqlQuery(rch, query);
+                if (length(stat) != 0) {
+                  print(paste0("Error. Query: ", query));
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    print("----------------------------");
+  }
+  print(Sys.time());
+  odbcClose(rch);
 }

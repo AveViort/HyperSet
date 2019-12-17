@@ -24,20 +24,19 @@ function show()
 	}
 	var ags;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open('GET', 'https://dev.evinet.org/cgi/get_ags_genes.cgi?platform=' + encodeURIComponent(params.get("platform")) + '&id=' + encodeURIComponent(params.get("id")), false);
+	xmlhttp.open('GET', 'https://' + location.hostname + '/cgi/get_ags_genes.cgi?platform=' + encodeURIComponent(params.get("platform")) + '&id=' + encodeURIComponent(params.get("id")), false);
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			ags = this.responseText;}
 		}
 	xmlhttp.send();
 	var fgs;
-	xmlhttp.open('GET', 'https://dev.evinet.org/cgi/get_fgs_genes.cgi?&fgs=' + encodeURIComponent(params.get("pathway")), false);
+	xmlhttp.open('GET', 'https://' + location.hostname + '/cgi/get_fgs_genes.cgi?&fgs=' + encodeURIComponent(params.get("pathway")), false);
 	xmlhttp.onreadystatechange = function() {
 	if (this.readyState == 4 && this.status == 200) {
 		fgs = this.responseText;}
 	}
 	xmlhttp.send();
-	pathway = 'subnet-1___USERS_LIST_AGS___HALLMARK_PANCREAS_BETA_CELLS___fromCytoscapeJS';
 	var genes = ags.toUpperCase();
 	genes = genes.split(',');
 	console.log(genes);
@@ -45,8 +44,6 @@ function show()
 	context_genes = context_genes.split(',');
 	console.log(context_genes);
 	var div_content = '';
-	// https://dev.evinet.org/cgi/i.cgi?mode=standalone&username=&sid=&signature=&neafile=default&step=default&subneturlbox=reduce%3D%3Breduce_by%3Dnoislets%3Bqvotering%3Dquota%3Bshow_names%3DNames%3Bkeep_query%3Dyes%3Bcoff%3D-0.5%3Bags_fgs%3Dyes%3Bspecies%3Dhsa%3Bcontext_genes%3Dakt3%0D%0bcl2l2-pabpn1%3Bgenes%3Dtbc1d28%0D%0or56a4%0D%0c17orf74%3Border%3D0%3Bnetworks%3Ddata_pwc9%3Bno_of_links%3D1000;action=subnet-1___USERS_LIST_AGS___HALLMARK_PANCREAS_BETA_CELLS___fromCytoscapeJS;changeLayout=arbor;saveCytoscapeView=saveCyView;input-save-cy-view=CytoScapeView1;caseNodeLabels=uppercase;edgeLabel=showEdgeLabel
-	//console.log('https://dev.evinet.org/cgi/i.cgi?mode=standalone&username=&sid=&signature=&neafile=default&step=default&subneturlbox=' + encodeURIComponent('reduce=;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;coff=-0.5;ags_fgs=yes;species=hsa;context_genes=' + context_genes.join('%0D%0') + ';genes=' + genes.join('%0D%0') + ';order=0;networks=data_pwc9;no_of_links=1000') + ';action=' + encodeURIComponent(pathway) + ';changeLayout=arbor;saveCytoscapeView=saveCyView;input-save-cy-view=CytoScapeView1;caseNodeLabels=uppercase;edgeLabel=showEdgeLabel');
 	xmlhttp.open('GET', 'https://dev.evinet.org/cgi/i.cgi?mode=standalone&username=&sid=&signature=&neafile=default&step=default&subneturlbox=' + encodeURIComponent('reduce=;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;coff=-0.5;ags_fgs=yes;species=hsa;context_genes=' + context_genes.join('%0D%0A') + ';genes=' + genes.join('%0D%0A') + ';order=0;networks=data_pwc9;no_of_links=1000') + ';action=' + encodeURIComponent('subnet-1___USERS_LIST_AGS___HALLMARK_PANCREAS_BETA_CELLS___fromCytoscapeJS') + ';changeLayout=arbor;saveCytoscapeView=saveCyView;input-save-cy-view=CytoScapeView1;caseNodeLabels=uppercase;edgeLabel=showEdgeLabel', false);
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {

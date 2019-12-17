@@ -1,31 +1,33 @@
 -- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
 
 -- return all drugs/features and genes for given combination of parameters
-CREATE OR REPLACE FUNCTION feature_gene_list(source_n text, data_type text, platform_n text, screen_name text, sensitivity_m text) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION feature_gene_list(source_n text, data_type text, cohort_n text, platform_n text, screen_name text, sensitivity_m text) RETURNS setof text AS $$
 DECLARE
-table_name text;
+table_n text;
 res text;
 res_array text array;
+sensitivity_array text array;
 i numeric;
 BEGIN
 res_array = ARRAY[]::text[];
-IF (data_type = '%') AND (platform_n = '%') AND (screen_name = '%')
+IF (data_type = '%') AND (cohort_n = '%') AND (platform_n = '%') AND (screen_name = '%')
 THEN
 FOR res IN SELECT id FROM cor_all_ids
 LOOP
 SELECT array_append(res_array, res) INTO res_array;
 END LOOP;
 ELSE
-FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table WHERE source=\'' || source_n ||  E'\' AND datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_name || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
+sensitivity_array := string_to_array(sensitivity_m, ',');
+FOR table_n IN SELECT table_name FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_name AND sensitivity_measure=ANY(sensitivity_array)
 LOOP
-FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_name || ';'
+FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_n || ';'
 LOOP
 IF NOT (SELECT res = ANY (res_array))
 THEN
 SELECT array_append(res_array, res) INTO res_array;
 END IF;
 END LOOP;
-FOR res IN EXECUTE 'SELECT DISTINCT upper(gene) FROM ' || table_name || ';'
+FOR res IN EXECUTE 'SELECT DISTINCT upper(gene) FROM ' || table_n || ';'
 LOOP
 IF NOT (SELECT res = ANY (res_array))
 THEN
@@ -73,11 +75,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- return available screens for correlation tables
-CREATE OR REPLACE FUNCTION screen_list(source_n text, data_type text, platform_n text, sensitivity_m text) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION screen_list(source_n text, data_type text, cohort_n text, platform_n text, sensitivity_m text) RETURNS setof text AS $$
 DECLARE
 res text;
+sensitivity_array text array;
 BEGIN
-FOR res IN SELECT DISTINCT screen FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND platform LIKE platform_n AND sensitivity_measure=sensitivity_m
+sensitivity_array := string_to_array(sensitivity_m, ',');
+FOR res IN SELECT DISTINCT screen FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND sensitivity_measure=ANY(sensitivity_array)
 LOOP
 RETURN NEXT res;
 END LOOP;
@@ -164,13 +168,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- same, but for correlations
-CREATE OR REPLACE FUNCTION cor_platform_list (source_n text, data_type text, sensitivity_m text) RETURNS setof text
+CREATE OR REPLACE FUNCTION cor_platform_list (source_n text, data_type text, cohort_n text, sensitivity_m text) RETURNS setof text
 AS $$
 DECLARE
 res text;
+sensitivity_array text array;
 BEGIN
+sensitivity_array := string_to_array(sensitivity_m, ',');
 -- NOTE that we have to use LIKE, not =, because user can ask for platforms for all datatypes 
-FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND sensitivity_measure=sensitivity_m 
+FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND sensitivity_measure=ANY(sensitivity_array)
 LOOP
 RETURN NEXT res;
 END LOOP;
@@ -207,8 +213,25 @@ CREATE OR REPLACE FUNCTION cor_datatype_list (source_n text, sensitivity_m text)
 AS $$
 DECLARE
 res text;
+sensitivity_array text array;
 BEGIN
-FOR res IN SELECT DISTINCT datatype FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=sensitivity_m 
+sensitivity_array := string_to_array(sensitivity_m, ',');
+FOR res IN SELECT DISTINCT datatype FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) 
+LOOP
+RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- get cohorts for correlations, used only for TCGA
+CREATE OR REPLACE FUNCTION cor_cohort_list (source_n text, datatype_n text, sensitivity_m text) RETURNS setof text
+AS $$
+DECLARE
+res text;
+sensitivity_array text array;
+BEGIN
+sensitivity_array := string_to_array(sensitivity_m, ',');
+FOR res IN SELECT DISTINCT cohort FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) AND datatype LIKE datatype_n 
 LOOP
 RETURN NEXT res;
 END LOOP;
@@ -607,23 +630,26 @@ $$ LANGUAGE plpgsql;
 -- first column is ALWAYS gene
 -- second column is ALWAYS feature
 -- last column is ALWAYS q
-CREATE OR REPLACE FUNCTION retrieve_correlations(data_type text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION retrieve_correlations(source_n text, data_type text, cohort_n text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text) RETURNS setof text AS $$
 DECLARE
-table_name text;
+table_n text;
 datatype_name text;
+cohort_name text;
 platform_name text;
 screen_name text;
-cohorts text;
+sensitivity_type text;
 res text array;
 columns_array text array;
+sensitivity_array text array;
 query text;
 i numeric;
 BEGIN
 columns_array := string_to_array(cor_columns, ',');
-FOR table_name, datatype_name, platform_name, screen_name IN EXECUTE E'SELECT table_name,datatype,platform,screen FROM cor_guide_table WHERE datatype LIKE \'' || data_type || E'\' AND platform LIKE \'' || platform_n || E'\' AND screen LIKE \'' || screen_n || E'\' AND sensitivity_measure LIKE \'' || sensitivity_m || E'\';'
+sensitivity_array := string_to_array(sensitivity_m, ',');
+FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity_type IN SELECT table_name,datatype,cohort,platform,screen,sensitivity_measure FROM cor_guide_table WHERE datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_n AND sensitivity_measure=ANY(sensitivity_array) 
 LOOP
 --RAISE notice 'table name: %', table_name;
-query := 'SELECT ARRAY (SELECT upper(' || columns_array[1] || E') \|\| \'\|\' \|\| drug_synonym(' || columns_array[2] || E') \|\| \'\|\' \|\| \'' || datatype_name || E'\' \|\| \'\|\' \|\| \'' || platform_name || E'\' \|\| \'\|\' \|\| \'' || screen_name || E'\'';
+query := 'SELECT ARRAY (SELECT upper(' || columns_array[1] || E') \|\| \'\|\' \|\| drug_synonym(' || columns_array[2] || E') \|\| \'\|\' \|\| \'' || datatype_name || E'\' \|\| \'\|\' \|\| \'' || cohort_name || E'\' \|\| \'\|\' \|\| \'' || platform_name || E'\' \|\| \'\|\' \|\| \'' || screen_name || E'\' \|\| \'\|\' \|\| \'' || sensitivity_type || E'\'';
 FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || E' \|\| \'\|\' \|\| ' || columns_array[i]; 
@@ -631,10 +657,10 @@ query := query || E' \|\| \'\|\' \|\| ' || columns_array[i];
 --RAISE notice '%: query: %', i, query;
 END LOOP;
 i := array_length(columns_array, 1);
-query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[2] || ',' || mindrug || ') FROM ' || table_name || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
+query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[2] || ',' || mindrug || ') FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
 --RAISE notice '%: query: %', i, query;
 EXECUTE query INTO res;
-RAISE notice 'Query complete, number of rows: %', array_length(res,1);
+--RAISE notice 'Query complete, number of rows: %', array_length(res,1);
 IF array_length(res,1) > 0
 THEN
 FOR i in 1..array_length(res, 1)
@@ -723,10 +749,11 @@ THEN
 res := res || '||';
 END IF;
 -- check if we have values already
-EXECUTE E'SELECT EXISTS(SELECT ' || platform || E' FROM druggable_ids WHERE cohort=\''|| cohort || E'\' AND ' || platform || ' IS NOT NULL);' INTO flag;
+--EXECUTE E'SELECT EXISTS(SELECT ' || platform || E' FROM druggable_ids WHERE cohort=\'' || cohort || E'\' AND ' || platform || ' IS NOT NULL);' INTO flag;
+EXECUTE E'SELECT EXISTS(SELECT cohort FROM druggable_ids WHERE cohort=\'' || cohort || E'\');' INTO flag;
 -- if we have - delete old value
 IF (flag=true) THEN
-EXECUTE 'UPDATE druggable_ids SET ' || platform || E'=\'' || res || E'\' WHERE cohort=\''|| cohort || E'\';';
+EXECUTE 'UPDATE druggable_ids SET ' || platform || E'=\'' || res || E'\' WHERE cohort=\'' || cohort || E'\';';
 ELSE
 EXECUTE 'INSERT INTO druggable_ids(cohort,'|| platform || E') VALUES(\'' || cohort || E'\',\'' || res || E'\');';
 END IF;

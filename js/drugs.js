@@ -24,10 +24,23 @@ function get_correlation_datatypes(source) {
 	return datatypes.slice(0, datatypes.length-1);
 }
 
-function get_correlation_platforms(source, datatype) {
+function get_correlation_cohorts(source,datatype) {
+	var datatypes;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/correlation_cohorts.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			datatypes = this.responseText;}
+		}
+	xmlhttp.send();
+	datatypes = datatypes.split("|");
+	return datatypes.slice(0, datatypes.length-1);
+}
+
+function get_correlation_platforms(source, datatype, cohort) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype), false);
+	xmlhttp.open("GET", "cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			platforms = this.responseText;}
@@ -37,10 +50,10 @@ function get_correlation_platforms(source, datatype) {
 	return platforms.slice(0, platforms.length-1);
 }
 
-function get_correlation_screens(source, datatype, platform) {
+function get_correlation_screens(source, datatype, cohort, platform) {
 	var screens;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/correlation_screens.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform), false);
+	xmlhttp.open("GET", "cgi/correlation_screens.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			screens = this.responseText;}
@@ -50,11 +63,12 @@ function get_correlation_screens(source, datatype, platform) {
 	return screens.slice(0, screens.length-1);
 }
 
-function get_correlation_features_and_genes(source, datatype, platform, screen) {
+function get_correlation_features_and_genes(source, datatype, cohort, platform, screen) {
 	var features_and_genes;
+	console.log("cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen));
 	var xmlhttp = new XMLHttpRequest();
 	// Pay attention! This function is called by web worker in JS folder, that's why we have .. in relative path 
-	xmlhttp.open("GET", "../cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen), false);
+	xmlhttp.open("GET", "../cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			features_and_genes = this.responseText;}
@@ -161,10 +175,12 @@ function feature_list() {
 function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales) {
 	var file; 
 	//var target = '#tab-lookup';
-	// $(target).html('<span class="' + loadingClasses + '"></span>');
+	// $("#displayind").html('<span class="' + loadingClasses + '"></span>');
 	//$("#progressbar").css({"visibility": "visible"});
-	$("#displayindicator").html('<span class="' + loadingClasses + '"></span>');
-	console.log("Before: " + $("#displayindicator").css("visibility"));
+	// $("#displayindicator").html('<span class="' + loadingClasses + '"></span>');
+	$("#displayind2").addClass("being_removed"); 
+	console.log("Before: " + $("#displayind2").css("visibility"));
+	
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
 		encodeURIComponent(type) + "&source=" +
@@ -179,8 +195,10 @@ function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scal
 			if (this.readyState == 4 && this.status == 200) {
 			file = this.responseText;
 			//$("#progressbar").css({"visibility": "hidden"});
-				//$("#displayindicator").html('');
-	console.log("After: " + $("#displayindicator").css("visibility"));
+				//$("#displayind2").removeClass("being_removed"); 
+				// $("#displayind2").html('');
+				// $("#displayind2").html('progress');
+	console.log("After: " + $("#displayind2").css("visibility"));
 			}
 		}
 	xmlhttp.send();
@@ -244,7 +262,6 @@ function get_platforms(cohort, datatype, previous_platforms) {
 			platforms = this.responseText;}
 		}
 	xmlhttp.send();
-	console.log(platforms);
 	platforms = platforms.split("|");
 	//return platforms.slice(0, platforms.length-1);
 	var platforms_array = [];
@@ -324,9 +341,4 @@ function get_tcga_codes(cohort, datatype, previous_datatypes) {
 	xmlhttp.send();
 	codes = codes.split(",");
 	return codes;
-}
-
-function foo (argument) {
-	argument = argument == undefined ? 'Not defined' : 'Defined'
-	return argument;
 }

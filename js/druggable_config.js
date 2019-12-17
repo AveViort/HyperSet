@@ -22,9 +22,11 @@ ids_placeholders.set("NEA_MUT", "Pathway name");
 // headers
 var cor_headers = new Map();
 cor_headers.set("CCLE", "<tr><th>Gene</th><th>Feature</th><th>Data type</th><th>Platform</th><th>Screen</th><th>p1</th><th>p2</th><th>p3</th><th>q</th><th></th><th>Cohorts</th><th></th></tr>");
+cor_headers.set("TCGA", "<tr><th>Gene</th><th>Feature</th><th>Data type</th><th>Cohort</th><th>Platform</th><th>Screen</th><th>Sensitivity</th><th>Followup part</th><th>Interaction</th><th>Drug</th><th>Expr</th><th>q</th><th></th><th>Cohorts</th><th></th></tr>");
 // column names to retrieve from SQL
 var cor_sql_columns = new Map();
 cor_sql_columns.set("CCLE", "gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature");
+cor_sql_columns.set("TCGE", "gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q");
 // visible columns
 var cor_visible_columns = new Map();
 cor_visible_columns.set("CCLE", [
@@ -45,6 +47,35 @@ cor_visible_columns.set("CCLE", [
 			{ "data": "ancova_q_2x_feature",
 			  "render":  function (data) {
 				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "plot" },
+			{ "data": "cohort-selector" },
+			{ "data": "KM-button" }
+        ]
+);
+cor_visible_columns.set("TCGA", [
+            { "data": "gene" },
+            { "data": "feature" },
+            { "data": "datatype" },
+			{ "data": "cohort" },
+            { "data": "platform" },
+            { "data": "screen" },
+			{ "data": "sensitivity" },
+			{ "data": "followup_part" },
+            { "data": "interaction",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "drug",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "expression",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "q",
+			  "render":  function (data) {
+				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+			{ "data": "n_patients" },
+			{ "data": "n_treated" },
+			{ "data": "n_followup" },
 			{ "data": "plot" },
 			{ "data": "cohort-selector" },
 			{ "data": "KM-button" }

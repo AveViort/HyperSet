@@ -7,11 +7,11 @@ use HS_SQL;
 use Aconfig;
 
 our ($dbh, $stat);
-my( @source);
+my (@source);
 
 print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
-$stat = qq/SELECT DISTINCT source FROM cor_guide_table WHERE source IS NOT NULL AND sensitivity_measure=\'$Aconfig::sensitivity_m'\;/;
+$stat = qq/SELECT DISTINCT source FROM cor_guide_table WHERE source IS NOT NULL;/;
 $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 while (@source = $sth->fetchrow_array) {

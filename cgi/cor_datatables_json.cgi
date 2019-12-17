@@ -12,7 +12,9 @@ our ($dbh, $stat);
 my @row;
 
 my $query = new CGI;
-my $datatype 	= $query->param("datatype"); 
+my $source 		= $query->param("source"); 
+my $datatype 	= $query->param("datatype");
+my $cohort 		= $query->param("cohort"); 
 my $platform 	= $query->param("platform");
 my $screen 		= $query->param("screen");
 my $id 			= $query->param("id");
@@ -21,12 +23,13 @@ my $mindrug 	= $query->param("mindrug");
 my $columns 	= $query->param("columns");
 
 $datatype	= "%" if $datatype	eq "all";
+$cohort		= "%" if $cohort	eq "all";
 $platform	= "%" if $platform	eq "all";
 $screen 	= "%" if $screen	eq "all";
 $id 		= "%" if $id 		eq "";
 
 $dbh = HS_SQL::dbh('druggable');
-$stat = qq/SELECT retrieve_correlations(\'$datatype'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m'\, \'$id'\, $fdr, $mindrug, \'$columns'\);/;
+$stat = qq/SELECT retrieve_correlations(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\, \'$id'\, $fdr, $mindrug, \'$columns'\);/;
 
 print $query->header("application/json");
 print '{"data":';
@@ -37,7 +40,7 @@ my $row_id = 1;
 # carefull! This method is driver-dependent!
 my $rows = $sth->rows;
 my @column_names = split /,/, $columns;
-my @field_names = ("gene", "feature", "datatype", "platform", "screen");
+my @field_names = ("gene", "feature", "datatype", "cohort", "platform", "screen", "sensitivity");
 my $colnumber = @column_names;
 my $i;
 foreach $i(2..$colnumber-1) {
