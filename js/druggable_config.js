@@ -21,12 +21,12 @@ ids_placeholders.set("NEA_MUT", "Pathway name");
 // correlation tables settings
 // headers
 var cor_headers = new Map();
-cor_headers.set("CCLE", "<tr><th>Gene</th><th>Feature</th><th>Data type</th><th>Platform</th><th>Screen</th><th>p1</th><th>p2</th><th>p3</th><th>q</th><th></th><th>Cohorts</th><th></th></tr>");
-cor_headers.set("TCGA", "<tr><th>Gene</th><th>Feature</th><th>Data type</th><th>Cohort</th><th>Platform</th><th>Screen</th><th>Sensitivity</th><th>Followup part</th><th>Interaction</th><th>Drug</th><th>Expr</th><th>q</th><th></th><th>Cohorts</th><th></th></tr>");
+cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'></th><th title=\'\'>Cohorts in TCGA </th><th title=\'\'></th></tr>");
+cor_headers.set("TCGA", "<tr><th title=\'\'>Gene</th><th title=\'\'>Feature</th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>Cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th title=\'\'>Screen</th><th title=\'\'>Sensitivity</th><th title=\'\'>Followup part</th><th title=\'\'>Interaction</th><th title=\'\'>Drug</th><th title=\'\'>Expr</th><th title=\'\'>N treated</th><th title=\'\'>N patients</th><th title=\'\'>Followup</th><th title=\'\'>Cohorts</th><th title=\'\'></th></tr>");
 // column names to retrieve from SQL
 var cor_sql_columns = new Map();
 cor_sql_columns.set("CCLE", "gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature");
-cor_sql_columns.set("TCGE", "gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q");
+cor_sql_columns.set("TCGA", "gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,interaction");
 // visible columns
 var cor_visible_columns = new Map();
 cor_visible_columns.set("CCLE", [
@@ -67,16 +67,12 @@ cor_visible_columns.set("TCGA", [
 			{ "data": "drug",
 			  "render":  function (data) {
 				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
-			{ "data": "expression",
-			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
-			{ "data": "q",
+			{ "data": "expr",
 			  "render":  function (data) {
 				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
 			{ "data": "n_patients" },
 			{ "data": "n_treated" },
-			{ "data": "n_followup" },
-			{ "data": "plot" },
+			{ "data": "followup" },
 			{ "data": "cohort-selector" },
 			{ "data": "KM-button" }
         ]

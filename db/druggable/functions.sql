@@ -12,7 +12,7 @@ BEGIN
 res_array = ARRAY[]::text[];
 IF (data_type = '%') AND (cohort_n = '%') AND (platform_n = '%') AND (screen_name = '%')
 THEN
-FOR res IN SELECT id FROM cor_all_ids
+FOR res IN EXECUTE 'SELECT id FROM cor_all_ids_' || source_n
 LOOP
 SELECT array_append(res_array, res) INTO res_array;
 END LOOP;
@@ -172,13 +172,15 @@ CREATE OR REPLACE FUNCTION cor_platform_list (source_n text, data_type text, coh
 AS $$
 DECLARE
 res text;
+description_n text;
 sensitivity_array text array;
 BEGIN
 sensitivity_array := string_to_array(sensitivity_m, ',');
 -- NOTE that we have to use LIKE, not =, because user can ask for platforms for all datatypes 
 FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND sensitivity_measure=ANY(sensitivity_array)
 LOOP
-RETURN NEXT res;
+SELECT fullname INTO description_n FROM platform_descriptions WHERE shortname=lower(res);
+RETURN NEXT res || '|' || description_n;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -189,6 +191,7 @@ AS $$
 DECLARE
 res text;
 datatypes_array text array;
+description_n text;
 flag boolean;
 BEGIN
 datatypes_array := string_to_array(previous_datatypes, ',');
@@ -199,10 +202,12 @@ THEN
 SELECT check_datatypes_compatibility(res, datatypes_array) INTO flag;
 IF (flag)
 THEN 
-RETURN NEXT res;
+SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
 END IF;
 ELSE
-RETURN NEXT res;
+SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
 END IF;
 END LOOP;
 END;
@@ -213,12 +218,29 @@ CREATE OR REPLACE FUNCTION cor_datatype_list (source_n text, sensitivity_m text)
 AS $$
 DECLARE
 res text;
+description_n text;
 sensitivity_array text array;
 BEGIN
 sensitivity_array := string_to_array(sensitivity_m, ',');
 FOR res IN SELECT DISTINCT datatype FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) 
 LOOP
-RETURN NEXT res;
+SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- get correlations and their public names
+CREATE OR REPLACE FUNCTION cohort_list (source_n text) RETURNS setof text
+AS $$
+DECLARE
+res text;
+description_n text;
+BEGIN
+FOR res IN SELECT DISTINCT cohort FROM guide_table WHERE source=source_n
+LOOP
+SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -228,12 +250,14 @@ CREATE OR REPLACE FUNCTION cor_cohort_list (source_n text, datatype_n text, sens
 AS $$
 DECLARE
 res text;
+description_n text;
 sensitivity_array text array;
 BEGIN
 sensitivity_array := string_to_array(sensitivity_m, ',');
 FOR res IN SELECT DISTINCT cohort FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) AND datatype LIKE datatype_n 
 LOOP
-RETURN NEXT res;
+SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -590,16 +614,19 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- creates table with ALL unique ids from correlations
-CREATE OR REPLACE FUNCTION bar() RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION bar(source text) RETURNS setof text AS $$
 DECLARE
 table_name text;
 res text;
 res_array text array;
+query text;
 i numeric;
 BEGIN
-CREATE TABLE cor_all_ids (id text);
+query := 'CREATE TABLE cor_all_ids_' || source || ' (id text);';
+EXECUTE query;
+RAISE NOTICE 'query: %', query;
 res_array = ARRAY[]::text[];
-FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table ;'
+FOR table_name IN EXECUTE E'SELECT table_name FROM cor_guide_table WHERE source=\'' || source || E'\';'
 LOOP
 RAISE NOTICE 'Table: %', table_name;
 FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_name || ';'
@@ -619,7 +646,7 @@ END LOOP;
 END LOOP;
 FOR i IN 1..array_length(res_array, 1)
 LOOP
-INSERT INTO cor_all_ids(id) VALUES (res_array[i]);
+EXECUTE 'INSERT INTO cor_all_ids_' || source || E'(id) VALUES (\'' || res_array[i] || E'\');';
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -687,6 +714,9 @@ THEN
 res := res || cohort_n || ',';
 END IF;
 END LOOP;
+IF (res='') THEN
+res := ' ';
+END IF;
 RETURN res;
 END;
 $$ LANGUAGE plpgsql;
@@ -893,6 +923,38 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
+-- same for datatypes
+CREATE OR REPLACE FUNCTION update_datatype_description (datatype_n text, description text, display boolean) RETURNS boolean AS $$
+DECLARE
+flag boolean;
+BEGIN
+EXECUTE E'SELECT EXISTS (SELECT * FROM datatype_descriptions WHERE shortname=\'' || datatype_n || E'\');' INTO flag;
+IF (flag = true)
+THEN
+EXECUTE E'UPDATE datatype_descriptions SET fullname=\'' || description || E'\',visibility='|| display || E' WHERE shortname=\'' || datatype_n || E'\';';
+ELSE
+EXECUTE E'INSERT INTO datatype_descriptions VALUES (\'' || datatype_n || E'\', \'' || description || E'\', ' || display || ');';
+END IF;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same for cohorts
+CREATE OR REPLACE FUNCTION update_cohort_description (cohort_n text, description text, display boolean) RETURNS boolean AS $$
+DECLARE
+flag boolean;
+BEGIN
+EXECUTE E'SELECT EXISTS (SELECT * FROM cohort_descriptions WHERE shortname=\'' || cohort_n || E'\');' INTO flag;
+IF (flag = true)
+THEN
+EXECUTE E'UPDATE cohort_descriptions SET fullname=\'' || description || E'\',visibility='|| display || E' WHERE shortname=\'' || cohort_n || E'\';';
+ELSE
+EXECUTE E'INSERT INTO cohort_descriptions VALUES (\'' || cohort_n || E'\', \'' || description || E'\', ' || display || ');';
+END IF;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
 -- function to add an exclusion
 -- exclusions are platforms which are not shown for specific cohort and/or datatype
 CREATE OR REPLACE FUNCTION add_exclusion (cohort_n text, datatype_n text, platform_n text) RETURNS boolean AS $$
@@ -987,6 +1049,40 @@ table_codes := array_to_string(temp_array, ',');
 INSERT INTO tcga_codes(table_name, codes) VALUES (table_n, table_codes);
 END IF;
 RAISE NOTICE 'table_codes: %', table_codes;
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function will add codes for missing tables
+CREATE OR REPLACE FUNCTION update_tcga_codes_table() RETURNS boolean AS $$
+DECLARE
+table_n text;
+table_codes text;
+-- this variable is used to test if table contains patients or samples
+table_sample text;
+flag boolean;
+temp_array text array;
+BEGIN
+FOR table_n IN SELECT table_name FROM guide_table WHERE source = 'TCGA'
+LOOP
+SELECT EXISTS(SELECT * FROM tcga_codes WHERE table_name=table_n) INTO flag;
+IF (flag = FALSE)
+THEN
+table_codes := '';
+--RAISE NOTICE 'Table: %', table_n;
+EXECUTE 'SELECT sample FROM ' || table_n || ' LIMIT 1;' INTO table_sample;
+--RAISE NOTICE 'Chosen sample: %', table_sample;
+-- tables with samples have two digits in the end
+SELECT table_sample LIKE '%-__' INTO flag;
+IF (flag = TRUE) THEN
+RAISE NOTICE 'Table: %', table_n;
+EXECUTE 'SELECT ARRAY(SELECT DISTINCT (left_trim(sample, 13)) FROM ' || table_n || ');' INTO temp_array;
+table_codes := array_to_string(temp_array, ',');
+INSERT INTO tcga_codes(table_name, codes) VALUES (table_n, table_codes);
+RAISE NOTICE 'table_codes: %', table_codes;
+END IF;
+END IF;
 END LOOP;
 RETURN TRUE;
 END;

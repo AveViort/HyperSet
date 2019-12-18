@@ -57,12 +57,12 @@ while (@row = $sth->fetchrow_array()) {
 	}
 	my $plot = "";
 	if ($visible_datatype ne "MUT") {
-		$plot = '<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.@field_values[2].'\', \'drug\'], [\''.@field_values[3].'\', \''.@field_values[4].'\'], [\''.@field_values[0].'\', \''.@field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
+		$plot = '<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.@field_values[2].'\', \'drug\'], [\''.@field_values[4].'\', \''.@field_values[5].'\'], [\''.@field_values[0].'\', \''.@field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
 	}
 	my $cohort_selector = "";
 	my $km_button = "";
 	my $cohorts = @field_values[$colnumber-1];
-	if ($cohorts ne "") {
+	if ($cohorts ne " ") {
 		my @cohort_list = split /,/, $cohorts;
 		$cohort_selector = '<select id=\"TCGAcohortSelector'.$row_id.'\" class=\"ui-helper\">';
 		foreach (@cohort_list) {

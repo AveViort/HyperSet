@@ -188,3 +188,58 @@ export_surv_cor <- function(file_name, source, rch) {
   print(Sys.time());
   odbcClose(rch);
 }
+
+# These values are just placeholders!!!
+create_fake_q_values <- function(rch) {
+  print(Sys.time());
+  query <- "SELECT table_name FROM cor_guide_table WHERE source='TCGA';";
+  tables <- sqlQuery(rch, query);
+  for (table_name in tables$table_name) {
+    print(table_name);
+    query <- paste0("ALTER TABLE ", table_name, " ADD q numeric;");
+    sqlQuery(rch, query);
+    query <- paste0("UPDATE ", table_name, " SET q=0.01;");
+    sqlQuery(rch, query);
+  }
+  print(Sys.time());
+  odbcClose(rch);
+}
+
+clean_tcga_correlation_tables <- function(rch) {
+  print(Sys.time());
+  query <- "SELECT table_name FROM cor_guide_table WHERE source='TCGA';";
+  tables <- sqlQuery(rch, query);
+  for (table_name in tables$table_name) {
+    print(table_name);
+    query <- paste0("SELECT COUNT (*) FROM ", table_name, ";");
+    count <- sqlQuery(rch, query)[1,1];
+    print(paste0("Before: ", count));
+    query <- paste0("DELETE FROM ", table_name, " WHERE interaction IS NULL and drug IS NULL and expr IS NULL;");
+    sqlQuery(rch, query);
+    query <- paste0("SELECT COUNT (*) FROM ", table_name, ";");
+    count <- sqlQuery(rch, query)[1,1];
+    print(paste0("After: ", count));
+  }
+  print(Sys.time());
+}
+
+delete_empty_tcga_correlation_tables <- function(rch) {
+  print(Sys.time());
+  query <- "SELECT table_name FROM cor_guide_table WHERE source='TCGA';";
+  tables <- sqlQuery(rch, query);
+  deleted <- 0;
+  for (table_name in tables$table_name) {
+    query <- paste0("SELECT COUNT (*) FROM ", table_name, ";");
+    count <- sqlQuery(rch, query)[1,1];
+    if (count == 0) {
+      print(paste0("Delete table: ", table_name));
+      query <- paste0("DROP TABLE ", table_name, ";");
+      sqlQuery(rch, query);
+      query <- paste0("DELETE FROM cor_guide_table WHERE table_name='", table_name, "';");
+      sqlQuery(rch, query);
+      deleted <- deleted+1;
+    }
+  }
+  print(paste0("Number of deleted tables: ", deleted));
+  print(Sys.time());
+}

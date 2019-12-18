@@ -13,7 +13,7 @@ my $query = new CGI;
 my $source = $query->param('source');
 print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
-$stat = qq/SELECT DISTINCT cohort FROM guide_table WHERE (source=\'$source'\) AND (cohort IS NOT NULL)/;
+$stat = qq/SELECT cohort_list(\'$source'\)/;
 $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 while (@cohort = $sth->fetchrow_array) {

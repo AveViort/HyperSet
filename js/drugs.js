@@ -21,20 +21,30 @@ function get_correlation_datatypes(source) {
 		}
 	xmlhttp.send();
 	datatypes = datatypes.split("|");
-	return datatypes.slice(0, datatypes.length-1);
+	//return datatypes.slice(0, datatypes.length-1);
+	var datatypes_array = [];
+	for (i=0; i<datatypes.length-1; i=i+2) {
+		datatypes_array.push({datatype: datatypes[i], name: datatypes[i+1]});
+	}
+	return datatypes_array;
 }
 
 function get_correlation_cohorts(source,datatype) {
-	var datatypes;
+	var cohorts;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/correlation_cohorts.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-			datatypes = this.responseText;}
+			cohorts = this.responseText;}
 		}
 	xmlhttp.send();
-	datatypes = datatypes.split("|");
-	return datatypes.slice(0, datatypes.length-1);
+	cohorts = cohorts.split("|");
+	//return datatypes.slice(0, datatypes.length-1);
+	var cohorts_array = [];
+	for (i=0; i<cohorts.length-1; i=i+2) {
+		cohorts_array.push({cohort: cohorts[i], name: cohorts[i+1]});
+	}
+	return cohorts_array;
 }
 
 function get_correlation_platforms(source, datatype, cohort) {
@@ -47,7 +57,12 @@ function get_correlation_platforms(source, datatype, cohort) {
 		}
 	xmlhttp.send();
 	platforms = platforms.split("|");
-	return platforms.slice(0, platforms.length-1);
+	//return platforms.slice(0, platforms.length-1);
+	var platforms_array = [];
+	for (i=0; i<platforms.length-1; i=i+2) {
+		platforms_array.push({platform: platforms[i], name: platforms[i+1]});
+	}
+	return platforms_array;
 }
 
 function get_correlation_screens(source, datatype, cohort, platform) {
@@ -182,6 +197,15 @@ function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scal
 	console.log("Before: " + $("#displayind2").css("visibility"));
 	
 	var xmlhttp = new XMLHttpRequest();
+	console.log("cgi/rplot.cgi?type=" + 
+		encodeURIComponent(type) + "&source=" +
+		encodeURIComponent(source) + "&cohort=" + 
+		encodeURIComponent(cohort) + "&datatypes=" + 
+		encodeURIComponent(datatypes.join()) + "&platforms=" + 
+		encodeURIComponent(platforms.join()) + "&ids=" + 
+		encodeURIComponent(ids.join()) + "&tcga_codes=" + 
+		encodeURIComponent(tcga_codes.join()) + "&scales=" +
+		encodeURIComponent(scales.join()));
 	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
 		encodeURIComponent(type) + "&source=" +
 		encodeURIComponent(source) + "&cohort=" + 
@@ -231,7 +255,12 @@ function get_plot_cohorts(source) {
 	xmlhttp.send();
 	cohorts = cohorts.split("|");
 	// the last element is always ""
-	return cohorts.slice(0, cohorts.length-1);
+	//return cohorts.slice(0, cohorts.length-1);
+	var cohorts_array = [];
+	for (i=0; i<cohorts.length-1; i=i+2) {
+		cohorts_array.push({cohort: cohorts[i], name: cohorts[i+1]});
+	}
+	return cohorts_array;
 }
 
 function get_cohort_datatypes(cohort, previous_datatypes) {
@@ -245,15 +274,20 @@ function get_cohort_datatypes(cohort, previous_datatypes) {
 		}
 	xmlhttp.send();
 	datatypes = datatypes.split("|");
-	return datatypes.slice(0, datatypes.length-1);
+	//return datatypes.slice(0, datatypes.length-1);
+	var datatypes_array = [];
+	for (i=0; i<datatypes.length-1; i=i+2) {
+		datatypes_array.push({datatype: datatypes[i], name: datatypes[i+1]});
+	}
+	return datatypes_array;
 }
 
 function get_platforms(cohort, datatype, previous_platforms) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
-		"&datatype=" + encodeURIComponent(datatype) +
-		"&previous_platforms=" + encodeURIComponent(previous_platforms));
+	//console.log("cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
+	//	"&datatype=" + encodeURIComponent(datatype) +
+	//	"&previous_platforms=" + encodeURIComponent(previous_platforms));
 	xmlhttp.open("GET", "cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
 		"&datatype=" + encodeURIComponent(datatype) +
 		"&previous_platforms=" + encodeURIComponent(previous_platforms), false);
@@ -341,4 +375,32 @@ function get_tcga_codes(cohort, datatype, previous_datatypes) {
 	xmlhttp.send();
 	codes = codes.split(",");
 	return codes;
+}
+
+// these function are used for table headers tips on the second tab
+function get_datatypes_tip(source) {
+	var datatypes = get_correlation_datatypes(source);
+	var tip = "";
+	for (i in datatypes) {
+		tip = tip + datatypes[i].datatype + ": " + datatypes[i].name + "\n";
+	}
+	return tip;
+}
+
+function get_cohorts_tip(source) {
+	var cohorts = get_correlation_cohorts(source, "all");
+	var tip = "";
+	for (i in cohorts) {
+		tip = tip + cohorts[i].cohort + ": " + cohorts[i].name + "\n";
+	}
+	return tip;
+}
+
+function get_platforms_tip(source) {
+	var platforms = get_correlation_platforms(source, "all", "all");
+	var tip = "";
+	for (i in platforms) {
+		tip = tip + platforms[i].platform + ": " + platforms[i].name + "\n";
+	}
+	return tip;
 }

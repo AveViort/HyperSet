@@ -4,6 +4,32 @@ library(RODBC);
 library(gtools);
 source("../R/plot_common_functions.r");
 
+# WORKING WITH COHORT DESCRIPTIONS
+
+update_cohort_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
+	table_data <- read.csv2(table_name, header = FALSE);
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+	for (i in 1:nrow(table_data)) {
+		sqlQuery(rch, paste0("SELECT update_cohort_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3],")"));
+	}
+	print(paste0("Created/updated ", i, " records"));
+	odbcClose(rch);
+}
+
+# WORKING WITH DATATYPE DESCRIPTIONS
+
+update_datatype_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
+	table_data <- read.csv2(table_name, header = FALSE);
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+	for (i in 1:nrow(table_data)) {
+		sqlQuery(rch, paste0("SELECT update_datatype_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3],")"));
+	}
+	print(paste0("Created/updated ", i, " records"));
+	odbcClose(rch);
+}
+
 # WORKING WITH PLATFORM DESCRIPTIONS
 
 update_platform_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
@@ -117,7 +143,10 @@ update_plot_types  <- function(table_name, key_file = "HS_SQL.conf") {
 # platform1-platform2-platform3-plot
 # for 2D plots it will be platform1-platform2-''-plot
 # for 1D plots it will be platform1-''-''-plot
-add_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
+
+ # cat plots_all.csv | grep \;NA\;KM | sed '{s/NA/drug/g}' > plots.KM_2x2.csv
+ # add_plot_types("plots.KM_2x2.csv", key_file = "../cgi/HS_SQL.conf")
+ add_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
 	k <- change_plot_types(table_name, "add", key_file);
 	print(paste0("Added ", k, " records"));
 }
@@ -395,7 +424,7 @@ add_synonyms <- function(table_name, key_file = "HS_SQL.conf") {
 # basic function, reads data from sql table to csv
 # file_name - output csv file 
 # drch is an open RODBC channel
-druggable_get_table <- function(sql_table, key_file = "HS_SQL.conf", rch = '') {
+druggable_get_table <- function(sql_table, key_file = "HS_SQL.conf", drch = '') {
 	rch <- NULL;
 	if (drch == '') {
 		credentials <- getDbCredentials(key_file);

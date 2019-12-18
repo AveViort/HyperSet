@@ -39,10 +39,10 @@
 <script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script>
 <script src="js/Cytoscape.js/cytoscape.js-edgehandles.js" type="text/javascript"></script>
 
-<script src="js/druggable_config.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/HS.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/drugs.js" type="text/javascript"></script>
 <script src="js/cookies.js" type="text/javascript"></script>
+<script src="js/druggable_config.js" type="text/javascript" charset="utf-8"></script>
 
 <style>
 li.tab ul {
@@ -104,13 +104,14 @@ li.tab:hover ul {
 	
 <div id="tabs">
 	<ul>
-		<li><a href="#tab-home">Home</a></li>
+		<li><a href="#tab-home">Introduction and help</a></li>
 		<li><a href="#tab-signif">Significant results</a></li>
 		<li><a href="#tab-lookup">Look up</a></li>
 	</ul>
-	<div id="tab-home">This is a home tab</div>
+	<div id="tab-home">...</div>
 	<div id="tab-signif">
-		<table id="select_layout">
+<div class="inputarea inputareahighlight">
+	<table id="select_layout">
 			<tr>
 			<td>
 			<select name="corSource_selector" id="corSource_selector" class="ui-helper" style="width: 40ch;" >
@@ -137,7 +138,7 @@ li.tab:hover ul {
 			</td>
 			</tr>
 		</table>
-		
+	</div>	
 		<br>
 		<div class="container">
 			<table id="cor_result_table" class="ui-state-default ui-corner-all" style="width: 100%; font-size: x-small;">
@@ -170,6 +171,7 @@ li.tab:hover ul {
 			</tr>
 		</table>
 		<br>
+		<div class="inputarea inputareahighlight">
 		<table id = "plot_options">
 			<tr>
 				<th>Data type</th>
@@ -202,6 +204,7 @@ li.tab:hover ul {
 				</td>
 			</tr>
 		</table>
+		</div>
 	</div>
 	<br>
 	<table>
@@ -267,6 +270,7 @@ $(document).ready(function(){
 	$("#tabs").tabs({});
 	
 	$("#retrieve-cor-button").button();
+	$("#retrieve-cor-button").button("disable");
 	init_cor_source_selector();
 	$('#corSource_selector').val('CCLE');
 	$("#corSource_selector").selectmenu("refresh");
@@ -408,15 +412,16 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		// new plot
 		//console.log(parent_tab);
 		if (plot_filename == "no") {
-			//$("#progressbar").css({"visibility": "visible"});
-	/*		plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
+			$("#progressbar").css({"visibility": "visible"});
+			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
-			sessionStorage.setItem(plot_filename, plot_description);*/
-			//var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="800" height="600"></div>';
-var plot_id = '444';
-var graph_window = '<div id="plot_window_' + plot_id +'"><span class="ui-icon ui-icon-loading-status-balls rotate"></span></div>';
+			sessionStorage.setItem(plot_filename, plot_description);
+			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="720" height="540"></div>';
+/*var plot_id = '444';
+var graph_window = '<div id="plot_window_' + plot_id +'">TTT<span class="ui-icon ui-icon-loading-status-balls rotate"></span></div>';
 var plot_title = 'TTT';
-var parent_tab = '#tab-lookup';
+var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></span>';*/
+//var parent_tab = '#tab-lookup';
 			$(parent_tab).append(graph_window);
 			$("#plot_window_" + plot_id).dialog({
 				title: plot_title,
@@ -445,14 +450,14 @@ var parent_tab = '#tab-lookup';
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			}).parent().appendTo(parent_tab);
 						
-						plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
+			/*plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
-			sessionStorage.setItem(plot_filename, plot_description);
+			sessionStorage.setItem(plot_filename, plot_description);*/
 
-$(graph_window).append('<iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="800" height="600">');
+//$(graph_window).append('<iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="800" height="600">');
 			
 			//$("#displayind2").removeClass("being_removed");
-			//$("#progressbar").css({"visibility": "hidden"});
+			$("#progressbar").css({"visibility": "hidden"});
 		}
 		// existing plot
 		else {
@@ -740,8 +745,8 @@ function init_cohortselector() {
 	var cohorts = get_plot_cohorts($("#source_selector option:selected").val());
 	options = [];
 	for (i in cohorts) {
-		options.push("<option value='" + cohorts[i] + "'>" + cohorts[i] + "</option>");
-	}
+				options.push("<option value='"+ cohorts[i].cohort + "'>" + cohorts[i].name + "</option>");
+		}
 	$("#cohort_selector").append(options.join("")).selectmenu({
         width: "100px"
     });
@@ -781,7 +786,7 @@ function init_dataselector(selector_id) {
 	if (!empty) {
 		options = [];
 		for (i in datatypes) {
-			options.push("<option value='"+ datatypes[i] + "'>" + datatypes[i] + "</option>");
+				options.push("<option value='"+ datatypes[i].datatype + "'>" + datatypes[i].name + "</option>");
 		}
 		$("#" + selector_id).append(options.join("")).selectmenu({
 			width: "120px"
@@ -993,7 +998,7 @@ function init_cor_datatype_selector() {
 		options.push("<option value='all'>All datatypes</option>");
 		var datatypes = get_correlation_datatypes(cor_source);
 		for (i in datatypes) {
-			options.push("<option value='" + datatypes[i] + "'>" + datatypes[i] +"</option>");
+			options.push("<option value='" + datatypes[i].datatype + "'>" + datatypes[i].name +"</option>");
 		}
 	}
 	$("#corDatatype_selector").append(options.join("")).selectmenu(
@@ -1008,7 +1013,6 @@ function init_cor_datatype_selector() {
 }
 
 function init_cor_cohort_selector() {
-	console.log("Init cor cohort selector");
 	var options = [];
 	//options.push("<option value='undef' disabled selected>Choose platform</option>");
 	var cor_datatype = $("#corDatatype_selector option:selected").val();
@@ -1021,7 +1025,7 @@ function init_cor_cohort_selector() {
 		var cohorts = get_correlation_cohorts($("#corSource_selector option:selected").val(), cor_datatype);
 		options.push("<option value='all'>All cohorts</option>");
 		for (i in cohorts) {
-			options.push("<option value='" + cohorts[i] + "'>" + cohorts[i] +"</option>");
+			options.push("<option value='" + cohorts[i].cohort + "'>" + cohorts[i].name + "</option>");
 		}
 	}
 	$("#corCohort_selector").append(options.join("")).selectmenu({
@@ -1049,7 +1053,7 @@ function init_cor_platform_selector() {
 		var platforms = get_correlation_platforms($("#corSource_selector option:selected").val(), cor_datatype, cor_cohort);
 		options.push("<option value='all'>All platforms</option>");
 		for (i in platforms) {
-			options.push("<option value='" + platforms[i] + "'>" + platforms[i] +"</option>");
+			options.push("<option value='" + platforms[i].platform + "'>" + platforms[i].name +"</option>");
 		}
 	}
 	$("#corPlatform_selector").append(options.join("")).selectmenu({
@@ -1287,6 +1291,43 @@ function update_cor_source_selector() {
 	var previous_value = (getCookie("corSource_selector").split("|"))[0];
 	if (selector_value != previous_value) {
 		usetCookie("corSource_selector", selector_value, accepted_time);
+		$("#corGeneFeature_input").val("");
+		worker = new Worker("js/drug_id_grubber.js");
+		console.log("Starting worker " + Date.now());
+		worker.postMessage([$("#corSource_selector option:selected").val(), $("#corDatatype_selector option:selected").val(), $("#corCohort_selector option:selected").val(), $("#corPlatform_selector option:selected").val(), $("#corScreen_selector option:selected").val()]);
+		worker.onmessage = function(event) {
+			console.log("Received message from worker " + Date.now());
+			var autocomplete_ids = event.data;
+			$("#corGeneFeature_input").autocomplete({
+				source: autocomplete_ids,
+				minLength: 2,
+				response: function( event, ui ) {
+					if (ui.content.length > 20) {
+						console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
+						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+					}
+				},
+				search: function( event, ui ) {
+					var value = $("#" + event.target.getAttribute("id")).val();
+					console.log("Search triggered, value: " + value);
+					if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
+						// check if we have > 2 symbols
+						if (value.length > 2) {
+							// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
+							if (value[2] == "S") {
+								console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+								event.preventDefault();
+							}
+						}
+						else {
+							event.preventDefault();
+						}
+					}
+				} 
+			});
+			cor_id_keyup();
+			worker.terminate();
+		};
 		$('#corDatatype_selector').find('option').remove().end();
 		$('#corDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 		init_cor_datatype_selector();
@@ -1374,7 +1415,6 @@ function update_cor_screen_selector() {
 					}
 				} 
 			});
-			$("#corScreen_selector").selectmenu("enable");
 			$("#corDatatype_selector").selectmenu("enable");
 			if ($("#corSource_selector option:selected").val() != "CCLE") {
 				$("#corCohort_selector").selectmenu("enable");
@@ -1618,7 +1658,7 @@ function cor_id_keyup() {
 	var flag = true;
 	var valueSoFar = $("#corGeneFeature_input").val();
 	var available_ids = $( "#corGeneFeature_input" ).autocomplete("option", "source");
-	flag = flag*(available_ids.includes(valueSoFar) + (valueSoFar == ""));
+	flag = flag*(available_ids.includes(valueSoFar))*(valueSoFar!='');
 	var fdr = $("#FDR_input").val();
 	flag = flag * (fdr >= 0.001) * (fdr<1);
 	if (flag) {

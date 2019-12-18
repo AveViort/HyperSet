@@ -1,8 +1,9 @@
 source("../R/init_plot.r");
 library(survival);
+Debug = 1;
 
 # from usefull_functions.r
-plotSurvival  <- function (
+fitSurvival  <- function (
 	fe, #feature: a dependent variable, formatted as a vector of named elements
 	clin, # modified! 3 columns: sample, xx, xx.time
 	datatype, # COPY, GE, PE etc.
@@ -13,12 +14,13 @@ plotSurvival  <- function (
 	usedSamples=NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))
 	return.p=c("coefficient", "logtest", "sctest", "waldtest")[1] #which type p-value from coxph
 ) {
+# print(table(fe));
 	if (is.na(usedSamples)) {usedSamples <- intersect(names(fe), rownames(clin));}
-	#print("usedSamples (inside of plotSurvival):")
-	#print(str(usedSamples));
+	print("usedSamples (inside of plotSurvival):")
+	print(str(usedSamples));
 	fe <- fe[usedSamples];
-	#print("fe(inside of plotSurvival):")
-	#print(str(fe));
+	print("fe(inside of plotSurvival):")
+	print(str(fe));
 	if (mode(fe) == "numeric") {
 		label1 <- '';
 		label2 <- '';
@@ -30,9 +32,9 @@ plotSurvival  <- function (
 			label1 <- paste0("N(", toupper(id), "<0)=", label1_col);
 			label2 <- paste0("N(", toupper(id), ">0)=", label2_col);
 			label3 <- paste0("N(", toupper(id), "=0)=", label3_col);
-			print(label1);
-			print(label2);
-			print(label3);
+			# print(label1);
+			# print(label2);
+			# print(label3);
 			Pat.vector[which(fe < 0)] <- label1;
 			Pat.vector[which(fe > 0)] <- label2;
 			Pat.vector[which(fe == 0)] <- label3;
@@ -146,6 +148,7 @@ ggsurv <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
                    ylab = 'Survival', main = ''){
   
   library(ggplot2)
+  print(paste("Strata: ", s$strata))
   strata <- ifelse(is.null(s$strata) ==T, 1, length(s$strata))
   stopifnot(length(surv.col) == 1 | length(surv.col) == strata)
   stopifnot(length(lty.est) == 1 | length(lty.est) == strata)
@@ -265,7 +268,7 @@ ggsurv <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
   pl
 }
 
-print("druggable.km.r");
+# print("druggable.km.r");
 
 # markers
 Cov = c("os", "os_time", "pfs", "pfs_time", "rfs", "rfs_time", "dss", "dss_time", "dfi", "dfi_time", "pfi", "pfi_time");
@@ -278,7 +281,7 @@ second_set_platform <- '';
 second_set_id <- '';
 k <- ifelse(platforms[1] %in% Cov, 1, 2);
 m <- ifelse(k == 1, 2, 1);
-print(paste0("Found surv at the following position: ", k));
+# print(paste0("Found surv at the following position: ", k));
 first_set_datatype <- datatypes[k];
 # we have to use xx, not xx_time!
 first_set_platform <- ifelse(grepl("_time", platforms[k]), strsplit(platforms[k], "_")[[1]][1], platforms[k]);
@@ -296,7 +299,7 @@ second_set_table <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", first_set_platform, ",", first_set_platform, "_time FROM ", first_set_table, ";")
 first_set <- sqlQuery(rch, query);
 rownames(first_set) <- as.character(first_set[,1]);
-print(str(first_set));
+# print(str(first_set));
 
 # we need patients, not samples! If source is TCGA - choose patients with the specified code and remove codes
 query <- "SELECT ";
@@ -319,7 +322,7 @@ if ((Par["source"]=="tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))
 	query <- paste0(query, " AND sample LIKE '", createPostgreSQLregex(tcga_codes[m]),"'");
 }
 query <- paste0(query, ";");
-print(query);
+# print(query);
 second_set <- sqlQuery(rch, query);
 odbcClose(rch);
 fe <- as.character(second_set[,2]);
@@ -342,7 +345,7 @@ if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
 	names(temp) <- missing_patients;
 	fe <- c(fe, temp);
 }
-print(str(fe));
+# print(str(fe));
 if (all(is.na(fe))) {
 	print("All NAs, shutting down");
 	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
@@ -351,11 +354,13 @@ if (all(is.na(fe))) {
 	if (!empty_value(second_set_id)) {
 		plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
 	}
-	surv.data <- plotSurvival(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
-	#print("surv.data:");
-	#print(str(surv.data));
+		print(paste("table(fe): ", table(fe)));
+	# stop("end");
+	surv.fit <- fitSurvival(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
+	#print("surv.fit:");
+	#print(str(surv.fit));
 
-	a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = plot_title);
+	a <- ggsurv(surv.fit, ylab = toupper(first_set_platform), main = plot_title);
 	#print("a:");
 	#print(str(a));
 	p <- ggplotly(a);
