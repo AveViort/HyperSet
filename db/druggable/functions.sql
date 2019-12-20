@@ -684,7 +684,7 @@ query := query || E' \|\| \'\|\' \|\| ' || columns_array[i];
 --RAISE notice '%: query: %', i, query;
 END LOOP;
 i := array_length(columns_array, 1);
-query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[2] || ',' || mindrug || ') FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
+query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\', ' || fdr || ') FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
 --RAISE notice '%: query: %', i, query;
 EXECUTE query INTO res;
 --RAISE notice 'Query complete, number of rows: %', array_length(res,1);
@@ -700,19 +700,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- function to get TCGA cohorts for retrieve_correlations
-CREATE OR REPLACE FUNCTION retrieve_cohorts_for_drug(drug_name character varying, mindrug numeric) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION retrieve_cohorts_for_drug(target_id character varying, drug_name character varying, data_type character varying, coff numeric) RETURNS text AS $$
 DECLARE
 cohort_n text;
+platform_n text;
+measure_n text;
 res text;
-n_pats numeric;
 BEGIN
 res := '';
-FOR cohort_n, n_pats IN SELECT cohort,counts FROM drug_counts WHERE drug=drug_name
+FOR cohort_n, platform_n, measure_n IN SELECT cohort,platform,measure FROM significant_interactions WHERE feature=drug_name AND id=target_id AND datatype=data_type AND interaction<coff AND drug>0.25
 LOOP
-IF (n_pats > mindrug)
-THEN
-res := res || cohort_n || ',';
-END IF;
+res := res || cohort_n || '#' || data_type || '#' || platform_n || '#' || measure_n || ',';
 END LOOP;
 IF (res='') THEN
 res := ' ';

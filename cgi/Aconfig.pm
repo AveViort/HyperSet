@@ -29,7 +29,8 @@ our $tableDir = '/var/www/html/research/HyperSet/db/input_files/';
 # use this variable to set, which sensitivity measure should be used for correlations
 #our $sensitivity_m = 'LN_IC50_INVNORM_ROW';
 our %sensitivity_m = (
-"CCLE"	=>	'LN_IC50_INVNORM_ROW',
+#"CCLE"	=>	'LN_IC50_INVNORM_ROW'
+"CCLE"	=>	'LN_IC50_INVNORM_ROW,AUC_INVNORM_ROW',
 "TCGA"	=>	'os,rfs,pfi'
 );
 

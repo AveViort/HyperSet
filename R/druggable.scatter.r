@@ -104,13 +104,13 @@ if (status != 'ok') {
 					paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), sep="\n");
 		print(plot_legend);
 		x_axis <- list(
-			title = paste0(datatypes[1], ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+			title = paste0(toupper(datatypes[1]), ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
 			tickfont = font2);
 		y_axis <- list(
-			title = paste0(datatypes[2], ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+			title = paste0(toupper(datatypes[2]), ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
@@ -142,12 +142,12 @@ if (status != 'ok') {
 						//console.log('AGS genes: ', genes);
 						//console.log('Request and processing took ', endTime - startTime, ' ms');
 						//console.log('Hover: ', d) 
-					});
-				el.on('plotly_click', function(d) { 
+					});",
+				ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) { 
 						var id = ((d.points[0].text).split(' '))[1];
 						window.open('https://dev.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
-					});
-				el.on('plotly_selected', function(d) { console.log('Select: ', d) });
+					});"), ""),
+				"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 			}
 		")) %>%
 		layout(title = plot_title,
@@ -189,18 +189,18 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(datatypes[1], ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+				title = paste0(toupper(datatypes[1]), ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(datatypes[2], ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+				title = paste0(toupper(datatypes[2]), ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
-			z_axis <- paste0(datatypes[3], ifelse(!empty_value(ids[3]), paste0(" of ", ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")");
+			z_axis <- paste0(toupper(datatypes[3]), ifelse(!empty_value(ids[3]), paste0(" of ", ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")");
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
 				text = ~paste("Patient: ", common_samples), color = z_data) %>% 
 			colorbar(title = z_axis) %>%
@@ -212,9 +212,12 @@ if (status != 'ok') {
 						console.log('Datatype: ', datatype);
 						console.log('Platform: ', platform);
 						console.log('ID: ', d[0].text);
-						//console.log('Hover: ', d) });
-					el.on('plotly_click', function(d) { window.open('https://www.evinet.org/share.html#8ca697060e94e0388d182977ae514a414192464a550c82fac5733c0db0787773','_blank'); });
-					el.on('plotly_selected', function(d) { console.log('Select: ', d) });
+						//console.log('Hover: ', d) });",
+					ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) { 
+						var id = ((d.points[0].text).split(' '))[1];
+						window.open('https://dev.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
+					});"), ""),
+					"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 				}
 			")) %>%
 			layout(title = plot_title,
@@ -251,13 +254,13 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(datatypes[axis_index[1]], ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[1]]), strsplit(ids[axis_index[1]], ":")[[1]][1], ids[axis_index[1]])), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
+				title = paste0(toupper(datatypes[axis_index[1]]), ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[1]]), strsplit(ids[axis_index[1]], ":")[[1]][1], ids[axis_index[1]])), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(datatypes[axis_index[2]], ifelse(!empty_value(ids[axis_index[2]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[2]]), strsplit(ids[axis_index[2]], ":")[[1]][1], ids[axis_index[2]])), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
+				title = paste0(toupper(datatypes[axis_index[2]]), ifelse(!empty_value(ids[axis_index[2]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[2]]), strsplit(ids[axis_index[2]], ":")[[1]][1], ids[axis_index[2]])), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,

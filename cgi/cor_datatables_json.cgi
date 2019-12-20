@@ -56,8 +56,8 @@ while (@row = $sth->fetchrow_array()) {
 		print '"'.@field_names[$i].'":"'.@field_values[$i].'",';
 	}
 	my $plot = "";
-	if ($visible_datatype ne "MUT") {
-		$plot = '<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.@field_values[2].'\', \'drug\'], [\''.@field_values[4].'\', \''.@field_values[5].'\'], [\''.@field_values[0].'\', \''.@field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
+	if (@field_values[2] ne "MUT") {
+		$plot = '<button id=\"cor-plot'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.@field_values[2].'\', \'drug\'], [\''.@field_values[4].'\', \''.@field_values[5].'\'], [\''.@field_values[0].'\', \''.@field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
 	}
 	my $cohort_selector = "";
 	my $km_button = "";
@@ -66,10 +66,11 @@ while (@row = $sth->fetchrow_array()) {
 		my @cohort_list = split /,/, $cohorts;
 		$cohort_selector = '<select id=\"TCGAcohortSelector'.$row_id.'\" class=\"ui-helper\">';
 		foreach (@cohort_list) {
-			$cohort_selector .= '<option value=\"'.$_.'\">'.$_.'</option>';
+			my ($cohort_name, $datatype_name, $platform_name, $measure) = split /\#/, $_;
+			$cohort_selector .= '<option value=\"'.$cohort_name.'#'.$datatype_name.'#'.$platform_name.'#'.$measure.'\">'.$cohort_name.'-'.$platform_name.'-'.$measure.'</option>';
 		}
 		$cohort_selector .= '</select>';
-		$km_button = '<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val(), [\'drug\', \'clin\'], [\'drug\', \'os\'], [\''.@field_values[1].'\', \'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">KM</button>';
+		$km_button = '<button id=\"cor-KM'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'drug\', \'clin\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.@field_values[1].'\', \'\',\''.@field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\">KM</button>';
 	}
 	print '"plot":"'.$plot.'",';
 	print '"cohort-selector":"'.$cohort_selector.'",';

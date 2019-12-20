@@ -76,9 +76,9 @@ if (datatypes[1] == datatypes[2]) {
 	}
 	plot_title <- "";
 	if (platforms[1] == platforms[2]) {
-		plot_title <- paste0("VENN of ", toupper(Par["cohort"]), ":", datatypes[1], ":", readable_platforms[platforms[1],2]);
+		plot_title <- paste0("VENN of ", toupper(Par["cohort"]), ":", toupper(datatypes[1]), ":", readable_platforms[platforms[1],2]);
 	} else {	
-		plot_title <- paste0("VENN of ", toupper(Par["cohort"]), ":", datatypes[1]);
+		plot_title <- paste0("VENN of ", toupper(Par["cohort"]), ":", toupper(datatypes[1]));
 	}
 	plot_subtitle <- paste0("Total population: ", nrow(all_samples));
 	venn.list <- list(paste0(first_set[,1], "-", first_set[,2]), paste0(second_set[,1], "-", second_set[,2]));
@@ -93,7 +93,7 @@ if (datatypes[1] == datatypes[2]) {
 		margin = 0.075, lwd = 2, lty = 'blank', euler.d = FALSE, scaled = FALSE);
 	doc <- tags$html(
 		tags$head(
-			tags$title('My first page')
+			tags$title('Venn diagram')
 		),
 		tags$body(
 			img(src=paste0(fname, ".png"), width="100%", height="100%")

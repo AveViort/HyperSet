@@ -317,7 +317,7 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
     <li><a href="#help-tab-citation">Citation</a></li>
   </ul>
 	<div id="help-tab-faq">
-		<a href="help/faq-evi/evi-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
+		<a target="_blank" href="help/faq-evi/evi-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
 	</div>
 	<div id="help-tab-demo">
 <table><tr><td>
@@ -445,7 +445,7 @@ Ashwini Jeggari and Andrey Alexeyenko <span class="highlighted">NEArender: an R 
 
 <script type="text/javascript">
 $(function() {
-$("#help-tabs").tabs({heightStyle: "content"});
+$("#help-tabs").tabs({heightStyle: "fill"});
 });
 
 $(function() {
@@ -456,7 +456,7 @@ $("#help-dialog-static").dialog({
         modal: false,
         title: "Help, FAQ, downloads", 
         width:  1000,
-        height: "auto",
+        height: 600,
 		position: { 		my: "center", at: "center", 		of: window 		}, 
 autoOpen: false,
 show: {

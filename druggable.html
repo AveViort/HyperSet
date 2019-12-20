@@ -42,6 +42,7 @@
 <script src="js/HS.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/drugs.js" type="text/javascript"></script>
 <script src="js/cookies.js" type="text/javascript"></script>
+<script src="js/DR_demo.js" type="text/javascript"></script>
 <script src="js/druggable_config.js" type="text/javascript" charset="utf-8"></script>
 
 <style>
@@ -90,8 +91,30 @@ li.tab:hover ul {
 </HEAD>
 
 <BODY class="ui-state-default ui-corner-all">
-<div id="progressbar"></div>
-<div  id="displayind"><div id="displayind2">progress</div></div>
+<h1 class="main_header ui-widget-header ui-corner-all">Druggable </h1>
+<p class="main_header" style="background-color: #eeeeee; font-size: large; ">Molecular data &mdash; global interaction network &mdash; drug response</p>
+<div id="progressbar" style="display: inline-block; width: 40%;"></div>
+<div  style="display: inline; width: 35%;">
+<table><tr>
+<td>
+<div id="demo-1">
+<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
+</div>
+</td>
+<td>
+<div id="demo-3">
+<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
+</div>
+</td>
+<td>
+<div id="demo-2">
+<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
+</div>
+</td>
+
+</tr></table>
+</div>
+<!--div  id="displayind"><div id="displayind2">progress</div></div-->
 
 <div id="cookiewarning">
 	<div role="alert" class="ui-widget-header ui-corner-all" style=" margin: 5px; padding: 5px;">
@@ -105,10 +128,224 @@ li.tab:hover ul {
 <div id="tabs">
 	<ul>
 		<li><a href="#tab-home">Introduction and help</a></li>
-		<li><a href="#tab-signif">Significant results</a></li>
-		<li><a href="#tab-lookup">Look up</a></li>
+		<li><a href="#tab-signif">Correlates of drug response</a></li>
+		<li><a href="#tab-lookup">Data exploration and look up</a></li>
 	</ul>
-	<div id="tab-home">...</div>
+	<div id="tab-home">
+	<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
+<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
+</p></div>
+<div id="table-help-menu" style="display: inline;">
+<span  id="help-qtip" style="float: right; margin-right: 4em; margin-left: 1em;  font-size: 250%; color: #c00;" class="ui-icon ui-icon-circle-help" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');">icon</span>
+</div>
+
+
+
+ 
+</div>
+
+
+<div id="help-dialog-dr">
+<div id="help-tabs-dr">
+  <ul>
+    <li><a href="#help-tab-faq">FAQ</a></li>
+    <li><a href="#help-tab-demo">Demo</a></li>
+    <!--li><a href="#help-tab-login">Registration and login</a></li-->
+    <!--li><a href="#help-tab-file">Scenarios</a></li-->
+    <!--li><a href="#help-tab-download">Download</a></li-->
+    <!--li><a href="#help-tab-example">Example files</a></li-->
+    <li><a href="#help-tab-comp">Compatibility</a></li>
+    <li><a href="#help-tab-citation">Citation</a></li>
+  </ul>
+	<div id="help-tab-faq">
+		<a target="_blank" href="help/faq-evi/dr-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 2.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
+	</div>
+	<div id="help-tab-demo">
+<table><tr><td>
+				<!--div id="help-7" class="showme clickable demo_button sbm-controls" onclick="$('#help-dialog-dr').dialog('close'); demo1(
+'myveryfirstproject', 'mmu', 'KXD1 MKX NKX1-1 NKX1-2 NKX2-1 NKX2-2 NKX2-2AS  NKX2-3 NKX2-4 NKX2-5 PRKX','', 'fc_lim','KEGG.SIG.mmu','', '', '', '')" 
+ title="A quick demo<br>Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
+<img src="pics/_showme.png" class="showme" ></div-->
+ 
+		<!--div id="help-8" class="showme clickable demo_button sbm-controls" onclick="$('#help-dialog-dr').dialog('close'); demo3(
+'myveryfirstproject',
+'mmu',
+'ags-file-h3',
+'fc_lim',
+'KEGG.SIG.mmu'
+)" 
+ title="Demo for Venn diagrams.Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
+<img src="pics/venn627483358680368.png" class="showme"></div-->
+</td></tr></table>
+
+	</div>
+	<!--div id="help-tab-login">
+<h3>Using the sign-up form</h3>
+1) Accept cookies if asked.<br>
+2) Click on the arrow icon in the upper right corner.<br>
+3) Choose "Sign up".<br>
+4) Provide your email. If you are worried about your privacy - please read our <a href = https://www.evinet.org/help/faq-evi/evi-faq.html#privacy>FAQ</a>.<br>
+5) Create a strong password. Read our instruction about creating strong password. Please read <a href = help/password_policy.html>our help article on passwords</a>.<br>
+6) Confirm the chosen password and press "Sign up" button.<br>
+Here you go! You are now a registered user. Before using your account you have to activate it. You will receive a mail with the activation link.<br>
+
+Then do not forget to type in a new project ID in the project box (upper row) and press Enter.
+It should shine green. Then every time you login, your project(s) would be in the drop-down list.
+The user file lists (under "Altered gene sets" and "Functional gene sets") will be available if you press the respective icons in "File".
+	
+	</div>
+	<div id="help-tab-file">
+<div style="display: inline; float: right;"><a href="https://get.adobe.com/se/reader/"><img src='pics/pdf.jpg' style="width:  24px; height: 24px; margin-right: 1em;" title="Download PDF reader"></a></div>
+<table>
+<tr>
+<td>How to begin?</td>
+<td></td>
+<td><a href="help/part1.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Access, users, projects</td>
+<td></td>
+<td><a href="help/user_access.htm"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Identification of driver genes</td>
+<td></td>
+<td><a href="help/drivers.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Exploration of molecular landscapes</td>
+<td></td>
+<td><a href="help/molecular.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Using Venn diagrams</td>
+<td></td>
+<td><a href="help/venn_help.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+<tr>
+<td>Using stand-alone software</td>
+<td></td>
+<td><a href="help/nea_standalone.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
+</tr>
+</table>
+	</div>
+	<div id="help-tab-download">
+<p >Potentially, you can obtain much more useful output by running the perl script NEA.pl off-line.<br>NEA.pl is the script that executes network enrichment analysis at this web site.<br> Please note that while running analysis online, on this web-site, you can both look up the command line and <span style="color: red">download specific input and output files</span>.<br>Watch the text and links that appear after the current analysis finished. <br>You can to use them either as a reference or as input to a modified analysis off-line. _tmpAGS, _tmpFGS, and _tmpNET contain your submitted gene list(s), the collection of functional gene sets, and the network.</p>
+
+<a href="https://cran.r-project.org/web/packages/NEArender/index.html">R package NEArender on CRAN</a>
+<br>
+<a href="https://research.scilifelab.se/andrej_alexeyenko/downloads/NEArender/NEArender_1.4.tar.gz">R package NEArender on local site</a>
+<br>
+<a href='https://research.scilifelab.se/andrej_alexeyenko/downloads/NEA.pl'>perl script NEA.pl </a> from <a href='https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308' target='_blank'> Merid et al. (2014) </a>
+		
+	</div>
+	<div id="help-tab-example">
+TAB-delimited file with pre-compliled AGSs, gene IDS accompanied with AGS ID:
+<br>
+<a href='https://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/SomaticMutations.GBM_OV.example'>SomaticMutations.TCGA-2008</a>
+<br>
+TAB-delimited file with results of a differential expression analysis, gene IDs followed by fold change, p, and FDR values in multiple contrasts:
+<br>
+<a href='https://research.scilifelab.se/andrej_alexeyenko/downloads/P.matrix.NoModNodiff_wESC.DE.VENN.txt'> P.matrix.NoModNodiff_wESC.DE.VENN.txt</a>
+		
+	</div-->
+	<div id="help-tab-comp">
+Known compatibility issues:
+<br>
+This site best works with Google Chrome <span style="color: #00aa00;">(v. 60 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 57 or later)</span>. 
+<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span> (opening uploaded user's files)..
+<br>The site also works with Apple Safari (v. 11.1, macOS Sierra v10.12.6), other versions of Safari browser can have compatibility issues.
+	</div>
+	<div id="help-tab-citation">
+<b>Network-based biomarker discovery and validation:</b>
+  <p>
+Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
+<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
+<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
+  </p>
+
+<b>EviNet web resource:</b>
+<p>
+Ashwini Jeggari, Zhanna Alekseenko, José Dias, Johan Ericson, and Andrey Alexeyenko <span class="highlighted" style="color: #c00;">EviNet: a web platform for network enrichment analysis with flexible definition of gene sets</span> <b><i>Nucleic Acids Res</i></b> 2018 Jul 2;46(W1):W163-W170. <a class="clickable" href="https://doi.org/10.1093/nar/gky485">doi: 10.1002/1878-0261.12350</a>.
+  </p>
+	</div>
+	
+
+</div>
+</div>
+
+<script type="text/javascript">
+$(function() {
+$("#help-tabs-dr").tabs({heightStyle: "fill"});
+});
+
+$(function() {
+//$("#'.$dialogID.'").html("'.$text.'");
+//$("#help-menu-dr").menu();
+$("#help-dialog-dr").dialog({
+		resizable: false,
+        modal: false,
+        title: "Help, FAQ, demo", 
+        width:  1000,
+        height: 600,
+		position: { 		my: "center", at: "center", 		of: window 		}, 
+autoOpen: false,
+show: {
+//effect: "blind", duration: 380
+},
+close: function() {
+//$("#help-dialog-dr").css({"visibility": hidden});
+//$("#help-dialog-dr").html("");
+//$("[id*='qtip-'][aria-hidden='false']" ).remove(); //span:nth-child(3)
+//$( this ).dialog( "destroy" );
+}
+});
+//$('[aria-describedby="help-dialog-dr"]').css({"z-index": 1001});
+//$(".nea_loading").removeClass("nea_loading");
+//$("#usable-url").html("");
+//openTab( "analysis_type_ne", HSTabs.subtab.indices["'.$backTab.'"]);
+// $( "#rocOpener" ).click(function() {$( "#showError" ).dialog( "open" );});
+});
+function showDialogStatic (title, message) {
+$("#error-dialog-dr").html(message);
+$("#error-dialog-dr").dialog({
+		resizable: false,
+        modal: true,
+        title: title, 
+        width:  400,
+        height: "auto",
+		position: { 		my: "center", at: "center", 		of: window 		}, 
+autoOpen: true,
+show: {
+//effect: "blind", duration: 380
+},
+close: function() {}
+});
+}
+
+$("#help-qtip").qtip({
+     show: true, 
+     hide: "unfocus", 
+
+        content: {
+        text: function(event, api) {
+            return $(this).attr("title");
+        }
+        }, 
+        position: {
+                viewport: $(window)
+                },
+        style: {
+                classes: "qtip-bootstrap",
+                tip: {
+                        width: 16,
+                        height: 8
+                }}
+});
+
+</script>
+
+
 	<div id="tab-signif">
 <div class="inputarea inputareahighlight">
 	<table id="select_layout">
@@ -385,8 +622,10 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		// get all child nodes of #tabs
 		var nodes = $("#tabs").tabs()[0].childNodes;
 		// this is the node used to attach plot - pay attention to 3+2*!
-		var parent_tab = "#" + nodes[3+2*$("#tabs").tabs("option", "active")].getAttribute("id");
-		// variables are initialised when this function is called from correlations table, otherwise - initialise them
+		//var parent_tab = "#" + nodes[3+2*$("#tabs").tabs("option", "active")].getAttribute("id");
+		var parent_tab = "#" + nodes[6+2*$("#tabs").tabs("option", "active")].getAttribute("id");;
+//var parent_tab = '#tab-lookup';		
+// variables are initialised when this function is called from correlations table, otherwise - initialise them
 		if (type == undefined) {
 			type = $('#plot-type option:selected').val();
 			var n = $('#plot_options tr').length-1;
@@ -416,12 +655,12 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			sessionStorage.setItem(plot_filename, plot_description);
-			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="720" height="540"></div>';
+			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 /*var plot_id = '444';
 var graph_window = '<div id="plot_window_' + plot_id +'">TTT<span class="ui-icon ui-icon-loading-status-balls rotate"></span></div>';
 var plot_title = 'TTT';
 var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></span>';*/
-//var parent_tab = '#tab-lookup';
+
 			$(parent_tab).append(graph_window);
 			$("#plot_window_" + plot_id).dialog({
 				title: plot_title,
@@ -432,10 +671,11 @@ var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></sp
 						click: function() {plot_minimize(this)},
 					},
 					{
-						text: "Dock",
+						text: "Get link",
 						icon: "ui-icon-arrowthickstop-1-s",
 						click: function() {
-							dock_plot(this, plot_id);
+							//dock_plot(this, plot_id);
+							alert("You can use this as a direct link: https://www.evinet.org/pics/plots/" + plot_filename);
 						},
 						showText: false
 					}
@@ -469,7 +709,7 @@ var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></sp
 			}
 			else {
 				console.log("Plot was closed");
-				var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="550" height="400"></div>';
+				var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 				$(graph_window).dialog({
 					title: plot_title,
 					buttons: [
@@ -479,10 +719,11 @@ var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></sp
 							click: function() {plot_minimize(this)}
 						},
 						{
-							text: "Dock",
+							text: "Get link",
 							icon: "ui-icon-arrowthickstop-1-s",
 							click: function() {
-								dock_plot(this, plot_id);
+								//dock_plot(this, plot_id);
+								alert("You can use this as a direct link: https://www.evinet.org/pics/plots/" + plot_filename);
 							}
 						}
 					],
@@ -550,11 +791,12 @@ function retrieve_correlations() {
 	var id = ($("#corGeneFeature_input").val()).toLowerCase();
 	var fdr = $("#FDR_input").val();
 	// clear result table each time
-	document.getElementById("cor_result_table").innerHTML = '<table></table>';
+	document.getElementById("cor_result_table").innerHTML = '<table><thead>' + cor_headers.get(source) + '</thead></table>';
 	// variable min_pat_drug_number defined in druggable_config.js and used for defining if TCGA cohort should be offered for KM plot
 	// i.e. if min_pat_drug_number=10 and BRCA has 12 patients with drug A - BRCA will be offered
-	console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source));
+	//console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source));
 	var data_table = $('#cor_result_table').DataTable({
+		"ordering": true,
 		"ajax": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source),
         "columns": cor_visible_columns.get(source),
 		buttons: [
@@ -564,8 +806,6 @@ function retrieve_correlations() {
 			{ className: "dt-center", targets: "_all" }
 		]});
 		data_table.buttons().container().prependTo( $("#cor_result_table_wrapper"));
-		var table_head = document.getElementById("cor_result_table").createTHead();
-		table_head.innerHTML = cor_headers.get(source);
 }
 
 function tcga_km_from_cor(i, drug) {
@@ -744,8 +984,10 @@ function delete_plot_options_row(i) {
 function init_cohortselector() {
 	var cohorts = get_plot_cohorts($("#source_selector option:selected").val());
 	options = [];
+	var cohort_ids = [];
 	for (i in cohorts) {
 				options.push("<option value='"+ cohorts[i].cohort + "'>" + cohorts[i].name + "</option>");
+				cohort_ids.push(cohorts[i].cohort);
 		}
 	$("#cohort_selector").append(options.join("")).selectmenu({
         width: "100px"
@@ -755,7 +997,7 @@ function init_cohortselector() {
 	if (cookies) {
 		var previous_selection = (getCookie("cohort").split("|"))[0];
 		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		if (cohorts.includes(previous_selection)) {
+		if (cohort_ids.includes(previous_selection)) {
 			$("#cohort_selector").val(previous_selection);
 		}
 		usetCookie("cohort", $("#cohort_selector option:selected").val(), accepted_time);
@@ -785,8 +1027,10 @@ function init_dataselector(selector_id) {
 	var empty = (datatypes.length == 0);
 	if (!empty) {
 		options = [];
+		var datatypes_ids = [];
 		for (i in datatypes) {
 				options.push("<option value='"+ datatypes[i].datatype + "'>" + datatypes[i].name + "</option>");
+				datatypes_ids.push(datatypes[i].datatype);
 		}
 		$("#" + selector_id).append(options.join("")).selectmenu({
 			width: "120px"
@@ -794,7 +1038,7 @@ function init_dataselector(selector_id) {
 		var cookies = checkCookiesAccepted();
 		if (cookies) {
 			var previous_selection = (getCookie(selector_id).split("|"))[0];
-			if (datatypes.includes(previous_selection)) {
+			if (datatypes_ids.includes(previous_selection)) {
 				$("#" + selector_id).val(previous_selection);
 				$("#" + selector_id).selectmenu( "refresh" );
 			}
@@ -1338,33 +1582,42 @@ function update_cor_source_selector() {
 function update_cor_datatype_selector() {
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corDatatype_selector option:selected").val();
-	usetCookie("corDatatype_selector", selector_value, accepted_time);
-	$('#corCohort_selector').find('option').remove().end();
-	$('#corCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_cor_cohort_selector();
-	$('#corCohort_selector').selectmenu( "refresh" );
+	var previous_value = (getCookie("corDatatype_selector").split("|"))[0];
+	if (selector_value != previous_value) {
+		usetCookie("corDatatype_selector", selector_value, accepted_time);
+		$('#corCohort_selector').find('option').remove().end();
+		$('#corCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_cor_cohort_selector();
+		$('#corCohort_selector').selectmenu( "refresh" );
+	}
 }
 
 function update_cor_cohort_selector() {
 	// here we don't compare previous value and current - previous value can be "all", but the function can be called by datatype change
 	var selector_value = $("#corCohort_selector option:selected").val();
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("corCohort_selector", selector_value, accepted_time);
-	$('#corPlatform_selector').find('option').remove().end();
-	$('#corPlatform_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_cor_platform_selector();
-	$('#corPlatform_selector').selectmenu( "refresh" );
+	var previous_value = (getCookie("corCohort_selector").split("|"))[0];
+	if (selector_value != previous_value) {
+		usetCookie("corCohort_selector", selector_value, accepted_time);
+		$('#corPlatform_selector').find('option').remove().end();
+		$('#corPlatform_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_cor_platform_selector();
+		$('#corPlatform_selector').selectmenu( "refresh" );
+	}
 }
 
 function update_cor_platform_selector() {
 	// here we don't compare previous value and current - previous value can be "all", but the function can be called by datatype change
 	var selector_value = $("#corPlatform_selector option:selected").val();
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("corPlatform_selector", selector_value, accepted_time);
-	$('#corScreen_selector').find('option').remove().end();
-	$('#corScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_cor_screen_selector();
-	$('#corScreen_selector').selectmenu( "refresh" );
+	var previous_value = (getCookie("corPlatform_selector").split("|"))[0];
+	if (selector_value != previous_value) {
+		usetCookie("corPlatform_selector", selector_value, accepted_time);
+		$('#corScreen_selector').find('option').remove().end();
+		$('#corScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_cor_screen_selector();
+		$('#corScreen_selector').selectmenu( "refresh" );
+	}
 }
 
 function update_cor_screen_selector() {
@@ -1524,6 +1777,7 @@ function update(initiator) {
 					if (current_value != previous_value) {
 						update_cor_cohort_selector();
 						update_cor_platform_selector();
+						update_cor_screen_selector();
 					}
 					break;
 				case "corCohort":
@@ -1531,10 +1785,12 @@ function update(initiator) {
 					var current_value = $("#" + initiator + " option:selected").val();
 					if (current_value != previous_value) {
 						update_cor_platform_selector();
+						update_cor_screen_selector();
 					}
 					break;
 				case "corPlatform":
 					update_cor_platform_selector();
+					update_cor_screen_selector();
 					break;
 				case "corScreen":
 					update_cor_screen_selector();
@@ -1616,11 +1872,12 @@ function id_keyup(k) {
 		var valueSoFar = $("#id" + k + "_input").val();
 		if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
 			valueSoFar = valueSoFar.toUpperCase();
-			$("#id" + i + "_input").val(valueSoFar);
+			$("#id" + k + "_input").val(valueSoFar);
 		}
 		var temp_flag = available_ids.includes(valueSoFar);
 		if (temp_flag) {
 					var confirmed = synonyms.get($("#id" + k + "_input").val());
+					console.log("Confirmed: " + confirmed);
 					$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
 					setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
 								$("#id" + k + "_input").css('background-color', '')}, 500);

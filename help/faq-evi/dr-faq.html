@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+	<LINK href="https://www.evinet.org/js/jquery-ui-themes-1.11.2/themes/redmond/jquery-ui-1.11.icon-font.min.css" type="text/css" rel="stylesheet">
+
+	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="css/test_v2.css"> <!-- Resource style -->
+	<!--LINK href="../../js/jquery-ui-themes-1.11.2/themes/redmond/jquery-ui.min.css" type="text/css" rel="stylesheet">
+	<script src="../../js/jquery-2.1.1.min.js" type="text/javascript"></script>
+	<script src="../../js/jquery-ui-1.11.2/jquery-ui.min.js" type="text/javascript"></script-->
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+
+	<title>Druggable FAQ </title>
+	<style>
+.restore_defaults {
+	all: initial;
+	display: block;
+	font-family: "Open Sans", sans-serif;
+	margin: 10px;
+	
+  }
+  	TD{font-family: Arial; font-size: 9pt}
+
+	table {
+    	font-family: arial, sans-serif;
+    	border-collapse: collapse;
+    	width: 100%;
+	}
+
+	td, th {
+    	border: 1px solid black;
+    	text-align: center;
+    	padding: 8px;
+	}
+
+	tr:hover{
+   	 background-color: #dddddd;
+	}
+
+	</style>
+</head>
+<body>
+<header>
+	<h1>Frequently asked questions</h1>
+</header>
+
+<!--ul>
+<li>Versions</li><li>
+Datasets</li><li>
+Platforms</li><li>
+Metrics</li><li>
+Significance interpretation</li><li>
+Added value of NEA</li>
+</ul-->
+<section class="cd-faq">
+	<ul class="cd-faq-categories">
+		<li><a class="selected" href="#basics">Basics</a></li>
+		<li><a href="#data">Data</a></li>
+		<li><a href="#usage">Usage</a></li>
+		<li><a href="#mail">Enquires</a></li>
+	</ul> <!-- cd-faq-categories -->
+
+	<div class="cd-faq-items">
+		<ul id="basics" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Basics</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">What is the web server functionality?</a>
+				<div class="cd-faq-content">
+					<p> Server Druggable was created to provide the biomedical research community with a handy tool for quick look-up at data from large public repositories such as The Cancer Genome Atlas (TCGA) and The Cancer Cell Line Encyclopedia (CCLE) as well as mining basic functional relations via statistical and network tools. Many resources have enabled such access (OncoMine, PharmacoDB, CTD etc.) but none of them, to the best of our knowledge, combined quick data access, advanced visualization, and basic correlation analysis between 2 or 3 variables, including phenotype information. Partially, the issue was addressed by project-specific sites, but then there was no way to cross-check findings in alternative in vitro screens and cohorts. The idea of our server came from collaboration experience. Oftentimes biologists - often possessing just basic Excel skills - are left alone with the task to download, parse, and organize the big datasets in order to perform relatively simple visual and statistical analyses. Many did not manage the difficulties and resorted to own lab experiments just to establish a correlation which could have been readily recovered from a public resource. For the same reason, molecular “biomarkers” too often get published without proper biological and statistical validation. Therefore, the new web server provides access to sub-network views of the pathway correlates, which uses the engine of our server Evinet.org, also published in NAR (Jeggari et a., 2018) but not directly related to that. Druggable provides both pre-calculated lists of correlates and direct access to the datasets.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+			<li>
+				<a class="cd-faq-trigger" href="#0">What would be an advantage of considering interaction network in my research?</a>
+				<div class="cd-faq-content">
+					<p>The data integration using global gene networks has the following strengths: 
+<ul>
+<li>The global network includes all major types of molecular interactions, hence the analysis readily incorporates data from different platforms.</li> 
+<li>The problem of cancer heterogeneity at the levels of individual promoters, genes, and proteins is solved by summarizing them to pathways via e.g. the Network Enrichment Analysis, and </li>
+<li>The pathway view enables efficient, low-dimensional statistical analysis and is transparent for biological interpretation. </li>
+</ul>
+</p> 
+				</div> <!-- cd-faq-content -->
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">What is added value from using network enrichment scores as correlates?</a>
+				<div class="cd-faq-content">
+					<p>Our work demonstrated advantage of network enrichment analysis (NEA) scores over single gene/protein profiles. The same was true in a comparison against enrichment scores produced by other methods. This was proved in terms of robustness and reproducibility in independent datasets and cohorts:</p>
+					<p style="font-size: x-small;">
+Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
+<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
+<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
+  </p>
+  					<p>We provide correlates based on the NEA scores in parallel with original gene/protein level data from CCLE and TCGA. Compared to the latter, NEA-based datapoins at the plots are clickable which provides a network context view on the gene sets.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="data" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Major public data sources presented at Druggable</h2></li>
+						<li>
+				<a class="cd-faq-trigger" href="#0">The Cancer Genome Atlas</a>
+				<div class="cd-faq-content">
+					<p> Ten biggest TCGA cohorts with all their major omics datasets over most of the patient line samples are accompanied with patients' clinical records. In addition, TCGA-based PanCancer projects provided extra data from e.g. leucocyte counts from <i>in silico</i> image analysis over the same samples (Saltz et al., 2018).
+<a class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">No. of samples in TCGA cohort, per omics platform</a>
+					<img src="../../pics/TCGA_10.png" alt="TCGA cohort table" width="96%"> <br> 
+					</p>
+				</div> <!-- cd-faq-content -->
+			</li>						<li>
+				<a class="cd-faq-trigger" href="#0">The Cancer Cell Line Encyclopedia</a>
+				<div class="cd-faq-content">
+					<p> The CCLE collection over close to 1000 cancer cell lines contains both omics (gene expression, gene copy number, point mutation and proteomics) data and results of three  large-scale <i>in vitro</i> drug screens, which inluded more than 600 approved and experimental drugs in total.
+					
+<a class="clickable" href="https://portals.broadinstitute.org/ccle/">CCLE</a>
+					</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+
+		<ul id="usage" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Using the web server</h2></li>
+				<li>
+				<a class="cd-faq-trigger" href="#0">Finding pre-calculated correlates</a>
+				<div class="cd-faq-content">
+					<p> 
+The table in second tab allows extracting lists of molecular correlates from particular omics platforms for specific drugs. In CCLE, we calculated correlates of drug sensitivity <i>in vitro</i> in the commonly accepted 2-factorial linear model, where the tissue of origin served a covariate. Therefore, the other model term, called "feature" represents a "net" effect of the molecular feature. <br>
+In TCGA, the 2-factorial models with interaction terms allowed comparison of disease outcome given high vs. low molecular feature score between groups of patients who differed in having/not having the drug treatment in the clinical history. Thus the significant (i.e. low p-value) "interaction" term in the model points to a predictive potential of the molecular feature with regard of the treatment outcome.
+Demos on the top of the main page can help to start.
+					</p>
+				</div> <!-- cd-faq-content -->
+			</li>						<li>
+				<a class="cd-faq-trigger" href="#0">Exploring relations between different variables</a>
+				<div class="cd-faq-content">
+The thrid tab provides access to most of the big datasets in TCGA  and CCLE. Users can choose plotting selected variables, such as gene expression or mutation profiles, against each other or versus clinical or cytological variables. By clicking at '+' in the end of each line, one can add up to 3 dimensions to the plot (the 3rd one would then be represented as color). Variable scales can be adjusted via log or square root transformation. If a certain data-plot combination is not enabled, it is recommended to remove the lines and start again in a different order.
+Demos on the top of the main page can help to start.
+				</div> <!-- cd-faq-content -->
+			</li>
+									
+			
+		</ul> <!-- cd-faq-group -->
+
+		
+		<ul id="mail" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Enquires</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#0">Found problems?</a>
+				<div class="cd-faq-content">
+					<a href="mailto:andrej.alekseenko@scilifelab.se">Send us email</a>
+				</div> <!-- cd-faq-content -->
+			</li>
+		</ul> <!-- cd-faq-group -->
+	
+	</div> <!-- cd-faq-items -->
+	
+	<a href="#0" class="cd-close-panel">Close</a>
+</section> <!-- cd-faq -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/jquery.mobile.custom.min.js"></script>
+<script src="js/main.js"></script> <!-- Resource jQuery -->
+</body>
+</html>
+
