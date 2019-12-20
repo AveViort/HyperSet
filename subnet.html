@@ -53,7 +53,7 @@ function show()
 	//var plot_name = 'subnet-1___USERS_LIST_AGS___HALLMARK_PANCREAS_BETA_CELLS___fromCytoscapeJS';
 	console.log(plot_name);
 	var div_content = '';
-	xmlhttp.open('GET', 'https://' + location.hostname + 'cgi/i.cgi?mode=standalone&username=&sid=&signature=&neafile=default&step=default&subneturlbox=' + encodeURIComponent('reduce=;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;coff=-0.5;ags_fgs=yes;species=hsa;context_genes=' + context_genes.join('%0D%0A') + ';genes=' + genes.join('%0D%0A') + ';order=0;networks=data_pwc9;no_of_links=1000') + ';action=' + encodeURIComponent(plot_name) + ';changeLayout=arbor;saveCytoscapeView=saveCyView;input-save-cy-view=CytoScapeView1;caseNodeLabels=uppercase;edgeLabel=showEdgeLabel', false);
+	xmlhttp.open('GET', 'https://' + location.hostname + '/cgi/i.cgi?mode=standalone&username=&sid=&signature=&neafile=default&step=default&subneturlbox=' + encodeURIComponent('reduce=;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;coff=-0.5;ags_fgs=yes;species=hsa;context_genes=' + context_genes.join('%0D%0A') + ';genes=' + genes.join('%0D%0A') + ';order=0;networks=data_pwc9;no_of_links=1000') + ';action=' + encodeURIComponent(plot_name) + ';changeLayout=arbor;saveCytoscapeView=saveCyView;input-save-cy-view=CytoScapeView1;caseNodeLabels=uppercase;edgeLabel=showEdgeLabel', false);
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			div_content = this.responseText;}

@@ -145,7 +145,7 @@ if (status != 'ok') {
 					});",
 				ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) { 
 						var id = ((d.points[0].text).split(' '))[1];
-						window.open('https://dev.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
+						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
 					});"), ""),
 				"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 			}
@@ -215,7 +215,7 @@ if (status != 'ok') {
 						//console.log('Hover: ', d) });",
 					ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) { 
 						var id = ((d.points[0].text).split(' '))[1];
-						window.open('https://dev.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
+						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
 					});"), ""),
 					"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 				}
