@@ -131,146 +131,60 @@ li.tab:hover ul {
 		<li><a href="#tab-signif">Correlates of drug response</a></li>
 		<li><a href="#tab-lookup">Data exploration and look up</a></li>
 	</ul>
+	
 	<div id="tab-home">
-	<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
-<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
-</p></div>
-<div id="table-help-menu" style="display: inline;">
-<span  id="help-qtip" style="float: right; margin-right: 4em; margin-left: 1em;  font-size: 250%; color: #c00;" class="ui-icon ui-icon-circle-help" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');">icon</span>
-</div>
-
-
-
- 
-</div>
-
-
-<div id="help-dialog-dr">
-<div id="help-tabs-dr">
-  <ul>
-    <li><a href="#help-tab-faq">FAQ</a></li>
-    <li><a href="#help-tab-demo">Demo</a></li>
-    <!--li><a href="#help-tab-login">Registration and login</a></li-->
-    <!--li><a href="#help-tab-file">Scenarios</a></li-->
-    <!--li><a href="#help-tab-download">Download</a></li-->
-    <!--li><a href="#help-tab-example">Example files</a></li-->
-    <li><a href="#help-tab-comp">Compatibility</a></li>
-    <li><a href="#help-tab-citation">Citation</a></li>
-  </ul>
-	<div id="help-tab-faq">
-		<a target="_blank" href="help/faq-evi/dr-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 2.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
+		<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
+			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
+			</p>
+		</div>
+		
+		<div id="table-help-menu" style="display: inline;">
+			<span  id="help-qtip" style="float: right; margin-right: 4em; margin-left: 1em;  font-size: 250%; color: #c00;" class="ui-icon ui-icon-circle-help" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');">icon</span>
+		</div>
 	</div>
-	<div id="help-tab-demo">
-<table><tr><td>
-				<!--div id="help-7" class="showme clickable demo_button sbm-controls" onclick="$('#help-dialog-dr').dialog('close'); demo1(
-'myveryfirstproject', 'mmu', 'KXD1 MKX NKX1-1 NKX1-2 NKX2-1 NKX2-2 NKX2-2AS  NKX2-3 NKX2-4 NKX2-5 PRKX','', 'fc_lim','KEGG.SIG.mmu','', '', '', '')" 
- title="A quick demo<br>Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
-<img src="pics/_showme.png" class="showme" ></div-->
- 
-		<!--div id="help-8" class="showme clickable demo_button sbm-controls" onclick="$('#help-dialog-dr').dialog('close'); demo3(
-'myveryfirstproject',
-'mmu',
-'ags-file-h3',
-'fc_lim',
-'KEGG.SIG.mmu'
-)" 
- title="Demo for Venn diagrams.Note that this is a real-life execution. Hence for robustness it is recommended to refresh  the page (F5) and let it running without extra interference."> 
-<img src="pics/venn627483358680368.png" class="showme"></div-->
-</td></tr></table>
-
-	</div>
-	<!--div id="help-tab-login">
-<h3>Using the sign-up form</h3>
-1) Accept cookies if asked.<br>
-2) Click on the arrow icon in the upper right corner.<br>
-3) Choose "Sign up".<br>
-4) Provide your email. If you are worried about your privacy - please read our <a href = https://www.evinet.org/help/faq-evi/evi-faq.html#privacy>FAQ</a>.<br>
-5) Create a strong password. Read our instruction about creating strong password. Please read <a href = help/password_policy.html>our help article on passwords</a>.<br>
-6) Confirm the chosen password and press "Sign up" button.<br>
-Here you go! You are now a registered user. Before using your account you have to activate it. You will receive a mail with the activation link.<br>
-
-Then do not forget to type in a new project ID in the project box (upper row) and press Enter.
-It should shine green. Then every time you login, your project(s) would be in the drop-down list.
-The user file lists (under "Altered gene sets" and "Functional gene sets") will be available if you press the respective icons in "File".
 	
-	</div>
-	<div id="help-tab-file">
-<div style="display: inline; float: right;"><a href="https://get.adobe.com/se/reader/"><img src='pics/pdf.jpg' style="width:  24px; height: 24px; margin-right: 1em;" title="Download PDF reader"></a></div>
-<table>
-<tr>
-<td>How to begin?</td>
-<td></td>
-<td><a href="help/part1.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
-</tr>
-<tr>
-<td>Access, users, projects</td>
-<td></td>
-<td><a href="help/user_access.htm"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
-</tr>
-<tr>
-<td>Identification of driver genes</td>
-<td></td>
-<td><a href="help/drivers.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
-</tr>
-<tr>
-<td>Exploration of molecular landscapes</td>
-<td></td>
-<td><a href="help/molecular.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
-</tr>
-<tr>
-<td>Using Venn diagrams</td>
-<td></td>
-<td><a href="help/venn_help.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
-</tr>
-<tr>
-<td>Using stand-alone software</td>
-<td></td>
-<td><a href="help/nea_standalone.html"><span style="float: left; margin-right: 0.5em;" class="ui-icon ui-icon-file-richtext" title="Open new page">icon</span></a></td>
-</tr>
-</table>
-	</div>
-	<div id="help-tab-download">
-<p >Potentially, you can obtain much more useful output by running the perl script NEA.pl off-line.<br>NEA.pl is the script that executes network enrichment analysis at this web site.<br> Please note that while running analysis online, on this web-site, you can both look up the command line and <span style="color: red">download specific input and output files</span>.<br>Watch the text and links that appear after the current analysis finished. <br>You can to use them either as a reference or as input to a modified analysis off-line. _tmpAGS, _tmpFGS, and _tmpNET contain your submitted gene list(s), the collection of functional gene sets, and the network.</p>
-
-<a href="https://cran.r-project.org/web/packages/NEArender/index.html">R package NEArender on CRAN</a>
-<br>
-<a href="https://research.scilifelab.se/andrej_alexeyenko/downloads/NEArender/NEArender_1.4.tar.gz">R package NEArender on local site</a>
-<br>
-<a href='https://research.scilifelab.se/andrej_alexeyenko/downloads/NEA.pl'>perl script NEA.pl </a> from <a href='https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308' target='_blank'> Merid et al. (2014) </a>
+	<div id="help-dialog-dr">
+		<div id="help-tabs-dr">
 		
-	</div>
-	<div id="help-tab-example">
-TAB-delimited file with pre-compliled AGSs, gene IDS accompanied with AGS ID:
-<br>
-<a href='https://research.scilifelab.se/andrej_alexeyenko/downloads/evinet/SomaticMutations.GBM_OV.example'>SomaticMutations.TCGA-2008</a>
-<br>
-TAB-delimited file with results of a differential expression analysis, gene IDs followed by fold change, p, and FDR values in multiple contrasts:
-<br>
-<a href='https://research.scilifelab.se/andrej_alexeyenko/downloads/P.matrix.NoModNodiff_wESC.DE.VENN.txt'> P.matrix.NoModNodiff_wESC.DE.VENN.txt</a>
+		<ul>
+			<li><a href="#help-tab-faq">FAQ</a></li>
+			<li><a href="#help-tab-demo">Demo</a></li>
+			<li><a href="#help-tab-comp">Compatibility</a></li>
+			<li><a href="#help-tab-citation">Citation</a></li>
+		</ul>
 		
-	</div-->
+		<div id="help-tab-faq">
+			<a target="_blank" href="help/faq-evi/dr-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 2.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
+		</div>
+		
+		<div id="help-tab-demo">
+			<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
+			<br>
+			<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
+			<br>
+			<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
+		</div>
+	
 	<div id="help-tab-comp">
-Known compatibility issues:
-<br>
-This site best works with Google Chrome <span style="color: #00aa00;">(v. 60 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 57 or later)</span>. 
-<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span> (opening uploaded user's files)..
-<br>The site also works with Apple Safari (v. 11.1, macOS Sierra v10.12.6), other versions of Safari browser can have compatibility issues.
-	</div>
-	<div id="help-tab-citation">
-<b>Network-based biomarker discovery and validation:</b>
-  <p>
-Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
-<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
-<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
-  </p>
-
-<b>EviNet web resource:</b>
-<p>
-Ashwini Jeggari, Zhanna Alekseenko, José Dias, Johan Ericson, and Andrey Alexeyenko <span class="highlighted" style="color: #c00;">EviNet: a web platform for network enrichment analysis with flexible definition of gene sets</span> <b><i>Nucleic Acids Res</i></b> 2018 Jul 2;46(W1):W163-W170. <a class="clickable" href="https://doi.org/10.1093/nar/gky485">doi: 10.1002/1878-0261.12350</a>.
-  </p>
+		Known compatibility issues:
+		<br>
+		This site best works with Google Chrome <span style="color: #00aa00;">(v. 60 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 57 or later)</span>. 
+		<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span> (opening uploaded user's files)..
+		<br>The site also works with Apple Safari (v. 11.1, macOS Sierra v10.12.6), other versions of Safari browser can have compatibility issues.
 	</div>
 	
-
+	<div id="help-tab-citation">
+		<b>Network-based biomarker discovery and validation:</b>
+		<p>
+			Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
+			<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
+			<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
+		</p>
+		<b>EviNet web resource:</b>
+		<p>
+			Ashwini Jeggari, Zhanna Alekseenko, José Dias, Johan Ericson, and Andrey Alexeyenko <span class="highlighted" style="color: #c00;">EviNet: a web platform for network enrichment analysis with flexible definition of gene sets</span> <b><i>Nucleic Acids Res</i></b> 2018 Jul 2;46(W1):W163-W170. <a class="clickable" href="https://doi.org/10.1093/nar/gky485">doi: 10.1002/1878-0261.12350</a>.
+		</p>
+	</div>
 </div>
 </div>
 
@@ -621,11 +535,9 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 	if (cookies) {
 		// get all child nodes of #tabs
 		var nodes = $("#tabs").tabs()[0].childNodes;
-		// this is the node used to attach plot - pay attention to 3+2*!
-		//var parent_tab = "#" + nodes[3+2*$("#tabs").tabs("option", "active")].getAttribute("id");
-		var parent_tab = "#" + nodes[6+2*$("#tabs").tabs("option", "active")].getAttribute("id");;
-//var parent_tab = '#tab-lookup';		
-// variables are initialised when this function is called from correlations table, otherwise - initialise them
+		// this is the node used to attach plot - pay attention to 6+2*!
+		var parent_tab = "#" + nodes[6+2*$("#tabs").tabs("option", "active")].getAttribute("id");;		
+		// variables are initialised when this function is called from correlations table, otherwise - initialise them
 		if (type == undefined) {
 			type = $('#plot-type option:selected').val();
 			var n = $('#plot_options tr').length-1;
@@ -656,11 +568,6 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			sessionStorage.setItem(plot_filename, plot_description);
 			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
-/*var plot_id = '444';
-var graph_window = '<div id="plot_window_' + plot_id +'">TTT<span class="ui-icon ui-icon-loading-status-balls rotate"></span></div>';
-var plot_title = 'TTT';
-var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></span>';*/
-
 			$(parent_tab).append(graph_window);
 			$("#plot_window_" + plot_id).dialog({
 				title: plot_title,
@@ -689,14 +596,6 @@ var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></sp
 					},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			}).parent().appendTo(parent_tab);
-						
-			/*plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
-			plot_id = plot_filename.substring(0, plot_filename.length-5);
-			sessionStorage.setItem(plot_filename, plot_description);*/
-
-//$(graph_window).append('<iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="800" height="600">');
-			
-			//$("#displayind2").removeClass("being_removed");
 			$("#progressbar").css({"visibility": "hidden"});
 		}
 		// existing plot
@@ -744,39 +643,6 @@ var plot_title = '<span class="ui-icon ui-icon-loading-status-balls rotate"></sp
 		alert("Please accept cookies to use this site");
 	}
 }
-
-<!-- var plot_id = '444'; -->
-<!-- var graph_window = '<div id="plot_window_' + plot_id +'"><span class="ui-icon ui-icon-loading-status-balls rotate"></span></div>'; -->
-<!-- var plot_title = 'TTT'; -->
-<!-- var parent_tab = '#tab-lookup'; -->
-			<!-- $(parent_tab).append(graph_window); -->
-<!-- $("#plot_window_" + plot_id).dialog({ -->
-				<!-- title: plot_title, -->
-				<!-- buttons: [ -->
-					<!-- { -->
-						<!-- text: "Minimize", -->
-						<!-- icon: "ui-icon-minus", -->
-						<!-- click: function() {plot_minimize(this)}, -->
-					<!-- }, -->
-					<!-- { -->
-						<!-- text: "Dock", -->
-						<!-- icon: "ui-icon-arrowthickstop-1-s", -->
-						<!-- click: function() { -->
-							<!-- //dock_plot(this, plot_id); -->
-						<!-- }, -->
-						<!-- showText: false -->
-					<!-- } -->
-				<!-- ], -->
-				<!-- height: 'auto', -->
-				<!-- width: 'auto', -->
-				<!-- modal: false, -->
-				<!-- resize: function( event, ui ) { -->
-						<!-- ($(this).children('iframe'))[0].setAttribute("height", $(this).height()); -->
-						<!-- ($(this).children('iframe'))[0].setAttribute("width", $(this).width()); -->
-					<!-- }, -->
-				<!-- beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()} -->
-			<!-- }).parent().appendTo(parent_tab); -->
-
 
 function retrieve_correlations() {
 	var n = $('#cor_result_table tr').length;
@@ -1980,6 +1846,7 @@ function safe_clear() {
 	sessionStorage.removeItem("cor_cohort");
 	sessionStorage.removeItem("cor_platform");
 	sessionStorage.removeItem("cor_screen");
+	sessionStorage.removeItem("demo");
 }
 
 // function provided by https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input

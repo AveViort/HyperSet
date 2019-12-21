@@ -32,189 +32,193 @@ function waitForElement (ww) {
 
 // demo for the third tap - 2D plot
 function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, datatype2, platform2, id2, scale2, plottype) {
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		$("#tabs").tabs("option", "active", 2);
+	if (sessionStorage.getItem("demo") == null) {
+		var cookies = checkCookiesAccepted();
+		if (cookies) {
+			sessionStorage.setItem("demo", 1);
+			$("#tabs").tabs("option", "active", 2);
 		
-		// prepare everything for demo
-		var n = $('#plot_options tr').length-1;
-		if (n > 1) {
-			for (i = n; i>=2; i--) {
-				delete_plot_options_row(2);
+			// prepare everything for demo
+			var n = $('#plot_options tr').length-1;
+			if (n > 1) {
+				for (i = n; i>=2; i--) {
+					delete_plot_options_row(2);
+				}
 			}
-		}
-		var to = 1000;
-		setTimeout(function () {
-			$("select[id='source_selector']").val(source); 
-			$("select[id='source_selector']").selectmenu( "refresh" );
-			update_source();
-		}, to);
-		to += 800;            //250;
-		
-		var part_a = {
-			ele: "cohort_selector",	
-			interval: 50, 
-			val: cohort, 
-			func: function () {
-				console.log("Part cohort_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_a); 
-		setTimeout(function () {
-			$("select[id='cohort_selector']").val(cohort); 
-			$("select[id='cohort_selector']").selectmenu( "refresh" );
-			update_cohort();
-		}, to);
-		to += 1100;            //250;
-		
-		var part_b = {
-			ele: "type1_selector",	
-			interval: 50, 
-			val: datatype1, 
-			func: function () {
-				console.log("Part type1_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_b); 
-		setTimeout(function () {
-			$("select[id='type1_selector']").val(datatype1); 
-			$("select[id='type1_selector']").selectmenu( "refresh" );
-			update_type(1);
-		}, to);
-		to += 1400;
-		
-		var part_c = {
-			ele: "platform1_selector",	
-			interval: 50, 
-			val: platform1, 
-			func: function () {
-				console.log("Part platform1_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_c); 
-		setTimeout(function () {
-			$("select[id='platform1_selector']").val(platform1); 
-			$("select[id='platform1_selector']").selectmenu( "refresh" );
-			update_platform(1);
-		}, to);
-		to += 1700;
-		
-		setTimeout(function () {
-			$("#id1_input").val(id1); 
-			id_keyup(1);
-		}, to);
-		to += 2000;
-		
-		var part_d = {
-			ele: "axis1_selector",	
-			interval: 50, 
-			val: scale1, 
-			func: function () {
-				console.log("Part axis1_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_d); 
-		setTimeout(function () {
-			$("select[id='axis1_selector']").val(scale1); 
-			$("select[id='axis1_selector']").selectmenu( "refresh" );
-		}, to);
-		to += 2300;
-		
-		setTimeout(function () {
-			console.log("Part add_row1");
-				demoClick("#add_row1", 100);
-		}, to);
-		to += 2600;
-		
-		var part_e = {
-			ele: "type2_selector",	
-			interval: 50, 
-			val: datatype2, 
-			func: function () {
-				console.log("Part type2_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_e); 
-		setTimeout(function () {
-			$("select[id='type2_selector']").val(datatype2); 
-			$("select[id='type2_selector']").selectmenu( "refresh" );
-			update_type(2);
-		}, to);
-		to += 2900;
-		
-		var part_f = {
-			ele: "platform2_selector",	
-			interval: 50, 
-			val: platform2, 
-			func: function () {
-				console.log("Part platform2_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_f); 
-		setTimeout(function () {
-			$("select[id='platform2_selector']").val(platform2); 
-			$("select[id='platform2_selector']").selectmenu( "refresh" );
-			update_platform(2);
-		}, to);
-		to += 3200;
-		
-		setTimeout(function () {
-			$("#id2_input").val(id2); 
-			id_keyup(2);
-		}, to);
-		to += 3500;
-		
-		var part_g = {
-			ele: "axis2_selector",	
-			interval: 50, 
-			val: scale2, 
-			func: function () {
-				console.log("Part axis1_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_g); 
-		setTimeout(function () {
-			$("select[id='axis2_selector']").val(scale2); 
-			$("select[id='axis2_selector']").selectmenu( "refresh" );
-		}, to);
-		to += 3800;
-		
-		var part_h = {
-			ele: "plot-type",	
-			interval: 50, 
-			val: plottype, 
-			func: function () {
-				console.log("Part plot-type");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_h); 
-		setTimeout(function () {
-			$("select[id='plot-type']").val(plottype); 
-			$("select[id='plot-type']").selectmenu( "refresh" );
-		}, to);
-		to += 4100;
-		
-		setTimeout(function () {
-			demoClick("#plot-button", 100);
-		}, to);
-		to += 4400;
-		
-		setTimeout(function () {
-			if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
-				alert("Click on any point on the graph to see the network behind")
+			var to = 1000;
+			setTimeout(function () {
+				$("select[id='source_selector']").val(source); 
+				$("select[id='source_selector']").selectmenu( "refresh" );
+				update_source();
+			}, to);
+			to += 800;            //250;
+			
+			var part_a = {
+				ele: "cohort_selector",	
+				interval: 50, 
+				val: cohort, 
+				func: function () {
+					console.log("Part cohort_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
 			}
-		}, to);
-	}
-	else {
-		alert("Please accept cookies to run demo");
+			waitForElement(part_a); 
+			setTimeout(function () {
+				$("select[id='cohort_selector']").val(cohort); 
+				$("select[id='cohort_selector']").selectmenu( "refresh" );
+				update_cohort();
+			}, to);
+			to += 1100;            //250;
+			
+			var part_b = {
+				ele: "type1_selector",	
+				interval: 50, 
+				val: datatype1, 
+				func: function () {
+					console.log("Part type1_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_b); 
+			setTimeout(function () {
+				$("select[id='type1_selector']").val(datatype1); 
+				$("select[id='type1_selector']").selectmenu( "refresh" );
+				update_type(1);
+			}, to);
+			to += 1400;
+			
+			var part_c = {
+				ele: "platform1_selector",	
+				interval: 50, 
+				val: platform1, 
+				func: function () {
+					console.log("Part platform1_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_c); 
+			setTimeout(function () {
+				$("select[id='platform1_selector']").val(platform1); 
+				$("select[id='platform1_selector']").selectmenu( "refresh" );
+				update_platform(1);
+			}, to);
+			to += 1700;
+			
+			setTimeout(function () {
+				$("#id1_input").val(id1); 
+				id_keyup(1);
+			}, to);
+			to += 2000;
+			
+			var part_d = {
+				ele: "axis1_selector",	
+				interval: 50, 
+				val: scale1, 
+				func: function () {
+					console.log("Part axis1_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_d); 
+			setTimeout(function () {
+				$("select[id='axis1_selector']").val(scale1); 
+				$("select[id='axis1_selector']").selectmenu( "refresh" );
+			}, to);
+			to += 2300;
+			
+			setTimeout(function () {
+				console.log("Part add_row1");
+					demoClick("#add_row1", 100);
+			}, to);
+			to += 2600;
+			
+			var part_e = {
+				ele: "type2_selector",	
+				interval: 50, 
+				val: datatype2, 
+				func: function () {
+					console.log("Part type2_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_e); 
+			setTimeout(function () {
+				$("select[id='type2_selector']").val(datatype2); 
+				$("select[id='type2_selector']").selectmenu( "refresh" );
+				update_type(2);
+			}, to);
+			to += 2900;
+			
+			var part_f = {
+				ele: "platform2_selector",	
+				interval: 50, 
+				val: platform2, 
+				func: function () {
+					console.log("Part platform2_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_f); 
+			setTimeout(function () {
+				$("select[id='platform2_selector']").val(platform2); 
+				$("select[id='platform2_selector']").selectmenu( "refresh" );
+				update_platform(2);
+			}, to);
+			to += 3200;
+			
+			setTimeout(function () {
+				$("#id2_input").val(id2); 
+				id_keyup(2);
+			}, to);
+			to += 3500;
+			
+			var part_g = {
+				ele: "axis2_selector",	
+				interval: 50, 
+				val: scale2, 
+				func: function () {
+					console.log("Part axis1_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_g); 
+			setTimeout(function () {
+				$("select[id='axis2_selector']").val(scale2); 
+				$("select[id='axis2_selector']").selectmenu( "refresh" );
+			}, to);
+			to += 3800;
+			
+			var part_h = {
+				ele: "plot-type",	
+				interval: 50, 
+				val: plottype, 
+				func: function () {
+					console.log("Part plot-type");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_h); 
+			setTimeout(function () {
+				$("select[id='plot-type']").val(plottype); 
+				$("select[id='plot-type']").selectmenu( "refresh" );
+			}, to);
+			to += 4100;
+			
+			setTimeout(function () {
+				demoClick("#plot-button", 100);
+				sessionStorage.removeItem("demo");
+			}, to);
+			to += 4400;
+			
+			setTimeout(function () {
+				if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
+					alert("Click on any point on the graph to see the network behind")
+				}
+			}, to);
+		}
+		else {
+			alert("Please accept cookies to run demo");
+		}
 	}
 }
 
@@ -223,182 +227,190 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 // plotid is id of the row on which button should be clicked
 // WARNING! Numeration can be weird, the first line can have number 5893 etc.
 function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
-	var cookies = checkCookiesAccepted();
-	if (cookies) {	
-		$("#tabs").tabs("option", "active", 1);
-		var to = 1000;
-		setTimeout(function () {
-			$("select[id='corSource_selector']").val(source); 
-			$("select[id='corSource_selector']").selectmenu( "refresh" );
-			update_source();
-		}, to);
-		to += 800;            //250;
-		
-		var part_a = {
-			ele: "corDatatype_selector",	
-			interval: 50, 
-			val: datatype, 
-			func: function () {
-				console.log("Part corDatatype_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
+	if (sessionStorage.getItem("demo") == null) {
+		var cookies = checkCookiesAccepted();
+		if (cookies) {
+			sessionStorage.setItem("demo", 1);
+			$("#tabs").tabs("option", "active", 1);
+			var to = 1000;
+			setTimeout(function () {
+				$("select[id='corSource_selector']").val(source); 
+				$("select[id='corSource_selector']").selectmenu( "refresh" );
+				update_source();
+			}, to);
+			to += 800;            //250;
+			
+			var part_a = {
+				ele: "corDatatype_selector",	
+				interval: 50, 
+				val: datatype, 
+				func: function () {
+					console.log("Part corDatatype_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_a); 
+			setTimeout(function () {
+				$("select[id='corDatatype_selector']").val(datatype); 
+				$("select[id='corDatatype_selector']").selectmenu( "refresh" );
+				update_cohort();
+			}, to);
+			to += 1100;            //250;
+			
+			var part_b = {
+				ele: "corPlatform_selector",	
+				interval: 50, 
+				val: platform, 
+				func: function () {
+					console.log("Part corPlatform_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_b); 
+			setTimeout(function () {
+				$("select[id='corPlatform_selector']").val(platform); 
+				$("select[id='corPlatform_selector']").selectmenu( "refresh" );
+				update_type(1);
+			}, to);
+			to += 1400;
+			
+			var part_c = {
+				ele: "corScreen_selector",	
+				interval: 50, 
+				val: screen, 
+				func: function () {
+					console.log("Part corScreen_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_c); 
+			setTimeout(function () {
+				$("select[id='corScreen_selector']").val(screen); 
+				$("select[id='corScreen_selector']").selectmenu( "refresh" );
+				update_platform(1);
+			}, to);
+			to += 1700;
+			
+			setTimeout(function () {
+				$("#corGeneFeature_input").val(id); 
+				cor_id_keyup();
+			}, to);
+			to += 2000;
+			
+			setTimeout(function () {
+				$("#FDR_input").val(fdr); 
+			}, to);
+			to += 2250;
+			
+			setTimeout(function () {
+				demoClick("#retrieve-cor-button", 100);
+			}, to);
+			to += 2500;
+			
+			setTimeout(function () {
+				demoClick("#cor-KM" + plotid, 100);
+				sessionStorage.removeItem("demo");
+			}, to);
+			to += 3000;
 		}
-		waitForElement(part_a); 
-		setTimeout(function () {
-			$("select[id='corDatatype_selector']").val(datatype); 
-			$("select[id='corDatatype_selector']").selectmenu( "refresh" );
-			update_cohort();
-		}, to);
-		to += 1100;            //250;
-		
-		var part_b = {
-			ele: "corPlatform_selector",	
-			interval: 50, 
-			val: platform, 
-			func: function () {
-				console.log("Part corPlatform_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
+		else {
+			alert("Please accept cookies to run demo");
 		}
-		waitForElement(part_b); 
-		setTimeout(function () {
-			$("select[id='corPlatform_selector']").val(platform); 
-			$("select[id='corPlatform_selector']").selectmenu( "refresh" );
-			update_type(1);
-		}, to);
-		to += 1400;
-		
-		var part_c = {
-			ele: "corScreen_selector",	
-			interval: 50, 
-			val: screen, 
-			func: function () {
-				console.log("Part corScreen_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_c); 
-		setTimeout(function () {
-			$("select[id='corScreen_selector']").val(screen); 
-			$("select[id='corScreen_selector']").selectmenu( "refresh" );
-			update_platform(1);
-		}, to);
-		to += 1700;
-		
-		setTimeout(function () {
-			$("#corGeneFeature_input").val(id); 
-			cor_id_keyup();
-		}, to);
-		to += 2000;
-		
-		setTimeout(function () {
-			$("#FDR_input").val(fdr); 
-		}, to);
-		to += 2250;
-		
-		setTimeout(function () {
-			demoClick("#retrieve-cor-button", 100);
-		}, to);
-		to += 2500;
-		
-		setTimeout(function () {
-			demoClick("#cor-KM" + plotid, 100);
-		}, to);
-		to += 3000;
-	}
-	else {
-		alert("Please accept cookies to run demo");
 	}
 }
 
 // CCLE only
 // this is demo of "Plot" button for the second tab
 function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
-	var cookies = checkCookiesAccepted();
-	if (cookies) {		
-		$("#tabs").tabs("option", "active", 1);
-		var to = 1000;
-		setTimeout(function () {
-			$("select[id='corSource_selector']").val(source); 
-			$("select[id='corSource_selector']").selectmenu( "refresh" );
-			update_source();
-		}, to);
-		to += 800;            //250;
-		
-		var part_a = {
-			ele: "corDatatype_selector",	
-			interval: 50, 
-			val: datatype, 
-			func: function () {
-				console.log("Part corDatatype_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
+	if (sessionStorage.getItem("demo") == null) {
+		sessionStorage.setItem("demo", 1);	
+		var cookies = checkCookiesAccepted();
+		if (cookies) {	
+			$("#tabs").tabs("option", "active", 1);
+			var to = 1000;
+			setTimeout(function () {
+				$("select[id='corSource_selector']").val(source); 
+				$("select[id='corSource_selector']").selectmenu( "refresh" );
+				update_source();
+			}, to);
+			to += 800;            //250;
+			
+			var part_a = {
+				ele: "corDatatype_selector",	
+				interval: 50, 
+				val: datatype, 
+				func: function () {
+					console.log("Part corDatatype_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_a); 
+			setTimeout(function () {
+				$("select[id='corDatatype_selector']").val(datatype); 
+				$("select[id='corDatatype_selector']").selectmenu( "refresh" );
+				update_cohort();
+			}, to);
+			to += 1100;            //250;
+			
+			var part_b = {
+				ele: "corPlatform_selector",	
+				interval: 50, 
+				val: platform, 
+				func: function () {
+					console.log("Part corPlatform_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_b); 
+			setTimeout(function () {
+				$("select[id='corPlatform_selector']").val(platform); 
+				$("select[id='corPlatform_selector']").selectmenu( "refresh" );
+				update_type(1);
+			}, to);
+			to += 1400;
+			
+			var part_c = {
+				ele: "corScreen_selector",	
+				interval: 50, 
+				val: screen, 
+				func: function () {
+					console.log("Part corScreen_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_c); 
+			setTimeout(function () {
+				$("select[id='corScreen_selector']").val(screen); 
+				$("select[id='corScreen_selector']").selectmenu( "refresh" );
+				update_platform(1);
+			}, to);
+			to += 1700;
+			
+			setTimeout(function () {
+				$("#corGeneFeature_input").val(id); 
+				cor_id_keyup();
+			}, to);
+			to += 2000;
+			
+			setTimeout(function () {
+				$("#FDR_input").val(fdr); 
+			}, to);
+			to += 2250;
+			
+			setTimeout(function () {
+				demoClick("#retrieve-cor-button", 100);
+			}, to);
+			to += 2700;
+			
+			setTimeout(function () {
+				demoClick("#cor-plot" + plotid, 100);
+				sessionStorage.removeItem("demo");
+			}, to);
+			to += 3000;
 		}
-		waitForElement(part_a); 
-		setTimeout(function () {
-			$("select[id='corDatatype_selector']").val(datatype); 
-			$("select[id='corDatatype_selector']").selectmenu( "refresh" );
-			update_cohort();
-		}, to);
-		to += 1100;            //250;
-		
-		var part_b = {
-			ele: "corPlatform_selector",	
-			interval: 50, 
-			val: platform, 
-			func: function () {
-				console.log("Part corPlatform_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
+		else {
+			alert("Please accept cookies to run demo");
 		}
-		waitForElement(part_b); 
-		setTimeout(function () {
-			$("select[id='corPlatform_selector']").val(platform); 
-			$("select[id='corPlatform_selector']").selectmenu( "refresh" );
-			update_type(1);
-		}, to);
-		to += 1400;
-		
-		var part_c = {
-			ele: "corScreen_selector",	
-			interval: 50, 
-			val: screen, 
-			func: function () {
-				console.log("Part corScreen_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_c); 
-		setTimeout(function () {
-			$("select[id='corScreen_selector']").val(screen); 
-			$("select[id='corScreen_selector']").selectmenu( "refresh" );
-			update_platform(1);
-		}, to);
-		to += 1700;
-		
-		setTimeout(function () {
-			$("#corGeneFeature_input").val(id); 
-			cor_id_keyup();
-		}, to);
-		to += 2000;
-		
-		setTimeout(function () {
-			$("#FDR_input").val(fdr); 
-		}, to);
-		to += 2250;
-		
-		setTimeout(function () {
-			demoClick("#retrieve-cor-button", 100);
-		}, to);
-		to += 2700;
-		
-		setTimeout(function () {
-			demoClick("#cor-plot" + plotid, 100);
-		}, to);
-		to += 3000;
-	}
-	else {
-		alert("Please accept cookies to run demo");
 	}
 }		
 			
