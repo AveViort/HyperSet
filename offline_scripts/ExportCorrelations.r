@@ -243,3 +243,69 @@ delete_empty_tcga_correlation_tables <- function(rch) {
   print(paste0("Number of deleted tables: ", deleted));
   print(Sys.time());
 }
+
+# synonyms is a named vector containing SQL platform names
+# e.g. 
+# "BOTH.RPPA" => rppa
+# "IlluminaHiSeq_RNASeqV2_log2FPKM" => illuminahiseq_rnaseqv2
+# "IlluminaHiSeq_RNASeqV2" => illuminahiseq_rnaseqv2
+united_interaction_table <- function(filename, synonyms, rch) {
+  print(Sys.time());
+  load(filename);
+  counter <- 0;
+  query <- "CREATE TABLE significant_interactions (id character varying(256), feature character varying(256), cohort character varying (256), datatype character varying (256), platform character varying (256), measure character varying (32), followup_part numeric, interaction numeric, expr numeric, drug numeric);";
+  print(query);
+  sqlQuery(rch, query);
+  cohorts <- names(survXdrug);
+  for (cohort in cohorts) {
+    print(cohort);
+    datatypes <- names(survXdrug[[cohort]]);
+    for (datatype in datatypes) {
+      print(datatype);
+      platforms <- names(survXdrug[[cohort]][[datatype]]);
+      for (platform in platforms) {
+        sql_platform <- synonyms[platform];
+        print(paste0("Orig: ", platform, " SQL: ", sql_platform));
+        measures <- names(survXdrug[[cohort]][[datatype]][[platform]]);
+        for (measure in measures) {
+          print(measure);
+          followup_parts <- names(survXdrug[[cohort]][[datatype]][[platform]][[measure]]);
+          for (followup_part in followup_parts) {
+            print(followup_part);
+            features <- colnames(survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["interaction"]]);
+            tbl <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["interaction"]];
+            for (feature in features) {
+                signif_ids <- which((tbl[,feature] < 0.05));
+                ids <- rownames(tbl)[signif_ids];
+                for (id in ids) {
+                  interaction <- tbl[id,feature];
+                  columns <- "id,feature,cohort,datatype,platform,measure,followup_part,interaction";
+                  values <- paste0("'", gsub("\\'", "", id), "','", gsub("\\'", "", feature), "','", cohort, "','", datatype, "','", synonyms[platform], "','", measure, "',", followup_part, ",", interaction);
+                  drug <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["drug"]][id,feature];
+                  expr <- survXdrug[[cohort]][[datatype]][[platform]][[measure]][[followup_part]][["expr"]][id,feature];
+                  if (!is.na(drug)) {
+                    columns <- paste0(columns,",drug");
+                    values <- paste0(values,",",drug);
+                  }
+                  if(!is.na(expr)) {
+                    columns <- paste0(columns,",expr");
+                    values <- paste0(values,",",expr);
+                  }
+                  query <- paste0("INSERT INTO significant_interactions(", columns, ") VALUES(", values, ");");
+                  stat <- sqlQuery(rch, query);
+                  if (length(stat) != 0) {
+                    print(paste0("Error. Query: ", query));
+                  } else {
+                    counter <- counter + 1;
+                  }
+                }
+                
+                print(counter);
+            }
+          }
+        }
+      }
+    }
+  }
+  print(paste0("Total rows: ", counter));
+}

@@ -190,13 +190,17 @@ CREATE OR REPLACE FUNCTION datatype_list (cohort_n text, previous_datatypes text
 AS $$
 DECLARE
 res text;
+datatable text;
 datatypes_array text array;
 description_n text;
 flag boolean;
 BEGIN
 datatypes_array := string_to_array(previous_datatypes, ',');
-FOR res IN SELECT type FROM guide_table WHERE cohort=cohort_n
+FOR datatable,res IN SELECT table_name, type FROM guide_table WHERE cohort=cohort_n
 LOOP
+SELECT table_has_visible_platforms(datatable) INTO flag;
+IF (flag=true)
+THEN
 IF NOT (previous_datatypes = '')
 THEN
 SELECT check_datatypes_compatibility(res, datatypes_array) INTO flag;
@@ -209,11 +213,26 @@ ELSE
 SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
 END IF;
+END IF;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
--- same, but for correlations
+-- this function shows if table has any visible platforms 
+-- required then we have just 1 row in tab for plots (because we cannot delete row if it is the only one=
+CREATE OR REPLACE FUNCTION table_has_visible_platforms (datatable text) RETURNS boolean
+AS $$
+DECLARE
+res boolean;
+ids boolean;
+offset_v numeric;
+BEGIN
+SELECT EXISTS (SELECT column_name FROM information_schema.columns A INNER JOIN platform_descriptions B ON A.column_name=B.shortname WHERE A.table_name=datatable AND B.visibility=true) INTO res;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same as datatype_list, but for correlations
 CREATE OR REPLACE FUNCTION cor_datatype_list (source_n text, sensitivity_m text) RETURNS setof text
 AS $$
 DECLARE
@@ -829,6 +848,45 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
+-- check for tables with missing autocomplete ids
+CREATE OR REPLACE FUNCTION check_missing_autocomplete() RETURNS numeric AS $$
+DECLARE
+datatable text;
+cohort_n text;
+datatype_n text;
+platform_n text;
+flag boolean;
+visible boolean;
+i numeric;
+BEGIN
+i := 0;
+FOR cohort_n IN SELECT DISTINCT cohort FROM guide_table WHERE cohort<>''
+LOOP
+raise notice 'Current cohort: %', cohort_n;
+FOR datatable,datatype_n IN SELECT table_name,type FROM guide_table WHERE (cohort=cohort_n)
+LOOP
+SELECT check_ids_availability(datatype_n) INTO flag;
+IF (flag=true) THEN
+FOR platform_n IN SELECT column_name FROM information_schema.columns WHERE table_name=datatable OFFSET 2
+LOOP
+SELECT visibility INTO visible FROM platform_descriptions WHERE shortname=platform_n;
+IF (visible=true)
+THEN
+EXECUTE 'SELECT EXISTS (SELECT * FROM druggable_ids WHERE ((' || platform_n || ' IS NULL) OR (' || platform_n || E'=\'\')) AND (cohort=\'' || cohort_n || E'\'));' INTO flag;
+IF (flag=true)
+THEN
+raise notice 'Missing ids found. Table name: % datatype: % platform: %', datatable, datatype_n, platform_n;
+i = i+1;
+END IF;
+END IF;
+END LOOP;
+END IF;
+END LOOP;
+END LOOP;
+RETURN i;
+END;
+$$ LANGUAGE plpgsql;
+
 -- function to check if dataset has ids or not
 CREATE OR REPLACE FUNCTION check_ids_availability(datatype text) RETURNS boolean AS $$
 DECLARE
@@ -1232,6 +1290,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- autocreate indices for all tables registered in guide_table
+-- it creates indices only for single columns!
 CREATE OR REPLACE FUNCTION autocreate_indices_all() RETURNS boolean AS $$
 DECLARE
 table_n text;
@@ -1251,6 +1310,63 @@ ELSE
 RAISE NOTICE 'Index already exists';
 END IF;
 END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function create indices sample-platform for all tables in guide_table
+CREATE OR REPLACE FUNCTION autocreate_double_indices_all() RETURNS boolean AS $$
+DECLARE
+table_n text;
+col_n text; 
+flag boolean;
+BEGIN
+FOR table_n in SELECT table_name FROM guide_table
+LOOP
+-- skip sample column with offset
+FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET 1;'
+LOOP
+RAISE NOTICE 'Creating ids for table % platforms sample, %', table_n, col_n;
+EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_sample_' || col_n || E'_ind\');' INTO flag;
+IF (flag=false)
+THEN
+EXECUTE E'CREATE INDEX ' || table_n || '_sample_' || col_n || '_ind ON ' || table_n || '(sample,' || col_n || ');';
+ELSE
+RAISE NOTICE 'Index already exists';
+END IF;
+END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function create indices sample-id_platform for all tables (which have id column) in guide_table
+CREATE OR REPLACE FUNCTION autocreate_triple_indices_all() RETURNS boolean AS $$
+DECLARE
+table_n text;
+datatype_n text;
+col_n text; 
+flag boolean;
+BEGIN
+FOR table_n, datatype_n in SELECT table_name FROM guide_table
+LOOP
+-- check if table has id column
+SELECT has_ids INTO flag FROM type_ids WHERE data_type=datatype_n;
+IF (flag=true) THEN
+-- skip sample,id columns with offset
+FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET 2;'
+LOOP
+RAISE NOTICE 'Creating ids for table % platforms sample, id, %', table_n, col_n;
+EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_sample_id_' || col_n || E'_ind\');' INTO flag;
+IF (flag=false)
+THEN
+EXECUTE E'CREATE INDEX ' || table_n || '_sample_id_' || col_n || '_ind ON ' || table_n || '(sample,id,' || col_n || ');';
+ELSE
+RAISE NOTICE 'Index already exists';
+END IF;
+END LOOP;
+END IF;
 END LOOP;
 RETURN true;
 END;
@@ -1277,6 +1393,78 @@ RAISE NOTICE 'Index already exists';
 END IF;
 END LOOP;
 END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- gene-platform indexes for tables from cor_guide_table
+CREATE OR REPLACE FUNCTION autocreate_double_indices_cor() RETURNS boolean AS $$
+DECLARE
+table_n text;
+col_n text; 
+flag boolean;
+BEGIN
+FOR table_n in SELECT table_name FROM cor_guide_table
+LOOP
+FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET 1;'
+LOOP
+RAISE NOTICE 'Creating ids for table % platforms gene, %', table_n, col_n;
+EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_gene_' || col_n || E'_ind\');' INTO flag;
+IF (flag=false)
+THEN
+EXECUTE E'CREATE INDEX ' || table_n || '_gene_' || col_n || '_ind ON ' || table_n || '(gene,' || col_n || ');';
+ELSE
+RAISE NOTICE 'Index already exists';
+END IF;
+END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, for gene-feature-platform
+-- all tables in cor_guide_table have gene and feature columns
+CREATE OR REPLACE FUNCTION autocreate_triple_indices_cor() RETURNS boolean AS $$
+DECLARE
+table_n text;
+col_n text; 
+flag boolean;
+BEGIN
+FOR table_n in SELECT table_name FROM cor_guide_table
+LOOP
+FOR col_n IN EXECUTE E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' OFFSET 2;'
+LOOP
+RAISE NOTICE 'Creating ids for table % platforms gene, feature, %', table_n, col_n;
+EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_gene_feature_' || col_n || E'_ind\');' INTO flag;
+IF (flag=false)
+THEN
+EXECUTE E'CREATE INDEX ' || table_n || '_gene_feature_' || col_n || '_ind ON ' || table_n || '(gene,feature,' || col_n || ');';
+ELSE
+RAISE NOTICE 'Index already exists';
+END IF;
+END LOOP;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to create double/triple indexes for all
+CREATE OR REPLACE FUNCTION create_multiple_indexes() RETURNS boolean AS $$
+DECLARE
+flag boolean;
+BEGIN
+RAISE notice 'Creating double indexes for tables in guide_table, time: %', clock_timestamp();
+SELECT autocreate_double_indices_all() INTO flag;
+RAISE notice 'Finished, status: %, time: %', flag, clock_timestamp();
+RAISE notice 'Creating triple indexes for tables in guide_table, time: %', clock_timestamp();
+SELECT autocreate_triple_indices_all() INTO flag;
+RAISE notice 'Finished, status: %, time: %', flag, clock_timestamp();
+RAISE notice 'Creating double indexes for tables in cor_guide_table, time: %', clock_timestamp();
+SELECT autocreate_double_indices_cor() INTO flag;
+RAISE notice 'Finished, status: %, time: %', flag, clock_timestamp();
+RAISE notice 'Creating triple indexes for tables in cor_guide_table, time: %', clock_timestamp();
+SELECT autocreate_triple_indices_cor() INTO flag;
+RAISE notice 'Finished, status: %, time: %', flag, clock_timestamp();
 RETURN true;
 END;
 $$ LANGUAGE plpgsql;

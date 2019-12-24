@@ -18,6 +18,11 @@ update_cohort_descriptions_from_table <- function(table_name, key_file = "HS_SQL
 }
 
 # WORKING WITH DATATYPE DESCRIPTIONS
+# setwd("/var/www/html/research/HyperSet/dev/HyperSet/R")
+# source("/var/www/html/research/HyperSet/dev/HyperSet/R/platform_descriptions.r")
+# update_platform_descriptions_from_table()
+ # update_platform_descriptions_from_table("/var/www/html/research/HyperSet/dev/HyperSet/R/platform_descriptions.csv", key_file = "../cgi/HS_SQL.conf")
+ # [1] "Created/updated 150 records"
 
 update_datatype_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
 	table_data <- read.csv2(table_name, header = FALSE);
@@ -75,6 +80,7 @@ add_compatible_platforms_from_table <- function(table_name, key_file = "HS_SQL.c
 }
 
 # this function adds compatibility between platform and all platforms of given datatype
+# make_platform_and_datatype_compatible("ccle_exome_2019","COPY","/var/www/html/research/HyperSet/dev/HyperSet/cgi/HS_SQL.conf")
 make_platform_and_datatype_compatible <- function(platform1, datatype, key_file = "HS_SQL.conf", drch = '') {
 	rch <- NULL;
 	if (drch == '') {

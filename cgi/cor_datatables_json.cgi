@@ -49,7 +49,7 @@ foreach $i(2..$colnumber-1) {
 while (@row = $sth->fetchrow_array()) {
 	print "{";
 	my @field_values = split /\|/, @row[0];
-	print '"id":"',$row_id,'",';
+	#print '"id":"',$row_id,'",';
 	# all columns except for the last one - which has to be transformed into HTML element
 	$colnumber = @field_values;
 	foreach $i(0..$colnumber-2) {

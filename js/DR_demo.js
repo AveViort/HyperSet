@@ -41,7 +41,8 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 			// prepare everything for demo
 			var n = $('#plot_options tr').length-1;
 			if (n > 1) {
-				for (i = n; i>=2; i--) {
+				for (var i = n; i>=2; i--) {
+					console.log(i);
 					delete_plot_options_row(2);
 				}
 			}

@@ -933,7 +933,7 @@ function init_platformselector(selector_id) {
 	//console.log($("#cohort_selector option:selected").val() + ' ' + $("#type" + n + "_selector option:selected").val() + ' ' + previous_platforms);
 	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_platforms);
 	//console.log(platforms);
-	var empty = (platforms.length == 1);
+	var empty = (platforms[1].length == 0);
 	//console.log(empty);
 	if (!empty) {
 		// check if we have ids or no for the chosen datatype;
@@ -1605,51 +1605,53 @@ function update(initiator) {
 					update_cohort();
 					break;
 				case "type":
-					update_type(n);
-					// use this to avoid double-update
-					sessionStorage.setItem("update_autocomplete", "false");
-					update_platform(n);
 					var current_value = $("#" + initiator + " option:selected").val();
 					if (current_value != previous_value) {
-						for (i=n+1; i<=n; i++) {
+						update_type(n);
+						// use this to avoid double-update
+						sessionStorage.setItem("update_autocomplete", "false");
+						update_platform(n);
+						console.log("Initiator: " + initiator + " Current value: " + current_value + " Previous value: " + previous_value);
+						for (var i=n+1; i<=total; i++) {
 							update_type(i);
 							update_platform(i);
 						}
 						update_plot_types();
+						sessionStorage.removeItem("update_autocomplete");
 					}
-					sessionStorage.removeItem("update_autocomplete");
 					break;
 				case "platform":
-					update_platform(n);
 					var current_value = $("#" + initiator + " option:selected").val();
 					if (current_value != previous_value) {
-						for (i=n+1; i<=n; i++) {
+						update_platform(n);
+						console.log("Initiator: " + initiator + " Current value: " + current_value + " Previous value: " + previous_value);
+						for (var i=n+1; i<=total; i++) {
 							update_platform(i);
 						}
+						update_plot_types();
 					}
-					update_plot_types();
 					break;
 				case "corSource":
-					update_cor_source_selector();
 					if (current_value != previous_value) {
+						update_cor_source_selector();
 						update_cor_datatype_selector();
 						update_cor_cohort_selector();
 						update_cor_platform_selector();
 					}
 					break;
 				case "corDatatype":
-					update_cor_datatype_selector();
 					var current_value = $("#" + initiator + " option:selected").val();
 					if (current_value != previous_value) {
+						update_cor_datatype_selector();
 						update_cor_cohort_selector();
 						update_cor_platform_selector();
 						update_cor_screen_selector();
 					}
 					break;
 				case "corCohort":
-					update_cor_cohort_selector();
 					var current_value = $("#" + initiator + " option:selected").val();
 					if (current_value != previous_value) {
+						update_cor_cohort_selector();
 						update_cor_platform_selector();
 						update_cor_screen_selector();
 					}
@@ -1662,7 +1664,9 @@ function update(initiator) {
 					update_cor_screen_selector();
 					break;
 			}
-			sessionStorage.removeItem("updates_triggered");
+			//setTimeout(function () {
+				sessionStorage.removeItem("updates_triggered");
+			//}, 50);
 		}
 	}
 	else {
