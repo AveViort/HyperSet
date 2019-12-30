@@ -837,6 +837,7 @@ var Type = null;
 			";action=run-exploratory-" + Type + 
 			";colnames=" + cids.join("***") + 
 			";rownames=" +  $('[name="sgs_list"]').val().replace(/\s/g, "***") + 
+			";normalize=" +  $('[name="normalize"]').val() + 
 			";hclust_method=" +  $('[name="hclust_method"]').val() + 
 			";table=" + $("#selectradio-table-ags-ele").attr("value") + ";"; 
 		Title = Type + 'plots';
@@ -1297,9 +1298,26 @@ return(thisURL);
 
 	var callcount=0;	
 	var cc2=0;
+	
+/*	(function() {
+    var origOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function() {
+        console.log('request started!');
+        this.addEventListener('load', function() {
+            console.log('request completed!');
+            // console.log(this.readyState); //will always be 4 (ajax is completed successfully)
+            // console.log(this.responseText); //whatever the response was
+        });
+        origOpen.apply(this, arguments);
+    };
+})();*/
+
 $(document).ready(
 				HSonReady = function () {
-
+ /* $(document).ajaxStop(function(){
+    alert("All AJAX requests completed");
+  });*/
+  
 $(document).on("keypress", ":input:not(textarea)", function(event) {
     if (event.keyCode == 13) {
         event.preventDefault();

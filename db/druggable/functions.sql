@@ -434,10 +434,15 @@ ELSE
 plots_array := ARRAY(SELECT DISTINCT (plot_types.plot) FROM plot_types WHERE (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[3]) OR (plot_types.platform1=temp_array[2] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[1] AND plot_types.platform2=temp_array[3] AND plot_types.platform3=temp_array[2]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[2] AND plot_types.platform3=temp_array[1]) OR (plot_types.platform1=temp_array[3] AND plot_types.platform2=temp_array[1] AND plot_types.platform3=temp_array[2]));
 END IF;
 END IF;
+IF (array_length(plots_array, 1) <> 0)
+THEN
 FOR i IN 1..array_length(plots_array, 1)
 LOOP
 RETURN NEXT plots_array[i];
 END LOOP;
+ELSE
+RETURN NEXT NULL;
+END IF;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -605,6 +610,152 @@ END IF;
 END;
 $$ LANGUAGE plpgsql;
 
+-- this functions checks for missing plots: if platforms are compatible, but plot is not defined for them
+CREATE OR REPLACE FUNCTION check_missing_plots() RETURNS numeric AS $$
+DECLARE
+i numeric;
+j numeric;
+platform1_n text;
+platform2_n text;
+platform3_n text;
+platforms text;
+platforms_array text array;
+datatype1_n text;
+datatype2_n text;
+datatype3_n text;
+datatypes text;
+datatypes_array text array;
+BEGIN
+i := 0;
+j := 0;
+RAISE notice '1D plots';
+FOR platform1_n IN SELECT shortname FROM platform_descriptions WHERE visibility=true
+LOOP
+IF ((SELECT COUNT (*) FROM (SELECT available_plot_types(platform1_n)) AS a) = 1)
+THEN
+j := j + 1;
+IF (SELECT available_plot_types(platform1_n) IS NULL)
+THEN
+RAISE notice '%;;;', platform1_n;
+i := i+1;
+END IF;
+END IF;
+END LOOP;
+RAISE notice '2D plots';
+FOR platform1_n IN SELECT shortname FROM platform_descriptions WHERE visibility=true
+LOOP
+FOR platform2_n IN SELECT shortname FROM platform_descriptions WHERE visibility=true
+LOOP
+FOR datatype1_n IN SELECT find_datatype_for_platform(platform1_n)
+LOOP
+FOR datatype2_n IN SELECT find_datatype_for_platform(platform2_n)
+LOOP
+IF ((datatype1_n IS NOT NULL) AND (datatype2_n IS NOT NULL))
+THEN
+datatypes := datatype2_n;
+datatypes_array := string_to_array(datatypes, ',');
+IF (SELECT check_datatypes_compatibility(datatype1_n, datatypes_array) = true)
+THEN
+platforms := platform2_n;
+platforms_array := string_to_array(platforms, ',');
+IF (SELECT check_platforms_compatibility(platform1_n, platforms_array) = true)
+THEN
+j := j + 1;
+platforms := platform1_n || ',' || platform2_n;
+IF ((SELECT COUNT (*) FROM (SELECT available_plot_types(platforms)) AS a) = 1)
+THEN
+IF (SELECT available_plot_types(platforms) IS NULL)
+THEN
+RAISE notice '%;%;;', platform1_n, platform2_n;
+i := i+1;
+END IF;
+END IF;
+END IF;
+END IF;
+END IF;
+END LOOP;
+END LOOP;
+END LOOP;
+END LOOP;
+RAISE notice '3D plots';
+FOR platform1_n IN SELECT shortname FROM platform_descriptions WHERE visibility=true
+LOOP
+FOR platform2_n IN SELECT shortname FROM platform_descriptions WHERE visibility=true
+LOOP
+FOR platform3_n IN SELECT shortname FROM platform_descriptions WHERE visibility=true
+LOOP
+FOR datatype1_n IN SELECT find_datatype_for_platform(platform1_n)
+LOOP
+FOR datatype2_n IN SELECT find_datatype_for_platform(platform2_n)
+LOOP
+FOR datatype3_n IN SELECT find_datatype_for_platform(platform3_n)
+LOOP
+IF ((datatype1_n IS NOT NULL) AND (datatype2_n IS NOT NULL) AND (datatype3_n IS NOT NULL))
+THEN
+datatypes := datatype2_n || ',' || datatype3_n;
+datatypes_array := string_to_array(datatypes, ',');
+IF (SELECT check_datatypes_compatibility(datatype1_n, datatypes_array) = true)
+THEN
+platforms := platform2_n || ',' || platform3_n;
+platforms_array := string_to_array(platforms, ',');
+IF (SELECT check_platforms_compatibility(platform1_n, platforms_array) = true)
+THEN
+j := j + 1;
+platforms := platform1_n || ',' || platform2_n || platform3_n;
+IF ((SELECT COUNT (*) FROM (SELECT available_plot_types(platforms)) AS a) = 1)
+THEN
+IF (SELECT available_plot_types(platforms) IS NULL)
+THEN
+RAISE notice '%;%;%;', platform1_n, platform2_n, platform3_n;
+i := i+1;
+END IF;
+END IF;
+END IF;
+END IF;
+END IF;
+END LOOP;
+END LOOP;
+END LOOP;
+END LOOP;
+END LOOP;
+END LOOP;
+RAISE notice 'Checked combinations (total): %', j;
+RETURN i;
+END;
+$$ LANGUAGE plpgsql;
+
+-- additional functions to find datatypes for the given platform - used in check_missing_plots()
+CREATE OR REPLACE FUNCTION find_datatype_for_platform(platform text) RETURNS setof text AS $$
+DECLARE
+table_n text;
+datatype_n text;
+datatype_array text array;
+flag boolean;
+BEGIN
+datatype_array := ARRAY[]::text[];
+FOR table_n, datatype_n IN SELECT table_name,type FROM guide_table
+LOOP
+IF NOT (SELECT datatype_n = ANY (datatype_array))
+THEN
+EXECUTE E'SELECT EXISTS (SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' AND column_name=\'' || platform || E'\');' INTO flag;
+IF (flag=true)
+THEN
+SELECT array_append(datatype_array, datatype_n) INTO datatype_array;
+END IF;
+END IF;
+END LOOP;
+IF (array_length(datatype_array, 1) <> 0)
+THEN
+FOR i IN 1..array_length(datatype_array, 1)
+LOOP
+RETURN NEXT datatype_array[i];
+END LOOP;
+ELSE
+RETURN NEXT NULL;
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 -- FUNCTIONS TO WORK WITH CORRELATIONS
@@ -675,7 +826,7 @@ $$ LANGUAGE plpgsql;
 -- cor_columns is a string with comma-separated columns to use for query 
 -- first column is ALWAYS gene
 -- second column is ALWAYS feature
--- last column is ALWAYS q
+-- last column is ALWAYS used for filtration (it can be q)
 CREATE OR REPLACE FUNCTION retrieve_correlations(source_n text, data_type text, cohort_n text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text) RETURNS setof text AS $$
 DECLARE
 table_n text;
@@ -703,7 +854,7 @@ query := query || E' \|\| \'\|\' \|\| ' || columns_array[i];
 --RAISE notice '%: query: %', i, query;
 END LOOP;
 i := array_length(columns_array, 1);
-query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\', ' || fdr || ') FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
+query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\', ' || fdr || ')  FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
 --RAISE notice '%: query: %', i, query;
 EXECUTE query INTO res;
 --RAISE notice 'Query complete, number of rows: %', array_length(res,1);
@@ -746,6 +897,19 @@ BEGIN
 FOR syn IN SELECT external_id FROM synonyms WHERE internal_id=drug AND id_type='drug'
 LOOP
 res := syn;
+END LOOP;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_url(id text) RETURNS text AS $$
+DECLARE
+res text;
+link text;
+BEGIN
+FOR link IN SELECT url FROM synonyms WHERE external_id=id
+LOOP
+res := link;
 END LOOP;
 RETURN res;
 END;
@@ -886,6 +1050,7 @@ END LOOP;
 RETURN i;
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- function to check if dataset has ids or not
 CREATE OR REPLACE FUNCTION check_ids_availability(datatype text) RETURNS boolean AS $$
@@ -1284,6 +1449,21 @@ IF (res = FALSE) THEN
 EXECUTE 'INSERT INTO ' || table_name || '(sample,id,' || column_name || E') VALUES(\'' || sample_name || E'\',\'' || gene_name || E'\',' || val || ');';
 ELSE
 EXECUTE 'UPDATE ' || table_name || ' SET ' || column_name || '=' || val || E' WHERE (sample=\'' || sample_name || E'\') AND (id=\'' || gene_name || E'\');';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but for drugs table, i.e. ctd_drug
+CREATE OR REPLACE FUNCTION insert_or_update_drug(table_name text, column_name text, sample_name text, drug_name text, val numeric) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+EXECUTE 'SELECT EXISTS (SELECT * FROM ' || table_name || E' WHERE (sample=\'' || sample_name || E'\') AND (drug=\'' || drug_name || E'\') AND (' || column_name || ' IS NULL));' INTO res;
+IF (res = FALSE) THEN 
+EXECUTE 'INSERT INTO ' || table_name || '(sample,drug,' || column_name || E') VALUES(\'' || sample_name || E'\',\'' || drug_name || E'\',' || val || ');';
+ELSE
+EXECUTE 'UPDATE ' || table_name || ' SET ' || column_name || '=' || val || E' WHERE (sample=\'' || sample_name || E'\') AND (drug=\'' || drug_name || E'\');';
 END IF;
 RETURN res;
 END;

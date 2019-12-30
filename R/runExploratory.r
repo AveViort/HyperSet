@@ -59,13 +59,9 @@ Col<-colorRampPalette(colors=c("blue","white","red"))(20)
 hcm <- Param$hclust_method;
 if (Debug>0) {print(Param$hclust_method);}
 #####################################################
+if (Param$normalize == "Normalize") {t.in <- normalize(as.matrix(tbl));} else {t.in <- as.matrix(tbl);}
 heatmaply(
-normalize(as.matrix(tbl)), 
-# distfun="spearman", 
-distfun="pearson", 
-# hclust_method="ward.D2", 
-# hclust_method="complete", 
-# hclust_method="average", 
+t.in, distfun="pearson", # distfun="spearman", 
 hclust_method=hcm, 
 colors = Col, 
 k_col = 1, k_row = 1, 
@@ -80,7 +76,7 @@ scale="none", margins=c(80,80)
 }
 #####################################################
 Args <- commandArgs(trailingOnly = T);
-paramNames <- c("table", "out", "hclust_method");
+paramNames <- c("table", "out", "hclust_method", "normalize");
 Param <- vector("list", length(paramNames));
 names(Param) <- paramNames;
 for (aa in Args) {

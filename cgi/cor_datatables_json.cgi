@@ -57,7 +57,7 @@ while (@row = $sth->fetchrow_array()) {
 	}
 	my $plot = "";
 	if (@field_values[2] ne "MUT") {
-		$plot = '<button id=\"cor-plot'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.@field_values[2].'\', \'drug\'], [\''.@field_values[4].'\', \''.@field_values[5].'\'], [\''.@field_values[0].'\', \''.@field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
+		$plot = '<button id=\"cor-plot'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.@field_values[2].'\', \'drug\'], [\''.@field_values[4].'\', \''.@field_values[5].'\'.split(\'.\').join(\'\')], [\''.@field_values[0].'\', \''.@field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
 	}
 	my $cohort_selector = "";
 	my $km_button = "";
@@ -74,7 +74,9 @@ while (@row = $sth->fetchrow_array()) {
 	}
 	print '"plot":"'.$plot.'",';
 	print '"cohort-selector":"'.$cohort_selector.'",';
-	print '"KM-button":"'.$km_button.'"';
+	print '"KM-button":"'.$km_button.'",';
+	print '"info1":"<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"window.open(get_url(\''.@field_values[0].'\'), \'_blank\')\">Info</button>",';
+	print '"info2":"<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"window.open(get_url(\''.@field_values[1].'\'), \'_blank\')\">Info</button>"';
 	print "}";
 	if ($row_id != $rows) { print ","; }
 	$row_id = $row_id + 1;

@@ -50,6 +50,7 @@ function get_correlation_cohorts(source,datatype) {
 function get_correlation_platforms(source, datatype, cohort) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
+	console.log("cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort));
 	xmlhttp.open("GET", "cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -403,4 +404,17 @@ function get_platforms_tip(source) {
 		tip = tip + platforms[i].platform + ": " + platforms[i].name + "\n";
 	}
 	return tip;
+}
+
+// function to get url by external_id
+function get_url(external_id) {
+	var url;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/retrieve_url.cgi?id=" + encodeURIComponent(external_id), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			url = this.responseText;}
+		}
+	xmlhttp.send();
+	return url;
 }

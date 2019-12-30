@@ -96,6 +96,15 @@ function erase_all_cookies()
 	location.reload();
 }
 
+// delete all cookies except for cookies_accepted
+function erase_all_but_accept_cookies() {
+	document.cookie.split("; ").forEach(function(c) {
+		var s = c.substring(0, c.indexOf("="));
+		if (s != "cookies_accepted") {
+			document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=; expires=" + new Date().toUTCString() + "; path=/");} 
+	});
+}
+
 // delete all previous cookies - e.g. if user worked as an anonymous user, and later decided to log in. Or in the case of logoff.
 function erase_user_cookies()
 {
@@ -104,8 +113,10 @@ function erase_user_cookies()
 		var deletelist = ["username", "session_id", "project_id"];
 		var s = c.substring(0, c.indexOf("="));
 		if (deletelist.indexOf(s) != -1) {
-			document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=; expires=" + new Date().toUTCString() + "; path=/");} });
+			document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=; expires=" + new Date().toUTCString() + "; path=/");} 
+	});
 }
+
 // generating random id - for unregistered users
 // n is the number of symbols
 function random_id(n)

@@ -601,7 +601,7 @@ $con .= '
 <a href="https://doi.org/10.1371/journal.pcbi.1007244" target="_blank"><img src="pics/ten.jpeg"  class="showme"></a></div>
 </td>
 
-<td title="Heatmap">
+<!--td title="Heatmap">
 <div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"> 
 </div>
@@ -611,13 +611,17 @@ $con .= '
       <option>complete</option>
       <option>average</option>
       <option>centroid</option>
+    </select>	
+	<select name="normalize" id="normalize">
+      <option selected="selected">Normalize</option>
+      <option>As is</option>
     </select>
 
 </td>
 <td title="PCA (principal component analysis)">
 <div id="run-exploratory-pca" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/eres.png" class="showme" ></div>
-</td>
+</td-->
 <td>
 				<div id="help-'.$main::ajax_help_id++.'" class="showme clickable demo_button sbm-controls" onclick="demo1(
 \''.$HSconfig::examples->{'1'}->{'proj'}.'\',
@@ -690,9 +694,8 @@ $con .= '</select>
 	<script type="text/javascript">
 	
 
-  $( function() {
-    $( "#hclust_method" ).selectmenu();
-  } );
+  $( function() {    $( "#hclust_method" ).selectmenu();  } );
+  $( function() {    $( "#normalize" ).selectmenu();  } );
 
 $( function() {
 var opts = $("#species-ele").prop("options");

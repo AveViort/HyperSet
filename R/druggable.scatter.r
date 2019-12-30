@@ -44,9 +44,9 @@ for (i in 1:length(datatypes)) {
 	query <- "SELECT ";
 	# for drugs - binarize patients!
 	if ((empty_value(ids[i])) & (platforms[i] == "drug")) {
-		query <- paste0(query, "DISTINCT sample,TRUE FROM ", Par["cohort"], "_", datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
+		query <- paste0(query, "DISTINCT sample,TRUE FROM ", Par["cohort"], "_", datatypes[i], condition, ifelse(condition == " WHERE ", "", " AND "), platforms[i], " IS NOT NULL;");
 	} else {
-		query <- paste0(query, "sample,", platforms[i], " FROM ", Par["cohort"], "_", datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
+		query <- paste0(query, "sample,", platforms[i], " FROM ", Par["cohort"], "_", datatypes[i], condition, ifelse(condition == " WHERE ", "", " AND "), platforms[i], " IS NOT NULL;");
 	}
 	print(query);
 	temp[[i]] <- sqlQuery(rch, query);
@@ -267,6 +267,7 @@ if (status != 'ok') {
 				tickfont = font2);
 			types <- unique(z_data);
 			marker_shapes <- druggable.plotly.marker_shapes[1:length(types)];
+			tissue_colours <- druggable.plotly.tissue_colours;
 			names(marker_shapes) <- types;
 			script_file_name <- paste0(fname, ".r");
 			script_file <- file(script_file_name, "w")
@@ -275,9 +276,16 @@ if (status != 'ok') {
 			for (i in types) {
 				x_val <- paste(x_data[which(z_data == i)], collapse = ",");
 				y_val <- paste(y_data[which(z_data == i)], collapse = ",");
-				script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-										name='", i, "', marker = list(color = 'black', symbol = '",
-										marker_shapes[i], "')) %>%");
+				scripte_line <- '';
+				if (platforms[k] == "tissue") {
+					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
+											name='", i, "', marker = list(color = '", tissue_colours[i], "', symbol = '",
+											marker_shapes[1], "')) %>%");
+				} else {
+					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
+											name='", i, "', marker = list(color = 'black', symbol = '",
+											marker_shapes[i], "')) %>%");
+				}
 				write(script_line, file = script_file, append = TRUE);
 			}
 			script_line <- paste0("layout(title = '", plot_title, "',showlegend = TRUE,

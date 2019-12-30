@@ -323,9 +323,9 @@ my($pg, $lst);
 
 my($rnms);
 push @{$rnms}, @{HStextProcessor::parseGenes($q->param('sgs_list'), SPACE)};
-system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." colnames=".$q->param('colnames')." rownames=".$q->param('rownames')." out=$outfile delimiter=TAB  hclust_method=".$q->param('hclust_method')); 
+system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." colnames=".$q->param('colnames')." rownames=".$q->param('rownames')." out=$outfile delimiter=TAB  normalize=".$q->param('normalize')." hclust_method=".$q->param('hclust_method')); 
 $content = '<a href="'.$HSconfig::Rplots->{dir}.$outfile.'" target="_blank" class="clickable">Heatmap</a>';
-}
+} 
 return $content;
 }
 

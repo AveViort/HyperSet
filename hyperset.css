@@ -32,6 +32,19 @@ font-weight: 700;
 	font-weight: bold; 
 	color: #1d5987;
 }
+
+.xmlhttp_header {
+	background-color: #eeeeee; 
+	width:90%; 
+	padding: 10px;
+    margin: 10px;
+	text-align: center; 
+	font-size: x-large; 
+	font-weight: bold; 
+	color: #ffffff;
+	display: none;
+}
+
 .hidden {
 	visibility: hidden;
 }
@@ -41,6 +54,43 @@ font-weight: 700;
     width: 97%;
     margin-left: 16px;
     min-width: 800px;
+}
+
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000; 
+    top:        0px;
+    left:       0px;
+    height:     75%;
+    width:      100%;
+    background: rgba( 245, 245, 245, .8 ) url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 50% 50%  no-repeat;
+}
+
+.nea_loading  {
+    display: 	block;
+    position:   fixed;
+    z-index:    10000; 
+    top:        350px;
+    left:       0px;
+    height:     250px;
+    width:      100%;
+    background: rgba( 245, 245, 245, .8 ) url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 50% 50%  no-repeat;	
+}
+
+.loading  {
+    display: block;
+}
+
+.ajax_loading  {
+    position:   fixed;
+    z-index:    1000; 
+    /*top:        0;
+    left:       0px;*/
+    height:     100%;
+    width:      100%;
+    background: rgba( 245, 245, 245, .5 ) url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 50% 50%  no-repeat;
+    display: block;
 }
 
 .top_menu {
@@ -463,42 +513,6 @@ visibility: visible;
     background: rgba( 225, 225, 225, .8 ) url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 75% 75%  no-repeat;	
 }*/
 
-.modal {
-    display:    none;
-    position:   fixed;
-    z-index:    1000; 
-    top:        0px;
-    left:       0px;
-    height:     75%;
-    width:      100%;
-    background: rgba( 245, 245, 245, .8 ) url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 50% 50%  no-repeat;
-}
-
-.nea_loading  {
-    display: 	block;
-    position:   fixed;
-    z-index:    10000; 
-    top:        350px;
-    left:       0px;
-    height:     250px;
-    width:      100%;
-    background: rgba( 245, 245, 245, .8 ) url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 50% 50%  no-repeat;	
-}
-
-.loading  {
-    display: block;
-}
-
-.ajax_loading  {
-    position:   fixed;
-    z-index:    1000; 
-    top:        0;
-    left:       0px;
-    height:     75%;
-    width:      100%;
-    background: rgba( 245, 245, 245, .8 ) url('https://research.scilifelab.se/andrej_alexeyenko/pics/ajax-loader.gif') 50% 50%  no-repeat;
-    display: block;
-}
 
 button[disabled] {
 	box-shadow: none; 
