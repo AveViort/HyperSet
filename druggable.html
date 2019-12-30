@@ -839,9 +839,7 @@ function add_plot_options_row(i) {
 			$('#tcga_selector').selectmenu( "refresh" );
 		}
 		sessionStorage.removeItem("add_row");
-		if (id_input_enabled) {
-			id_keyup(i+1);
-		}
+		id_keyup(i+1);
 	}
 	else {
 		alert("Please accept cookies to use this site");
@@ -906,10 +904,7 @@ function delete_plot_options_row(i) {
 	}
 	// artificially trigger change event for all available inputs
 	// so if the deleted row was the reason why plot-button was disabled - the button would become enabled
-	var id_input_enabled = ($("#id" + (i+1) + "_input").is(":enabled"));
-	if (id_input_enabled) {
-		id_keyup(i-1);
-	}
+	id_keyup(i-1);
 }
 
 function init_cohortselector() {
@@ -1439,10 +1434,7 @@ function update_platform(n) {
 			plot_type_changed();
 		}
 		// do not move this operation - otherwise will cause bug
-		var id_input_enabled = ($("#id" + n + "_input").is(":enabled"));
-		if (id_input_enabled) {
-			id_keyup(n);
-		}
+		id_keyup(n);
 	}
 }
 
@@ -1798,21 +1790,24 @@ function id_keyup(k) {
 		flag = false;
 	}
 	else {
-		var available_ids = $( "#id" + k + "_input" ).autocomplete("option", "source");
-		var valueSoFar = $("#id" + k + "_input").val();
-		if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
-			valueSoFar = valueSoFar.toUpperCase();
-			$("#id" + k + "_input").val(valueSoFar);
-		}
-		var temp_flag = available_ids.includes(valueSoFar);
-		if (temp_flag) {
-			var confirmed = synonyms.get($("#id" + k + "_input").val());
-			//console.log("Confirmed: " + confirmed);
-			$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
-			setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
-							$("#id" + k + "_input").css('background-color', '')}, 500);
-			$("#id" + k + "_input").css('border-color', 'chartreuse');
-			$("#id" + k + "_input").css('background-color', 'chartreuse');
+		var temp_flag;
+		if ($("#id" + i + "_input").is(":enabled")) {
+			var available_ids = $( "#id" + k + "_input" ).autocomplete("option", "source");
+			var valueSoFar = $("#id" + k + "_input").val();
+			if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
+				valueSoFar = valueSoFar.toUpperCase();
+				$("#id" + k + "_input").val(valueSoFar);
+			}
+			temp_flag = available_ids.includes(valueSoFar);
+			if (temp_flag) {
+				var confirmed = synonyms.get($("#id" + k + "_input").val());
+				//console.log("Confirmed: " + confirmed);
+				$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
+				setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
+								$("#id" + k + "_input").css('background-color', '')}, 500);
+				$("#id" + k + "_input").css('border-color', 'chartreuse');
+				$("#id" + k + "_input").css('background-color', 'chartreuse');
+			}
 		}
 		for (i = 1; i<=n; i++) {
 			if ($("#id" + i + "_input").is(":enabled")) {

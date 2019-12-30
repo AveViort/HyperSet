@@ -157,7 +157,6 @@ if (status != 'ok') {
 		title = x_axis_name,
 		titlefont = font1,
 		showticklabels = TRUE,
-		tickangle = 0,
 		tickfont = font2);
 	y_axis <- list(
 		title = y_axis_name,
