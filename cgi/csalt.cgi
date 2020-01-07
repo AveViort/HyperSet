@@ -6,16 +6,6 @@ use CGI;
 use CGI::Carp qw ( fatalsToBrowser );
 $ENV{'PATH'} = '/bin:/usr/bin:';
 $CGI::POST_MAX=102400000; 
-#our ($dbh, $conditions, $pl, $nm, $debug, $stat);
-
-# exprected parameters: cname, cvalue, ctimestamp
-#my $csign = hsign("username", "ikpetrov", 1495531615204);
-#print $csign . "\n";
-#my $csign2 = hsign("username", "ikpetrov", 1495531615204);
-#my $csign3 = hsign("username", "ikpetrov", 1495531615204);
-#my $cond1 = ($csign == $csign2);
-#my $cond2 = ($csign == $csign3);
-#print "Condition 1: " . $cond1 ." Condition2: ". $cond2 . "\n";
 
 my $query = new CGI;
 my $cname = $query->param('cname');

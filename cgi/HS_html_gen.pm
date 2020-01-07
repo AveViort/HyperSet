@@ -596,12 +596,17 @@ sub ajaxMenu {
 my $sp; 
 my $con = '<table><tr>';
 $con .= '
+<td title="Nine quick tips for analyzing network data">
+<div id="nintips" class="showme icon-ok demo_button sbm-controls"> 
+<a href=" https://doi.org/10.1371/journal.pcbi.1007434" target="_blank"><img src="pics/tips9.png"  class="showme"></a></div>
+</td>
 <td title="Ten simple rules to create network figures">
 <div id="tenrules" class="showme icon-ok demo_button sbm-controls"> 
 <a href="https://doi.org/10.1371/journal.pcbi.1007244" target="_blank"><img src="pics/ten.jpeg"  class="showme"></a></div>
 </td>
 
-<!--td title="Heatmap">
+<!-- start comment>
+<td title="Heatmap">
 <div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"> 
 </div>
@@ -621,7 +626,9 @@ $con .= '
 <td title="PCA (principal component analysis)">
 <div id="run-exploratory-pca" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/eres.png" class="showme" ></div>
-</td-->
+</td>
+
+<!-- end comment ><-->
 <td>
 				<div id="help-'.$main::ajax_help_id++.'" class="showme clickable demo_button sbm-controls" onclick="demo1(
 \''.$HSconfig::examples->{'1'}->{'proj'}.'\',

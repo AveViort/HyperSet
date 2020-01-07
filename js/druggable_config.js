@@ -87,6 +87,9 @@ cor_visible_columns.set("TCGA", [
 // maximum number of rows for "Look up" tab (number of plot dimensions)
 var max_rows = 3;
 
+// maximum number of elements in autocomplete list
+var max_autocomplete = 50;
+
 // get synonyms here
 var synonyms = new Map();
 syn_worker = new Worker("js/synonyms_grubber.js");

@@ -177,7 +177,7 @@ li.tab:hover ul {
 	<div id="help-tab-comp">
 		Known compatibility issues:
 		<br>
-		This site best works with Google Chrome <span style="color: #00aa00;">(v. 60 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 57 or later)</span>. 
+		This site best works with Google Chrome <span style="color: #00aa00;">(v. 60 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 57 or later). It is also compatible with Edge.</span>. 
 		<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span> (opening uploaded user's files)..
 		<br>The site also works with Apple Safari (v. 11.1, macOS Sierra v10.12.6), other versions of Safari browser can have compatibility issues.
 	</div>
@@ -196,77 +196,6 @@ li.tab:hover ul {
 	</div>
 </div>
 </div>
-
-<script type="text/javascript">
-$(function() {
-$("#help-tabs-dr").tabs({heightStyle: "fill"});
-});
-
-$(function() {
-//$("#'.$dialogID.'").html("'.$text.'");
-//$("#help-menu-dr").menu();
-$("#help-dialog-dr").dialog({
-		resizable: false,
-        modal: false,
-        title: "Help, FAQ, demo", 
-        width:  1000,
-        height: 600,
-		position: { 		my: "center", at: "center", 		of: window 		}, 
-autoOpen: false,
-show: {
-//effect: "blind", duration: 380
-},
-close: function() {
-//$("#help-dialog-dr").css({"visibility": hidden});
-//$("#help-dialog-dr").html("");
-//$("[id*='qtip-'][aria-hidden='false']" ).remove(); //span:nth-child(3)
-//$( this ).dialog( "destroy" );
-}
-});
-//$('[aria-describedby="help-dialog-dr"]').css({"z-index": 1001});
-//$(".nea_loading").removeClass("nea_loading");
-//$("#usable-url").html("");
-//openTab( "analysis_type_ne", HSTabs.subtab.indices["'.$backTab.'"]);
-// $( "#rocOpener" ).click(function() {$( "#showError" ).dialog( "open" );});
-});
-function showDialogStatic (title, message) {
-$("#error-dialog-dr").html(message);
-$("#error-dialog-dr").dialog({
-		resizable: false,
-        modal: true,
-        title: title, 
-        width:  400,
-        height: "auto",
-		position: { 		my: "center", at: "center", 		of: window 		}, 
-autoOpen: true,
-show: {
-//effect: "blind", duration: 380
-},
-close: function() {}
-});
-}
-
-$("#help-qtip").qtip({
-     show: true, 
-     hide: "unfocus", 
-
-        content: {
-        text: function(event, api) {
-            return $(this).attr("title");
-        }
-        }, 
-        position: {
-                viewport: $(window)
-                },
-        style: {
-                classes: "qtip-bootstrap",
-                tip: {
-                        width: 16,
-                        height: 8
-                }}
-});
-
-</script>
 
 <div id="tab-signif">
 <div class="inputarea inputareahighlight">
@@ -388,41 +317,99 @@ $("#help-qtip").qtip({
 
 <P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
 
-<div class="footer ui-widget-header ui-corner-all" id="druggable_footer"><P>Click this button to delete all your previous data <button id="clean_reload_button" onclick=clean_reload()>Clean reload</button></P></div>
+<div class="footer ui-widget-header ui-corner-all" id="druggable_footer"><P><button id="clean_reload_button" onclick=clean_reload()>Reload site completely</button></P></div>
 
 <script>
+$(function() {
+	$("#help-tabs-dr").tabs({heightStyle: "fill"});
+});
 
-	(function() { //https://stackoverflow.com/questions/5202296/add-a-hook-to-all-ajax-requests-on-a-page
-    var origOpen = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function() {
-        //console.log('-----------------------------');
+$(function() {
+	//$("#'.$dialogID.'").html("'.$text.'");
+	//$("#help-menu-dr").menu();
+	$("#help-dialog-dr").dialog({
+		resizable: false,
+        modal: false,
+        title: "Help, FAQ, demo", 
+        width:  1000,
+        height: 600,
+		position: {
+			my: "center",
+			at: "center",
+			of: window
+		}, 
+		autoOpen: false,
+		show: {
+			//effect: "blind", duration: 380
+		},
+		close: function() {
+			//$("#help-dialog-dr").css({"visibility": hidden});
+			//$("#help-dialog-dr").html("");
+			//$("[id*='qtip-'][aria-hidden='false']" ).remove(); //span:nth-child(3)
+			//$( this ).dialog( "destroy" );
+		}
+	});
+	//$('[aria-describedby="help-dialog-dr"]').css({"z-index": 1001});
+	//$(".nea_loading").removeClass("nea_loading");
+	//$("#usable-url").html("");
+	//openTab( "analysis_type_ne", HSTabs.subtab.indices["'.$backTab.'"]);
+	// $( "#rocOpener" ).click(function() {$( "#showError" ).dialog( "open" );});
+});
+
+function showDialogStatic (title, message) {
+	$("#error-dialog-dr").html(message);
+	$("#error-dialog-dr").dialog({
+		resizable: false,
+        modal: true,
+        title: title, 
+        width:  400,
+        height: "auto",
+		position: { 		my: "center", at: "center", 		of: window 		}, 
+		autoOpen: true,
+		show: {
+			//effect: "blind", duration: 380
+		},
+		close: function() {}
+	});
+}
+
+$("#help-qtip").qtip({
+	show: true, 
+	hide: "unfocus", 
+	content: {
+		text: function(event, api) {
+			return $(this).attr("title");
+		}
+	}, 
+	position: {
+		viewport: $(window)
+	},
+	style: {
+		classes: "qtip-bootstrap",
+		tip: {
+			width: 16,
+			height: 8
+		}
+	}
+});
+
+(function() { //https://stackoverflow.com/questions/5202296/add-a-hook-to-all-ajax-requests-on-a-page
+	var origOpen = XMLHttpRequest.prototype.open;
+	XMLHttpRequest.prototype.open = function() {
+		//console.log('-----------------------------');
 		$('.xmlhttp_header').addClass("ajax_loading");  
-		//$('.main_header').append("<span class='ajax_loading'></span>");  
-		//$(window).trigger('resize');
-		//$('.main_header').hide().show(0);
 		//$('.main_header').hide().show(1000);
-		//$('.main_header').hide().show("blind", { direction: "down" }, "slow"); //"fold", 1000 
-		//$('.main_header').toggle().toggle(0);
-		//$('body').hide().show(0);
-
-
 		this.addEventListener("load", function () {
-		//$('.main_header').addClass("ajax_loading");
-		$('.ajax_loading').removeClass("ajax_loading");  		
-            //console.log('++++++++++');
-			
-            // console.log(this.readyState); //will always be 4 (ajax is completed successfully)
-            // console.log(this.responseText); //whatever the response was
-        
-	});	
-        origOpen.apply(this, arguments);
-    };
+			//$('.main_header').addClass("ajax_loading");
+			$('.ajax_loading').removeClass("ajax_loading");  		
+		});	
+		origOpen.apply(this, arguments);
+	};
 })();
 
 
 
 $(document).ready(function(){
-
 	safe_clear();
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
@@ -466,18 +453,29 @@ $(document).ready(function(){
 		//console.log(tabList[tt]);
 		//$(tabList[tt]).append( '<span id= "' + $(tabList[tt]).attr("aria-controls") + '-loading' + '" class="ui-icon ui-icon-loading-status-balls rotate"></span>' );	
 	}
+	
+	$("#clean_reload_button").button();
+	$("#clean_reload_button").qtip({ 
+			content: {
+				text: "Press this button to delete all cookies. The site will return to the original state like you have never used it before, but accepted cookies"
+			},
+			position: {
+				my: 'bottom left',  
+				at: 'top right',
+				target: $("#clean_reload_button")
+			}
+	});
 
 	$("#retrieve-cor-button").button();
 	$("#retrieve-cor-button").button("disable");
 	init_cor_source_selector();
-	$('#corSource_selector').val('CCLE');
+	$("#corSource_selector").val('CCLE');
 	$("#corSource_selector").selectmenu("refresh");
 	init_cor_datatype_selector();
 	init_cor_cohort_selector();
 	init_cor_platform_selector();
 	init_cor_screen_selector();
 	
-	// move this code!
 	worker = new Worker("js/drug_id_grubber.js");
 	console.log("Starting worker " + Date.now());
 	worker.postMessage(["CCLE", "all", "all", "all", "all"]);
@@ -488,8 +486,9 @@ $(document).ready(function(){
 			source: autocomplete_ids,
 			minLength: 2,
 			response: function( event, ui ) {
-				if (ui.content.length > 50) {
-					console.log("We have " + ui.content.length + " elements, but cannot show more than 50: closing autocomplete")
+				// max_autocomplete defined in druggable_config.js
+				if (ui.content.length > max_autocomplete) {
+					console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 				}
 			},
@@ -589,7 +588,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		// get all child nodes of #tabs
 		var nodes = $("#tabs").tabs()[0].childNodes;
 		// this is the node used to attach plot - pay attention to 6+2*!
-		var parent_tab = "#" + nodes[6+2*$("#tabs").tabs("option", "active")].getAttribute("id");;		
+		var parent_tab = "#" + nodes[4+2*$("#tabs").tabs("option", "active")].getAttribute("id");		
 		// variables are initialised when this function is called from correlations table, otherwise - initialise them
 		if (type == undefined) {
 			type = $('#plot-type option:selected').val();
@@ -1042,8 +1041,8 @@ function init_platformselector(selector_id) {
 				source: autocomplete_ids,
 				minLength: 2,
 				response: function( event, ui ) {
-					if (ui.content.length > 20) {
-						console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
+					if (ui.content.length > max_autocomplete) {
+						console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 					}
 				},
@@ -1378,8 +1377,8 @@ function update_platform(n) {
 					source: autocomplete_ids,
 					minLength: 2,
 					response: function( event, ui ) {
-						if (ui.content.length > 20) {
-							console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
+						if (ui.content.length > max_autocomplete) {
+							console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 							$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 						}
 					},
@@ -1549,8 +1548,8 @@ function update_cor_screen_selector() {
 				source: autocomplete_ids,
 				minLength: 2,
 				response: function( event, ui ) {
-					if (ui.content.length > 20) {
-						console.log("We have " + ui.content.length + " elements, but cannot show more than 20: closing autocomplete")
+					if (ui.content.length > max_autocomplete) {
+						console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 					}
 				},
@@ -1791,7 +1790,7 @@ function id_keyup(k) {
 	}
 	else {
 		var temp_flag;
-		if ($("#id" + i + "_input").is(":enabled")) {
+		if ($("#id" + k + "_input").is(":enabled")) {
 			var available_ids = $( "#id" + k + "_input" ).autocomplete("option", "source");
 			var valueSoFar = $("#id" + k + "_input").val();
 			if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
@@ -1809,7 +1808,7 @@ function id_keyup(k) {
 				$("#id" + k + "_input").css('background-color', 'chartreuse');
 			}
 		}
-		for (i = 1; i<=n; i++) {
+		for (var i = 1; i<=n; i++) {
 			if ($("#id" + i + "_input").is(":enabled")) {
 				var valueSoFar = $("#id" + i + "_input").val();
 				// this variable declared in druggable_config.js
@@ -1829,6 +1828,7 @@ function id_keyup(k) {
 			}
 			else {
 				flag = flag*true;
+				$("#open_info" + i).button("disable");
 			}
 		}
 	}

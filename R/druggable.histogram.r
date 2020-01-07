@@ -26,6 +26,7 @@ if (status != 'ok') {
 		} else {
 			
 	x_data <- transformVars(x_data[[platforms[1]]], scales[1]);
+	print(x_data);
 	if (Par["source"] == "tcga") {
 		plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
 	} else {
@@ -38,9 +39,10 @@ if (status != 'ok') {
 		tickangle = 0,
 		tickfont = font2);
 	p <- plot_ly(x = x_data,
+		text = ~x_data,
+		hoverinfo = 'y+x',
 		type = 'histogram') %>% 
-	layout(title = plot_title,
-		xaxis = x_axis);
+	layout(xaxis = x_axis);
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 }
 odbcClose(rch)

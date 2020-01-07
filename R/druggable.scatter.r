@@ -83,12 +83,12 @@ if (status != 'ok') {
 		print("str(y_data):");
 		print(str(y_data));	
 		if (Par["source"] == "tcga") {
-			plot_title <- paste0("Correlation between ", 
-				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and ", 
+			plot_title <- paste0("Scatter of ", 
+				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
 				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""));
 		} else {
-			plot_title <- paste0("Correlation between ", 
-				readable_platforms[platforms[1],2], " and ", 
+			plot_title <- paste0("Scatter of ", 
+				readable_platforms[platforms[1],2], " and \n", 
 				readable_platforms[platforms[2],2]);
 		}
 		cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
@@ -97,20 +97,21 @@ if (status != 'ok') {
 		t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
 		f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
 		plot_legend = paste(
-			ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
-					ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
-					paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
-					paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
-					paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), sep="\n");
+			plot_title,
+			ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
+			ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
+			paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
+			paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
+			paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), sep="\n");
 		print(plot_legend);
 		x_axis <- list(
-			title = paste0(toupper(datatypes[1]), ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+			title = paste0(ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
 			tickfont = font2);
 		y_axis <- list(
-			title = paste0(toupper(datatypes[2]), ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+			title = paste0(ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
@@ -150,22 +151,21 @@ if (status != 'ok') {
 				"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 			}
 		")) %>%
-		layout(title = plot_title,
-			legend = druggable.plotly.legend.style,
+		layout(legend = druggable.plotly.legend.style,
 			showlegend = TRUE,
 			xaxis = x_axis,
 			yaxis = y_axis);
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
 		if (Par["source"] == "tcga") {
-			plot_title <- paste0("Correlation between ", 
-				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and ", 
-				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""), " and ",
+			plot_title <- paste0("Scatter of ", 
+				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
+				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""), " and \n",
 				readable_platforms[platforms[3],2], ifelse(!(datatypes[3] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[3], ")"), ""));
 		} else {
-			plot_title <- paste0("Correlation between ", 
-				readable_platforms[platforms[1],2], " and ", 
-				readable_platforms[platforms[2],2], " and ",
+			plot_title <- paste0("Scatter of ", 
+				readable_platforms[platforms[1],2], " and \n", 
+				readable_platforms[platforms[2],2], " and \n",
 				readable_platforms[platforms[3],2]);
 		}
 		# in case with 3D plots we have not only numeric datatypes
@@ -189,18 +189,18 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(toupper(datatypes[1]), ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+				title = paste0(ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(toupper(datatypes[2]), ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+				title = paste0(ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
-			z_axis <- paste0(toupper(datatypes[3]), ifelse(!empty_value(ids[3]), paste0(" of ", ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")");
+			z_axis <- paste0(ifelse(!empty_value(ids[3]), paste0(" of ", ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")");
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
 				text = ~paste("Patient: ", common_samples), color = z_data) %>% 
 			colorbar(title = z_axis) %>%
@@ -220,8 +220,7 @@ if (status != 'ok') {
 					"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 				}
 			")) %>%
-			layout(title = plot_title,
-				legend = druggable.plotly.legend.style,
+			layout(legend = druggable.plotly.legend.style,
 				showlegend = TRUE,
 				xaxis = x_axis,
 				yaxis = y_axis);
@@ -254,13 +253,13 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(toupper(datatypes[axis_index[1]]), ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[1]]), strsplit(ids[axis_index[1]], ":")[[1]][1], ids[axis_index[1]])), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
+				title = paste0(ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[1]]), strsplit(ids[axis_index[1]], ":")[[1]][1], ids[axis_index[1]])), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(toupper(datatypes[axis_index[2]]), ifelse(!empty_value(ids[axis_index[2]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[2]]), strsplit(ids[axis_index[2]], ":")[[1]][1], ids[axis_index[2]])), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
+				title = paste0(ifelse(!empty_value(ids[axis_index[2]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[2]]), strsplit(ids[axis_index[2]], ":")[[1]][1], ids[axis_index[2]])), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
@@ -288,7 +287,7 @@ if (status != 'ok') {
 				}
 				write(script_line, file = script_file, append = TRUE);
 			}
-			script_line <- paste0("layout(title = '", plot_title, "',showlegend = TRUE,
+			script_line <- paste0("showlegend = TRUE,
 				legend = druggable.plotly.legend.style,
 				xaxis = x_axis,
 				yaxis = y_axis);");
