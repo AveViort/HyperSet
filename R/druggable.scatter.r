@@ -105,13 +105,13 @@ if (status != 'ok') {
 			paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), sep="\n");
 		print(plot_legend);
 		x_axis <- list(
-			title = paste0(ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+			title = adjust_string(paste0(ifelse(!empty_value(ids[1]), paste0(ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"), druggable.axis.label.threshold),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
 			tickfont = font2);
 		y_axis <- list(
-			title = paste0(ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+			title = adjust_string(paste0(ifelse(!empty_value(ids[2]), paste0(ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"), druggable.axis.label.threshold),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
@@ -154,7 +154,8 @@ if (status != 'ok') {
 		layout(legend = druggable.plotly.legend.style,
 			showlegend = TRUE,
 			xaxis = x_axis,
-			yaxis = y_axis);
+			yaxis = y_axis,
+			margin = druggable.margins);
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
 		if (Par["source"] == "tcga") {
@@ -189,18 +190,18 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(ifelse(!empty_value(ids[1]), paste0(" of ", ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"),
+				title = adjust_string(paste0(ifelse(!empty_value(ids[1]), paste0(ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"), druggable.axis.label.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(ifelse(!empty_value(ids[2]), paste0(" of ", ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"),
+				title = adjust_string(paste0(ifelse(!empty_value(ids[2]), paste0(ifelse(grepl(":", ids[2]), strsplit(ids[2], ":")[[1]][1], ids[2])), ""), " (", readable_platforms[platforms[2],2], ",", scales[2], ")"), druggable.axis.label.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
-			z_axis <- paste0(ifelse(!empty_value(ids[3]), paste0(" of ", ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")");
+			z_axis <- adjust_string(paste0(ifelse(!empty_value(ids[3]), paste0(ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")"), druggable.axis.label.threshold);
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
 				text = ~paste("Patient: ", common_samples), color = z_data) %>% 
 			colorbar(title = z_axis) %>%
@@ -223,7 +224,8 @@ if (status != 'ok') {
 			layout(legend = druggable.plotly.legend.style,
 				showlegend = TRUE,
 				xaxis = x_axis,
-				yaxis = y_axis);
+				yaxis = y_axis,
+				margin = druggable.margins);
 			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		} else {
 			print("One of the columns contains characters");
@@ -253,13 +255,13 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = paste0(ifelse(!empty_value(ids[axis_index[1]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[1]]), strsplit(ids[axis_index[1]], ":")[[1]][1], ids[axis_index[1]])), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"),
+				title = adjust_string(paste0(ifelse(!empty_value(ids[axis_index[1]]), paste0(ifelse(grepl(":", ids[axis_index[1]]), strsplit(ids[axis_index[1]], ":")[[1]][1], ids[axis_index[1]])), ""), " (", readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"), druggable.axis.label.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = paste0(ifelse(!empty_value(ids[axis_index[2]]), paste0(" of ", ifelse(grepl(":", ids[axis_index[2]]), strsplit(ids[axis_index[2]], ":")[[1]][1], ids[axis_index[2]])), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"),
+				title = adjust_string(paste0(ifelse(!empty_value(ids[axis_index[2]]), paste0(ifelse(grepl(":", ids[axis_index[2]]), strsplit(ids[axis_index[2]], ":")[[1]][1], ids[axis_index[2]])), ""), " (", readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"), druggable.axis.label.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,

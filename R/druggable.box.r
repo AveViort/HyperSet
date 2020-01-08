@@ -141,33 +141,38 @@ if (status != 'ok') {
 	print(str(y_data));
 	y_axis_name = '';
 	print(readable_platforms);
-	#print(ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
 	x_axis_name = paste0(toupper(temp_datatypes[2]), ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
 	if (length(temp_scales) != 0) {
 		if (!empty_value(temp_ids[1])) {
-			y_axis_name <- paste0(toupper(temp_datatypes[1]), ":", readable_platforms[temp_platforms[1], 2], " (", ifelse(grepl(":", temp_ids[1]), strsplit(temp_ids[1], ":")[[1]][1], temp_ids[1]), ",", temp_scales[1], ")");
+			y_axis_name <- paste0(readable_platforms[temp_platforms[1], 2], " (", ifelse(grepl(":", temp_ids[1]), strsplit(temp_ids[1], ":")[[1]][1], temp_ids[1]), ",", temp_scales[1], ")");
 		} else {
-			y_axis_name <- paste0(toupper(temp_datatypes[1]), ":", readable_platforms[temp_platforms[1], 2], " (", temp_scales[1], ")");
+			y_axis_name <- paste0(toupper(readable_platforms[temp_platforms[1], 2], " (", temp_scales[1], ")");
 		}
 	} else {
 		y_axis_name <- paste0(toupper(temp_datatypes[1]), ":", readable_platforms[temp_platforms[1], 2]);
 	}	
-	plot_title <- paste0("Boxplot of ", Par["cohort"]);
+	plot_annotation <- paste0("Cohort: ", toupper(Par["cohort"]));
 	x_axis <- list(
-		title = x_axis_name,
+		title = adjust_string(x_axis_name, druggable.axis.label.threshold),
 		titlefont = font1,
 		showticklabels = TRUE,
 		tickfont = font2);
 	y_axis <- list(
-		title = y_axis_name,
+		title = adjust_string(y_axis_name, druggable.axis.label.threshold),
 		titlefont = font1,
 		showticklabels = TRUE,
 		tickangle = 0,
 		tickfont = font2);
 	p <- plot_ly(y = x_data, x = y_data, type = "box") %>% 
-	layout(title = plot_title,
-		xaxis = x_axis,
-		yaxis = y_axis);
+	add_annotations(xref = "paper",
+		yref = "paper",
+		x = 1,
+		y = -0.1,
+		text = plot_annotation,
+		showarrow = FALSE) %>%
+	layout(xaxis = x_axis,
+		yaxis = y_axis,
+		margin = druggable.margins);
 	time1 <- Sys.time();
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	time2 <- Sys.time();

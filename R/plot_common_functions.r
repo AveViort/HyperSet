@@ -40,7 +40,7 @@ adjust_cex_main <- function(main_title, cex.main.relative) {
 	return(cex.adjusted);
 }
 
-# make fefr shift in vectors
+# make left shift in vectors
 left_shift <- function(original_vector, n) {
 	transformed_vector <- c();
 	if ((n > length(original_vector)) | (n <= 0)) {
@@ -54,4 +54,23 @@ left_shift <- function(original_vector, n) {
 # check if value is equal to empty string or is NA
 empty_value <- function(value) {
 	return((is.na(value)) | (value == ""));
+}
+
+# if string is too long (i.e. too long axis label) - make it two-line string by adding \n approximately in the middle
+# threshold is a number, max number of characters for one string
+adjust_string <- function(long_string, threshold) {
+	print(long_string);
+	print(threshold);
+	string_length <- nchar(long_string);
+	adjusted_string <- long_string;
+	if (string_length > threshold) {
+		spaces <- gregexpr(pattern =' ', long_string)[[1]];
+		print(spaces);
+		# cut string into approximately equal halves
+		pos <- which.min(abs(string_length/2-spaces));
+		print(pos);
+		adjusted_string <- paste0(substr(long_string, 1, spaces[pos]-1), "\n", substr(long_string, spaces[pos]+1, string_length));
+	}
+	print(adjusted_string);
+	return(adjusted_string);
 }

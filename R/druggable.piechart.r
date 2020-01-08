@@ -3,7 +3,7 @@ source("../R/init_plot.r");
 print("druggable.piechart.r");
 
 status <- '';
-plot_title <- '';
+plot_annotation <- '';
 condition <- " WHERE ";
 if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes))) {
 	condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
@@ -49,16 +49,21 @@ if (status != 'ok') {
 		slices <- c(slices, length(which(x_data[,2] == ufactor)));
 	}
 	if (Par["source"] == "tcga") {
-		plot_legend <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
+		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
 	} else {
-		plot_legend <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''));
+		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''));
 	}
+	plot_annotation <- paste0(plot_annotation, " N=", nrow(x_data));
 	p <- plot_ly(labels = factors,
 		values = slices,
-		name = plot_legend,
 		type = 'pie') %>% 
-	layout(legend = list(orientation = 'h'),
-		showlegend = TRUE);
+	add_annotations(xref = "paper",
+		yref = "paper",
+		x = 1,
+		y = -0.1,
+		text = plot_annotation,
+		showarrow = FALSE) %>%
+	layout(margin = druggable.margins);
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 }
 odbcClose(rch)

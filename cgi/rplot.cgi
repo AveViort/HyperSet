@@ -17,5 +17,5 @@ my $scales = $query->param('scales');
 print "Content-type: text/html\n\n";
 srand(); my $r = rand();
 my $file = 'tmp'.$1.'.html' if $r =~  m/0\.([0-9]{12})/;
-system("Rscript ../R/druggable.".$type.".r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids=$ids tcga_codes=$tcga_codes scales=$scales out=$file");
+system("Rscript ../R/druggable.".$type.".r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids='$ids' tcga_codes=$tcga_codes scales=$scales out=$file");
 print $file;

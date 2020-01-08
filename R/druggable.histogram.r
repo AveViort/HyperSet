@@ -3,7 +3,7 @@ source("../R/init_plot.r");
 print("druggable.histogram.r");
 
 status <- '';
-plot_title <- '';
+plot_annotation <- '';
 condition <- " WHERE ";
 if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes))) {
 	condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
@@ -28,12 +28,13 @@ if (status != 'ok') {
 	x_data <- transformVars(x_data[[platforms[1]]], scales[1]);
 	print(x_data);
 	if (Par["source"] == "tcga") {
-		plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
+		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
 	} else {
-		plot_title <- paste0(toupper(Par["cohort"]), ' ', readable_platforms[platforms[1],2], ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''));
+		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''));
 	}
+	plot_annotation <- paste0(plot_annotation, " N=", length(x_data));
 	x_axis <- list(
-		title = paste0(readable_platforms[platforms[1],2], ifelse(scales[1] != "linear", paste0(" (", scales[1], ")"), "")),
+		title = adjust_string(paste0(readable_platforms[platforms[1],2], ifelse(scales[1] != "linear", paste0(" (", scales[1], ")"), "")), druggable.axis.label.threshold),
 		titlefont = font1,
 		showticklabels = TRUE,
 		tickangle = 0,
@@ -42,7 +43,14 @@ if (status != 'ok') {
 		text = ~x_data,
 		hoverinfo = 'y+x',
 		type = 'histogram') %>% 
-	layout(xaxis = x_axis);
+	add_annotations(xref = "paper",
+		yref = "paper",
+		x = 1,
+		y = -0.1,
+		text = plot_annotation,
+		showarrow = FALSE) %>%
+	layout(xaxis = x_axis,
+		margin = druggable.margins);
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 }
 odbcClose(rch)

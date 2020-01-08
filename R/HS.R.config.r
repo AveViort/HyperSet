@@ -41,7 +41,7 @@ druggable.precision.pval.legend = 2;
 # options for plotly
 font1 <- list(
   family = "Arial, sans-serif",
-  size = 14,
+  size = 12.5,
   color = "black"
 );
 font2 <- list(
@@ -99,3 +99,14 @@ druggable.plotly.tissue_colours <- c(
 
 # datatypes which use patients, not samples
 druggable.patient.datatypes <- c("clin", "immuno", "drug");
+
+# this variable is used to set margins - so annotations will not overlap with axis labels
+druggable.margins <- list(
+	l = 20,
+	r = 10,
+	b = 50,
+	t = 10,
+	pad = 4);
+	
+# max number of characters in axis labels
+druggable.axis.label.threshold <- 60;
