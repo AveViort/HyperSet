@@ -63,7 +63,8 @@ if (status != 'ok') {
 		y = -0.1,
 		text = plot_annotation,
 		showarrow = FALSE) %>%
-	layout(margin = druggable.margins);
+	layout(margin = druggable.margins) %>%
+	config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 }
 odbcClose(rch)

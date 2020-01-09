@@ -547,6 +547,11 @@ $(document).ready(function(){
 				text: "Delete this row"
 			}
 	});
+	$("#open_info1").qtip({ 
+			content: {
+				text: "Open external information page"
+			}
+	});
 	$("#plot-button").button();
 	$("#plot-button").button("disable");
 	// we assign qtip to wrapper because qtip is not shown for disabled objects - and we have to show qtip only when plot-button is disabled
@@ -555,8 +560,6 @@ $(document).ready(function(){
 			text: "Please fill all IDs"
 		}
 	});
-	$("#open_info1").button();
-	$("#open_info1").button("disable");
 	// need to call it manually because some types of plots need no additional parameters 
 	id_keyup(1);
 	// reload from cookies if we had more than 1 row
@@ -613,7 +616,6 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		var plot_id;
 		var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
 		// new plot
-		//console.log(parent_tab);
 		if (plot_filename == "no") {
 			//$("#progressbar").css({"visibility": "visible"});
 			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
@@ -631,10 +633,11 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 					},
 					{
 						text: "Get link",
-						icon: "ui-icon-arrowthickstop-1-s",
+						icon: "ui-icon-link",
 						click: function() {
 							//dock_plot(this, plot_id);
-							alert("You can use this as a direct link: https://www.evinet.org/pics/plots/" + plot_filename);
+							navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
+							alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
 						},
 						showText: false
 					}
@@ -671,10 +674,11 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 						},
 						{
 							text: "Get link",
-							icon: "ui-icon-arrowthickstop-1-s",
+							icon: "ui-icon-link",
 							click: function() {
 								//dock_plot(this, plot_id);
-								alert("You can use this as a direct link: https://www.evinet.org/pics/plots/" + plot_filename);
+								navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
+								alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
 							}
 						}
 					],
@@ -782,20 +786,25 @@ function add_plot_options_row(i) {
 		}
 		var InfoButton = row.insertCell(4);
 		InfoButton.innerHTML = '<button id="open_info' + (i+1) + '" onclick="open_info_page(' + (i+1) + ')" disabled>Info</button>';
+		$(InfoButton).qtip({ 
+			content: {
+				text: "Open external information page"
+			}
+		});
 		var AxisSelector = row.insertCell(5);
 		AxisSelector.innerHTML = '<select id="axis' + (i+1) +'_selector" class="ui-helper" style="width: 20ch;">';
 		init_axis_type_selector('axis' + (i+1) + '_selector');
 		var AddButton = row.insertCell(6);
 		// max number of rows defined in druggable_config.js
 		AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=' + max_rows + ' onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
-		$( AddButton ).qtip({ 
+		$(AddButton).qtip({ 
 			content: {
 				text: "Add a new row (under this one)"
 			}
 		});
 		var DeleteButton = row.insertCell(7);
 		DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=' + max_rows + ' onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
-		$( DeleteButton ).qtip({ 
+		$(DeleteButton).qtip({ 
 			content: {
 				text: "Delete this row"
 			}
@@ -804,6 +813,15 @@ function add_plot_options_row(i) {
 		$("#add_row" + (i+1)).button();
 		$("#delete_row" + (i+1)).button();
 		$("#open_info" + (i+1)).button();
+		
+		// for some reason - we have to do this after initialisation. Otherwise , if you do it on one of the previous lines, jquery ui will
+		// add "title" field to button and hence another tip (you will see "+" and "-" white tooltips for icons)
+		$("#add_row" + (i+1)).button({icon: "ui-icon-circle-plus",
+			showLabel: false});
+		$("#delete_row" + (i+1)).button({icon: "ui-icon-circle-minus",
+			showLabel: false});
+		$("#open_info" + (i+1)).button({icon: "ui-icon-extlink",
+			showLabel: false});
 		if (n+1 >= document.getElementById("add_row" + i).getAttribute("max")) {
 			for (j=1; j<=n+1; j++) {
 				$("#add_row" + j).button("disable");
@@ -934,8 +952,13 @@ function init_cohortselector() {
 	init_axis_type_selector("axis1_selector");
 	init_tcga_code_selector("tcga_selector");
 	init_plot_type_selector();
-	$("#add_row1").button();
-	$("#delete_row1").button();
+	$("#open_info1").button({icon: "ui-icon-extlink",
+        showLabel: false});
+	$("#open_info1").button("disable");
+	$("#add_row1").button({icon: "ui-icon-circle-plus",
+        showLabel: false});
+	$("#delete_row1").button({icon: "ui-icon-circle-minus",
+        showLabel: false});
 	$("#delete_row1").button("disable");
 	sessionStorage.removeItem("add_row");
 }

@@ -172,7 +172,8 @@ if (status != 'ok') {
 		showarrow = FALSE) %>%
 	layout(xaxis = x_axis,
 		yaxis = y_axis,
-		margin = druggable.margins);
+		margin = druggable.margins) %>%
+	config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 	time1 <- Sys.time();
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	time2 <- Sys.time();

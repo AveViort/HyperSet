@@ -83,11 +83,11 @@ if (status != 'ok') {
 		print("str(y_data):");
 		print(str(y_data));	
 		if (Par["source"] == "tcga") {
-			plot_title <- paste0("Scatter of ", 
+			plot_title <- paste0("Scatter of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
 				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""));
 		} else {
-			plot_title <- paste0("Scatter of ", 
+			plot_title <- paste0("Scatter of ",  toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], " and \n", 
 				readable_platforms[platforms[2],2]);
 		}
@@ -155,16 +155,17 @@ if (status != 'ok') {
 			showlegend = TRUE,
 			xaxis = x_axis,
 			yaxis = y_axis,
-			margin = druggable.margins);
+			margin = druggable.margins) %>%
+		config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
 		if (Par["source"] == "tcga") {
-			plot_title <- paste0("Scatter of ", 
+			plot_annotation <- paste0("Scatter of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
 				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""), " and \n",
 				readable_platforms[platforms[3],2], ifelse(!(datatypes[3] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[3], ")"), ""));
 		} else {
-			plot_title <- paste0("Scatter of ", 
+			plot_annotation <- paste0("Scatter of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], " and \n", 
 				readable_platforms[platforms[2],2], " and \n",
 				readable_platforms[platforms[3],2]);
@@ -221,11 +222,18 @@ if (status != 'ok') {
 					"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 				}
 			")) %>%
+			add_annotations(xref = "paper",
+				yref = "paper",
+				x = 1,
+				y = -0.12,
+				text = plot_annotation,
+				showarrow = FALSE) %>%
 			layout(legend = druggable.plotly.legend.style,
 				showlegend = TRUE,
 				xaxis = x_axis,
 				yaxis = y_axis,
-				margin = druggable.margins);
+				margin = druggable.margins) %>%
+			config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		} else {
 			print("One of the columns contains characters");
@@ -289,10 +297,18 @@ if (status != 'ok') {
 				}
 				write(script_line, file = script_file, append = TRUE);
 			}
-			script_line <- paste0("showlegend = TRUE,
+			script_line <- paste0("add_annotations(xref = 'paper',
+					yref = 'paper',
+					x = 1,
+					y = -0.12,
+					text = plot_annotation,
+					showarrow = FALSE) %>%
+				layout(showlegend = TRUE,
 				legend = druggable.plotly.legend.style,
 				xaxis = x_axis,
-				yaxis = y_axis);");
+				yaxis = y_axis,
+				margin = druggable.margins) %>%
+			config(modeBarButtonsToAdd = list(druggable.evinet.modebar));");
 			write(script_line, file = script_file, append = TRUE);
 			close(script_file)
 			source(script_file_name)
