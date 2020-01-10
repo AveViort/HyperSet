@@ -177,8 +177,8 @@ li.tab:hover ul {
 	<div id="help-tab-comp">
 		Known compatibility issues:
 		<br>
-		This site best works with Google Chrome <span style="color: #00aa00;">(v. 60 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 57 or later). It is also compatible with Edge.</span>. 
-		<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span> (opening uploaded user's files)..
+		This site best works with Google Chrome <span style="color: #00aa00;">(v. 71 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 60 or later)</span>. It is also compatible with Edge.
+		<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span>.
 		<br>The site also works with Apple Safari (v. 11.1, macOS Sierra v10.12.6), other versions of Safari browser can have compatibility issues.
 	</div>
 	
@@ -702,7 +702,8 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 
 function retrieve_correlations() {
 	var n = $('#cor_result_table tr').length;
-	if (n > 0) {
+	if (n > 1) {
+		$('#cor_result_table').DataTable().clear();
 		$('#cor_result_table').DataTable().destroy();
 	}
 	var source = $("#corSource_selector option:selected").val();
@@ -1485,7 +1486,7 @@ function update_cor_source_selector() {
 	var previous_value = (getCookie("corSource_selector").split("|"))[0];
 	if ((selector_value != previous_value) | (selector_value == "all")) {
 		usetCookie("corSource_selector", selector_value, accepted_time);
-		$("#corGeneFeature_input").val("");
+		$('#corGeneFeature_input').val("");
 		$('#corDatatype_selector').find('option').remove().end();
 		$('#corDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 		init_cor_datatype_selector();

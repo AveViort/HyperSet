@@ -233,13 +233,13 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 		if (cookies) {
 			sessionStorage.setItem("demo", 1);
 			$("#tabs").tabs("option", "active", 1);
-			var to = 1000;
+			var to = 1200;
 			setTimeout(function () {
 				$("select[id='corSource_selector']").val(source); 
 				$("select[id='corSource_selector']").selectmenu( "refresh" );
-				update_source();
+				update_cor_source_selector();
 			}, to);
-			to += 800;            //250;
+			to += 1000; 
 			
 			var part_a = {
 				ele: "corDatatype_selector",	
@@ -254,9 +254,9 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 			setTimeout(function () {
 				$("select[id='corDatatype_selector']").val(datatype); 
 				$("select[id='corDatatype_selector']").selectmenu( "refresh" );
-				update_cohort();
+				update_cor_cohort_selector();
 			}, to);
-			to += 1100;            //250;
+			to += 1500;            
 			
 			var part_b = {
 				ele: "corPlatform_selector",	
@@ -271,9 +271,9 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 			setTimeout(function () {
 				$("select[id='corPlatform_selector']").val(platform); 
 				$("select[id='corPlatform_selector']").selectmenu( "refresh" );
-				update_type(1);
+				update_cor_platform_selector();
 			}, to);
-			to += 1400;
+			to += 1900;
 			
 			var part_c = {
 				ele: "corScreen_selector",	
@@ -288,31 +288,31 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 			setTimeout(function () {
 				$("select[id='corScreen_selector']").val(screen); 
 				$("select[id='corScreen_selector']").selectmenu( "refresh" );
-				update_platform(1);
+				update_cor_screen_selector();
 			}, to);
-			to += 1700;
+			to += 2700;
 			
 			setTimeout(function () {
 				$("#corGeneFeature_input").val(id); 
 				cor_id_keyup();
 			}, to);
-			to += 2000;
+			to += 3500;
 			
 			setTimeout(function () {
 				$("#FDR_input").val(fdr); 
 			}, to);
-			to += 2250;
+			to += 3750;
 			
 			setTimeout(function () {
 				demoClick("#retrieve-cor-button", 100);
 			}, to);
-			to += 2500;
+			to += 4100;
 			
 			setTimeout(function () {
 				demoClick("#cor-KM" + plotid, 100);
 				sessionStorage.removeItem("demo");
 			}, to);
-			to += 3000;
+			to += 4250;
 		}
 		else {
 			alert("Please accept cookies to run demo");
@@ -328,13 +328,13 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 		var cookies = checkCookiesAccepted();
 		if (cookies) {	
 			$("#tabs").tabs("option", "active", 1);
-			var to = 1000;
+			var to = 1200;
 			setTimeout(function () {
 				$("select[id='corSource_selector']").val(source); 
 				$("select[id='corSource_selector']").selectmenu( "refresh" );
-				update_source();
+				update_cor_source_selector();
 			}, to);
-			to += 800;            //250;
+			to += 1000;
 			
 			var part_a = {
 				ele: "corDatatype_selector",	
@@ -349,9 +349,9 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 			setTimeout(function () {
 				$("select[id='corDatatype_selector']").val(datatype); 
 				$("select[id='corDatatype_selector']").selectmenu( "refresh" );
-				update_cohort();
+				update_cor_datatype_selector();
 			}, to);
-			to += 1100;            //250;
+			to += 1400;
 			
 			var part_b = {
 				ele: "corPlatform_selector",	
@@ -366,9 +366,9 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 			setTimeout(function () {
 				$("select[id='corPlatform_selector']").val(platform); 
 				$("select[id='corPlatform_selector']").selectmenu( "refresh" );
-				update_type(1);
+				update_cor_platform_selector(1);
 			}, to);
-			to += 1400;
+			to += 2000;
 			
 			var part_c = {
 				ele: "corScreen_selector",	
@@ -383,31 +383,31 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 			setTimeout(function () {
 				$("select[id='corScreen_selector']").val(screen); 
 				$("select[id='corScreen_selector']").selectmenu( "refresh" );
-				update_platform(1);
+				update_cor_screen_selector();
 			}, to);
-			to += 1700;
+			to += 2700;
 			
 			setTimeout(function () {
 				$("#corGeneFeature_input").val(id); 
 				cor_id_keyup();
 			}, to);
-			to += 2000;
+			to += 3100;
 			
 			setTimeout(function () {
 				$("#FDR_input").val(fdr); 
 			}, to);
-			to += 2250;
+			to += 3250;
 			
 			setTimeout(function () {
 				demoClick("#retrieve-cor-button", 100);
 			}, to);
-			to += 2700;
+			to += 3400;
 			
 			setTimeout(function () {
 				demoClick("#cor-plot" + plotid, 100);
 				sessionStorage.removeItem("demo");
 			}, to);
-			to += 3000;
+			to += 4000;
 		}
 		else {
 			alert("Please accept cookies to run demo");
