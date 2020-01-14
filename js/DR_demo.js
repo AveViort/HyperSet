@@ -324,9 +324,9 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 // this is demo of "Plot" button for the second tab
 function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 	if (sessionStorage.getItem("demo") == null) {
-		sessionStorage.setItem("demo", 1);	
 		var cookies = checkCookiesAccepted();
-		if (cookies) {	
+		if (cookies) {
+			sessionStorage.setItem("demo", 1);	
 			$("#tabs").tabs("option", "active", 1);
 			var to = 1200;
 			setTimeout(function () {
