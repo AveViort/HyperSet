@@ -1,9 +1,10 @@
 #!/usr/bin/speedy -w
+
+# script for creating druggable plot
 # use warnings;
 use strict vars;
 use CGI; # qw(-no_xhtml);
 use CGI::Carp qw ( fatalsToBrowser );
-use Switch;
 
 my $query = new CGI;
 my $type = $query->param('type');

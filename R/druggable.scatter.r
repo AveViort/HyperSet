@@ -292,7 +292,7 @@ if (status != 'ok') {
 											marker_shapes[1], "')) %>%");
 				} else {
 					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-											name='", i, "', marker = list(color = 'black', symbol = '",
+											name='", i, "', marker = list(color = '", tissue_colours[i],"', symbol = '",
 											marker_shapes[i], "')) %>%");
 				}
 				write(script_line, file = script_file, append = TRUE);
@@ -307,8 +307,15 @@ if (status != 'ok') {
 				legend = druggable.plotly.legend.style,
 				xaxis = x_axis,
 				yaxis = y_axis,
-				margin = druggable.margins) %>%
-			config(modeBarButtonsToAdd = list(druggable.evinet.modebar));");
+				margin = druggable.margins) %>%");
+			if (!is.na(nea_platform)) {
+				render_line < paste0("el.on('plotly_click', function(d) { 
+						var id = ((d.points[0].text).split(' '))[1];
+						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
+					});");
+				script_line <- paste0(script_line, 'onRender("', render_line, '") %>%');
+			}
+			script_line <- paste0(script_line, "config(modeBarButtonsToAdd = list(druggable.evinet.modebar));");
 			write(script_line, file = script_file, append = TRUE);
 			close(script_file)
 			source(script_file_name)

@@ -230,6 +230,13 @@ function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scal
 	return file;
 }
 
+// mark plot and don't delete it
+function mark_plot(plot_file) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/mark_plot.cgi?plot=" + encodeURIComponent(plot_file), true);
+	xmlhttp.send();
+}
+
 function get_plot_sources() {
 	var sources;
 	var xmlhttp = new XMLHttpRequest();

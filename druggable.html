@@ -11,8 +11,8 @@
 <LINK href="js/jquery-ui-themes-1.12.1/themes/blitzer/jquery-ui.min.css" type="text/css" rel="stylesheet">
 <LINK href="js/jquery-ui-themes-1.12.1/themes/blitzer/jquery-ui-1.12.icon-font.min.css" type="text/css" rel="stylesheet">
 <LINK href="js/qTip/jquery.qtip.min.css" type="text/css" rel="stylesheet">
-<link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" />
-<link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" />
+<!--link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" /-->
+<!--link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" /-->
 <link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
 <link href="//cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css">
 <link href="//cdn.datatables.net/tabletools/2.2.3/css/dataTables.tableTools.css" rel="stylesheet" type="text/css">
@@ -22,22 +22,9 @@
 <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
 <script src="js/jquery-ui-1.12.1.custom/jquery-ui.min.js" type="text/javascript"></script>
 <script src="js/jquery-ui-contextmenu-master/jquery.ui-contextmenu.min.js" type="text/javascript"></script>  
-<script src="js/jquery.form.js" type="text/javascript"></script>  
-<script src="js/Cytoscape.js/cytoscape.min.js" type="text/javascript"></script>  
-<!--script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script-->
-<script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script>
-<script src="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.js" type="text/javascript"></script>
-<script src="js/overlib.js" type="text/javascript"></script>
-<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" type="text/javascript"></script>
-<script src="//cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js" type="text/javascript"></script>
-<script src="//cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js" type="text/javascript"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript"></script>
-<script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.js" type="text/javascript"></script>
-<script src="//cdn.datatables.net/responsive/1.0.4/js/dataTables.responsive.js" type="text/javascript"></script>
+<script src="js/jquery.form.js" type="text/javascript"></script> 
 <script src="js/qTip/jquery.qtip.min.js" type="text/javascript"></script>
-
-<script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script>
-<script src="js/Cytoscape.js/cytoscape.js-edgehandles.js" type="text/javascript"></script>
+<script src="js/overlib.js" type="text/javascript"></script>
 
 <script src="js/HS.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/drugs.js" type="text/javascript"></script>
@@ -95,33 +82,38 @@ li.tab:hover ul {
   width: 100%;
   text-align: center;
 }
+
+.ui-menu-item {
+	word-break: break-word;
+}
 </style>
 </HEAD>
 
 <BODY class="ui-state-default ui-corner-all">
 <div class="xmlhttp_header"></div>
-<h1 class="main_header ui-widget-header ui-corner-all">Druggable </h1>
+<h1 class="main_header ui-widget-header ui-corner-all">Druggable</h1>
 <p class="main_header" style="background-color: #eeeeee; font-size: large;">Molecular data &mdash; global interaction network &mdash; drug response</p>
 <!--div id="progressbar" style="display: inline-block; width: 40%;"></div-->
 <div  style="display: inline; width: 35%;">
-<table><tr>
-<td>
-<div id="demo-1">
-<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
-</div>
-</td>
-<td>
-<div id="demo-3">
-<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
-</div>
-</td>
-<td>
-<div id="demo-2">
-<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
-</div>
-</td>
-
-</tr></table>
+	<table>
+		<tr>
+			<td>
+				<div id="demo-1">
+					<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
+				</div>
+			</td>
+			<td>
+				<div id="demo-3">
+					<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
+				</div>
+			</td>
+			<td>
+				<div id="demo-2">
+					<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
+				</div>
+			</td>
+		</tr>
+	</table>
 </div>
 <!--div  id="displayind"><div id="displayind2">progress</div></div-->
 
@@ -154,79 +146,83 @@ li.tab:hover ul {
 	
 	<div id="help-dialog-dr">
 		<div id="help-tabs-dr">
-		
-		<ul>
-			<li><a href="#help-tab-faq">FAQ</a></li>
-			<li><a href="#help-tab-demo">Demo</a></li>
-			<li><a href="#help-tab-comp">Compatibility</a></li>
-			<li><a href="#help-tab-citation">Citation</a></li>
-		</ul>
-		
-		<div id="help-tab-faq">
-			<a target="_blank" href="help/faq-evi/dr-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 2.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
-		</div>
-		
-		<div id="help-tab-demo">
-			<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
-			<br>
-			<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
-			<br>
-			<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
-		</div>
-	
-	<div id="help-tab-comp">
-		Known compatibility issues:
-		<br>
-		This site best works with Google Chrome <span style="color: #00aa00;">(v. 71 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 60 or later)</span>. It is also compatible with Edge.
-		<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span>.
-		<br>The site also works with Apple Safari (v. 11.1, macOS Sierra v10.12.6), other versions of Safari browser can have compatibility issues.
-	</div>
-	
-	<div id="help-tab-citation">
-		<b>Network-based biomarker discovery and validation:</b>
-		<p>
-			Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
-			<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
-			<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
-		</p>
-		<b>EviNet web resource:</b>
-		<p>
-			Ashwini Jeggari, Zhanna Alekseenko, José Dias, Johan Ericson, and Andrey Alexeyenko <span class="highlighted" style="color: #c00;">EviNet: a web platform for network enrichment analysis with flexible definition of gene sets</span> <b><i>Nucleic Acids Res</i></b> 2018 Jul 2;46(W1):W163-W170. <a class="clickable" href="https://doi.org/10.1093/nar/gky485">doi: 10.1002/1878-0261.12350</a>.
-		</p>
-	</div>
-</div>
-</div>
 
-<div id="tab-signif">
-<div class="inputarea inputareahighlight">
-	<table id="select_layout">
-			<tr>
-			<td>
-			<select name="corSource_selector" id="corSource_selector" class="ui-helper" style="width: 40ch;" >
-			</td>
-			<td>
-			<select name="corDatatype_selector" id="corDatatype_selector" class="ui-helper" style="width: 40ch;" >
-			</td>
-			<td>
-			<select name="corCohort_selector" id="corCohort_selector" class="ui-helper" style="width: 40ch;" >
-			</td>
-			<td>
-			<select name="corPlatform_selector" id="corPlatform_selector" class="ui-helper" style="width: 40ch;" >
-			</td>
-			<td>
-			<select name="corScreen_selector" id="corScreen_selector" class="ui-helper" style="width: 40ch;" >
-			</td>
-			<td>
-			<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name">
-			</td>
-			<td>
-			<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
-			<td>
-			<button type="submit" id="retrieve-cor-button" name="retrieve-cor-button" onclick = retrieve_correlations() style="width: 150; visibility: visible;">Retrieve correlations</button>
-			</td>
-			</tr>
-		</table>
-	</div>	
+			<ul>
+				<li><a href="#help-tab-faq">FAQ</a></li>
+				<li><a href="#help-tab-demo">Demo</a></li>
+				<li><a href="#help-tab-comp">Compatibility</a></li>
+				<li><a href="#help-tab-citation">Citation</a></li>
+			</ul>
+			
+			<div id="help-tab-faq">
+				<p>
+					Refer to this page to get answers to your questions and instructions for some typical tasks.
+				</p>
+				<br>
+				<a target="_blank" href="help/faq-evi/dr-faq.html" class="clickable">Open as new page<span style="float: left; margin-right: 2.5em;" class="ui-icon ui-icon-file-richtext" >icon</span></a> 
+			</div>
+			
+			<div id="help-tab-demo">
+				<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
+				<br>
+				<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
+				<br>
+				<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
+			</div>
+		
+			<div id="help-tab-comp">
+				Known compatibility issues:
+				<br>
+				This site best works with Google Chrome <span style="color: #00aa00;">(v. 71 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 60 or later)</span>. It is also compatible with Edge.
+				<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span>.
+				<br>The site also works with Apple Safari (v. 11.1, macOS Sierra v10.12.6), other versions of Safari browser can have compatibility issues.
+			</div>
+			
+			<div id="help-tab-citation">
+				<b>Network-based biomarker discovery and validation:</b>
+				<p>
+					Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
+					<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
+					<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
+				</p>
+				<b>EviNet web resource:</b>
+				<p>
+					Ashwini Jeggari, Zhanna Alekseenko, José Dias, Johan Ericson, and Andrey Alexeyenko <span class="highlighted" style="color: #c00;">EviNet: a web platform for network enrichment analysis with flexible definition of gene sets</span> <b><i>Nucleic Acids Res</i></b> 2018 Jul 2;46(W1):W163-W170. <a class="clickable" href="https://doi.org/10.1093/nar/gky485">doi: 10.1002/1878-0261.12350</a>.
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<div id="tab-signif">
+		<div class="inputarea inputareahighlight">
+			<table id="select_layout">
+				<tr>
+				<td>
+				<select name="corSource_selector" id="corSource_selector" class="ui-helper" style="width: 40ch;" >
+				</td>
+				<td>
+				<select name="corDatatype_selector" id="corDatatype_selector" class="ui-helper" style="width: 40ch;" >
+				</td>
+				<td>
+				<select name="corCohort_selector" id="corCohort_selector" class="ui-helper" style="width: 40ch;" >
+				</td>
+				<td>
+				<select name="corPlatform_selector" id="corPlatform_selector" class="ui-helper" style="width: 40ch;" >
+				</td>
+				<td>
+				<select name="corScreen_selector" id="corScreen_selector" class="ui-helper" style="width: 40ch;" >
+				</td>
+				<td>
+				<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name">
+				</td>
+				<td>
+				<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
+				<td>
+				<button type="submit" id="retrieve-cor-button" name="retrieve-cor-button" onclick = retrieve_correlations() style="width: 150; visibility: visible;">Retrieve correlations</button>
+				</td>
+				</tr>
+			</table>
+		</div>	
 		<br>
 		<div class="container">
 			<table id="cor_result_table" class="ui-state-default ui-corner-all" style="width: 100%; font-size: x-small;">
@@ -234,83 +230,84 @@ li.tab:hover ul {
 		</div>
 	</div>
 	<div id="tab-lookup"><br>
-	<br>
-	<div id="plot-options-filters">
+		<br>
+		<div id="plot-options-filters">
+			<table>
+				<tr>
+					<th>Source</th>
+					<th>Cohort</th>
+					<th>Code</th>
+				</tr>
+				<tr>
+					<td>
+						<div id="source_selector-wrapper">
+							<select id="source_selector" class="ui-helper" style="width: 40ch;">
+						</div>
+					</td>
+					<td>
+						<div id="cohort_selector-wrapper">
+							<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
+						</div>
+					</td>
+					<td>
+						<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
+					</td>
+				</tr>
+			</table>
+			<br>
+			<div class="inputarea inputareahighlight">
+				<table id = "plot_options">
+					<tr>
+						<th>Data type</th>
+						<th>Platform</th>
+						<th>ID</th>
+						<th></th>
+						<th></th>
+						<th>Scale</th>
+					</tr>
+					<tr>
+						<td>
+							<select id="type1_selector" class="ui-helper" style="width: 40ch;">
+						</td>
+						<td>
+							<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
+						</td>
+						<td>
+							<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup(1)">
+						</td>
+						<td>
+							<input id="id1_confirmed" disabled>
+						</td>
+						<td>
+							<button id="open_info1" onclick="open_info_page(1)">Info</button>
+						</td>
+						<td>
+							<select id="axis1_selector" class="ui-helper" style="width: 20ch;">
+						</td>
+						<td>
+							<button id="add_row1" onclick="add_plot_options_row(1)">+</button>
+						</td>
+						<td>
+							<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<br>
 		<table>
 			<tr>
-				<th>Source</th>
-				<th>Cohort</th>
-				<th>Code</th>
-			</tr>
-			<tr>
 				<td>
-					<div id="source_selector-wrapper">
-						<select id="source_selector" class="ui-helper" style="width: 40ch;">
-					</div>
+					<select id="plot-type">
 				</td>
 				<td>
-					<div id="cohort_selector-wrapper">
-						<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
+					<div id="plot-button-wrapper">
+						<button id="plot-button" onclick="plot()">Plot</button>
 					</div>
-				</td>
-				<td>
-					<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
 				</td>
 			</tr>
 		</table>
-		<br>
-		<div class="inputarea inputareahighlight">
-		<table id = "plot_options">
-			<tr>
-				<th>Data type</th>
-				<th>Platform</th>
-				<th>ID</th>
-				<th></th>
-				<th></th>
-				<th>Scale</th>
-			</tr>
-			<tr>
-				<td>
-					<select id="type1_selector" class="ui-helper" style="width: 40ch;">
-				</td>
-				<td>
-					<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
-				</td>
-				<td>
-					<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup(1)">
-				</td>
-				<td>
-					<input id="id1_confirmed" disabled>
-				</td>
-				<td>
-					<button id="open_info1" onclick="open_info_page(1)">Info</button>
-				</td>
-				<td>
-					<select id="axis1_selector" class="ui-helper" style="width: 20ch;">
-				</td>
-				<td>
-					<button id="add_row1" onclick="add_plot_options_row(1)">+</button>
-				</td>
-				<td>
-					<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
-				</td>
-			</tr>
-		</table>
-		</div>
 	</div>
-	<br>
-	<table>
-	<tr>
-	<td>
-	<select id="plot-type">
-	</td>
-	<td>
-	<div id="plot-button-wrapper">
-		<button id="plot-button" onclick="plot()">Plot</button>
-	</div>
-	</td>
-	</tr>
-	</table>
 	</div>
 	</div>
 </div>   
@@ -638,6 +635,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 							//dock_plot(this, plot_id);
 							navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
 							alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
+							mark_plot(plot_filename);
 						},
 						showText: false
 					}
@@ -679,6 +677,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 								//dock_plot(this, plot_id);
 								navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
 								alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
+								mark_plot(plot_filename);
 							}
 						}
 					],
@@ -1158,6 +1157,9 @@ function init_plot_type_selector() {
 	}
 	options = [];
 	var plot_types = get_plot_types(platforms);
+	if (plot_types[0] == '') {
+		alert("The platforms you have chosen are compatible, but no plots have been tested, please choose another combination");
+	}
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
 	}
@@ -1971,6 +1973,23 @@ function setInputFilter(textbox, inputFilter) {
   });
 }
 </script>
+
+ 
+<!--script src="js/Cytoscape.js/cytoscape.min.js" type="text/javascript"></script-->  
+<!--script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script-->
+<!--script src="js/cytoscape.js-cxtmenu-master/cytoscape-cxtmenu.js" type="text/javascript"></script-->
+<!--script src="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.js" type="text/javascript"></script-->
+<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js" type="text/javascript"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/responsive/1.0.4/js/dataTables.responsive.js" type="text/javascript"></script>
+
+
+<!--script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script-->
+<!--script src="js/Cytoscape.js/cytoscape.js-edgehandles.js" type="text/javascript"></script-->
+
 </BODY>
 </HTML>
 	

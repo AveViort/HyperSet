@@ -14,8 +14,8 @@
 	<script src="../../js/jquery-ui-1.11.2/jquery-ui.min.js" type="text/javascript"></script-->
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
 
-	<title>Druggable FAQ </title>
-	<style>
+<title>Druggable FAQ </title>
+<style>
 .restore_defaults {
 	all: initial;
 	display: block;
@@ -41,8 +41,9 @@
    	 background-color: #dddddd;
 	}
 
-	</style>
+</style>
 </head>
+
 <body>
 <header>
 	<h1>Frequently asked questions</h1>
@@ -61,6 +62,7 @@ Added value of NEA</li>
 		<li><a class="selected" href="#basics">Basics</a></li>
 		<li><a href="#data">Data</a></li>
 		<li><a href="#usage">Usage</a></li>
+		<li><a href="#security">Security and data usage</a></li>
 		<li><a href="#mail">Enquires</a></li>
 	</ul> <!-- cd-faq-categories -->
 
@@ -70,31 +72,35 @@ Added value of NEA</li>
 			<li>
 				<a class="cd-faq-trigger" href="#0">What is the web server functionality?</a>
 				<div class="cd-faq-content">
-					<p> Server Druggable was created to provide the biomedical research community with a handy tool for quick look-up at data from large public repositories such as The Cancer Genome Atlas (TCGA) and The Cancer Cell Line Encyclopedia (CCLE) as well as mining basic functional relations via statistical and network tools. Many resources have enabled such access (OncoMine, PharmacoDB, CTD etc.) but none of them, to the best of our knowledge, combined quick data access, advanced visualization, and basic correlation analysis between 2 or 3 variables, including phenotype information. Partially, the issue was addressed by project-specific sites, but then there was no way to cross-check findings in alternative in vitro screens and cohorts. The idea of our server came from collaboration experience. Oftentimes biologists - often possessing just basic Excel skills - are left alone with the task to download, parse, and organize the big datasets in order to perform relatively simple visual and statistical analyses. Many did not manage the difficulties and resorted to own lab experiments just to establish a correlation which could have been readily recovered from a public resource. For the same reason, molecular “biomarkers” too often get published without proper biological and statistical validation. Therefore, the new web server provides access to sub-network views of the pathway correlates, which uses the engine of our server Evinet.org, also published in NAR (Jeggari et a., 2018) but not directly related to that. Druggable provides both pre-calculated lists of correlates and direct access to the datasets.</p>
+					<p>
+						Server Druggable was created to provide the biomedical research community with a handy tool for quick look-up at data from large public repositories such as The Cancer Genome Atlas (TCGA) and The Cancer Cell Line Encyclopedia (CCLE) as well as mining basic functional relations via statistical and network tools. Many resources have enabled such access (OncoMine, PharmacoDB, CTD etc.) but none of them, to the best of our knowledge, combined quick data access, advanced visualization, and basic correlation analysis between 2 or 3 variables, including phenotype information. 
+						Partially, the issue was addressed by project-specific sites, but then there was no way to cross-check findings in alternative in vitro screens and cohorts. The idea of our server came from collaboration experience. Oftentimes biologists - often possessing just basic Excel skills - are left alone with the task to download, parse, and organize the big datasets in order to perform relatively simple visual and statistical analyses. Many did not manage the difficulties and resorted to own lab experiments just to establish a correlation which could have been readily recovered from a public resource. 
+						For the same reason, molecular “biomarkers” too often get published without proper biological and statistical validation. Therefore, the new web server provides access to sub-network views of the pathway correlates, which uses the engine of our server Evinet.org, also published in NAR (Jeggari et a., 2018) but not directly related to that. Druggable provides both pre-calculated lists of correlates and direct access to the datasets.
+					</p>
 				</div> <!-- cd-faq-content -->
 			</li>
 
 			<li>
-				<a class="cd-faq-trigger" href="#0">What would be an advantage of considering interaction network in my research?</a>
+				<a class="cd-faq-trigger" href="#1">What would be an advantage of considering interaction network in my research?</a>
 				<div class="cd-faq-content">
 					<p>The data integration using global gene networks has the following strengths: 
-<ul>
-<li>The global network includes all major types of molecular interactions, hence the analysis readily incorporates data from different platforms.</li> 
-<li>The problem of cancer heterogeneity at the levels of individual promoters, genes, and proteins is solved by summarizing them to pathways via e.g. the Network Enrichment Analysis, and </li>
-<li>The pathway view enables efficient, low-dimensional statistical analysis and is transparent for biological interpretation. </li>
-</ul>
-</p> 
+						<ul>
+							<li>The global network includes all major types of molecular interactions, hence the analysis readily incorporates data from different platforms.</li> 
+							<li>The problem of cancer heterogeneity at the levels of individual promoters, genes, and proteins is solved by summarizing them to pathways via e.g. the Network Enrichment Analysis, and </li>
+							<li>The pathway view enables efficient, low-dimensional statistical analysis and is transparent for biological interpretation. </li>
+						</ul>
+					</p> 
 				</div> <!-- cd-faq-content -->
 			</li>
 			<li>
-				<a class="cd-faq-trigger" href="#0">What is added value from using network enrichment scores as correlates?</a>
+				<a class="cd-faq-trigger" href="#2">What is added value from using network enrichment scores as correlates?</a>
 				<div class="cd-faq-content">
 					<p>Our work demonstrated advantage of network enrichment analysis (NEA) scores over single gene/protein profiles. The same was true in a comparison against enrichment scores produced by other methods. This was proved in terms of robustness and reproducibility in independent datasets and cohorts:</p>
 					<p style="font-size: x-small;">
-Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
-<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
-<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
-  </p>
+						Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina Selivanova, Andrey Alexeyenko
+						<span class="highlighted" style="color: #c00;">Prediction of response to anti-cancer drugs becomes robust via network integration of molecular data</span>
+						<b><i>Sci Rep</i></b> 9, 2379 (2019) <a class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">doi: 10.1186/1471-2105-13-226</a>.
+					</p>
   					<p>We provide correlates based on the NEA scores in parallel with original gene/protein level data from CCLE and TCGA. Compared to the latter, NEA-based datapoins at the plots are clickable which provides a network context view on the gene sets.</p>
 				</div> <!-- cd-faq-content -->
 			</li>
@@ -103,95 +109,125 @@ Marcela Franco, Ashwini Jeggari, Sylvain Peuget, Franziska B&ouml;ttger, Galina 
 
 		<ul id="data" class="cd-faq-group">
 			<li class="cd-faq-title"><h2>Major public data sources presented at Druggable</h2></li>
-						<li>
-				<a class="cd-faq-trigger" href="#0">The Cancer Genome Atlas</a>
+			<li>
+				<a class="cd-faq-trigger" href="#3">The Cancer Genome Atlas</a>
 				<div class="cd-faq-content">
-					<p> Ten biggest TCGA cohorts with all their major omics datasets over most of the patient line samples are accompanied with patients' clinical records. In addition, TCGA-based PanCancer projects provided extra data from e.g. leucocyte counts from <i>in silico</i> image analysis over the same samples (Saltz et al., 2018).
-<a class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">No. of samples in TCGA cohort, per omics platform</a>
-					<img src="../../pics/TCGA_10.png" alt="TCGA cohort table" width="96%"> <br> 
+					<p>Ten biggest TCGA cohorts with all their major omics datasets over most of the patient line samples are accompanied with patients' clinical records. In addition, TCGA-based PanCancer projects provided extra data from e.g. leucocyte counts from <i>in silico</i> image analysis over the same samples (Saltz et al., 2018).
+					<a class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">No. of samples in TCGA cohort, per omics platform</a>
+						<img src="../../pics/TCGA_10.png" alt="TCGA cohort table" width="96%"> <br> 
 					</p>
 				</div> <!-- cd-faq-content -->
-			</li>						<li>
-				<a class="cd-faq-trigger" href="#0">The Cancer Cell Line Encyclopedia</a>
+			</li>						
+			<li>
+				<a class="cd-faq-trigger" href="#4">The Cancer Cell Line Encyclopedia</a>
 				<div class="cd-faq-content">
-					<p> The <a class="clickable" href="https://portals.broadinstitute.org/ccle/">CCLE</a> collection over close to 1000 cancer cell lines contains both omics (gene expression, gene copy number, point mutation and proteomics) data and results of three  large-scale <i>in vitro</i> drug screens, which inluded more than 600 approved and experimental drugs in total:
-					</p>
-					
-<br>
-<h3>Molecular profiles:</h3>
-<table>				
-<tr><th>Type</th><th>Platform</th><th>No. of genes</th><th>No. of cell lines</th><th>Source</th></tr>  
-<tr><td>GE</td><td>RNAseq</td><td>17893</td><td>1201</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr>  
-<tr><td>GE</td><td>Affymetrix1</td><td>18900</td><td>1034</td><td>CCLE <a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">(Barretina et al., 2012)</a></td></tr>       
-<tr><td>GE</td><td>Affymetrix2</td><td>13981</td><td>622</td>
-	<td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr>        
-<tr><td>MUT</td><td>CCLE_EXOME_2019</td><td>19525</td><td>1631</td>
-	<td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr>           
-<tr><td>MUT</td><td>CCLE_TARGET_2012</td><td>1667</td><td>904</td>
-	<td>CCLE <a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">(Barretina et al., 2012)</a></td></tr>             
-<tr><td>MUT</td><td>COSMIC_EXOME_2014</td><td>19759</td><td>1023</td>
-	<td><a class="clickable" target="_blank"  href="">COSMIC</a></td></tr>             
-<tr><td>COPY</td><td>SNP6</td><td>21217</td><td>994</td>
-	<td>CCLE <a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">(Barretina et al., 2012)</a></td></tr>  
-<tr><td>COPY</td><td>GDSC</td><td>25638</td><td>987</td><td>GDSC <a class="clickable" target="_blank"  href="https://dx.doi.org/10.1016%2Fj.cell.2016.06.017">(Iorio et al., 2016)</a></td></tr>  
-<tr><td>COPY</td><td>CCLE</td><td>23299</td><td>1627</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr> 
-<tr><td>METH</td><td>GSE68379</td><td>485512</td><td>1028</td><td>GDSC <a class="clickable" target="_blank"  href="https://dx.doi.org/10.1016%2Fj.cell.2016.06.017">(Iorio et al., 2016)</a></td></tr> 				
-</table>
-<br>
-<h3>Drug screens:</h3>
-<table>
-<tr><th>Screen</th><th>No. of drugs</th><th>No. of cell lines</th><th>Source</th></tr> 	
-<tr><td>GDSC1</td><td>304</td><td>988</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
-<tr><td>GDSC2</td><td>169</td><td>810</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
-<tr><td>CTRPv2.0</td><td>545</td><td>887</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CTRPv2.0</a></td></tr> 	
-<!--tr><td>ACT</td><td>25</td><td>30</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr--> 	
-<tr><td>Basu2013</td><td>203</td><td>242</td><td><a class="clickable" target="_blank"  href="http://dx.doi.org/10.1016/j.cell.2013.08.003">CTD2</a></td></tr> 	
-<tr><td>Garnett2012</td><td>138</td><td>714</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
-<tr><td>Barretina2012</td><td>24</td><td>504</td><td><a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">CCLE</a></td></tr> 	 
-</table>
-					
+					<p>The <a class="clickable" href="https://portals.broadinstitute.org/ccle/">CCLE</a> collection over close to 1000 cancer cell lines contains both omics (gene expression, gene copy number, point mutation and proteomics) data and results of three  large-scale <i>in vitro</i> drug screens, which inluded more than 600 approved and experimental drugs in total:</p>
+					<br>
+					<h3>Molecular profiles:</h3>
+					<table>				
+						<tr><th>Type</th><th>Platform</th><th>No. of genes</th><th>No. of cell lines</th><th>Source</th></tr>  
+						<tr><td>GE</td><td>RNAseq</td><td>17893</td><td>1201</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr>  
+						<tr><td>GE</td><td>Affymetrix1</td><td>18900</td><td>1034</td><td>CCLE <a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">(Barretina et al., 2012)</a></td></tr>       
+						<tr><td>GE</td><td>Affymetrix2</td><td>13981</td><td>622</td>
+							<td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr>        
+						<tr><td>MUT</td><td>CCLE_EXOME_2019</td><td>19525</td><td>1631</td>
+							<td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr>           
+						<tr><td>MUT</td><td>CCLE_TARGET_2012</td><td>1667</td><td>904</td>
+							<td>CCLE <a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">(Barretina et al., 2012)</a></td></tr>             
+						<tr><td>MUT</td><td>COSMIC_EXOME_2014</td><td>19759</td><td>1023</td>
+							<td><a class="clickable" target="_blank"  href="">COSMIC</a></td></tr>             
+						<tr><td>COPY</td><td>SNP6</td><td>21217</td><td>994</td>
+							<td>CCLE <a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">(Barretina et al., 2012)</a></td></tr>  
+						<tr><td>COPY</td><td>GDSC</td><td>25638</td><td>987</td><td>GDSC <a class="clickable" target="_blank"  href="https://dx.doi.org/10.1016%2Fj.cell.2016.06.017">(Iorio et al., 2016)</a></td></tr>  
+						<tr><td>COPY</td><td>CCLE</td><td>23299</td><td>1627</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr> 
+						<tr><td>METH</td><td>GSE68379</td><td>485512</td><td>1028</td><td>GDSC <a class="clickable" target="_blank"  href="https://dx.doi.org/10.1016%2Fj.cell.2016.06.017">(Iorio et al., 2016)</a></td></tr> 				
+					</table>
+					<br>
 
+					<h3>Drug screens:</h3>
+					<table>
+						<tr><th>Screen</th><th>No. of drugs</th><th>No. of cell lines</th><th>Source</th></tr> 	
+						<tr><td>GDSC1</td><td>304</td><td>988</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
+						<tr><td>GDSC2</td><td>169</td><td>810</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
+						<tr><td>CTRPv2.0</td><td>545</td><td>887</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CTRPv2.0</a></td></tr> 	
+						<!--tr><td>ACT</td><td>25</td><td>30</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr--> 	
+						<tr><td>Basu2013</td><td>203</td><td>242</td><td><a class="clickable" target="_blank"  href="http://dx.doi.org/10.1016/j.cell.2013.08.003">CTD2</a></td></tr> 	
+						<tr><td>Garnett2012</td><td>138</td><td>714</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
+						<tr><td>Barretina2012</td><td>24</td><td>504</td><td><a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">CCLE</a></td></tr> 	 
+					</table>
 				</div> <!-- cd-faq-content -->
 			</li>
 		</ul> <!-- cd-faq-group -->
 
 		<ul id="usage" class="cd-faq-group">
 			<li class="cd-faq-title"><h2>Using the web server</h2></li>
-				<li>
-				<a class="cd-faq-trigger" href="#0">Finding pre-calculated correlates</a>
+			<li>
+				<a class="cd-faq-trigger" href="#5">Finding pre-calculated correlates</a>
 				<div class="cd-faq-content">
 					<p> 
-The table in second tab allows extracting lists of molecular correlates from particular omics platforms for specific drugs. In CCLE, we calculated correlates of drug sensitivity <i>in vitro</i> in the commonly accepted 2-factorial linear model, where the tissue of origin served a covariate. Therefore, the other model term, called "feature" represents a "net" effect of the molecular feature. <br>
-In TCGA, the 2-factorial models with interaction terms allowed comparison of disease outcome given high vs. low molecular feature score between groups of patients who differed in having/not having the drug treatment in the clinical history. Thus the significant (i.e. low p-value) "interaction" term in the model points to a predictive potential of the molecular feature with regard of the treatment outcome.
-Demos on the top of the main page can help to start.
+						The table in second tab allows extracting lists of molecular correlates from particular omics platforms for specific drugs. In CCLE, we calculated correlates of drug sensitivity <i>in vitro</i> in the commonly accepted 2-factorial linear model, where the tissue of origin served a covariate. Therefore, the other model term, called "feature" represents a "net" effect of the molecular feature. <br>
+						In TCGA, the 2-factorial models with interaction terms allowed comparison of disease outcome given high vs. low molecular feature score between groups of patients who differed in having/not having the drug treatment in the clinical history. Thus the significant (i.e. low p-value) "interaction" term in the model points to a predictive potential of the molecular feature with regard of the treatment outcome.
+						Demos on the top of the main page can help to start.
 					</p>
 				</div> <!-- cd-faq-content -->
-			</li>						<li>
-				<a class="cd-faq-trigger" href="#0">Exploring relations between different variables</a>
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#6">Exploring relations between different variables</a>
 				<div class="cd-faq-content">
-The thrid tab provides access to most of the big datasets in TCGA  and CCLE. Users can choose plotting selected variables, such as gene expression or mutation profiles, against each other or versus clinical or cytological variables. By clicking at '+' in the end of each line, one can add up to 3 dimensions to the plot (the 3rd one would then be represented as color). Variable scales can be adjusted via log or square root transformation. If a certain data-plot combination is not enabled, it is recommended to remove the lines and start again in a different order.
-Demos on the top of the main page can help to start.
+					<p> 
+						The thrid tab provides access to most of the big datasets in TCGA  and CCLE. Users can choose plotting selected variables, such as gene expression or mutation profiles, against each other or versus clinical or cytological variables. 
+						By clicking at '+' in the end of each line, one can add up to 3 dimensions to the plot (the 3rd one would then be represented as color or shape). Variable scales can be adjusted via log or square root transformation. If a certain data-plot combination is not enabled, it is recommended to remove the lines and start again in a different order.
+						Demos on the top of the main page can help to start.
+					</p>
+				</div> <!-- cd-faq-content -->
+			</li>	
+			<li>
+				<a class="cd-faq-trigger" href="#7">Analyzing and embedding plots</a>
+				<div class="cd-faq-content">
+					<p>
+						Most plots on the site are created with <a href=https://plot.ly/>plotly</a> library, which means they are highly interactive. If you have several datalines on scatter plot - you can turn some of them of (same goes for pie charts). On scatter plots which contain netowrk enrichment analysis data you can click on points to see the subnetwrok connecting patient's altered genes and chosen pathway.
+						<br>
+						You can use these plots on your own website or for publication. You can either download plotly plot as png (by clicking the respective button on the plot modebar in upper-right corner) or (all plots) get URL. To get URL simply click on "Get link" button under the plot. You can either use this link to view plot as a separate page or embed it into your page.
+					</p>
+				</div>
+			</li>
+		</ul> <!-- cd-faq-group -->
+		
+		<ul id="security" class="cd-faq-group">
+			<li class="cd-faq-title"><h2>Security and data usage</h2></li>
+			<li>
+				<a class="cd-faq-trigger" href="#8">Is my connection secure?</a>
+				<div class="cd-faq-content">
+					<p>Yes. This server uses https connection.</p>
 				</div> <!-- cd-faq-content -->
 			</li>
-									
-			
+			<li>
+				<a class="cd-faq-trigger" href="#9">Why do I have to accept cookies?</a>
+				<div class="cd-faq-content">
+					<p>Cookies are used for memorizing your settings - so you will be able to reload the site and some paramreters (such as chosen cohort, datatypes, platforms etc.) in the third tab will be loaded from cookies.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#10">How cookies are used?</a>
+				<div class="cd-faq-content">
+					<p>We use cookies only for improving user experience with website. We don't have access to your personal data and don't store any information about your actions - exclusions are some error messages. You have to give your permission for us to use cookies. This site uses Google Analytics - all Google-related handled cookies are handled by Google according to their policy.</p>
+				</div> <!-- cd-faq-content -->
+			</li>
 		</ul> <!-- cd-faq-group -->
-
-		
+	
 		<ul id="mail" class="cd-faq-group">
 			<li class="cd-faq-title"><h2>Enquires</h2></li>
 			<li>
-				<a class="cd-faq-trigger" href="#0">Found problems?</a>
+				<a class="cd-faq-trigger" href="#11">Found problems?</a>
 				<div class="cd-faq-content">
 					<a href="mailto:andrej.alekseenko@scilifelab.se">Send us email</a>
 				</div> <!-- cd-faq-content -->
 			</li>
 		</ul> <!-- cd-faq-group -->
-	
 	</div> <!-- cd-faq-items -->
-	
 	<a href="#0" class="cd-close-panel">Close</a>
 </section> <!-- cd-faq -->
+
 <script src="js/jquery-2.1.1.js"></script>
 <script src="js/jquery.mobile.custom.min.js"></script>
 <script src="js/main.js"></script> <!-- Resource jQuery -->
