@@ -86,6 +86,8 @@ li.tab:hover ul {
 .ui-menu-item {
 	word-break: break-word;
 }
+
+.noTitleDialog .ui-dialog-titlebar {display:none}
 </style>
 </HEAD>
 
@@ -413,33 +415,7 @@ $(document).ready(function(){
 		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 		usetCookie("cookies_accepted", "true", accepted_time);
 	}
-	$(function() {
-		$( "#showScales" ).dialog({
-			resizable: false,
-			modal: false,
-			title: "Drug sensitivity scales", 
-			width:  600,
-			height: "auto",
-			autoOpen: false,
-			show: {
-				effect: "blind",
-				duration: 280
-			},
-			hide: {
-				effect: "explode",
-				duration: 600
-			},
-			buttons: {"Close": 
-				function () {
-					$(this).dialog("close");
-				}
-			}
-		});
-		$( "#ssOpener" ).click(function() {
-			$( "#showScales" ).dialog( "open" );
-			$( "#ssAcc" ).accordion();
-		});
-	});
+	
 	urlfixtabs("#tabs");
 	//$("#progressbar").progressbar({		value: false	});	$("#progressbar").css({"visibility": "hidden"});
 	$("#tabs").tabs({});
@@ -478,6 +454,9 @@ $(document).ready(function(){
 	worker.postMessage(["CCLE", "all", "all", "all", "all"]);
 	worker.onmessage = function(event) {
 		console.log("Received message from worker " + Date.now());
+		$("#corGeneFeature_input").tooltip({
+			track: true
+		});
 		var autocomplete_ids = event.data;
 		$("#corGeneFeature_input").autocomplete({
 			source: autocomplete_ids,
@@ -487,6 +466,12 @@ $(document).ready(function(){
 				if (ui.content.length > max_autocomplete) {
 					console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+				} else {
+					if (ui.content.length == 0) {
+						$("#corGeneFeature_input").attr("title", "No results found. Try typing something else");
+					} else {
+						$("#corGeneFeature_input").attr("title", "");
+					}
 				}
 			},
 			search: function( event, ui ) {
@@ -1060,6 +1045,9 @@ function init_platformselector(selector_id) {
 		// get autocomplete_ids only if it is enabled
 		if (flag) {
 			var autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
+			$("#id" + n + "_input").tooltip({
+				track: true
+			});
 			$("#id" + n + "_input").autocomplete({
 				source: autocomplete_ids,
 				minLength: 2,
@@ -1067,6 +1055,12 @@ function init_platformselector(selector_id) {
 					if (ui.content.length > max_autocomplete) {
 						console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+					} else {
+						if (ui.content.length == 0) {
+							$("#id" + n + "_input").attr("title", "No results found. Try typing something else");
+						} else {
+							$("#id" + n + "_input").attr("title", "");
+						}
 					}
 				},
 				search: function( event, ui ) {
@@ -1399,6 +1393,9 @@ function update_platform(n) {
 			$("#id" + n + "_input").val("");
 			if (sessionStorage.getItem("update_autocomplete") == null) {
 				var autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
+				$("#id" + n + "_input").tooltip({
+					track: true
+				});
 				$("#id" + n + "_input").autocomplete({
 					source: autocomplete_ids,
 					minLength: 2,
@@ -1406,6 +1403,12 @@ function update_platform(n) {
 						if (ui.content.length > max_autocomplete) {
 							console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 							$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+						} else {
+							if (ui.content.length == 0) {
+								$("#id" + n + "_input").attr("title", "No results found. Try typing something else");
+							} else {
+								$("#id" + n + "_input").attr("title", "");
+							}
 						}
 					},
 					search: function( event, ui ) {
@@ -1569,6 +1572,9 @@ function update_cor_screen_selector() {
 		worker.postMessage([$("#corSource_selector option:selected").val(), $("#corDatatype_selector option:selected").val(), $("#corCohort_selector option:selected").val(), $("#corPlatform_selector option:selected").val(), $("#corScreen_selector option:selected").val()]);
 		worker.onmessage = function(event) {
 			console.log("Received message from worker " + Date.now());
+			$("#corGeneFeature_input").tooltip({
+				track: true
+			});
 			var autocomplete_ids = event.data;
 			$("#corGeneFeature_input").autocomplete({
 				source: autocomplete_ids,
@@ -1577,6 +1583,12 @@ function update_cor_screen_selector() {
 					if (ui.content.length > max_autocomplete) {
 						console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+					} else {
+						if (ui.content.length == 0) {
+							$("#corGeneFeature_input").attr("title", "No results found. Try typing something else");
+						} else {
+							$("#corGeneFeature_input").attr("title", "");
+						}
 					}
 				},
 				search: function( event, ui ) {

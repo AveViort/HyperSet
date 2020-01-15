@@ -1,5 +1,9 @@
-var delta_typing = 100;
-var delta_local = 1000; var slowly = 2; var quickly = 0.5; var normally = 1; var skipIt = 0.01; 
+var delta_typing = 75;
+var delta_local = 1000;
+var slowly = 2;
+var quickly = 0.5;
+var normally = 1;
+var skipIt = 0.01; 
 var message="Plots can be created using 1, 2, or 3 variables for the avaialble datasets.<br>Select 1st and, if needed, 2nd and 3rd rows in order to visualize molecular and clinical data on a set of samples/patients.";
 
 function hasOption (ele, opt) {
@@ -47,12 +51,8 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}
 			}
 			var to = 1000;
-			setTimeout(function () {
-				$("select[id='source_selector']").val(source); 
-				$("select[id='source_selector']").selectmenu( "refresh" );
-				update_source();
-			}, to);
-			to += 800;            //250;
+			changeDropVal("#source_selector", source, to);
+			to += 1000;            //250;
 			
 			var part_a = {
 				ele: "cohort_selector",	
@@ -64,12 +64,8 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}	   
 			}
 			waitForElement(part_a); 
-			setTimeout(function () {
-				$("select[id='cohort_selector']").val(cohort); 
-				$("select[id='cohort_selector']").selectmenu( "refresh" );
-				update_cohort();
-			}, to);
-			to += 1100;            //250;
+			changeDropVal("#cohort_selector", cohort, to);
+			to += 1300;            //250;
 			
 			var part_b = {
 				ele: "type1_selector",	
@@ -81,12 +77,8 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}	   
 			}
 			waitForElement(part_b); 
-			setTimeout(function () {
-				$("select[id='type1_selector']").val(datatype1); 
-				$("select[id='type1_selector']").selectmenu( "refresh" );
-				update_type(1);
-			}, to);
-			to += 1400;
+			changeDropVal("#type1_selector", datatype1, to);
+			to += 1700;
 			
 			var part_c = {
 				ele: "platform1_selector",	
@@ -98,18 +90,11 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}	   
 			}
 			waitForElement(part_c); 
-			setTimeout(function () {
-				$("select[id='platform1_selector']").val(platform1); 
-				$("select[id='platform1_selector']").selectmenu( "refresh" );
-				update_platform(1);
-			}, to);
-			to += 1700;
-			
-			setTimeout(function () {
-				$("#id1_input").val(id1); 
-				id_keyup(1);
-			}, to);
+			changeDropVal("#platform1_selector", platform1, to);
 			to += 2000;
+			
+			setTextBox(id1, to, "#id1_input");
+			to += 2800;
 			
 			var part_d = {
 				ele: "axis1_selector",	
@@ -121,17 +106,14 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}	   
 			}
 			waitForElement(part_d); 
-			setTimeout(function () {
-				$("select[id='axis1_selector']").val(scale1); 
-				$("select[id='axis1_selector']").selectmenu( "refresh" );
-			}, to);
-			to += 2300;
+			changeDropVal("#axis1_selector", scale1, to);
+			to += 3100;
 			
 			setTimeout(function () {
 				console.log("Part add_row1");
 					demoClick("#add_row1", 100);
 			}, to);
-			to += 2600;
+			to += 3200;
 			
 			var part_e = {
 				ele: "type2_selector",	
@@ -143,12 +125,8 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}	   
 			}
 			waitForElement(part_e); 
-			setTimeout(function () {
-				$("select[id='type2_selector']").val(datatype2); 
-				$("select[id='type2_selector']").selectmenu( "refresh" );
-				update_type(2);
-			}, to);
-			to += 2900;
+			changeDropVal("#type2_selector", datatype2, to);
+			to += 3700;
 			
 			var part_f = {
 				ele: "platform2_selector",	
@@ -160,34 +138,27 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}	   
 			}
 			waitForElement(part_f); 
-			setTimeout(function () {
-				$("select[id='platform2_selector']").val(platform2); 
-				$("select[id='platform2_selector']").selectmenu( "refresh" );
-				update_platform(2);
-			}, to);
-			to += 3200;
+			changeDropVal("#platform2_selector", platform2, to);
+			to += 4000;
 			
 			setTimeout(function () {
 				$("#id2_input").val(id2); 
 				id_keyup(2);
 			}, to);
-			to += 3500;
+			to += 4300;
 			
 			var part_g = {
 				ele: "axis2_selector",	
 				interval: 50, 
 				val: scale2, 
 				func: function () {
-					console.log("Part axis1_selector");
+					console.log("Part axis2_selector");
 					demoClick("#" + this.ele, 100);
 				}	   
 			}
 			waitForElement(part_g); 
-			setTimeout(function () {
-				$("select[id='axis2_selector']").val(scale2); 
-				$("select[id='axis2_selector']").selectmenu( "refresh" );
-			}, to);
-			to += 3800;
+			changeDropVal("#axis2_selector", scale2, to);
+			to += 4600;
 			
 			var part_h = {
 				ele: "plot-type",	
@@ -199,17 +170,14 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 				}	   
 			}
 			waitForElement(part_h); 
-			setTimeout(function () {
-				$("select[id='plot-type']").val(plottype); 
-				$("select[id='plot-type']").selectmenu( "refresh" );
-			}, to);
-			to += 4100;
+			changeDropVal("#plot-type", plottype, to);
+			to += 4900;
 			
 			setTimeout(function () {
 				demoClick("#plot-button", 100);
 				sessionStorage.removeItem("demo");
 			}, to);
-			to += 4400;
+			to += 5200;
 			
 			setTimeout(function () {
 				if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
@@ -234,12 +202,8 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 			sessionStorage.setItem("demo", 1);
 			$("#tabs").tabs("option", "active", 1);
 			var to = 1200;
-			setTimeout(function () {
-				$("select[id='corSource_selector']").val(source); 
-				$("select[id='corSource_selector']").selectmenu( "refresh" );
-				update_cor_source_selector();
-			}, to);
-			to += 1000; 
+			changeDropVal("#corSource_selector", source, to);
+			to += 2000; 
 			
 			var part_a = {
 				ele: "corDatatype_selector",	
@@ -251,12 +215,8 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 				}	   
 			}
 			waitForElement(part_a); 
-			setTimeout(function () {
-				$("select[id='corDatatype_selector']").val(datatype); 
-				$("select[id='corDatatype_selector']").selectmenu( "refresh" );
-				update_cor_cohort_selector();
-			}, to);
-			to += 1500;            
+			changeDropVal("#corDatatype_selector", datatype, to);
+			to += 14500;            
 			
 			var part_b = {
 				ele: "corPlatform_selector",	
@@ -268,12 +228,8 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 				}	   
 			}
 			waitForElement(part_b); 
-			setTimeout(function () {
-				$("select[id='corPlatform_selector']").val(platform); 
-				$("select[id='corPlatform_selector']").selectmenu( "refresh" );
-				update_cor_platform_selector();
-			}, to);
-			to += 1900;
+			changeDropVal("#corPlatform_selector", platform, to);
+			to += 14900;
 			
 			var part_c = {
 				ele: "corScreen_selector",	
@@ -285,34 +241,27 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 				}	   
 			}
 			waitForElement(part_c); 
-			setTimeout(function () {
-				$("select[id='corScreen_selector']").val(screen); 
-				$("select[id='corScreen_selector']").selectmenu( "refresh" );
-				update_cor_screen_selector();
-			}, to);
-			to += 2700;
+			changeDropVal("#corScreen_selector", screen, to);
+			to += 15100;
 			
-			setTimeout(function () {
-				$("#corGeneFeature_input").val(id); 
-				cor_id_keyup();
-			}, to);
-			to += 3500;
+			setTextBox(id, to, "#corGeneFeature_input");
+			to += 15500;
 			
 			setTimeout(function () {
 				$("#FDR_input").val(fdr); 
 			}, to);
-			to += 3750;
+			to += 15850;
 			
 			setTimeout(function () {
 				demoClick("#retrieve-cor-button", 100);
 			}, to);
-			to += 4100;
+			to += 16050;
 			
 			setTimeout(function () {
 				demoClick("#cor-KM" + plotid, 100);
 				sessionStorage.removeItem("demo");
 			}, to);
-			to += 4250;
+			to += 16150;
 		}
 		else {
 			alert("Please accept cookies to run demo");
@@ -329,11 +278,7 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 			sessionStorage.setItem("demo", 1);	
 			$("#tabs").tabs("option", "active", 1);
 			var to = 1200;
-			setTimeout(function () {
-				$("select[id='corSource_selector']").val(source); 
-				$("select[id='corSource_selector']").selectmenu( "refresh" );
-				update_cor_source_selector();
-			}, to);
+			changeDropVal("#corSource_selector", source, to);
 			to += 1000;
 			
 			var part_a = {
@@ -346,12 +291,8 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 				}	   
 			}
 			waitForElement(part_a); 
-			setTimeout(function () {
-				$("select[id='corDatatype_selector']").val(datatype); 
-				$("select[id='corDatatype_selector']").selectmenu( "refresh" );
-				update_cor_datatype_selector();
-			}, to);
-			to += 1400;
+			changeDropVal("#corDatatype_selector", datatype, to);
+			to += 14500;
 			
 			var part_b = {
 				ele: "corPlatform_selector",	
@@ -363,12 +304,8 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 				}	   
 			}
 			waitForElement(part_b); 
-			setTimeout(function () {
-				$("select[id='corPlatform_selector']").val(platform); 
-				$("select[id='corPlatform_selector']").selectmenu( "refresh" );
-				update_cor_platform_selector(1);
-			}, to);
-			to += 2000;
+			changeDropVal("#corPlatform_selector", platform, to);
+			to += 14900;
 			
 			var part_c = {
 				ele: "corScreen_selector",	
@@ -380,34 +317,27 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 				}	   
 			}
 			waitForElement(part_c); 
-			setTimeout(function () {
-				$("select[id='corScreen_selector']").val(screen); 
-				$("select[id='corScreen_selector']").selectmenu( "refresh" );
-				update_cor_screen_selector();
-			}, to);
-			to += 2700;
+			changeDropVal("#corScreen_selector", screen, to);
+			to += 15100;
 			
-			setTimeout(function () {
-				$("#corGeneFeature_input").val(id); 
-				cor_id_keyup();
-			}, to);
-			to += 3100;
+			setTextBox(id, to, "#corGeneFeature_input");
+			to += 15500;
 			
 			setTimeout(function () {
 				$("#FDR_input").val(fdr); 
 			}, to);
-			to += 3250;
+			to += 15850;
 			
 			setTimeout(function () {
 				demoClick("#retrieve-cor-button", 100);
 			}, to);
-			to += 3400;
+			to += 16050;
 			
 			setTimeout(function () {
 				demoClick("#cor-plot" + plotid, 100);
 				sessionStorage.removeItem("demo");
 			}, to);
-			to += 4000;
+			to += 16150;
 		}
 		else {
 			alert("Please accept cookies to run demo");
@@ -435,18 +365,10 @@ function messpop(id,to,message) {
 }, to);
 }
 
-//function alertpop(id,to) {
-//    setTimeout(function(){ $(id).click(function(){
-//    alert("this is a try");	
-//})},to);
-//}
-
 function radioClick(id,to){
 setTimeout(function() {$(id).addClass("checkboxhighlight").click()}, to);
 return(to);
 }
-
-
 
 function demoClick(id,to){
 	setTimeout(function() {$(id).addClass("checkboxhighlight")},to);
@@ -458,65 +380,42 @@ function demoClick(id,to){
 }
 
 function sliderChange(tid,oval,to){
-to += 1000;
-setTimeout(function(){$(tid).addClass("demohighlight")}, to);
-//to += 300; 
-to += delta_local/2;
-setTimeout(function() {$(tid).val(oval).change()}, to);
-//to += 300;
-to += delta_local/1;
-setTimeout(function() {$(tid).removeClass("demohighlight")},to);
-return(to);
-}
-
-
-
-function changeDropVal(oid, oval, to) {
-	setTimeout(function () {$(oid).addClass("demohighlight")}, to);
+	to += 1000;
+	setTimeout(function(){$(tid).addClass("demohighlight")}, to);
+	//to += 300; 
 	to += delta_local/2;
-	setTimeout(function () {$(oid).val(oval).change(); $(oid).selectmenu( "refresh" );}, to);
+	setTimeout(function() {$(tid).val(oval).change()}, to);
+	//to += 300;
 	to += delta_local/1;
-	setTimeout(function () {$(oid).removeClass("demohighlight")}, to);
+	setTimeout(function() {$(tid).removeClass("demohighlight")},to);
 	return(to);
 }
 
 
-function setTextBox (a, to, Tab, fld, shake) {
-to += delta_local / 2;
-setTimeout(enableTab, to, 'div[id="' + divID + '"]', HSTabs.subtab.indices[Tab], shake);
-
-to += delta_local / 3;
-setTimeout(function (cl) {$(fld).addClass(cl)}, to, "demohighlight");
-to += delta_local;
-$(fld).val("");
-for (i=0; i<a.length; i++) {
-to = to + delta_typing;
-setTimeout(function (ii) {$(fld).val( $(fld).val() + a[ii])}, to, i);
-}
-//to = to + delta_typing;
-//$(fld).val( $(fld).val() + String.fromCharCode(13));
-// to= to + (a.length + 1) * delta_typing;
-// var event = jQuery.Event('keypress'); event.which = 13; event.keyCode = 13; jQuery(fld).trigger(event); $(fld).keypress();
-to= to + delta_local;
-setTimeout(function (cl) {$(fld).removeClass(cl); $(fld).change();}, to, "demohighlight"); //
-if (fld == "#project_id_ne") {
-to += delta_local; 
-setTimeout(function () {
-var chr = 13;
-e = jQuery.Event("keyup");
-e.which = chr; //enter charecter 13 used
-e.keyCode = chr;
-    //$(fld).keyup(function(event) {
-    //if ((event.keyCode) == chr) {
-        //alert('keypress triggered');
-        //$(fld).val($(fld).val() + String.fromCharCode(event.keyCode));
-    //}
-//});
-    $(fld).trigger(e);
-	$("button[id='listbutton-table-ags-ele']").click();
+function changeDropVal(oid, oval, to) {
+	setTimeout(function () {$(oid + "-button").addClass("demohighlight")}, to);
+	to += delta_local/2;
+	setTimeout(function () {
+		$(oid).val(oval);
+		$(oid).selectmenu( "refresh" );
+		$(oid).trigger("selectmenuchange");
 	}, to);
+	to += delta_local/1;
+	setTimeout(function () {$(oid + "-button").removeClass("demohighlight")}, to);
+	return(to);
 }
-return(to + delta_local - 2000);
+
+
+function setTextBox (a, to, fld) {
+	setTimeout(function (cl) {$(fld).addClass(cl)}, to, "demohighlight");
+	to += delta_local;
+	for (i=0; i<a.length; i++) {
+		to +=delta_typing;
+		setTimeout(function (ii) {$(fld).val( $(fld).val() + a[ii])}, to, i);
+	}
+	to += delta_local;
+	setTimeout(function (cl) {$(fld).removeClass(cl); $(fld).change();}, to, "demohighlight"); 
+	return(to + delta_local - 2000);
 }
 
 
@@ -540,13 +439,6 @@ to += delta_local * quickly;
 setTimeout(enableTab, to, 'div[id="vertNETtabs"]', elementContent.net.subtabs.coll.order, shake);
 }
 
-//to += delta_local / 1;
-//setTimeout(function () {
-//$("input[name='" + Type + "']").each(function () {
-//    $(this).prop("checked", false);
-//});
-//} , to);
-
 to += delta_local;
 setTimeout(function (cl) {$(fld).addClass(cl)}, to, "checkboxhighlight");
 
@@ -563,7 +455,6 @@ updatechecksbm("fgs", "coll");
 	}, to, "checkboxhighlight");
 	return(to);
 }
-
 	
 function enableTab (Div, Tb, shake) {
 	$(Div).tabs( "option", "active", Tb); 
@@ -571,7 +462,3 @@ function enableTab (Div, Tb, shake) {
 		$(".ui-tabs-active").effect( "bounce", "slow" );
 	}
 }
-
-
-
-
