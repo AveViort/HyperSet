@@ -201,6 +201,14 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 		if (cookies) {
 			sessionStorage.setItem("demo", 1);
 			$("#tabs").tabs("option", "active", 1);
+			
+			// if we had previous results - delete them
+			var n = $('#cor_result_table tr').length;
+			if (n > 1) {
+				$('#cor_result_table').DataTable().clear();
+				$('#cor_result_table').DataTable().destroy();
+			}
+			
 			var to = 1200;
 			changeDropVal("#corSource_selector", source, to);
 			to += 2000; 
@@ -245,23 +253,24 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 			to += 15100;
 			
 			setTextBox(id, to, "#corGeneFeature_input");
-			to += 15500;
+			to += 15200;
 			
 			setTimeout(function () {
+				demoClick("#FDR_input", 50);
 				$("#FDR_input").val(fdr); 
 			}, to);
-			to += 15850;
+			to += 15300;
 			
 			setTimeout(function () {
 				demoClick("#retrieve-cor-button", 100);
 			}, to);
-			to += 16050;
+			to += 15400;
 			
 			setTimeout(function () {
 				demoClick("#cor-KM" + plotid, 100);
 				sessionStorage.removeItem("demo");
 			}, to);
-			to += 16150;
+			to += 15800;
 		}
 		else {
 			alert("Please accept cookies to run demo");
@@ -277,6 +286,14 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 		if (cookies) {
 			sessionStorage.setItem("demo", 1);	
 			$("#tabs").tabs("option", "active", 1);
+			
+			// if we had previous results - delete them
+			var n = $('#cor_result_table tr').length;
+			if (n > 1) {
+				$('#cor_result_table').DataTable().clear();
+				$('#cor_result_table').DataTable().destroy();
+			}
+			
 			var to = 1200;
 			changeDropVal("#corSource_selector", source, to);
 			to += 1000;
@@ -321,23 +338,24 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 			to += 15100;
 			
 			setTextBox(id, to, "#corGeneFeature_input");
-			to += 15500;
+			to += 15200;
 			
 			setTimeout(function () {
+				demoClick("#FDR_input", 50);
 				$("#FDR_input").val(fdr); 
 			}, to);
-			to += 15850;
+			to += 15300;
 			
 			setTimeout(function () {
 				demoClick("#retrieve-cor-button", 100);
 			}, to);
-			to += 16050;
+			to += 15400;
 			
 			setTimeout(function () {
 				demoClick("#cor-plot" + plotid, 100);
 				sessionStorage.removeItem("demo");
 			}, to);
-			to += 16150;
+			to += 15800;
 		}
 		else {
 			alert("Please accept cookies to run demo");

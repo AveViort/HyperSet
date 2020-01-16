@@ -1524,13 +1524,38 @@ $$ LANGUAGE plpgsql;
 -- this function create indices sample-id_platform for all tables (which have id column) in guide_table
 CREATE OR REPLACE FUNCTION autocreate_triple_indices_all() RETURNS boolean AS $$
 DECLARE
+datatype_n text;
+BEGIN
+FOR datatype_n in SELECT DISTINCT type FROM guide_table
+LOOP
+RAISE NOTICE 'Current datatype: %', datatype_n;
+PERFORM autocreate_triple_indices_datatype(datatype_n);
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- triple ind for datatype
+CREATE OR REPLACE FUNCTION autocreate_triple_indices_datatype(datatype_n text) RETURNS boolean AS $$
+DECLARE
 table_n text;
+BEGIN
+FOR table_n in SELECT table_name FROM guide_table WHERE type=datatype_n
+LOOP
+PERFORM autocreate_triple_indices_table(table_n);
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- for one table
+CREATE OR REPLACE FUNCTION autocreate_triple_indices_table(table_n text) RETURNS boolean AS $$
+DECLARE
 datatype_n text;
 col_n text; 
 flag boolean;
 BEGIN
-FOR table_n, datatype_n in SELECT table_name FROM guide_table
-LOOP
+SELECT type INTO datatype_n FROM guide_table WHERE table_name=table_n;
 -- check if table has id column
 SELECT has_ids INTO flag FROM type_ids WHERE data_type=datatype_n;
 IF (flag=true) THEN
@@ -1547,8 +1572,7 @@ RAISE NOTICE 'Index already exists';
 END IF;
 END LOOP;
 END IF;
-END LOOP;
-RETURN true;
+RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
 
