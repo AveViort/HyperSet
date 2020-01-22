@@ -506,7 +506,7 @@ $(document).ready(function(){
 	$("#source_selector").append(options.join("")).selectmenu({
         width: "100px"
     });
-	$('#source_selector').on( "selectmenuchange", function( event, ui ) {update_source()} );
+	$('#source_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update_source()} );
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
 		var previous_selection = (getCookie("source").split("|"))[0];
@@ -725,8 +725,8 @@ function add_plot_options_row(i) {
 		// current number of rows (-1 because of header)
 		var n = $('#plot_options tr').length-1;
 		for (j=i+1; j<=n; j++) {
-			$('#type' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('type' + (j+1) + '_selector')} );
-			$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('platform' + (j+1) + '_selector')} );
+			$('#type' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + (j+1) + '_selector')} );
+			$('#platform' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('platform' + (j+1) + '_selector')} );
 			document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j+1) +'_selector');
 			document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j+1) +'_selector');
 			document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j+1) +')');
@@ -851,8 +851,8 @@ function delete_plot_options_row(i) {
 	// no need to check cookies in this function - you cannot add row without accepting cookies
 	var n = $('#plot_options tr').length-1;
 	for (j=i+1; j<=n; j++) {
-		$('#type' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('type' + (j-1) + '_selector')} );
-		$('#platform' + j + '_selector').on( "selectmenuchange", function( event, ui ) {update('platform' + (j-1) + '_selector')} );
+		$('#type' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + (j-1) + '_selector')} );
+		$('#platform' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('platform' + (j-1) + '_selector')} );
 		document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j-1) +'_selector');
 		document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j-1) +'_selector');
 		document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j-1) +')');
@@ -919,7 +919,7 @@ function init_cohortselector() {
 	$("#cohort_selector").append(options.join("")).selectmenu({
         width: "100px"
     });
-	$('#cohort_selector').on( "selectmenuchange", function( event, ui ) {update_cohort()} );
+	$('#cohort_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update_cohort()} );
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
 		var previous_selection = (getCookie("cohort").split("|"))[0];
@@ -978,7 +978,7 @@ function init_dataselector(selector_id) {
 			var selector_value = $("#" + selector_id + " option:selected").val();
 			usetCookie(selector_id, selector_value, accepted_time);
 		}
-		$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {update('type' + n + '_selector')} );
+		$("#" + selector_id).off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + n + '_selector')} );
 	}
 	else {
 		for (i = total; i>n; i--) {
@@ -1088,7 +1088,7 @@ function init_platformselector(selector_id) {
 			init_axis_type_selector('axis'+ n + '_selector');
 			$('#axis'+ n + '_selector').selectmenu( "refresh" );
 		}
-		$("#" + selector_id).on( "selectmenuchange", function( event, ui ) {update(selector_id)} );
+		$("#" + selector_id).off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update(selector_id)} );
 	}
 	else {
 		for (i = total; i>n; i--) {
@@ -1160,7 +1160,7 @@ function init_plot_type_selector() {
 	{
         width: "125px"
     });
-	$('#plot-type').on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
+	$('#plot-type').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
 	plot_type_changed();
 }
 
@@ -1175,7 +1175,7 @@ function init_cor_source_selector() {
 	{
         width: "150px"
     });
-	$('#corSource_selector').on( "selectmenuchange", function( event, ui ) {update("corSource_selector")} );
+	$('#corSource_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corSource_selector")} );
 }
 
 function init_cor_datatype_selector() {
@@ -1194,10 +1194,7 @@ function init_cor_datatype_selector() {
         width: "150px",
 		disabled: cor_source == "undef"
     });
-	if (sessionStorage.getItem("cor_datatype") == null) {
-		sessionStorage.setItem("cor_datatype", 1);
-		$('#corDatatype_selector').on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
-	}
+	$('#corDatatype_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
 }
 
 function init_cor_cohort_selector() {
@@ -1220,11 +1217,7 @@ function init_cor_cohort_selector() {
         width: "175px",
 		disabled: $("#corSource_selector option:selected").val() == "CCLE"
     });
-	// for some reason events for platforms and screens fire multiple times
-	if (sessionStorage.getItem("cor_cohort") == null) {
-		sessionStorage.setItem("cor_cohort", 1);
-		$('#corCohort_selector').on( "selectmenuchange", function( event, ui ) {update("corCohort_selector")} );
-	}
+	$('#corCohort_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corCohort_selector")} );
 }
 
 function init_cor_platform_selector() {
@@ -1280,14 +1273,11 @@ function init_cor_screen_selector() {
 	setInputFilter(document.getElementById("FDR_input"), function(value) {
 		return /^\d*\.?\d*$/.test(value);
 	});
-	if (sessionStorage.getItem("cor_screen") == null) {
-		sessionStorage.setItem("cor_screen", 1);
-		$('#corScreen_selector').on( "selectmenuchange", function( event, ui ) {update("corScreen_selector")} );
-		document.getElementById('FDR_input').setAttribute("onkeyup", 'cor_id_keyup()');
-		document.getElementById('FDR_input').setAttribute("onchange", 'cor_id_keyup()');
-		document.getElementById('corGeneFeature_input').setAttribute("onkeyup", 'cor_id_keyup()');
-		document.getElementById('corGeneFeature_input').setAttribute("onchange", 'cor_id_keyup()');
-	}
+	$('#corScreen_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corScreen_selector")} );
+	document.getElementById('FDR_input').setAttribute("onkeyup", 'cor_id_keyup()');
+	document.getElementById('FDR_input').setAttribute("onchange", 'cor_id_keyup()');
+	document.getElementById('corGeneFeature_input').setAttribute("onkeyup", 'cor_id_keyup()');
+	document.getElementById('corGeneFeature_input').setAttribute("onchange", 'cor_id_keyup()');
 }
 
 function update_source() {
@@ -1480,7 +1470,7 @@ function update_plot_type_selector() {
 	$('#plot-type').append(options.join("")).selectmenu({
         width: "120px"
     });
-	$('#plot-type').on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
+	$('#plot-type').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
 	plot_type_changed();
 }
 
@@ -1742,9 +1732,7 @@ function update(initiator) {
 					update_cor_screen_selector();
 					break;
 			}
-			//setTimeout(function () {
-				sessionStorage.removeItem("updates_triggered");
-			//}, 50);
+			sessionStorage.removeItem("updates_triggered");
 		}
 	}
 	else {
@@ -1954,10 +1942,6 @@ function safe_clear() {
 	sessionStorage.removeItem("updates_triggered");
 	sessionStorage.removeItem("cascade_delete");
 	sessionStorage.removeItem("update_autocomplete");
-	sessionStorage.removeItem("cor_datatype");
-	sessionStorage.removeItem("cor_cohort");
-	sessionStorage.removeItem("cor_platform");
-	sessionStorage.removeItem("cor_screen");
 	sessionStorage.removeItem("demo");
 }
 
