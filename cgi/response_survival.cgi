@@ -1,30 +1,28 @@
 #!/usr/bin/speedy -w
 
-# script for retrieving screens for the given correlation datatype, cohort and platform
+# script for retrieving survival options for the given response cohort, datatype, platform, screen and sensitivity
 use CGI; # qw(-no_xhtml);
 use CGI::Carp qw ( fatalsToBrowser );
 use HS_SQL;
-use Aconfig;
 
 our ($dbh, $stat);
-my( @screen);
+my( @surv);
 
 my $query = new CGI;
 my $source = $query->param("source");
 my $datatype = $query->param("datatype"); 
-$datatype = "%" if $datatype eq "all";
 my $cohort = $query->param("cohort"); 
-$cohort = "%" if $cohort eq "all";
 my $platform = $query->param("platform"); 
-$platform = "%" if $platform eq "all";
+my $screen = $query->param("screen"); 
+my $sensitivity = $query->param("sensitivity"); 
 
 $dbh = HS_SQL::dbh('druggable');
 print "Content-type: text/html\n\n";
-$stat = qq/SELECT screen_list(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$Aconfig::sensitivity_m{$source}'\);/;
+$stat = qq/SELECT response_survival_list(\'$source'\, \'$cohort'\, \'$datatype'\, \'$platform'\, \'$screen'\, \'$sensitivity'\);/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
-while (@screen = $sth->fetchrow_array()) {
-    print(@screen);
+while (@surv = $sth->fetchrow_array()) {
+    print(@surv);
 	print("|");
 }
 $sth->finish;

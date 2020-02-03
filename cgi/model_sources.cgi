@@ -10,7 +10,7 @@ my (@source);
 
 print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
-$stat = qq/SELECT DISTINCT source FROM cor_guide_table WHERE source IS NOT NULL;/;
+$stat = qq/SELECT DISTINCT source FROM model_guide_table WHERE table_type=\'predictor'\ AND source IS NOT NULL;/;
 $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 while (@source = $sth->fetchrow_array) {

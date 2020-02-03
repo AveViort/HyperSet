@@ -132,6 +132,7 @@ li.tab:hover ul {
 		<li><a href="#tab-home">Introduction and help</a></li>
 		<li><a href="#tab-signif">Correlates of drug response</a></li>
 		<li><a href="#tab-lookup">Data exploration and look up</a></li>
+		<li><a href="#tab-predict">Multidimensional prediction models</a></li>
 	</ul>
 	
 	<div id="tab-home">
@@ -230,6 +231,7 @@ li.tab:hover ul {
 			</table>
 		</div>
 	</div>
+	
 	<div id="tab-lookup"><br>
 		<br>
 		<div id="plot-options-filters">
@@ -257,7 +259,7 @@ li.tab:hover ul {
 			</table>
 			<br>
 			<div class="inputarea inputareahighlight">
-				<table id = "plot_options">
+				<table id ="plot_options">
 					<tr>
 						<th>Data type</th>
 						<th>Platform</th>
@@ -309,6 +311,146 @@ li.tab:hover ul {
 			</tr>
 		</table>
 	</div>
+	
+	<div id="tab-predict" style="font-size: xx-small;"><br>
+	<table>
+		<tr>
+			<th>Source</th>
+			<th>Cohort</th>
+		</tr>
+		<tr>
+			<td>
+				<select id="modelSource_selector">
+			</td>
+			<td>
+				<select id="modelCohort_selector">
+			</td>
+			<td>
+				<button id="add_variable" onclick="add_model_options_row()">+</button>
+			</td>
+			<td>
+				<button id="delete_variable" onclick="delete_model_options_row()">-</button>
+			</td>
+		</tr>
+	</table>
+	<br>
+	<table id="glmnet_parameters">
+		<tr>
+			<td>
+				<span class="subheader">Parameters	</span>
+				<tr>
+					<td title="Set all variables on the same scale">Standardize
+					</td>
+					<td>
+						<input type="checkbox" id="standardize" class="alternative_input venn_box_control"> 
+					</td>
+				</tr>
+				<tr>
+					<td title="Relative influence of lasso vs. ridge approaches">Alpha
+					</td>
+					<td>
+						<input type="number" id="in-number-alpha" class="spinNumber ui-corner-all" min=0 max=1 step=0.05> 
+					</td>
+				</tr>
+				<tr>
+					<td title="Determines the number of steps to find the optimum">No. of lambda steps
+					</td>
+					<td>
+						<input type="number" id="in-number-nlambda" class="spinNumber ui-corner-all" min=5 max=100 step=1> 
+					</td>
+				</tr>
+				<tr>
+					<td title="Depends on sample size relative to the number of variables. Set automatically">Lambda min ratio 
+					</td>
+					<td>
+						<input type="text" id="lambda" class="alternative_input venn_box_control" value="0.01" disabled> 
+					</td>
+				</tr>
+				<tr>
+					<td title="Determined by distributions of the used input variables. Set automatically">Family
+					</td>
+					<td>
+						<input type="text" id="family" class="alternative_input venn_box_control" value="Gaussian" disabled> 
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<tr>
+							<td>
+								<input type="checkbox" id="crossval" class="alternative_input venn_box_control">	
+								<span class="subheader">Model validation</span>
+								<div id="crossval_ctrls" class="ui-widget ui-widget-content ui-corner-all inputarea inputareahighlight">
+									<table id="crossval_table">
+										<tr>
+											<td title="Partitioning of the dataset into training and test fractions. The minimal 3-fold value means 2/3 used for training while 1/3 for testing. Can be as large as the sample size (leave-one-out cross-validation),">
+												No. of folds for cross-validation
+											</td>
+											<td>
+												<input type="number" id="in-number-Nfold" class="Validation spinNumber ui-corner-all" min=3 max=10 step=1 value=10> 
+											</td>
+										</tr>		
+										<tr>
+											<td title="Regardless of the N-fold cross-validation above (which might repeatedly involve each sample into the training), this option retains a fraction of the dataset exclusively for testing at the final step">
+												Final test set
+											</td>
+											<td>
+												<input type="number" id="in-number-tsPerc" class="Validation spinNumber ui-corner-all" min=0 max=50 step=1>%
+											</td>
+										</tr>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</td>
+				</tr>
+			</td>
+		</tr>
+	</table>
+	<br>
+	<table id="response_options">
+		<tr>
+			<td>
+				<select id="responseDatatype_selector">
+			</td>
+			<td>
+				<select id="responsePlatform_selector">
+			</td>
+			<td>
+				<select id="responseScreen_selector">
+			</td>
+			<td>
+				<select id="responseSensitivity_selector">
+			</td>
+			<td>
+				<select id="responseSurvival_selector">
+			</td>
+			<td>
+				<select id="responseVariable_selector">
+			</td>
+			<td>
+				<input id="responseId">
+			</td>
+		</tr>
+	</table>
+	<br>
+	<table id ="model_options">
+		<tr>
+			<th>Data type</th>
+			<th>Platform</th>
+			<th>IDs</th>
+		</tr>
+		<tr id = "model_options_row">
+			<td>
+				<select id="modelDatatype1_selector">
+			</td>
+			<td>
+				<select id="modelPlatform1_selector">
+			</td>
+			<td>
+				<textarea id="genes_area1" rows="20" cols="16"></textarea>
+			</td>
+		</tr>
+	</table>
 	</div>
 	</div>
 </div>   
@@ -551,9 +693,26 @@ $(document).ready(function(){
 		sessionStorage.setItem("docked_plots", 0);
 	}
 	
-	//var tabList = $( "#tabs" )[0].childNodes[1].children;	for (tt = 0; tt < tabList.length; tt++) {$('#' + $(tabList[tt]).attr("aria-controls") + '-loading')[0].remove();			}
-			
-			
+	init_model_source_selector();
+	init_model_cohort_selector();
+	init_model_datatype_selector(1);
+	init_model_platform_selector(1);
+	init_model_genearea(1);
+	$("#add_variable").button({icon: "ui-icon-circle-plus",
+        showLabel: false});
+	$("#delete_variable").button({icon: "ui-icon-circle-minus",
+        showLabel: false});
+	$("#delete_variable").button("disable");
+	if (getCookie("modelDatatype2_selector") != "") {
+		reload_model_options();
+	}
+	init_response_datatype_selector();
+	init_response_platform_selector();
+	init_response_screen_selector();
+	init_response_sensitivity_selector();
+	init_response_survival_selector();
+	init_response_variable_selector();
+	//var tabList = $( "#tabs" )[0].childNodes[1].children;	for (tt = 0; tt < tabList.length; tt++) {$('#' + $(tabList[tt]).attr("aria-controls") + '-loading')[0].remove();			}		
 });
 
 // this function is used to reload rows on the third tab from cookies
@@ -562,6 +721,16 @@ function reload_analysis_options() {
 	for (var i=2; i<=n; i++) {
 		if (getCookie("type" + i + "_selector") != "") {
 			add_plot_options_row(i-1);
+		}
+	} 
+}
+
+// same for the fourth tab
+function reload_model_options() {
+	var n = max_model_rows;
+	for (var i=2; i<=n; i++) {
+		if (getCookie("modelDatatype" + i + "_selector") != "") {
+			add_model_options_row();
 		}
 	} 
 }
@@ -908,6 +1077,60 @@ function delete_plot_options_row(i) {
 	id_keyup(i-1);
 }
 
+// unlike plot options model options row may be added only as a last row
+function add_model_options_row() {
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		// unlike plots_option, options represented as columns, 3 elements for 1 var
+		var n = $('#model_options td').length/3;
+		$('#modelDatatype' + n + '_selector').selectmenu("disable");
+		var i = n+1;
+		// -1 because indexes come from 0
+		n = n*3-1;
+		var row = document.getElementById("model_options_row");
+		var TypeSelectorCell = row.insertCell(n+1);
+		TypeSelectorCell.innerHTML = '<select id="modelDatatype' + i +'_selector" class="ui-helper">';
+		init_model_datatype_selector(i);
+		var PlatformSelectorCell = row.insertCell(n+2);
+		PlatformSelectorCell.innerHTML = '<select id="modelPlatform' + i +'_selector" class="ui-helper">';
+		init_model_platform_selector(i);
+		var IdInput = row.insertCell(n+3);
+		IdInput.innerHTML = '<textarea id="genes_area'+ i + '" rows="20" cols="16">';
+		$("#modelSource_selector").selectmenu("disable");
+		$("#modelCohort_selector").selectmenu("disable");
+		//$("#modelSensitivityMeasure_selector").selectmenu("disable");
+		if (i==max_model_rows) {
+			$("#add_variable").button("disable");
+		}
+		$("#delete_variable").button("enable");
+		check_model_unique_variable(i);
+	}
+	else {
+		alert("Please accept cookies to use this site");
+	}
+}
+
+// we always delete the last variable
+function delete_model_options_row() {
+	var n = $('#model_options td').length/3;
+	deleteCookie("modelDatatype" + n + "_selector");
+	deleteCookie("modelPlatform" + n + "_selector");
+	$('#modelDatatype' + (n-1) + '_selector').selectmenu("enable");
+	document.getElementById("genes_area" + (n-1)).disabled = false;
+	if (n-1 == 1) {
+		$("#modelSource_selector").selectmenu("enable");
+		$("#modelCohort_selector").selectmenu("enable");
+		//$("#modelSensitivityMeasure_selector").selectmenu("enable");
+		$("#delete_variable").button("disable");
+	}
+	n=n*3-1;
+	var row = document.getElementById("model_options_row");
+	for (var i=n; i>n-3; i--) {
+		row.deleteCell(i);
+	}
+	$("#add_variable").button("enable");
+}
+
 function init_cohortselector() {
 	var cohorts = get_plot_cohorts($("#source_selector option:selected").val());
 	options = [];
@@ -1241,11 +1464,7 @@ function init_cor_platform_selector() {
         width: "175px",
 		disabled: cor_datatype == "undef"
     });
-	// for some reason events for platforms and screens fire multiple times
-	if (sessionStorage.getItem("cor_platform") == null) {
-		sessionStorage.setItem("cor_platform", 1);
-		$('#corPlatform_selector').on( "selectmenuchange", function( event, ui ) {update("corPlatform_selector")} );
-	}
+	$('#corPlatform_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corPlatform_selector")} );
 }
 
 // this function is also used for gene/feature autocomplete init
@@ -1278,6 +1497,374 @@ function init_cor_screen_selector() {
 	document.getElementById('FDR_input').setAttribute("onchange", 'cor_id_keyup()');
 	document.getElementById('corGeneFeature_input').setAttribute("onkeyup", 'cor_id_keyup()');
 	document.getElementById('corGeneFeature_input').setAttribute("onchange", 'cor_id_keyup()');
+}
+
+function init_model_source_selector() {
+	var sources = get_model_sources();
+	var sources_ids = [];
+	var options = [];
+	//options.push("<option value='undef' disabled selected>Choose source</option>");
+	for (i in sources) {
+		options.push("<option value='" + sources[i] + "'>" + sources[i] +"</option>");
+		sources_ids.push(sources[i]);
+	}
+	$("#modelSource_selector").append(options.join("")).selectmenu(
+	{
+        width: "150px"
+    });
+	$('#modelSource_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelSource_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("modelSource_selector").split("|"))[0];
+		if (sources_ids.includes(previous_selection)) {
+			$("#modelSource_selector").val(previous_selection);
+			$("#modelSource_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("modelSource_selector", $("#modelSource_selector option:selected").val(), accepted_time);
+	}
+}
+
+
+function init_model_cohort_selector() {
+	var options = [];
+	var cohort_ids = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var cohorts = get_model_cohorts($("#modelSource_selector option:selected").val());
+	for (i in cohorts) {
+		options.push("<option value='" + cohorts[i].cohort + "'>" + cohorts[i].name + "</option>");
+		cohort_ids.push(cohorts[i].cohort);
+	}
+	$("#modelCohort_selector").append(options.join("")).selectmenu({
+        width: "175px"
+    });
+	$('#modelCohort_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelCohort_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("modelCohort_selector").split("|"))[0];
+		if (cohort_ids.includes(previous_selection)) {
+			$("#modelCohort_selector").val(previous_selection);
+			$("#modelCohort_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("modelCohort_selector", $("#modelCohort_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_model_datatype_selector(n) {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var datatypes = get_model_datatypes(model_source, model_cohort);
+	var datatypes_ids = [];
+	for (i in datatypes) {
+		options.push("<option value='" + datatypes[i].datatype + "'>" + datatypes[i].name +"</option>");
+		datatypes_ids.push(datatypes[i].datatype);
+	}
+	$("#modelDatatype" + n + "_selector").append(options.join("")).selectmenu(
+	{
+        width: "150px",
+		disabled: model_source == "undef"
+    });
+	$('#modelDatatype' + n + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelDatatype" + n + "_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("modelDatatype" + n + "_selector").split("|"))[0];
+		if (datatypes_ids.includes(previous_selection)) {
+			$("#modelDatatype" + n + "_selector").val(previous_selection);
+			$("#modelDatatype" + n + "_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("modelDatatype" + n + "_selector", $("#modelDatatype" + n + "_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_model_platform_selector(n) {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var model_datatype = $("#modelDatatype" + n + "_selector option:selected").val();
+	var platforms = get_model_platforms(model_source, model_cohort, model_datatype);
+	var platforms_ids = [];
+	for (i in platforms) {
+		options.push("<option value='" + platforms[i].platform + "'>" + platforms[i].name +"</option>");
+		platforms_ids.push(platforms[i].platform);
+	}
+	$("#modelPlatform" + n + "_selector").append(options.join("")).selectmenu({
+        width: "175px",
+		disabled: model_datatype == "undef"
+    });
+	$('#modelPlatform' + n + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelPlatform" + n + "_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("modelPlatform" + n + "_selector").split("|"))[0];
+		if (platforms_ids.includes(previous_selection)) {
+			$("#modelPlatform" + n + "_selector").val(previous_selection);
+			$("#modelPlatform" + n + "_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("modelPlatform" + n + "_selector", $("#modelPlatform" + n + "_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_model_genearea(n) {
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var model_datatype = $("#modelDatatype" + n + "_selector option:selected").val();
+	var model_platform = $("#modelPlatform" + n + "_selector option:selected").val();
+	var ids = get_autocomplete_ids(model_cohort, model_datatype, model_platform);
+	
+	// example from https://jqueryui.com/autocomplete/#multiple
+	$("#genes_area" + n)
+		// don't navigate away from the field on tab when selecting an item
+		.on( "keydown", function( event ) {
+		if ( event.keyCode === $.ui.keyCode.TAB &&
+			$( this ).autocomplete( "instance" ).menu.active ) {
+				event.preventDefault();
+			}
+		})
+		.autocomplete({
+		minLength: 2,
+		response: function( event, ui ) {
+			if (ui.content.length > max_autocomplete) {
+				console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+				$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+			}
+		},
+		source: function( request, response ) {
+			// delegate back to autocomplete, but extract the last term
+			response( $.ui.autocomplete.filter(ids, extractLast( request.term ) ) );
+		},
+		focus: function() {
+			// prevent value inserted on focus
+			return false;
+		},
+		select: function( event, ui ) {
+			var terms = split( this.value );
+			// remove the current input
+			terms.pop();
+			// add the selected item
+			terms.push( ui.item.value );
+			// add placeholder to get the comma-and-space at the end
+			terms.push( "" );
+			this.value = terms.join( ", " );
+			var cookies = checkCookiesAccepted();
+			if (cookies) {
+				var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+				usetCookie("modelGenearea" + n, $("#genes_area" + n).val(), accepted_time);
+			}
+			return false;
+		}
+	});
+}
+
+function init_response_datatype_selector() {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var datatypes = get_response_datatypes(model_source, model_cohort);
+	var datatypes_ids = [];
+	for (i in datatypes) {
+		options.push("<option value='" + datatypes[i].datatype + "'>" + datatypes[i].name +"</option>");
+		datatypes_ids.push(datatypes[i].datatype);
+	}
+	$("#responseDatatype_selector").append(options.join("")).selectmenu(
+	{
+        width: "150px"
+    });
+	$('#responseDatatype_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseDatatype_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("responseDatatype_selector").split("|"))[0];
+		if (datatypes_ids.includes(previous_selection)) {
+			$("#responseDatatype_selector").val(previous_selection);
+			$("#responseDatatype_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("responseDatatype_selector", $("#responseDatatype_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_response_platform_selector() {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var response_datatype = $("#responseDatatype_selector option:selected").val();
+	var platforms = get_response_platforms(model_source, model_cohort, response_datatype);
+	var platforms_ids = [];
+	for (i in platforms) {
+		options.push("<option value='" + platforms[i].platform + "'>" + platforms[i].name +"</option>");
+		platforms_ids.push(platforms[i].platform);
+	}
+	$("#responsePlatform_selector").append(options.join("")).selectmenu({
+        width: "175px"
+    });
+	$('#responsePlatform_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responsePlatform_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("responsePlatform_selector").split("|"))[0];
+		if (platforms_ids.includes(previous_selection)) {
+			$("#responsePlatform_selector").val(previous_selection);
+			$("#responsePlatform_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("responsePlatform_selector", $("#responsePlatform_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_response_screen_selector() {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var response_datatype = $("#responseDatatype_selector option:selected").val();
+	var response_platform = $("#responsePlatform_selector option:selected").val();
+	// not all response datatables have 'platform' column filled
+	if (response_platform == "undef") {
+		response_platform = "";
+	}
+	var screens = get_response_screens(model_source, model_cohort, response_datatype, response_platform);
+	var screens_ids = [];
+	for (i in screens) {
+		options.push("<option value='" + screens[i].screen + "'>" + screens[i].name +"</option>");
+		screens_ids.push(screens[i].screen);
+	}
+	$("#responseScreen_selector").append(options.join("")).selectmenu({
+        width: "175px",
+		disabled: screens_ids[0] == ""
+    });
+	$('#responseScreen_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseScreen_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("responseScreen_selector").split("|"))[0];
+		if (screens_ids.includes(previous_selection)) {
+			$("#responseScreen_selector").val(previous_selection);
+			$("#responseScreen_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("responseScreen_selector", $("#responseScreen_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_response_sensitivity_selector() {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var response_datatype = $("#responseDatatype_selector option:selected").val();
+	var response_platform = $("#responsePlatform_selector option:selected").val();
+	if (response_platform == "undef") {
+		response_platform = "";
+	}
+	var response_screen = $("#responseScreen_selector option:selected").val();
+	if (response_screen == "undef") {
+		response_screen = "";
+	}
+	var sensitivity = get_response_sensitivity(model_source, model_cohort, response_datatype, response_platform, response_screen);
+	var sensitivity_ids = [];
+	for (i in sensitivity) {
+		options.push("<option value='" + sensitivity[i].sensitivity + "'>" + sensitivity[i].name +"</option>");
+		sensitivity_ids.push(sensitivity[i].sensitivity);
+	}
+	$("#responseSensitivity_selector").append(options.join("")).selectmenu({
+        width: "175px",
+		disabled: sensitivity_ids[0] == ""
+    });
+	$('#responseSensitivity_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseSensitivity_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("responseSensitivity_selector").split("|"))[0];
+		if (sensitivity_ids.includes(previous_selection)) {
+			$("#responseSensitivity_selector").val(previous_selection);
+			$("#responseSensitivity_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("responseSensitivity_selector", $("#responseSensitivity_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_response_survival_selector() {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var response_datatype = $("#responseDatatype_selector option:selected").val();
+	var response_platform = $("#responsePlatform_selector option:selected").val();
+	if (response_platform == "undef") {
+		response_platform = "";
+	}
+	var response_screen = $("#responseScreen_selector option:selected").val();
+	if (response_screen == "undef") {
+		response_screen = "";
+	}
+	var response_sensitivity = $("#responseSensitivity_selector option:selected").val();
+	if (response_sensitivity == "undef") {
+		response_sensitivity = "";
+	}
+	var survival = get_response_survival(model_source, model_cohort, response_datatype, response_platform, response_screen, response_sensitivity);
+	var survival_ids = [];
+	for (i in survival) {
+		options.push("<option value='" + survival[i].survival + "'>" + survival[i].name +"</option>");
+		survival_ids.push(survival[i].survival);
+	}
+	$("#responseSurvival_selector").append(options.join("")).selectmenu({
+        width: "175px",
+		disabled: survival_ids[0] == ""
+    });
+	$('#responseSurvival_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseSurvival_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("responseSurvival_selector").split("|"))[0];
+		if (survival_ids.includes(previous_selection)) {
+			$("#responseSurvival_selector").val(previous_selection);
+			$("#responseSurvival_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("responseSurvival_selector", $("#responseSurvival_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_response_variable_selector() {
+	var options = [];
+	var model_source = $("#modelSource_selector option:selected").val();
+	var model_cohort = $("#modelCohort_selector option:selected").val();
+	var response_datatype = $("#responseDatatype_selector option:selected").val();
+	var response_platform = $("#responsePlatform_selector option:selected").val();
+	if (response_platform == "undef") {
+		response_platform = "";
+	}
+	var response_screen = $("#responseScreen_selector option:selected").val();
+	if (response_screen == "undef") {
+		response_screen = "";
+	}
+	var response_sensitivity = $("#responseSensitivity_selector option:selected").val();
+	if (response_sensitivity == "undef") {
+		response_sensitivity = "";
+	}
+	var response_survival = $("#responseSurvival_selector option:selected").val();
+	if (response_survival == "undef") {
+		response_survival = "";
+	}
+	var variables = get_response_variables(model_source, model_cohort, response_datatype, response_platform, response_screen, response_sensitivity, response_survival);
+	var variable_ids = [];
+	for (i in variables) {
+		options.push("<option value='" + variables[i].variable + "'>" + variables[i].name +"</option>");
+		variable_ids.push(variables[i].variable);
+	}
+	$("#responseVariable_selector").append(options.join("")).selectmenu({
+        width: "175px"
+    });
+	$('#responseVariable_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseVariable_selector")} );
+	var cookies = checkCookiesAccepted();
+	if (cookies) {
+		var previous_selection = (getCookie("responseVariable_selector").split("|"))[0];
+		if (variable_ids.includes(previous_selection)) {
+			$("#responseVariable_selector").val(previous_selection);
+			$("#responseVariable_selector").selectmenu( "refresh" );
+		}
+		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+		usetCookie("responseVariable_selector", $("#responseVariable_selector option:selected").val(), accepted_time);
+	}
+}
+
+function init_response_id_input() {
+
 }
 
 function update_source() {
@@ -1477,68 +2064,43 @@ function update_plot_type_selector() {
 function update_cor_source_selector() {
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corSource_selector option:selected").val();
-	var previous_value = (getCookie("corSource_selector").split("|"))[0];
-	if ((selector_value != previous_value) | (selector_value == "all")) {
-		usetCookie("corSource_selector", selector_value, accepted_time);
-		$('#corGeneFeature_input').val("");
-		$('#corDatatype_selector').find('option').remove().end();
-		$('#corDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_cor_datatype_selector();
-		$('#corDatatype_selector').selectmenu( "refresh" );
-		$('#corPlatform_selector').find('option').remove().end();
-		$('#corDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_cor_platform_selector();
-		$('#corPlatform_selector').selectmenu( "refresh" );
-		$('#corScreen_selector').find('option').remove().end();
-		$('#corScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_cor_screen_selector();
-		$('#corScreen_selector').selectmenu( "refresh" );
-	}
+	usetCookie("corSource_selector", selector_value, accepted_time);
+	$('#corGeneFeature_input').val("");
+	$('#corDatatype_selector').find('option').remove().end();
+	$('#corDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_cor_datatype_selector();
+	$('#corDatatype_selector').selectmenu( "refresh" );
 }
 
 function update_cor_datatype_selector() {
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corDatatype_selector option:selected").val();
-	var previous_value = (getCookie("corDatatype_selector").split("|"))[0];
-	if ((selector_value != previous_value) | (selector_value == "all")) {
-		usetCookie("corDatatype_selector", selector_value, accepted_time);
-		$('#corCohort_selector').find('option').remove().end();
-		$('#corCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_cor_cohort_selector();
-		$('#corCohort_selector').selectmenu( "refresh" );
-	}
+	usetCookie("corDatatype_selector", selector_value, accepted_time);
+	$('#corCohort_selector').find('option').remove().end();
+	$('#corCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_cor_cohort_selector();
+	$('#corCohort_selector').selectmenu( "refresh" );
 }
 
 function update_cor_cohort_selector() {
-	// here we don't compare previous value and current - previous value can be "all", but the function can be called by datatype change
 	var selector_value = $("#corCohort_selector option:selected").val();
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	var previous_value = (getCookie("corCohort_selector").split("|"))[0];
-	if ((selector_value != previous_value) | (selector_value == "all")) {
-		usetCookie("corCohort_selector", selector_value, accepted_time);
-		$('#corPlatform_selector').find('option').remove().end();
-		$('#corPlatform_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_cor_platform_selector();
-		$('#corPlatform_selector').selectmenu( "refresh" );
-		$('#corScreen_selector').find('option').remove().end();
-		$('#corScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_cor_datatype_selector();
-		$('#corScreen_selector').selectmenu( "refresh" );
-	}
+	usetCookie("corCohort_selector", selector_value, accepted_time);
+	$('#corPlatform_selector').find('option').remove().end();
+	$('#corPlatform_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_cor_platform_selector();
+	$('#corPlatform_selector').selectmenu( "refresh" );
 }
 
 function update_cor_platform_selector() {
 	// here we don't compare previous value and current - previous value can be "all", but the function can be called by datatype change
 	var selector_value = $("#corPlatform_selector option:selected").val();
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	var previous_value = (getCookie("corPlatform_selector").split("|"))[0];
-	if ((selector_value != previous_value) | (selector_value == "all")) {
-		usetCookie("corPlatform_selector", selector_value, accepted_time);
-		$('#corScreen_selector').find('option').remove().end();
-		$('#corScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_cor_screen_selector();
-		$('#corScreen_selector').selectmenu( "refresh" );
-	}
+	usetCookie("corPlatform_selector", selector_value, accepted_time);
+	$('#corScreen_selector').find('option').remove().end();
+	$('#corScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_cor_screen_selector();
+	$('#corScreen_selector').selectmenu( "refresh" );
 }
 
 function update_cor_screen_selector() {
@@ -1614,6 +2176,102 @@ function update_cor_screen_selector() {
 	}
 }
 
+function update_model_source_selector() {
+	var selector_value = $("#modelSource_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("modelSource_selector", selector_value, accepted_time);
+	$('#modelCohort_selector').find('option').remove().end();
+	$('#modelCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_model_cohort_selector();
+	$('#modelCohort_selector').selectmenu( "refresh" );
+}
+
+function update_model_cohort_selector() {
+	var selector_value = $("#modelCohort_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("modelCohort_selector", selector_value, accepted_time);
+	$('#modelDatatype1_selector').find('option').remove().end();
+	$('#modelDatatype1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_model_datatype_selector(1);
+	$('#responseDatatype_selector').selectmenu( "refresh" );
+	$('#responseDatatype_selector').find('option').remove().end();
+	$('#responseDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_response_datatype_selector(1);
+	$('#responseDatatype_selector').selectmenu( "refresh" );
+}
+
+function update_model_datatype_selector(n) {
+	var selector_value = $("#modelDatatype" + n + "_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("modelDatatype" + n + "_selector", selector_value, accepted_time);
+	check_model_unique_variable(n);
+	$('#modelPlatform' + n + '_selector').find('option').remove().end();
+	$('#modelPlatform' + n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_model_platform_selector(n);
+	$('#modelPlatform' + n + '_selector').selectmenu( "refresh" );
+}
+
+function update_model_platform_selector(n) {
+	var selector_value = $("#modelPlatform" + n + "_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("modelPlatform" + n + "_selector", selector_value, accepted_time);
+	init_model_genearea(n);
+}
+
+function update_response_datatype_selector() {
+	var selector_value = $("#responseDatatype_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("responseDatatype_selector", selector_value, accepted_time);
+	$('#responsePlatform_selector').find('option').remove().end();
+	$('#responsePlatform_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_response_platform_selector();
+	$('#responsePlatform_selector').selectmenu( "refresh" );
+}
+
+function update_response_platform_selector() {
+	var selector_value = $("#responsePlatform_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("responsePlatform_selector", selector_value, accepted_time);
+	$('#responseScreen_selector').find('option').remove().end();
+	$('#responseScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_response_screen_selector();
+	$('#responseScreen_selector').selectmenu( "refresh" );
+}
+
+function update_response_screen_selector() {
+	var selector_value = $("#responseScreen_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("responseScreen_selector", selector_value, accepted_time);
+	$('#responseSensitivity_selector').find('option').remove().end();
+	$('#responseSensitivity_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_response_sensitivity_selector();
+	$('#responseSensitivity_selector').selectmenu( "refresh" );
+}
+
+function update_response_sensitivity_selector() {
+	var selector_value = $("#responseSensitivity_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("responseSensitivity_selector", selector_value, accepted_time);
+	$('#responseSurvival_selector').find('option').remove().end();
+	$('#responseSurvival_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_response_survival_selector();
+	$('#responseSurvival_selector').selectmenu( "refresh" );
+}
+
+function update_response_survival_selector() {
+	var selector_value = $("#responseSurvival_selector option:selected").val();
+	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
+	usetCookie("responseSurvival_selector", selector_value, accepted_time);
+	$('#responseVariable_selector').find('option').remove().end();
+	$('#responseVariable_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_response_variable_selector();
+	$('#responseVariable_selector').selectmenu( "refresh" );
+}
+
+function update_response_variable_selector() {
+
+}
+
 // WARNING! Use this function with extreme caution! It is a potential source of bugs
 // e.g. it can hide input, but cannot set it visible back
 // however, it is ok for current conditions
@@ -1669,8 +2327,7 @@ function update(initiator) {
 					update_cohort();
 					break;
 				case "type":
-					var current_value = $("#" + initiator + " option:selected").val();
-					if (current_value != previous_value) {
+					if (selector_value != previous_value) {
 						toggle_selectors("disable");
 						update_type(n);
 						// use this to avoid double-update
@@ -1687,8 +2344,7 @@ function update(initiator) {
 					}
 					break;
 				case "platform":
-					var current_value = $("#" + initiator + " option:selected").val();
-					if (current_value != previous_value) {
+					if (selector_value != previous_value) {
 						toggle_selectors("disable");
 						update_platform(n);
 						console.log("Initiator: " + initiator + " Current value: " + current_value + " Previous value: " + previous_value);
@@ -1700,7 +2356,7 @@ function update(initiator) {
 					}
 					break;
 				case "corSource":
-					if (current_value != previous_value) {
+					if (selector_value != previous_value) {
 						update_cor_source_selector();
 						update_cor_datatype_selector();
 						update_cor_cohort_selector();
@@ -1708,8 +2364,7 @@ function update(initiator) {
 					}
 					break;
 				case "corDatatype":
-					var current_value = $("#" + initiator + " option:selected").val();
-					if (current_value != previous_value) {
+					if (selector_value != previous_value) {
 						update_cor_datatype_selector();
 						update_cor_cohort_selector();
 						update_cor_platform_selector();
@@ -1717,8 +2372,7 @@ function update(initiator) {
 					}
 					break;
 				case "corCohort":
-					var current_value = $("#" + initiator + " option:selected").val();
-					if (current_value != previous_value) {
+					if (selector_value != previous_value) {
 						update_cor_cohort_selector();
 						update_cor_platform_selector();
 						update_cor_screen_selector();
@@ -1730,6 +2384,83 @@ function update(initiator) {
 					break;
 				case "corScreen":
 					update_cor_screen_selector();
+					break;
+				case "modelSource":
+					if (selector_value != previous_value) {
+						update_model_source_selector();
+						update_model_cohort_selector();
+						update_model_datatype_selector(1);
+						update_model_platform_selector(1);
+					}
+					break;
+				case "modelCohort":
+					if (selector_value != previous_value) {
+						update_model_cohort_selector();
+						update_model_datatype_selector(1);
+						update_model_platform_selector(1);
+						update_response_datatype_selector();
+						update_response_platform_selector();
+						update_response_screen_selector();
+						update_response_sensitivity_selector();
+						update_response_survival_selector();
+						update_response_variable_selector();
+					}
+					break;
+				case "modelDatatype":
+					if (selector_value != previous_value) {
+						update_model_datatype_selector(n);
+						update_model_platform_selector(n);
+					}
+					break;
+				case "modelPlatform":
+					if (selector_value != previous_value) {
+						update_model_platform_selector(n);
+					}
+					break;
+				case "responseDatatype":
+					if (selector_value != previous_value) {
+						update_response_datatype_selector();
+						update_response_platform_selector();
+						update_response_screen_selector();
+						update_response_sensitivity_selector();
+						update_response_survival_selector();
+						update_response_variable_selector();
+					}
+					break;
+				case "responsePlatform":
+					if (selector_value != previous_value) {
+						update_response_platform_selector();
+						update_response_screen_selector();
+						update_response_sensitivity_selector();
+						update_response_survival_selector();
+						update_response_variable_selector();
+					}
+					break;
+				case "responseScreen":
+					if (selector_value != previous_value) {
+						update_response_screen_selector();
+						update_response_sensitivity_selector();
+						update_response_survival_selector();
+						update_response_variable_selector();
+					}
+					break;
+				case "responseSensitivity":
+					if (selector_value != previous_value) {
+						update_response_sensitivity_selector();
+						update_response_survival_selector();
+						update_response_variable_selector();
+					}
+					break;
+				case "responseSurvival":
+					if (selector_value != previous_value) {
+						update_response_survival_selector();
+						update_response_variable_selector();
+					}
+					break;
+				case "responseVariable":
+					if (selector_value != previous_value) {
+						update_response_variable_selector();
+					}
 					break;
 			}
 			sessionStorage.removeItem("updates_triggered");
@@ -1967,6 +2698,29 @@ function setInputFilter(textbox, inputFilter) {
     });
   });
 }
+
+// functions for textarea autocomplete
+function split( val ) {
+	return val.split( /,\s*/ );
+}
+
+function extractLast( term ) {
+	return split( term ).pop();
+}
+
+// function to check if we already have datatype in selected variables
+function check_model_unique_variable(n) {
+	var flag = false;
+	var total = $('#model_options td').length/3;
+	for (var i=1; i<=total; i++) {
+		if (i!=n) {
+			flag = flag + ($('#modelDatatype' + i + '_selector option:selected').val() == $('#modelDatatype' + n + '_selector option:selected').val());
+		}
+	}
+	if (flag) {
+		alert("Model does not allow choosing same datatype as two different variables. Please chose another datatype");
+	}
+}
 </script>
 
  
@@ -1987,4 +2741,3 @@ function setInputFilter(textbox, inputFilter) {
 
 </BODY>
 </HTML>
-	

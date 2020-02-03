@@ -1,6 +1,6 @@
 -- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
 
--- return all drugs/features and genes for given combination of parameters
+-- return all drugs/features and genes for given combination of parameters (for correlations)
 CREATE OR REPLACE FUNCTION feature_gene_list(source_n text, data_type text, cohort_n text, platform_n text, screen_name text, sensitivity_m text) RETURNS setof text AS $$
 DECLARE
 table_n text;
@@ -85,6 +85,139 @@ FOR res IN SELECT DISTINCT screen FROM cor_guide_table WHERE source=source_n AND
 LOOP
 RETURN NEXT res;
 END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but for dependent variable
+CREATE OR REPLACE FUNCTION response_screen_list(source_n text, cohort_n text, data_type text, platform_n text) RETURNS setof text AS $$
+DECLARE
+res text;
+query text;
+BEGIN
+query := E'SELECT DISTINCT screen FROM model_guide_table WHERE source=\'' || source_n || E'\'AND cohort=\'' || cohort_n || E'\' AND datatype=\'' || data_type || E'\'';
+IF (platform_n <> '') THEN
+query := query || E' AND platform=\'' || platform_n || E'\'';
+END IF;
+query := query || E' AND table_type=\'response\';';
+FOR res IN EXECUTE query
+LOOP
+RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- similiar to previous function, but returns sensitivity measures
+CREATE OR REPLACE FUNCTION response_sensitivity_list(source_n text, cohort_n text, data_type text, platform_n text, screen_n text) RETURNS setof text AS $$
+DECLARE
+res text;
+query text;
+description text;
+BEGIN
+query := E'SELECT DISTINCT sensitivity FROM model_guide_table WHERE source=\'' || source_n || E'\'AND cohort=\'' || cohort_n || E'\' AND datatype=\'' || data_type || E'\'';
+IF (platform_n <> '') THEN
+query := query || E' AND platform=\'' || platform_n || E'\'';
+END IF;
+IF (screen_n <> '') THEN
+query := query || E' AND screen=\'' || screen_n || E'\'';
+END IF;
+query := query || E' AND table_type=\'response\';';
+FOR res IN EXECUTE query
+LOOP
+SELECT fullname INTO description FROM platform_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- similiar to previous function, but returns survival measures
+CREATE OR REPLACE FUNCTION response_survival_list(source_n text, cohort_n text, data_type text, platform_n text, screen_n text, sensitivity_m text) RETURNS setof text AS $$
+DECLARE
+res text;
+query text;
+description text;
+BEGIN
+query := E'SELECT DISTINCT survival FROM model_guide_table WHERE source=\'' || source_n || E'\'AND cohort=\'' || cohort_n || E'\' AND datatype=\'' || data_type || E'\'';
+IF (platform_n <> '') THEN
+query := query || E' AND platform=\'' || platform_n || E'\'';
+END IF;
+IF (screen_n <> '') THEN
+query := query || E' AND screen=\'' || screen_n || E'\'';
+END IF;
+IF (sensitivity_m <> '') THEN
+query := query || E' AND sensitivity=\'' || sensitivity_m || E'\'';
+END IF;
+query := query || E' AND table_type=\'response\';';
+FOR res IN EXECUTE query
+LOOP
+SELECT fullname INTO description FROM platform_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION response_variable_list(source_n text, cohort_n text, data_type text, platform_n text, screen_n text, sensitivity_m text, survival_n text) RETURNS setof text AS $$
+DECLARE
+variable_nm text;
+query text;
+description text;
+exclude boolean;
+response_flag boolean;
+table_n text;
+data_types text array;
+cohorts text array;
+BEGIN
+data_types := ARRAY['all', data_type];
+cohorts := ARRAY['all', cohort_n];
+IF
+EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'response_variables')
+THEN
+DELETE FROM response_variables;
+ELSE
+CREATE TABLE response_variables (variable_n character varying(256), visible_name character varying(256));
+END IF;
+query := E'SELECT table_name FROM model_guide_table WHERE source=\'' || source_n || E'\'AND cohort=\'' || cohort_n || E'\' AND datatype=\'' || data_type || E'\'';
+IF (platform_n <> '') THEN
+query := query || E' AND platform=\'' || platform_n || E'\'';
+END IF;
+IF (screen_n <> '') THEN
+query := query || E' AND screen=\'' || screen_n || E'\'';
+END IF;
+IF (sensitivity_m <> '') THEN
+query := query || E' AND sensitivity=\'' || sensitivity_m || E'\'';
+END IF;
+IF (survival_n <> '') THEN
+query := query || E' AND survival=\'' || survival_n || E'\'';
+END IF;
+query := query || E' AND table_type=\'response\';';
+EXECUTE query INTO table_n;
+-- if table exists
+IF (table_n IS NOT NULL) THEN
+EXECUTE E'INSERT INTO response_variables SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
+FOR variable_nm, description IN SELECT * FROM response_variables 
+LOOP
+SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=variable_nm) INTO exclude;
+SELECT response INTO response_flag FROM variable_guide_table WHERE variable_name=variable_nm;
+IF ((NOT exclude) AND response_flag)
+THEN 
+RETURN NEXT variable_nm || '|' || description;
+END IF;
+END LOOP;
+-- if table does not exist
+ELSE
+variable_nm := '|';
+RETURN NEXT variable_nm;
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION response_variable_ids(source_n text, cohort_n text, data_type text, platform_n text, screen_n text, sensitivity_m text, survival_n text, variable_n text) RETURNS setof text AS $$
+DECLARE
+query text;
+BEGIN
+query := E'SELECT feature_gene_list(\'' || source_n || E'\', \'' || data_type || E'\', \'' || cohort_n || E'\', \'' || platform_n || E'\', \'' || screen_n || E'\', \'' || survival_n || E'\');';
+RAISE notice '%', query;
+RETURN QUERY EXECUTE query;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -185,6 +318,77 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- same, but for models
+CREATE OR REPLACE FUNCTION model_platform_list (source_n text, cohort_n text, data_type text) RETURNS setof text
+AS $$
+DECLARE
+table_n text;
+exclude boolean;
+predictor_flag boolean;
+platform_n text;
+description text;
+data_types text array;
+cohorts text array;
+BEGIN
+data_types := ARRAY['all', data_type];
+cohorts := ARRAY['all', cohort_n];
+IF
+EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'model_platforms')
+THEN
+DELETE FROM model_platforms;
+ELSE
+CREATE TABLE model_platforms (platform character varying(256), visible_name character varying(256));
+END IF;
+SELECT table_name INTO table_n FROM model_guide_table WHERE (cohort=cohort_n) AND (datatype=data_type) AND (table_type='predictor');
+-- if table exists
+IF (table_n IS NOT NULL) THEN
+EXECUTE E'INSERT INTO model_platforms SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
+FOR platform_n, description IN SELECT * FROM model_platforms 
+LOOP
+SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
+SELECT predictor INTO predictor_flag FROM variable_guide_table WHERE variable_name=platform_n;
+IF ((NOT exclude) AND predictor_flag)
+THEN 
+RETURN NEXT platform_n || '|' || description;
+END IF;
+END LOOP;
+-- if table does not exist
+ELSE
+platform_n := '|';
+RETURN NEXT platform_n;
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but for dependent variables
+CREATE OR REPLACE FUNCTION response_platform_list (source_n text, cohort_n text, data_type text) RETURNS setof text
+AS $$
+DECLARE
+table_n text;
+exclude boolean;
+visible boolean;
+platform_n text;
+description text;
+data_types text array;
+cohorts text array;
+BEGIN
+data_types := ARRAY['all', data_type];
+cohorts := ARRAY['all', cohort_n];
+FOR platform_n IN SELECT DISTINCT platform FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND datatype=data_type AND table_type='response' 
+LOOP
+SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
+SELECT visibility FROM platform_descriptions WHERE shortname=platform_n INTO visible;
+-- potential bug: at leas one visible platform needed
+IF ((NOT exclude) AND visible)
+THEN 
+SELECT fullname INTO description FROM platform_descriptions WHERE shortname=platform_n;
+RETURN NEXT platform_n || '|' || description;
+END IF;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 -- return data types for the given source (takes previous datatypes into account)
 CREATE OR REPLACE FUNCTION datatype_list (cohort_n text, previous_datatypes text) RETURNS setof text
 AS $$
@@ -249,6 +453,36 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- same, but for models; gives only predictors
+CREATE OR REPLACE FUNCTION model_datatype_list (source_n text, cohort_n text) RETURNS setof text
+AS $$
+DECLARE
+res text;
+description_n text;
+BEGIN
+FOR res IN SELECT DISTINCT datatype FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND table_type='predictor' 
+LOOP
+SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but for dependent variable (response)
+CREATE OR REPLACE FUNCTION response_datatype_list (source_n text, cohort_n text) RETURNS setof text
+AS $$
+DECLARE
+res text;
+description_n text;
+BEGIN
+FOR res IN SELECT DISTINCT datatype FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND table_type='response' 
+LOOP
+SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 -- get correlations and their public names
 CREATE OR REPLACE FUNCTION cohort_list (source_n text) RETURNS setof text
 AS $$
@@ -274,6 +508,21 @@ sensitivity_array text array;
 BEGIN
 sensitivity_array := string_to_array(sensitivity_m, ',');
 FOR res IN SELECT DISTINCT cohort FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) AND datatype LIKE datatype_n 
+LOOP
+SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
+RETURN NEXT res || '|' || description_n;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- get cohorts for models
+CREATE OR REPLACE FUNCTION model_cohort_list (source_n text) RETURNS setof text
+AS $$
+DECLARE
+res text;
+description_n text;
+BEGIN
+FOR res IN SELECT DISTINCT cohort FROM model_guide_table WHERE source=source_n AND table_type='predictor' 
 LOOP
 SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;

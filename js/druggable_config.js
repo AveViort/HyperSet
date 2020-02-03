@@ -87,6 +87,9 @@ cor_visible_columns.set("TCGA", [
 // maximum number of rows for "Look up" tab (number of plot dimensions)
 var max_rows = 3;
 
+// maximum number of rows for model options
+var max_model_rows = 3;
+
 // maximum number of elements in autocomplete list
 var max_autocomplete = 50;
 

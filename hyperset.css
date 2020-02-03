@@ -12,9 +12,6 @@ font-weight: normal;
 
 div,p {
 color: #2e6e9e;
-/*background-color: white; 
-font-size: small; 
-font-weight: normal;*/
 }
 
 span.highlighted {
@@ -518,18 +515,33 @@ button[disabled] {
 	box-shadow: none; 
 }
 
+.subheader {
+font-size: 1.2em;
+font-weight: 600;
+	}
+
+.spinNumber {
+	display: inline; 
+	/*float: right; */
+	width: 3em; 
+}
+
+.inputareadisabled {
+	color: #aaaaaa;
+}
+
 .inputareahighlight {  
 border: 2px solid #a6c9e2;
 box-shadow: 5px 5px 10px; 
 }
 
-.dialoghighlight { 
-box-shadow: 5px 5px 10px #e17009 ; 
-}
-
 .inputarea {  
 margin:3px 3px 3px;
 padding:5px 5px 5px;
+}
+
+.dialoghighlight { 
+box-shadow: 5px 5px 10px #e17009 ; 
 }
 
 .projecthighlight {  
