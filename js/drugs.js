@@ -296,6 +296,51 @@ function get_response_variables(source, cohort, datatype, platform, screen, sens
 	return variable_array;
 }
 
+function get_response_multiselector_values(source, cohort, datatype, platform, screen, sensitivity, survival, variable) {
+	var values;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/response_multiselector.cgi?source=" + encodeURIComponent(source) + 
+		"&cohort=" + encodeURIComponent(cohort) + 
+		"&datatype=" + encodeURIComponent(datatype) +
+		"&platform=" + encodeURIComponent(platform) +
+		"&screen=" + encodeURIComponent(screen) +
+		"&sensitivity=" + encodeURIComponent(sensitivity) +
+		"&survival=" + encodeURIComponent(survival) + 
+		"&variable=" + encodeURIComponent(variable), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			values = this.responseText;}
+		}
+	xmlhttp.send();
+	values = values.split("|");
+	if (values[0].indexOf(",") > 0) {
+		values = values[0].split(",");
+	}
+	if (values[values.length-1] == "") {
+		values = values.slice(0, values.length-2);
+	}
+	return values;
+}
+
+function build_model(method, source, cohort, resp_datatype, resp_platform, ind_datatypes, ind_platforms, ind_ids, multiple) {
+	var file; 
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/model_predict.cgi?method=" + encodeURIComponent(method) +
+		"&source=" + encodeURIComponent(source) + 
+		"&cohort=" + encodeURIComponent(cohort) + 
+		"&datatypes=" + encodeURIComponent(datatypes.join()) + 
+		"&platforms=" + encodeURIComponent(platforms.join()) + 
+		"&ids=" + encodeURIComponent(ids.join()) +
+		"&multiple=" + encodeURIComponent(multiple.join()), false);
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			file = this.responseText;
+		}
+	}
+	xmlhttp.send();
+	return file;
+}
+
 function get_annotations() {
 	var annotations;
 	var xmlhttp = new XMLHttpRequest();

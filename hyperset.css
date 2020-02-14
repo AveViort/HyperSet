@@ -10,9 +10,23 @@ font-size: small;
 font-weight: normal;
 }
 
+
+/*@media screen and (min-resolution: 96dpi) {
+	body {
+		font-size: x-large;
+	}
+}
+@media screen and (min-resolution: 192dpi) {
+	body {
+		font-size: x-large;
+	}
+}*/
+
 div,p {
 color: #2e6e9e;
 }
+
+
 
 span.highlighted {
 color: #e17009;

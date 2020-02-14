@@ -74,6 +74,22 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- get all possible tissue types for cohort
+CREATE OR REPLACE FUNCTION get_tissue_types(cohort_n text) RETURNS setof text AS $$
+DECLARE
+table_n text;
+query text;
+res text;
+BEGIN
+SELECT table_name INTO table_n FROM guide_table WHERE cohort=cohort_n AND type='TISSUE';
+query := 'SELECT DISTINCT tissue FROM ' || table_n || ';';
+FOR res IN EXECUTE query
+LOOP
+RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 -- return available screens for correlation tables
 CREATE OR REPLACE FUNCTION screen_list(source_n text, data_type text, cohort_n text, platform_n text, sensitivity_m text) RETURNS setof text AS $$
 DECLARE
@@ -208,16 +224,6 @@ ELSE
 variable_nm := '|';
 RETURN NEXT variable_nm;
 END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE OR REPLACE FUNCTION response_variable_ids(source_n text, cohort_n text, data_type text, platform_n text, screen_n text, sensitivity_m text, survival_n text, variable_n text) RETURNS setof text AS $$
-DECLARE
-query text;
-BEGIN
-query := E'SELECT feature_gene_list(\'' || source_n || E'\', \'' || data_type || E'\', \'' || cohort_n || E'\', \'' || platform_n || E'\', \'' || screen_n || E'\', \'' || survival_n || E'\');';
-RAISE notice '%', query;
-RETURN QUERY EXECUTE query;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -372,20 +378,27 @@ platform_n text;
 description text;
 data_types text array;
 cohorts text array;
+flag boolean;
 BEGIN
+-- this flag is needed in case if we don't have platforms
+flag := TRUE;
 data_types := ARRAY['all', data_type];
 cohorts := ARRAY['all', cohort_n];
 FOR platform_n IN SELECT DISTINCT platform FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND datatype=data_type AND table_type='response' 
 LOOP
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
 SELECT visibility FROM platform_descriptions WHERE shortname=platform_n INTO visible;
--- potential bug: at leas one visible platform needed
 IF ((NOT exclude) AND visible)
 THEN 
 SELECT fullname INTO description FROM platform_descriptions WHERE shortname=platform_n;
 RETURN NEXT platform_n || '|' || description;
+flag := FALSE;
 END IF;
 END LOOP;
+IF (flag)
+THEN
+RETURN NEXT '|';
+END IF;
 END;
 $$ LANGUAGE plpgsql;
 
