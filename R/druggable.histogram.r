@@ -16,15 +16,16 @@ if (!empty_value(ids[1])) {
 	condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
 	condition <- paste0(condition, "id='", internal_id, "'");
 }
-query <- paste0("SELECT ", platforms[1], " FROM ", Par["cohort"], "_", datatypes[1], ifelse(condition == " WHERE ", "", condition), ";");
+query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[1]), "';");
+table_name <- sqlQuery(rch, query)[1,1];
+query <- paste0("SELECT ", platforms[1], " FROM ", table_name, ifelse(condition == " WHERE ", "", condition), ";");
 print(query);
 x_data <- sqlQuery(rch, query);
 status <- ifelse(nrow(x_data) != 0, 'ok', 'error');
 
 if (status != 'ok') {
-			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
-		} else {
-			
+	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+} else {		
 	x_data <- transformVars(x_data[[platforms[1]]], scales[1]);
 	print(x_data);
 	if (Par["source"] == "tcga") {

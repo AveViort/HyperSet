@@ -1963,6 +1963,18 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
+-- function to automatically report errors and warnings
+-- levels are: info, warning, error
+CREATE OR REPLACE FUNCTION report_event(e_source text, e_level text, e_description text, e_options text, e_client_info text) RETURNS boolean AS $$
+DECLARE
+stimestamp timestamp;
+BEGIN
+SELECT LOCALTIMESTAMP INTO stimestamp;
+INSERT INTO event_log (event_time, event_source, event_level, event_description, options, user_agent) VALUES (stimestamp, e_source, e_level, e_description, e_options, e_client_info);
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
 
 -- DEPRICATED FUNCTIONS
 

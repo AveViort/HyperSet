@@ -521,7 +521,7 @@ function get_cohort_datatypes(cohort, previous_datatypes) {
 	var datatypes;
 	// console.log('previous datatypes: ' + previous_datatypes);
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/plot_datatypes.cgi?cohort=" + encodeURIComponent(cohort) + "&previous_datatypes=" + encodeURIComponent(previous_datatypes), false);
+	xmlhttp.open("GET", "cgi/plot_datatypes.cgi?cohort=" + encodeURIComponent(cohort) + "&previous_datatypes=" + encodeURIComponent(previous_datatypes.join()), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			datatypes = this.responseText;}

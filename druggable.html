@@ -32,6 +32,7 @@
 <script src="js/cookies.js" type="text/javascript"></script>
 <script src="js/DR_demo.js" type="text/javascript"></script>
 <script src="js/druggable_config.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
 
 <style>
 li.tab ul {
@@ -268,7 +269,7 @@ li.tab:hover ul {
 						<th></th>
 						<th>Scale</th>
 					</tr>
-					<tr>
+					<tr id="plot_options_row1">
 						<td>
 							<select id="type1_selector" class="ui-helper" style="width: 40ch;">
 						</td>
@@ -646,13 +647,13 @@ $(document).ready(function(){
 	id_keyup(1);
 	// reload from cookies if we had more than 1 row
 	if (getCookie("type2_selector") != "") {
+		console.log("Reloading options for the third tab");
 		reload_analysis_options();
 	}
 	if (sessionStorage.getItem("docked_plots") == null) {
 		sessionStorage.setItem("docked_plots", 0);
 	}
 	
-	$("#model_accordion").accordion();
 	init_model_source_selector();
 	init_model_cohort_selector();
 	init_model_datatype_selector(1);
@@ -680,8 +681,11 @@ $(document).ready(function(){
 function reload_analysis_options() {
 	var n = parseInt(document.getElementById("add_row1").getAttribute("max"));
 	for (var i=2; i<=n; i++) {
+		console.log("Checking row " + i);
 		if (getCookie("type" + i + "_selector") != "") {
+			console.log("Row was set before");
 			add_plot_options_row(i-1);
+			console.log("Row " + i + " reloaded");
 		}
 	} 
 }
@@ -748,7 +752,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 						click: function() {
 							//dock_plot(this, plot_id);
 							navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
-							alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
+							alert("The plot can be accessed at any time via the link:\n https://www.evinet.org/pics/plots/" + plot_filename + " \n, which is also copied to the clippboard.");
 							mark_plot(plot_filename);
 						},
 						showText: false
@@ -854,9 +858,10 @@ function add_plot_options_row(i) {
 	if (cookies) {
 		// current number of rows (-1 because of header)
 		var n = $('#plot_options tr').length-1;
-		for (j=i+1; j<=n; j++) {
+		for (j=n; j>=i+1; j--) {
 			$('#type' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + (j+1) + '_selector')} );
 			$('#platform' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('platform' + (j+1) + '_selector')} );
+			document.getElementById('plot_options_row' + j).setAttribute("id", 'plot_options_row' + (j+1));
 			document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j+1) +'_selector');
 			document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j+1) +'_selector');
 			document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j+1) +')');
@@ -879,12 +884,18 @@ function add_plot_options_row(i) {
 		
 		var table = document.getElementById("plot_options");
 		var row = table.insertRow(i+1);
+		row.id = "plot_options_row" + (i+1);
 		var TypeSelectorCell = row.insertCell(0);
 		TypeSelectorCell.innerHTML = '<select id="type' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
 		var for_delete = false;
 		var flag = init_dataselector('type'+(i+1)+'_selector');
 		if (flag) {
 			alert('No more compatible datatypes!');
+			var previous_datatypes = [];
+			for (j=1; j<i; j++) {
+				previous_datatypes.push($("#type" + j +"_selector option:selected").val());
+			}
+			report_event("druggable.html", "warning", "no_compatible_datatypes", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join());
 			for_delete = true;
 		}
 		var PlatformSelectorCell = row.insertCell(1);
@@ -896,11 +907,18 @@ function add_plot_options_row(i) {
 		flag = init_platformselector('platform'+(i+1)+'_selector');
 		if (flag & !for_delete) {
 			alert('No more compatible platforms!');
+			var previous_datatypes = [];
+			var previous_platforms = [];
+			for (j=1; j<i; j++) {
+				previous_datatypes.push($("#type" + j +"_selector option:selected").val());
+				previous_platforms.push($("#platform" + j +"_selector option:selected").val());
+			}
+			report_event("druggable.html", "warning", "no_compatible_platforms", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join() + "&previous_platforms=" + previous_platforms.join());
 			for_delete = true;
 		}
 		var InfoButton = row.insertCell(4);
 		InfoButton.innerHTML = '<button id="open_info' + (i+1) + '" onclick="open_info_page(' + (i+1) + ')" disabled>Info</button>';
-		$(InfoButton).qtip({ 
+		$("#open_info" + (i+1)).qtip({ 
 			content: {
 				text: "Open external information page"
 			}
@@ -911,14 +929,14 @@ function add_plot_options_row(i) {
 		var AddButton = row.insertCell(6);
 		// max number of rows defined in druggable_config.js
 		AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=' + max_rows + ' onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
-		$(AddButton).qtip({ 
+		$("#add_row" + (i+1)).qtip({ 
 			content: {
 				text: "Add a new row (under this one)"
 			}
 		});
 		var DeleteButton = row.insertCell(7);
 		DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=' + max_rows + ' onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
-		$(DeleteButton).qtip({ 
+		$("#delete_row" + (i+1)).qtip({ 
 			content: {
 				text: "Delete this row"
 			}
@@ -983,6 +1001,7 @@ function delete_plot_options_row(i) {
 	for (j=i+1; j<=n; j++) {
 		$('#type' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + (j-1) + '_selector')} );
 		$('#platform' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('platform' + (j-1) + '_selector')} );
+		document.getElementById('plot_options_row' + j).setAttribute("id", 'plot_options_row' + (j-1));
 		document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j-1) +'_selector');
 		document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j-1) +'_selector');
 		document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j-1) +')');
@@ -999,7 +1018,8 @@ function delete_plot_options_row(i) {
 		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 		usetCookie("type" + j + "_selector", (getCookie("type" + (j-1) + "_selector").split("|"))[0], accepted_time);
 		usetCookie("platform" + j + "_selector", (getCookie("platform" + (j-1) + "_selector").split("|"))[0], accepted_time);
-	}	
+	}
+	$("#plot_options_row" + i).children().children().qtip('destroy', true);
 	document.getElementById("plot_options").deleteRow(i);
 	
 	// delete cookies for the last row - see the code above to understand why
@@ -1337,6 +1357,7 @@ function init_plot_type_selector() {
 	var plot_types = get_plot_types(platforms);
 	if (plot_types[0] == '') {
 		alert("The platforms you have chosen are compatible, but no plots have been tested, please choose another combination");
+		report_event("druggable.html", "warning", "plot_types_missing", "platforms=" + platforms.join());	
 	}
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
@@ -1921,7 +1942,7 @@ function init_response_multiselector() {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
 		var previous_selection = (getCookie("responseMulti_selector").split("|"))[0];
-		console.log(previous_selection);
+		//console.log(previous_selection);
 		if (values.includes(previous_selection)) {
 			$("#responseMulti_selector").val(previous_selection);
 			$("#responseMulti_selector").selectmenu( "refresh" );
@@ -1967,6 +1988,8 @@ function update_cohort() {
 }
 
 function update_type(n) {
+	// use this to identify exit code
+	var status = 'ok';
 	if (sessionStorage.getItem("add_row") == null) {
 		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 		var selector_value = $("#type" + n + "_selector option:selected").val();
@@ -1989,12 +2012,20 @@ function update_type(n) {
 			var total = $('#plot_options tr').length-1;
 			if (empty) {
 				alert("No more compatible platforms");
+				var previous_datatypes = [];
+				var previous_platforms = [];
+				for (j=1; j<n; j++) {
+					previous_datatypes.push($("#type" + j +"_selector option:selected").val());
+					previous_platforms.push($("#platform" + j +"_selector option:selected").val());
+				}
+				report_event("druggable.html", "warning", "no_compatible_platforms", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join() + "&previous_platforms=" + previous_platforms.join());
 				sessionStorage.setItem("cascade_delete", 1);
 				for (i=total; i>=n; i--) {
 					console.log("Cascade delete invoked. Removing row " + i + " (removing from " + total + " till " + n + ")");
 					delete_plot_options_row(i);
 				}
 				sessionStorage.removeItem("cascade_delete");
+				status = 'deleted';
 			}
 			else {
 				if (n<total) {
@@ -2009,11 +2040,13 @@ function update_type(n) {
 							delete_plot_options_row(i);
 						}
 						sessionStorage.removeItem("cascade_delete");
+						status = 'deleted';
 					}
 				}
 			}
 		}
 	}
+	return status;
 }
 
 function update_platform(n) {
@@ -2360,16 +2393,19 @@ function update(initiator) {
 				case "type":
 					if (selector_value != previous_value) {
 						toggle_selectors("disable");
-						update_type(n);
-						// use this to avoid double-update
-						sessionStorage.setItem("update_autocomplete", "false");
-						update_platform(n);
-						for (var i=n+1; i<=total; i++) {
-							update_type(i);
-							update_platform(i);
+						var status = update_type(n);
+						console.log(status);
+						if (status != 'deleted') {
+							// use this to avoid double-update
+							sessionStorage.setItem("update_autocomplete", "false");
+							update_platform(n);
+							for (var i=n+1; i<=total; i++) {
+								update_type(i);
+								update_platform(i);
+							}
+							update_plot_types();
+							sessionStorage.removeItem("update_autocomplete");
 						}
-						update_plot_types();
-						sessionStorage.removeItem("update_autocomplete");
 						toggle_selectors("enable");
 					}
 					break;
@@ -2573,63 +2609,73 @@ function open_info_page(id) {
 }
 
 function id_keyup(k) {
-	var n = $('#plot_options tr').length-1;
-	$("#id" + k + "_confirmed").val("");
-	var flag = true;
-	var temp_flag;
-	if ($("#id" + k + "_input").is(":enabled")) {
-		var available_ids = $( "#id" + k + "_input" ).autocomplete("option", "source");
-		var valueSoFar = $("#id" + k + "_input").val();
-		if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
-			valueSoFar = valueSoFar.toUpperCase();
-			$("#id" + k + "_input").val(valueSoFar);
-		}
-		temp_flag = available_ids.includes(valueSoFar);
-		if (temp_flag) {
-			var confirmed = synonyms.get($("#id" + k + "_input").val());
-			//console.log("Confirmed: " + confirmed);
-			$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
-			setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
-							$("#id" + k + "_input").css('background-color', '')}, 500);
-			$("#id" + k + "_input").css('border-color', 'chartreuse');
-			$("#id" + k + "_input").css('background-color', 'chartreuse');
-		}
-	}
-	if ((typeof $("#plot-type option:selected").val() == 'undefined') || ($("#plot-type option:selected").val() == "")) {
-		flag = false;
+	if (synonyms.size == 0) {
+		console.log("Waiting for synonyms...");
+		setTimeout(id_keyup, 50, k);
 	}
 	else {
-		for (var i = 1; i<=n; i++) {
-			if ($("#id" + i + "_input").is(":enabled")) {
-				var valueSoFar = $("#id" + i + "_input").val();
-				// this variable declared in druggable_config.js
-				if (capitalized_datatypes.includes($("#type" + i + "_selector option:selected").val())) {
-					valueSoFar = valueSoFar.toUpperCase();
-					$("#id" + i + "_input").val(valueSoFar);
-				}
-				available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
-				temp_flag = available_ids.includes(valueSoFar);
-				if (temp_flag) {
-					$("#open_info" + i).button("enable");
+		console.log("Synonyms arrived");
+		var n = $('#plot_options tr').length-1;
+		//console.log("Number of rows: " + n + " id_keyup triggered for row: " + k);
+		$("#id" + k + "_confirmed").val("");
+		var flag = true;
+		var temp_flag;
+		if ($("#id" + k + "_input").is(":enabled")) {
+			var available_ids = $( "#id" + k + "_input" ).autocomplete("option", "source");
+			var valueSoFar = $("#id" + k + "_input").val();
+			if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
+				valueSoFar = valueSoFar.toUpperCase();
+				$("#id" + k + "_input").val(valueSoFar);
+			}
+			temp_flag = available_ids.includes(valueSoFar);
+			if ((temp_flag) && (valueSoFar != "")) {
+				console.log("Value so far: " + valueSoFar);
+				var confirmed = synonyms.get($("#id" + k + "_input").val());
+				console.log("Confirmed: " + confirmed);
+				$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
+				setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
+								$("#id" + k + "_input").css('background-color', '')}, 500);
+				$("#id" + k + "_input").css('border-color', 'chartreuse');
+				$("#id" + k + "_input").css('background-color', 'chartreuse');
+			}
+		}
+		if ((typeof $("#plot-type option:selected").val() == 'undefined') || ($("#plot-type option:selected").val() == "")) {
+			flag = false;
+		}
+		else {
+			for (var i = 1; i<=n; i++) {
+				if ($("#id" + i + "_input").is(":enabled")) {
+					var valueSoFar = $("#id" + i + "_input").val();
+					// this variable declared in druggable_config.js
+					if (capitalized_datatypes.includes($("#type" + i + "_selector option:selected").val())) {
+						valueSoFar = valueSoFar.toUpperCase();
+						$("#id" + i + "_input").val(valueSoFar);
+					}
+					available_ids = $( "#id" + i + "_input" ).autocomplete("option", "source");
+					temp_flag = available_ids.includes(valueSoFar);
+					if (temp_flag) {
+						$("#open_info" + i).button("enable");
+					}
+					else {
+						$("#open_info" + i).button("disable");
+					}
+					flag = flag*temp_flag;
 				}
 				else {
+					flag = flag*true;
 					$("#open_info" + i).button("disable");
 				}
-				flag = flag*temp_flag;
-			}
-			else {
-				flag = flag*true;
-				$("#open_info" + i).button("disable");
 			}
 		}
-	}
-	if (flag) {
-		$("#plot-button").button("enable");
-		$("#plot-button-wrapper").qtip("disable");
-	}
-	else {
-		$("#plot-button").button("disable");
-		$("#plot-button-wrapper").qtip("enable");
+		if (flag) {
+			$("#plot-button").button("enable");
+			$("#plot-button-wrapper").qtip("disable");
+		}
+		else {
+			$("#plot-button").button("disable");
+			$("#plot-button-wrapper").qtip("enable");
+		}
+		return flag;
 	}
 }
 
@@ -2664,7 +2710,7 @@ function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
 			case "scatter": 
 				if (ids.every((val, i, arr) => val === "")) {
 					if (ids.length == 3) {
-						plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ' vs ' + datatypes[2] + ':' + platforms[2] + ':' + scales[2] + ')';
+						plot_title = 'Scatterplot of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ' vs ' + datatypes[2] + ':' + platforms[2] + ':' + scales[2] + ')';
 					}
 					else {
 						plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ')';
@@ -2711,13 +2757,6 @@ function safe_clear() {
 	sessionStorage.removeItem("demo");
 }
 
-// use this function to clear sessionStorage, all cookies (except for cookiesAccepted) and reload the page
-function clean_reload() {
-	sessionStorage.clear();
-	erase_all_but_accept_cookies();
-	location.reload();
-}
-
 // function provided by https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input
 function setInputFilter(textbox, inputFilter) {
   ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
@@ -2755,6 +2794,38 @@ function check_model_unique_variable(n) {
 	if (flag) {
 		//alert("Model does not allow choosing same datatype as two different variables. Please chose another datatype");
 	}
+}
+
+// debug function
+function report_plot_tab() {
+	var plot = $('#plot-type option:selected').val();
+	var n = $('#plot_options tr').length-1;
+	var source = $("#source_selector option:selected").val();
+	var cohort = $("#cohort_selector option:selected").val();
+	var datatypes = [];
+	var ids = [];
+	var confirmed = [];
+	var platforms = [];
+	var scales = [];
+	var tcga_codes = $("#tcga_selector option:selected").val();
+	for (i=1; i<=n; i++) {
+		datatypes.push($("#type" + i + "_selector option:selected").val());
+		platforms.push($("#platform" + i + "_selector option:selected").val());
+		ids.push($("#id" + i + "_input").val());
+		confirmed.push($("#id" + i + "_confirmed").val());
+		scales.push($("#axis" + i + "_selector option:selected").val());
+	}
+	report_event("druggable.html", "info", "reported_state_plot_tab", 
+		"source=" + source + 
+		"&cohort=" + cohort + 
+		"&datatypes=" + datatypes.join() + 
+		"&platforms=" + platforms.join() +
+		"&ids=" + ids.join() +
+		"&confirmed=" + confirmed.join() + 
+		"&scales=" + scales.join() +
+		"&tcga_codes=" + tcga_codes +
+		"&plot=" + plot);
+			
 }
 </script>
 

@@ -25,7 +25,8 @@ if (($source eq "CCLE") && ($variable eq "tissue")) {
 }
 else {
 	if ($source eq "TCGA") {
-		$stat = qq/SELECT get_tcga_codes(\'$cohort'\, \'$datatype'\, \''\)/;
+		# add CLIN, so we don't see metacodes, because it does not make sense for multiselector
+		$stat = qq/SELECT get_tcga_codes(\'$cohort'\, \'$datatype'\, \'CLIN'\)/;
 	}
 }
 # case when multiselector should not be initialized

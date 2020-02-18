@@ -376,6 +376,39 @@ add_plot_type_platform_vs_datatype <- function(platform, datatype, plot_type, ke
 	return(k);
 }
 
+add_plot_type_datatype <- function(datatype1, plot_type, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
+	cohorts <- as.character(cohorts[,1]);
+	platforms1 <- '';
+	for (cohort in cohorts) {
+		# use SQL function to get platforms
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype1,"', '');"));
+		platforms1 <- c(platforms1, as.character(temp[,1]));
+	}
+	platforms1 <- unique(platforms1);
+	platforms1 <- platforms1[which(platforms1!='')];
+	# delete platform descriptions
+	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms1 <- unlist(platforms1);
+	k <- 0;
+	for (platform1 in platforms1) {
+		n <- add_plot_type(platform1, '', '', plot_type, key_file, rch);
+		k <- k+n;
+	}
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	print(paste0(datatype1,": added ", k, " records"));
+	return(k);
+}
+
 add_plot_type_datatype_vs_datatype <- function(datatype1, datatype2, plot_type, key_file = "HS_SQL.conf", drch = '') {
 	rch <- NULL;
 	if (drch == '') {

@@ -77,7 +77,9 @@ for (i in 1:length(temp_datatypes)) {
 		# drugs are special case!
 		condition <- paste0(condition, ifelse(temp_platforms[i] == "drug", "drug='","id='"), internal_id, "'");
 	}
-	query <- paste0("SELECT ", ifelse(temp_platforms[i] == "drug", " DISTINCT ", ""),"sample,", ifelse(temp_platforms[i] == "drug", "TRUE", temp_platforms[i]), " FROM ", Par["cohort"], "_", temp_datatypes[i], ifelse(condition == " WHERE ", "", condition), ";");
+	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(temp_datatypes[i]), "';");
+	table_name <- sqlQuery(rch, query)[1,1];
+	query <- paste0("SELECT ", ifelse(temp_platforms[i] == "drug", " DISTINCT ", ""),"sample,", ifelse(temp_platforms[i] == "drug", "TRUE", temp_platforms[i]), " FROM ", table_name, ifelse(condition == " WHERE ", "", condition), ";");
 	print(query);
 	time1 <- Sys.time();
 	temp[[i]] <- sqlQuery(rch, query);
@@ -118,12 +120,12 @@ if (status != 'ok') {
 	print("str(x_data):");
 	print(str(x_data));
 	y_data <- NULL;
-	if ((temp_platforms[2] != "maf") & (temp_platforms[2] != "drug")) {
+	if ((temp_datatypes[2] != "mut") & (temp_datatypes[2] != "drug")) {
 		y_data <- temp[[2]][common_samples,2];
 	} else {
 		y_data <- rep(NA, length(common_samples));
 		for (i in 1:length(common_samples)) {
-			if (temp_platforms[2] == "maf") {
+			if (temp_datatypes[2] == "mut") {
 				y_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[2]]), paste0("MUT(", ifelse(grepl(":", temp_ids[2]), strsplit(temp_ids[2], ":")[[1]][1], temp_ids[2]), ")=pos"), paste0("MUT(", temp_ids[2], ")=neg"));
 			} else {
 				# if drug was specified
@@ -146,10 +148,10 @@ if (status != 'ok') {
 		if (!empty_value(temp_ids[1])) {
 			y_axis_name <- paste0(readable_platforms[temp_platforms[1], 2], " (", ifelse(grepl(":", temp_ids[1]), strsplit(temp_ids[1], ":")[[1]][1], temp_ids[1]), ",", temp_scales[1], ")");
 		} else {
-			y_axis_name <- paste0(toupper(readable_platforms[temp_platforms[1], 2], " (", temp_scales[1], ")");
+			y_axis_name <- paste0(readable_platforms[temp_platforms[1], 2], " (", temp_scales[1], ")");
 		}
 	} else {
-		y_axis_name <- paste0(toupper(temp_datatypes[1]), ":", readable_platforms[temp_platforms[1], 2]);
+		y_axis_name <- paste0(readable_platforms[temp_platforms[1], 2]);
 	}	
 	plot_annotation <- paste0("Cohort: ", toupper(Par["cohort"]));
 	x_axis <- list(

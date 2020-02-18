@@ -41,12 +41,14 @@ for (i in 1:length(datatypes)) {
 			condition <- paste0(condition, "id='", internal_ids[i], "'");
 		}
 	}
+	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[i]), "';");
+	table_name <- sqlQuery(rch, query)[1,1];
 	query <- "SELECT ";
 	# for drugs - binarize patients!
 	if ((empty_value(ids[i])) & (platforms[i] == "drug")) {
-		query <- paste0(query, "DISTINCT sample,TRUE FROM ", Par["cohort"], "_", datatypes[i], condition, ifelse(condition == " WHERE ", "", " AND "), platforms[i], " IS NOT NULL;");
+		query <- paste0(query, "DISTINCT sample,TRUE FROM ", table_name, condition, ifelse(condition == " WHERE ", "", " AND "), platforms[i], " IS NOT NULL;");
 	} else {
-		query <- paste0(query, "sample,", platforms[i], " FROM ", Par["cohort"], "_", datatypes[i], condition, ifelse(condition == " WHERE ", "", " AND "), platforms[i], " IS NOT NULL;");
+		query <- paste0(query, "sample,", platforms[i], " FROM ", table_name, condition, ifelse(condition == " WHERE ", "", " AND "), platforms[i], " IS NOT NULL;");
 	}
 	print(query);
 	temp[[i]] <- sqlQuery(rch, query);
@@ -83,11 +85,11 @@ if (status != 'ok') {
 		print("str(y_data):");
 		print(str(y_data));	
 		if (Par["source"] == "tcga") {
-			plot_title <- paste0("Scatter of ", toupper(Par["cohort"]), " ",
+			plot_title <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
 				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""));
 		} else {
-			plot_title <- paste0("Scatter of ",  toupper(Par["cohort"]), " ",
+			plot_title <- paste0("Scatterplot of ",  toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], " and \n", 
 				readable_platforms[platforms[2],2]);
 		}
@@ -160,12 +162,12 @@ if (status != 'ok') {
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
 		if (Par["source"] == "tcga") {
-			plot_annotation <- paste0("Scatter of ", toupper(Par["cohort"]), " ",
+			plot_annotation <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
 				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""), " and \n",
 				readable_platforms[platforms[3],2], ifelse(!(datatypes[3] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[3], ")"), ""));
 		} else {
-			plot_annotation <- paste0("Scatter of ", toupper(Par["cohort"]), " ",
+			plot_annotation <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], " and \n", 
 				readable_platforms[platforms[2],2], " and \n",
 				readable_platforms[platforms[3],2]);
@@ -202,6 +204,11 @@ if (status != 'ok') {
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
+			print("Color bar limits:");
+			print("var_limits: ");
+			print(c(min(z_data), max(z_data)));
+			print("bar_limits: ");
+			print(c(min(z_data), max(z_data)));
 			z_axis <- adjust_string(paste0(ifelse(!empty_value(ids[3]), paste0(ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")"), druggable.axis.label.threshold);
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
 				text = ~paste("Patient: ", common_samples), color = z_data) %>% 

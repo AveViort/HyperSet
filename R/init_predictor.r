@@ -43,7 +43,7 @@ commonIdx <- function(m1, m2, Dir="vec") {
 makeCu <- function (clin, s.type, Xmax=NA, usedNames) {
 	survSamples <- commonIdx(clin[,"sample"], usedNames, 'vec');
 	Time = clin[which(clin[,"sample"] %in% survSamples), c("sample", paste(s.type, "time", sep="_"))];
-	Time <- Time[order(Time$sample),]
+	Time <- Time[order(Time$sample),];
 	Stat = clin[which(clin[,"sample"] %in% survSamples), c("sample", s.type)];
 	Stat <- Stat[order(Stat$sample),]
 	Stat[,2] <- as.numeric(Stat[,2])
@@ -80,6 +80,7 @@ plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax=NA, Cls, Title=NA, 
 # function to save model coefficients in JSON format
 saveJSON <- function(model, filename, Nfolds = NA) {
 	Betas <- model$glmnet.fit$beta;
+	Lc <- NULL;
 	if (!is.na(Nfolds)) {
 		Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
 	} else {
@@ -148,6 +149,8 @@ for (i in 1:length(ids)) {
 	ids[[i]] <- temp;
 }
 print(ids);
+multiopt <- unlist(strsplit(Par["multiopt"], split = ","));
+print(multiopt);
 fname <- substr(Par["out"], 1, gregexpr(pattern = "\\.", Par["out"])[[1]][1]-1);
 print(fname);
 query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(platforms, collapse = "','"), "'"),"]);");

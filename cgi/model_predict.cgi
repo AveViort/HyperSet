@@ -17,5 +17,5 @@ my $multiopt = $query->param('multiopt');
 print "Content-type: text/html\n\n";
 srand(); my $r = rand();
 my $file = 'model'.$1.'.pdf' if $r =~  m/0\.([0-9]{12})/;
-system("Rscript ../R/model.".$method.".r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids='$ids' out=$file");
+system("Rscript ../R/model.".$method.".r --vanilla --args source=$source cohort=$cohort datatypes=$datatypes platforms=$platforms ids='$ids' multiopt='$multiopt' out=$file");
 print $file;

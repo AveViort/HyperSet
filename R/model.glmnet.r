@@ -74,7 +74,11 @@ createGLMnetSignature <- function (
 		MG <- responseVector;
 		PW = t(predictorSpace);
 		if (!is.na(Nfolds)) {
-			print(paste0(Nfolds, "-fold cross-validation"))
+			print(paste0(Nfolds, "-fold cross-validation"));
+			print("PW[Sample1,]:");
+			print(PW[Sample1,]);
+			print("MG[Sample1]:");
+			print(MG[Sample1]);
 			model <- cv.glmnet(PW[Sample1,], MG[Sample1], grouped = TRUE, 
 						family=Family, 
 						alpha = Alpha, 
@@ -235,9 +239,11 @@ query <- "";
 X.variables <- as.list(NULL);
 Platform <- as.list(NULL);
 for (i in 1:length(datatypes)) {
+	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[i]), "';");
+	table_name <- sqlQuery(rch, query)[1,1];
 	# careful! Not all tables have ids
 	# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
-	query <- paste0("SELECT sample,id,", platforms[i], " FROM ", Par["cohort"], "_", datatypes[i], " WHERE id=ANY('{", paste(ids[[i]], collapse=","), "}'::text[]);");
+	query <- paste0("SELECT sample,id,", platforms[i], " FROM ", table_name, " WHERE id=ANY('{", paste(ids[[i]], collapse=","), "}'::text[]);");
 	print(query);
 	temp <- sqlQuery(rch, query);
 	# if we have 3 genes - then we have to keep ids which occur 3 times in temp
@@ -251,16 +257,37 @@ for (i in 1:length(datatypes)) {
 	Platform[[datatypes[i]]] <- temp;
 }
 print(X.variables);
+query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper("clin"), "';");
+table_name <- sqlQuery(rch, query)[1,1];
 # optimize this: select only intersections of ids in X.variables (?)
-query <- paste0("SELECT * FROM ", Par["cohort"], "_clin;");
+query <- paste0("SELECT * FROM ", table_name, " WHERE os_time<>0;");
 clin <- sqlQuery(rch, query);
 clin[,1] <- as.character(clin[,1]);
 rownames(clin) <- clin[,1];
 
 # for TCGA only
-sample.mask <- "-06$";
+sample_mask <- c();
+# CCLE only
+tissue_samples <- c();
 if (Par["source"] == "tcga") {
-
+	for (tcga_code in multiopt) {
+		sample_mask <- c(sample_mask, paste0("(-", tcga_code, "$)"));
+	}
+	sample_mask <- paste(sample_mask, collapse = "|");
+	print(paste0("Sample mask: ", sample_mask));
+}
+if (Par["source"] == "ccle") {
+	# rewrite in SQL format
+	tissues <- c();
+	for (tissue in multiopt) {
+		tissues <- c(tissues, tissue);
+	}
+	tissues <- paste0("{", paste(tissues, collapse=","), "}::text[]");
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+	print(query);
+	tissue_samples <- sqlQuery(rch,query)[,1];
+	print("Tissue samples:");
+	print(tissue_samples)
 }
 
 for (ty in names(Platform)) {
@@ -285,11 +312,18 @@ for (ty in names(Platform)) {
 		print(dim(X.matrix))
 }
 print(dim(X.matrix));
-X.matrix <- X.matrix[,grep(sample.mask, colnames(X.matrix), fixed=FALSE)];
-colnames(X.matrix) <- gsub(sample.mask, "", colnames(X.matrix), fixed=FALSE);
+if (Par["source"] == "tcga") {
+	X.matrix <- X.matrix[,grep(sample_mask, colnames(X.matrix), fixed=FALSE)];
+	colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE);
+}
+if (Par["source"] == "ccle") {
+	X.matrix <- X.matrix[,which(colnames(X.matrix) %in% tissue_samples)];
+}
 X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 print(X.matrix);
 usedSamples <- colnames(X.matrix);
+print("Used samples:");
+print(usedSamples);
 fam <- c("gaussian","binomial","poisson", "multinomial","cox","mgaussian")[5]
 mea <- c("deviance", "mse", "mae", "class", "auc")[1];
 cu <- makeCu(clin=clin, s.type="os", Xmax=NA, usedNames=usedSamples);
@@ -297,9 +331,11 @@ cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
 X.matrix <- X.matrix[,rownames(cu)];
 resp <- Surv(as.numeric(cu$Time), cu$Stat);
 rownames(resp) <- rownames(cu);
+print(resp);
 for (i in 1:nrow(X.matrix)) {
 	X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
 }
+X.matrix <- X.matrix[,names(resp)];
 
 par(mfrow=c(2,2))
 model <- createGLMnetSignature(
@@ -324,7 +360,7 @@ model <- createGLMnetSignature(
 			cu0=cu
 );
 save(model, file=paste0(fname, ".RData"));
-saveJSON(model, paste0("coeff.", fname, ".json"));
+saveJSON(model, paste0("coeff.", fname, ".json"), 3);
 
 dev.off();
 print(Sys.time());
