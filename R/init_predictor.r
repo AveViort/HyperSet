@@ -141,7 +141,7 @@ datatypes <- unlist(strsplit(Par["datatypes"], split = ","));
 print(datatypes);
 platforms <- unlist(strsplit(Par["platforms"], split = ","));
 print(platforms);
-ids <- as.list(strsplit(Par["ids"], split = ",")[[1]]);
+ids <- as.list(strsplit(tolower(Par["ids"]), split = ",")[[1]]);
 # unlike plots, where we have one id per variable, here we have lists of them
 for (i in 1:length(ids)) {
 	temp <- gsub("\\[|\\]", "", ids[[i]]);

@@ -7,7 +7,7 @@ function report_event(source, level, description, options) {
 		"&level=" + encodeURIComponent(level) + 
 		"&description=" + encodeURIComponent(description) + 
 		"&options=" + encodeURIComponent(options) + 
-		"&user_agent=" + encodeURIComponent(navigator.userAgent), true);
+		"&user_agent=" + encodeURIComponent(navigator.userAgent), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			stat = this.responseText;}

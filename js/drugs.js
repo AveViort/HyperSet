@@ -322,16 +322,32 @@ function get_response_multiselector_values(source, cohort, datatype, platform, s
 	return values;
 }
 
-function build_model(method, source, cohort, resp_datatype, resp_platform, ind_datatypes, ind_platforms, ind_ids, multiple) {
+function build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt, family, measure, standardize, 
+	alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent) 
+{
 	var file; 
+	var ids = [];
+	for (var i=0; i<x_ids.length; i++) {
+		console.log(x_ids[i]);
+		ids.push("[" + x_ids[i].join("|") + "]");
+	}
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/model_predict.cgi?method=" + encodeURIComponent(method) +
 		"&source=" + encodeURIComponent(source) + 
 		"&cohort=" + encodeURIComponent(cohort) + 
-		"&datatypes=" + encodeURIComponent(datatypes.join()) + 
-		"&platforms=" + encodeURIComponent(platforms.join()) + 
+		"&datatypes=" + encodeURIComponent(x_datatypes.join()) + 
+		"&platforms=" + encodeURIComponent(x_platforms.join()) + 
 		"&ids=" + encodeURIComponent(ids.join()) +
-		"&multiple=" + encodeURIComponent(multiple.join()), false);
+		"&multiopt=" + encodeURIComponent(multiopt.join()) +
+		"&family=" + encodeURIComponent(family) + 
+		"&measure=" + encodeURIComponent(measure) +
+		"&standardize=" + encodeURIComponent(standardize) +
+		"&alpha=" + encodeURIComponent(alpha) +
+		"&nlambda=" + encodeURIComponent(nlambda) +
+		"&minlambda=" + encodeURIComponent(minlambda) +
+		"&validation=" + encodeURIComponent(crossvalidation) +
+		"&nfolds=" + encodeURIComponent(nfold) +
+		"&validation_fraction=" + encodeURIComponent(crossvalidation_percent), false);
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			file = this.responseText;

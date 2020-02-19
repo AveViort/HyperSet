@@ -1,7 +1,7 @@
 #!/usr/bin/speedy -w
 # use warnings;
 
-# script for retrieving drug list for each source
+# script for retrieving correlations in JSON format
 use CGI; # qw(-no_xhtml);
 use CGI::Carp qw ( fatalsToBrowser );
 use HS_SQL;

@@ -1975,6 +1975,23 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
+-- functions to read log
+CREATE OR REPLACE FUNCTION read_event_log() RETURNS setof text AS $$
+DECLARE
+stimestamp timestamp;
+e_source text;
+e_level text;
+e_description text;
+e_options text;
+e_client_info text;
+BEGIN
+FOR stimestamp, e_source, e_level, e_description, e_options, e_client_info IN SELECT * FROM event_log
+LOOP
+RETURN NEXT stimestamp || '|' || e_source || '|' || e_level || '|' || e_description || '|' || e_options || '|' || e_client_info;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 
 -- DEPRICATED FUNCTIONS
 

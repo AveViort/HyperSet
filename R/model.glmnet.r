@@ -240,6 +240,7 @@ X.variables <- as.list(NULL);
 Platform <- as.list(NULL);
 for (i in 1:length(datatypes)) {
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[i]), "';");
+	print(query);
 	table_name <- sqlQuery(rch, query)[1,1];
 	# careful! Not all tables have ids
 	# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
@@ -258,9 +259,11 @@ for (i in 1:length(datatypes)) {
 }
 print(X.variables);
 query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper("clin"), "';");
+print(query);
 table_name <- sqlQuery(rch, query)[1,1];
 # optimize this: select only intersections of ids in X.variables (?)
 query <- paste0("SELECT * FROM ", table_name, " WHERE os_time<>0;");
+print(query);
 clin <- sqlQuery(rch, query);
 clin[,1] <- as.character(clin[,1]);
 rownames(clin) <- clin[,1];
@@ -319,13 +322,34 @@ if (Par["source"] == "tcga") {
 if (Par["source"] == "ccle") {
 	X.matrix <- X.matrix[,which(colnames(X.matrix) %in% tissue_samples)];
 }
-X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
-print(X.matrix);
+print(str(X.matrix));
+#save(X.matrix, file="X.matrix.RData");
+#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
+X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 usedSamples <- colnames(X.matrix);
 print("Used samples:");
 print(usedSamples);
-fam <- c("gaussian","binomial","poisson", "multinomial","cox","mgaussian")[5]
-mea <- c("deviance", "mse", "mae", "class", "auc")[1];
+#fam <- c("gaussian","binomial","poisson", "multinomial", "cox", "mgaussian")[5]
+#mea <- c("deviance", "mse", "mae", "class", "auc")[1];
+fam <- Par["family"];
+mea <- Par["measure"];
+validation <- as.logical(Par["validation"]);
+validation_fraction <- as.numeric(Par["validation_fraction"]);
+nfolds <- as.numeric(Par["nfolds"]);
+alpha <- as.numeric(Par["alpha"]);
+nlambda <- as.numeric(Par["nlambda"]);
+minlambda <- as.numeric(Par["minlambda"]);
+standardize <- as.logical(Par["standardize"]);
+print(paste0("Family: ", fam));
+print(paste0("Measure: ", mea));
+print(paste0("Validation: ", validation));
+print(paste0("Validation fraction: ", validation_fraction));
+print(paste0("Nfolds: ", nfolds));
+print(paste0("Alpha: ", alpha));
+print(paste0("Nlambda: ", nlambda));
+print(paste0("Minlambda: ", minlambda));
+print(paste0("Standardize: ", standardize));
+
 cu <- makeCu(clin=clin, s.type="os", Xmax=NA, usedNames=usedSamples);
 cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
 X.matrix <- X.matrix[,rownames(cu)];
@@ -342,14 +366,14 @@ model <- createGLMnetSignature(
 			responseVector = resp, 
 			predictorSpace = X.matrix,
 			Family = fam,
-			type.measure=mea, 
-			independentValidation = TRUE, 
-			validationFraction = 0.50,
-			Nfolds = 3,
-			Alpha = 1, 
-			Nlambda = 10, 
-			minLambda = 0.01, 
-			STD=FALSE,
+			type.measure = mea, 
+			independentValidation = validation, 
+			validationFraction = validation_fraction,
+			Nfolds = nfolds,
+			Alpha = alpha, 
+			Nlambda = nlambda, 
+			minLambda = minlambda, 
+			STD = standardize,
 			min.fit = 0.1, 
 			title.main = NA, 
 			title.sub = NA,

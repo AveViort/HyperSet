@@ -314,11 +314,15 @@ li.tab:hover ul {
 	</div>
 	
 	<div id="tab-predict">
-		<div style="width: 500px; display: inline-block; float:left; position: relative; height:500px; background:gray; margin:10px">
-			<table id="glmnet_parameters">
-				<tr>
-					<td>
-						<span class="subheader">GLMnet parameters</span>
+		<table id="all_parameters" border="2" style="border-width: 2px; height: 150px; margin:10px">
+			<tr id="r-1">
+				<td id="d-glmnet" rowspan="4">
+					<table id="table-glmnet">
+						<tr>
+							<td>
+								<span class="subheader">GLMnet parameters</span>
+							</td>
+						</tr>
 						<tr>
 							<td title="Set all variables on the same scale">Standardize
 							</td>
@@ -330,21 +334,21 @@ li.tab:hover ul {
 							<td title="Relative influence of lasso vs. ridge approaches">Alpha
 							</td>
 							<td>
-								<input type="number" id="in-number-alpha" class="spinNumber ui-corner-all" min=0 max=1 step=0.05> 
+								<input type="number" id="alpha" class="spinNumber ui-corner-all" min=0 max=1 step=0.05 value=1> 
 							</td>
 						</tr>
 						<tr>
 							<td title="Determines the number of steps to find the optimum">No. of lambda steps
 							</td>
 							<td>
-								<input type="number" id="in-number-nlambda" class="spinNumber ui-corner-all" min=5 max=100 step=1> 
+								<input type="number" id="nlambda" class="spinNumber ui-corner-all" min=5 max=100 step=1 value=10> 
 							</td>
 						</tr>
 						<tr>
 							<td title="Depends on sample size relative to the number of variables. Set automatically">Lambda min ratio 
 							</td>
 							<td>
-								<input type="text" id="lambda" class="alternative_input venn_box_control" value="0.01" disabled> 
+								<input type="text" id="minlambda" class="alternative_input venn_box_control" value="0.01" disabled> 
 							</td>
 						</tr>
 						<tr>
@@ -367,7 +371,7 @@ li.tab:hover ul {
 														No. of folds for cross-validation
 													</td>
 													<td>
-														<input type="number" id="in-number-Nfold" class="Validation spinNumber ui-corner-all" min=3 max=10 step=1 value=10> 
+														<input type="number" id="nfold" class="Validation spinNumber ui-corner-all" min=3 max=10 step=1 value=10> 
 													</td>
 												</tr>		
 												<tr>
@@ -375,7 +379,7 @@ li.tab:hover ul {
 														Final test set
 													</td>
 													<td>
-														<input type="number" id="in-number-tsPerc" class="Validation spinNumber ui-corner-all" min=0 max=50 step=1>%
+														<input type="number" id="crossval_perc" class="Validation spinNumber ui-corner-all" min=0 max=50 step=1 value=50>%
 													</td>
 												</tr>
 											</table>
@@ -384,83 +388,65 @@ li.tab:hover ul {
 								</tr>
 							</td>
 						</tr>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div style="width: 500px; float:left; display: inline-block; position: relative; height:500px; background:gray; margin:10px">
-			<table>
-				<tr>
-					<th>Source</th>
-					<th>Cohort</th>
-				</tr>
-				<tr>
-					<td>
-						<select id="modelSource_selector">
-					</td>
-					<td>
-						<select id="modelCohort_selector">
-					</td>
-					<td>
-						<button id="add_variable" onclick="add_model_options_row()">+</button>
-					</td>
-					<td>
-						<button id="delete_variable" onclick="delete_model_options_row()">-</button>
-					</td>
-				</tr>
-			</table>
-			<br>
-			<span class="subheader">Y</span>
-			<table id="response_options">
-				<tr>
-					<td>
-						<select id="responseDatatype_selector">
-					</td>
-					<td>
-						<select id="responsePlatform_selector">
-					</td>
-					<td>
-						<select id="responseScreen_selector">
-					</td>
-					<td>
-						<select id="responseSensitivity_selector">
-					</td>
-					<td>
-						<select id="responseSurvival_selector">
-					</td>
-					<td>
-						<select id="responseVariable_selector">
-					</td>
-					<td>
-						<select multiple id="responseMulti_selector">
-					</td>
-				</tr>
-			</table>
-			<br>
-			<span class="subheader">X</span>
-			<table id ="model_options">
-				<tr>
-					<th>Data type</th>
-					<th>Platform</th>
-					<th>IDs</th>
-				</tr>
-				<tr id = "model_options_row">
-					<td>
-						<select id="modelDatatype1_selector">
-					</td>
-					<td>
-						<select id="modelPlatform1_selector">
-					</td>
-					<td>
-						<textarea id="genes_area1" rows="20" cols="16"></textarea>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<button style="clear: both;">Build model</button>
+					</table>
+				</td>
+				<td id="d-top" colspan="3">
+					<table id="table-top">
+						<tr>
+							<td>
+								Source<select id="modelSource_selector">
+							</td>
+							<td>
+								Cohort<select id="modelCohort_selector">
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr id="r-response">
+				<td id="d-response" colspan="3">
+					<table id="table-response">
+						<tr>
+							<td title="Data type">
+								<select id="responseDatatype_selector">
+							</td>
+							<td title="Platform">
+								<select id="responsePlatform_selector">
+							</td>
+							<td>
+								<select id="responseScreen_selector">
+							</td>
+							<td>
+								<select id="responseSensitivity_selector">
+							</td>
+							<td>
+								<select id="responseSurvival_selector">
+							</td>
+							<td>
+								<select id="responseVariable_selector">
+							</td>
+							<td>
+								<select multiple id="responseMulti_selector">
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>		
+			<tr id="r-2buttons">
+				<td id="d-2buttons" colspan="3">
+					<div id="div-2buttons" style="float: right; display: inline-block; position: relative;" title="Add/delete predictor variables of certain data type">
+						<button id="add_variable" onclick="add_model_options_row();">+</button>
+						<button id="delete_variable" onclick="delete_model_options_row(); ">-</button>
+					</div>
+				</td>
+			</tr>	
+			<tr id="r-x">
+			</tr>
+		</table>
+		<button id="build_model_button" onclick="build_and_show_model()">Build model</button>
 	</div>
 	</div>
-</div>   
+</div>     
 
 <P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
 
@@ -656,9 +642,7 @@ $(document).ready(function(){
 	
 	init_model_source_selector();
 	init_model_cohort_selector();
-	init_model_datatype_selector(1);
-	init_model_platform_selector(1);
-	init_model_genearea(1);
+	add_model_options_row();
 	$("#add_variable").button({icon: "ui-icon-circle-plus",
         showLabel: false});
 	$("#delete_variable").button({icon: "ui-icon-circle-minus",
@@ -734,6 +718,21 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		if (plot_filename == "no") {
 			//$("#progressbar").css({"visibility": "visible"});
 			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
+			// check if plot successfully created
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("HEAD", "https://www.evinet.org/pics/plots/" + plot_filename, false);
+			xmlhttp.send();
+			if (xmlhttp.status == 404) {
+				console.log("Something went wrong, plot was not created, reporting error...");
+				report_event("druggable.html", "error", "plot_not_created", "type=" + type +
+					"&source=" + source + 
+					"&cohort=" + cohort + 
+					"&datatypes" + datatypes.join() + 
+					"&platforms=" + platforms.join() + 
+					"&ids=" + ids.join() +
+					"&tcga_codes=" + tcga_codes.join() +
+					"&scales=" + scales.join());
+			}
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			sessionStorage.setItem(plot_filename, plot_description);
 			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
@@ -815,6 +814,57 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 	else {
 		alert("Please accept cookies to use this site");
 	}
+}
+
+function build_and_show_model() {
+	// common options for response and independent variables
+	var source = $("#modelSource_selector option:selected").val();
+	var cohort = $("#modelCohort_selector option:selected").val();
+	var multiopt = $("#responseMulti_selector").val();
+	
+	// independent variables
+	var x_datatypes = [];
+	var x_platforms = [];
+	var x_ids = [];
+	var n = $('[id*="modelPlatform"][id$="selector"]').length;
+	for (var i=1; i<=n; i++) {
+		x_datatypes.push($("#modelDatatype" + n + "_selector option:selected").val());
+		x_platforms.push($("#modelPlatform" + n + "_selector option:selected").val());
+		// if id input contain delimeter at the last position - empty array element will be generated; prevent this
+		var temp = $("#genes_area" + n).val().split(",");
+		if (temp[temp.length-1] == " ") {
+			temp.pop();
+		}
+		x_ids.push(temp);
+	}
+	
+	// model options
+	// hard-coded now, make a selector
+	var method = "glmnet";
+	var standardize = $("#standardize:checked").val();
+	if (standardize == "on") {
+		standardize = true;
+	}
+	else {
+		standardize = false;
+	}
+	var alpha = $("#alpha").val();
+	var nlambda = $("#nlambda").val();
+	var minlambda = $("#minlambda").val();
+	var family = $("#family").val();
+	var measure = "deviance";
+	var crossvalidation = $("#crossval:checked").val();
+	if (crossvalidation == "on") {
+		crossvalidation = true;
+	}
+	else {
+		crossvalidation = false;
+	}
+	var nfold = $("#nfold").val();
+	var crossvalidation_percent = $("#crossval_perc").val()/100;
+	
+	build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt,
+		family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
 }
 
 function retrieve_correlations() {
@@ -1061,28 +1111,29 @@ function delete_plot_options_row(i) {
 function add_model_options_row() {
 	var cookies = checkCookiesAccepted();
 	if (cookies) {
-		// unlike plots_option, options represented as columns, 3 elements for 1 var
-		var n = $('#model_options td').length/3;
-		//$('#modelDatatype' + n + '_selector').selectmenu("disable");
-		var i = n+1;
-		// -1 because indexes come from 0
-		n = n*3-1;
-		var row = document.getElementById("model_options_row");
-		var TypeSelectorCell = row.insertCell(n+1);
-		TypeSelectorCell.innerHTML = '<select id="modelDatatype' + i +'_selector" class="ui-helper">';
-		init_model_datatype_selector(i);
-		var PlatformSelectorCell = row.insertCell(n+2);
-		PlatformSelectorCell.innerHTML = '<select id="modelPlatform' + i +'_selector" class="ui-helper">';
-		init_model_platform_selector(i);
-		var IdInput = row.insertCell(n+3);
-		IdInput.innerHTML = '<textarea id="genes_area'+ i + '" rows="20" cols="16">';
-		$("#modelSource_selector").selectmenu("disable");
-		$("#modelCohort_selector").selectmenu("disable");
-		if (i==max_model_rows) {
-			$("#add_variable").button("disable");
+		var i = $('[id*="modelPlatform"][id$="selector"]').length + 1;
+		//$('[id*="modelPlatform"] option:selected').each(function () {});
+		var newContent = html_glm_regressors.replace(/###/g, i);
+		if (i == 1) {
+			newContent.replace(/\, type 1/, "");
 		}
-		$("#delete_variable").button("enable");
-		check_model_unique_variable(i);
+		var row = document.getElementById("r-x");
+		var NewModelXCell = row.insertCell(i-1);
+		NewModelXCell.id = "d-x" + i;
+		NewModelXCell.innerHTML = newContent;
+
+		init_model_datatype_selector(i);
+		init_model_platform_selector(i);
+		init_model_genearea(i);
+		if (i > 1) {
+			$("#modelSource_selector").selectmenu("disable");
+			$("#modelCohort_selector").selectmenu("disable");
+			if (i == max_model_rows) {
+				$("#add_variable").button("disable");
+			}
+			$("#delete_variable").button("enable");
+			check_model_unique_variable(i);
+		}
 	}
 	else {
 		alert("Please accept cookies to use this site");
@@ -1091,21 +1142,16 @@ function add_model_options_row() {
 
 // we always delete the last variable
 function delete_model_options_row() {
-	var n = $('#model_options td').length/3;
+	var n = $('[id*="modelPlatform"][id$="selector"]').length;
 	deleteCookie("modelDatatype" + n + "_selector");
 	deleteCookie("modelPlatform" + n + "_selector");
-	//$('#modelDatatype' + (n-1) + '_selector').selectmenu("enable");
-	document.getElementById("genes_area" + (n-1)).disabled = false;
-	if (n-1 == 1) {
+	$("#genes_area" + (n-1)).disabled = false;
+	if (n == 2) {
 		$("#modelSource_selector").selectmenu("enable");
 		$("#modelCohort_selector").selectmenu("enable");
 		$("#delete_variable").button("disable");
 	}
-	n=n*3-1;
-	var row = document.getElementById("model_options_row");
-	for (var i=n; i>n-3; i--) {
-		row.deleteCell(i);
-	}
+	$("#d-x" + n).remove();
 	$("#add_variable").button("enable");
 }
 
@@ -2330,7 +2376,7 @@ function update_response_variable_selector() {
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	usetCookie("responseVariable_selector", selector_value, accepted_time);
 	var length = document.getElementById("responseMulti_selector").options.length;
-	for (var i = 0; i < length; i++) {
+	for (var i = length-1; i >= 0; i--) {
 		document.getElementById("responseMulti_selector").options[i] = null;
 	}
 	init_response_multiselector();
@@ -2796,7 +2842,7 @@ function check_model_unique_variable(n) {
 	}
 }
 
-// debug function
+// debug functions to report state
 function report_plot_tab() {
 	var plot = $('#plot-type option:selected').val();
 	var n = $('#plot_options tr').length-1;
@@ -2815,7 +2861,7 @@ function report_plot_tab() {
 		confirmed.push($("#id" + i + "_confirmed").val());
 		scales.push($("#axis" + i + "_selector option:selected").val());
 	}
-	report_event("druggable.html", "info", "reported_state_plot_tab", 
+	var stat = report_event("druggable.html", "info", "reported_state_plot_tab", 
 		"source=" + source + 
 		"&cohort=" + cohort + 
 		"&datatypes=" + datatypes.join() + 
@@ -2824,8 +2870,27 @@ function report_plot_tab() {
 		"&confirmed=" + confirmed.join() + 
 		"&scales=" + scales.join() +
 		"&tcga_codes=" + tcga_codes +
-		"&plot=" + plot);
-			
+		"&plot=" + plot);	
+	return stat;
+}
+
+function report_cor_tab() {
+	var source = $("#corSource_selector option:selected").val();
+	var datatype = $("#corDatatype_selector option:selected").val();
+	var cohort = $("#corCohort_selector option:selected").val();
+	var platform = $("#corPlatform_selector option:selected").val();
+	var screen = $("#corScreen_selector option:selected").val();
+	var id = $("#corGeneFeature_input").val();
+	var fdr = $("#FDR_input").val();
+	var stat = report_event("druggable.html", "info", "reported_state_cor_tab", 
+		"source=" + source + 
+		"&datatype=" + datatype + 
+		"&cohort=" + cohort + 
+		"&platform=" + platform +
+		"&screen=" + screen +
+		"&id=" + id +
+		"&fdr=" + fdr);
+	return stat;		
 }
 </script>
 
