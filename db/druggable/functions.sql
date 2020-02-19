@@ -1976,7 +1976,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- functions to read log
-CREATE OR REPLACE FUNCTION read_event_log() RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION read_event_log(pass text) RETURNS setof text AS $$
 DECLARE
 stimestamp timestamp;
 e_source text;
@@ -1984,11 +1984,48 @@ e_level text;
 e_description text;
 e_options text;
 e_client_info text;
+e_ack_status boolean;
+control text;
 BEGIN
-FOR stimestamp, e_source, e_level, e_description, e_options, e_client_info IN SELECT * FROM event_log
+SELECT passphrase INTO control FROM passphrases WHERE entity='event_log';
+IF (pass=control) THEN
+FOR stimestamp, e_source, e_level, e_description, e_options, e_client_info, e_ack_status IN SELECT * FROM event_log
 LOOP
-RETURN NEXT stimestamp || '|' || e_source || '|' || e_level || '|' || e_description || '|' || e_options || '|' || e_client_info;
+RETURN NEXT stimestamp || '|' || e_source || '|' || e_level || '|' || e_description || '|' || e_options || '|' || e_client_info || '|' || e_ack_status;
 END LOOP;
+ELSE
+RETURN NEXT '';
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- mark event as acknowledged/not acknowledged
+CREATE OR REPLACE FUNCTION toggle_event_acknowledgement_status(pass text, e_timestamp timestamp, e_source text, e_level text, e_description text, e_options text, e_client_info text, status boolean) RETURNS boolean AS $$
+DECLARE
+control text;
+BEGIN
+SELECT passphrase INTO control FROM passphrases WHERE entity='event_log';
+IF (pass=control) THEN
+UPDATE event_log SET acknowledged=status WHERE event_time=e_timestamp AND event_source=e_source AND event_level=e_level AND event_description=e_description AND options=e_options AND user_agent=e_client_info;
+RETURN true;
+ELSE
+RETURN false;
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- delete event from log
+CREATE OR REPLACE FUNCTION delete_event(pass text, e_timestamp timestamp, e_source text, e_level text, e_description text, e_options text, e_client_info text) RETURNS boolean AS $$
+DECLARE
+control text;
+BEGIN
+SELECT passphrase INTO control FROM passphrases WHERE entity='event_log';
+IF (pass=control) THEN
+DELETE FROM event_log WHERE event_time=e_timestamp AND event_source=e_source AND event_level=e_level AND event_description=e_description AND options=e_options AND user_agent=e_client_info;
+RETURN true;
+ELSE
+RETURN false;
+END IF;
 END;
 $$ LANGUAGE plpgsql;
 

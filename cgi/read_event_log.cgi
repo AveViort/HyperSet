@@ -11,9 +11,10 @@ our ($dbh, $stat);
 my @row;
 
 my $query = new CGI;
+my $pass = $query->param("pass");
 
 $dbh = HS_SQL::dbh('druggable');
-$stat = qq/SELECT read_event_log();/;
+$stat = qq/SELECT read_event_log(\'$pass'\);/;
 
 print $query->header("application/json");
 print '{"data":';
@@ -32,12 +33,14 @@ while (@row = $sth->fetchrow_array()) {
 	my $event_description = @field_values[3];
 	my $event_options = @field_values[4];
 	my $user_agent = @field_values[5];
+	my $acknowledged = "<input type='checkbox' onclick='toggle_event_acknowledgement_status(\\\"".$pass."\\\", \\\"".$event_time."\\\", \\\"".$event_source."\\\", \\\"".$event_level."\\\", \\\"".$event_description."\\\", \\\"".$event_options."\\\", \\\"".$user_agent."\\\", this.checked)'". (@field_values[6] eq "true" ? " checked" : "") .">";
 	print '"event_time":"'.$event_time.'",';
 	print '"event_source":"'.$event_source.'",';
 	print '"event_level":"'.$event_level.'",';
 	print '"event_description":"'.$event_description.'",';
 	print '"event_options":"'.$event_options.'",';
-	print '"user_agent":"'.$user_agent.'"';
+	print '"user_agent":"'.$user_agent.'",';
+	print '"acknowledged":"'.$acknowledged.'"';
 	print "}";
 	if ($row_id != $rows) { print ","; }
 	$row_id = $row_id + 1;
