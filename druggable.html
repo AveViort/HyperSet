@@ -35,6 +35,7 @@
 <script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
 
 <style>
+
 li.tab ul {
   display: none;
   margin: 0;
@@ -137,7 +138,7 @@ li.tab:hover ul {
 	</ul>
 	
 	<div id="tab-home">
-		<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
+		<div class="scalable-font-medium" style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
 			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
 			</p>
 		</div>
@@ -233,7 +234,7 @@ li.tab:hover ul {
 		</div>
 	</div>
 	
-	<div id="tab-lookup"><br>
+	<div class="scalable-font-small" id="tab-lookup"><br>
 		<br>
 		<div id="plot-options-filters">
 			<table>
@@ -717,21 +718,34 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		// new plot
 		if (plot_filename == "no") {
 			//$("#progressbar").css({"visibility": "visible"});
+			var ErrorStack = check_error_stack(new Error().stack);
 			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
 			// check if plot successfully created
 			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.open("HEAD", "https://www.evinet.org/pics/plots/" + plot_filename, false);
+			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + plot_filename, false);
 			xmlhttp.send();
 			if (xmlhttp.status == 404) {
 				console.log("Something went wrong, plot was not created, reporting error...");
-				report_event("druggable.html", "error", "plot_not_created", "type=" + type +
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "error", "plot_not_created", "type=" + type +
 					"&source=" + source + 
 					"&cohort=" + cohort + 
 					"&datatypes" + datatypes.join() + 
 					"&platforms=" + platforms.join() + 
 					"&ids=" + ids.join() +
 					"&tcga_codes=" + tcga_codes.join() +
-					"&scales=" + scales.join());
+					"&scales=" + scales.join(),
+					ErrorStack);
+			}
+			else {
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "plot_created", "type=" + type +
+					"&source=" + source + 
+					"&cohort=" + cohort + 
+					"&datatypes" + datatypes.join() + 
+					"&platforms=" + platforms.join() + 
+					"&ids=" + ids.join() +
+					"&tcga_codes=" + tcga_codes.join() +
+					"&scales=" + scales.join(),
+					"https://" + window.location.hostname + "/pics/plots/" + plot_filename);
 			}
 			plot_id = plot_filename.substring(0, plot_filename.length-5);
 			sessionStorage.setItem(plot_filename, plot_description);
@@ -938,6 +952,7 @@ function add_plot_options_row(i) {
 		var TypeSelectorCell = row.insertCell(0);
 		TypeSelectorCell.innerHTML = '<select id="type' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
 		var for_delete = false;
+		var ErrorStack = check_error_stack(new Error().stack);
 		var flag = init_dataselector('type'+(i+1)+'_selector');
 		if (flag) {
 			alert('No more compatible datatypes!');
@@ -945,7 +960,7 @@ function add_plot_options_row(i) {
 			for (j=1; j<i; j++) {
 				previous_datatypes.push($("#type" + j +"_selector option:selected").val());
 			}
-			report_event("druggable.html", "warning", "no_compatible_datatypes", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join());
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_datatypes", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join(), ErrorStack);
 			for_delete = true;
 		}
 		var PlatformSelectorCell = row.insertCell(1);
@@ -954,6 +969,7 @@ function add_plot_options_row(i) {
 		IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup(' + (i+1) + ')" onchange="id_keyup(' + (i+1) + ')">';
 		var IdConfirmed = row.insertCell(3);
 		IdConfirmed.innerHTML = '<input id="id'+ (i+1) + '_confirmed" disabled>';
+		var ErrorStack = check_error_stack(new Error().stack);
 		flag = init_platformselector('platform'+(i+1)+'_selector');
 		if (flag & !for_delete) {
 			alert('No more compatible platforms!');
@@ -963,7 +979,11 @@ function add_plot_options_row(i) {
 				previous_datatypes.push($("#type" + j +"_selector option:selected").val());
 				previous_platforms.push($("#platform" + j +"_selector option:selected").val());
 			}
-			report_event("druggable.html", "warning", "no_compatible_platforms", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join() + "&previous_platforms=" + previous_platforms.join());
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_platforms", 
+				"cohort=" + $("#cohort_selector option:selected").val() + 
+				"&previous_datatypes=" + previous_datatypes.join() + 
+				"&previous_platforms=" + previous_platforms.join(),
+				ErrorStack);
 			for_delete = true;
 		}
 		var InfoButton = row.insertCell(4);
@@ -1400,10 +1420,11 @@ function init_plot_type_selector() {
 		platforms.push($("#platform" + i + "_selector option:selected").val());
 	}
 	options = [];
+	var ErrorStack = check_error_stack(new Error().stack);
 	var plot_types = get_plot_types(platforms);
 	if (plot_types[0] == '') {
 		alert("The platforms you have chosen are compatible, but no plots have been tested, please choose another combination");
-		report_event("druggable.html", "warning", "plot_types_missing", "platforms=" + platforms.join());	
+		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "plot_types_missing", "platforms=" + platforms.join(), ErrorStack);	
 	}
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
@@ -2053,6 +2074,7 @@ function update_type(n) {
 			}
 			$('#platform' + n + '_selector').find('option').remove().end();
 			$('#platform' + n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+			var ErrorStack = check_error_stack(new Error().stack);
 			var empty = init_platformselector('platform' + n + '_selector');
 			$('#platform'+ n + '_selector').selectmenu( "refresh" );
 			var total = $('#plot_options tr').length-1;
@@ -2064,7 +2086,11 @@ function update_type(n) {
 					previous_datatypes.push($("#type" + j +"_selector option:selected").val());
 					previous_platforms.push($("#platform" + j +"_selector option:selected").val());
 				}
-				report_event("druggable.html", "warning", "no_compatible_platforms", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join() + "&previous_platforms=" + previous_platforms.join());
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_platforms", 
+					"cohort=" + $("#cohort_selector option:selected").val() + 
+					"&previous_datatypes=" + previous_datatypes.join() + 
+					"&previous_platforms=" + previous_platforms.join(),
+					ErrorStack);
 				sessionStorage.setItem("cascade_delete", 1);
 				for (i=total; i>=n; i--) {
 					console.log("Cascade delete invoked. Removing row " + i + " (removing from " + total + " till " + n + ")");
@@ -2861,7 +2887,8 @@ function report_plot_tab() {
 		confirmed.push($("#id" + i + "_confirmed").val());
 		scales.push($("#axis" + i + "_selector option:selected").val());
 	}
-	var stat = report_event("druggable.html", "info", "reported_state_plot_tab", 
+	var ErrorStack = check_error_stack(new Error().stack);
+	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "reported_state_plot_tab", 
 		"source=" + source + 
 		"&cohort=" + cohort + 
 		"&datatypes=" + datatypes.join() + 
@@ -2870,7 +2897,8 @@ function report_plot_tab() {
 		"&confirmed=" + confirmed.join() + 
 		"&scales=" + scales.join() +
 		"&tcga_codes=" + tcga_codes +
-		"&plot=" + plot);	
+		"&plot=" + plot,
+		"Stack: " + ErrorStack);	
 	return stat;
 }
 
@@ -2882,14 +2910,16 @@ function report_cor_tab() {
 	var screen = $("#corScreen_selector option:selected").val();
 	var id = $("#corGeneFeature_input").val();
 	var fdr = $("#FDR_input").val();
-	var stat = report_event("druggable.html", "info", "reported_state_cor_tab", 
+	var ErrorStack = check_error_stack(new Error().stack);
+	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "reported_state_cor_tab", 
 		"source=" + source + 
 		"&datatype=" + datatype + 
 		"&cohort=" + cohort + 
 		"&platform=" + platform +
 		"&screen=" + screen +
 		"&id=" + id +
-		"&fdr=" + fdr);
+		"&fdr=" + fdr,
+		"Stack: " + ErrorStack);
 	return stat;		
 }
 </script>

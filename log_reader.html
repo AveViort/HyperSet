@@ -46,6 +46,7 @@
 			<th>Level</th>
 			<th>Description</th>
 			<th>Options</th>
+			<th>Message</th>
 			<th>User Agent</th>
 			<th>Ack.</th>
 			<th></th>
@@ -61,11 +62,11 @@ $(document).ready(function() {
     $('#log').DataTable( {
         "ajax": "cgi/read_event_log.cgi?pass=" + pass,
 		"columnDefs": [
-			{ "width": "15%", "targets": [0,1] },
+			{ "width": "15%", "targets": [0,1,5] },
 			{ "width": "10%", "targets": 2 },
 			{ "width": "20%", "targets": 3 },
-			{ "width": "5%", "targets": [6,7] },
-			{ "targets": 7,
+			{ "width": "5%", "targets": [7,8] },
+			{ "targets": 8,
 				"data": null,
 				"defaultContent": "<button>Del.</button>"}
 		],
@@ -75,9 +76,11 @@ $(document).ready(function() {
             { "data": "event_level" },
 			{ "data": "event_description" },
             { "data": "event_options" },
+			{ "data": "event_message" },
             { "data": "user_agent" },
 			{ "data": "acknowledged"}
         ],
+		"order": [[ 0, "desc" ]]
     } );
 	// https://datatables.net/examples/ajax/null_data_source.html
 	// https://datatables.net/reference/api/row().remove()

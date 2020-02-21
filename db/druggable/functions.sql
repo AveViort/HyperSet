@@ -1965,12 +1965,12 @@ $$ LANGUAGE plpgsql;
 
 -- function to automatically report errors and warnings
 -- levels are: info, warning, error
-CREATE OR REPLACE FUNCTION report_event(e_source text, e_level text, e_description text, e_options text, e_client_info text) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION report_event(e_source text, e_level text, e_description text, e_options text, e_message text, e_client_info text) RETURNS boolean AS $$
 DECLARE
 stimestamp timestamp;
 BEGIN
 SELECT LOCALTIMESTAMP INTO stimestamp;
-INSERT INTO event_log (event_time, event_source, event_level, event_description, options, user_agent) VALUES (stimestamp, e_source, e_level, e_description, e_options, e_client_info);
+INSERT INTO event_log (event_time, event_source, event_level, event_description, options, message, user_agent) VALUES (stimestamp, e_source, e_level, e_description, e_options, e_message, e_client_info);
 RETURN true;
 END;
 $$ LANGUAGE plpgsql;
@@ -1983,15 +1983,16 @@ e_source text;
 e_level text;
 e_description text;
 e_options text;
+e_message text;
 e_client_info text;
 e_ack_status boolean;
 control text;
 BEGIN
 SELECT passphrase INTO control FROM passphrases WHERE entity='event_log';
 IF (pass=control) THEN
-FOR stimestamp, e_source, e_level, e_description, e_options, e_client_info, e_ack_status IN SELECT * FROM event_log
+FOR stimestamp, e_source, e_level, e_description, e_options, e_client_info, e_ack_status, e_message IN SELECT * FROM event_log
 LOOP
-RETURN NEXT stimestamp || '|' || e_source || '|' || e_level || '|' || e_description || '|' || e_options || '|' || e_client_info || '|' || e_ack_status;
+RETURN NEXT stimestamp || '||' || e_source || '||' || e_level || '||' || e_description || '||' || e_options || '||' || e_client_info || '||' || e_ack_status || '||' || e_message;
 END LOOP;
 ELSE
 RETURN NEXT '';

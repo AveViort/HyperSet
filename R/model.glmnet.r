@@ -79,14 +79,21 @@ createGLMnetSignature <- function (
 			print(PW[Sample1,]);
 			print("MG[Sample1]:");
 			print(MG[Sample1]);
-			model <- cv.glmnet(PW[Sample1,], MG[Sample1], grouped = TRUE, 
+			t1 <- try(model <- cv.glmnet(PW[Sample1,], MG[Sample1], grouped = TRUE, 
 						family=Family, 
 						alpha = Alpha, 
 						type.measure=type.measure,
 						nlambda = Nlambda, 
 						nfolds = Nfolds,  
 						lambda.min.ratio=minLambda,
-						standardize = STD);
+						standardize = STD));
+			if (grepl("Error|fitter|levels", t1[1])) {
+				print("Error occured");
+				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], "&x_datatypes=", Par["datatypes"],
+					"&x_platforms=", Par["platforms"], "&x_ids=", Par["ids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
+					"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
+				return(NA);
+            }
 			Betas <- model$glmnet.fit$beta;
 			A0 <- model$glmnet.fit$a0;
 			Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
@@ -356,6 +363,14 @@ X.matrix <- X.matrix[,rownames(cu)];
 resp <- Surv(as.numeric(cu$Time), cu$Stat);
 rownames(resp) <- rownames(cu);
 print(resp);
+print("All values:");
+print(length(resp));
+print("Censored values:");
+censored_length <- length(which(grepl("\\+", as.character(resp))))
+print(censored_length);
+print("Not censored values:");
+print(length(resp)-length(which(grepl("\\+", as.character(resp)))));
+
 for (i in 1:nrow(X.matrix)) {
 	X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
 }

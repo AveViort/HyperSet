@@ -7,15 +7,6 @@ return(switch(axis_scale,
          ));
 }
 
-getDbCredentials <- function(key_file = "HS_SQL.conf") {
-	options(warn=-1);
-	temp <- read.delim(file = key_file, header = FALSE, sep = " ", row.names = 1)
-	username = as.character(temp["druggable", 2]);
-	password = as.character(temp["druggable", 3]);
-	options(warn=0);
-	return(c(username, password));
-}
-
 createPostgreSQLregex <- function(tcga_code) {
 	regex <- '';
 	switch (tcga_code,
