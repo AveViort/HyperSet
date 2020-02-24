@@ -11,6 +11,8 @@
 <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
 <script src="js/jquery-ui-1.12.1.custom/jquery-ui.min.js" type="text/javascript"></script>
 
+<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+
 <script type="text/javascript">
 function show()
 {
@@ -41,16 +43,22 @@ function show()
 	genes = genes.split(',');
 	console.log(genes);
 	if (genes.length > 250) {
+		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "subnet.html", "info", "input_truncated", 
+			"id=" + params.get("id") +
+			"&platform=" + params.get("platform"),
+			"Number of ags genes: " + genes.length);
 		genes = genes.slice(0,249);
 	}
 	var context_genes = fgs.toUpperCase();
 	context_genes = context_genes.split(',');
 	console.log(context_genes);
 	if (context_genes.length > 500) {
+		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "subnet.html", "info", "input_truncated", 
+			"pathway=" + params.get("pathway"),
+			"Number of genes in pathway: " + genes.length);
 		context_genes = context_genes.slice(0,499);
 	}
 	var plot_name = "subnet-1___" + (params.get("id")).toUpperCase() + "___" + (params.get("pathway")).toUpperCase() + "___fromCytoscapeJS";
-	//var plot_name = 'subnet-1___USERS_LIST_AGS___HALLMARK_PANCREAS_BETA_CELLS___fromCytoscapeJS';
 	console.log(plot_name);
 	var div_content = '';
 	xmlhttp.open('GET', 'https://' + location.hostname + '/cgi/i.cgi?mode=standalone&username=&sid=&signature=&neafile=default&step=default&subneturlbox=' + encodeURIComponent('reduce=;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;coff=-0.5;ags_fgs=yes;species=hsa;context_genes=' + context_genes.join('%0D%0A') + ';genes=' + genes.join('%0D%0A') + ';order=0;networks=data_pwc9;no_of_links=1000') + ';action=' + encodeURIComponent(plot_name) + ';changeLayout=arbor;saveCytoscapeView=saveCyView;input-save-cy-view=CytoScapeView1;caseNodeLabels=uppercase;edgeLabel=showEdgeLabel', false);

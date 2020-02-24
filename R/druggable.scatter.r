@@ -76,6 +76,14 @@ status <- ifelse(length(common_samples) > 0, 'ok', 'error');
 
 if (status != 'ok') {
 	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+	report_event("druggable.scatter.r", "warning", "empty_plot", paste0("plot_type=scatter&source=", Par["source"], 
+		"&cohort=", Par["cohort"], 
+		"&datatypes=", paste(datatypes,  collapse = ","),
+		"&platform=", paste(platforms, collapse = ","), 
+		"&ids=", paste(ids, collapse = ","),  
+		ifelse((Par["source"] == "tcga") & (!(all(datatypes %in% druggable.patient.datatypes))), paste0("&tcga_codes=", tcga_codes[1]), ""),
+		"&scales=", paste(ids, collapse = ",")),
+		"Plot succesfully generated, but it is empty");
 } else {
 	if (length(datatypes) == 2) {
 		x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);

@@ -7,11 +7,9 @@ sink(file(paste(usedDir, "plotData.", usedSink, ".message.Rout", sep=""), open =
 options(warn = 1); # options(warn = 0);
 message("TEST0");
 
-source("../R/HS.R.config.r");
 source("../R/common_functions.r");
 source("../R/plot_common_functions.r");
 #print(library());
-library(RODBC);
 library(plotly);
 library(htmlwidgets);
 Debug = 1;

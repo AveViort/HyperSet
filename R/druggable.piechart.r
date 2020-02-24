@@ -29,6 +29,13 @@ status <- ifelse(nrow(x_data) != 0, 'ok', 'error');
 
 if (status != 'ok') {
 	system(paste0("ln -s /var/www/html/research/users_tmp/error.html ", File));
+	report_event("druggable.piechart.r", "warning", "empty_plot", paste0("plot_type=piechart&source=", Par["source"], 
+		"&cohort=", Par["cohort"], 
+		"&datatype=", datatypes[1],
+		"&platform=", platforms[1], 
+		"&ids=", ids[1], 
+		ifelse((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes[1]), "")),
+		"Plot succesfully generated, but it is empty");
 } else {
 	if ((platforms[1] == "drug") & (!empty_value(ids[1]))) {
 		# patients who took drug

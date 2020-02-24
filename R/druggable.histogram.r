@@ -25,6 +25,14 @@ status <- ifelse(nrow(x_data) != 0, 'ok', 'error');
 
 if (status != 'ok') {
 	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+	report_event("druggable.histogram.r", "warning", "empty_plot", paste0("plot_type=histogram&source=", Par["source"], 
+		"&cohort=", Par["cohort"], 
+		"&datatype=", datatypes[1],
+		"&platform=", platforms[1], 
+		"&ids=", ids[1], 
+		ifelse((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes[1]), ""),
+		"&scales=", scales[1]),
+		"Plot succesfully generated, but it is empty");
 } else {		
 	x_data <- transformVars(x_data[[platforms[1]]], scales[1]);
 	print(x_data);

@@ -45,13 +45,9 @@ createGLMnetSignature <- function (
 	title.sub = NA,
 	ve = "v1", 
 	plotModel = TRUE, 
-	savePDF = FALSE,
 	TypeDelimiter = "___",
 	cu0=NULL) {
 	
-	if (savePDF) {
-		pdf(file=paste("Models.Obs_vs_pred", "standardize_", STD, ve, ifelse(independentValidation, validationFraction, paste0(Nfolds, "_fold_CV")), Nlambda, versionByDate(), "pdf", sep="."), width=12, height=8);
-	}
 	perf <- as.list(NULL);
 	lt1 = 1; st1 = 0; Niter = 0; 
 	c1 <- Betas <- model <- NULL;
@@ -92,6 +88,8 @@ createGLMnetSignature <- function (
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], "&x_datatypes=", Par["datatypes"],
 					"&x_platforms=", Par["platforms"], "&x_ids=", Par["ids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
 					"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
+				plot(0,type='n', axes=FALSE, ann=FALSE);
+				text(x=1, y=0.5, labels = t1[1], cex = 1);
 				return(NA);
             }
 			Betas <- model$glmnet.fit$beta;
@@ -99,12 +97,21 @@ createGLMnetSignature <- function (
 			Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
 		}	else {
 			print(paste0("No cross-validation"))
-			model <- glmnet(PW[Sample1,], MG[Sample1],  
-						family=Family, 
+			t1 <- try(model <- glmnet(PW[Sample1,], MG[Sample1],  
+						family = Family, 
 						alpha = Alpha, 
 						nlambda = Nlambda, 
-						lambda.min.ratio=minLambda,
-						standardize = STD);
+						lambda.min.ratio = minLambda,
+						standardize = STD));
+			if (grepl("Error|fitter|levels", t1[1])) {
+				print("Error occured");
+				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], "&x_datatypes=", Par["datatypes"],
+					"&x_platforms=", Par["platforms"], "&x_ids=", Par["ids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
+					"&nlambda=", Nlambda, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
+				plot(0,type='n', axes=FALSE, ann=FALSE);
+				text(x=1, y=0.5, labels = t1[1], cex = 1);
+				return(NA);
+            }
 			Betas <- model$beta;
 			A0 <- model$a0;
 			Lc = colnames(Betas)[ncol(Betas)];	  
@@ -154,7 +161,8 @@ createGLMnetSignature <- function (
 			lt1 = 1; st1 = 0;
 		}
 	}
-
+	
+	par(mfrow=c(2,2));
 	if (length(co) > 0) {
 		plot(model);
 		Cex.main  = 0.85; Cex.lbl = 0.35; Cex.leg = 0.5;
@@ -236,9 +244,6 @@ createGLMnetSignature <- function (
 	return(model);
 }
 
-Contextures <- as.list(NULL);
-Contextures$ic_rejection <- c("cd3e", "cd3g", "cd3d", "cd8a", "cd8b", "ifng", "ifna1", "il2", "tbx21", "irf1", "stat1");
-
 print(Sys.time());
 pdf(file=File, width=8, height=8);
 
@@ -254,10 +259,6 @@ for (i in 1:length(datatypes)) {
 	query <- paste0("SELECT sample,id,", platforms[i], " FROM ", table_name, " WHERE id=ANY('{", paste(ids[[i]], collapse=","), "}'::text[]);");
 	print(query);
 	temp <- sqlQuery(rch, query);
-	# if we have 3 genes - then we have to keep ids which occur 3 times in temp
-	#count <- sequence(rle(as.character(temp[,"sample"]))$lengths);
-	#samples <- temp[which(count==length(ids[[i]])), "sample"];
-	#X.variables[[datatypes[i]]] <- unique(as.character(temp[which(temp[,"sample"] %in% samples),"id"]));
 	X.variables[[datatypes[i]]] <- unique(as.character(temp[,"id"]));
 	temp <- dcast(temp, id ~ sample, value.var = platforms[i]);
 	rownames(temp) <- temp[,1];
@@ -268,7 +269,6 @@ print(X.variables);
 query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper("clin"), "';");
 print(query);
 table_name <- sqlQuery(rch, query)[1,1];
-# optimize this: select only intersections of ids in X.variables (?)
 query <- paste0("SELECT * FROM ", table_name, " WHERE os_time<>0;");
 print(query);
 clin <- sqlQuery(rch, query);
@@ -376,7 +376,6 @@ for (i in 1:nrow(X.matrix)) {
 }
 X.matrix <- X.matrix[,names(resp)];
 
-par(mfrow=c(2,2))
 model <- createGLMnetSignature(
 			responseVector = resp, 
 			predictorSpace = X.matrix,
@@ -393,13 +392,14 @@ model <- createGLMnetSignature(
 			title.main = NA, 
 			title.sub = NA,
 			ve = "v1", 
-			plotModel = TRUE, 
-			savePDF = FALSE,
+			plotModel = TRUE,
 			TypeDelimiter = TypeDelimiter, 
 			cu0=cu
 );
-save(model, file=paste0(fname, ".RData"));
-saveJSON(model, paste0("coeff.", fname, ".json"), 3);
+if (!is.na(model)) {
+	save(model, file=paste0(fname, ".RData"));
+	saveJSON(model, paste0("coeff.", fname, ".json"), 3);
+}
 
 dev.off();
 print(Sys.time());

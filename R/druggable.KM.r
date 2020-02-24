@@ -346,6 +346,13 @@ print(str(fe));
 if (all(is.na(fe))) {
 	print("All NAs, shutting down");
 	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+	report_event("druggable.KM.r", "warning", "empty_plot", paste0("plot_type=KM&source=", Par["source"], 
+		"&cohort=", Par["cohort"], 
+		"&datatypes=", paste(datatypes,  collapse = ","),
+		"&platform=", paste(platforms, collapse = ","), 
+		"&ids=", paste(ids, collapse = ","), 
+		ifelse((Par["source"] == "tcga") & (!(second_set_datatype %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes[1]), "")),
+		"Plot succesfully generated, but it is empty");
 } else {
 	plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
 	if (!empty_value(second_set_id)) {

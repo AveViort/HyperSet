@@ -114,6 +114,14 @@ status <- ifelse(length(common_samples) > 0, 'ok', 'error');
 
 if (status != 'ok') {
 		system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+		report_event("druggable.box.r", "warning", "empty_plot", paste0("plot_type=box&source=", Par["source"], 
+		"&cohort=", Par["cohort"], 
+		"&datatypes=", paste(datatypes,  collapse = ","),
+		"&platform=", paste(platforms, collapse = ","), 
+		"&ids=", paste(ids, collapse = ","),  
+		ifelse((Par["source"] == "tcga") & (!(all(datatypes %in% druggable.patient.datatypes))), paste0("&tcga_codes=", tcga_codes[1]), ""),
+		"&scales=", paste(ids, collapse = ",")),
+		"Plot succesfully generated, but it is empty");
 } else {
 	x_data <- transformVars(temp[[1]][common_samples,2], temp_scales[1]);
 	names(x_data) <- common_samples;

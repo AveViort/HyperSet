@@ -7,13 +7,10 @@ sink(file(paste(usedDir, "modelData.", usedSink, ".message.Rout", sep=""), open 
 options(warn = 1); # options(warn = 0);
 message("TEST0");
 
-source("../R/HS.R.config.r");
 source("../R/common_functions.r");
 source("../R/plot_common_functions.r");
-library(RODBC);
 library(plotly);
 library(htmlwidgets);
-library(httr);
 library(reshape2);
 library(survival);
 Debug = 1;
@@ -129,14 +126,6 @@ for (a in Args) {
 		if (Debug>0) {print(paste(p1[1], p1[2], collapse=" "));}
 	}
 }
-
-credentials <- getDbCredentials();
-rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
-
-# this flag is used for reporter
-dev_flag <- grepl("\\/dev\\/", getwd());
-# to avoid certificate problems
-httr::set_config(config(ssl_verifypeer = 0L))
 
 setwd(r.plots);
 

@@ -93,6 +93,14 @@ var max_rows = 3;
 // maximum number of rows for model options
 var max_model_rows = 3;
 
+// some restrictions for models
+nfolds_min = 3;
+nfolds_max = 10;
+validation_fraction_max = 50;
+
+// delimiters which can be used for model ids - write as a regexp
+var ids_delim = /[\s,;]+/;
+
 // maximum number of elements in autocomplete list
 var max_autocomplete = 50;
 

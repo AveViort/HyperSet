@@ -372,7 +372,7 @@ li.tab:hover ul {
 														No. of folds for cross-validation
 													</td>
 													<td>
-														<input type="number" id="nfold" class="Validation spinNumber ui-corner-all" min=3 max=10 step=1 value=10> 
+														<input type="number" id="nfold" class="Validation spinNumber ui-corner-all" step=1 value=10> 
 													</td>
 												</tr>		
 												<tr>
@@ -380,7 +380,7 @@ li.tab:hover ul {
 														Final test set
 													</td>
 													<td>
-														<input type="number" id="crossval_perc" class="Validation spinNumber ui-corner-all" min=0 max=50 step=1 value=50>%
+														<input type="number" id="crossval_perc" class="Validation spinNumber ui-corner-all" min=0 step=1 value=50>%
 													</td>
 												</tr>
 											</table>
@@ -659,6 +659,10 @@ $(document).ready(function(){
 	init_response_survival_selector();
 	init_response_variable_selector();
 	init_response_multiselector();
+	// these parameters are defined in druggable_config.js
+	document.getElementById('nfold').setAttribute("min", nfolds_min);
+	document.getElementById('nfold').setAttribute("max", nfolds_max);
+	document.getElementById('crossval_perc').setAttribute("max", validation_fraction_max);
 	//var tabList = $( "#tabs" )[0].childNodes[1].children;	for (tt = 0; tt < tabList.length; tt++) {$('#' + $(tabList[tt]).attr("aria-controls") + '-loading')[0].remove();			}		
 });
 
@@ -831,54 +835,66 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 }
 
 function build_and_show_model() {
-	// common options for response and independent variables
-	var source = $("#modelSource_selector option:selected").val();
-	var cohort = $("#modelCohort_selector option:selected").val();
-	var multiopt = $("#responseMulti_selector").val();
-	
-	// independent variables
-	var x_datatypes = [];
-	var x_platforms = [];
-	var x_ids = [];
-	var n = $('[id*="modelPlatform"][id$="selector"]').length;
-	for (var i=1; i<=n; i++) {
-		x_datatypes.push($("#modelDatatype" + n + "_selector option:selected").val());
-		x_platforms.push($("#modelPlatform" + n + "_selector option:selected").val());
-		// if id input contain delimeter at the last position - empty array element will be generated; prevent this
-		var temp = $("#genes_area" + n).val().split(",");
-		if (temp[temp.length-1] == " ") {
-			temp.pop();
+	var status = check_model_input();
+	if (status == 'ok') {
+		// common options for response and independent variables
+		var source = $("#modelSource_selector option:selected").val();
+		var cohort = $("#modelCohort_selector option:selected").val();
+		var multiopt = $("#responseMulti_selector").val();
+		
+		// independent variables
+		var x_datatypes = [];
+		var x_platforms = [];
+		var x_ids = [];
+		var n = $('[id*="modelPlatform"][id$="selector"]').length;
+		for (var i=1; i<=n; i++) {
+			x_datatypes.push($("#modelDatatype" + n + "_selector option:selected").val());
+			x_platforms.push($("#modelPlatform" + n + "_selector option:selected").val());
+			// if id input contain delimeter at the last position - empty array element will be generated; prevent this
+			var temp = $("#genes_area" + n).val();
+			// delete all spaces - otherwise "a, b, c" will turn into ["a", " b", " c"]
+			temp = temp.replace(/\s/g, '');
+			// regexp, defined in druggable_config.js
+			temp = temp.split(ids_delim);
+			for (var j=0; j<temp.length; j++) { 
+				if (temp[j] == "") {
+					temp.splice(j, 1); 
+				}
+			}
+			x_ids.push(temp);
 		}
-		x_ids.push(temp);
-	}
-	
-	// model options
-	// hard-coded now, make a selector
-	var method = "glmnet";
-	var standardize = $("#standardize:checked").val();
-	if (standardize == "on") {
-		standardize = true;
+		
+		// model options
+		// hard-coded now, make a selector
+		var method = "glmnet";
+		var standardize = $("#standardize:checked").val();
+		if (standardize == "on") {
+			standardize = true;
+		}
+		else {
+			standardize = false;
+		}
+		var alpha = $("#alpha").val();
+		var nlambda = $("#nlambda").val();
+		var minlambda = $("#minlambda").val();
+		var family = $("#family").val();
+		var measure = "deviance";
+		var crossvalidation = $("#crossval:checked").val();
+		if (crossvalidation == "on") {
+			crossvalidation = true;
+		}
+		else {
+			crossvalidation = false;
+		}
+		var nfold = $("#nfold").val();
+		var crossvalidation_percent = $("#crossval_perc").val()/100;
+		
+		build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt,
+			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
 	}
 	else {
-		standardize = false;
+		alert("Please fix the following problems to build the model:" + status);
 	}
-	var alpha = $("#alpha").val();
-	var nlambda = $("#nlambda").val();
-	var minlambda = $("#minlambda").val();
-	var family = $("#family").val();
-	var measure = "deviance";
-	var crossvalidation = $("#crossval:checked").val();
-	if (crossvalidation == "on") {
-		crossvalidation = true;
-	}
-	else {
-		crossvalidation = false;
-	}
-	var nfold = $("#nfold").val();
-	var crossvalidation_percent = $("#crossval_perc").val()/100;
-	
-	build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt,
-		family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
 }
 
 function retrieve_correlations() {
@@ -2847,7 +2863,8 @@ function setInputFilter(textbox, inputFilter) {
 
 // functions for textarea autocomplete
 function split( val ) {
-	return val.split( /,\s*/ );
+	//return val.split( /,\s*/ );
+	return val.split(ids_delim);
 }
 
 function extractLast( term ) {
@@ -2866,6 +2883,35 @@ function check_model_unique_variable(n) {
 	if (flag) {
 		//alert("Model does not allow choosing same datatype as two different variables. Please chose another datatype");
 	}
+}
+
+// this functions check if all model parameters are specified, returns either 'ok' or error message 
+function check_model_input() {
+	var message = "";
+	
+	var n = $('[id*="modelPlatform"][id$="selector"]').length;
+	for (var i=1; i<=n; i++) {
+		var temp = $("#genes_area" + n).val();
+		temp = temp.replace(/\s/g, '');
+		temp = temp.split(ids_delim);
+		for (var j=0; j<temp.length; j++) { 
+			if (temp[j] == "") {
+				temp.splice(j, 1); 
+			}
+		}
+		if (temp.length == 0) {
+			message = message + "\nEmpty IDs for variable " + j;
+		}
+	}
+	var multiopt = $("#responseMulti_selector").val();
+	if (multiopt.length == 0) {
+		message = message + "\nAt least one values for multiselector should be selected";
+	}
+	
+	if (message == "") {
+		message = "ok";
+	} 
+	return message;
 }
 
 // debug functions to report state
@@ -2922,6 +2968,62 @@ function report_cor_tab() {
 		"Stack: " + ErrorStack);
 	return stat;		
 }
+
+function report_model_tab() {
+	var source = $("#modelSource_selector option:selected").val();
+	var cohort = $("#modelCohort_selector option:selected").val();
+	var multiopt = $("#responseMulti_selector").val();
+		
+	// independent variables
+	var x_datatypes = [];
+	var x_platforms = [];
+	var x_ids = [];
+	var n = $('[id*="modelPlatform"][id$="selector"]').length;
+	var ids = [];
+	for (var i=1; i<=n; i++) {
+		x_datatypes.push($("#modelDatatype" + n + "_selector option:selected").val());
+		x_platforms.push($("#modelPlatform" + n + "_selector option:selected").val());
+		var temp = $("#genes_area" + n).val();
+		x_ids.push(temp);
+	}
+	for (var i=0; i<ids.length; i++) {
+		x_ids.push("[" + ids[i].join() + "]");
+	}
+		
+	// model options
+	var method = "glmnet";
+	var standardize = $("#standardize:checked").val();
+	var alpha = $("#alpha").val();
+	var nlambda = $("#nlambda").val();
+	var minlambda = $("#minlambda").val();
+	var family = $("#family").val();
+	var measure = "deviance";
+	var crossvalidation = $("#crossval:checked").val();
+	var nfold = $("#nfold").val();
+	var crossvalidation_percent = $("#crossval_perc").val();
+	
+	var ErrorStack = check_error_stack(new Error().stack);
+	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "reported_state_model_tab", 
+		"source=" + source + 
+		"&cohort=" + cohort + 
+		"&x_datatypes=" + x_datatypes.join() + 
+		"&x_platforms=" + x_platforms.join() +
+		"&x_ids=" + x_ids.join() +
+		"&multiopt=" + multiopt.join() + 
+		"&method=" + method +
+		"&standardize=" + standardize +
+		"&alpha=" + alpha +
+		"&nlambda=" + nlambda +
+		"&minlambda=" + minlambda +
+		"&family=" + family +
+		"&measure=" + measure +
+		"&crossvalidation=" + crossvalidation +
+		"&nfold=" + nfold +
+		"&crossvalidation_percent=" + crossvalidation_percent,
+		"Stack: " + ErrorStack);
+	return stat;
+}
+
 </script>
 
  

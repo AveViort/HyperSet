@@ -328,7 +328,6 @@ function build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, mu
 	var file; 
 	var ids = [];
 	for (var i=0; i<x_ids.length; i++) {
-		console.log(x_ids[i]);
 		ids.push("[" + x_ids[i].join("|") + "]");
 	}
 	var xmlhttp = new XMLHttpRequest();

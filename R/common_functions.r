@@ -1,5 +1,9 @@
 # this fail contains functions which are common for plots, models etc.
 
+source("../R/HS.R.config.r");
+library(RODBC);
+library(httr);
+
 report_event <- function(e_source, e_level, e_description, e_options, e_message) {
 	# we can distinguish between dev and production versions of scripts
 	e_source <- paste0(ifelse(dev_flag, "dev/", ""), e_source);
@@ -27,3 +31,11 @@ getDbCredentials <- function(key_file = "HS_SQL.conf") {
 	options(warn=0);
 	return(c(username, password));
 }
+
+credentials <- getDbCredentials();
+rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+
+# this flag is used for reporter
+dev_flag <- grepl("\\/dev\\/", getwd());
+# to avoid certificate problems
+httr::set_config(config(ssl_verifypeer = 0L));

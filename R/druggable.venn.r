@@ -103,5 +103,13 @@ if (datatypes[1] == datatypes[2]) {
 	save_html(doc, File, background = "white", libdir = NULL);
 } else {
 	system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+	report_event("druggable.venn.r", "warning", "empty_plot", paste0("plot_type=venn&source=", Par["source"], 
+		"&cohort=", Par["cohort"], 
+		"&datatypes=", paste(datatypes,  collapse = ","),
+		"&platform=", paste(platforms, collapse = ","), 
+		"&ids=", paste(ids, collapse = ","),  
+		ifelse((Par["source"] == "tcga") & (!(all(datatypes %in% druggable.patient.datatypes))), paste0("&tcga_codes=", tcga_codes[1]), ""),
+		"&scales=", paste(ids, collapse = ",")),
+		"Plot succesfully generated, but it is empty");
 }
 odbcClose(rch)
