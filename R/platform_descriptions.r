@@ -499,6 +499,27 @@ add_plot_type_datatypes_3D <- function(datatype1, datatype2, datatype3, plot_typ
 	return(k);
 }
 
+# WORKING WITH MODELS
+
+# function to register table in model_guide_table and add all columns of this table to variable_guide_table
+# table type is either 'predictor' or 'response'
+add_model_variables <- function(table_source, cohort, datatype, table_type, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	query <- paste0("SELECT register_model_vars_from_table('", table_source, "','", cohort, "','", datatype, "','", table_type, "');");
+	k <- sqlQuery(rch, query)[1,1];
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	print(paste0("Added/updated ", k, " records"));
+	return(k);
+}
+
 # WORKING WITH SYNONYMS
 
 get_synonims <- function(table_name, key_file = "HS_SQL.conf") {

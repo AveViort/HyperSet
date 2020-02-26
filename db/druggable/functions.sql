@@ -1639,6 +1639,73 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- FUNCTIONS TO WORK WITH MODELS
+
+-- function to register table in model_guide_table and register its columns in 
+-- t_type is either 'response' or 'predictor'
+CREATE OR REPLACE FUNCTION register_model_vars_from_table(t_source text, t_cohort text, t_datatype text, t_type text) RETURNS numeric AS $$
+DECLARE
+n numeric;
+table_n text;
+variable_n text;
+query text;
+flag boolean;
+visible boolean;
+exclude boolean;
+new_t boolean;
+data_types text array;
+cohorts text array;
+BEGIN
+n := 0;
+new_t := FALSE;
+data_types := ARRAY['all', t_datatype];
+cohorts := ARRAY['all', t_cohort];
+query := E'SELECT table_name FROM guide_table WHERE source=\'' || t_source || E'\' AND cohort=\'' || t_cohort || E'\' AND type=\'' || t_datatype || E'\';';
+EXECUTE QUERY query INTO table_n;
+-- check if we have table registered in model_guide_table
+query := E'SELECT EXISTS(SELECT * FROM model_guide_table WHERE table_name=\'' || table_n || E'\' AND table_type=\'' || t_type || E'\');';
+EXECUTE QUERY query INTO flag;
+IF (NOT flag) THEN
+INSERT INTO model_guide_table(table_name, datatype, cohort, table_type) VALUES (table_n, t_datatype, t_cohort, t_type);
+new_t := TRUE;
+END IF;
+query := E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\';';
+FOR variable_n IN EXECUTE QUERY query
+LOOP
+SELECT visibility FROM platform_descriptions WHERE shortname=variable_n INTO visible;
+SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=variable_n) INTO exclude;
+IF ((NOT exclude) AND visible) THEN
+--RAISE notice 'column: %', variable_n;
+-- check if we already have this variable
+SELECT EXISTS(SELECT * FROM variable_guide_table WHERE variable_name=variable_n) INTO flag;
+-- if we don't - add new row to table
+IF (NOT flag) THEN
+--RAISE notice 'Add variable: %', variable_n;
+query := 'INSERT INTO variable_guide_table(variable_name,' || t_type || E') VALUES (\'' || variable_n || E'\', TRUE);';
+EXECUTE QUERY query; 
+n := n + 1;
+ELSE
+-- we have a variable - check if it is TRUE or FALSE
+query := 'SELECT ' || t_type || E' FROM variable_guide_table WHERE variable_name=\'' || variable_n || E'\';';
+EXECUTE QUERY query INTO flag;
+IF (NOT flag) THEN
+--RAISE notice 'Update variable: %', variable_n;
+query := 'UPDATE variable_guide_table SET ' || t_type || E'=TRUE WHERE variable_name=\'' || variable_n || E'\';';
+EXECUTE QUERY query; 
+n := n + 1;
+ELSE
+-- if the table was just registered - still count its variables, otherwise getting 0 can be misleading
+IF (new_t) THEN
+n := n + 1;
+END IF;
+END IF;
+END IF;
+END IF;
+END LOOP;
+RETURN n;
+END;
+$$ LANGUAGE plpgsql;
+
 
 
 -- ADDITIONAL FUNCTIONS

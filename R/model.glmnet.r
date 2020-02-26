@@ -322,85 +322,96 @@ for (ty in names(Platform)) {
 		print(dim(X.matrix))
 }
 print(dim(X.matrix));
+stop_flag = FALSE;
 if (Par["source"] == "tcga") {
 	X.matrix <- X.matrix[,grep(sample_mask, colnames(X.matrix), fixed=FALSE)];
-	colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE);
+	t1 <- try(colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE));
+	if (grepl("Error|fitter|levels", t1[1])) {
+			print("Error occured");
+			report_event("model.glmnet.r", "error", "colnames_assignment_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], "&x_datatypes=", Par["datatypes"],
+				"&x_platforms=", Par["platforms"], "&x_ids=", Par["ids"], "&multiopt=", Par["multiopt"]), prepare_error_stack(t1));
+			plot(0,type='n', axes=FALSE, ann=FALSE);
+			text(x=1, y=0.5, labels = t1[1], cex = 1);
+			stop_flag = TRUE;
+           }
 }
 if (Par["source"] == "ccle") {
 	X.matrix <- X.matrix[,which(colnames(X.matrix) %in% tissue_samples)];
 }
-print(str(X.matrix));
-#save(X.matrix, file="X.matrix.RData");
-#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
-X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
-usedSamples <- colnames(X.matrix);
-print("Used samples:");
-print(usedSamples);
-#fam <- c("gaussian","binomial","poisson", "multinomial", "cox", "mgaussian")[5]
-#mea <- c("deviance", "mse", "mae", "class", "auc")[1];
-fam <- Par["family"];
-mea <- Par["measure"];
-validation <- as.logical(Par["validation"]);
-validation_fraction <- as.numeric(Par["validation_fraction"]);
-nfolds <- as.numeric(Par["nfolds"]);
-alpha <- as.numeric(Par["alpha"]);
-nlambda <- as.numeric(Par["nlambda"]);
-minlambda <- as.numeric(Par["minlambda"]);
-standardize <- as.logical(Par["standardize"]);
-print(paste0("Family: ", fam));
-print(paste0("Measure: ", mea));
-print(paste0("Validation: ", validation));
-print(paste0("Validation fraction: ", validation_fraction));
-print(paste0("Nfolds: ", nfolds));
-print(paste0("Alpha: ", alpha));
-print(paste0("Nlambda: ", nlambda));
-print(paste0("Minlambda: ", minlambda));
-print(paste0("Standardize: ", standardize));
 
-cu <- makeCu(clin=clin, s.type="os", Xmax=NA, usedNames=usedSamples);
-cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
-X.matrix <- X.matrix[,rownames(cu)];
-resp <- Surv(as.numeric(cu$Time), cu$Stat);
-rownames(resp) <- rownames(cu);
-print(resp);
-print("All values:");
-print(length(resp));
-print("Censored values:");
-censored_length <- length(which(grepl("\\+", as.character(resp))))
-print(censored_length);
-print("Not censored values:");
-print(length(resp)-length(which(grepl("\\+", as.character(resp)))));
+if (!stop_flag) {
+	print(str(X.matrix));
+	#save(X.matrix, file="X.matrix.RData");
+	#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
+	X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
+	usedSamples <- colnames(X.matrix);
+	print("Used samples:");
+	print(usedSamples);
+	#fam <- c("gaussian","binomial","poisson", "multinomial", "cox", "mgaussian")[5]
+	#mea <- c("deviance", "mse", "mae", "class", "auc")[1];
+	fam <- Par["family"];
+	mea <- Par["measure"];
+	validation <- as.logical(Par["validation"]);
+	validation_fraction <- as.numeric(Par["validation_fraction"]);
+	nfolds <- as.numeric(Par["nfolds"]);
+	alpha <- as.numeric(Par["alpha"]);
+	nlambda <- as.numeric(Par["nlambda"]);
+	minlambda <- as.numeric(Par["minlambda"]);
+	standardize <- as.logical(Par["standardize"]);
+	print(paste0("Family: ", fam));
+	print(paste0("Measure: ", mea));
+	print(paste0("Validation: ", validation));
+	print(paste0("Validation fraction: ", validation_fraction));
+	print(paste0("Nfolds: ", nfolds));
+	print(paste0("Alpha: ", alpha));
+	print(paste0("Nlambda: ", nlambda));
+	print(paste0("Minlambda: ", minlambda));
+	print(paste0("Standardize: ", standardize));
 
-for (i in 1:nrow(X.matrix)) {
-	X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
+	cu <- makeCu(clin=clin, s.type="os", Xmax=NA, usedNames=usedSamples);
+	cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
+	X.matrix <- X.matrix[,rownames(cu)];
+	resp <- Surv(as.numeric(cu$Time), cu$Stat);
+	rownames(resp) <- rownames(cu);
+	print(resp);
+	print("All values:");
+	print(length(resp));
+	print("Censored values:");
+	censored_length <- length(which(grepl("\\+", as.character(resp))))
+	print(censored_length);
+	print("Not censored values:");
+	print(length(resp)-length(which(grepl("\\+", as.character(resp)))));
+
+	for (i in 1:nrow(X.matrix)) {
+		X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
+	}
+	X.matrix <- X.matrix[,names(resp)];
+
+	model <- createGLMnetSignature(
+				responseVector = resp, 
+				predictorSpace = X.matrix,
+				Family = fam,
+				type.measure = mea, 
+				independentValidation = validation, 
+				validationFraction = validation_fraction,
+				Nfolds = nfolds,
+				Alpha = alpha, 
+				Nlambda = nlambda, 
+				minLambda = minlambda, 
+				STD = standardize,
+				min.fit = 0.1, 
+				title.main = NA, 
+				title.sub = NA,
+				ve = "v1", 
+				plotModel = TRUE,
+				TypeDelimiter = TypeDelimiter, 
+				cu0=cu
+	);
+	if (!is.na(model)) {
+		save(model, file=paste0(fname, ".RData"));
+		saveJSON(model, paste0("coeff.", fname, ".json"), 3);
+	}
 }
-X.matrix <- X.matrix[,names(resp)];
-
-model <- createGLMnetSignature(
-			responseVector = resp, 
-			predictorSpace = X.matrix,
-			Family = fam,
-			type.measure = mea, 
-			independentValidation = validation, 
-			validationFraction = validation_fraction,
-			Nfolds = nfolds,
-			Alpha = alpha, 
-			Nlambda = nlambda, 
-			minLambda = minlambda, 
-			STD = standardize,
-			min.fit = 0.1, 
-			title.main = NA, 
-			title.sub = NA,
-			ve = "v1", 
-			plotModel = TRUE,
-			TypeDelimiter = TypeDelimiter, 
-			cu0=cu
-);
-if (!is.na(model)) {
-	save(model, file=paste0(fname, ".RData"));
-	saveJSON(model, paste0("coeff.", fname, ".json"), 3);
-}
-
 dev.off();
 print(Sys.time());
 odbcClose(rch)

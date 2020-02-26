@@ -356,7 +356,10 @@ li.tab:hover ul {
 							<td title="Determined by distributions of the used input variables. Set automatically">Family
 							</td>
 							<td>
-								<input type="text" id="family" class="alternative_input venn_box_control" value="Gaussian" disabled> 
+								<select id="family">
+									<option>gaussian</option>
+									<option>cox</option>
+								</select>
 							</td>
 						</tr>
 						<tr>
@@ -877,7 +880,7 @@ function build_and_show_model() {
 		var alpha = $("#alpha").val();
 		var nlambda = $("#nlambda").val();
 		var minlambda = $("#minlambda").val();
-		var family = $("#family").val();
+		var family = $("#family option:selected").val();
 		var measure = "deviance";
 		var crossvalidation = $("#crossval:checked").val();
 		if (crossvalidation == "on") {
@@ -889,8 +892,30 @@ function build_and_show_model() {
 		var nfold = $("#nfold").val();
 		var crossvalidation_percent = $("#crossval_perc").val()/100;
 		
-		build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt,
+		var model_filename = build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt,
 			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
+		var model_name = model_filename.substr(0, model_filename.search("\\."));
+		var model_window = '<div id="model_window"><iframe src="https://www.evinet.org/pics/plots/' + model_filename + '" width="960" height="600"></iframe><br><table id="model_coef" class="display" style="width:100%"></table></div>';
+			$("#tab-predict").append(model_window);
+			$("#model_window").dialog({
+				title: "Model viewer",
+				height: 'auto',
+				width: 'auto',
+				modal: false,
+				resize: function( event, ui ) {
+						($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+					},
+				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+			}).parent().appendTo("#tab-predict");
+		$('#model_coef').DataTable( {
+			"ajax": "https://dev.evinet.org/pics/plots/coeff." + model_name + ".json",
+			"columns": [
+				{ "data": "Term"},
+				{ "data": "Coef"}
+			],
+			"order": [[ 1, "desc" ]],
+		});
 	}
 	else {
 		alert("Please fix the following problems to build the model:" + status);
@@ -2996,7 +3021,7 @@ function report_model_tab() {
 	var alpha = $("#alpha").val();
 	var nlambda = $("#nlambda").val();
 	var minlambda = $("#minlambda").val();
-	var family = $("#family").val();
+	var family = $("#family option:selected").val();
 	var measure = "deviance";
 	var crossvalidation = $("#crossval:checked").val();
 	var nfold = $("#nfold").val();
