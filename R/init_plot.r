@@ -31,9 +31,6 @@ for (a in Args) {
 	}
 }
 
-credentials <- getDbCredentials();
-rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
-
 setwd(r.plots);
 
 File <- paste0(r.plots, "/", Par["out"])

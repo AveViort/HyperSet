@@ -20,6 +20,9 @@ report_event <- function(e_source, e_level, e_description, e_options, e_message)
 # this functions prepares try-error object to be usead as a message in report_event()
 prepare_error_stack <- function(error_stack) {
 	e_message = error_stack[1];
+	e_message <- gsub("\n", "<br>", e_message);
+	e_message <- gsub("\"", "\\\"", e_message);
+	e_message <- gsub(";", "%3b", e_message);
 	return(e_message);
 }
 

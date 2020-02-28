@@ -50,6 +50,7 @@
 			<th>User Agent</th>
 			<th>Ack.</th>
 			<th></th>
+			<th></th>
 		</tr>
 	</thead>
 </table>
@@ -57,18 +58,23 @@
  <script>
 
 $(document).ready(function() {
-	var pass = location.hash;
-	pass = pass.substr(1);
+	var params = location.hash;
+	params = params.substr(1);
+	params = params.split(";");
+	var pass = params[0];
     $('#log').DataTable( {
         "ajax": "cgi/read_event_log.cgi?pass=" + pass,
 		"columnDefs": [
 			{ "width": "15%", "targets": [0,1,5] },
 			{ "width": "10%", "targets": 2 },
 			{ "width": "20%", "targets": 3 },
-			{ "width": "5%", "targets": [7,8] },
+			{ "width": "5%", "targets": [7,8,9] },
 			{ "targets": 8,
 				"data": null,
-				"defaultContent": "<button>Del.</button>"}
+				"defaultContent": "<button class='DelButton'>Del.</button>"},
+			{ "targets": 9,
+				"data": null,
+				"defaultContent": "<button class='ShrButton'>Shr.</button>"}
 		],
         "columns": [
             { "data": "event_time" },
@@ -80,19 +86,35 @@ $(document).ready(function() {
             { "data": "user_agent" },
 			{ "data": "acknowledged"}
         ],
-		"order": [[ 0, "desc" ]],
-		"responsive": true
+		"order": [[ 0, "desc" ]]
     } );
 	// https://datatables.net/examples/ajax/null_data_source.html
 	// https://datatables.net/reference/api/row().remove()
 	$('#log tbody').on( 'click', 'button', function () {
 		var table = $("#log").DataTable();
+		var className = $(this).attr('class');
 		var data = table.row( $(this).parents('tr') ).data();
-		delete_event(pass, data.event_time, data.event_source, data.event_level, data.event_description, data.event_options, data.user_agent);
-		table.row( $(this).parents('tr') )
-			.remove()
-			.draw();
+		switch (className) {
+			case "DelButton":
+				delete_event(pass, data.event_time, data.event_source, data.event_level, data.event_description, data.event_options, data.user_agent);
+				table.row( $(this).parents('tr') )
+					.remove()
+					.draw();
+				break;
+			case "ShrButton":
+				navigator.clipboard.writeText("https://" + location.host + "/log_reader.html#" + pass + ";" + data.event_time.split(" ")[1]);
+				break;
+		}
 	});
+	
+	// show specific event via shareable link
+	if (params.length > 1) {
+		var table = $("#log").DataTable();
+		table
+			.columns( 0 )
+			.search(params[1])
+			.draw();
+	}
 } );
 </script>
 

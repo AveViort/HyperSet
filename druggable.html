@@ -72,6 +72,7 @@ li.tab:hover ul {
     padding: 0;
     margin: 0;
 }
+
 .ui-dialog .ui-dialog-content {
     padding: 0;
     margin: 0;
@@ -414,20 +415,11 @@ li.tab:hover ul {
 							<td title="Data type">
 								<select id="responseDatatype_selector">
 							</td>
-							<td title="Platform">
-								<select id="responsePlatform_selector">
-							</td>
-							<td>
-								<select id="responseScreen_selector">
-							</td>
-							<td>
-								<select id="responseSensitivity_selector">
-							</td>
-							<td>
-								<select id="responseSurvival_selector">
-							</td>
 							<td>
 								<select id="responseVariable_selector">
+							</td>
+							<td>
+								<input id="responseID_input">
 							</td>
 							<td>
 								<select multiple id="responseMulti_selector">
@@ -656,10 +648,6 @@ $(document).ready(function(){
 		reload_model_options();
 	}
 	init_response_datatype_selector();
-	init_response_platform_selector();
-	init_response_screen_selector();
-	init_response_sensitivity_selector();
-	init_response_survival_selector();
 	init_response_variable_selector();
 	init_response_multiselector();
 	// these parameters are defined in druggable_config.js
@@ -845,6 +833,11 @@ function build_and_show_model() {
 		var cohort = $("#modelCohort_selector option:selected").val();
 		var multiopt = $("#responseMulti_selector").val();
 		
+		// dependent variables
+		var r_datatype = $("#responseDatatype_selector option:selected").val();
+		var r_platform = $("#responseVariable_selector option:selected").val();
+		var r_id = $("#responseID_input").val();
+		
 		// independent variables
 		var x_datatypes = [];
 		var x_platforms = [];
@@ -892,7 +885,7 @@ function build_and_show_model() {
 		var nfold = $("#nfold").val();
 		var crossvalidation_percent = $("#crossval_perc").val()/100;
 		
-		var model_filename = build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt,
+		var model_filename = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
 			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
 		var model_name = model_filename.substr(0, model_filename.search("\\."));
 		var model_window = '<div id="model_window"><iframe src="https://www.evinet.org/pics/plots/' + model_filename + '" width="960" height="600"></iframe><br><table id="model_coef" class="display" style="width:100%"></table></div>';
@@ -1832,172 +1825,27 @@ function init_response_datatype_selector() {
 	}
 }
 
-function init_response_platform_selector() {
-	var options = [];
-	var model_source = $("#modelSource_selector option:selected").val();
-	var model_cohort = $("#modelCohort_selector option:selected").val();
-	var response_datatype = $("#responseDatatype_selector option:selected").val();
-	var platforms = get_response_platforms(model_source, model_cohort, response_datatype);
-	var platforms_ids = [];
-	for (i in platforms) {
-		options.push("<option value='" + platforms[i].platform + "'>" + platforms[i].name +"</option>");
-		platforms_ids.push(platforms[i].platform);
-	}
-	$("#responsePlatform_selector").append(options.join("")).selectmenu({
-        width: "175px",
-		disabled: platforms_ids[0] == ""
-    });
-	$('#responsePlatform_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responsePlatform_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("responsePlatform_selector").split("|"))[0];
-		if (platforms_ids.includes(previous_selection)) {
-			$("#responsePlatform_selector").val(previous_selection);
-			$("#responsePlatform_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("responsePlatform_selector", $("#responsePlatform_selector option:selected").val(), accepted_time);
-	}
-}
-
-function init_response_screen_selector() {
-	var options = [];
-	var model_source = $("#modelSource_selector option:selected").val();
-	var model_cohort = $("#modelCohort_selector option:selected").val();
-	var response_datatype = $("#responseDatatype_selector option:selected").val();
-	var response_platform = $("#responsePlatform_selector option:selected").val();
-	// not all response datatables have 'platform' column filled
-	if (response_platform == "undef") {
-		response_platform = "";
-	}
-	var screens = get_response_screens(model_source, model_cohort, response_datatype, response_platform);
-	var screens_ids = [];
-	for (i in screens) {
-		options.push("<option value='" + screens[i].screen + "'>" + screens[i].name +"</option>");
-		screens_ids.push(screens[i].screen);
-	}
-	$("#responseScreen_selector").append(options.join("")).selectmenu({
-        width: "175px",
-		disabled: screens_ids[0] == ""
-    });
-	document.getElementById("responseScreen_selector").hidden = (screens_ids[0] == "");
-	$('#responseScreen_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseScreen_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("responseScreen_selector").split("|"))[0];
-		if (screens_ids.includes(previous_selection)) {
-			$("#responseScreen_selector").val(previous_selection);
-			$("#responseScreen_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("responseScreen_selector", $("#responseScreen_selector option:selected").val(), accepted_time);
-	}
-}
-
-function init_response_sensitivity_selector() {
-	var options = [];
-	var model_source = $("#modelSource_selector option:selected").val();
-	var model_cohort = $("#modelCohort_selector option:selected").val();
-	var response_datatype = $("#responseDatatype_selector option:selected").val();
-	var response_platform = $("#responsePlatform_selector option:selected").val();
-	if (response_platform == "undef") {
-		response_platform = "";
-	}
-	var response_screen = $("#responseScreen_selector option:selected").val();
-	if (response_screen == "undef") {
-		response_screen = "";
-	}
-	var sensitivity = get_response_sensitivity(model_source, model_cohort, response_datatype, response_platform, response_screen);
-	var sensitivity_ids = [];
-	for (i in sensitivity) {
-		options.push("<option value='" + sensitivity[i].sensitivity + "'>" + sensitivity[i].name +"</option>");
-		sensitivity_ids.push(sensitivity[i].sensitivity);
-	}
-	$("#responseSensitivity_selector").append(options.join("")).selectmenu({
-        width: "175px",
-		disabled: sensitivity_ids[0] == ""
-    });
-	document.getElementById("responseSensitivity_selector").hidden = (sensitivity_ids[0] == "");
-	$('#responseSensitivity_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseSensitivity_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("responseSensitivity_selector").split("|"))[0];
-		if (sensitivity_ids.includes(previous_selection)) {
-			$("#responseSensitivity_selector").val(previous_selection);
-			$("#responseSensitivity_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("responseSensitivity_selector", $("#responseSensitivity_selector option:selected").val(), accepted_time);
-	}
-}
-
-function init_response_survival_selector() {
-	var options = [];
-	var model_source = $("#modelSource_selector option:selected").val();
-	var model_cohort = $("#modelCohort_selector option:selected").val();
-	var response_datatype = $("#responseDatatype_selector option:selected").val();
-	var response_platform = $("#responsePlatform_selector option:selected").val();
-	if (response_platform == "undef") {
-		response_platform = "";
-	}
-	var response_screen = $("#responseScreen_selector option:selected").val();
-	if (response_screen == "undef") {
-		response_screen = "";
-	}
-	var response_sensitivity = $("#responseSensitivity_selector option:selected").val();
-	if (response_sensitivity == "undef") {
-		response_sensitivity = "";
-	}
-	var survival = get_response_survival(model_source, model_cohort, response_datatype, response_platform, response_screen, response_sensitivity);
-	var survival_ids = [];
-	for (i in survival) {
-		options.push("<option value='" + survival[i].survival + "'>" + survival[i].name +"</option>");
-		survival_ids.push(survival[i].survival);
-	}
-	$("#responseSurvival_selector").append(options.join("")).selectmenu({
-        width: "175px",
-		disabled: survival_ids[0] == ""
-    });
-	document.getElementById("responseSurvival_selector").hidden = (survival_ids[0] == "");
-	$('#responseSurvival_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseSurvival_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("responseSurvival_selector").split("|"))[0];
-		if (survival_ids.includes(previous_selection)) {
-			$("#responseSurvival_selector").val(previous_selection);
-			$("#responseSurvival_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("responseSurvival_selector", $("#responseSurvival_selector option:selected").val(), accepted_time);
-	}
-}
-
 function init_response_variable_selector() {
 	var options = [];
 	var model_source = $("#modelSource_selector option:selected").val();
 	var model_cohort = $("#modelCohort_selector option:selected").val();
 	var response_datatype = $("#responseDatatype_selector option:selected").val();
-	var response_platform = $("#responsePlatform_selector option:selected").val();
-	if (response_platform == "undef") {
-		response_platform = "";
+	$("#responseID_input").val("");
+	var variables = get_response_variables(model_source, model_cohort, response_datatype);
+	var flag = parseInt(variables.shift());
+	document.getElementById("responseID_input").disabled = !(flag);
+	document.getElementById("responseID_input").hidden = !(flag);
+	// set placeholder text if ids exist
+	if (flag == 1) {
+		// placeholders are defined in druggable_config.js
+		document.getElementById("responseID_input").setAttribute("placeholder", ids_placeholders.get(response_datatype));
 	}
-	var response_screen = $("#responseScreen_selector option:selected").val();
-	if (response_screen == "undef") {
-		response_screen = "";
-	}
-	var response_sensitivity = $("#responseSensitivity_selector option:selected").val();
-	if (response_sensitivity == "undef") {
-		response_sensitivity = "";
-	}
-	var response_survival = $("#responseSurvival_selector option:selected").val();
-	if (response_survival == "undef") {
-		response_survival = "";
-	}
-	var variables = get_response_variables(model_source, model_cohort, response_datatype, response_platform, response_screen, response_sensitivity, response_survival);
 	var variable_ids = [];
 	for (i in variables) {
-		options.push("<option value='" + variables[i].variable + "'>" + variables[i].name +"</option>");
-		variable_ids.push(variables[i].variable);
+		for (j in variables[i]) {
+			options.push("<option value='" + variables[i][j].variable + "'>" + variables[i][j].name +"</option>");
+			variable_ids.push(variables[i][j].variable);
+		}
 	}
 	$("#responseVariable_selector").append(options.join("")).selectmenu({
         width: "175px"
@@ -2013,6 +1861,45 @@ function init_response_variable_selector() {
 		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 		usetCookie("responseVariable_selector", $("#responseVariable_selector option:selected").val(), accepted_time);
 	}
+	if (flag == 1) {
+		$("#responseID_input").tooltip({
+				track: true
+			});
+		var autocomplete_ids = get_autocomplete_ids(model_cohort, response_datatype, $("#responseVariable_selector option:selected").val());
+		$("#responseID_input").autocomplete({
+			source: autocomplete_ids,
+			minLength: 2,
+			response: function( event, ui ) {
+				if (ui.content.length > max_autocomplete) {
+					console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+				} else {
+					if (ui.content.length == 0) {
+						$("#responseID_input").attr("title", "No results found. Try typing something else");
+					} else {
+						$("#responseID_input").attr("title", "");
+					}
+				}
+			},
+			search: function( event, ui ) {
+				var value = $("#" + event.target.getAttribute("id")).val();
+				console.log("Search triggered, value: " + value);
+				if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
+					// check if we have > 2 symbols
+					if (value.length > 2) {
+						// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
+						if (value[2] == "S") {
+							console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+							event.preventDefault();
+						}
+					}
+					else {
+						event.preventDefault();
+					}
+				}
+			} 
+		});
+	}
 }
 
 function init_response_multiselector() {
@@ -2020,27 +1907,17 @@ function init_response_multiselector() {
 	var model_source = $("#modelSource_selector option:selected").val();
 	var model_cohort = $("#modelCohort_selector option:selected").val();
 	var response_datatype = $("#responseDatatype_selector option:selected").val();
-	var response_platform = $("#responsePlatform_selector option:selected").val();
-	if (response_platform == "undef") {
-		response_platform = "";
-	}
-	var response_screen = $("#responseScreen_selector option:selected").val();
-	if (response_screen == "undef") {
-		response_screen = "";
-	}
-	var response_sensitivity = $("#responseSensitivity_selector option:selected").val();
-	if (response_sensitivity == "undef") {
-		response_sensitivity = "";
-	}
-	var response_survival = $("#responseSurvival_selector option:selected").val();
-	if (response_survival == "undef") {
-		response_survival = "";
-	}
 	var response_variable = $("#responseVariable_selector option:selected").val();
 	if (response_variable == "undef") {
 		response_variable = "";
 	}
-	var values = get_response_multiselector_values(model_source, model_cohort, response_datatype, response_platform, response_screen, response_sensitivity, response_survival, response_variable);
+	var values = [];
+	if ((model_source == "TCGA") & ((response_datatype == "MUT") | (response_datatype == "CLIN"))) {
+		values = ["01", "06"];
+	}
+	else {
+		values = get_response_multiselector_values(model_source, model_cohort, response_datatype, response_variable);
+	}
 	console.log(values);
 	for (i in values) {
 		options.push("<option value='" + values[i] + "'>" + values[i] +"</option>");
@@ -2392,46 +2269,6 @@ function update_response_datatype_selector() {
 	var selector_value = $("#responseDatatype_selector option:selected").val();
 	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	usetCookie("responseDatatype_selector", selector_value, accepted_time);
-	$('#responsePlatform_selector').find('option').remove().end();
-	$('#responsePlatform_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_response_platform_selector();
-	$('#responsePlatform_selector').selectmenu( "refresh" );
-}
-
-function update_response_platform_selector() {
-	var selector_value = $("#responsePlatform_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("responsePlatform_selector", selector_value, accepted_time);
-	$('#responseScreen_selector').find('option').remove().end();
-	$('#responseScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_response_screen_selector();
-	$('#responseScreen_selector').selectmenu( "refresh" );
-}
-
-function update_response_screen_selector() {
-	var selector_value = $("#responseScreen_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("responseScreen_selector", selector_value, accepted_time);
-	$('#responseSensitivity_selector').find('option').remove().end();
-	$('#responseSensitivity_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_response_sensitivity_selector();
-	$('#responseSensitivity_selector').selectmenu( "refresh" );
-}
-
-function update_response_sensitivity_selector() {
-	var selector_value = $("#responseSensitivity_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("responseSensitivity_selector", selector_value, accepted_time);
-	$('#responseSurvival_selector').find('option').remove().end();
-	$('#responseSurvival_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_response_survival_selector();
-	$('#responseSurvival_selector').selectmenu( "refresh" );
-}
-
-function update_response_survival_selector() {
-	var selector_value = $("#responseSurvival_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("responseSurvival_selector", selector_value, accepted_time);
 	$('#responseVariable_selector').find('option').remove().end();
 	$('#responseVariable_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_response_variable_selector();
@@ -2570,10 +2407,6 @@ function update(initiator) {
 						update_model_datatype_selector(1);
 						update_model_platform_selector(1);
 						update_response_datatype_selector();
-						update_response_platform_selector();
-						update_response_screen_selector();
-						update_response_sensitivity_selector();
-						update_response_survival_selector();
 						update_response_variable_selector();
 					}
 					break;
@@ -2583,10 +2416,6 @@ function update(initiator) {
 						update_model_datatype_selector(1);
 						update_model_platform_selector(1);
 						update_response_datatype_selector();
-						update_response_platform_selector();
-						update_response_screen_selector();
-						update_response_sensitivity_selector();
-						update_response_survival_selector();
 						update_response_variable_selector();
 					}
 					break;
@@ -2604,40 +2433,6 @@ function update(initiator) {
 				case "responseDatatype":
 					if (selector_value != previous_value) {
 						update_response_datatype_selector();
-						update_response_platform_selector();
-						update_response_screen_selector();
-						update_response_sensitivity_selector();
-						update_response_survival_selector();
-						update_response_variable_selector();
-					}
-					break;
-				case "responsePlatform":
-					if (selector_value != previous_value) {
-						update_response_platform_selector();
-						update_response_screen_selector();
-						update_response_sensitivity_selector();
-						update_response_survival_selector();
-						update_response_variable_selector();
-					}
-					break;
-				case "responseScreen":
-					if (selector_value != previous_value) {
-						update_response_screen_selector();
-						update_response_sensitivity_selector();
-						update_response_survival_selector();
-						update_response_variable_selector();
-					}
-					break;
-				case "responseSensitivity":
-					if (selector_value != previous_value) {
-						update_response_sensitivity_selector();
-						update_response_survival_selector();
-						update_response_variable_selector();
-					}
-					break;
-				case "responseSurvival":
-					if (selector_value != previous_value) {
-						update_response_survival_selector();
 						update_response_variable_selector();
 					}
 					break;

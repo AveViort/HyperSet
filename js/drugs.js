@@ -192,97 +192,12 @@ function get_response_datatypes(source, cohort) {
 	return datatypes_array;
 }
 
-function get_response_platforms(source, cohort, datatype) {
-	var platforms;
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/response_platforms.cgi?source=" + encodeURIComponent(source) + "&cohort=" + encodeURIComponent(cohort) + "&datatype=" + encodeURIComponent(datatype), false);
-	xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			platforms = this.responseText;}
-		}
-	xmlhttp.send();
-	platforms = platforms.split("|");
-	var platforms_array = [];
-	for (i=0; i<platforms.length-1; i=i+2) {
-		platforms_array.push({platform: platforms[i], name: platforms[i+1]});
-	}
-	return platforms_array;
-}
-
-function get_response_screens(source, cohort, datatype, platform) {
-	var screens;
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/response_screens.cgi?source=" + encodeURIComponent(source) + 
-		"&cohort=" + encodeURIComponent(cohort) + 
-		"&datatype=" + encodeURIComponent(datatype) +
-		"&platform=" + encodeURIComponent(platform), false);
-	xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			screens = this.responseText;}
-		}
-	xmlhttp.send();
-	screens = screens.split("|");
-	var screens_array = [];
-	for (i=0; i<screens.length-1; i=i+2) {
-		screens_array.push({screen: screens[i], name: screens[i+1]});
-	}
-	return screens_array;
-}
-
-function get_response_sensitivity(source, cohort, datatype, platform, screen) {
-	var sensitivity;
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/response_sensitivity.cgi?source=" + encodeURIComponent(source) + 
-		"&cohort=" + encodeURIComponent(cohort) + 
-		"&datatype=" + encodeURIComponent(datatype) +
-		"&platform=" + encodeURIComponent(platform) +
-		"&screen=" + encodeURIComponent(screen), false);
-	xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			sensitivity = this.responseText;}
-		}
-	xmlhttp.send();
-	sensitivity = sensitivity.split("|");
-	var sensitivity_array = [];
-	for (i=0; i<sensitivity.length-1; i=i+2) {
-		sensitivity_array.push({sensitivity: sensitivity[i], name: sensitivity[i+1]});
-	}
-	return sensitivity_array;
-}
-
-// note! This function does not return a plot or something else. It returns data from model_guide_table survival column
-function get_response_survival(source, cohort, datatype, platform, screen, sensitivity) {
-	var survival;
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/response_survival.cgi?source=" + encodeURIComponent(source) + 
-		"&cohort=" + encodeURIComponent(cohort) + 
-		"&datatype=" + encodeURIComponent(datatype) +
-		"&platform=" + encodeURIComponent(platform) +
-		"&screen=" + encodeURIComponent(screen) +
-		"&sensitivity=" + encodeURIComponent(sensitivity), false);
-	xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			survival = this.responseText;}
-		}
-	xmlhttp.send();
-	survival = survival.split("|");
-	var survival_array = [];
-	for (i=0; i<survival.length-1; i=i+2) {
-		survival_array.push({survival: survival[i], name: survival[i+1]});
-	}
-	return survival_array;
-}
-
-function get_response_variables(source, cohort, datatype, platform, screen, sensitivity, survival) {
+function get_response_variables(source, cohort, datatype) {
 	var variables;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/response_variables.cgi?source=" + encodeURIComponent(source) + 
 		"&cohort=" + encodeURIComponent(cohort) + 
-		"&datatype=" + encodeURIComponent(datatype) +
-		"&platform=" + encodeURIComponent(platform) +
-		"&screen=" + encodeURIComponent(screen) +
-		"&sensitivity=" + encodeURIComponent(sensitivity) +
-		"&survival=" + encodeURIComponent(survival), false);
+		"&datatype=" + encodeURIComponent(datatype), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			variables = this.responseText;}
@@ -290,22 +205,18 @@ function get_response_variables(source, cohort, datatype, platform, screen, sens
 	xmlhttp.send();
 	variables = variables.split("|");
 	var variable_array = [];
-	for (i=0; i<variables.length-1; i=i+2) {
+	for (i=1; i<variables.length-1; i=i+2) {
 		variable_array.push({variable: variables[i], name: variables[i+1]});
 	}
-	return variable_array;
+	return [variables[0], variable_array];
 }
 
-function get_response_multiselector_values(source, cohort, datatype, platform, screen, sensitivity, survival, variable) {
+function get_response_multiselector_values(source, cohort, datatype, variable) {
 	var values;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/response_multiselector.cgi?source=" + encodeURIComponent(source) + 
 		"&cohort=" + encodeURIComponent(cohort) + 
-		"&datatype=" + encodeURIComponent(datatype) +
-		"&platform=" + encodeURIComponent(platform) +
-		"&screen=" + encodeURIComponent(screen) +
-		"&sensitivity=" + encodeURIComponent(sensitivity) +
-		"&survival=" + encodeURIComponent(survival) + 
+		"&datatype=" + encodeURIComponent(datatype) + 
 		"&variable=" + encodeURIComponent(variable), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -322,21 +233,24 @@ function get_response_multiselector_values(source, cohort, datatype, platform, s
 	return values;
 }
 
-function build_model(method, source, cohort, x_datatypes, x_platforms, x_ids, multiopt, family, measure, standardize, 
-	alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent) 
+function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
+	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent) 
 {
 	var file; 
-	var ids = [];
+	var xids = [];
 	for (var i=0; i<x_ids.length; i++) {
-		ids.push("[" + x_ids[i].join("|") + "]");
+		xids.push("[" + x_ids[i].join("|") + "]");
 	}
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET", "cgi/model_predict.cgi?method=" + encodeURIComponent(method) +
 		"&source=" + encodeURIComponent(source) + 
 		"&cohort=" + encodeURIComponent(cohort) + 
-		"&datatypes=" + encodeURIComponent(x_datatypes.join()) + 
-		"&platforms=" + encodeURIComponent(x_platforms.join()) + 
-		"&ids=" + encodeURIComponent(ids.join()) +
+		"&rdatatype=" + encodeURIComponent(r_datatype) +
+		"&rplatform=" + encodeURIComponent(r_platform) +
+		"&rid=" + encodeURIComponent(r_id) +
+		"&xdatatypes=" + encodeURIComponent(x_datatypes.join()) + 
+		"&xplatforms=" + encodeURIComponent(x_platforms.join()) + 
+		"&xids=" + encodeURIComponent(xids.join()) +
 		"&multiopt=" + encodeURIComponent(multiopt.join()) +
 		"&family=" + encodeURIComponent(family) + 
 		"&measure=" + encodeURIComponent(measure) +

@@ -520,6 +520,24 @@ add_model_variables <- function(table_source, cohort, datatype, table_type, key_
 	return(k);
 }
 
+# add model variable by datatype 
+add_model_variables_datatype <- function(table_source, datatype, table_type, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	query <- paste0("SELECT register_model_vars_from_datatype('", table_source, "','", datatype, "','", table_type, "');");
+	k <- sqlQuery(rch, query)[1,1];
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	print(paste0("Added/updated ", k, " records"));
+	return(k);
+}
+
 # WORKING WITH SYNONYMS
 
 get_synonims <- function(table_name, key_file = "HS_SQL.conf") {

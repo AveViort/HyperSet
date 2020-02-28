@@ -171,7 +171,7 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION response_variable_list(source_n text, cohort_n text, data_type text, platform_n text, screen_n text, sensitivity_m text, survival_n text) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION response_variable_list(source_n text, cohort_n text, data_type text) RETURNS setof text AS $$
 DECLARE
 variable_nm text;
 query text;
@@ -192,20 +192,7 @@ DELETE FROM response_variables;
 ELSE
 CREATE TABLE response_variables (variable_n character varying(256), visible_name character varying(256));
 END IF;
-query := E'SELECT table_name FROM model_guide_table WHERE source=\'' || source_n || E'\'AND cohort=\'' || cohort_n || E'\' AND datatype=\'' || data_type || E'\'';
-IF (platform_n <> '') THEN
-query := query || E' AND platform=\'' || platform_n || E'\'';
-END IF;
-IF (screen_n <> '') THEN
-query := query || E' AND screen=\'' || screen_n || E'\'';
-END IF;
-IF (sensitivity_m <> '') THEN
-query := query || E' AND sensitivity=\'' || sensitivity_m || E'\'';
-END IF;
-IF (survival_n <> '') THEN
-query := query || E' AND survival=\'' || survival_n || E'\'';
-END IF;
-query := query || E' AND table_type=\'response\';';
+query := E'SELECT table_name FROM model_guide_table WHERE source=\'' || source_n || E'\'AND cohort=\'' || cohort_n || E'\' AND datatype=\'' || data_type || E'\' AND table_type=\'response\';';
 EXECUTE query INTO table_n;
 -- if table exists
 IF (table_n IS NOT NULL) THEN
@@ -1666,7 +1653,7 @@ EXECUTE QUERY query INTO table_n;
 query := E'SELECT EXISTS(SELECT * FROM model_guide_table WHERE table_name=\'' || table_n || E'\' AND table_type=\'' || t_type || E'\');';
 EXECUTE QUERY query INTO flag;
 IF (NOT flag) THEN
-INSERT INTO model_guide_table(table_name, datatype, cohort, table_type) VALUES (table_n, t_datatype, t_cohort, t_type);
+INSERT INTO model_guide_table(table_name, source, datatype, cohort, table_type) VALUES (table_n, t_source, t_datatype, t_cohort, t_type);
 new_t := TRUE;
 END IF;
 query := E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\';';
@@ -1688,7 +1675,7 @@ ELSE
 -- we have a variable - check if it is TRUE or FALSE
 query := 'SELECT ' || t_type || E' FROM variable_guide_table WHERE variable_name=\'' || variable_n || E'\';';
 EXECUTE QUERY query INTO flag;
-IF (NOT flag) THEN
+IF ((NOT flag) OR (flag IS NULL)) THEN
 --RAISE notice 'Update variable: %', variable_n;
 query := 'UPDATE variable_guide_table SET ' || t_type || E'=TRUE WHERE variable_name=\'' || variable_n || E'\';';
 EXECUTE QUERY query; 
@@ -1701,6 +1688,23 @@ END IF;
 END IF;
 END IF;
 END IF;
+END LOOP;
+RETURN n;
+END;
+$$ LANGUAGE plpgsql;
+
+-- calls previous function for all tables for given datatype
+CREATE OR REPLACE FUNCTION register_model_vars_from_datatype(t_source text, t_datatype text, t_type text) RETURNS numeric AS $$
+DECLARE
+n numeric;
+temp numeric;
+t_cohort text;
+BEGIN
+n := 0;
+FOR t_cohort IN SELECT cohort FROM guide_table WHERE source=t_source AND type=t_datatype
+LOOP
+temp := register_model_vars_from_table(t_source, t_cohort, t_datatype, t_type);
+n := n + temp;
 END LOOP;
 RETURN n;
 END;

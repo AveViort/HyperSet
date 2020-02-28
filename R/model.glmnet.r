@@ -4,7 +4,7 @@ library(glmnet);
 
 usedSamples <- c();
 Ncases <- 10;
-Stages 	<- c("X", "Tis", "0", "I", "IA",  "IB",  "IC",  "II", "IIA",  "IIB",  "IIC",  "III", "IIIA", "IIIB", "IIIC", "IV" , "IVA" , "IVB" , "IVC" );
+Stages 	<- c("X", "Tis", "Stage 0", "Stage I", "Stage IA",  "Stage IB",  "Stage IC",  "Stage II", "Stage IIA",  "Stage IIB",  "Stage IIC",  "Stage III", "Stage IIIA", "Stage IIIB", "Stage IIIC", "Stage IV" , "Stage IVA" , "Stage IVB" , "Stage IVC" );
 Stata <- c("Negative", "Equivocal", "Indeterminate", "Positive")
 Levels <- c("absent", "medium", "strong", "weak");
 Rescale <- list(
@@ -85,8 +85,9 @@ createGLMnetSignature <- function (
 						standardize = STD));
 			if (grepl("Error|fitter|levels", t1[1])) {
 				print("Error occured");
-				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], "&x_datatypes=", Par["datatypes"],
-					"&x_platforms=", Par["platforms"], "&x_ids=", Par["ids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
+				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
+					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
+					"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
 					"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
 				plot(0,type='n', axes=FALSE, ann=FALSE);
 				text(x=1, y=0.5, labels = t1[1], cex = 1);
@@ -105,8 +106,9 @@ createGLMnetSignature <- function (
 						standardize = STD));
 			if (grepl("Error|fitter|levels", t1[1])) {
 				print("Error occured");
-				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], "&x_datatypes=", Par["datatypes"],
-					"&x_platforms=", Par["platforms"], "&x_ids=", Par["ids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
+				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
+					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
+					"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
 					"&nlambda=", Nlambda, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
 				plot(0,type='n', axes=FALSE, ann=FALSE);
 				text(x=1, y=0.5, labels = t1[1], cex = 1);
@@ -250,30 +252,51 @@ pdf(file=File, width=8, height=8);
 query <- "";
 X.variables <- as.list(NULL);
 Platform <- as.list(NULL);
-for (i in 1:length(datatypes)) {
-	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[i]), "';");
+for (i in 1:length(x_datatypes)) {
+	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(x_datatypes[i]), "';");
 	print(query);
 	table_name <- sqlQuery(rch, query)[1,1];
 	# careful! Not all tables have ids
 	# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
-	query <- paste0("SELECT sample,id,", platforms[i], " FROM ", table_name, " WHERE id=ANY('{", paste(ids[[i]], collapse=","), "}'::text[]);");
+	query <- paste0("SELECT sample,id,", x_platforms[i], " FROM ", table_name, " WHERE id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[]);");
 	print(query);
 	temp <- sqlQuery(rch, query);
-	X.variables[[datatypes[i]]] <- unique(as.character(temp[,"id"]));
-	temp <- dcast(temp, id ~ sample, value.var = platforms[i]);
+	X.variables[[x_datatypes[i]]] <- unique(as.character(temp[,"id"]));
+	temp <- dcast(temp, id ~ sample, value.var = x_platforms[i]);
 	rownames(temp) <- temp[,1];
 	temp <- temp[,-1];
-	Platform[[datatypes[i]]] <- temp;
+	Platform[[x_datatypes[i]]] <- temp;
 }
 print(X.variables);
 query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper("clin"), "';");
 print(query);
 table_name <- sqlQuery(rch, query)[1,1];
-query <- paste0("SELECT * FROM ", table_name, " WHERE os_time<>0;");
+query <- paste0("SELECT sample,", ifelse(!empty_value(rid), "id,", ""),
+	rplatform, ifelse(rplatform %in% c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi"), paste0(",", rplatform, "_time"), ""), 
+	" FROM ", table_name);
+condition <- " WHERE ";
+if (rdatatype == "clin") {
+	if (rplatform %in% c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi")) {
+		condition <- paste0(condition, rplatform,"_time<>0");
+	}
+} else {
+	if (Par["source"] == "tcga") {
+		query <- paste0(query, "sample LIKE ANY ('{", paste0("%-", multiopt, collapse=","), "}'::text[])");
+	}
+	condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
+	if (rid != '') {
+		condition <- paste0(condition, "id='", rid, "'")
+	}
+}
+# in case if we have not added any conditions - like with clin:ajcc_pathologic_tumor_stage
+if (condition == " WHERE ") {
+	condition <- "";
+}
+query <- paste0(query, condition, ";");
 print(query);
-clin <- sqlQuery(rch, query);
-clin[,1] <- as.character(clin[,1]);
-rownames(clin) <- clin[,1];
+resp_matr <- sqlQuery(rch, query);
+resp_matr[,1] <- as.character(resp_matr[,1]);
+rownames(resp_matr) <- resp_matr[,1];
 
 # for TCGA only
 sample_mask <- c();
@@ -328,8 +351,9 @@ if (Par["source"] == "tcga") {
 	t1 <- try(colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE));
 	if (grepl("Error|fitter|levels", t1[1])) {
 			print("Error occured");
-			report_event("model.glmnet.r", "error", "colnames_assignment_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], "&x_datatypes=", Par["datatypes"],
-				"&x_platforms=", Par["platforms"], "&x_ids=", Par["ids"], "&multiopt=", Par["multiopt"]), prepare_error_stack(t1));
+			report_event("model.glmnet.r", "error", "colnames_assignment_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"],
+				"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
+				"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"]), prepare_error_stack(t1));
 			plot(0,type='n', axes=FALSE, ann=FALSE);
 			text(x=1, y=0.5, labels = t1[1], cex = 1);
 			stop_flag = TRUE;
@@ -345,10 +369,8 @@ if (!stop_flag) {
 	#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 	X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 	usedSamples <- colnames(X.matrix);
-	print("Used samples:");
-	print(usedSamples);
-	#fam <- c("gaussian","binomial","poisson", "multinomial", "cox", "mgaussian")[5]
-	#mea <- c("deviance", "mse", "mae", "class", "auc")[1];
+	#print("Used samples:");
+	#print(usedSamples);
 	fam <- Par["family"];
 	mea <- Par["measure"];
 	validation <- as.logical(Par["validation"]);
@@ -358,34 +380,41 @@ if (!stop_flag) {
 	nlambda <- as.numeric(Par["nlambda"]);
 	minlambda <- as.numeric(Par["minlambda"]);
 	standardize <- as.logical(Par["standardize"]);
-	print(paste0("Family: ", fam));
-	print(paste0("Measure: ", mea));
-	print(paste0("Validation: ", validation));
-	print(paste0("Validation fraction: ", validation_fraction));
-	print(paste0("Nfolds: ", nfolds));
-	print(paste0("Alpha: ", alpha));
-	print(paste0("Nlambda: ", nlambda));
-	print(paste0("Minlambda: ", minlambda));
-	print(paste0("Standardize: ", standardize));
-
-	cu <- makeCu(clin=clin, s.type="os", Xmax=NA, usedNames=usedSamples);
-	cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
-	X.matrix <- X.matrix[,rownames(cu)];
-	resp <- Surv(as.numeric(cu$Time), cu$Stat);
-	rownames(resp) <- rownames(cu);
-	print(resp);
-	print("All values:");
-	print(length(resp));
-	print("Censored values:");
-	censored_length <- length(which(grepl("\\+", as.character(resp))))
-	print(censored_length);
-	print("Not censored values:");
-	print(length(resp)-length(which(grepl("\\+", as.character(resp)))));
-
+	
+	cu <- NULL;
+	if (rplatform %in% c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi")) {
+		cu <- makeCu(clin=resp_matr, s.type=rplatform, Xmax=NA, usedNames=usedSamples);
+		cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
+		X.matrix <- X.matrix[,rownames(cu)];
+		resp <- Surv(as.numeric(cu$Time), cu$Stat);
+		rownames(resp) <- rownames(cu);
+		print(resp);
+		print("All values:");
+		print(length(resp));
+		print("Censored values:");
+		censored_length <- length(which(grepl("\\+", as.character(resp))))
+		print(censored_length);
+		print("Not censored values:");
+		print(length(resp)-length(which(grepl("\\+", as.character(resp)))));
+	} else {
+		resp <- resp_matr[,rplatform];
+		names(resp) <- resp_matr[,"sample"];
+		if (rplatform %in% names(Rescale)) {
+			print(names(Rescale[[rplatform]]));
+			print(resp);
+			temp_names <- names(resp);
+			resp <- unlist(lapply(resp, function(el) {return(Rescale[[rplatform]][el])}));
+			names(resp) <- temp_names;
+			print(resp);
+			print(str(resp));
+		}
+	}
+	
+	print(str(X.matrix));
 	for (i in 1:nrow(X.matrix)) {
 		X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
 	}
-	X.matrix <- X.matrix[,names(resp)];
+	X.matrix <- X.matrix[,intersect(names(resp),colnames(X.matrix))];
 
 	model <- createGLMnetSignature(
 				responseVector = resp, 

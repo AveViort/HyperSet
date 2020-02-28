@@ -117,7 +117,7 @@ for (a in Args) {
 	if (grepl('=', a)) {
 		p1 <- strsplit(a, split = '=', fixed = T)[[1]];
 		if (length(p1) > 1) {
-			if (p1[1] == "ids") {
+			if (p1[1] == "xids") {
 				Par[p1[1]] = p1[2];
 			} else {
 				Par[p1[1]] = tolower(p1[2]);
@@ -132,23 +132,33 @@ setwd(r.plots);
 File <- paste0(r.plots, "/", Par["out"])
 print(File)
 print(names(Par));
-png(file=File, width =  plotSize, height = plotSize, type = "cairo");
-datatypes <- unlist(strsplit(Par["datatypes"], split = ","));
-print(datatypes);
-platforms <- unlist(strsplit(Par["platforms"], split = ","));
-print(platforms);
-ids <- as.list(strsplit(tolower(Par["ids"]), split = ",")[[1]]);
+x_datatypes <- unlist(strsplit(Par["xdatatypes"], split = ","));
+print(x_datatypes);
+x_platforms <- unlist(strsplit(Par["xplatforms"], split = ","));
+print(x_platforms);
+x_ids <- as.list(strsplit(Par["xids"], split = ",")[[1]]);
 # unlike plots, where we have one id per variable, here we have lists of them
-for (i in 1:length(ids)) {
-	temp <- gsub("\\[|\\]", "", ids[[i]]);
+for (i in 1:length(x_ids)) {
+	temp <- gsub("\\[|\\]", "", x_ids[[i]]);
 	temp <- unlist(strsplit(temp, split = "\\|"));
-	ids[[i]] <- temp;
+	query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse=","), "}'::text[]);"); 
+	print(query);
+	internal_ids <- sqlQuery(rch, query);
+	print(internal_ids);
+	x_ids[[i]] <- internal_ids[,"internal_id"];
 }
-print(ids);
+print(x_ids);
+
 multiopt <- unlist(strsplit(Par["multiopt"], split = ","));
 print(multiopt);
 fname <- substr(Par["out"], 1, gregexpr(pattern = "\\.", Par["out"])[[1]][1]-1);
 print(fname);
-query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(platforms, collapse = "','"), "'"),"]);");
+query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(x_platforms, collapse = "','"), "'"),"]);");
 readable_platforms <- sqlQuery(rch, query);
 rownames(readable_platforms) <- readable_platforms[,1];
+rdatatype <- Par["rdatatype"];
+print(rdatatype);
+rplatform <- Par["rplatform"];
+print(rplatform);
+rid <- Par["rid"];
+print(rid);
