@@ -18,6 +18,9 @@ ids_placeholders.set("DRUG", "Drug name or ID");
 ids_placeholders.set("NEA_GE", "Pathway name");
 ids_placeholders.set("NEA_MUT", "Pathway name");
 
+//lifetime for cookies
+var druggable_cookie_time = 168;
+
 //var html_glm_regressors = "<td id='d-x###'><table id ='table-regressors###'><tr><tr><td>Predictors, type ###:</td><td></td></tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table></td>";
 var html_glm_regressors = "<table id ='table-regressors###'><tr><tr><td>Predictors, type ###:</td><td></td></tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table>";
 

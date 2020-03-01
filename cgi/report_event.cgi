@@ -18,11 +18,11 @@ my $user_agent = $query->param("user_agent");
 
 print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable');
-$message =~ s/"/'\\"'/eg;
+$message =~ s/"/\"/g;
 $stat = qq/SELECT report_event(\'$source'\, \'$level'\, \'$description'\, \'$options'\, \'$message'\, \'$user_agent'\);/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 $dbh->commit;
-print "ok";
+print 'ok';
 $sth->finish;
 $dbh->disconnect;

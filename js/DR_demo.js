@@ -37,157 +37,151 @@ function waitForElement (ww) {
 // demo for the third tap - 2D plot
 function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, datatype2, platform2, id2, scale2, plottype) {
 	if (sessionStorage.getItem("demo") == null) {
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			sessionStorage.setItem("demo", 1);
-			$("#tabs").tabs("option", "active", 2);
+		sessionStorage.setItem("demo", 1);
+		$("#tabs").tabs("option", "active", 2);
 		
-			// prepare everything for demo
-			var n = $('#plot_options tr').length-1;
-			if (n > 1) {
-				for (var i = n; i>=2; i--) {
-					console.log(i);
-					delete_plot_options_row(2);
-				}
+		// prepare everything for demo
+		var n = $('#plot_options tr').length-1;
+		if (n > 1) {
+			for (var i = n; i>=2; i--) {
+				console.log(i);
+				delete_plot_options_row(2);
 			}
-			var to = 1000;
-			changeDropVal("#source_selector", source, to);
-			to += 1000;            //250;
-			
-			var part_a = {
-				ele: "cohort_selector",	
-				interval: 50, 
-				val: cohort, 
-				func: function () {
-					console.log("Part cohort_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_a); 
-			changeDropVal("#cohort_selector", cohort, to);
-			to += 1300;            //250;
-			
-			var part_b = {
-				ele: "type1_selector",	
-				interval: 50, 
-				val: datatype1, 
-				func: function () {
-					console.log("Part type1_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_b); 
-			changeDropVal("#type1_selector", datatype1, to);
-			to += 1700;
-			
-			var part_c = {
-				ele: "platform1_selector",	
-				interval: 50, 
-				val: platform1, 
-				func: function () {
-					console.log("Part platform1_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_c); 
-			changeDropVal("#platform1_selector", platform1, to);
-			to += 2000;
-			
-			setTextBox(id1, to, "#id1_input");
-			to += 2800;
-			
-			var part_d = {
-				ele: "axis1_selector",	
-				interval: 50, 
-				val: scale1, 
-				func: function () {
-					console.log("Part axis1_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_d); 
-			changeDropVal("#axis1_selector", scale1, to);
-			to += 3100;
-			
-			setTimeout(function () {
-				console.log("Part add_row1");
-					demoClick("#add_row1", 100);
-			}, to);
-			to += 3200;
-			
-			var part_e = {
-				ele: "type2_selector",	
-				interval: 50, 
-				val: datatype2, 
-				func: function () {
-					console.log("Part type2_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_e); 
-			changeDropVal("#type2_selector", datatype2, to);
-			to += 3700;
-			
-			var part_f = {
-				ele: "platform2_selector",	
-				interval: 50, 
-				val: platform2, 
-				func: function () {
-					console.log("Part platform2_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_f); 
-			changeDropVal("#platform2_selector", platform2, to);
-			to += 4000;
-			
-			setTimeout(function () {
-				$("#id2_input").val(id2); 
-				id_keyup(2);
-			}, to);
-			to += 4300;
-			
-			var part_g = {
-				ele: "axis2_selector",	
-				interval: 50, 
-				val: scale2, 
-				func: function () {
-					console.log("Part axis2_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_g); 
-			changeDropVal("#axis2_selector", scale2, to);
-			to += 4600;
-			
-			var part_h = {
-				ele: "plot-type",	
-				interval: 50, 
-				val: plottype, 
-				func: function () {
-					console.log("Part plot-type");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_h); 
-			changeDropVal("#plot-type", plottype, to);
-			to += 4900;
-			
-			setTimeout(function () {
-				demoClick("#plot-button", 100);
-				sessionStorage.removeItem("demo");
-			}, to);
-			to += 5200;
-			
-			setTimeout(function () {
-				if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
-					alert("Click on any point on the graph to see the network behind")
-				}
-			}, to);
 		}
-		else {
-			alert("Please accept cookies to run demo");
+		var to = 1000;
+		changeDropVal("#source_selector", source, to);
+		to += 1000;            //250;
+			
+		var part_a = {
+			ele: "cohort_selector",	
+			interval: 50, 
+			val: cohort, 
+			func: function () {
+				console.log("Part cohort_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
 		}
+		waitForElement(part_a); 
+		changeDropVal("#cohort_selector", cohort, to);
+		to += 1300;            //250;
+		
+		var part_b = {
+			ele: "type1_selector",	
+			interval: 50, 
+			val: datatype1, 
+			func: function () {
+				console.log("Part type1_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_b); 
+		changeDropVal("#type1_selector", datatype1, to);
+		to += 1700;
+			
+		var part_c = {
+			ele: "platform1_selector",	
+			interval: 50, 
+			val: platform1, 
+			func: function () {
+				console.log("Part platform1_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_c); 
+		changeDropVal("#platform1_selector", platform1, to);
+		to += 2000;
+			
+		setTextBox(id1, to, "#id1_input");
+		to += 2800;
+			
+		var part_d = {
+			ele: "axis1_selector",	
+			interval: 50, 
+			val: scale1, 
+			func: function () {
+				console.log("Part axis1_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_d); 
+		changeDropVal("#axis1_selector", scale1, to);
+		to += 3100;
+			
+		setTimeout(function () {
+			console.log("Part add_row1");
+				demoClick("#add_row1", 100);
+		}, to);
+		to += 3200;
+			
+		var part_e = {
+			ele: "type2_selector",	
+			interval: 50, 
+			val: datatype2, 
+			func: function () {
+				console.log("Part type2_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_e); 
+		changeDropVal("#type2_selector", datatype2, to);
+		to += 3700;
+			
+		var part_f = {
+			ele: "platform2_selector",	
+			interval: 50, 
+			val: platform2, 
+			func: function () {
+				console.log("Part platform2_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_f); 
+		changeDropVal("#platform2_selector", platform2, to);
+		to += 4000;
+			
+		setTimeout(function () {
+			$("#id2_input").val(id2); 
+			id_keyup(2);
+		}, to);
+		to += 4300;
+			
+		var part_g = {
+			ele: "axis2_selector",	
+			interval: 50, 
+			val: scale2, 
+			func: function () {
+				console.log("Part axis2_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_g); 
+		changeDropVal("#axis2_selector", scale2, to);
+		to += 4600;
+			
+		var part_h = {
+			ele: "plot-type",	
+			interval: 50, 
+			val: plottype, 
+			func: function () {
+				console.log("Part plot-type");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_h); 
+		changeDropVal("#plot-type", plottype, to);
+		to += 4900;
+			
+		setTimeout(function () {
+			demoClick("#plot-button", 100);
+			sessionStorage.removeItem("demo");
+		}, to);
+		to += 5200;
+			
+		setTimeout(function () {
+			if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
+				alert("Click on any point on the graph to see the network behind")
+			}
+		}, to);
 	}
 }
 
@@ -197,84 +191,78 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 // WARNING! Numeration can be weird, the first line can have number 5893 etc.
 function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 	if (sessionStorage.getItem("demo") == null) {
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			sessionStorage.setItem("demo", 1);
-			$("#tabs").tabs("option", "active", 1);
+		sessionStorage.setItem("demo", 1);
+		$("#tabs").tabs("option", "active", 1);
 			
-			// if we had previous results - delete them
-			var n = $('#cor_result_table tr').length;
-			if (n > 1) {
-				$('#cor_result_table').DataTable().clear();
-				$('#cor_result_table').DataTable().destroy();
-			}
-			
-			var to = 1200;
-			changeDropVal("#corSource_selector", source, to);
-			to += 2000; 
-			
-			var part_a = {
-				ele: "corDatatype_selector",	
-				interval: 50, 
-				val: datatype, 
-				func: function () {
-					console.log("Part corDatatype_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_a); 
-			changeDropVal("#corDatatype_selector", datatype, to);
-			to += 14500;            
-			
-			var part_b = {
-				ele: "corPlatform_selector",	
-				interval: 50, 
-				val: platform, 
-				func: function () {
-					console.log("Part corPlatform_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_b); 
-			changeDropVal("#corPlatform_selector", platform, to);
-			to += 14900;
-			
-			var part_c = {
-				ele: "corScreen_selector",	
-				interval: 50, 
-				val: screen, 
-				func: function () {
-					console.log("Part corScreen_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_c); 
-			changeDropVal("#corScreen_selector", screen, to);
-			to += 15100;
-			
-			setTextBox(id, to, "#corGeneFeature_input");
-			to += 15200;
-			
-			setTimeout(function () {
-				demoClick("#FDR_input", 50);
-				$("#FDR_input").val(fdr); 
-			}, to);
-			to += 15300;
-			
-			setTimeout(function () {
-				demoClick("#retrieve-cor-button", 100);
-			}, to);
-			to += 15400;
-			
-			setTimeout(function () {
-				demoClick("#cor-KM" + plotid, 100);
-				sessionStorage.removeItem("demo");
-			}, to);
-			to += 15800;
+		// if we had previous results - delete them
+		var n = $('#cor_result_table tr').length;
+		if (n > 1) {
+			$('#cor_result_table').DataTable().clear();
+			$('#cor_result_table').DataTable().destroy();
 		}
-		else {
-			alert("Please accept cookies to run demo");
+			
+		var to = 1200;
+		changeDropVal("#corSource_selector", source, to);
+		to += 2000; 
+			
+		var part_a = {
+			ele: "corDatatype_selector",	
+			interval: 50, 
+			val: datatype, 
+			func: function () {
+				console.log("Part corDatatype_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
 		}
+		waitForElement(part_a); 
+		changeDropVal("#corDatatype_selector", datatype, to);
+		to += 14500;            
+			
+		var part_b = {
+			ele: "corPlatform_selector",	
+			interval: 50, 
+			val: platform, 
+			func: function () {
+				console.log("Part corPlatform_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_b); 
+		changeDropVal("#corPlatform_selector", platform, to);
+		to += 14900;
+			
+		var part_c = {
+			ele: "corScreen_selector",	
+			interval: 50, 
+			val: screen, 
+			func: function () {
+				console.log("Part corScreen_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_c); 
+		changeDropVal("#corScreen_selector", screen, to);
+		to += 15100;
+			
+		setTextBox(id, to, "#corGeneFeature_input");
+		to += 15200;
+			
+		setTimeout(function () {
+			demoClick("#FDR_input", 50);
+			$("#FDR_input").val(fdr); 
+		}, to);
+		to += 15300;
+			
+		setTimeout(function () {
+			demoClick("#retrieve-cor-button", 100);
+		}, to);
+		to += 15400;
+			
+		setTimeout(function () {
+			demoClick("#cor-KM" + plotid, 100);
+			sessionStorage.removeItem("demo");
+		}, to);
+		to += 15800;
 	}
 }
 
@@ -282,84 +270,78 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 // this is demo of "Plot" button for the second tab
 function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 	if (sessionStorage.getItem("demo") == null) {
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			sessionStorage.setItem("demo", 1);	
-			$("#tabs").tabs("option", "active", 1);
+		sessionStorage.setItem("demo", 1);	
+		$("#tabs").tabs("option", "active", 1);
 			
-			// if we had previous results - delete them
-			var n = $('#cor_result_table tr').length;
-			if (n > 1) {
-				$('#cor_result_table').DataTable().clear();
-				$('#cor_result_table').DataTable().destroy();
-			}
-			
-			var to = 1200;
-			changeDropVal("#corSource_selector", source, to);
-			to += 1000;
-			
-			var part_a = {
-				ele: "corDatatype_selector",	
-				interval: 50, 
-				val: datatype, 
-				func: function () {
-					console.log("Part corDatatype_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_a); 
-			changeDropVal("#corDatatype_selector", datatype, to);
-			to += 14500;
-			
-			var part_b = {
-				ele: "corPlatform_selector",	
-				interval: 50, 
-				val: platform, 
-				func: function () {
-					console.log("Part corPlatform_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_b); 
-			changeDropVal("#corPlatform_selector", platform, to);
-			to += 14900;
-			
-			var part_c = {
-				ele: "corScreen_selector",	
-				interval: 50, 
-				val: screen, 
-				func: function () {
-					console.log("Part corScreen_selector");
-					demoClick("#" + this.ele, 100);
-				}	   
-			}
-			waitForElement(part_c); 
-			changeDropVal("#corScreen_selector", screen, to);
-			to += 15100;
-			
-			setTextBox(id, to, "#corGeneFeature_input");
-			to += 15200;
-			
-			setTimeout(function () {
-				demoClick("#FDR_input", 50);
-				$("#FDR_input").val(fdr); 
-			}, to);
-			to += 15300;
-			
-			setTimeout(function () {
-				demoClick("#retrieve-cor-button", 100);
-			}, to);
-			to += 15400;
-			
-			setTimeout(function () {
-				demoClick("#cor-plot" + plotid, 100);
-				sessionStorage.removeItem("demo");
-			}, to);
-			to += 15800;
+		// if we had previous results - delete them
+		var n = $('#cor_result_table tr').length;
+		if (n > 1) {
+			$('#cor_result_table').DataTable().clear();
+			$('#cor_result_table').DataTable().destroy();
 		}
-		else {
-			alert("Please accept cookies to run demo");
+			
+		var to = 1200;
+		changeDropVal("#corSource_selector", source, to);
+		to += 1000;
+			
+		var part_a = {
+			ele: "corDatatype_selector",	
+			interval: 50, 
+			val: datatype, 
+			func: function () {
+				console.log("Part corDatatype_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
 		}
+		waitForElement(part_a); 
+		changeDropVal("#corDatatype_selector", datatype, to);
+		to += 14500;
+			
+		var part_b = {
+			ele: "corPlatform_selector",	
+			interval: 50, 
+			val: platform, 
+			func: function () {
+				console.log("Part corPlatform_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_b); 
+		changeDropVal("#corPlatform_selector", platform, to);
+		to += 14900;
+			
+		var part_c = {
+			ele: "corScreen_selector",	
+			interval: 50, 
+			val: screen, 
+			func: function () {
+				console.log("Part corScreen_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_c); 
+		changeDropVal("#corScreen_selector", screen, to);
+		to += 15100;
+			
+		setTextBox(id, to, "#corGeneFeature_input");
+		to += 15200;
+			
+		setTimeout(function () {
+			demoClick("#FDR_input", 50);
+			$("#FDR_input").val(fdr); 
+		}, to);
+		to += 15300;
+			
+		setTimeout(function () {
+			demoClick("#retrieve-cor-button", 100);
+		}, to);
+		to += 15400;
+			
+		setTimeout(function () {
+			demoClick("#cor-plot" + plotid, 100);
+			sessionStorage.removeItem("demo");
+		}, to);
+		to += 15800;
 	}
 }		
 			

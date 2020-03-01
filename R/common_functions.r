@@ -11,7 +11,7 @@ report_event <- function(e_source, e_level, e_description, e_options, e_message)
 		"&level=", e_level,
 		"&description=", e_description,
 		"&options=", URLencode(gsub("&", "%26", e_options)),
-		"&message=", URLencode(gsub("&", "%26", e_message)),
+		"&message=", URLencode(gsub("&", "%26", e_message), reserved = FALSE),
 		"&user_agent=internal");
 	print(report_string);
 	GET(report_string);

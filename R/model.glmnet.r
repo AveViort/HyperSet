@@ -3,7 +3,6 @@ source("../R/init_predictor.r");
 library(glmnet);
 
 usedSamples <- c();
-Ncases <- 10;
 Stages 	<- c("X", "Tis", "Stage 0", "Stage I", "Stage IA",  "Stage IB",  "Stage IC",  "Stage II", "Stage IIA",  "Stage IIB",  "Stage IIC",  "Stage III", "Stage IIIA", "Stage IIIB", "Stage IIIC", "Stage IV" , "Stage IVA" , "Stage IVB" , "Stage IVC" );
 Stata <- c("Negative", "Equivocal", "Indeterminate", "Positive")
 Levels <- c("absent", "medium", "strong", "weak");
@@ -27,6 +26,7 @@ Rescale[["TStage"]] <- c(1,2,3,4,4)
 names(Rescale[["TStage"]]) 					<- c("T1", "T2", "T3", "T4", "T4a");
 Rescale[["TStage_binarized"]] <- c(1,1,2,2,2)
 names(Rescale[["TStage_binarized"]]) <- c("T1", "T2", "T3", "T4", "T4a");
+survival_platforms <- c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi");
 
 createGLMnetSignature <- function (
 	responseVector, 
@@ -272,11 +272,11 @@ query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par
 print(query);
 table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", ifelse(!empty_value(rid), "id,", ""),
-	rplatform, ifelse(rplatform %in% c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi"), paste0(",", rplatform, "_time"), ""), 
+	rplatform, ifelse(rplatform %in% survival_platforms, paste0(",", rplatform, "_time"), ""), 
 	" FROM ", table_name);
 condition <- " WHERE ";
 if (rdatatype == "clin") {
-	if (rplatform %in% c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi")) {
+	if (rplatform %in% survival_platforms) {
 		condition <- paste0(condition, rplatform,"_time<>0");
 	}
 } else {
@@ -382,7 +382,7 @@ if (!stop_flag) {
 	standardize <- as.logical(Par["standardize"]);
 	
 	cu <- NULL;
-	if (rplatform %in% c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi")) {
+	if (rplatform %in% survival_platforms) {
 		cu <- makeCu(clin=resp_matr, s.type=rplatform, Xmax=NA, usedNames=usedSamples);
 		cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
 		X.matrix <- X.matrix[,rownames(cu)];
@@ -405,9 +405,10 @@ if (!stop_flag) {
 			temp_names <- names(resp);
 			resp <- unlist(lapply(resp, function(el) {return(Rescale[[rplatform]][el])}));
 			names(resp) <- temp_names;
-			print(resp);
-			print(str(resp));
 		}
+		resp <- resp[!is.na(resp)];
+		print(resp);
+		print(str(resp));
 	}
 	
 	print(str(X.matrix));

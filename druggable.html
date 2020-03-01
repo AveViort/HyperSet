@@ -123,9 +123,9 @@ li.tab:hover ul {
 
 <div id="cookiewarning">
 	<div role="alert" class="ui-widget-header ui-corner-all" style=" margin: 5px; padding: 5px;">
-	<p style="width: 95%; height: 60px; display: block; text-align: right; margin: 5px; padding: 5px;">This website uses cookies. To learn more about our cookie policy, click <a class="clickable" style="color: #e17009" href="https://www.evinet.org/help/faq-evi/evi-faq.html#privacy">here</a>
+	<p style="width: 95%; height: 60px; display: block; text-align: right; margin: 5px; padding: 5px;">This website uses cookies. To learn more about our cookie policy, click <a class="clickable" style="color: #e17009" href="www://dev.evinet.org/help/faq-evi/dr-faq.html#security">here</a>
 	  <br>  <br>
-	  <button type="button" id="acceptcookies" class="ui-widget-header ui-corner-all" style="vertical-align: middle; align: right;" onclick="acceptCookies()">I agree</button>
+	  <button type="button" id="ackcookies" class="ui-widget-header ui-corner-all" style="vertical-align: middle; align: right;" onclick="acceptCookies()">Ok</button>
 	  </p>
 	</div>	
 </div>
@@ -540,11 +540,8 @@ $("#help-qtip").qtip({
 
 $(document).ready(function(){
 	safe_clear();
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("cookies_accepted", "true", accepted_time);
-	}
+	// need this to hide message
+	checkCookiesAccepted();
 	
 	urlfixtabs("#tabs");
 	//$("#progressbar").progressbar({		value: false	});	$("#progressbar").css({"visibility": "hidden"});
@@ -560,7 +557,7 @@ $(document).ready(function(){
 	$("#clean_reload_button").button();
 	$("#clean_reload_button").qtip({ 
 			content: {
-				text: "Press this button to delete all cookies. The site will return to the original state like you have never used it before, but accepted cookies"
+				text: "Press this button to delete all cookies. The site will return to the original state like you have never used it before"
 			},
 			position: {
 				my: 'bottom left',  
@@ -591,16 +588,12 @@ $(document).ready(function(){
         width: "100px"
     });
 	$('#source_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update_source()} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("source").split("|"))[0];
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		if (sources.includes(previous_selection)) {
-			$("#source_selector").val(previous_selection);
-			$('#source_selector').selectmenu( "refresh" );
-		}
-		usetCookie("source", $("#source_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("source").split("|"))[0];
+	if (sources.includes(previous_selection)) {
+		$("#source_selector").val(previous_selection);
+		$('#source_selector').selectmenu( "refresh" );
 	}
+	usetCookie("source", $("#source_selector option:selected").val(), druggable_cookie_time);
 	init_cohortselector();
 	$("#add_row1").qtip({ 
 			content: {
@@ -681,147 +674,138 @@ function reload_model_options() {
 }
 
 function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		// get all child nodes of #tabs
-		var nodes = $("#tabs").tabs()[0].childNodes;
-		// this is the node used to attach plot - pay attention to 6+2*!
-		var parent_tab = "#" + nodes[4+2*$("#tabs").tabs("option", "active")].getAttribute("id");		
-		// variables are initialised when this function is called from correlations table, otherwise - initialise them
-		if (type == undefined) {
-			type = $('#plot-type option:selected').val();
-			var n = $('#plot_options tr').length-1;
-			source = $("#source_selector option:selected").val();
-			cohort = $("#cohort_selector option:selected").val();
-			datatypes = [];
-			ids = [];
-			platforms = [];
-			scales = [];
-			tcga_codes = [];
-			for (i=1; i<=n; i++) {
-				datatypes.push($("#type" + i + "_selector option:selected").val());
-				platforms.push($("#platform" + i + "_selector option:selected").val());
-				ids.push($("#id" + i + "_input").val());
-				scales.push($("#axis" + i + "_selector option:selected").val());
-				tcga_codes.push($("#tcga_selector option:selected").val());
-			}
+	// get all child nodes of #tabs
+	var nodes = $("#tabs").tabs()[0].childNodes;
+	// this is the node used to attach plot - pay attention to 6+2*!
+	var parent_tab = "#" + nodes[4+2*$("#tabs").tabs("option", "active")].getAttribute("id");		
+	// variables are initialised when this function is called from correlations table, otherwise - initialise them
+	if (type == undefined) {
+		type = $('#plot-type option:selected').val();
+		var n = $('#plot_options tr').length-1;
+		source = $("#source_selector option:selected").val();
+		cohort = $("#cohort_selector option:selected").val();
+		datatypes = [];
+		ids = [];
+		platforms = [];
+		scales = [];
+		tcga_codes = [];
+		for (i=1; i<=n; i++) {
+			datatypes.push($("#type" + i + "_selector option:selected").val());
+			platforms.push($("#platform" + i + "_selector option:selected").val());
+			ids.push($("#id" + i + "_input").val());
+			scales.push($("#axis" + i + "_selector option:selected").val());
+			tcga_codes.push($("#tcga_selector option:selected").val());
 		}
-		var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
-		var plot_filename = find_plot_in_history(plot_description);
-		var plot_id;
-		var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
-		// new plot
-		if (plot_filename == "no") {
-			//$("#progressbar").css({"visibility": "visible"});
-			var ErrorStack = check_error_stack(new Error().stack);
-			plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
-			// check if plot successfully created
-			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + plot_filename, false);
-			xmlhttp.send();
-			if (xmlhttp.status == 404) {
-				console.log("Something went wrong, plot was not created, reporting error...");
-				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "error", "plot_not_created", "type=" + type +
-					"&source=" + source + 
-					"&cohort=" + cohort + 
-					"&datatypes" + datatypes.join() + 
-					"&platforms=" + platforms.join() + 
-					"&ids=" + ids.join() +
-					"&tcga_codes=" + tcga_codes.join() +
-					"&scales=" + scales.join(),
-					ErrorStack);
-			}
-			else {
-				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "plot_created", "type=" + type +
-					"&source=" + source + 
-					"&cohort=" + cohort + 
-					"&datatypes" + datatypes.join() + 
-					"&platforms=" + platforms.join() + 
-					"&ids=" + ids.join() +
-					"&tcga_codes=" + tcga_codes.join() +
-					"&scales=" + scales.join(),
-					"https://" + window.location.hostname + "/pics/plots/" + plot_filename);
-			}
-			plot_id = plot_filename.substring(0, plot_filename.length-5);
-			sessionStorage.setItem(plot_filename, plot_description);
+	}
+	var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
+	var plot_filename = find_plot_in_history(plot_description);
+	var plot_id;
+	var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
+	// new plot
+	if (plot_filename == "no") {
+		//$("#progressbar").css({"visibility": "visible"});
+		var ErrorStack = check_error_stack(new Error().stack);
+		plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
+		// check if plot successfully created
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + plot_filename, false);
+		xmlhttp.send();
+		if (xmlhttp.status == 404) {
+			console.log("Something went wrong, plot was not created, reporting error...");
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "error", "plot_not_created", "type=" + type +
+				"&source=" + source + 
+				"&cohort=" + cohort + 
+				"&datatypes" + datatypes.join() + 
+				"&platforms=" + platforms.join() + 
+				"&ids=" + ids.join() +
+				"&tcga_codes=" + tcga_codes.join() +
+				"&scales=" + scales.join(),
+				ErrorStack);
+		}
+		else {
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "plot_created", "type=" + type +
+				"&source=" + source + 
+				"&cohort=" + cohort + 
+				"&datatypes" + datatypes.join() + 
+				"&platforms=" + platforms.join() + 
+				"&ids=" + ids.join() +
+				"&tcga_codes=" + tcga_codes.join() +
+				"&scales=" + scales.join(),
+				"https://" + window.location.hostname + "/pics/plots/" + plot_filename);
+		}
+		plot_id = plot_filename.substring(0, plot_filename.length-5);
+		sessionStorage.setItem(plot_filename, plot_description);
+		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
+		$(parent_tab).append(graph_window);
+		$("#plot_window_" + plot_id).dialog({
+			title: plot_title,
+			buttons: [
+				{
+					text: "Minimize",
+					icon: "ui-icon-minus",
+					click: function() {plot_minimize(this)},
+				},
+				{
+					text: "Get link",
+					icon: "ui-icon-link",
+					click: function() {
+						navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
+						alert("The plot can be accessed at any time via the link:\n https://www.evinet.org/pics/plots/" + plot_filename + " \n, which is also copied to the clippboard.");
+						mark_plot(plot_filename);
+					},
+					showText: false
+				}
+			],
+			height: 'auto',
+			width: 'auto',
+			modal: false,
+			resize: function( event, ui ) {
+					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+					($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+				},
+			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+		}).parent().appendTo(parent_tab);
+		//$("#progressbar").css({"visibility": "hidden"});
+	}
+	// existing plot
+	else {
+		console.log("No need to do it again!");
+		plot_id = plot_filename.substring(0, plot_filename.length-5);
+		if (document.getElementById("plot_window_" + plot_id)) {
+			console.log("We already have a window: move it to the top!");
+			$("#plot_window_" + plot_id + ".ui-dialog-content.ui-widget-content").dialog("moveToTop");
+		}
+		else {
+			console.log("Plot was closed");
 			var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
-			$(parent_tab).append(graph_window);
-			$("#plot_window_" + plot_id).dialog({
+			$(graph_window).dialog({
 				title: plot_title,
 				buttons: [
 					{
 						text: "Minimize",
 						icon: "ui-icon-minus",
-						click: function() {plot_minimize(this)},
+						click: function() {plot_minimize(this)}
 					},
 					{
 						text: "Get link",
 						icon: "ui-icon-link",
 						click: function() {
-							//dock_plot(this, plot_id);
 							navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
-							alert("The plot can be accessed at any time via the link:\n https://www.evinet.org/pics/plots/" + plot_filename + " \n, which is also copied to the clippboard.");
+							alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
 							mark_plot(plot_filename);
-						},
-						showText: false
+						}
 					}
 				],
 				height: 'auto',
 				width: 'auto',
 				modal: false,
 				resize: function( event, ui ) {
-						($(this).children('iframe'))[0].setAttribute("height", $(this).height());
-						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
-					},
+					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+					($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+				},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			}).parent().appendTo(parent_tab);
-			//$("#progressbar").css({"visibility": "hidden"});
 		}
-		// existing plot
-		else {
-			console.log("No need to do it again!");
-			plot_id = plot_filename.substring(0, plot_filename.length-5);
-			if (document.getElementById("plot_window_" + plot_id)) {
-				console.log("We already have a window: move it to the top!");
-				$("#plot_window_" + plot_id + ".ui-dialog-content.ui-widget-content").dialog("moveToTop");
-			}
-			else {
-				console.log("Plot was closed");
-				var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
-				$(graph_window).dialog({
-					title: plot_title,
-					buttons: [
-						{
-							text: "Minimize",
-							icon: "ui-icon-minus",
-							click: function() {plot_minimize(this)}
-						},
-						{
-							text: "Get link",
-							icon: "ui-icon-link",
-							click: function() {
-								//dock_plot(this, plot_id);
-								navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
-								alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
-								mark_plot(plot_filename);
-							}
-						}
-					],
-					height: 'auto',
-					width: 'auto',
-					modal: false,
-					//resizable: false,
-					resize: function( event, ui ) {
-						($(this).children('iframe'))[0].setAttribute("height", $(this).height());
-						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
-					},
-					beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-				}).parent().appendTo(parent_tab);
-			}
-		}
-	}
-	else {
-		alert("Please accept cookies to use this site");
 	}
 }
 
@@ -888,9 +872,9 @@ function build_and_show_model() {
 		var model_filename = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
 			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
 		var model_name = model_filename.substr(0, model_filename.search("\\."));
-		var model_window = '<div id="model_window"><iframe src="https://www.evinet.org/pics/plots/' + model_filename + '" width="960" height="600"></iframe><br><table id="model_coef" class="display" style="width:100%"></table></div>';
+		var model_window = '<div id="' + model_name + '_window"><iframe src="https://www.evinet.org/pics/plots/' + model_filename + '" width="960" height="600"></iframe><br><table id="' + model_name + '_coef" class="display" style="width:100%"></table></div>';
 			$("#tab-predict").append(model_window);
-			$("#model_window").dialog({
+			$("#" + model_name + "_window").dialog({
 				title: "Model viewer",
 				height: 'auto',
 				width: 'auto',
@@ -901,7 +885,7 @@ function build_and_show_model() {
 					},
 				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 			}).parent().appendTo("#tab-predict");
-		$('#model_coef').DataTable( {
+		$('#' + model_name + '_coef').DataTable( {
 			"ajax": "https://dev.evinet.org/pics/plots/coeff." + model_name + ".json",
 			"columns": [
 				{ "data": "Term"},
@@ -952,155 +936,147 @@ function tcga_km_from_cor(i, drug) {
 }
 
 function add_plot_options_row(i) {
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		// current number of rows (-1 because of header)
-		var n = $('#plot_options tr').length-1;
-		for (j=n; j>=i+1; j--) {
-			$('#type' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + (j+1) + '_selector')} );
-			$('#platform' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('platform' + (j+1) + '_selector')} );
-			document.getElementById('plot_options_row' + j).setAttribute("id", 'plot_options_row' + (j+1));
-			document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j+1) +'_selector');
-			document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j+1) +'_selector');
-			document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j+1) +')');
-			document.getElementById('id' + j +'_input').setAttribute("onchange", 'id_keyup(' + (j+1) +')');
-			document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j+1) +'_input');
-			document.getElementById('id' + j +'_confirmed').setAttribute("id", 'id' + (j+1) +'_confirmed');
-			document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j+1) +'_selector');
-			document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j+1));
-			document.getElementById('add_row' + (j+1)).setAttribute("onclick", 'add_plot_options_row(' + (j+1) + ')');
-			document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j+1));
-			document.getElementById('delete_row' + (j+1)).setAttribute("onclick", 'delete_plot_options_row(' + (j+1) + ')');
-			document.getElementById('open_info' + j).setAttribute("id", 'open_info' + (j+1));
-			document.getElementById('open_info' + (j+1)).setAttribute("onclick", 'open_info_page(' + (j+1) + ')');
-			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-			usetCookie("type" + (j+1) + "_selector", (getCookie("type" + j + "_selector").split("|"))[0], accepted_time);
-			usetCookie("platform" + (j+1) + "_selector", (getCookie("platform" + j + "_selector").split("|"))[0], accepted_time);
-		}
+	// current number of rows (-1 because of header)
+	var n = $('#plot_options tr').length-1;
+	for (j=n; j>=i+1; j--) {
+		$('#type' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + (j+1) + '_selector')} );
+		$('#platform' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('platform' + (j+1) + '_selector')} );
+		document.getElementById('plot_options_row' + j).setAttribute("id", 'plot_options_row' + (j+1));
+		document.getElementById('type' + j +'_selector').setAttribute("id", 'type' + (j+1) +'_selector');
+		document.getElementById('platform' + j +'_selector').setAttribute("id", 'platform' + (j+1) +'_selector');
+		document.getElementById('id' + j +'_input').setAttribute("onkeyup", 'id_keyup(' + (j+1) +')');
+		document.getElementById('id' + j +'_input').setAttribute("onchange", 'id_keyup(' + (j+1) +')');
+		document.getElementById('id' + j +'_input').setAttribute("id", 'id' + (j+1) +'_input');
+		document.getElementById('id' + j +'_confirmed').setAttribute("id", 'id' + (j+1) +'_confirmed');
+		document.getElementById('axis' + j +'_selector').setAttribute("id", 'axis' + (j+1) +'_selector');
+		document.getElementById('add_row' + j).setAttribute("id", 'add_row' + (j+1));
+		document.getElementById('add_row' + (j+1)).setAttribute("onclick", 'add_plot_options_row(' + (j+1) + ')');
+		document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j+1));
+		document.getElementById('delete_row' + (j+1)).setAttribute("onclick", 'delete_plot_options_row(' + (j+1) + ')');
+		document.getElementById('open_info' + j).setAttribute("id", 'open_info' + (j+1));
+		document.getElementById('open_info' + (j+1)).setAttribute("onclick", 'open_info_page(' + (j+1) + ')');
+		usetCookie("type" + (j+1) + "_selector", (getCookie("type" + j + "_selector").split("|"))[0], druggable_cookie_time);
+		usetCookie("platform" + (j+1) + "_selector", (getCookie("platform" + j + "_selector").split("|"))[0], druggable_cookie_time);
+	}
 		
-		sessionStorage.setItem("add_row", 1);
+	sessionStorage.setItem("add_row", 1);
 		
-		var table = document.getElementById("plot_options");
-		var row = table.insertRow(i+1);
-		row.id = "plot_options_row" + (i+1);
-		var TypeSelectorCell = row.insertCell(0);
-		TypeSelectorCell.innerHTML = '<select id="type' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
-		var for_delete = false;
-		var ErrorStack = check_error_stack(new Error().stack);
-		var flag = init_dataselector('type'+(i+1)+'_selector');
-		if (flag) {
-			alert('No more compatible datatypes!');
-			var previous_datatypes = [];
-			for (j=1; j<i; j++) {
-				previous_datatypes.push($("#type" + j +"_selector option:selected").val());
-			}
-			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_datatypes", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join(), ErrorStack);
-			for_delete = true;
+	var table = document.getElementById("plot_options");
+	var row = table.insertRow(i+1);
+	row.id = "plot_options_row" + (i+1);
+	var TypeSelectorCell = row.insertCell(0);
+	TypeSelectorCell.innerHTML = '<select id="type' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
+	var for_delete = false;
+	var ErrorStack = check_error_stack(new Error().stack);
+	var flag = init_dataselector('type'+(i+1)+'_selector');
+	if (flag) {
+		alert('No more compatible datatypes!');
+		var previous_datatypes = [];
+		for (j=1; j<i; j++) {
+			previous_datatypes.push($("#type" + j +"_selector option:selected").val());
 		}
-		var PlatformSelectorCell = row.insertCell(1);
-		PlatformSelectorCell.innerHTML = '<select id="platform' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
-		var IdInput = row.insertCell(2);
-		IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup(' + (i+1) + ')" onchange="id_keyup(' + (i+1) + ')">';
-		var IdConfirmed = row.insertCell(3);
-		IdConfirmed.innerHTML = '<input id="id'+ (i+1) + '_confirmed" disabled>';
-		var ErrorStack = check_error_stack(new Error().stack);
-		flag = init_platformselector('platform'+(i+1)+'_selector');
-		if (flag & !for_delete) {
-			alert('No more compatible platforms!');
-			var previous_datatypes = [];
-			var previous_platforms = [];
-			for (j=1; j<i; j++) {
-				previous_datatypes.push($("#type" + j +"_selector option:selected").val());
-				previous_platforms.push($("#platform" + j +"_selector option:selected").val());
-			}
-			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_platforms", 
-				"cohort=" + $("#cohort_selector option:selected").val() + 
-				"&previous_datatypes=" + previous_datatypes.join() + 
-				"&previous_platforms=" + previous_platforms.join(),
-				ErrorStack);
-			for_delete = true;
+		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_datatypes", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join(), ErrorStack);
+		for_delete = true;
+	}
+	var PlatformSelectorCell = row.insertCell(1);
+	PlatformSelectorCell.innerHTML = '<select id="platform' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
+	var IdInput = row.insertCell(2);
+	IdInput.innerHTML = '<input id="id'+ (i+1) + '_input" onkeyup="id_keyup(' + (i+1) + ')" onchange="id_keyup(' + (i+1) + ')">';
+	var IdConfirmed = row.insertCell(3);
+	IdConfirmed.innerHTML = '<input id="id'+ (i+1) + '_confirmed" disabled>';
+	var ErrorStack = check_error_stack(new Error().stack);
+	flag = init_platformselector('platform'+(i+1)+'_selector');
+	if (flag & !for_delete) {
+		alert('No more compatible platforms!');
+		var previous_datatypes = [];
+		var previous_platforms = [];
+		for (j=1; j<i; j++) {
+			previous_datatypes.push($("#type" + j +"_selector option:selected").val());
+			previous_platforms.push($("#platform" + j +"_selector option:selected").val());
 		}
-		var InfoButton = row.insertCell(4);
-		InfoButton.innerHTML = '<button id="open_info' + (i+1) + '" onclick="open_info_page(' + (i+1) + ')" disabled>Info</button>';
-		$("#open_info" + (i+1)).qtip({ 
-			content: {
-				text: "Open external information page"
-			}
-		});
-		var AxisSelector = row.insertCell(5);
-		AxisSelector.innerHTML = '<select id="axis' + (i+1) +'_selector" class="ui-helper" style="width: 20ch;">';
-		init_axis_type_selector('axis' + (i+1) + '_selector');
-		var AddButton = row.insertCell(6);
-		// max number of rows defined in druggable_config.js
-		AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=' + max_rows + ' onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
-		$("#add_row" + (i+1)).qtip({ 
-			content: {
-				text: "Add a new row (under this one)"
-			}
-		});
-		var DeleteButton = row.insertCell(7);
-		DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=' + max_rows + ' onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
-		$("#delete_row" + (i+1)).qtip({ 
-			content: {
-				text: "Delete this row"
-			}
-		});
-		update_plot_types();
-		$("#add_row" + (i+1)).button();
-		$("#delete_row" + (i+1)).button();
-		$("#open_info" + (i+1)).button();
+		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_platforms", 
+			"cohort=" + $("#cohort_selector option:selected").val() + 
+			"&previous_datatypes=" + previous_datatypes.join() + 
+			"&previous_platforms=" + previous_platforms.join(),
+			ErrorStack);
+		for_delete = true;
+	}
+	var InfoButton = row.insertCell(4);
+	InfoButton.innerHTML = '<button id="open_info' + (i+1) + '" onclick="open_info_page(' + (i+1) + ')" disabled>Info</button>';
+	$("#open_info" + (i+1)).qtip({ 
+		content: {
+			text: "Open external information page"
+		}
+	});
+	var AxisSelector = row.insertCell(5);
+	AxisSelector.innerHTML = '<select id="axis' + (i+1) +'_selector" class="ui-helper" style="width: 20ch;">';
+	init_axis_type_selector('axis' + (i+1) + '_selector');
+	var AddButton = row.insertCell(6);
+	// max number of rows defined in druggable_config.js
+	AddButton.innerHTML = '<button id="add_row' + (i+1) + '" max=' + max_rows + ' onclick="add_plot_options_row(' + (i+1) + ')">+</button>';
+	$("#add_row" + (i+1)).qtip({ 
+		content: {
+			text: "Add a new row (under this one)"
+		}
+	});
+	var DeleteButton = row.insertCell(7);
+	DeleteButton.innerHTML = '<button id="delete_row' + (i+1) + '" max=' + max_rows + ' onclick="delete_plot_options_row(' + (i+1) + ')">-</button>';
+	$("#delete_row" + (i+1)).qtip({ 
+		content: {
+			text: "Delete this row"
+		}
+	});
+	update_plot_types();
+	$("#add_row" + (i+1)).button();
+	$("#delete_row" + (i+1)).button();
+	$("#open_info" + (i+1)).button();
 		
-		// for some reason - we have to do this after initialisation. Otherwise , if you do it on one of the previous lines, jquery ui will
-		// add "title" field to button and hence another tip (you will see "+" and "-" white tooltips for icons)
-		$("#add_row" + (i+1)).button({icon: "ui-icon-circle-plus",
-			showLabel: false});
-		$("#delete_row" + (i+1)).button({icon: "ui-icon-circle-minus",
-			showLabel: false});
-		$("#open_info" + (i+1)).button({icon: "ui-icon-extlink",
-			showLabel: false});
-		if (n+1 >= document.getElementById("add_row" + i).getAttribute("max")) {
-			for (j=1; j<=n+1; j++) {
-				$("#add_row" + j).button("disable");
-			}
+	// for some reason - we have to do this after initialisation. Otherwise , if you do it on one of the previous lines, jquery ui will
+	// add "title" field to button and hence another tip (you will see "+" and "-" white tooltips for icons)
+	$("#add_row" + (i+1)).button({icon: "ui-icon-circle-plus",
+		showLabel: false});
+	$("#delete_row" + (i+1)).button({icon: "ui-icon-circle-minus",
+		showLabel: false});
+	$("#open_info" + (i+1)).button({icon: "ui-icon-extlink",
+		showLabel: false});
+	if (n+1 >= document.getElementById("add_row" + i).getAttribute("max")) {
+		for (j=1; j<=n+1; j++) {
+			$("#add_row" + j).button("disable");
 		}
-		for (j=1; j<=n; j++) {
-				$("#delete_row" + j).button("enable");
-			}
-		$("#source_selector").selectmenu("disable");
-		$("#source_selector-wrapper").qtip({ 
-			content: {
-				text: "Please delete all but one row to change source"
-			}
-		});
-		$("#cohort_selector").selectmenu("disable");
-		$("#cohort_selector-wrapper").qtip({ 
-			content: {
-				text: "Please delete all but one row to change cohort"
-			}
-		});
-		var id_input_enabled = ($("#id" + (i+1) + "_input").is(":enabled"));
-		if (id_input_enabled) {
-			$("#plot-button").button("disable"); 
+	}
+	for (j=1; j<=n; j++) {
+		$("#delete_row" + j).button("enable");
+	}
+	$("#source_selector").selectmenu("disable");
+	$("#source_selector-wrapper").qtip({ 
+		content: {
+			text: "Please delete all but one row to change source"
 		}
-		if (for_delete) {
-			delete_plot_options_row(i+1);
+	});
+	$("#cohort_selector").selectmenu("disable");
+	$("#cohort_selector-wrapper").qtip({ 
+		content: {
+			text: "Please delete all but one row to change cohort"
 		}
-		else {
-			$('#tcga_selector').find('option').remove().end();
-			$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-			init_tcga_code_selector('tcga_selector');
-			$('#tcga_selector').selectmenu( "refresh" );
-		}
-		sessionStorage.removeItem("add_row");
-		id_keyup(i+1);
+	});
+	var id_input_enabled = ($("#id" + (i+1) + "_input").is(":enabled"));
+	if (id_input_enabled) {
+		$("#plot-button").button("disable"); 
+	}
+	if (for_delete) {
+		delete_plot_options_row(i+1);
 	}
 	else {
-		alert("Please accept cookies to use this site");
+		$('#tcga_selector').find('option').remove().end();
+		$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		init_tcga_code_selector('tcga_selector');
+		$('#tcga_selector').selectmenu( "refresh" );
 	}
+	sessionStorage.removeItem("add_row");
+	id_keyup(i+1);
 }
 
 function delete_plot_options_row(i) {
-	// no need to check cookies in this function - you cannot add row without accepting cookies
 	var n = $('#plot_options tr').length-1;
 	for (j=i+1; j<=n; j++) {
 		$('#type' + j + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + (j-1) + '_selector')} );
@@ -1119,9 +1095,9 @@ function delete_plot_options_row(i) {
 		document.getElementById('delete_row' + j).setAttribute("id", 'delete_row' + (j-1));
 		document.getElementById('open_info' + j).setAttribute("onclick", 'open_info_page(' + (j-1) + ')');
 		document.getElementById('open_info' + j).setAttribute("id", 'open_info' + (j-1));
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("type" + j + "_selector", (getCookie("type" + (j-1) + "_selector").split("|"))[0], accepted_time);
-		usetCookie("platform" + j + "_selector", (getCookie("platform" + (j-1) + "_selector").split("|"))[0], accepted_time);
+		// druggable_cookie_time defined in druggable_config.js
+		usetCookie("type" + j + "_selector", (getCookie("type" + (j-1) + "_selector").split("|"))[0], druggable_cookie_time);
+		usetCookie("platform" + j + "_selector", (getCookie("platform" + (j-1) + "_selector").split("|"))[0], druggable_cookie_time);
 	}
 	$("#plot_options_row" + i).children().children().qtip('destroy', true);
 	document.getElementById("plot_options").deleteRow(i);
@@ -1163,34 +1139,28 @@ function delete_plot_options_row(i) {
 
 // unlike plot options model options row may be added only as a last row
 function add_model_options_row() {
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var i = $('[id*="modelPlatform"][id$="selector"]').length + 1;
-		//$('[id*="modelPlatform"] option:selected').each(function () {});
-		var newContent = html_glm_regressors.replace(/###/g, i);
-		if (i == 1) {
-			newContent.replace(/\, type 1/, "");
-		}
-		var row = document.getElementById("r-x");
-		var NewModelXCell = row.insertCell(i-1);
-		NewModelXCell.id = "d-x" + i;
-		NewModelXCell.innerHTML = newContent;
-
-		init_model_datatype_selector(i);
-		init_model_platform_selector(i);
-		init_model_genearea(i);
-		if (i > 1) {
-			$("#modelSource_selector").selectmenu("disable");
-			$("#modelCohort_selector").selectmenu("disable");
-			if (i == max_model_rows) {
-				$("#add_variable").button("disable");
-			}
-			$("#delete_variable").button("enable");
-			check_model_unique_variable(i);
-		}
+	var i = $('[id*="modelPlatform"][id$="selector"]').length + 1;
+	//$('[id*="modelPlatform"] option:selected').each(function () {});
+	var newContent = html_glm_regressors.replace(/###/g, i);
+	if (i == 1) {
+		newContent.replace(/\, type 1/, "");
 	}
-	else {
-		alert("Please accept cookies to use this site");
+	var row = document.getElementById("r-x");
+	var NewModelXCell = row.insertCell(i-1);
+	NewModelXCell.id = "d-x" + i;
+	NewModelXCell.innerHTML = newContent;
+
+	init_model_datatype_selector(i);
+	init_model_platform_selector(i);
+	init_model_genearea(i);
+	if (i > 1) {
+		$("#modelSource_selector").selectmenu("disable");
+		$("#modelCohort_selector").selectmenu("disable");
+		if (i == max_model_rows) {
+			$("#add_variable").button("disable");
+		}
+		$("#delete_variable").button("enable");
+		check_model_unique_variable(i);
 	}
 }
 
@@ -1221,15 +1191,11 @@ function init_cohortselector() {
         width: "100px"
     });
 	$('#cohort_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update_cohort()} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("cohort").split("|"))[0];
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		if (cohort_ids.includes(previous_selection)) {
-			$("#cohort_selector").val(previous_selection);
-		}
-		usetCookie("cohort", $("#cohort_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("cohort").split("|"))[0];
+	if (cohort_ids.includes(previous_selection)) {
+		$("#cohort_selector").val(previous_selection);
 	}
+	usetCookie("cohort", $("#cohort_selector option:selected").val(), druggable_cookie_time);
 	$('#cohort_selector').selectmenu( "refresh" );
 	sessionStorage.setItem("add_row", 1);
 	init_dataselector("type1_selector");
@@ -1272,17 +1238,13 @@ function init_dataselector(selector_id) {
 		$("#" + selector_id).append(options.join("")).selectmenu({
 			width: "120px"
 		});
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			var previous_selection = (getCookie(selector_id).split("|"))[0];
-			if (datatypes_ids.includes(previous_selection)) {
-				$("#" + selector_id).val(previous_selection);
-				$("#" + selector_id).selectmenu( "refresh" );
-			}
-			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-			var selector_value = $("#" + selector_id + " option:selected").val();
-			usetCookie(selector_id, selector_value, accepted_time);
+		var previous_selection = (getCookie(selector_id).split("|"))[0];
+		if (datatypes_ids.includes(previous_selection)) {
+			$("#" + selector_id).val(previous_selection);
+			$("#" + selector_id).selectmenu( "refresh" );
 		}
+		var selector_value = $("#" + selector_id + " option:selected").val();
+		usetCookie(selector_id, selector_value, druggable_cookie_time);
 		$("#" + selector_id).off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update('type' + n + '_selector')} );
 	}
 	else {
@@ -1335,17 +1297,13 @@ function init_platformselector(selector_id) {
 		for (i=0; i<platforms[0].length; i++) {
 			platforms_ids.push(platforms[0][i]["platform"]);
 		}
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			var previous_selection = (getCookie(selector_id).split("|"))[0];
-			if (platforms_ids.includes(previous_selection)) {
-				$("#" + selector_id).val(previous_selection);
-				$("#" + selector_id).selectmenu( "refresh" );
-			}
-			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-			var selector_value = $("#" + selector_id + " option:selected").val();
-			usetCookie(selector_id, selector_value, accepted_time);
+		var previous_selection = (getCookie(selector_id).split("|"))[0];
+		if (platforms_ids.includes(previous_selection)) {
+			$("#" + selector_id).val(previous_selection);
+			$("#" + selector_id).selectmenu( "refresh" );
 		}
+		var selector_value = $("#" + selector_id + " option:selected").val();
+		usetCookie(selector_id, selector_value, druggable_cookie_time);
 		// get autocomplete_ids only if it is enabled
 		if (flag) {
 			var autocomplete_ids = get_autocomplete_ids ($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
@@ -1519,11 +1477,7 @@ function init_cor_cohort_selector() {
 	//options.push("<option value='undef' disabled selected>Choose platform</option>");
 	var cor_datatype = $("#corDatatype_selector option:selected").val();
 	if (cor_datatype != "undef") {
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-			usetCookie("corDatatype_selector", cor_datatype, accepted_time);
-		}
+		usetCookie("corDatatype_selector", cor_datatype, druggable_cookie_time);
 		var cohorts = get_correlation_cohorts($("#corSource_selector option:selected").val(), cor_datatype);
 		options.push("<option value='all'>All cohorts</option>");
 		for (i in cohorts) {
@@ -1543,11 +1497,7 @@ function init_cor_platform_selector() {
 	var cor_datatype = $("#corDatatype_selector option:selected").val();
 	var cor_cohort = $("#corCohort_selector option:selected").val();
 	if (cor_cohort != "undef") {
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-			usetCookie("corCohort_selector", cor_cohort, accepted_time);
-		}
+		usetCookie("corCohort_selector", cor_cohort, druggable_cookie_time);
 		var platforms = get_correlation_platforms($("#corSource_selector option:selected").val(), cor_datatype, cor_cohort);
 		options.push("<option value='all'>All platforms</option>");
 		for (i in platforms) {
@@ -1566,11 +1516,7 @@ function init_cor_screen_selector() {
 	var options = [];
 	var cor_platform = $("#corPlatform_selector option:selected").val();
 	if (cor_platform != "undef") {
-		var cookies = checkCookiesAccepted();
-		if (cookies) {
-			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-			usetCookie("corPlatform_selector", cor_platform, accepted_time);
-		}
+		usetCookie("corPlatform_selector", cor_platform, druggable_cookie_time);
 		var screens = get_correlation_screens($("#corSource_selector option:selected").val(), $("#corDatatype_selector option:selected").val(), $("#corCohort_selector option:selected").val(), cor_platform);
 		options.push("<option value='all'>All screens</option>");
 		for (i in screens) {
@@ -1655,16 +1601,12 @@ function init_model_source_selector() {
         width: "150px"
     });
 	$('#modelSource_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelSource_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("modelSource_selector").split("|"))[0];
-		if (sources_ids.includes(previous_selection)) {
-			$("#modelSource_selector").val(previous_selection);
-			$("#modelSource_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("modelSource_selector", $("#modelSource_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("modelSource_selector").split("|"))[0];
+	if (sources_ids.includes(previous_selection)) {
+		$("#modelSource_selector").val(previous_selection);
+		$("#modelSource_selector").selectmenu( "refresh" );
 	}
+	usetCookie("modelSource_selector", $("#modelSource_selector option:selected").val(), druggable_cookie_time);
 }
 
 function init_model_cohort_selector() {
@@ -1680,16 +1622,12 @@ function init_model_cohort_selector() {
         width: "175px"
     });
 	$('#modelCohort_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelCohort_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("modelCohort_selector").split("|"))[0];
-		if (cohort_ids.includes(previous_selection)) {
-			$("#modelCohort_selector").val(previous_selection);
-			$("#modelCohort_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("modelCohort_selector", $("#modelCohort_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("modelCohort_selector").split("|"))[0];
+	if (cohort_ids.includes(previous_selection)) {
+		$("#modelCohort_selector").val(previous_selection);
+		$("#modelCohort_selector").selectmenu( "refresh" );
 	}
+	usetCookie("modelCohort_selector", $("#modelCohort_selector option:selected").val(), druggable_cookie_time);
 }
 
 function init_model_datatype_selector(n) {
@@ -1708,16 +1646,12 @@ function init_model_datatype_selector(n) {
 		disabled: model_source == "undef"
     });
 	$('#modelDatatype' + n + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelDatatype" + n + "_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("modelDatatype" + n + "_selector").split("|"))[0];
-		if (datatypes_ids.includes(previous_selection)) {
-			$("#modelDatatype" + n + "_selector").val(previous_selection);
-			$("#modelDatatype" + n + "_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("modelDatatype" + n + "_selector", $("#modelDatatype" + n + "_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("modelDatatype" + n + "_selector").split("|"))[0];
+	if (datatypes_ids.includes(previous_selection)) {
+		$("#modelDatatype" + n + "_selector").val(previous_selection);
+		$("#modelDatatype" + n + "_selector").selectmenu( "refresh" );
 	}
+	usetCookie("modelDatatype" + n + "_selector", $("#modelDatatype" + n + "_selector option:selected").val(), druggable_cookie_time);
 }
 
 function init_model_platform_selector(n) {
@@ -1736,16 +1670,12 @@ function init_model_platform_selector(n) {
 		disabled: model_datatype == "undef"
     });
 	$('#modelPlatform' + n + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelPlatform" + n + "_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("modelPlatform" + n + "_selector").split("|"))[0];
-		if (platforms_ids.includes(previous_selection)) {
-			$("#modelPlatform" + n + "_selector").val(previous_selection);
-			$("#modelPlatform" + n + "_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("modelPlatform" + n + "_selector", $("#modelPlatform" + n + "_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("modelPlatform" + n + "_selector").split("|"))[0];
+	if (platforms_ids.includes(previous_selection)) {
+		$("#modelPlatform" + n + "_selector").val(previous_selection);
+		$("#modelPlatform" + n + "_selector").selectmenu( "refresh" );
 	}
+	usetCookie("modelPlatform" + n + "_selector", $("#modelPlatform" + n + "_selector option:selected").val(), druggable_cookie_time);
 }
 
 function init_model_genearea(n) {
@@ -1788,11 +1718,7 @@ function init_model_genearea(n) {
 			// add placeholder to get the comma-and-space at the end
 			terms.push( "" );
 			this.value = terms.join( ", " );
-			var cookies = checkCookiesAccepted();
-			if (cookies) {
-				var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-				usetCookie("modelGenearea" + n, $("#genes_area" + n).val(), accepted_time);
-			}
+			usetCookie("modelGenearea" + n, $("#genes_area" + n).val(), druggable_cookie_time);
 			return false;
 		}
 	});
@@ -1813,16 +1739,12 @@ function init_response_datatype_selector() {
         width: "150px"
     });
 	$('#responseDatatype_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseDatatype_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("responseDatatype_selector").split("|"))[0];
-		if (datatypes_ids.includes(previous_selection)) {
-			$("#responseDatatype_selector").val(previous_selection);
-			$("#responseDatatype_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("responseDatatype_selector", $("#responseDatatype_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("responseDatatype_selector").split("|"))[0];
+	if (datatypes_ids.includes(previous_selection)) {
+		$("#responseDatatype_selector").val(previous_selection);
+		$("#responseDatatype_selector").selectmenu( "refresh" );
 	}
+	usetCookie("responseDatatype_selector", $("#responseDatatype_selector option:selected").val(), druggable_cookie_time);
 }
 
 function init_response_variable_selector() {
@@ -1851,16 +1773,12 @@ function init_response_variable_selector() {
         width: "175px"
     });
 	$('#responseVariable_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseVariable_selector")} );
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("responseVariable_selector").split("|"))[0];
-		if (variable_ids.includes(previous_selection)) {
-			$("#responseVariable_selector").val(previous_selection);
-			$("#responseVariable_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("responseVariable_selector", $("#responseVariable_selector option:selected").val(), accepted_time);
+	var previous_selection = (getCookie("responseVariable_selector").split("|"))[0];
+	if (variable_ids.includes(previous_selection)) {
+		$("#responseVariable_selector").val(previous_selection);
+		$("#responseVariable_selector").selectmenu( "refresh" );
 	}
+	usetCookie("responseVariable_selector", $("#responseVariable_selector option:selected").val(), druggable_cookie_time);
 	if (flag == 1) {
 		$("#responseID_input").tooltip({
 				track: true
@@ -1924,23 +1842,18 @@ function init_response_multiselector() {
 	}
 	$("#responseMulti_selector").append(options.join(""));
     document.getElementById("responseMulti_selector").disabled = (values[0] == "");
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		var previous_selection = (getCookie("responseMulti_selector").split("|"))[0];
-		//console.log(previous_selection);
-		if (values.includes(previous_selection)) {
-			$("#responseMulti_selector").val(previous_selection);
-			$("#responseMulti_selector").selectmenu( "refresh" );
-		}
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("responseMulti_selector", $("#responseMulti_selector").val(), accepted_time);
+	var previous_selection = (getCookie("responseMulti_selector").split("|"))[0];
+	//console.log(previous_selection);
+	if (values.includes(previous_selection)) {
+		$("#responseMulti_selector").val(previous_selection);
+		$("#responseMulti_selector").selectmenu( "refresh" );
 	}
+	usetCookie("responseMulti_selector", $("#responseMulti_selector").val(), druggable_cookie_time);
 }
 
 function update_source() {
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#source_selector option:selected").val();
-	usetCookie("source", selector_value, accepted_time);
+	usetCookie("source", selector_value, druggable_cookie_time);
 	$('#cohort_selector').find('option').remove().end();
 	$('#cohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_cohortselector();
@@ -1948,9 +1861,8 @@ function update_source() {
 }
 
 function update_cohort() {
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#cohort_selector option:selected").val();
-	usetCookie("cohort", selector_value, accepted_time);
+	usetCookie("cohort", selector_value, druggable_cookie_time);
 	$('#type1_selector').find('option').remove().end();
 	$('#type1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	sessionStorage.setItem("add_row", 1);
@@ -1976,11 +1888,10 @@ function update_type(n) {
 	// use this to identify exit code
 	var status = 'ok';
 	if (sessionStorage.getItem("add_row") == null) {
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 		var selector_value = $("#type" + n + "_selector option:selected").val();
 		var previous_value = (getCookie("type" + n + "_selector").split("|"))[0];
 		if (selector_value != previous_value) {
-			usetCookie("type" + n + "_selector", selector_value, accepted_time);
+			usetCookie("type" + n + "_selector", selector_value, druggable_cookie_time);
 			n = parseInt(n);
 			$('#id' + n + '_input').val("");
 			if ($("#source_selector").val() == "TCGA") {
@@ -2041,7 +1952,6 @@ function update_type(n) {
 
 function update_platform(n) {
 	if (sessionStorage.getItem("add_row") == null) {
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 		var selector_value = $("#platform" + n + "_selector option:selected").val();
 		var previous_value = (getCookie("platform" + n + "_selector").split("|"))[0];
 		if (selector_value != previous_value) {
@@ -2051,7 +1961,7 @@ function update_platform(n) {
 			var x = $("#platform" + n + "_selector-button").children()[0];
 			x.className = "ui-icon ui-icon-loading-status-balls rotate";
 			//$(".main_header").addClass("ajax_loading");
-			usetCookie("platform" + n + "_selector", selector_value, accepted_time);
+			usetCookie("platform" + n + "_selector", selector_value, druggable_cookie_time);
 			n = parseInt(n);
 			$("#id" + n + "_input").val("");
 			if (sessionStorage.getItem("update_autocomplete") == null) {
@@ -2149,9 +2059,8 @@ function update_plot_type_selector() {
 }
 
 function update_cor_source_selector() {
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corSource_selector option:selected").val();
-	usetCookie("corSource_selector", selector_value, accepted_time);
+	usetCookie("corSource_selector", selector_value, druggable_cookie_time);
 	$('#corGeneFeature_input').val("");
 	$('#corDatatype_selector').find('option').remove().end();
 	$('#corDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
@@ -2160,9 +2069,8 @@ function update_cor_source_selector() {
 }
 
 function update_cor_datatype_selector() {
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
 	var selector_value = $("#corDatatype_selector option:selected").val();
-	usetCookie("corDatatype_selector", selector_value, accepted_time);
+	usetCookie("corDatatype_selector", selector_value, druggable_cookie_time);
 	$('#corCohort_selector').find('option').remove().end();
 	$('#corCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_cor_cohort_selector();
@@ -2171,8 +2079,7 @@ function update_cor_datatype_selector() {
 
 function update_cor_cohort_selector() {
 	var selector_value = $("#corCohort_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("corCohort_selector", selector_value, accepted_time);
+	usetCookie("corCohort_selector", selector_value, druggable_cookie_time);
 	$('#corPlatform_selector').find('option').remove().end();
 	$('#corPlatform_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_cor_platform_selector();
@@ -2182,8 +2089,7 @@ function update_cor_cohort_selector() {
 function update_cor_platform_selector() {
 	// here we don't compare previous value and current - previous value can be "all", but the function can be called by datatype change
 	var selector_value = $("#corPlatform_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("corPlatform_selector", selector_value, accepted_time);
+	usetCookie("corPlatform_selector", selector_value, druggable_cookie_time);
 	$('#corScreen_selector').find('option').remove().end();
 	$('#corScreen_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_cor_screen_selector();
@@ -2206,8 +2112,7 @@ function update_cor_screen_selector() {
 		$("#corCohort_selector").selectmenu("disable");
 		$("#corPlatform_selector").selectmenu("disable");
 		$("#corScreen_selector").selectmenu("disable");
-		var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-		usetCookie("corScreen_selector", selector_value, accepted_time);
+		usetCookie("corScreen_selector", selector_value, druggable_cookie_time);
 		init_cor_genefeature_input();
 		$("#corDatatype_selector").selectmenu("enable");
 		if ($("#corSource_selector option:selected").val() != "CCLE") {
@@ -2225,8 +2130,7 @@ function update_cor_screen_selector() {
 
 function update_model_source_selector() {
 	var selector_value = $("#modelSource_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("modelSource_selector", selector_value, accepted_time);
+	usetCookie("modelSource_selector", selector_value, druggable_cookie_time);
 	$('#modelCohort_selector').find('option').remove().end();
 	$('#modelCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_model_cohort_selector();
@@ -2235,8 +2139,7 @@ function update_model_source_selector() {
 
 function update_model_cohort_selector() {
 	var selector_value = $("#modelCohort_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("modelCohort_selector", selector_value, accepted_time);
+	usetCookie("modelCohort_selector", selector_value, druggable_cookie_time);
 	$('#modelDatatype1_selector').find('option').remove().end();
 	$('#modelDatatype1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_model_datatype_selector(1);
@@ -2249,8 +2152,7 @@ function update_model_cohort_selector() {
 
 function update_model_datatype_selector(n) {
 	var selector_value = $("#modelDatatype" + n + "_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("modelDatatype" + n + "_selector", selector_value, accepted_time);
+	usetCookie("modelDatatype" + n + "_selector", selector_value, druggable_cookie_time);
 	check_model_unique_variable(n);
 	$('#modelPlatform' + n + '_selector').find('option').remove().end();
 	$('#modelPlatform' + n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
@@ -2260,15 +2162,13 @@ function update_model_datatype_selector(n) {
 
 function update_model_platform_selector(n) {
 	var selector_value = $("#modelPlatform" + n + "_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("modelPlatform" + n + "_selector", selector_value, accepted_time);
+	usetCookie("modelPlatform" + n + "_selector", selector_value, druggable_cookie_time);
 	init_model_genearea(n);
 }
 
 function update_response_datatype_selector() {
 	var selector_value = $("#responseDatatype_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("responseDatatype_selector", selector_value, accepted_time);
+	usetCookie("responseDatatype_selector", selector_value, druggable_cookie_time);
 	$('#responseVariable_selector').find('option').remove().end();
 	$('#responseVariable_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_response_variable_selector();
@@ -2277,8 +2177,7 @@ function update_response_datatype_selector() {
 
 function update_response_variable_selector() {
 	var selector_value = $("#responseVariable_selector option:selected").val();
-	var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-	usetCookie("responseVariable_selector", selector_value, accepted_time);
+	usetCookie("responseVariable_selector", selector_value, druggable_cookie_time);
 	var length = document.getElementById("responseMulti_selector").options.length;
 	for (var i = length-1; i >= 0; i--) {
 		document.getElementById("responseMulti_selector").options[i] = null;
@@ -2313,140 +2212,133 @@ function update_plot_types() {
 // this function has to be called by nearly every selector
 // instead of using update chain
 function update(initiator) {
-	var cookies = checkCookiesAccepted();
-	if (cookies) {
-		// if update in process - do nothing
-		if (sessionStorage.getItem("updates_triggered") != null) {
-			console.log("Update invoked, but rejected. Initiator: " + initiator + ". Reason: update already in progress.");
+	// if update in process - do nothing
+	if (sessionStorage.getItem("updates_triggered") != null) {
+		console.log("Update invoked, but rejected. Initiator: " + initiator + ". Reason: update already in progress.");
+	}
+	else {
+		console.log("Update succesfully invoked by initiator: " + initiator);
+		sessionStorage.setItem("updates_triggered", 1);
+		var previous_value = (getCookie(initiator).split("|"))[0];
+		usetCookie(initiator, selector_value, druggable_cookie_time);
+		var selector_value = $("#" + initiator + " option:selected").val();
+		var initiator_type = (initiator.split("_"))[0];
+		var total = $('#plot_options tr').length-1;
+		var n = parseInt(initiator_type[initiator_type.length - 1]);
+		// type, platform etc. selectors contain numbers, but source selector does not
+		if (!isNaN(n)) {
+			initiator_type = initiator_type.slice(0, -1);
 		}
-		else {
-			console.log("Update succesfully invoked by initiator: " + initiator);
-			sessionStorage.setItem("updates_triggered", 1);
-			var previous_value = (getCookie(initiator).split("|"))[0];
-			var accepted_time = (getCookie("cookies_accepted").split("|"))[1];
-			usetCookie(initiator, selector_value, accepted_time);
-			var selector_value = $("#" + initiator + " option:selected").val();
-			var initiator_type = (initiator.split("_"))[0];
-			var total = $('#plot_options tr').length-1;
-			var n = parseInt(initiator_type[initiator_type.length - 1]);
-			// type, platform etc. selectors contain numbers, but source selector does not
-			if (!isNaN(n)) {
-				initiator_type = initiator_type.slice(0, -1);
-			}
-			switch(initiator_type) {
-				case "source":
-					update_source();
-					break;
-				case "cohort":
-					update_cohort();
-					break;
-				case "type":
-					if (selector_value != previous_value) {
-						toggle_selectors("disable");
-						var status = update_type(n);
-						console.log(status);
-						if (status != 'deleted') {
-							// use this to avoid double-update
-							sessionStorage.setItem("update_autocomplete", "false");
-							update_platform(n);
-							for (var i=n+1; i<=total; i++) {
-								update_type(i);
-								update_platform(i);
-							}
-							update_plot_types();
-							sessionStorage.removeItem("update_autocomplete");
-						}
-						toggle_selectors("enable");
-					}
-					break;
-				case "platform":
-					if (selector_value != previous_value) {
-						toggle_selectors("disable");
+		switch(initiator_type) {
+			case "source":
+				update_source();
+				break;
+			case "cohort":
+				update_cohort();
+				break;
+			case "type":
+				if (selector_value != previous_value) {
+					toggle_selectors("disable");
+					var status = update_type(n);
+					console.log(status);
+					if (status != 'deleted') {
+						// use this to avoid double-update
+						sessionStorage.setItem("update_autocomplete", "false");
 						update_platform(n);
 						for (var i=n+1; i<=total; i++) {
+							update_type(i);
 							update_platform(i);
 						}
 						update_plot_types();
-						toggle_selectors("enable");
+						sessionStorage.removeItem("update_autocomplete");
 					}
-					break;
-				case "corSource":
-					if (selector_value != previous_value) {
-						update_cor_source_selector();
-						update_cor_datatype_selector();
-						update_cor_cohort_selector();
-						update_cor_platform_selector();
+					toggle_selectors("enable");
+				}
+				break;
+			case "platform":
+				if (selector_value != previous_value) {
+					toggle_selectors("disable");
+					update_platform(n);
+					for (var i=n+1; i<=total; i++) {
+						update_platform(i);
 					}
-					break;
-				case "corDatatype":
-					if (selector_value != previous_value) {
-						update_cor_datatype_selector();
-						update_cor_cohort_selector();
-						update_cor_platform_selector();
-						update_cor_screen_selector();
-					}
-					break;
-				case "corCohort":
-					if (selector_value != previous_value) {
-						update_cor_cohort_selector();
-						update_cor_platform_selector();
-						update_cor_screen_selector();
-					}
-					break;
-				case "corPlatform":
+					update_plot_types();
+					toggle_selectors("enable");
+				}
+				break;
+			case "corSource":
+				if (selector_value != previous_value) {
+					update_cor_source_selector();
+					update_cor_datatype_selector();
+					update_cor_cohort_selector();
+					update_cor_platform_selector();
+				}
+				break;
+			case "corDatatype":
+				if (selector_value != previous_value) {
+					update_cor_datatype_selector();
+					update_cor_cohort_selector();
 					update_cor_platform_selector();
 					update_cor_screen_selector();
-					break;
-				case "corScreen":
+				}
+				break;
+			case "corCohort":
+				if (selector_value != previous_value) {
+					update_cor_cohort_selector();
+					update_cor_platform_selector();
 					update_cor_screen_selector();
-					break;
-				case "modelSource":
-					if (selector_value != previous_value) {
-						update_model_source_selector();
-						update_model_cohort_selector();
-						update_model_datatype_selector(1);
-						update_model_platform_selector(1);
-						update_response_datatype_selector();
-						update_response_variable_selector();
-					}
-					break;
-				case "modelCohort":
-					if (selector_value != previous_value) {
-						update_model_cohort_selector();
-						update_model_datatype_selector(1);
-						update_model_platform_selector(1);
-						update_response_datatype_selector();
-						update_response_variable_selector();
-					}
-					break;
-				case "modelDatatype":
-					if (selector_value != previous_value) {
-						update_model_datatype_selector(n);
-						update_model_platform_selector(n);
-					}
-					break;
-				case "modelPlatform":
-					if (selector_value != previous_value) {
-						update_model_platform_selector(n);
-					}
-					break;
-				case "responseDatatype":
-					if (selector_value != previous_value) {
-						update_response_datatype_selector();
-						update_response_variable_selector();
-					}
-					break;
-				case "responseVariable":
-					if (selector_value != previous_value) {
-						update_response_variable_selector();
-					}
-					break;
-			}
-			sessionStorage.removeItem("updates_triggered");
+				}
+				break;
+			case "corPlatform":
+				update_cor_platform_selector();
+				update_cor_screen_selector();
+				break;
+			case "corScreen":
+				update_cor_screen_selector();
+				break;
+			case "modelSource":
+				if (selector_value != previous_value) {
+					update_model_source_selector();
+					update_model_cohort_selector();
+					update_model_datatype_selector(1);
+					update_model_platform_selector(1);
+					update_response_datatype_selector();
+					update_response_variable_selector();
+				}
+				break;
+			case "modelCohort":
+				if (selector_value != previous_value) {
+					update_model_cohort_selector();
+					update_model_datatype_selector(1);
+					update_model_platform_selector(1);
+					update_response_datatype_selector();
+					update_response_variable_selector();
+				}
+				break;
+			case "modelDatatype":
+				if (selector_value != previous_value) {
+					update_model_datatype_selector(n);
+					update_model_platform_selector(n);
+				}
+				break;
+			case "modelPlatform":
+				if (selector_value != previous_value) {
+					update_model_platform_selector(n);
+				}
+				break;
+			case "responseDatatype":
+				if (selector_value != previous_value) {
+					update_response_datatype_selector();
+					update_response_variable_selector();
+				}
+				break;
+			case "responseVariable":
+				if (selector_value != previous_value) {
+					update_response_variable_selector();
+				}
+				break;
 		}
-	}
-	else {
-		alert("Please accept cookies to use this site");
+		sessionStorage.removeItem("updates_triggered");
 	}
 }
 
@@ -2726,6 +2618,11 @@ function check_model_input() {
 	var multiopt = $("#responseMulti_selector").val();
 	if (multiopt.length == 0) {
 		message = message + "\nAt least one values for multiselector should be selected";
+	}
+	if (!document.getElementById("responseID_input").disabled) {
+		if ($("#responseID_input").val().length == 0) {
+			message = message + "\nID for response variable not specified"
+		}
 	}
 	
 	if (message == "") {
