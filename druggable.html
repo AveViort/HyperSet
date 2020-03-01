@@ -135,11 +135,11 @@ li.tab:hover ul {
 		<li><a href="#tab-home">Introduction and help</a></li>
 		<li><a href="#tab-signif">Correlates of drug response</a></li>
 		<li><a href="#tab-lookup">Data exploration and look up</a></li>
-		<li><a href="#tab-predict">Multidimensional prediction models</a></li>
+		<!--li><a href="#tab-predict">Multidimensional prediction models</a></li-->
 	</ul>
 	
 	<div id="tab-home">
-		<div class="scalable-font-medium" style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
+		<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
 			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
 			</p>
 		</div>
@@ -235,7 +235,7 @@ li.tab:hover ul {
 		</div>
 	</div>
 	
-	<div class="scalable-font-small" id="tab-lookup"><br>
+	<div id="tab-lookup"><br>
 		<br>
 		<div id="plot-options-filters">
 			<table>
@@ -315,7 +315,7 @@ li.tab:hover ul {
 		</table>
 	</div>
 	
-	<div id="tab-predict">
+	<!--div id="tab-predict">
 		<table id="all_parameters" border="2" style="border-width: 2px; height: 150px; margin:10px">
 			<tr id="r-1">
 				<td id="d-glmnet" rowspan="4">
@@ -440,7 +440,7 @@ li.tab:hover ul {
 			</tr>
 		</table>
 		<button id="build_model_button" onclick="build_and_show_model()">Build model</button>
-	</div>
+	</div-->
 	</div>
 </div>     
 
@@ -629,24 +629,24 @@ $(document).ready(function(){
 		sessionStorage.setItem("docked_plots", 0);
 	}
 	
-	init_model_source_selector();
-	init_model_cohort_selector();
-	add_model_options_row();
-	$("#add_variable").button({icon: "ui-icon-circle-plus",
-        showLabel: false});
-	$("#delete_variable").button({icon: "ui-icon-circle-minus",
-        showLabel: false});
-	$("#delete_variable").button("disable");
-	if (getCookie("modelDatatype2_selector") != "") {
-		reload_model_options();
-	}
-	init_response_datatype_selector();
-	init_response_variable_selector();
-	init_response_multiselector();
+	//init_model_source_selector();
+	//init_model_cohort_selector();
+	//add_model_options_row();
+	//$("#add_variable").button({icon: "ui-icon-circle-plus",
+    //    showLabel: false});
+	//$("#delete_variable").button({icon: "ui-icon-circle-minus",
+    //    showLabel: false});
+	//$("#delete_variable").button("disable");
+	//if (getCookie("modelDatatype2_selector") != "") {
+	//	reload_model_options();
+	//}
+	//init_response_datatype_selector();
+	//init_response_variable_selector();
+	//init_response_multiselector();
 	// these parameters are defined in druggable_config.js
-	document.getElementById('nfold').setAttribute("min", nfolds_min);
-	document.getElementById('nfold').setAttribute("max", nfolds_max);
-	document.getElementById('crossval_perc').setAttribute("max", validation_fraction_max);
+	//document.getElementById('nfold').setAttribute("min", nfolds_min);
+	//document.getElementById('nfold').setAttribute("max", nfolds_max);
+	//document.getElementById('crossval_perc').setAttribute("max", validation_fraction_max);
 	//var tabList = $( "#tabs" )[0].childNodes[1].children;	for (tt = 0; tt < tabList.length; tt++) {$('#' + $(tabList[tt]).attr("aria-controls") + '-loading')[0].remove();			}		
 });
 

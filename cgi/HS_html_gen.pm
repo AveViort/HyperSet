@@ -605,7 +605,7 @@ $con .= '
 <a href="https://doi.org/10.1371/journal.pcbi.1007244" target="_blank"><img src="pics/ten.jpeg"  class="showme"></a></div>
 </td>
 
-<!-- start comment>< -->
+<!-- start comment>
 <td title="Heatmap">
 <div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"> 
