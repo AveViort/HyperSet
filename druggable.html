@@ -33,6 +33,7 @@
 <script src="js/DR_demo.js" type="text/javascript"></script>
 <script src="js/druggable_config.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/autotests.js" type="text/javascript" charset="utf-8"></script>
 
 <style>
 
@@ -123,7 +124,7 @@ li.tab:hover ul {
 
 <div id="cookiewarning">
 	<div role="alert" class="ui-widget-header ui-corner-all" style=" margin: 5px; padding: 5px;">
-	<p style="width: 95%; height: 60px; display: block; text-align: right; margin: 5px; padding: 5px;">This website uses cookies. To learn more about our cookie policy, click <a class="clickable" style="color: #e17009" href="www://dev.evinet.org/help/faq-evi/dr-faq.html#security">here</a>
+	<p style="width: 95%; height: 60px; display: block; text-align: right; margin: 5px; padding: 5px;">This website uses cookies. To learn more about our cookie policy, click <a class="clickable" style="color: #e17009" href="https://dev.evinet.org/help/faq-evi/dr-faq.html#security">here</a>
 	  <br>  <br>
 	  <button type="button" id="ackcookies" class="ui-widget-header ui-corner-all" style="vertical-align: middle; align: right;" onclick="acceptCookies()">Ok</button>
 	  </p>
@@ -135,11 +136,11 @@ li.tab:hover ul {
 		<li><a href="#tab-home">Introduction and help</a></li>
 		<li><a href="#tab-signif">Correlates of drug response</a></li>
 		<li><a href="#tab-lookup">Data exploration and look up</a></li>
-		<!--li><a href="#tab-predict">Multidimensional prediction models</a></li-->
+		<li><a href="#tab-predict">Multidimensional prediction models</a></li>
 	</ul>
 	
 	<div id="tab-home">
-		<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
+		<div class="scalable-font-medium" style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
 			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
 			</p>
 		</div>
@@ -235,7 +236,7 @@ li.tab:hover ul {
 		</div>
 	</div>
 	
-	<div id="tab-lookup"><br>
+	<div class="scalable-font-small" id="tab-lookup"><br>
 		<br>
 		<div id="plot-options-filters">
 			<table>
@@ -315,7 +316,7 @@ li.tab:hover ul {
 		</table>
 	</div>
 	
-	<!--div id="tab-predict">
+	<div id="tab-predict">
 		<table id="all_parameters" border="2" style="border-width: 2px; height: 150px; margin:10px">
 			<tr id="r-1">
 				<td id="d-glmnet" rowspan="4">
@@ -357,10 +358,7 @@ li.tab:hover ul {
 							<td title="Determined by distributions of the used input variables. Set automatically">Family
 							</td>
 							<td>
-								<select id="family">
-									<option>gaussian</option>
-									<option>cox</option>
-								</select>
+								<select id="family"></select>
 							</td>
 						</tr>
 						<tr>
@@ -440,7 +438,7 @@ li.tab:hover ul {
 			</tr>
 		</table>
 		<button id="build_model_button" onclick="build_and_show_model()">Build model</button>
-	</div-->
+	</div>
 	</div>
 </div>     
 
@@ -629,24 +627,25 @@ $(document).ready(function(){
 		sessionStorage.setItem("docked_plots", 0);
 	}
 	
-	//init_model_source_selector();
-	//init_model_cohort_selector();
-	//add_model_options_row();
-	//$("#add_variable").button({icon: "ui-icon-circle-plus",
-    //    showLabel: false});
-	//$("#delete_variable").button({icon: "ui-icon-circle-minus",
-    //    showLabel: false});
-	//$("#delete_variable").button("disable");
-	//if (getCookie("modelDatatype2_selector") != "") {
-	//	reload_model_options();
-	//}
-	//init_response_datatype_selector();
-	//init_response_variable_selector();
-	//init_response_multiselector();
+	init_model_source_selector();
+	init_model_cohort_selector();
+	add_model_options_row();
+	$("#add_variable").button({icon: "ui-icon-circle-plus",
+        showLabel: false});
+	$("#delete_variable").button({icon: "ui-icon-circle-minus",
+        showLabel: false});
+	$("#delete_variable").button("disable");
+	if (getCookie("modelDatatype2_selector") != "") {
+		reload_model_options();
+	}
+	init_response_datatype_selector();
+	init_response_variable_selector();
+	init_response_multiselector();
+	init_glmnet_family_selector();
 	// these parameters are defined in druggable_config.js
-	//document.getElementById('nfold').setAttribute("min", nfolds_min);
-	//document.getElementById('nfold').setAttribute("max", nfolds_max);
-	//document.getElementById('crossval_perc').setAttribute("max", validation_fraction_max);
+	document.getElementById('nfold').setAttribute("min", nfolds_min);
+	document.getElementById('nfold').setAttribute("max", nfolds_max);
+	document.getElementById('crossval_perc').setAttribute("max", validation_fraction_max);
 	//var tabList = $( "#tabs" )[0].childNodes[1].children;	for (tt = 0; tt < tabList.length; tt++) {$('#' + $(tabList[tt]).attr("aria-controls") + '-loading')[0].remove();			}		
 });
 
@@ -826,6 +825,7 @@ function build_and_show_model() {
 		var x_datatypes = [];
 		var x_platforms = [];
 		var x_ids = [];
+		var variable_count = 0;
 		var n = $('[id*="modelPlatform"][id$="selector"]').length;
 		for (var i=1; i<=n; i++) {
 			x_datatypes.push($("#modelDatatype" + n + "_selector option:selected").val());
@@ -841,58 +841,122 @@ function build_and_show_model() {
 					temp.splice(j, 1); 
 				}
 			}
+			if (document.getElementById("genes_area" + i).disabled) {
+				variable_count = variable_count + 1;
+			}
+			else {
+				variable_count = variable_count + temp.length
+			}
 			x_ids.push(temp);
 		}
 		
-		// model options
-		// hard-coded now, make a selector
-		var method = "glmnet";
-		var standardize = $("#standardize:checked").val();
-		if (standardize == "on") {
-			standardize = true;
+		// check if we have 1D analysis
+		if (variable_count == 1) {
+			var plot_types = get_plot_types([x_platforms[0], r_platform]);
+			if (plot_types[0] == '') {
+				alert("Unable to make analysis with chosen parameters");
+			}
+			else {
+				var scales = ['linear', 'linear'];
+				if (plot_types[0] == 'box') {
+					var axis_types = get_axis_types(cohort, x_datatypes[0], x_platforms[0]);
+					if (axis_types.length == 0) {
+						scales[0] = '';
+					}
+					axis_types = get_axis_types(cohort, r_datatype, r_platform);
+					if (axis_types.length == 0) {
+						scales[1] = '';
+					}
+				}
+				plot(plot_types[0], source, cohort, [x_datatypes[0], r_datatype], [x_platforms[0], r_platform], [x_ids[0][0], r_id], scales, [multiopt[0]]);
+			}
 		}
 		else {
-			standardize = false;
-		}
-		var alpha = $("#alpha").val();
-		var nlambda = $("#nlambda").val();
-		var minlambda = $("#minlambda").val();
-		var family = $("#family option:selected").val();
-		var measure = "deviance";
-		var crossvalidation = $("#crossval:checked").val();
-		if (crossvalidation == "on") {
-			crossvalidation = true;
-		}
-		else {
-			crossvalidation = false;
-		}
-		var nfold = $("#nfold").val();
-		var crossvalidation_percent = $("#crossval_perc").val()/100;
+			// model options
+			// hard-coded now, make a selector
+			var method = "glmnet";
+			var standardize = $("#standardize:checked").val();
+			if (standardize == "on") {
+				standardize = true;
+			}
+			else {
+				standardize = false;
+			}
+			var alpha = $("#alpha").val();
+			var nlambda = $("#nlambda").val();
+			var minlambda = $("#minlambda").val();
+			var family = $("#family option:selected").val();
+			var measure = "deviance";
+			var crossvalidation = $("#crossval:checked").val();
+			if (crossvalidation == "on") {
+				crossvalidation = true;
+			}
+			else {
+				crossvalidation = false;
+			}
+			var nfold = $("#nfold").val();
+			var crossvalidation_percent = $("#crossval_perc").val()/100;
 		
-		var model_filename = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
-			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
-		var model_name = model_filename.substr(0, model_filename.search("\\."));
-		var model_window = '<div id="' + model_name + '_window"><iframe src="https://www.evinet.org/pics/plots/' + model_filename + '" width="960" height="600"></iframe><br><table id="' + model_name + '_coef" class="display" style="width:100%"></table></div>';
-			$("#tab-predict").append(model_window);
-			$("#" + model_name + "_window").dialog({
-				title: "Model viewer",
-				height: 'auto',
-				width: 'auto',
-				modal: false,
-				resize: function( event, ui ) {
-						($(this).children('iframe'))[0].setAttribute("height", $(this).height());
-						($(this).children('iframe'))[0].setAttribute("width", $(this).width());
-					},
-				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-			}).parent().appendTo("#tab-predict");
-		$('#' + model_name + '_coef').DataTable( {
-			"ajax": "https://dev.evinet.org/pics/plots/coeff." + model_name + ".json",
-			"columns": [
-				{ "data": "Term"},
-				{ "data": "Coef"}
-			],
-			"order": [[ 1, "desc" ]],
-		});
+			var model_name = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
+				family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
+			var model_window = '<div id="' + model_name + '_window">' +
+				'<div id="' + model_name + '_tabs"> \
+					<ul> \
+						<li><a href="#' + model_name + '_model">Model overview</a></li> \
+						<li><a href="#' + model_name + '_training">Training</a></li>'
+						+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : ('')) +
+					'</ul> \
+					<div id="' + model_name + '_model"> \
+						<iframe src="https://www.evinet.org/pics/plots/' + model_name + '_model.png" width="720" height="720"></iframe> \
+					</div> \
+					<div id="' + model_name + '_training"> \
+						<iframe src="https://www.evinet.org/pics/plots/' + model_name + '_training.png" width="720" height="720"></iframe> \
+					</div>'
+					+ ((crossvalidation) ? (
+					'<div id="' + model_name + '_validation"> \
+						<iframe src="https://www.evinet.org/pics/plots/' + model_name + '_validation.png" width="720" height="720"></iframe> \
+					</div>') : ('')) +
+				'</div> \
+				<br> \
+				<table id="' + model_name + '_coef" class="display" style="width:100%"> \
+					<thead> \
+						<tr> \
+							<th>Coefficient</th> \
+							<th>Weight</th> \
+						</tr> \
+					</thead> \
+				</table>\
+				</div>';
+				$("#tab-predict").append(model_window);
+				$("#" + model_name + "_window").dialog({
+					title: "Model viewer",
+					height: 'auto',
+					width: 'auto',
+					modal: false,
+					buttons: [
+						{
+							text: "Download model",
+							icon: "ui-icon-download",
+							click: function() {window.location.href = "https://www.evinet.org/pics/plots/" + model_name + ".RData";},
+						}
+					],
+					resize: function( event, ui ) {
+							($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+							($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+						},
+					beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+				}).parent().appendTo("#tab-predict");
+			$("#" + model_name + "_tabs").tabs();
+			urlfixtabs("#" + model_name + "_tabs");
+			$('#' + model_name + '_coef').DataTable( {
+				"ajax": "https://dev.evinet.org/pics/plots/coeff." + model_name + ".json",
+				"columns": [
+					{ "data": "Term"},
+					{ "data": "Coef"}
+				],
+				"order": [[ 1, "desc" ]],
+			});
+		}
 	}
 	else {
 		alert("Please fix the following problems to build the model:" + status);
@@ -1169,7 +1233,6 @@ function delete_model_options_row() {
 	var n = $('[id*="modelPlatform"][id$="selector"]').length;
 	deleteCookie("modelDatatype" + n + "_selector");
 	deleteCookie("modelPlatform" + n + "_selector");
-	$("#genes_area" + (n-1)).disabled = false;
 	if (n == 2) {
 		$("#modelSource_selector").selectmenu("enable");
 		$("#modelCohort_selector").selectmenu("enable");
@@ -1682,46 +1745,50 @@ function init_model_genearea(n) {
 	var model_cohort = $("#modelCohort_selector option:selected").val();
 	var model_datatype = $("#modelDatatype" + n + "_selector option:selected").val();
 	var model_platform = $("#modelPlatform" + n + "_selector option:selected").val();
-	var ids = get_autocomplete_ids(model_cohort, model_datatype, model_platform);
-	
-	// example from https://jqueryui.com/autocomplete/#multiple
-	$("#genes_area" + n)
+	var flag = parseInt(ids_available(model_datatype));
+	$("#genes_area" + n).val();
+	document.getElementById("genes_area" + n).disabled = !(flag);
+	document.getElementById("genes_area" + n).hidden = !(flag);
+	if (flag) {
+		var ids = get_autocomplete_ids(model_cohort, model_datatype, model_platform);
+		// example from https://jqueryui.com/autocomplete/#multiple
+		$("#genes_area" + n)
 		// don't navigate away from the field on tab when selecting an item
-		.on( "keydown", function( event ) {
-		if ( event.keyCode === $.ui.keyCode.TAB &&
-			$( this ).autocomplete( "instance" ).menu.active ) {
-				event.preventDefault();
+			.on( "keydown", function( event ) {
+				if ( event.keyCode === $.ui.keyCode.TAB && $( this ).autocomplete( "instance" ).menu.active ) {
+					event.preventDefault();
+				}
+			})
+			.autocomplete({
+				minLength: 2,
+				response: function( event, ui ) {
+					if (ui.content.length > max_autocomplete) {
+						console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+					}
+				},
+			source: function( request, response ) {
+				// delegate back to autocomplete, but extract the last term
+				response( $.ui.autocomplete.filter(ids, extractLast( request.term ) ) );
+			},
+			focus: function() {
+				// prevent value inserted on focus
+				return false;
+			},
+			select: function( event, ui ) {
+				var terms = split( this.value );
+				// remove the current input
+				terms.pop();
+				// add the selected item
+				terms.push( ui.item.value );
+				// add placeholder to get the comma-and-space at the end
+				terms.push( "" );
+				this.value = terms.join( ", " );
+				usetCookie("modelGenearea" + n, $("#genes_area" + n).val(), druggable_cookie_time);
+				return false;
 			}
-		})
-		.autocomplete({
-		minLength: 2,
-		response: function( event, ui ) {
-			if (ui.content.length > max_autocomplete) {
-				console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
-				$("#" + event.target.getAttribute("id")).autocomplete( "close" );
-			}
-		},
-		source: function( request, response ) {
-			// delegate back to autocomplete, but extract the last term
-			response( $.ui.autocomplete.filter(ids, extractLast( request.term ) ) );
-		},
-		focus: function() {
-			// prevent value inserted on focus
-			return false;
-		},
-		select: function( event, ui ) {
-			var terms = split( this.value );
-			// remove the current input
-			terms.pop();
-			// add the selected item
-			terms.push( ui.item.value );
-			// add placeholder to get the comma-and-space at the end
-			terms.push( "" );
-			this.value = terms.join( ", " );
-			usetCookie("modelGenearea" + n, $("#genes_area" + n).val(), druggable_cookie_time);
-			return false;
-		}
-	});
+		});
+	}
 }
 
 function init_response_datatype_selector() {
@@ -1836,7 +1903,7 @@ function init_response_multiselector() {
 	else {
 		values = get_response_multiselector_values(model_source, model_cohort, response_datatype, response_variable);
 	}
-	console.log(values);
+	//console.log(values);
 	for (i in values) {
 		options.push("<option value='" + values[i] + "'>" + values[i] +"</option>");
 	}
@@ -1849,6 +1916,16 @@ function init_response_multiselector() {
 		$("#responseMulti_selector").selectmenu( "refresh" );
 	}
 	usetCookie("responseMulti_selector", $("#responseMulti_selector").val(), druggable_cookie_time);
+}
+
+function init_glmnet_family_selector() {
+	var options = [];
+	var response_datatype = $("#responseDatatype_selector option:selected").val();
+	var families = get_glmnet_family(response_datatype);
+	for (i in families) {
+		options.push("<option value='" + families[i] + "'>" + families[i] +"</option>");
+	}
+	$("#family").append(options.join("")).selectmenu();
 }
 
 function update_source() {
@@ -1917,6 +1994,7 @@ function update_type(n) {
 				}
 				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_platforms", 
 					"cohort=" + $("#cohort_selector option:selected").val() + 
+					"&datatype=" + $('#type' + n + '_selector').val() +
 					"&previous_datatypes=" + previous_datatypes.join() + 
 					"&previous_platforms=" + previous_platforms.join(),
 					ErrorStack);
@@ -2173,6 +2251,10 @@ function update_response_datatype_selector() {
 	$('#responseVariable_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_response_variable_selector();
 	$('#responseVariable_selector').selectmenu( "refresh" );
+	$('#family').find('option').remove().end();
+	$('#family').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_glmnet_family_selector();
+	$('#family').selectmenu( "refresh" );
 }
 
 function update_response_variable_selector() {
@@ -2600,19 +2682,26 @@ function check_model_unique_variable(n) {
 // this functions check if all model parameters are specified, returns either 'ok' or error message 
 function check_model_input() {
 	var message = "";
+	var variable_count = 0;
 	
 	var n = $('[id*="modelPlatform"][id$="selector"]').length;
 	for (var i=1; i<=n; i++) {
-		var temp = $("#genes_area" + n).val();
-		temp = temp.replace(/\s/g, '');
-		temp = temp.split(ids_delim);
-		for (var j=0; j<temp.length; j++) { 
-			if (temp[j] == "") {
-				temp.splice(j, 1); 
+		if (!document.getElementById("genes_area" + i).disabled) {
+			var temp = $("#genes_area" + n).val();
+			temp = temp.replace(/\s/g, '');
+			temp = temp.split(ids_delim);
+			for (var j=0; j<temp.length; j++) { 
+				if (temp[j] == "") {
+					temp.splice(j, 1); 
+				}
 			}
+			if (temp.length == 0) {
+				message = message + "\nEmpty IDs for variable " + j;
+			}
+			variable_count = variable_count + 1;
 		}
-		if (temp.length == 0) {
-			message = message + "\nEmpty IDs for variable " + j;
+		else {
+			variable_count = variable_count + 1;
 		}
 	}
 	var multiopt = $("#responseMulti_selector").val();

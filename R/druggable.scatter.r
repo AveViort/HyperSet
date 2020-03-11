@@ -29,7 +29,7 @@ print(internal_ids);
 for (i in 1:length(datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(datatypes[i] %in% druggable.patient.datatypes))) {
-		condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[i]), "'");
+		condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
 	}
 	if (!empty_value(ids[i])) {
 		# check if this is the first term in condition or not

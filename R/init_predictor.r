@@ -151,8 +151,6 @@ print(x_ids);
 
 multiopt <- unlist(strsplit(Par["multiopt"], split = ","));
 print(multiopt);
-fname <- substr(Par["out"], 1, gregexpr(pattern = "\\.", Par["out"])[[1]][1]-1);
-print(fname);
 query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(x_platforms, collapse = "','"), "'"),"]);");
 readable_platforms <- sqlQuery(rch, query);
 rownames(readable_platforms) <- readable_platforms[,1];

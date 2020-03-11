@@ -151,7 +151,7 @@ function get_model_platforms(source, cohort, datatype) {
 			if (this.readyState == 4 && this.status == 200) {
 			platforms = this.responseText;}
 		}
-	xmlhttp.send();
+	xmlhttp.send();	
 	platforms = platforms.split("|");
 	var platforms_array = [];
 	for (i=0; i<platforms.length-1; i=i+2) {
@@ -228,9 +228,22 @@ function get_response_multiselector_values(source, cohort, datatype, variable) {
 		values = values[0].split(",");
 	}
 	if (values[values.length-1] == "") {
-		values = values.slice(0, values.length-2);
+		values = values.slice(0, values.length-1);
 	}
 	return values;
+}
+
+function get_glmnet_family(datatype) {
+	var families;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/glmnet_family.cgi?datatype=" + encodeURIComponent(datatype), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			families = this.responseText;}
+		}
+	xmlhttp.send();
+	families = families.split("|");
+	return families.slice(0,families.length-1);
 }
 
 function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
@@ -516,7 +529,7 @@ function get_autocomplete_ids(cohort, datatype, platform) {
 	xmlhttp.send();
 	ids = ids.split("||");
 	// WARNING! This function uses variable capitalized_datatypes from druggable_config.js
-	// this file is loaded by analysis.html
+	// this file is loaded by druggable.html
 	ids = ids.slice(1, ids.length);
 	if (capitalized_datatypes.includes(datatype)) {
 		ids = ids.map(function(x){ return x.toUpperCase() });
@@ -599,4 +612,17 @@ function get_url(external_id) {
 		}
 	xmlhttp.send();
 	return url;
+}
+
+// function to check if we should get available ids or not
+function ids_available(datatype) {
+	var flag;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/ids_available.cgi?datatype=" + encodeURIComponent(datatype), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			flag = this.responseText;}
+		}
+	xmlhttp.send();
+	return flag;
 }

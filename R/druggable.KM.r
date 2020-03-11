@@ -316,7 +316,7 @@ if (!empty_value(second_set_id)) {
 	}
 }
 if ((Par["source"]=="tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))) {
-	query <- paste0(query, " AND sample LIKE '", createPostgreSQLregex(tcga_codes[m]),"'");
+	query <- paste0(query, " AND sample LIKE '", createPostgreSQLregex(tcga_codes[1]),"'");
 }
 query <- paste0(query, ";");
 print(query);

@@ -214,6 +214,18 @@ END IF;
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION glmnet_family (response_datatype_n text) RETURNS setof text
+AS $$
+DECLARE
+res text;
+BEGIN
+FOR res IN SELECT family FROM glmnet_families WHERE response_datatype=response_datatype_n
+LOOP
+RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 -- this version returns platforms and their human-readable names (without sources or data types!)
 CREATE OR REPLACE FUNCTION platform_list (cohort_n text, data_type text, previous_platforms text) RETURNS setof text
 AS $$

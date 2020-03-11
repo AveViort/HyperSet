@@ -44,9 +44,12 @@ createGLMnetSignature <- function (
 	title.main = NA, 
 	title.sub = NA,
 	ve = "v1", 
-	plotModel = TRUE, 
+	plotModel = TRUE,
+	baseName = 'model_debug',
 	TypeDelimiter = "___",
 	cu0=NULL) {
+	
+	print("createGLMnetSignature");
 	
 	perf <- as.list(NULL);
 	lt1 = 1; st1 = 0; Niter = 0; 
@@ -55,7 +58,13 @@ createGLMnetSignature <- function (
 	if (independentValidation) {
 		rnds <- c(rnds, "validation");
 	}
-		  
+	
+	#if (is.null(nrow(predictorSpace))) {
+	#	temp_names <- names(predictorSpace);
+	#	predictorSpace <- matrix(predictorSpace, 1, length(predictorSpace));
+	#	colnames(predictorSpace) <- temp_names;
+	#}
+	
 	while (((Family == "cox" & lt1 >  min.fit) | (Family != "cox" & st1 < min.fit)) & Niter < 10) {
 		Niter = Niter + 1;
 		Ncases = ncol(predictorSpace) * validationFraction;
@@ -96,7 +105,7 @@ createGLMnetSignature <- function (
 			Betas <- model$glmnet.fit$beta;
 			A0 <- model$glmnet.fit$a0;
 			Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
-		}	else {
+		} else {
 			print(paste0("No cross-validation"))
 			t1 <- try(model <- glmnet(PW[Sample1,], MG[Sample1],  
 						family = Family, 
@@ -164,8 +173,8 @@ createGLMnetSignature <- function (
 		}
 	}
 	
-	par(mfrow=c(2,2));
 	if (length(co) > 0) {
+		png(file=paste0(baseName, "_model.png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 		plot(model);
 		Cex.main  = 0.85; Cex.lbl = 0.35; Cex.leg = 0.5;
 		Terms <- NULL;
@@ -186,9 +195,11 @@ createGLMnetSignature <- function (
 			paste0("n(training set)=", n),  
 			paste0("k(model)=", k), 
 			ppe, 
-			sep="\n"), bty="n", cex=Cex.leg * 1.5);  
+			sep="\n"), bty="n", cex=Cex.leg * 1.5); 
+		dev.off();
 	
 		for (Round in rnds) {
+			png(file=paste0(baseName, "_", Round,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 			if (Round == "training") {
 				smp = Sample1;
 			} else {
@@ -214,7 +225,7 @@ createGLMnetSignature <- function (
 			}
 			title.main=Round;
 
-			if (Family != "cox") {  	  
+			if (Family != "cox") {
 				plot(MG[smp], pred, type="n", xlab="Observed", ylab="Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
 				if (!is.na(title.sub)) {
 					title(sub = title.sub, line=1, cex.sub=Cex.leg * 1.5);
@@ -236,18 +247,20 @@ createGLMnetSignature <- function (
 				); 
 				ppe <- paste(ppe, paste0(pe, "=", va), sep="\n");
 			}
-			legend("topleft", legend=paste( ppe,   sep="\n"), bty="n", cex=Cex.leg * 1.7);  	
+			legend("topleft", legend=paste( ppe,   sep="\n"), bty="n", cex=Cex.leg * 1.7); 
+			dev.off();
 		}
 	} else {
+		png(file=paste0(baseName, "_model.png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 		plot(model, xvar = c("norm", "lambda", "dev")[1], label = TRUE);
 		legend("top", "No non-zero terms identified...");
 		print("No non-zero terms identified...");
+		dev.off();
 	}
 	return(model);
 }
 
 print(Sys.time());
-pdf(file=File, width=8, height=8);
 
 query <- "";
 X.variables <- as.list(NULL);
@@ -256,16 +269,36 @@ for (i in 1:length(x_datatypes)) {
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(x_datatypes[i]), "';");
 	print(query);
 	table_name <- sqlQuery(rch, query)[1,1];
-	# careful! Not all tables have ids
+	query <- paste0("SELECT sample,", ifelse(!x_datatypes[i] %in% druggable.patient.datatypes, "id,", ""), x_platforms[i], " FROM ", table_name);
+	condition <- " WHERE ";
+	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
+		condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+	}
+	if (condition == " WHERE ") {
+		condition <- "";
+	}
 	# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
-	query <- paste0("SELECT sample,id,", x_platforms[i], " FROM ", table_name, " WHERE id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[]);");
+	query <- paste0(query, condition, ";");
 	print(query);
 	temp <- sqlQuery(rch, query);
-	X.variables[[x_datatypes[i]]] <- unique(as.character(temp[,"id"]));
-	temp <- dcast(temp, id ~ sample, value.var = x_platforms[i]);
-	rownames(temp) <- temp[,1];
+	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
+		X.variables[[x_datatypes[i]]] <- unique(as.character(temp[,"id"]));
+		temp <- dcast(temp, id ~ sample, value.var = x_platforms[i]);
+	} else {
+		X.variables[[x_datatypes[i]]] <- c(x_platforms[i]);
+	}
+	temp_names <- temp[,1];
 	temp <- temp[,-1];
+	# in case if we have table with just 2 columns - we need to do this, otherwise it will transform itself into vector
+	if (is.null(nrow(temp))) {
+		temp <- matrix(temp, 1, length(temp));
+		rownames(temp) <- x_platforms[i];
+		colnames(temp) <- temp_names;
+	} else {
+		rownames(temp) <- temp_names;
+	}
 	Platform[[x_datatypes[i]]] <- temp;
+	print(temp);
 }
 print(X.variables);
 query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper("clin"), "';");
@@ -310,7 +343,6 @@ if (Par["source"] == "tcga") {
 	print(paste0("Sample mask: ", sample_mask));
 }
 if (Par["source"] == "ccle") {
-	# rewrite in SQL format
 	tissues <- c();
 	for (tissue in multiopt) {
 		tissues <- c(tissues, tissue);
@@ -326,6 +358,13 @@ if (Par["source"] == "ccle") {
 for (ty in names(Platform)) {
 		X.variables[[ty]] <- X.variables[[ty]][which(X.variables[[ty]] %in% rownames(Platform[[ty]]))];
 		X.add <- Platform[[ty]][X.variables[[ty]],];
+		# again, we can sometimes have a vector instead of a matrix
+		if (is.null(nrow(X.add))) {
+			temp_names <- names(X.add);
+			X.add <- matrix(X.add, 1, length(X.add));
+			colnames(X.add) <- temp_names;
+			rownames(X.add) <- X.variables[[ty]];
+		}
 		if (ty == "mut") {
 			for (i in 1:nrow(X.add)) {
 				X.add[i,which(empty_value(X.add[i,]))] <- "0";
@@ -340,13 +379,20 @@ for (ty in names(Platform)) {
 		} else {
 			X.matrix <- t(merge(t(X.matrix), t(X.add), by="row.names", all = TRUE));
 			colnames(X.matrix) <- X.matrix[1,];
+			temp_rownames <- rownames(X.matrix);
+			temp_colnames <- colnames(X.matrix);
 			X.matrix <- X.matrix[-1,];
+			if (is.null(nrow(X.matrix))) {
+			 X.matrix <- matrix(X.matrix, 1, length(X.matrix));
+			 colnames(X.matrix) <- temp_colnames;
+			 rownames(X.matrix) <- temp_rownames;
+			}
 		}
 		print(dim(X.matrix))
 }
 print(dim(X.matrix));
 stop_flag = FALSE;
-if (Par["source"] == "tcga") {
+if ((Par["source"] == "tcga" ) & (!any(x_datatypes %in% druggable.patient.datatypes))) {
 	X.matrix <- X.matrix[,grep(sample_mask, colnames(X.matrix), fixed=FALSE)];
 	t1 <- try(colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE));
 	if (grepl("Error|fitter|levels", t1[1])) {
@@ -367,10 +413,19 @@ if (!stop_flag) {
 	print(str(X.matrix));
 	#save(X.matrix, file="X.matrix.RData");
 	#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
+	temp_rownames <- rownames(X.matrix);
+	temp_colnames <- colnames(X.matrix);
 	X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
+	print(str(X.matrix));
+	if (is.null(nrow(X.matrix))) {
+		X.matrix <- matrix(X.matrix, 1, length(X.matrix));
+		colnames(X.matrix) <- temp_colnames;
+		rownames(X.matrix) <- temp_rownames;
+	}
+	print(str(X.matrix));
 	usedSamples <- colnames(X.matrix);
-	#print("Used samples:");
-	#print(usedSamples);
+	print("Used samples:");
+	print(usedSamples);
 	fam <- Par["family"];
 	mea <- Par["measure"];
 	validation <- as.logical(Par["validation"]);
@@ -383,9 +438,28 @@ if (!stop_flag) {
 	
 	cu <- NULL;
 	if (rplatform %in% survival_platforms) {
+		print(resp_matr);
 		cu <- makeCu(clin=resp_matr, s.type=rplatform, Xmax=NA, usedNames=usedSamples);
-		cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),]
-		X.matrix <- X.matrix[,rownames(cu)];
+		cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),];
+		temp_rownames <- rownames(X.matrix);
+		print(rownames(cu));
+		print(str(X.matrix));
+		if (nrow(X.matrix) > 1) {
+			X.matrix <- X.matrix[,rownames(cu)];
+		} else {
+			temp <- matrix(X.matrix[1,rownames(cu)], 1, nrow(cu));
+			temp_rownames <- rownames(X.matrix);
+			X.matrix <- temp;
+			colnames(X.matrix) <- rownames(cu);
+			rownames(X.matrix) <- temp_rownames;
+		}
+		print(str(X.matrix));
+		if (is.null(nrow(X.matrix))) {
+			temp_colnames <- names(X.matrix);
+			X.matrix <- matrix(X.matrix, 1, length(X.matrix));
+			colnames(X.matrix) <- temp_colnames;
+			rownames(X.matrix) <- temp_rownames;
+		}
 		resp <- Surv(as.numeric(cu$Time), cu$Stat);
 		rownames(resp) <- rownames(cu);
 		print(resp);
@@ -413,35 +487,52 @@ if (!stop_flag) {
 	
 	print(str(X.matrix));
 	for (i in 1:nrow(X.matrix)) {
+		print(i);
 		X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
 	}
-	X.matrix <- X.matrix[,intersect(names(resp),colnames(X.matrix))];
-
-	model <- createGLMnetSignature(
-				responseVector = resp, 
-				predictorSpace = X.matrix,
-				Family = fam,
-				type.measure = mea, 
-				independentValidation = validation, 
-				validationFraction = validation_fraction,
-				Nfolds = nfolds,
-				Alpha = alpha, 
-				Nlambda = nlambda, 
-				minLambda = minlambda, 
-				STD = standardize,
-				min.fit = 0.1, 
-				title.main = NA, 
-				title.sub = NA,
-				ve = "v1", 
-				plotModel = TRUE,
-				TypeDelimiter = TypeDelimiter, 
-				cu0=cu
-	);
-	if (!is.na(model)) {
-		save(model, file=paste0(fname, ".RData"));
-		saveJSON(model, paste0("coeff.", fname, ".json"), 3);
+	print(str(X.matrix));
+	temp_rownames <- rownames(X.matrix);
+	temp_colnames <- intersect(names(resp),colnames(X.matrix));
+	X.matrix <- X.matrix[,temp_colnames];
+	if (is.null(nrow(X.matrix))) {
+		for (type in c("model", "training", "validation")) {
+			png(file=paste0(File, "_", type,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
+			print("Error occured: only one variable left");
+			report_event("model.glmnet.r", "error", "glmnet_data_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
+				"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
+				"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
+				"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), "Only one variable left");
+			plot(0,type='n', axes=FALSE, ann=FALSE);
+			text(x=1, y=0.5, labels = "Cannot perform multidimensional analysis: not enough variables", cex = 1);
+			dev.off();
+		}
+	} else {
+		model <- createGLMnetSignature(
+					responseVector = resp, 
+					predictorSpace = X.matrix,
+					Family = fam,
+					type.measure = mea, 
+					independentValidation = validation, 
+					validationFraction = validation_fraction,
+					Nfolds = nfolds,
+					Alpha = alpha, 
+					Nlambda = nlambda, 
+					minLambda = minlambda, 
+					STD = standardize,
+					min.fit = 0.1, 
+					title.main = NA, 
+					title.sub = NA,
+					ve = "v1", 
+					plotModel = TRUE,
+					baseName = File,
+					TypeDelimiter = TypeDelimiter, 
+					cu0=cu
+		);
+		if (!is.na(model)) {
+			save(model, file=paste0(File, ".RData"));
+			saveJSON(model, paste0("coeff.", Par["out"], ".json"), nfolds);
+		}
 	}
 }
-dev.off();
 print(Sys.time());
 odbcClose(rch)

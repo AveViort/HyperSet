@@ -36,7 +36,7 @@ my $standardize = $query->param('standardize');
 
 print "Content-type: text/html\n\n";
 srand(); my $r = rand();
-my $file = 'model'.$1.'.pdf' if $r =~  m/0\.([0-9]{12})/;
+my $file = 'model'.$1 if $r =~  m/0\.([0-9]{12})/;
 system("Rscript ../R/model.".$method.".r --vanilla --args ".
 	"source=$source cohort=$cohort rdatatype=$rdatatype rplatform=$rplatform rid=$rid ".
 	"xdatatypes=$xdatatypes xplatforms=$xplatforms xids='$xids' multiopt='$multiopt' ".
