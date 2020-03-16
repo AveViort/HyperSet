@@ -23,7 +23,6 @@ BEGIN {
 	@EXPORT_OK	 =	qw();
 }
 our (%define,  $cs_menu_buttons, $toAdd);
-
 our $nodeScaleFactor = 2.0;
 our $edgeScaleFactor = 4;
 our $borderWidthScheme = 1.5;

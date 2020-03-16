@@ -95,7 +95,7 @@ if (status != 'ok') {
 		if (Par["source"] == "tcga") {
 			plot_title <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
-				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""));
+				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""));
 		} else {
 			plot_title <- paste0("Scatterplot of ",  toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], " and \n", 
@@ -172,8 +172,8 @@ if (status != 'ok') {
 		if (Par["source"] == "tcga") {
 			plot_annotation <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
-				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[2], ")"), ""), " and \n",
-				readable_platforms[platforms[3],2], ifelse(!(datatypes[3] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[3], ")"), ""));
+				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n",
+				readable_platforms[platforms[3],2], ifelse(!(datatypes[3] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""));
 		} else {
 			plot_annotation <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], " and \n", 

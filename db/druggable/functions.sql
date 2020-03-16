@@ -1651,6 +1651,7 @@ query text;
 flag boolean;
 visible boolean;
 exclude boolean;
+forbidden boolean; 
 new_t boolean;
 data_types text array;
 cohorts text array;
@@ -1673,7 +1674,8 @@ FOR variable_n IN EXECUTE QUERY query
 LOOP
 SELECT visibility FROM platform_descriptions WHERE shortname=variable_n INTO visible;
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=variable_n) INTO exclude;
-IF ((NOT exclude) AND visible) THEN
+EXECUTE QUERY 'SELECT EXISTS (SELECT * FROM forbidden_variables WHERE variable=' || variable_n || ' AND ' || t_type || '=TRUE)' INTO forbidden;
+IF ((NOT exclude) AND visible AND (NOT forbidden)) THEN
 --RAISE notice 'column: %', variable_n;
 -- check if we already have this variable
 SELECT EXISTS(SELECT * FROM variable_guide_table WHERE variable_name=variable_n) INTO flag;

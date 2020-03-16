@@ -626,3 +626,17 @@ function ids_available(datatype) {
 	xmlhttp.send();
 	return flag;
 }
+
+// debug function - used to determine if autocomplete_ids are filled
+function autocomplete_filled(cohort, platform) {
+	var flag;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/autocomplete_filled.cgi?cohort=" + encodeURIComponent(cohort) + 
+		"&platform=" + encodeURIComponent(platform), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			flag = (parseInt(this.responseText) == 1);}
+		}
+	xmlhttp.send();
+	return flag;
+}

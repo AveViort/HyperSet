@@ -181,7 +181,6 @@ our $vennColorCode;
 '+++-' => "#8DD3C7",
 '++-+' => "#FFFFB3");
 
-
 #THESE TWO ALTERNATIVES CAN SWITCH BETWEEN R AND PERL IMPLEMENTATIONS:
 # our $nea_software = '/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/NETwork_analysis/nea.web.pl';
 our $pca_software =  index($wd, 'dev') != -1 ? '/var/www/html/research/HyperSet/dev/HyperSet/R/runExploratory.r' : '/var/www/html/research/HyperSet/R/runExploratory.r'; 
@@ -250,7 +249,7 @@ $pivotal_nea_score = lc('NEA_Zscore');
 # $min_pivotal_nea_score = 0;
 $min_nea_fdr = 1.99; 
 $min_nea_p = 1.99;
-$min_pivotal_nea_score = -10;
+$min_pivotal_nea_score = 2; #change this cutoff for showing more/less AGS-FGS edges in the archived (or new) NEA output
 our $uppic =   'pics/sort_up16.png';
 our $dnpic =   'pics/sort_down16.png';
 our $showmepic =   'pics/showme.png';
