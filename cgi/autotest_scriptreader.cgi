@@ -15,7 +15,9 @@ open(my $data, '<', $script) or die "Could not open '$script' $!\n";
  
 while (my $line = <$data>) {
   chomp $line;
-  print $line.'|';
+  if (($line ne "") and ((substr $line, 0, 1) ne "/")) {
+	print $line.'|';
+  }
 }
 
 close($script);

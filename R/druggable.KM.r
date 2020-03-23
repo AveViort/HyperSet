@@ -7,7 +7,7 @@ plotSurvival_DR  <- function (
 	clin, # modified! 3 columns: sample, xx, xx.time
 	datatype, # COPY, GE, PE etc.
 	id, # gene name etc. Can be empty string, but cannot be NA
-	s.type="os", # survival type : OS, RFS, DFI, DSS, RFI
+	s.type="os", # survival type : OS, RFS, DFI, DSS, RFI, PFI
 	fu.length=NA, # length of follow-up time at which to cut, in respective time units
 	estimateIntervals=TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
 	usedSamples=NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))

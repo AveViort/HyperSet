@@ -74,6 +74,24 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- same, but for json format
+CREATE OR REPLACE FUNCTION synonyms_list_json() RETURNS setof text AS $$
+DECLARE
+id text;
+syn text;
+BEGIN
+FOR syn,id IN SELECT external_id,internal_id FROM synonyms WHERE (id_type='gene') OR (id_type='pathway') OR (id_type='antibody')
+LOOP
+RETURN NEXT E'{\"external\":\"' || syn || E'\",\"internal\":\"' || id || E'\"}';
+END LOOP;
+-- drugs are special case! We use external_id for them
+FOR syn,id IN SELECT external_id,external_id FROM synonyms WHERE id_type='drug'
+LOOP
+RETURN NEXT E'{\"external\":\"' || syn || E'\",\"internal\":\"' || id || E'\"}';
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 -- get all possible tissue types for cohort
 CREATE OR REPLACE FUNCTION get_tissue_types(cohort_n text) RETURNS setof text AS $$
 DECLARE
@@ -1674,7 +1692,7 @@ FOR variable_n IN EXECUTE QUERY query
 LOOP
 SELECT visibility FROM platform_descriptions WHERE shortname=variable_n INTO visible;
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=variable_n) INTO exclude;
-EXECUTE QUERY 'SELECT EXISTS (SELECT * FROM forbidden_variables WHERE variable=' || variable_n || ' AND ' || t_type || '=TRUE)' INTO forbidden;
+EXECUTE E'SELECT EXISTS(SELECT * FROM forbidden_variables WHERE variable_name=\'' || variable_n || E'\' AND ' || t_type || '=TRUE);' INTO forbidden;
 IF ((NOT exclude) AND visible AND (NOT forbidden)) THEN
 --RAISE notice 'column: %', variable_n;
 -- check if we already have this variable

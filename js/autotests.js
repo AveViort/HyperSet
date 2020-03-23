@@ -16,6 +16,8 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 	var empty = false;
 	var available_plot_types;
 	var used_plot_types;
+	var performed_tests = 0;
+	var tested_combinations = new Set();
 	
 	// go to the third tab
 	$("#tabs").tabs("option", "active", 2);
@@ -57,7 +59,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 	if (!empty) {
 		console.log('Datatype: ' + datatype);
 		var datatype_platforms = [];
-		if (platforms == 'all') {
+		if (platforms[0] == 'all') {
 			datatype_platforms = get_platforms(cohort, datatype, previous_platforms);
 			empty = (datatype_platforms[1].length == 0);
 			if (!empty) {
@@ -73,7 +75,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 			}
 		}
 		else {
-			datatype_platforms = platforms[0];
+			datatype_platforms = [{platform: platforms[0]}];
 			empty = false;
 			if (ids[0] != '') {
 				id_flags.push(1);
@@ -83,7 +85,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 			}
 		}
 		if (!empty) {
-			for (i in datatype_platforms) {
+			for (var i in datatype_platforms) {
 				platform = datatype_platforms[i].platform;
 				console.log('Platform: ' + platform);
 				if (id_flags[0]) {
@@ -103,7 +105,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 				if (datatypes.length > 1) {
 					var second_datatype = datatypes[1];
 					var second_datatype_platforms = [];
-					if (platforms == 'all') {
+					if (platforms[1] == 'all') {
 						second_datatype_platforms = get_platforms(cohort, second_datatype, previous_platforms.concat(platform));
 						empty = (second_datatype_platforms[1].length == 0);
 						if (!empty) {
@@ -119,7 +121,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 						}
 					}
 					else {
-						second_datatype_platforms = platforms[1];
+						second_datatype_platforms = [{platform: platforms[1]}];
 						empty = false;
 						if (ids[1] != '') {
 							id_flags.push(1);
@@ -129,7 +131,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 						}
 					}
 					if (!empty) {
-						for (j in second_datatype_platforms) {
+						for (var j in second_datatype_platforms) {
 							var second_platform = second_datatype_platforms[j].platform;
 							console.log('Second platform: ' + second_platform);
 							if (id_flags[1]) {
@@ -149,7 +151,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 							if (datatypes.length > 2) {
 								var third_datatype = datatypes[2];
 								var third_datatype_platforms = [];
-								if (platforms == 'all') {
+								if (platforms[2] == 'all') {
 									third_datatype_platforms = get_platforms(cohort, third_datatype, previous_platforms.concat(platform).concat(second_platform));
 									empty = (third_datatype_platforms[1].length == 0);
 									if (!empty) {
@@ -165,7 +167,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 									}
 								}
 								else {
-									third_datatype_platforms = platforms[2];
+									third_datatype_platforms = [{platform: platforms[2]}];
 									empty = false;
 									if (ids[2] != '') {
 										id_flags.push(1);
@@ -175,8 +177,8 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 									}
 								}
 								if (!empty) {
-									for (l in third_datatype_platforms) {
-										var third_platform = third_datatype_platforms[j].platform;
+									for (var l in third_datatype_platforms) {
+										var third_platform = third_datatype_platforms[l].platform;
 										console.log('Third platform: ' + third_platform);
 										if (id_flags[2]) {
 											if(!autocomplete_filled(cohort, third_platform)) {
@@ -192,44 +194,54 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 											}
 										}
 										console.log('3D plot');
-										available_plot_types = get_plot_types([platform, second_platform, third_platform]);
-										if (plot_types == 'all') {
-											used_plot_types = available_plot_types;
+										if (tested_combinations.has([platform, second_platform])) {
+											console.log('Already checked combination: ' + platform + "," + second_platform + "," + third_platform);
 										}
 										else {
-											used_plot_types = plot_types;
-										}
-										// check if we have available plot types
-										if (used_plot_types[0] == '') {
-											console.log('No available plot types for test')
-											report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
-												"plot_types_missing", "platforms=" + [platform, second_platform, third_platform].join(), 
-												"No available plot types: either function was called with empty plot_types argument or, if plot_types=all, no plot types defined");	
-										}
-										else {
-											used_ids = [];
-											for (x = 0; x<=2; x++) {
-												used_ids.push((id_flags[x] == 1 ? ids[x] : ''));
+											var checked_combinations = combinations([platform, second_platform, third_platform]);
+											for (var x in checked_combinations) {
+												tested_combinations.add(checked_combinations[x]);
 											}
-											for (m in used_plot_types) {
-												used_plot_type = used_plot_types[m];
-												if (available_plot_types.includes(used_plot_type)) {
-													console.log('Plot type: ' + used_plot_type);
-													var t0 = performance.now();
-													plot(used_plot_type, source, cohort, [datatype, second_datatype, third_datatype], [platform, second_platform, third_platform], used_ids, scales, [tcga_code]);
-													var t1 = performance.now();
-													console.log("Plot function took " + Math.floor(t1-t0) + " milliseconds.");
-													report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "info", 
-														"test_performance", "plot=" + used_plot_type + "&source=" + source + "&cohort=" + cohort + 
-														"&datatypes=" + [datatype, second_datatype, third_datatype].join() + 
-														"&platforms=" + [platform, second_platform, third_platform].join() + 
-														"&ids=" + used_ids.join(), 
-														"It took " + Math.floor(t1-t0) + " milliseconds to create plot");
+											available_plot_types = get_plot_types([platform, second_platform, third_platform]);
+											if (plot_types == 'all') {
+												used_plot_types = available_plot_types;
+											}
+											else {
+												used_plot_types = plot_types;
+											}
+											// check if we have available plot types
+											if (used_plot_types[0] == '') {
+												console.log('No available plot types for test')
+												report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
+													"plot_types_missing", "platforms=" + [platform, second_platform, third_platform].join(), 
+													"No available plot types: either function was called with empty plot_types argument or, if plot_types=all, no plot types defined");	
+											}
+											else {
+												used_ids = [];
+												for (x = 0; x<=2; x++) {
+													used_ids.push((id_flags[x] == 1 ? ids[x] : ''));
 												}
-												else {
-													report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
-														"wrong_plot_type", "plot=" + used_plot_type + "&platforms=" + [platform, second_platform, third_platform].join(), 
-														"Chosen plot type is not available for provided platforms");
+												for (m in used_plot_types) {
+													performed_tests = performed_tests + 1;
+													used_plot_type = used_plot_types[m];
+													if (available_plot_types.includes(used_plot_type)) {
+														console.log('Plot type: ' + used_plot_type);
+														var t0 = performance.now();
+														plot(used_plot_type, source, cohort, [datatype, second_datatype, third_datatype], [platform, second_platform, third_platform], used_ids, scales, [tcga_code]);
+														var t1 = performance.now();
+														console.log("Plot function took " + Math.floor(t1-t0) + " milliseconds.");
+														report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "info", 
+															"test_performance", "plot=" + used_plot_type + "&source=" + source + "&cohort=" + cohort + 
+															"&datatypes=" + [datatype, second_datatype, third_datatype].join() + 
+															"&platforms=" + [platform, second_platform, third_platform].join() + 
+															"&ids=" + used_ids.join(), 
+															"It took " + Math.floor(t1-t0) + " milliseconds to create plot");
+													}
+													else {
+														report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
+															"wrong_plot_type", "plot=" + used_plot_type + "&platforms=" + [platform, second_platform, third_platform].join(), 
+															"Chosen plot type is not available for provided platforms");
+													}
 												}
 											}
 										}
@@ -247,46 +259,56 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 							// plot 2D
 							else {
 								console.log("2D plot");
-								available_plot_types = get_plot_types([platform, second_platform]);
-								if (plot_types == 'all') {
-									used_plot_types = available_plot_types;
+								if (tested_combinations.has([platform, second_platform])) {
+									console.log('Already checked combination: ' + platform + "," + second_platform);
 								}
 								else {
-									used_plot_types = plot_types;
-								}
-								// check if we have available plot types
-								if (used_plot_types[0] == '') {
-									console.log('No available plot types for test')
-									report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
-										"plot_types_missing", "platforms=" + [platform, second_platform].join(), 
-										"No available plot types: either function was called with empty plot_types argument or, if plot_types=all, no plot types defined");	
-								}
-								else {
-									used_ids = [];
-									for (x = 0; x<=1; x++) {
-										used_ids.push((id_flags[x] == 1 ? ids[x] : ''));
+									var checked_combinations = combinations([platform, second_platform]);
+									for (var x in checked_combinations) {
+										tested_combinations.add(checked_combinations[x]);
 									}
-									for (k in used_plot_types) {
-										used_plot_type = used_plot_types[k];
-										if (available_plot_types.includes(used_plot_type)) {
-											console.log('Plot type: ' + used_plot_type);
-											var t0 = performance.now();
-											plot(used_plot_type, source, cohort, [datatype, second_datatype], [platform, second_platform], used_ids, scales, [tcga_code]);
-											var t1 = performance.now();
-											console.log("Plot function took " + Math.floor(t1-t0) + " milliseconds.");
-											report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "info", 
-												"test_performance", "plot=" + used_plot_type + "&source=" + source + "&cohort=" + cohort + 
-												"&datatypes=" + [datatype, second_datatype].join() + 
-												"&platforms=" + [platform, second_platform].join() + 
-												"&ids=" + used_ids.join(), 
-												"It took " + Math.floor(t1-t0) + " milliseconds to create plot");
+									available_plot_types = get_plot_types([platform, second_platform]);
+									if (plot_types == 'all') {
+										used_plot_types = available_plot_types;
+									}
+									else {
+										used_plot_types = plot_types;
+									}
+									// check if we have available plot types
+									if (used_plot_types[0] == '') {
+										console.log('No available plot types for test')
+										report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
+											"plot_types_missing", "platforms=" + [platform, second_platform].join(), 
+											"No available plot types: either function was called with empty plot_types argument or, if plot_types=all, no plot types defined");	
+									}
+									else {
+										used_ids = [];
+										for (x = 0; x<=1; x++) {
+											used_ids.push((id_flags[x] == 1 ? ids[x] : ''));
 										}
-										else {
-											console.log("Error: " + used_plot_type + " cannot be created for " + datatype + ":" + platform);
-											report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
-												"wrong_plot_type", "plot=" + used_plot_type + "&platforms=" + [platform, second_platform].join(), 
-												"Chosen plot type is not available for provided platforms");
-										}
+										for (k in used_plot_types) {
+											performed_tests = performed_tests + 1;
+											used_plot_type = used_plot_types[k];
+											if (available_plot_types.includes(used_plot_type)) {
+												console.log('Plot type: ' + used_plot_type);
+												var t0 = performance.now();
+												plot(used_plot_type, source, cohort, [datatype, second_datatype], [platform, second_platform], used_ids, scales, [tcga_code]);
+												var t1 = performance.now();
+												console.log("Plot function took " + Math.floor(t1-t0) + " milliseconds.");
+												report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "info", 
+													"test_performance", "plot=" + used_plot_type + "&source=" + source + "&cohort=" + cohort + 
+													"&datatypes=" + [datatype, second_datatype].join() + 
+													"&platforms=" + [platform, second_platform].join() + 
+													"&ids=" + used_ids.join(), 
+													"It took " + Math.floor(t1-t0) + " milliseconds to create plot");
+											}
+											else {
+												console.log("Error: " + used_plot_type + " cannot be created for " + datatype + ":" + platform);
+												report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "warning", 
+													"wrong_plot_type", "plot=" + used_plot_type + "&platforms=" + [platform, second_platform].join(), 
+													"Chosen plot type is not available for provided platforms");
+											}
+										}	
 									}
 								}
 							}
@@ -320,6 +342,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 					}
 					else {
 						for (j in used_plot_types) {
+							performed_tests = performed_tests + 1;
 							used_plot_type = used_plot_types[j];
 							if (available_plot_types.includes(used_plot_type)) {
 								console.log('Plot type: ' + used_plot_type);
@@ -355,6 +378,7 @@ function druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms
 	else {
 		console.log("Test aborted");
 	}
+	return performed_tests;
 }
 
 // this function will test all possible plot combinations for the given cohort
@@ -375,13 +399,15 @@ function druggable_plot_autotest_cohort(source, cohort, tcga_code, ids, scales) 
 	var all_empty = true;
 	// this set is sed to avoid double check
 	var tested_combinations = new Set();
+	var performed_tests = 0;
 	
 	var datatypes = get_cohort_datatypes(cohort, previous_datatypes);
 	console.log("Testing 1D plots");
 	for (i in datatypes) {
 		datatype = datatypes[i].datatype;
 		console.log("Current datatype: " + datatype);
-		druggable_plot_autotest(source, cohort, tcga_code, [datatype], 'all', ids, scales, 'all');
+		var y = druggable_plot_autotest(source, cohort, tcga_code, [datatype], 'all', ids, scales, 'all');
+		performed_tests = performed_tests + y;
 	}
 	
 	console.log("Testing 2D plots");
@@ -403,7 +429,8 @@ function druggable_plot_autotest_cohort(source, cohort, tcga_code, ids, scales) 
 							tested_combinations.add(checked_combinations[k]);
 					}
 					console.log("First datatype: " + datatype + " Second datatype: " + second_datatype);
-					druggable_plot_autotest(source, cohort, tcga_code, [datatype, second_datatype], 'all', ids, scales, 'all');
+					var y = druggable_plot_autotest(source, cohort, tcga_code, [datatype, second_datatype], 'all', ids, scales, 'all');
+					performed_tests = performed_tests + y;
 				}
 			}
 		}
@@ -439,7 +466,8 @@ function druggable_plot_autotest_cohort(source, cohort, tcga_code, ids, scales) 
 									tested_combinations.add(checked_combinations[l]);
 								}
 								console.log("First datatype: " + datatype + " Second datatype: " + second_datatype + " Third datatype: " + third_datatype);
-								druggable_plot_autotest(source, cohort, tcga_code, [datatype, second_datatype, third_datatype], 'all', ids, scales, 'all');
+								var y = druggable_plot_autotest(source, cohort, tcga_code, [datatype, second_datatype, third_datatype], 'all', ids, scales, 'all');
+								performed_tests = performed_tests + y;
 							}
 						}
 					}
@@ -457,6 +485,7 @@ function druggable_plot_autotest_cohort(source, cohort, tcga_code, ids, scales) 
 		"plot_autotest_finished", "source=" + source + "&cohort=" + cohort, 
 		"model_autotest_script started " + datetime.getFullYear() + '-' + (datetime.getMonth()+1) + '-' + datetime.getDate() + ' ' +
 		datetime.getHours() + ":" + datetime.getMinutes() + ":" + datetime.getSeconds());
+	return performed_tests;
 }
 
 // interface function to call generate_combinations - returns array of arrays
@@ -490,10 +519,11 @@ function generate_combinations(rest_array, acc, level) {
 
 // function to run plot tests according to previously defined script
 function plot_autotest_script(script) {
+	var performed_tests = 0;
 	var datetime = new Date();
 	report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotests.js", "info", 
 		"plot_autotest_started", "script=" + script, 
-		"model_autotest_script started " + datetime.getFullYear() + '-' + (datetime.getMonth()+1) + '-' + datetime.getDate() + ' ' +
+		"plot_autotest_script started " + datetime.getFullYear() + '-' + (datetime.getMonth()+1) + '-' + datetime.getDate() + ' ' +
 		datetime.getHours() + ":" + datetime.getMinutes() + ":" + datetime.getSeconds());
 	
 	var script_lines;
@@ -509,7 +539,7 @@ function plot_autotest_script(script) {
 	
 	for (var i in script_lines) {
 		var params = script_lines[i].split(";");
-		//console.log(params);
+		console.log(params);
 		// types are: whole_cohort and specific
 		var test_type = params[0];
 		var source = params[1];
@@ -519,15 +549,20 @@ function plot_autotest_script(script) {
 			case "whole_cohort":
 				var ids = params[4].split(",");
 				var scales = params[5].split(",");
-				druggable_plot_autotest_cohort(source, cohort, tcga_code, ids, scales);
+				var x = druggable_plot_autotest_cohort(source, cohort, tcga_code, ids, scales);
+				performed_tests = performed_tests + x;
 				break;
 			case "specific":
 				var datatypes = params[4].split(",");
+				//console.log(datatypes);
 				var platforms = params[5].split(",");
+				//console.log(platforms);
 				var ids = params[6].split(",");
+				//console.log(ids);
 				var scales = params[7].split(",");
 				var plot_types = params[8].split(",");
-				druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms, ids, scales, plot_types);
+				var x = druggable_plot_autotest(source, cohort, tcga_code, datatypes, platforms, ids, scales, plot_types);
+				performed_tests = performed_tests + x;
 				break;
 		}
 	}
@@ -535,14 +570,16 @@ function plot_autotest_script(script) {
 	datetime = new Date();
 	report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotests.js", "info", 
 		"plot_autotest_finished", "script=" + script, 
-		"model_autotest_script finished " + datetime.getFullYear() + '-' + (datetime.getMonth()+1) + '-' + datetime.getDate() + ' ' +
-		datetime.getHours() + ":" + datetime.getMinutes() + ":" + datetime.getSeconds());
+		"plot_autotest_script finished " + datetime.getFullYear() + '-' + (datetime.getMonth()+1) + '-' + datetime.getDate() + ' ' +
+		datetime.getHours() + ":" + datetime.getMinutes() + ":" + datetime.getSeconds() + ": " + performed_tests + " tests performed");
+	return performed_tests;
 }
 
 function model_autotest(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
 	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent)
 {
 	var exists = true;
+	var performed_tests = 0;
 	
 	// check if provided datatypes combination (independent variables) is valid
 	var available_datatypes = get_model_datatypes(source, cohort);
@@ -610,6 +647,7 @@ function model_autotest(method, source, cohort, r_datatype, r_platform, r_id, x_
 	}
 	
 	if (exists) {
+		performed_tests = performed_tests + 1;
 		var t0 = performance.now();
 		build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
 			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
@@ -627,9 +665,11 @@ function model_autotest(method, source, cohort, r_datatype, r_platform, r_id, x_
 	else {
 		console.log("Autotest aborted");
 	}
+	return performed_tests;
 }
 
 function model_autotest_script(script) {
+	var performed_tests = 0;
 	var datetime = new Date();
 	report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotests.js", "info", 
 		"model_autotest_started", "script=" + script, 
@@ -675,13 +715,15 @@ function model_autotest_script(script) {
 		var crossvalidation = params[16] == "TRUE";
 		var nfold = params[17];
 		var crossvalidation_percent = params[18];
-		model_autotest(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
-			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent)
+		var y = model_autotest(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
+			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
+		performed_tests = performed_tests + y;
 	}
 	
 	datetime = new Date();
 	report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotests.js", "info", 
 		"model_autotest_finished", "script=" + script, 
 		"model_autotest_script finished " + datetime.getFullYear() + '-' + (datetime.getMonth()+1) + '-' + datetime.getDate() + ' ' +
-		datetime.getHours() + ":" + datetime.getMinutes() + ":" + datetime.getSeconds());
+		datetime.getHours() + ":" + datetime.getMinutes() + ":" + datetime.getSeconds() + ": " + performed_tests + " tests performed");
+	return performed_tests;
 }

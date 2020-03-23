@@ -141,11 +141,15 @@ x_ids <- as.list(strsplit(Par["xids"], split = ",")[[1]]);
 for (i in 1:length(x_ids)) {
 	temp <- gsub("\\[|\\]", "", x_ids[[i]]);
 	temp <- unlist(strsplit(temp, split = "\\|"));
-	query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse=","), "}'::text[]);"); 
-	print(query);
-	internal_ids <- sqlQuery(rch, query);
-	print(internal_ids);
-	x_ids[[i]] <- internal_ids[,"internal_id"];
+	if (length(temp) > 0) {
+		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse=","), "}'::text[]);"); 
+		print(query);
+		internal_ids <- sqlQuery(rch, query);
+		print(internal_ids);
+		x_ids[[i]] <- internal_ids[,"internal_id"];
+	} else {
+		x_ids[[i]] <- "";
+	}
 }
 print(x_ids);
 

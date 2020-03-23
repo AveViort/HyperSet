@@ -20,7 +20,7 @@ my $variable = $query->param("variable");
 
 print "Content-type: text/html\n\n";
 $stat = "";
-if (($source eq "CCLE") && ($variable eq "tissue")) {
+if ($source eq "CCLE") {
 	$stat = qq/SELECT get_tissue_types(\'$cohort'\)/;
 }
 else {

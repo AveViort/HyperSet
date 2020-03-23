@@ -78,7 +78,7 @@ createGLMnetSignature <- function (
 		}
 		MG <- responseVector;
 		PW = t(predictorSpace);
-		if (!is.na(Nfolds)) {
+		if (independentValidation) {
 			print(paste0(Nfolds, "-fold cross-validation"));
 			print("PW[Sample1,]:");
 			print(PW[Sample1,]);
@@ -262,6 +262,31 @@ createGLMnetSignature <- function (
 
 print(Sys.time());
 
+# for TCGA only
+sample_mask <- c();
+# CCLE only
+tissue_samples <- c();
+if (Par["source"] == "tcga") {
+	for (tcga_code in multiopt) {
+		sample_mask <- c(sample_mask, paste0("(-", tcga_code, "$)"));
+	}
+	sample_mask <- paste(sample_mask, collapse = "|");
+	print(paste0("Sample mask: ", sample_mask));
+}
+if (Par["source"] == "ccle") {
+	tissues <- c();
+	multiopt <- toupper(multiopt);
+	for (tissue in multiopt) {
+		tissues <- c(tissues, tissue);
+	}
+	tissues <- paste0("'{", paste(tissues, collapse=","), "}'::text[]");
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+	print(query);
+	tissue_samples <- sqlQuery(rch,query)[,1];
+	print("Tissue samples:");
+	print(tissue_samples)
+}
+
 query <- "";
 X.variables <- as.list(NULL);
 Platform <- as.list(NULL);
@@ -273,6 +298,10 @@ for (i in 1:length(x_datatypes)) {
 	condition <- " WHERE ";
 	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
 		condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+		if (Par["source"] == "tcga") {
+			tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
+			condition <- paste0(condition, " AND sample LIKE ", tcga_array);
+		}
 	}
 	if (condition == " WHERE ") {
 		condition <- "";
@@ -282,10 +311,10 @@ for (i in 1:length(x_datatypes)) {
 	print(query);
 	temp <- sqlQuery(rch, query);
 	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
-		X.variables[[x_datatypes[i]]] <- unique(as.character(temp[,"id"]));
+		X.variables[[x_platforms[i]]] <- unique(as.character(temp[,"id"]));
 		temp <- dcast(temp, id ~ sample, value.var = x_platforms[i]);
 	} else {
-		X.variables[[x_datatypes[i]]] <- c(x_platforms[i]);
+		X.variables[[x_platforms[i]]] <- c(x_platforms[i]);
 	}
 	temp_names <- temp[,1];
 	temp <- temp[,-1];
@@ -293,15 +322,23 @@ for (i in 1:length(x_datatypes)) {
 	if (is.null(nrow(temp))) {
 		temp <- matrix(temp, 1, length(temp));
 		rownames(temp) <- x_platforms[i];
+		if (any(x_datatypes %in% druggable.patient.datatypes)) {
+			temp_names <- gsub(sample_mask, "", temp_names, fixed=FALSE)
+		}
 		colnames(temp) <- temp_names;
 	} else {
 		rownames(temp) <- temp_names;
+		temp_names <- colnames(temp);
+		if (any(x_datatypes %in% druggable.patient.datatypes)) {
+			temp_names <- gsub(sample_mask, "", temp_names, fixed=FALSE)
+		}
+		colnames(temp) <- temp_names;
 	}
-	Platform[[x_datatypes[i]]] <- temp;
-	print(temp);
+	Platform[[x_platforms[i]]] <- temp;
+	#print(temp);
 }
-print(X.variables);
-query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper("clin"), "';");
+#print(X.variables);
+query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(rdatatype), "';");
 print(query);
 table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", ifelse(!empty_value(rid), "id,", ""),
@@ -317,7 +354,7 @@ if (rdatatype == "clin") {
 		query <- paste0(query, "sample LIKE ANY ('{", paste0("%-", multiopt, collapse=","), "}'::text[])");
 	}
 	condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
-	if (rid != '') {
+	if (!(empty_value(rid))) {
 		condition <- paste0(condition, "id='", rid, "'")
 	}
 }
@@ -331,101 +368,84 @@ resp_matr <- sqlQuery(rch, query);
 resp_matr[,1] <- as.character(resp_matr[,1]);
 rownames(resp_matr) <- resp_matr[,1];
 
-# for TCGA only
-sample_mask <- c();
-# CCLE only
-tissue_samples <- c();
-if (Par["source"] == "tcga") {
-	for (tcga_code in multiopt) {
-		sample_mask <- c(sample_mask, paste0("(-", tcga_code, "$)"));
-	}
-	sample_mask <- paste(sample_mask, collapse = "|");
-	print(paste0("Sample mask: ", sample_mask));
-}
-if (Par["source"] == "ccle") {
-	tissues <- c();
-	for (tissue in multiopt) {
-		tissues <- c(tissues, tissue);
-	}
-	tissues <- paste0("{", paste(tissues, collapse=","), "}::text[]");
-	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
-	print(query);
-	tissue_samples <- sqlQuery(rch,query)[,1];
-	print("Tissue samples:");
-	print(tissue_samples)
-}
-
 for (ty in names(Platform)) {
-		X.variables[[ty]] <- X.variables[[ty]][which(X.variables[[ty]] %in% rownames(Platform[[ty]]))];
-		X.add <- Platform[[ty]][X.variables[[ty]],];
-		# again, we can sometimes have a vector instead of a matrix
-		if (is.null(nrow(X.add))) {
-			temp_names <- names(X.add);
-			X.add <- matrix(X.add, 1, length(X.add));
-			colnames(X.add) <- temp_names;
-			rownames(X.add) <- X.variables[[ty]];
+	#print(ty);
+	X.variables[[ty]] <- X.variables[[ty]][which(X.variables[[ty]] %in% rownames(Platform[[ty]]))];
+	X.add <- Platform[[ty]][X.variables[[ty]],];
+	#print("X.add:");
+	#print(X.add);
+	# again, we can sometimes have a vector instead of a matrix
+	if (is.null(nrow(X.add))) {
+		temp_names <- names(X.add);
+		X.add <- matrix(X.add, 1, length(X.add));
+		colnames(X.add) <- temp_names;
+		rownames(X.add) <- X.variables[[ty]];
+	}
+	if (ty == "mut") {
+		for (i in 1:nrow(X.add)) {
+			X.add[i,which(empty_value(X.add[i,]))] <- "0";
+			X.add[i,which(X.add[i,] != "0")] <- "1";
 		}
-		if (ty == "mut") {
-			for (i in 1:nrow(X.add)) {
-				X.add[i,which(empty_value(X.add[i,]))] <- "0";
-				X.add[i,which(X.add[i,] != "0")] <- "1";
-			}
+	}
+	TypeDelimiter = "___";
+	rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@", "_", rownames(X.add), fixed=FALSE)
+	rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
+	if (ty == names(Platform)[1]) {
+		X.matrix <- X.add;
+	} else {
+		X.matrix <- t(merge(t(X.matrix), t(X.add), by="row.names", all = TRUE));
+		colnames(X.matrix) <- X.matrix[1,];
+		temp_rownames <- rownames(X.matrix);
+		temp_colnames <- colnames(X.matrix);
+		X.matrix <- X.matrix[-1,];
+		if (is.null(nrow(X.matrix))) {
+			X.matrix <- matrix(X.matrix, 1, length(X.matrix));
+			colnames(X.matrix) <- temp_colnames;
+			rownames(X.matrix) <- temp_rownames;
 		}
-		TypeDelimiter = "___";
-		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@", "_", rownames(X.add), fixed=FALSE)
-		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
-		if (ty == names(Platform)[1]) {
-			X.matrix <- X.add;
-		} else {
-			X.matrix <- t(merge(t(X.matrix), t(X.add), by="row.names", all = TRUE));
-			colnames(X.matrix) <- X.matrix[1,];
-			temp_rownames <- rownames(X.matrix);
-			temp_colnames <- colnames(X.matrix);
-			X.matrix <- X.matrix[-1,];
-			if (is.null(nrow(X.matrix))) {
-			 X.matrix <- matrix(X.matrix, 1, length(X.matrix));
-			 colnames(X.matrix) <- temp_colnames;
-			 rownames(X.matrix) <- temp_rownames;
-			}
-		}
-		print(dim(X.matrix))
+	}
+	#print(dim(X.matrix))
 }
-print(dim(X.matrix));
+#print(dim(X.matrix));
+#print("Original X.matrix:");
+#print(X.matrix);
 stop_flag = FALSE;
 if ((Par["source"] == "tcga" ) & (!any(x_datatypes %in% druggable.patient.datatypes))) {
 	X.matrix <- X.matrix[,grep(sample_mask, colnames(X.matrix), fixed=FALSE)];
 	t1 <- try(colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE));
 	if (grepl("Error|fitter|levels", t1[1])) {
-			print("Error occured");
-			report_event("model.glmnet.r", "error", "colnames_assignment_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"],
-				"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
-				"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"]), prepare_error_stack(t1));
-			plot(0,type='n', axes=FALSE, ann=FALSE);
-			text(x=1, y=0.5, labels = t1[1], cex = 1);
-			stop_flag = TRUE;
-           }
+		print("Error occured");
+		report_event("model.glmnet.r", "error", "colnames_assignment_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"],			
+			"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
+			"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"]), prepare_error_stack(t1));
+		plot(0,type='n', axes=FALSE, ann=FALSE);
+		text(x=1, y=0.5, labels = t1[1], cex = 1);
+		stop_flag = TRUE;
+	}
 }
+# have to make an exclusion for tissues, otherwise will get an error:
+# Error in lognet(x, is.sparse, ix, jx, y, weights, offset, alpha, nobs,  : 
+#  one multinomial or binomial class has 1 or 0 observations; not allowed
 if (Par["source"] == "ccle") {
 	X.matrix <- X.matrix[,which(colnames(X.matrix) %in% tissue_samples)];
 }
 
 if (!stop_flag) {
-	print(str(X.matrix));
-	#save(X.matrix, file="X.matrix.RData");
+	#print(str(X.matrix));
 	#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 	temp_rownames <- rownames(X.matrix);
 	temp_colnames <- colnames(X.matrix);
 	X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
-	print(str(X.matrix));
+	#print(str(X.matrix));
 	if (is.null(nrow(X.matrix))) {
 		X.matrix <- matrix(X.matrix, 1, length(X.matrix));
 		colnames(X.matrix) <- temp_colnames;
 		rownames(X.matrix) <- temp_rownames;
 	}
-	print(str(X.matrix));
+	#print(str(X.matrix));
 	usedSamples <- colnames(X.matrix);
-	print("Used samples:");
-	print(usedSamples);
+	#print("Used samples:");
+	#print(usedSamples);
 	fam <- Par["family"];
 	mea <- Par["measure"];
 	validation <- as.logical(Par["validation"]);
@@ -438,12 +458,12 @@ if (!stop_flag) {
 	
 	cu <- NULL;
 	if (rplatform %in% survival_platforms) {
-		print(resp_matr);
+		#print(resp_matr);
 		cu <- makeCu(clin=resp_matr, s.type=rplatform, Xmax=NA, usedNames=usedSamples);
 		cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),];
 		temp_rownames <- rownames(X.matrix);
-		print(rownames(cu));
-		print(str(X.matrix));
+		#print(rownames(cu));
+		#print(str(X.matrix));
 		if (nrow(X.matrix) > 1) {
 			X.matrix <- X.matrix[,rownames(cu)];
 		} else {
@@ -453,7 +473,7 @@ if (!stop_flag) {
 			colnames(X.matrix) <- rownames(cu);
 			rownames(X.matrix) <- temp_rownames;
 		}
-		print(str(X.matrix));
+		#print(str(X.matrix));
 		if (is.null(nrow(X.matrix))) {
 			temp_colnames <- names(X.matrix);
 			X.matrix <- matrix(X.matrix, 1, length(X.matrix));
@@ -462,7 +482,7 @@ if (!stop_flag) {
 		}
 		resp <- Surv(as.numeric(cu$Time), cu$Stat);
 		rownames(resp) <- rownames(cu);
-		print(resp);
+		#print(resp);
 		print("All values:");
 		print(length(resp));
 		print("Censored values:");
@@ -474,23 +494,23 @@ if (!stop_flag) {
 		resp <- resp_matr[,rplatform];
 		names(resp) <- resp_matr[,"sample"];
 		if (rplatform %in% names(Rescale)) {
-			print(names(Rescale[[rplatform]]));
-			print(resp);
+			#print(names(Rescale[[rplatform]]));
+			#print(resp);
 			temp_names <- names(resp);
 			resp <- unlist(lapply(resp, function(el) {return(Rescale[[rplatform]][el])}));
 			names(resp) <- temp_names;
 		}
 		resp <- resp[!is.na(resp)];
-		print(resp);
-		print(str(resp));
+		#print(resp);
+		#print(str(resp));
 	}
 	
-	print(str(X.matrix));
+	#print(str(X.matrix));
 	for (i in 1:nrow(X.matrix)) {
-		print(i);
+		#print(i);
 		X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
 	}
-	print(str(X.matrix));
+	#print(str(X.matrix));
 	temp_rownames <- rownames(X.matrix);
 	temp_colnames <- intersect(names(resp),colnames(X.matrix));
 	X.matrix <- X.matrix[,temp_colnames];
@@ -500,8 +520,8 @@ if (!stop_flag) {
 			print("Error occured: only one variable left");
 			report_event("model.glmnet.r", "error", "glmnet_data_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
 				"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
-				"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
-				"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), "Only one variable left");
+				"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", fam, "&alpha=", alpha, "&measure=", mea,
+				"&nlambda=", nlambda, "&nfolds=", nfolds, "&lambda.min.ratio=", minlambda, "&standardize=", standardize), "Only one variable left");
 			plot(0,type='n', axes=FALSE, ann=FALSE);
 			text(x=1, y=0.5, labels = "Cannot perform multidimensional analysis: not enough variables", cex = 1);
 			dev.off();

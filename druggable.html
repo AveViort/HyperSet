@@ -714,7 +714,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "error", "plot_not_created", "type=" + type +
 				"&source=" + source + 
 				"&cohort=" + cohort + 
-				"&datatypes" + datatypes.join() + 
+				"&datatypes=" + datatypes.join() + 
 				"&platforms=" + platforms.join() + 
 				"&ids=" + ids.join() +
 				"&tcga_codes=" + tcga_codes.join() +
@@ -828,10 +828,10 @@ function build_and_show_model() {
 		var variable_count = 0;
 		var n = $('[id*="modelPlatform"][id$="selector"]').length;
 		for (var i=1; i<=n; i++) {
-			x_datatypes.push($("#modelDatatype" + n + "_selector option:selected").val());
-			x_platforms.push($("#modelPlatform" + n + "_selector option:selected").val());
+			x_datatypes.push($("#modelDatatype" + i + "_selector option:selected").val());
+			x_platforms.push($("#modelPlatform" + i + "_selector option:selected").val());
 			// if id input contain delimeter at the last position - empty array element will be generated; prevent this
-			var temp = $("#genes_area" + n).val();
+			var temp = $("#genes_area" + i).val();
 			// delete all spaces - otherwise "a, b, c" will turn into ["a", " b", " c"]
 			temp = temp.replace(/\s/g, '');
 			// regexp, defined in druggable_config.js
@@ -841,7 +841,7 @@ function build_and_show_model() {
 					temp.splice(j, 1); 
 				}
 			}
-			if (document.getElementById("genes_area" + i).disabled) {
+			if (document.getElementById("genes_area" + i).hidden) {
 				variable_count = variable_count + 1;
 			}
 			else {
@@ -1328,9 +1328,9 @@ function init_platformselector(selector_id) {
 	//console.log('previous platforms: ' + previous_platforms);
 	//console.log($("#cohort_selector option:selected").val() + ' ' + $("#type" + n + "_selector option:selected").val() + ' ' + previous_platforms);
 	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_platforms);
-	//console.log(platforms);
+	console.log(platforms);
 	var empty = (platforms[1].length == 0);
-	//console.log(empty);
+	console.log(empty);
 	if (!empty) {
 		// check if we have ids or no for the chosen datatype;
 		// cannot use ?...:... here, because we need to shift platforms anyway
@@ -1909,12 +1909,12 @@ function init_response_multiselector() {
 	}
 	$("#responseMulti_selector").append(options.join(""));
     document.getElementById("responseMulti_selector").disabled = (values[0] == "");
-	var previous_selection = (getCookie("responseMulti_selector").split("|"))[0];
+	//var previous_selection = (getCookie("responseMulti_selector").split("|"))[0];
 	//console.log(previous_selection);
-	if (values.includes(previous_selection)) {
-		$("#responseMulti_selector").val(previous_selection);
-		$("#responseMulti_selector").selectmenu( "refresh" );
-	}
+	//if (values.includes(previous_selection)) {
+	//	$("#responseMulti_selector").val(previous_selection);
+	//	$("#responseMulti_selector").selectmenu( "refresh" );
+	//}
 	usetCookie("responseMulti_selector", $("#responseMulti_selector").val(), druggable_cookie_time);
 }
 
@@ -2279,6 +2279,7 @@ function plot_type_changed() {
 			if (platforms.includes($("#platform" + i + "_selector option:selected").val())) {
 				$("#id" + i + "_input").val("");
 				document.getElementById("id" + i + "_input").hidden = true;
+				document.getElementById("id" + i + "_confirmed").hidden = true;
 			}
 		}
 	}
@@ -2502,7 +2503,7 @@ function id_keyup(k) {
 		$("#id" + k + "_confirmed").val("");
 		var flag = true;
 		var temp_flag;
-		if ($("#id" + k + "_input").is(":enabled")) {
+		if (!$("#id" + k + "_input").is(":hidden")) {
 			var available_ids = $( "#id" + k + "_input" ).autocomplete("option", "source");
 			var valueSoFar = $("#id" + k + "_input").val();
 			if (capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val())) {
@@ -2526,7 +2527,7 @@ function id_keyup(k) {
 		}
 		else {
 			for (var i = 1; i<=n; i++) {
-				if ($("#id" + i + "_input").is(":enabled")) {
+				if (!$("#id" + i + "_input").is(":hidden")) {
 					var valueSoFar = $("#id" + i + "_input").val();
 					// this variable declared in druggable_config.js
 					if (capitalized_datatypes.includes($("#type" + i + "_selector option:selected").val())) {
@@ -2687,7 +2688,7 @@ function check_model_input() {
 	var n = $('[id*="modelPlatform"][id$="selector"]').length;
 	for (var i=1; i<=n; i++) {
 		if (!document.getElementById("genes_area" + i).disabled) {
-			var temp = $("#genes_area" + n).val();
+			var temp = $("#genes_area" + i).val();
 			temp = temp.replace(/\s/g, '');
 			temp = temp.split(ids_delim);
 			for (var j=0; j<temp.length; j++) { 

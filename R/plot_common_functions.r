@@ -7,18 +7,6 @@ return(switch(axis_scale,
          ));
 }
 
-createPostgreSQLregex <- function(tcga_code) {
-	regex <- '';
-	switch (tcga_code,
-		"all" = {regex <- "%";},
-		"healthy" = {regex <- "%-1_";},
-		"cancer" = {regex <- "%-0_";},
-		{regex <- paste0("%-",tcga_code);}
-		
-	);
-	return(regex);
-}
-
 # adjust cex main - we have approximately 55 symbols for cex=3 and 1280 px
 adjust_cex_main <- function(main_title, cex.main.relative) {
 	cex.adjusted = 0;

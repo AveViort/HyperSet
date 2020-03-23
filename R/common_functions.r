@@ -35,6 +35,18 @@ getDbCredentials <- function(key_file = "HS_SQL.conf") {
 	return(c(username, password));
 }
 
+createPostgreSQLregex <- function(tcga_code) {
+	regex <- '';
+	switch (tcga_code,
+		"all" = {regex <- "%";},
+		"healthy" = {regex <- "%-1_";},
+		"cancer" = {regex <- "%-0_";},
+		{regex <- paste0("%-",tcga_code);}
+		
+	);
+	return(regex);
+}
+
 credentials <- getDbCredentials();
 rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 
