@@ -93,13 +93,13 @@ if (status != 'ok') {
 		print("str(y_data):");
 		print(str(y_data));	
 		if (Par["source"] == "tcga") {
-			plot_title <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
+			plot_title <- adjust_string(paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
-				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""));
+				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), "")), 25);
 		} else {
-			plot_title <- paste0("Scatterplot of ",  toupper(Par["cohort"]), " ",
+			plot_title <- adjust_string(paste0("Scatterplot of ",  toupper(Par["cohort"]), " ",
 				readable_platforms[platforms[1],2], " and \n", 
-				readable_platforms[platforms[2],2]);
+				readable_platforms[platforms[2],2]), 25);
 		}
 		cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
 		cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");

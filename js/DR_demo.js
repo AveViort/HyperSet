@@ -343,6 +343,212 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 		}, to);
 		to += 15800;
 	}
+}
+
+// demo for the 4th tab - create models for prediction
+// for 2D cases only
+function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, x_datatypes, x_platforms, x_ids,
+	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent) 
+{
+	/*
+	console.log('Method: ' + method);
+	console.log('Source:' + source);
+	console.log('Cohort: ' + cohort);
+	console.log('Multiopt: ' + multiopt);
+	console.log('Rdatatype: ' + rdatatype);
+	console.log('Rplatform: ' + rplatform);
+	console.log('Rid: ' + rid);
+	console.log('x_datatypes: ' + x_datatypes);
+	console.log('x_platforms: ' + x_platforms);
+	console.log('x_ids: ' + x_ids);
+	console.log('Family: ' + family);
+	console.log('Measure: ' + measure);
+	console.log('Standardize: ' + standardize);
+	console.log('Alpha: ' + alpha);
+	console.log('Nlambda: ' + nlambda);
+	console.log('Minlambda: ' + minlambda);
+	console.log('Cross validation: ' + crossvalidation);
+	console.log('nfold: ' + nfold);
+	console.log('Crossval percent: ' + crossvalidation_percent);
+	*/
+	
+	if (sessionStorage.getItem("demo") == null) {
+		sessionStorage.setItem("demo", 1);
+		$("#tabs").tabs("option", "active", 3);
+		
+		// prepare tab for demo
+		var n = $('[id*="modelPlatform"][id$="selector"]').length;
+		for (var i=n; i>1; i--) {
+			delete_model_options_row();
+		}
+		$("#standardize").prop("checked", false);
+		$("#crossval").prop("checked", false);
+		
+		var to = 1000;
+		changeDropVal("#modelSource_selector", source, to);
+		to += 800;
+			
+		var part_a = {
+			ele: "modelCohort_selector",	
+			interval: 50, 
+			val: cohort, 
+			func: function () {
+				console.log("Part modelCohort_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_a); 
+		changeDropVal("#modelCohort_selector", cohort, to);
+		to += 1100;
+		
+		var part_b = {
+			ele: "responseDatatype_selector",	
+			interval: 50, 
+			val: rdatatype, 
+			func: function () {
+				console.log("Part responseDatatype_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_b); 
+		changeDropVal("#responseDatatype_selector", rdatatype, to);
+		to += 1300;
+			
+		var part_c = {
+			ele: "responseVariable_selector",	
+			interval: 50, 
+			val: rplatform, 
+			func: function () {
+				console.log("Part responseVariable_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_c); 
+		changeDropVal("#responseVariable_selector", rplatform, to);
+		to += 1600;
+			
+		if(rid != '') {
+			setTextBox(rid, to, "#responseID_input");
+		}
+		to += 1700;
+		
+		setTimeout(function () {
+			$("#responseMulti_selector").val(multiopt)
+		}, to);
+		to += 1800;
+		
+		var part_d = {
+			ele: "modelDatatype1_selector",	
+			interval: 50, 
+			val: x_datatypes[0], 
+			func: function () {
+				console.log("Part modelDatatype1_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_d); 
+		changeDropVal("#modelDatatype1_selector", x_datatypes[0], to);
+		to += 2100;
+			
+		var part_e = {
+			ele: "modelPlatform1_selector",	
+			interval: 50, 
+			val: x_platforms[0], 
+			func: function () {
+				console.log("Part modelPlatform1_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_e); 
+		changeDropVal("#modelPlatform1_selector", x_platforms[0], to);
+		to += 2400;
+			
+		if(x_ids[0] != '') {
+			setTextBox(x_ids[0], to, "#genes_area1");
+		}
+		to += 2500;
+		
+		setTimeout(function () {
+			console.log("Part add_variable");
+				demoClick("#add_variable", 100);
+		}, to);
+		to += 2900;
+		
+		var part_f = {
+			ele: "modelDatatype2_selector",	
+			interval: 50, 
+			val: x_datatypes[1], 
+			func: function () {
+				console.log("Part modelDatatype2_selector");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_f); 
+		changeDropVal("#modelDatatype2_selector", x_datatypes[1], to);
+		to += 3200;
+			
+		var part_g = {
+			ele: "modelPlatform2_selector",	
+			interval: 50, 
+			val: x_platforms[1], 
+			func: function () {
+				console.log("Part modelPlatform2_selector");
+				demoClick("#" + this.ele, 100);
+			}		   
+		}
+		waitForElement(part_g); 
+		changeDropVal("#modelPlatform2_selector", x_platforms[1], to);
+		to += 3400;
+		
+		if(x_ids[1] != '') {
+			setTextBox(x_ids[1], to, "#genes_area2");
+		}
+		to += 3500;
+		
+		if (standardize) {
+			demoClick("#standardize", to);
+		}
+		to += 3600;
+		
+		setTextBox(x_ids[1], to, "#genes_area2");
+		to += 3700;
+			
+		setTextBox(alpha, to, "#alpha");
+		to += 3800;
+		
+		setTextBox(nlambda, to, "#nlambda");
+		to += 3900;
+			
+		var part_h = {
+			ele: "family",	
+			interval: 50, 
+			val: family, 
+			func: function () {
+				console.log("Part family");
+				demoClick("#" + this.ele, 100);
+			}	   
+		}
+		waitForElement(part_h); 
+		changeDropVal("#family", family, to);
+		to += 4100;
+		
+		if (crossvalidation) {
+			demoClick("#crossval", to);
+		}
+		to += 4200;
+		
+		setTextBox(nfold, to, "#nfold");
+		to += 4300;
+		
+		setTextBox(crossvalidation_percent, to, "#crossval_perc");
+		to += 4400;
+			
+		setTimeout(function () {
+			demoClick("#build_model_button", 100);
+			sessionStorage.removeItem("demo");
+		}, to);
+		to += 4500;
+	}
 }		
 			
 function messpop(id,to,message) {

@@ -33,7 +33,7 @@ while (@row = $sth->fetchrow_array()) {
 	my $event_description = @field_values[3];
 	my $event_options = @field_values[4];
 	my $user_agent = @field_values[5];
-	my $acknowledged = "<input type='checkbox' onclick='toggle_event_acknowledgement_status(\\\"".$pass."\\\", \\\"".$event_time."\\\", \\\"".$event_source."\\\", \\\"".$event_level."\\\", \\\"".$event_description."\\\", \\\"".$event_options."\\\", \\\"".$user_agent."\\\", this.checked)'". (@field_values[6] eq "true" ? " checked" : "") .">";
+	my $acknowledged = "<input type='checkbox' onclick='toggle_event_acknowledgement_status(\\\"".$pass."\\\", \\\"".$event_time."\\\", \\\"".$event_level."\\\", this.checked)'". (@field_values[6] eq "true" ? " checked" : "") .">";
 	my $event_message = @field_values[7];
 	# need to replace \n with <br> for Datatables
 	# also, JSON does not support \n - it should be replaced with "\n"

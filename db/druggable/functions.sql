@@ -2104,13 +2104,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- mark event as acknowledged/not acknowledged
-CREATE OR REPLACE FUNCTION toggle_event_acknowledgement_status(pass text, e_timestamp timestamp, e_source text, e_level text, e_description text, e_options text, e_client_info text, status boolean) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION toggle_event_acknowledgement_status(pass text, e_timestamp timestamp, e_level text, status boolean) RETURNS boolean AS $$
 DECLARE
 control text;
 BEGIN
 SELECT passphrase INTO control FROM passphrases WHERE entity='event_log';
 IF (pass=control) THEN
-UPDATE event_log SET acknowledged=status WHERE event_time=e_timestamp AND event_source=e_source AND event_level=e_level AND event_description=e_description AND options=e_options AND user_agent=e_client_info;
+UPDATE event_log SET acknowledged=status WHERE event_time=e_timestamp AND event_level=e_level;
 RETURN true;
 ELSE
 RETURN false;

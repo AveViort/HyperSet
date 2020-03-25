@@ -177,23 +177,16 @@ createGLMnetSignature <- function (
 		png(file=paste0(baseName, "_model.png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 		plot(model);
 		Cex.main  = 0.85; Cex.lbl = 0.35; Cex.leg = 0.5;
-		Terms <- NULL;
-		for (cc in names(co)) {
-			Terms <- c(Terms, toupper(ifelse(grepl(TypeDelimiter, cc), paste0(sub(TypeDelimiter, "(", cc), ")"), cc)));
-		}
-		legend("top", paste(paste(co, Terms, sep="*"), sep=" + \n "), 
-			cex = Cex.leg * ifelse(max(unlist(lapply(names(co), nchar))) > 25, 0.75, 1.5), bty="n", title="Model terms:");
 		ppe <- NULL; 
 		for (pe in names(perf)[which(!grepl(paste(rnds, collapse="|"), names(perf), fixed=FALSE))]) {
 			va =	round(perf[[pe]], digits=3); 
 			ppe <- paste(ppe, paste0(pe, "=", va), sep="\n");
 		}
 		legend("topleft", legend=paste(
-			ifelse(is.na(Nfolds), "", paste0("Cross-validation: ", Nfolds, "-fold")),  
+			ifelse(!independentValidation, "", paste0("Cross-validation: ", Nfolds, "-fold")),  
 			paste0("Response type: ", Family),  
 			paste0("Alpha=", Alpha),  
 			paste0("n(training set)=", n),  
-			paste0("k(model)=", k), 
 			ppe, 
 			sep="\n"), bty="n", cex=Cex.leg * 1.5); 
 		dev.off();
@@ -351,11 +344,10 @@ if (rdatatype == "clin") {
 	}
 } else {
 	if (Par["source"] == "tcga") {
-		query <- paste0(query, "sample LIKE ANY ('{", paste0("%-", multiopt, collapse=","), "}'::text[])");
+		condition <- paste0(condition, "sample LIKE ANY ('{", paste0("%-", multiopt, collapse=","), "}'::text[])");
 	}
-	condition <- ifelse(condition == " WHERE ", condition, paste0(condition, " AND "));
 	if (!(empty_value(rid))) {
-		condition <- paste0(condition, "id='", rid, "'")
+		condition <- paste0(condition, " AND id='", rid, "'")
 	}
 }
 # in case if we have not added any conditions - like with clin:ajcc_pathologic_tumor_stage
@@ -410,7 +402,7 @@ for (ty in names(Platform)) {
 #print("Original X.matrix:");
 #print(X.matrix);
 stop_flag = FALSE;
-if ((Par["source"] == "tcga" ) & (!any(x_datatypes %in% druggable.patient.datatypes))) {
+if ((Par["source"] == "tcga" ) & (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes))) {
 	X.matrix <- X.matrix[,grep(sample_mask, colnames(X.matrix), fixed=FALSE)];
 	t1 <- try(colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE));
 	if (grepl("Error|fitter|levels", t1[1])) {
@@ -550,7 +542,7 @@ if (!stop_flag) {
 		);
 		if (!is.na(model)) {
 			save(model, file=paste0(File, ".RData"));
-			saveJSON(model, paste0("coeff.", Par["out"], ".json"), nfolds);
+			saveJSON(model, paste0("coeff.", Par["out"], ".json"), validation, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, rid, multiopt);
 		}
 	}
 }

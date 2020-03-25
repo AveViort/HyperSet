@@ -17,16 +17,12 @@ function report_event(source, level, description, options, message) {
 	return stat;
 }
 
-function toggle_event_acknowledgement_status(pass, timestamp, source, level, description, options, user_agent, ack_status) {
+function toggle_event_acknowledgement_status(pass, timestamp, level, ack_status) {
 	var xmlhttp = new XMLHttpRequest();
 	var stat;
 	xmlhttp.open("GET", "cgi/toggle_event_acknowledgement.cgi?pass=" + pass + 
 		"&timestamp=" + timestamp +
-		"&source=" + encodeURIComponent(source) +
 		"&level=" + encodeURIComponent(level) + 
-		"&description=" + encodeURIComponent(description) + 
-		"&options=" + encodeURIComponent(options) + 
-		"&user_agent=" + encodeURIComponent(user_agent) +
 		"&status=" + encodeURIComponent(ack_status), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {

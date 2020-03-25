@@ -117,6 +117,11 @@ li.tab:hover ul {
 					<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
 				</div>
 			</td>
+			<td>
+				<div id="demo-4">
+					<span class=" clickable demo_button sbm-controls" onclick="dr_demo4 ('glmnet', 'TCGA', 'SKCM', ['06'], 'CLIN', 'os', '', ['GE', 'IMMUNO'], ['illuminahiseq_rnaseqv2','macrophages_m0'], ['TP53, MYC, MYCN, BRAF', ''], 'cox', 'deviance', false, 1, 10, 0.01, true, 3, 50)" title="Demo - using expression data for several genes and M0 macrophage count to predict overall survival time in cutaneous and malignant skin melanoma (SKCM) TCGA cohort.">Demo "predictive models"</span>
+				</div>
+			</td>
 		</tr>
 	</table>
 </div>
@@ -140,7 +145,7 @@ li.tab:hover ul {
 	</ul>
 	
 	<div id="tab-home">
-		<div class="scalable-font-medium" style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
+		<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
 			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
 			</p>
 		</div>
@@ -158,6 +163,7 @@ li.tab:hover ul {
 				<li><a href="#help-tab-demo">Demo</a></li>
 				<li><a href="#help-tab-comp">Compatibility</a></li>
 				<li><a href="#help-tab-citation">Citation</a></li>
+				<li><a href="#help-tab-version">Version</a></li>
 			</ul>
 			
 			<div id="help-tab-faq">
@@ -195,6 +201,12 @@ li.tab:hover ul {
 				<p>
 					Ashwini Jeggari, Zhanna Alekseenko, José Dias, Johan Ericson, and Andrey Alexeyenko <span class="highlighted" style="color: #c00;">EviNet: a web platform for network enrichment analysis with flexible definition of gene sets</span> <b><i>Nucleic Acids Res</i></b> 2018 Jul 2;46(W1):W163-W170. <a class="clickable" href="https://doi.org/10.1093/nar/gky485">doi: 10.1002/1878-0261.12350</a>.
 				</p>
+			</div>
+			
+			<div id="help-tab-version">
+				Version history:
+				<br>
+				1.0.0 (25th of March, 2020) - stable release: exploring correlations, creating and sharing plots, creating and downloading predictive models.
 			</div>
 		</div>
 	</div>
@@ -236,7 +248,7 @@ li.tab:hover ul {
 		</div>
 	</div>
 	
-	<div class="scalable-font-small" id="tab-lookup"><br>
+	<div id="tab-lookup"><br>
 		<br>
 		<div id="plot-options-filters">
 			<table>
@@ -442,9 +454,10 @@ li.tab:hover ul {
 	</div>
 </div>     
 
-<P style="width:33%;text-align:right;">Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
-
-<div class="footer ui-widget-header ui-corner-all" id="druggable_footer"><P><button id="clean_reload_button" onclick=clean_reload()>Reload site completely</button></P></div>
+<div class="footer ui-widget-header ui-corner-all" id="druggable_footer">
+	<P style="width:33%;text-align:right;">Ver. 1.0.0. Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
+	<P><button id="clean_reload_button" onclick=clean_reload()>Reload site completely</button></P>
+</div>
 
 <script>
 $(function() {
@@ -923,6 +936,7 @@ function build_and_show_model() {
 						<tr> \
 							<th>Coefficient</th> \
 							<th>Weight</th> \
+							<th></th>\
 						</tr> \
 					</thead> \
 				</table>\
@@ -952,7 +966,8 @@ function build_and_show_model() {
 				"ajax": "https://dev.evinet.org/pics/plots/coeff." + model_name + ".json",
 				"columns": [
 					{ "data": "Term"},
-					{ "data": "Coef"}
+					{ "data": "Coef"},
+					{ "data": "Plot"}
 				],
 				"order": [[ 1, "desc" ]],
 			});

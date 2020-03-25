@@ -77,10 +77,20 @@ plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax=NA, Cls, Title=NA, 
 }
 
 # function to save model coefficients in JSON format
-saveJSON <- function(model, filename, Nfolds = NA) {
+# new format: we need information about response, multiopt etc. to offer plots 
+saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x_platforms, available_ids, rdatatype, rplatform, rid, multiopt) {
+	if (empty_value(rid)) {
+		rid <- "";
+	} else {
+		if(rdatatype %in% c("copy", "ge", "meth", "mirna", "mut")) {
+			rid <- toupper(rid);
+		}
+	}
+	plot_types <- c();
+	
 	Betas <- model$glmnet.fit$beta;
 	Lc <- NULL;
-	if (!is.na(Nfolds)) {
+	if (crossval) {
 		Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
 	} else {
 		Betas <- model$beta;
@@ -101,7 +111,35 @@ saveJSON <- function(model, filename, Nfolds = NA) {
 	json_string <- "{\"data\":[";
 	values <- c()
 	for (i in 1:length(co)) {
-		values[i] <- paste0("{\"Term\":\"", Terms[i], "\", \"Coef\":", co[i], "}");
+		temp <- unlist(strsplit(substr(Terms[i], 1, nchar(Terms[i])-1), split="\\("));
+		temp_id <- (temp[1]);
+		temp_platform <- tolower(temp[2]);
+		temp_datatype <- x_datatypes[which(x_platforms == temp_platform)];
+		if (tolower(temp_id) %in% x_platforms) {
+			temp_id <- "";
+		} else {
+			if (!temp_datatype %in% c("copy", "ge", "meth", "mirna", "mut")) {
+				temp_id <- tolower(temp_id);
+			}
+		}
+		plot_type <- "";
+		if (rdatatype == "clin") {
+			plot_type <- "KM";
+		} else {
+			temp <- paste0(temp_platform, "-", rplatform);
+			if (temp %in% names(plot_types)) {
+				plot_type <- plot_types[temp]; 
+			} else {
+				query <- paste0("SELECT available_plot_types('", temp_platform, ",", rplatform,"');");
+				print(query);
+				plot_type <- sqlQuery(rch, query)[1,1];
+				temp_names <- c(names(plot_types), temp);
+				plot_types <- c(plot_types, plot_type);
+				names(plot_types) <- temp_names;
+			}
+		}
+		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'linear\', \'linear\'], [\'', multiopt[1], '\', \'', multiopt[1], '\'])\\">Plot</button>');
+		values[i] <- paste0("{\"Term\":\"", Terms[i], "\", \"Coef\":\"", co[i], "\", \"Plot\":\"", button_code, "\"}");
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "]}");
@@ -117,7 +155,7 @@ for (a in Args) {
 	if (grepl('=', a)) {
 		p1 <- strsplit(a, split = '=', fixed = T)[[1]];
 		if (length(p1) > 1) {
-			if (p1[1] == "xids") {
+			if ((p1[1] == "xids") | (p1[1] == "rid")) {
 				Par[p1[1]] = p1[2];
 			} else {
 				Par[p1[1]] = tolower(p1[2]);
@@ -163,4 +201,9 @@ print(rdatatype);
 rplatform <- Par["rplatform"];
 print(rplatform);
 rid <- Par["rid"];
+if (!empty_value(rid)) {
+	query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", rid, "';"); 
+	print(query);
+	rid <- sqlQuery(rch, query)[1,1];
+}
 print(rid);
