@@ -649,18 +649,50 @@ function model_autotest(method, source, cohort, r_datatype, r_platform, r_id, x_
 	if (exists) {
 		performed_tests = performed_tests + 1;
 		var t0 = performance.now();
-		build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
+		var model_name = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
 			family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
 		var t1 = performance.now();
 		console.log("Build_model function took " + Math.floor(t1-t0) + " milliseconds.");
-		// reporting not all parameters - just ones affecting the performance
-		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "info", 
-			"test_performance", "method=" + method + "&source=" + source + "&cohort=" + cohort + 
-			"&r_datatype=" + r_datatype + "&r_platform=" + r_platform + "&r_id=" + r_id +
-			"&x_datatypes=" + x_datatypes.join() + "&x_platforms=" + x_platforms.join() + "&x_ids=" + x_ids.join() +
-			"&multiopt=" + multiopt.join() + "&family=" + family + "&crossvalidation=" + crossvalidation + "&nfold=" + nfold +
-			"&crossval_percent=" + crossvalidation_percent + "&standardize=" + standardize, 
-			"It took " + Math.floor(t1-t0) + " milliseconds to build a model");
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
+		xmlhttp.send();
+		if (xmlhttp.status == 404) {
+			console.log("Something went wrong, model was not created, reporting error...");
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotests.js", "error", "model_not_created",
+				"method=" + method + 
+				"&source=" + source + 
+				"&cohort=" + cohort + 
+				"&r_datatype=" + r_datatype + 
+				"&r_platform=" + r_platform + 
+				"&r_id=" + r_id +
+				"&x_datatypes=" + x_datatypes.join() + 
+				"&x_platforms=" + x_platforms.join() + 
+				"&x_ids=" + x_ids.join() +
+				"&multiopt=" + multiopt.join() + 
+				"&family=" + family + 
+				"&crossvalidation=" + crossvalidation + 
+				"&nfold=" + nfold +
+				"&crossval_percent=" + crossvalidation_percent + 
+				"&standardize=" + standardize,
+				"Error during autotest");
+			}
+			else {
+				// reporting not all parameters - just ones affecting the performance
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "autotest.js", "info", 
+				"test_performance", "method=" + method + "&source=" + source + "&cohort=" + cohort + 
+				"&r_datatype=" + r_datatype + "&r_platform=" + r_platform + "&r_id=" + r_id +
+				"&x_datatypes=" + x_datatypes.join() + "&x_platforms=" + x_platforms.join() + "&x_ids=" + x_ids.join() +
+				"&multiopt=" + multiopt.join() + "&family=" + family + "&crossvalidation=" + crossvalidation + "&nfold=" + nfold +
+				"&crossval_percent=" + crossvalidation_percent + "&standardize=" + standardize, 
+				"It took " + Math.floor(t1-t0) + " milliseconds to build a model<br>" + 
+				"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png target=_blank>Model summary</a> " +
+				" <a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_training.png target=_blank>Model training</a> " +
+				((crossvalidation) ? (
+					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_validation.png target=_blank>Model validation</a> "
+				) : ("")) +
+				"<a href=https://" + window.location.hostname + "/model_json.html#coeff." + model_name + ".json target=_blank>View coefficients</a> " +
+				"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData target=_blank>Download</a> ");
+			}
 	}
 	else {
 		console.log("Autotest aborted");

@@ -743,7 +743,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				"&ids=" + ids.join() +
 				"&tcga_codes=" + tcga_codes.join() +
 				"&scales=" + scales.join(),
-				"https://" + window.location.hostname + "/pics/plots/" + plot_filename);
+				"<a href=https://" + window.location.hostname + "/pics/plots/" + plot_filename + " target=_blank>View</a>");
 		}
 		plot_id = plot_filename.substring(0, plot_filename.length-5);
 		sessionStorage.setItem(plot_filename, plot_description);
@@ -909,9 +909,58 @@ function build_and_show_model() {
 			}
 			var nfold = $("#nfold").val();
 			var crossvalidation_percent = $("#crossval_perc").val()/100;
-		
+			
+			var ErrorStack = check_error_stack(new Error().stack);
 			var model_name = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
 				family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
+			xmlhttp.send();
+			if (xmlhttp.status == 404) {
+				console.log("Something went wrong, model was not created, reporting error...");
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "error", "model_not_created",
+					"method=" + method + 
+					"&source=" + source + 
+					"&cohort=" + cohort + 
+					"&r_datatype=" + r_datatype + 
+					"&r_platform=" + r_platform + 
+					"&r_id=" + r_id +
+					"&x_datatypes=" + x_datatypes.join() + 
+					"&x_platforms=" + x_platforms.join() + 
+					"&x_ids=" + x_ids.join() +
+					"&multiopt=" + multiopt.join() + 
+					"&family=" + family + 
+					"&crossvalidation=" + crossvalidation + 
+					"&nfold=" + nfold +
+					"&crossval_percent=" + crossvalidation_percent + 
+					"&standardize=" + standardize,
+					ErrorStack);
+			}
+			else {
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "model_created", 
+					"method=" + method + 
+					"&source=" + source + 
+					"&cohort=" + cohort + 
+					"&r_datatype=" + r_datatype + 
+					"&r_platform=" + r_platform + 
+					"&r_id=" + r_id +
+					"&x_datatypes=" + x_datatypes.join() + 
+					"&x_platforms=" + x_platforms.join() + 
+					"&x_ids=" + x_ids.join() +
+					"&multiopt=" + multiopt.join() + 
+					"&family=" + family + 
+					"&crossvalidation=" + crossvalidation + 
+					"&nfold=" + nfold +
+					"&crossval_percent=" + crossvalidation_percent + 
+					"&standardize=" + standardize,
+					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png target=_blank>Model summary</a> " +
+					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_training.png target=_blank>Model training</a> " +
+					((crossvalidation) ? (
+						"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_validation.png target=_blank>Model validation</a> "
+					) : ("")) +
+					"<a href=https://" + window.location.hostname + "/model_json.html#coeff." + model_name + ".json target=_blank>View coefficients</a> " +
+					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData target=_blank>Download</a> ");
+			}
 			var model_window = '<div id="' + model_name + '_window">' +
 				'<div id="' + model_name + '_tabs"> \
 					<ul> \
@@ -920,14 +969,14 @@ function build_and_show_model() {
 						+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : ('')) +
 					'</ul> \
 					<div id="' + model_name + '_model"> \
-						<iframe src="https://www.evinet.org/pics/plots/' + model_name + '_model.png" width="720" height="720"></iframe> \
+						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="720" height="720"></iframe> \
 					</div> \
 					<div id="' + model_name + '_training"> \
-						<iframe src="https://www.evinet.org/pics/plots/' + model_name + '_training.png" width="720" height="720"></iframe> \
+						<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="720" height="720"></iframe> \
 					</div>'
 					+ ((crossvalidation) ? (
 					'<div id="' + model_name + '_validation"> \
-						<iframe src="https://www.evinet.org/pics/plots/' + model_name + '_validation.png" width="720" height="720"></iframe> \
+						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="720" height="720"></iframe> \
 					</div>') : ('')) +
 				'</div> \
 				<br> \
@@ -951,7 +1000,7 @@ function build_and_show_model() {
 						{
 							text: "Download model",
 							icon: "ui-icon-download",
-							click: function() {window.location.href = "https://www.evinet.org/pics/plots/" + model_name + ".RData";},
+							click: function() {window.location.href = "https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData";},
 						}
 					],
 					resize: function( event, ui ) {
@@ -963,7 +1012,7 @@ function build_and_show_model() {
 			$("#" + model_name + "_tabs").tabs();
 			urlfixtabs("#" + model_name + "_tabs");
 			$('#' + model_name + '_coef').DataTable( {
-				"ajax": "https://dev.evinet.org/pics/plots/coeff." + model_name + ".json",
+				"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
 				"columns": [
 					{ "data": "Term"},
 					{ "data": "Coef"},
@@ -971,6 +1020,7 @@ function build_and_show_model() {
 				],
 				"order": [[ 1, "desc" ]],
 			});
+			
 		}
 	}
 	else {

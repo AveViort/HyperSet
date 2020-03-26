@@ -186,7 +186,8 @@ createGLMnetSignature <- function (
 			ifelse(!independentValidation, "", paste0("Cross-validation: ", Nfolds, "-fold")),  
 			paste0("Response type: ", Family),  
 			paste0("Alpha=", Alpha),  
-			paste0("n(training set)=", n),  
+			paste0("n(training set)=", n),
+			paste0("k(model)=", k),			
 			ppe, 
 			sep="\n"), bty="n", cex=Cex.leg * 1.5); 
 		dev.off();
@@ -288,16 +289,13 @@ for (i in 1:length(x_datatypes)) {
 	print(query);
 	table_name <- sqlQuery(rch, query)[1,1];
 	query <- paste0("SELECT sample,", ifelse(!x_datatypes[i] %in% druggable.patient.datatypes, "id,", ""), x_platforms[i], " FROM ", table_name);
-	condition <- " WHERE ";
+	condition <- paste0(" WHERE ", x_platforms[i], " IS NOT NULL");
 	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
-		condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+		condition <- paste0(condition, " AND id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
 		if (Par["source"] == "tcga") {
 			tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
 			condition <- paste0(condition, " AND sample LIKE ", tcga_array);
 		}
-	}
-	if (condition == " WHERE ") {
-		condition <- "";
 	}
 	# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
 	query <- paste0(query, condition, ";");
@@ -315,14 +313,14 @@ for (i in 1:length(x_datatypes)) {
 	if (is.null(nrow(temp))) {
 		temp <- matrix(temp, 1, length(temp));
 		rownames(temp) <- x_platforms[i];
-		if (any(x_datatypes %in% druggable.patient.datatypes)) {
+		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
 			temp_names <- gsub(sample_mask, "", temp_names, fixed=FALSE)
 		}
 		colnames(temp) <- temp_names;
 	} else {
 		rownames(temp) <- temp_names;
 		temp_names <- colnames(temp);
-		if (any(x_datatypes %in% druggable.patient.datatypes)) {
+		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
 			temp_names <- gsub(sample_mask, "", temp_names, fixed=FALSE)
 		}
 		colnames(temp) <- temp_names;
@@ -337,22 +335,18 @@ table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", ifelse(!empty_value(rid), "id,", ""),
 	rplatform, ifelse(rplatform %in% survival_platforms, paste0(",", rplatform, "_time"), ""), 
 	" FROM ", table_name);
-condition <- " WHERE ";
+condition <- paste0(" WHERE ", rplatform, " IS NOT NULL");
 if (rdatatype == "clin") {
 	if (rplatform %in% survival_platforms) {
-		condition <- paste0(condition, rplatform,"_time<>0");
+		condition <- paste0(condition, " AND ", rplatform,"_time<>0");
 	}
 } else {
 	if (Par["source"] == "tcga") {
-		condition <- paste0(condition, "sample LIKE ANY ('{", paste0("%-", multiopt, collapse=","), "}'::text[])");
+		condition <- paste0(condition, " AND sample LIKE ANY ('{", paste0("%-", multiopt, collapse=","), "}'::text[])");
 	}
 	if (!(empty_value(rid))) {
 		condition <- paste0(condition, " AND id='", rid, "'")
 	}
-}
-# in case if we have not added any conditions - like with clin:ajcc_pathologic_tumor_stage
-if (condition == " WHERE ") {
-	condition <- "";
 }
 query <- paste0(query, condition, ";");
 print(query);
@@ -401,20 +395,8 @@ for (ty in names(Platform)) {
 #print(dim(X.matrix));
 #print("Original X.matrix:");
 #print(X.matrix);
+print(colnames(X.matrix));
 stop_flag = FALSE;
-if ((Par["source"] == "tcga" ) & (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes))) {
-	X.matrix <- X.matrix[,grep(sample_mask, colnames(X.matrix), fixed=FALSE)];
-	t1 <- try(colnames(X.matrix) <- gsub(sample_mask, "", colnames(X.matrix), fixed=FALSE));
-	if (grepl("Error|fitter|levels", t1[1])) {
-		print("Error occured");
-		report_event("model.glmnet.r", "error", "colnames_assignment_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"],			
-			"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
-			"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"]), prepare_error_stack(t1));
-		plot(0,type='n', axes=FALSE, ann=FALSE);
-		text(x=1, y=0.5, labels = t1[1], cex = 1);
-		stop_flag = TRUE;
-	}
-}
 # have to make an exclusion for tissues, otherwise will get an error:
 # Error in lognet(x, is.sparse, ix, jx, y, weights, offset, alpha, nobs,  : 
 #  one multinomial or binomial class has 1 or 0 observations; not allowed
@@ -423,7 +405,7 @@ if (Par["source"] == "ccle") {
 }
 
 if (!stop_flag) {
-	#print(str(X.matrix));
+	print(str(X.matrix));
 	#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 	temp_rownames <- rownames(X.matrix);
 	temp_colnames <- colnames(X.matrix);
@@ -436,8 +418,8 @@ if (!stop_flag) {
 	}
 	#print(str(X.matrix));
 	usedSamples <- colnames(X.matrix);
-	#print("Used samples:");
-	#print(usedSamples);
+	print("Used samples:");
+	print(usedSamples);
 	fam <- Par["family"];
 	mea <- Par["measure"];
 	validation <- as.logical(Par["validation"]);
@@ -493,6 +475,9 @@ if (!stop_flag) {
 			names(resp) <- temp_names;
 		}
 		resp <- resp[!is.na(resp)];
+		if ((Par["source"] == "tcga") & (any(x_datatypes %in% druggable.patient.datatypes) & (!rdatatype %in% druggable.patient.datatypes))) {
+			names(resp) <- gsub(sample_mask, "", names(resp), fixed=FALSE);
+		}
 		#print(resp);
 		#print(str(resp));
 	}
