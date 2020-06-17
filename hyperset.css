@@ -36,7 +36,11 @@ div,p {
 color: #2e6e9e;
 }
 
-
+p.over {
+	margin: 5px;
+	font-size: 1.1em;
+	font-weight: 550;
+}
 
 span.highlighted {
 color: #e17009;
@@ -208,12 +212,7 @@ span.ui-icon {
 	opacity: 0.35
 	}
 
-table.redmond_ui_table td {
-	border: 0px solid #c5dbec;
-	margin: 10px;
-	background-color: white; 
-	color: #2e6e9e;
-}
+
 
 .demo_button {
 	display: inline-block;
@@ -231,7 +230,7 @@ table.redmond_ui_table td {
 }	
 
 .extra_info {
-	display: block;
+	display: block-inline;
 	width: 240px;
 	text-align: left;
 	font-size: x-small;
@@ -420,7 +419,7 @@ border-style: solid;
    
 .cy_main {
   height: 675px;
-  width: 75%;
+  width: 70%;
   background-color: white;
   position: relative;
   z-index: 9;
@@ -548,6 +547,48 @@ font-weight: 600;
 	display: inline; 
 	/*float: right; */
 	width: 3em; 
+}
+
+table.redmond_ui_table td {
+	border: 0px solid #c5dbec;
+	margin: 10px;
+	background-color: white; 
+	color: #2e6e9e;
+}
+
+table.parameter_overview {
+	border: 1px solid #c5dbec;
+}
+
+table.parameter_overview td {
+	border: 1px solid #c5dbec;
+	margin: 3px;
+	padding: 15px;
+	/*background-color: white; 
+	color: #2e6e9e;*/
+}
+
+p.parameter_options1 {
+	display: inline-block;
+	font-size: 90%;
+	padding-left: 30px;
+}
+
+p.parameter_options2 {
+	float: right;
+	clear: both;
+	font-size: 90%;
+}
+
+
+td.parameter_area_disabled {
+	border: 1px solid #a6c9e2;
+	color: #aaaaaa;
+}
+
+td.parameter_area_enabled {  
+	border: 2px solid #c5dbec;
+	/*color: #aaaaaa;*/
 }
 
 .inputareadisabled {

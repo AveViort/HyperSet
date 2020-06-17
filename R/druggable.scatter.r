@@ -126,7 +126,8 @@ if (status != 'ok') {
 			showticklabels = TRUE,
 			tickangle = 0,
 			tickfont = font2);
-		p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples)) %>% 
+		p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', 
+			text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples, " (click to open cBioPortal information)")) %>% 
 		onRender(paste0("
 			function(el) { 
 				el.on('plotly_hover', function(d) {
@@ -137,27 +138,29 @@ if (status != 'ok') {
 						console.log('Datatype: ', datatype);
 						console.log('Platform: ', platform);
 						console.log('ID: ', id);
-						//console.log('FGS: ', ((d.yaxes[0].title.text).split(' '))[0]);
-						//var genes;
-						//var startTime = new Date();
-						//var xmlhttp = new XMLHttpRequest();
-						//xmlhttp.open('GET', 'https://www.evinet.org/dev/HyperSet/cgi/get_ags_genes.cgi?cohort=' + encodeURIComponent(cohort) + '&datatype=' + encodeURIComponent(datatype) + '&platform=' + encodeURIComponent(platform) + '&id=' + encodeURIComponent(id), false);
-						//xmlhttp.onreadystatechange = function() {
-						//	if (this.readyState == 4 && this.status == 200) {
-						//	genes = this.responseText;}
-						//}
-						//xmlhttp.send();
-						//genes = genes.split('|');
-						//genes.slice(0, genes.length-1);
-						//var endTime = new Date();
-						//console.log('AGS genes: ', genes);
-						//console.log('Request and processing took ', endTime - startTime, ' ms');
-						//console.log('Hover: ', d) 
 					});",
-				ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) { 
+				ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) {
 						var id = ((d.points[0].text).split(' '))[1];
 						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
-					});"), ""),
+					});"), ifelse(Par["source"] == "tcga", paste0("el.on('plotly_click', function(d) {
+						var id = ((d.points[0].text).split(' '))[1].toUpperCase();
+						window.open('https://www.cbioportal.org/patient?studyId=", Par["cohort"], "_tcga&",
+							ifelse(any(datatypes %in% druggable.patient.datatypes), 
+								"caseId='", 
+								"sampleId='"),
+							"+id,'_blank');
+						});"), ifelse(Par["source"] == "ccle", "el.on('plotly_click', function(d) { 
+							var id = ((d.points[0].text).split(' '))[1];
+							var depmap_id = '';
+							var xmlhttp = new XMLHttpRequest();
+							xmlhttp.open('GET', 'https://dev.evinet.org/cgi/get_depmap_id.cgi?celline=' + encodeURIComponent(id), false);
+							xmlhttp.onreadystatechange = function() {
+							if (this.readyState == 4 && this.status == 200) {
+								depmap_id = this.responseText;}
+							}
+							xmlhttp.send();	
+							window.open('https://depmap.org/portal/cell_line/' + depmap_id,'_blank');
+						});", ""))),
 				"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 			}
 		")) %>%
@@ -228,8 +231,7 @@ if (status != 'ok') {
 						var platform='", platforms[1],"';
 						console.log('Datatype: ', datatype);
 						console.log('Platform: ', platform);
-						console.log('ID: ', d[0].text);
-						//console.log('Hover: ', d) });",
+						console.log('ID: ', d[0].text);",
 					ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) { 
 						var id = ((d.points[0].text).split(' '))[1];
 						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');

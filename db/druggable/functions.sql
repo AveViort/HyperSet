@@ -1168,6 +1168,32 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- addition to previous function: this function allows to find data in significant interactions which is not represented in CLIN tables
+-- e.g. we had data for LUSC-RFS in significant results,  
+CREATE OR REPLACE FUNCTION missing_measurment_types() RETURNS setof text AS $$
+DECLARE
+record_count numeric;
+cohort_n text;
+measure_n text;
+table_n text;
+flag numeric;
+query text;
+res text;
+BEGIN
+FOR cohort_n, measure_n IN SELECT DISTINCT cohort, measure FROM significant_interactions
+LOOP
+table_n := LOWER(cohort_n) || '_clin';
+query := E'SELECT COUNT (druggable.INFORMATION_SCHEMA.COLUMNS.column_name) FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true) AND (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=\'' || LOWER(measure_n) || E'\');';
+EXECUTE query INTO flag;
+IF (flag = 0) THEN
+SELECT COUNT (*) FROM significant_interactions WHERE (cohort=cohort_n) AND (measure=measure_n) INTO record_count;
+res := 'Missing measure ' || measure_n || ' for cohort ' || cohort_n || ' (' || record_count || ' records)';
+RETURN NEXT res;
+END IF;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION drug_synonym(drug text) RETURNS text AS $$
 DECLARE
 res text;
@@ -1181,12 +1207,12 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION get_url(id text) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION get_url(ext_id text) RETURNS text AS $$
 DECLARE
 res text;
 link text;
 BEGIN
-FOR link IN SELECT url FROM synonyms WHERE external_id=id
+FOR link IN SELECT url FROM synonyms WHERE external_id=ext_id
 LOOP
 res := link;
 END LOOP;
@@ -1886,7 +1912,44 @@ RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 
--- this function create indices sample-id_platform for all tables (which have id column) in guide_table
+-- double ind for datatype (sample and id columns only)
+CREATE OR REPLACE FUNCTION autocreate_double_indices_datatype(datatype_n text) RETURNS boolean AS $$
+DECLARE
+table_n text;
+BEGIN
+FOR table_n in SELECT table_name FROM guide_table WHERE type=datatype_n
+LOOP
+PERFORM autocreate_double_indices_table(table_n);
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- for one table
+CREATE OR REPLACE FUNCTION autocreate_double_indices_table(table_n text) RETURNS boolean AS $$
+DECLARE
+datatype_n text;
+flag boolean;
+BEGIN
+SELECT type INTO datatype_n FROM guide_table WHERE table_name=table_n;
+-- check if table has id column
+SELECT has_ids INTO flag FROM type_ids WHERE data_type=datatype_n;
+IF (flag=true) THEN
+-- skip sample,id columns with offset
+RAISE NOTICE 'Creating ids for table % sample, id', table_n;
+EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || E'_sample_id__ind\');' INTO flag;
+IF (flag=false)
+THEN
+EXECUTE E'CREATE INDEX ' || table_n || '_sample_id_ind ON ' || table_n || '(sample,id);';
+ELSE
+RAISE NOTICE 'Index already exists';
+END IF;
+END IF;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function create indices sample-id-platform for all tables (which have id column) in guide_table
 CREATE OR REPLACE FUNCTION autocreate_triple_indices_all() RETURNS boolean AS $$
 DECLARE
 datatype_n text;

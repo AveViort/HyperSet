@@ -359,10 +359,10 @@ add_plot_type_platform_vs_datatype <- function(platform, datatype, plot_type, ke
 		platforms <- c(platforms, as.character(temp[,1]));
 	}
 	platforms <- unique(platforms);
-	platforms <- platforms[which(platforms!='')];
 	# delete platform descriptions
 	platforms <- lapply(platforms, function(x) unlist(strsplit(x, "\\|"))[1]);
 	platforms <- unlist(platforms);
+	platforms <- platforms[which(platforms!='')];
 	#print(platforms);
 	k <- 0;
 	for (platform2 in platforms) {
@@ -397,6 +397,7 @@ add_plot_type_datatype <- function(datatype1, plot_type, key_file = "HS_SQL.conf
 	# delete platform descriptions
 	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
 	platforms1 <- unlist(platforms1);
+	platforms1 <- platforms1[which(platforms1 != '')];
 	k <- 0;
 	for (platform1 in platforms1) {
 		n <- add_plot_type(platform1, '', '', plot_type, key_file, rch);
@@ -427,10 +428,10 @@ add_plot_type_datatype_vs_datatype <- function(datatype1, datatype2, plot_type, 
 		platforms1 <- c(platforms1, as.character(temp[,1]));
 	}
 	platforms1 <- unique(platforms1);
-	platforms1 <- platforms1[which(platforms1!='')];
 	# delete platform descriptions
 	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
 	platforms1 <- unlist(platforms1);
+	platforms1 <- platforms1[which(platforms1!='')];
 	#print(platforms1);
 	k <- 0;
 	for (platform1 in platforms1) {
@@ -469,9 +470,6 @@ add_plot_type_datatypes_3D <- function(datatype1, datatype2, datatype3, plot_typ
 	platforms1 <- unique(platforms1);
 	platforms2 <- unique(platforms2);
 	platforms3 <- unique(platforms3);
-	platforms1 <- platforms1[which(platforms1!='')];
-	platforms2 <- platforms2[which(platforms2!='')];
-	platforms3 <- platforms3[which(platforms3!='')];
 	# delete platform descriptions
 	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
 	platforms1 <- unlist(platforms1);
@@ -479,6 +477,9 @@ add_plot_type_datatypes_3D <- function(datatype1, datatype2, datatype3, plot_typ
 	platforms2 <- unlist(platforms2);
 	platforms3 <- lapply(platforms3, function(x) unlist(strsplit(x, "\\|"))[1]);
 	platforms3 <- unlist(platforms3);
+	platforms1 <- platforms1[which(platforms1!='')];
+	platforms2 <- platforms2[which(platforms2!='')];
+	platforms3 <- platforms3[which(platforms3!='')];
 	#print(platforms1);
 	#print(platforms2);
 	#print(platforms3);

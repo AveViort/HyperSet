@@ -75,7 +75,7 @@ for (i in 1:length(temp_datatypes)) {
 		print(temp_query);
 		internal_id <- sqlQuery(rch, temp_query)[1,1];
 		# drugs are special case!
-		condition <- paste0(condition, ifelse(temp_platforms[i] == "drug", "drug='","id='"), internal_id, "'");
+		condition <- paste0(condition, ifelse(temp_datatypes[i] == "drug", "drug='","id='"), internal_id, "'");
 	}
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(temp_datatypes[i]), "';");
 	table_name <- sqlQuery(rch, query)[1,1];

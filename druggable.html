@@ -2,7 +2,7 @@
 <HTML lang="en-US">
 <HEAD>
 
-<TITLE>Drug screen data - dev version</TITLE>
+<TITLE>Drug screen data</TITLE>
 <LINK href="pics/favicon.ico" rel="shortcut icon">
 <meta http-equiv="content-type" content="charset=utf-8">
 <META http-equiv="Content-Script-Type" content="application/javascript" >
@@ -91,6 +91,10 @@ li.tab:hover ul {
 .ui-menu-item {
 	word-break: break-word;
 }
+
+.no-titlebar .ui-dialog-titlebar {
+    display: none;
+}
 </style>
 </HEAD>
 
@@ -126,6 +130,10 @@ li.tab:hover ul {
 	</table>
 </div>
 <!--div  id="displayind"><div id="displayind2">progress</div></div-->
+
+<div id="demoComment" style="display: none; visibility: hidden">
+	<div id="commentSection"></div>
+</div>
 
 <div id="cookiewarning">
 	<div role="alert" class="ui-widget-header ui-corner-all" style=" margin: 5px; padding: 5px;">
@@ -1203,6 +1211,12 @@ function add_plot_options_row(i) {
 	}
 	sessionStorage.removeItem("add_row");
 	id_keyup(i+1);
+	var event = new CustomEvent("row_added", {
+		detail: {
+			row: i
+		}
+	});
+	document.getElementById("add_row" + i).dispatchEvent(event);
 }
 
 function delete_plot_options_row(i) {
@@ -1344,6 +1358,12 @@ function init_cohortselector() {
         showLabel: false});
 	$("#delete_row1").button("disable");
 	sessionStorage.removeItem("add_row");
+	var event = new CustomEvent("cohortselector_init_complete", {
+		detail: {
+			cohort: $("#cohort_selector option:selected").val()
+		}
+	});
+	document.getElementById("cohort_selector").dispatchEvent(event);
 }
 
 function init_dataselector(selector_id) {
@@ -1380,6 +1400,12 @@ function init_dataselector(selector_id) {
 			delete_plot_options_row(i);
 		}
 	}
+	var event = new CustomEvent("typeselector_init_complete", {
+		detail: {
+			type_selector: selector_id
+		}
+	});
+	document.getElementById(selector_id).dispatchEvent(event);
 	return empty;
 }
 
@@ -1486,6 +1512,12 @@ function init_platformselector(selector_id) {
 			delete_plot_options_row(i);
 		}
 	}
+	var event = new CustomEvent("platformselector_init_complete", {
+		detail: {
+			platform_selector: selector_id
+		}
+	});
+	document.getElementById(selector_id).dispatchEvent(event);
 	return empty;
 }
 
@@ -1507,6 +1539,20 @@ function init_axis_type_selector(selector_id) {
 			text: "Choose scale for this axis: linear, log or square root"
 		}
 	});
+	$("#" + selector_id).off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {
+		var event = new CustomEvent("axisselector_update_complete", {
+			detail: {
+				axis_selector: selector_id
+			}
+		});
+		document.getElementById(selector_id).dispatchEvent(event);
+	} );
+	var event = new CustomEvent("axisselector_init_complete", {
+		detail: {
+			axis_selector: selector_id
+		}
+	});
+	document.getElementById(selector_id).dispatchEvent(event);
 }
 
 function init_tcga_code_selector(selector_id) {
@@ -1555,6 +1601,9 @@ function init_plot_type_selector() {
     });
 	$('#plot-type').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
 	plot_type_changed();
+	var event = new CustomEvent("plotselector_init_complete", {
+	});
+	document.getElementById("plot-type").dispatchEvent(event);
 }
 
 function init_cor_source_selector(default_value) {
@@ -1579,6 +1628,12 @@ function init_cor_source_selector(default_value) {
         width: "150px"
     });
 	$('#corSource_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corSource_selector")} );
+	var event = new CustomEvent("corsourceselector_init_complete", {
+		detail: {
+			cor_source_selector: $('#corSource_selector option:selected').val()
+		}
+	});
+	document.getElementById('corSource_selector').dispatchEvent(event);
 }
 
 function init_cor_datatype_selector() {
@@ -1598,6 +1653,12 @@ function init_cor_datatype_selector() {
 		disabled: cor_source == "undef"
     });
 	$('#corDatatype_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
+	var event = new CustomEvent("cortypeselector_init_complete", {
+		detail: {
+			cor_type_selector: $('#corDatatype_selector option:selected').val()
+		}
+	});
+	document.getElementById('corDatatype_selector').dispatchEvent(event);
 }
 
 function init_cor_cohort_selector() {
@@ -1617,6 +1678,12 @@ function init_cor_cohort_selector() {
 		disabled: $("#corSource_selector option:selected").val() == "CCLE"
     });
 	$('#corCohort_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corCohort_selector")} );
+	var event = new CustomEvent("corcohortselector_init_complete", {
+		detail: {
+			cor_cohort_selector: $('#corCohort_selector option:selected').val()
+		}
+	});
+	document.getElementById('corCohort_selector').dispatchEvent(event);
 }
 
 function init_cor_platform_selector() {
@@ -1637,6 +1704,12 @@ function init_cor_platform_selector() {
 		disabled: cor_datatype == "undef"
     });
 	$('#corPlatform_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corPlatform_selector")} );
+	var event = new CustomEvent("corplatformselector_init_complete", {
+		detail: {
+			cor_platform_selector: $('#corPlatform_selector option:selected').val()
+		}
+	});
+	document.getElementById('corPlatform_selector').dispatchEvent(event);
 }
 
 // this function is also used for gene/feature autocomplete init
@@ -1664,6 +1737,12 @@ function init_cor_screen_selector() {
 	document.getElementById('FDR_input').setAttribute("onchange", 'cor_id_keyup()');
 	document.getElementById('corGeneFeature_input').setAttribute("onkeyup", 'cor_id_keyup()');
 	document.getElementById('corGeneFeature_input').setAttribute("onchange", 'cor_id_keyup()');
+	var event = new CustomEvent("corscreenselector_init_complete", {
+		detail: {
+			cor_screen_selector: $('#corScreen_selector option:selected').val()
+		}
+	});
+	document.getElementById('corScreen_selector').dispatchEvent(event);
 }
 
 function init_cor_genefeature_input() {
@@ -2024,6 +2103,13 @@ function update_cohort() {
 	$('#id1_input').val("");
 	update_plot_types();
 	plot_type_changed();
+	var event = new CustomEvent("cohortselector_update_complete", {
+		detail: {
+			cohort: $("#cohort_selector option:selected").val()
+		}
+	});
+	document.getElementById("cohort_selector").dispatchEvent(event);
+	
 }
 
 function update_type(n) {
@@ -2090,6 +2176,12 @@ function update_type(n) {
 			}
 		}
 	}
+	var event = new CustomEvent("typeselector_update_complete", {
+		detail: {
+			datatype: $("#type" + n + "_selector option:selected").val()
+		}
+	});
+	document.getElementById("type" + n + "_selector").dispatchEvent(event);
 	return status;
 }
 
@@ -2179,6 +2271,12 @@ function update_platform(n) {
 		}
 		// do not move this operation - otherwise will cause bug
 		id_keyup(n);
+		var event = new CustomEvent("platformselector_update_complete", {
+			detail: {
+				platform: $("#platform" + n + "_selector option:selected").val()
+			}
+		});
+		document.getElementById("platform" + n + "_selector").dispatchEvent(event);
 	}
 }
 
@@ -2278,6 +2376,12 @@ function update_model_source_selector() {
 	$('#modelCohort_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_model_cohort_selector();
 	$('#modelCohort_selector').selectmenu( "refresh" );
+	var event = new CustomEvent("modelsourceselector_update_complete", {
+		detail: {
+			source: $("#modelSource_selector option:selected").val()
+		}
+	});
+	document.getElementById("modelSource_selector").dispatchEvent(event);
 }
 
 function update_model_cohort_selector() {
@@ -2291,6 +2395,12 @@ function update_model_cohort_selector() {
 	$('#responseDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_response_datatype_selector(1);
 	$('#responseDatatype_selector').selectmenu( "refresh" );
+	var event = new CustomEvent("modelcohortselector_update_complete", {
+		detail: {
+			cohort: $("#modelCohort_selector option:selected").val()
+		}
+	});
+	document.getElementById("modelCohort_selector").dispatchEvent(event);
 }
 
 function update_model_datatype_selector(n) {
@@ -2301,12 +2411,24 @@ function update_model_datatype_selector(n) {
 	$('#modelPlatform' + n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_model_platform_selector(n);
 	$('#modelPlatform' + n + '_selector').selectmenu( "refresh" );
+	var event = new CustomEvent("modeltypeselector_update_complete", {
+		detail: {
+			datatype: $("#modelDatatype" + n + "_selector option:selected").val()
+		}
+	});
+	document.getElementById("modelDatatype" + n + "_selector").dispatchEvent(event);
 }
 
 function update_model_platform_selector(n) {
 	var selector_value = $("#modelPlatform" + n + "_selector option:selected").val();
 	usetCookie("modelPlatform" + n + "_selector", selector_value, druggable_cookie_time);
 	init_model_genearea(n);
+	var event = new CustomEvent("modelplatformselector_update_complete", {
+		detail: {
+			platform: $("#modelPlatform" + n + "_selector option:selected").val()
+		}
+	});
+	document.getElementById("modelPlatform" + n + "_selector").dispatchEvent(event);
 }
 
 function update_response_datatype_selector() {
@@ -2348,6 +2470,12 @@ function plot_type_changed() {
 			}
 		}
 	}
+	var event = new CustomEvent("plottype_changed", {
+		detail: {
+			plot_type: $('#plot-type option:selected').val()
+		}
+	});
+	document.getElementById("plot-type").dispatchEvent(event);
 }
 
 function update_plot_types() {
@@ -2402,6 +2530,12 @@ function update(initiator) {
 					}
 					toggle_selectors("enable");
 				}
+				var event = new CustomEvent("typeselector_update_complete", {
+					detail: {
+						datatype: $("#type" + n + "_selector option:selected").val()
+					}
+				});
+				document.getElementById("type" + n + "_selector").dispatchEvent(event);
 				break;
 			case "platform":
 				if (selector_value != previous_value) {
@@ -2413,6 +2547,12 @@ function update(initiator) {
 					update_plot_types();
 					toggle_selectors("enable");
 				}
+				var event = new CustomEvent("platformselector_update_complete", {
+					detail: {
+						platform: $("#platform" + n + "_selector option:selected").val()
+					}
+				});
+				document.getElementById("platform" + n + "_selector").dispatchEvent(event);
 				break;
 			case "corSource":
 				if (selector_value != previous_value) {
@@ -2420,6 +2560,14 @@ function update(initiator) {
 					update_cor_datatype_selector();
 					update_cor_cohort_selector();
 					update_cor_platform_selector();
+				} 
+				else {
+					var event = new CustomEvent("corsourceselector_update_complete", {
+						detail: {
+							source: $("#corSource_selector option:selected").val()
+						}
+					});
+					document.getElementById("corSource_selector").dispatchEvent(event);
 				}
 				break;
 			case "corDatatype":
@@ -2429,6 +2577,12 @@ function update(initiator) {
 					update_cor_platform_selector();
 					update_cor_screen_selector();
 				}
+				var event = new CustomEvent("cortypeselector_update_complete", {
+					detail: {
+						datatype: $("#corDatatype_selector option:selected").val()
+					}
+				});
+				document.getElementById("corDatatype_selector").dispatchEvent(event);
 				break;
 			case "corCohort":
 				if (selector_value != previous_value) {
@@ -2436,13 +2590,31 @@ function update(initiator) {
 					update_cor_platform_selector();
 					update_cor_screen_selector();
 				}
+				var event = new CustomEvent("corcohortselector_update_complete", {
+					detail: {
+						cohort: $("#corCohort_selector option:selected").val()
+					}
+				});
+				document.getElementById("corCohort_selector").dispatchEvent(event);
 				break;
 			case "corPlatform":
 				update_cor_platform_selector();
 				update_cor_screen_selector();
+				var event = new CustomEvent("corplatformselector_update_complete", {
+					detail: {
+						platform: $("#corPlatform_selector option:selected").val()
+					}
+				});
+				document.getElementById("corPlatform_selector").dispatchEvent(event);
 				break;
 			case "corScreen":
 				update_cor_screen_selector();
+				var event = new CustomEvent("corscreenselector_update_complete", {
+					detail: {
+						screen: $("#corScreen_selector option:selected").val()
+					}
+				});
+				document.getElementById("corScreen_selector").dispatchEvent(event);
 				break;
 			case "modelSource":
 				if (selector_value != previous_value) {

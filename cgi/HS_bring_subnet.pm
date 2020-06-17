@@ -38,7 +38,7 @@ $dbh,	$data,        $order,            $node,
 	%FBScol,                  $fc_class,
 	       $jsquid_screen,
 	$structured_table,        $single_table,
-	$tmpfile,   $coff_class, 
+	$tmpfile,   #$coff_class, 
    %GOlocation, $genes,    $context_genes, $gsAttr, $cgsAttr, 
 	            $max_links, $pathwayName,
 	$pathwaySize,             $pathwayMembership,
@@ -218,30 +218,17 @@ $fgs_genes = [@{$context_genes}];
 	print STDERR "SBMURL: ". $URL."\n";
 print STDERR "Genes: ". join(" ", @{$genes})."\n";
 
-
-		$keep_query                         = 	$q->{'keep_query'};
-		$submitted_coff                     = 	$q->{'coff'};
-		$order                              = 	$q->{'order'}; #network order
-		$reduce  =  $q->{'reduce'}; #choice of algorithm to reduce too large networks
-		if ($reduce) {
-			$reduce_by           = $q->{'reduce_by'};
-			$desired_links_total = $q->{'no_of_links'};
-			$qvotering           = $q->{'qvotering'};
-		}
-		else {$desired_links_total = 1000000;}
-	# }
-
 #END OF READING CGI PARAMETERS
 #PARAMETERS TO REPLACE CGI IN DEBUG MODE:
-$reduce_by           = 'noislets'  if !$reduce_by;
-$show_names          = 'Names'     if !$show_names;
-$desired_links_total = 10          if !$desired_links_total;
+# $reduce_by           = 'noislets'  if !$reduce_by;
+# $show_names          = 'Names'     if !$show_names;
+# $desired_links_total = 10          if !$desired_links_total;
 our $desired_nodes       = 3;
 our $antiCrashLimit      = 800;
 #Displaying the number of links for each node on the global network is only possible with pre-calculated values from a special table, and only at 3 discrete cut-offs; so it is prepared here:
-if    ( $submitted_coff < 0.375 ) { $coff_class = 0.25; }
-elsif ( $submitted_coff > 0.675 ) { $coff_class = 0.75; }
-else  { $coff_class = 0.50; }
+# if    ( $submitted_coff < 0.375 ) { $coff_class = 0.25; }
+# elsif ( $submitted_coff > 0.675 ) { $coff_class = 0.75; }
+# else  { $coff_class = 0.50; }
 print $submitted_species if ($main::debug);
 if ( !$submitted_species || !defined $genes->[0] || $#{$genes} < 0 ) {
 	print_noquery_dialog();
@@ -278,6 +265,7 @@ sub data { #brings most of the data to display the sub-network
 		$desired_links_per_query = 5 if $desired_links_per_query < 5;
 	}
 
+
 	if ( $output eq 'webgraph' ) {
 		print $q->header();
 		print $q->start_html(
@@ -297,8 +285,11 @@ sub data { #brings most of the data to display the sub-network
 	fc_links($initial_gene_set, $start_species, $fcgenes, $networks);
 	pubmed() if defined($allPubMed);
 	descriptions($fcgenes);
+	my $fnd_genes = [keys( %{ $found_genes->{$submitted_species} } )];
+	group_labels($fnd_genes); #FunCoup mode
 	group_labels($ags_genes,	$fgs_genes);
 	hubbiness2($initial_gene_set, $start_species, $networks);
+	hubbiness2($fnd_genes, $start_species, $networks); #FunCoup mode
 	extra_data() if $show_extra_data;
 	return undef;
 }
@@ -310,24 +301,33 @@ my($ge, $intensity);
 
 	# $genes = [keys(%{$gsAttr->{id}})]; #->{attr};
 	# $context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
+if (!defined($group2)) { #FunCoup mode
+if ($node->{ $ge }->{'groupColor'}) { #FunCoup mode
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_query'};
+	} else {
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_other'};	
+	}
+} else { #NEA mode
+
 for $ge(@{$group1}) {
 	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($gsAttr->{score}->{ $ge }, "byExpression") if (defined($gsAttr->{score}->{ $ge }));
 	$node->{ $ge }->{'subSet'} =  lc($gsAttr->{subset}->{ $ge }) if (defined($gsAttr->{subset}->{ $ge }));
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'};
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'}; # if !$node->{ $ge }->{'groupColor'};
 }
 for $ge(@{$group2}) {
 	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($cgsAttr->{score}->{ $ge }, "byExpression") if (defined($cgsAttr->{score}->{ $ge }));
 	$node->{ $ge }->{'subSet'} =  lc($cgsAttr->{subset}->{ $ge }) if (defined($cgsAttr->{subset}->{ $ge }));
 
 if ($node->{ $ge }->{'groupColor'}) {
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_both'};
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_both'} if ($group1 == $group2);
 } else {
 	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'};
 }
 }
 for $ge(keys % {$node}) {
 	$node->{ $ge }->{'name'} = $node->{ $ge }->{'id'} if (!$node->{ $ge }->{'name'});
-	$node->{ $ge }->{'groupColor'} = '#888888' if (!defined($node->{ $ge }->{'groupColor'}));
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_other'} if (!defined($node->{ $ge }->{'groupColor'}));
+}
 }
 return undef;
 }
@@ -565,7 +565,7 @@ sub fc_links { #the main procedure of sub-network retrieval. Note that it iterat
 	# push @fld_list, ( $scorecol . ' as confidence ', 'prot1', 'prot2' );
 	# push @fld_list, @{$networks};
 	push @fld_list, ( $scorecol . ' as confidence , * '); 
-
+# $order = 1;
 	for $oo ( 1 .. ( $order + 1 ) ) {
 		if ( $show_context and ( $oo == $order + 1 ) ) {
 			my $fcgenes = HS_SQL::gene_synonyms( $context_genes, $species{$submitted_species}, 'context' )
@@ -596,6 +596,7 @@ sub fc_links { #the main procedure of sub-network retrieval. Note that it iterat
 		  # ." order by $scorecol desc"
 		  ;
 		 $sm =~ s/data_pwc8/data_pwc9/g;
+		 print OUT $sm;
 		my $sth = $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT statement FC\n";
 		$sth->execute();
 		$j = 0;

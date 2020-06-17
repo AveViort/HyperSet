@@ -5,6 +5,7 @@ var quickly = 0.5;
 var normally = 1;
 var skipIt = 0.01; 
 var message="Plots can be created using 1, 2, or 3 variables for the avaialble datasets.<br>Select 1st and, if needed, 2nd and 3rd rows in order to visualize molecular and clinical data on a set of samples/patients.";
+var completed = false;
 
 function hasOption (ele, opt) {
 	ops = $("#" + ele)[0].options;
@@ -34,7 +35,76 @@ function waitForElement (ww) {
 	}
 }
 
-// demo for the third tap - 2D plot
+// does not work since JS concurrency model is very primitive - but save it for future
+// ele is element id (without #)
+// ev is event
+// fun is callback function
+// val is value (id input, dropdown menu value)
+// to is timer (ms)
+async function waitForEvent(ele, ev, fun, val, to) {
+	// temp! Works only for dropdown
+	if ($("#" + ele + " option:selected").val() != val) {
+		setListener(ele, ev);
+		console.log("Back to waitForEvent");
+		fun("#" + ele, val, to);
+		await waitForCompletion();
+	}
+	else {
+		fun("#" + ele, val, to);
+	}
+	return completed;
+}
+
+function setListener(ele, ev) {
+	completed = false;
+	console.log("Listener for " + ev + " registered");
+	document.getElementById(ele).addEventListener(ev, function(e) {
+		console.log(e + ": completed");
+		completed = true;
+	}, {once: true});
+}
+
+async function waitForCompletion() {
+	return new Promise((resolve, reject) => {
+		while (!completed) {
+			console.log("Waiting...");
+		}
+		resolve(completed);
+	});
+}
+
+// sometimes we have to ignore the event once 
+// e.g. for demo 2 - nearly all the events are fired at once (when source selector changed - it updates datatype, screen, platform)
+// ele is element id (without hash)
+// ev is event na,e
+function ignoreEvent(ele, ev) {
+	document.getElementById(ele).addEventListener(ev, function(e) {
+		console.log("Event " + ev + " ignored");
+	}, {once: true});
+}
+
+// comment form shows comments (what's happening now)
+function showCommentForm() {
+	$("#demoComment" ).css({"display": "block", "visibility": "visible"});
+	$("#demoComment" ).dialog({
+		dialogClass: "no-titlebar",
+		modal: false,
+		width: 480,
+		position: { my: 'top', at: 'top' },
+		resizable: false,
+		closeOnEscape: false
+	});
+}
+
+function closeCommentForm() {
+	$("#demoComment").dialog("close");
+}
+
+function comment(comment_text) {
+	$("#commentSection").text(comment_text);
+}
+
+// demo for the third tab - 2D plot
 function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, datatype2, platform2, id2, scale2, plottype) {
 	if (sessionStorage.getItem("demo") == null) {
 		sessionStorage.setItem("demo", 1);
@@ -49,139 +119,147 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 			}
 		}
 		var to = 1000;
-		changeDropVal("#source_selector", source, to);
-		to += 1000;            //250;
-			
-		var part_a = {
-			ele: "cohort_selector",	
-			interval: 50, 
-			val: cohort, 
-			func: function () {
-				console.log("Part cohort_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_a); 
-		changeDropVal("#cohort_selector", cohort, to);
-		to += 1300;            //250;
+		showCommentForm();
 		
-		var part_b = {
-			ele: "type1_selector",	
-			interval: 50, 
-			val: datatype1, 
-			func: function () {
-				console.log("Part type1_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_b); 
-		changeDropVal("#type1_selector", datatype1, to);
-		to += 1700;
-			
-		var part_c = {
-			ele: "platform1_selector",	
-			interval: 50, 
-			val: platform1, 
-			func: function () {
-				console.log("Part platform1_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_c); 
-		changeDropVal("#platform1_selector", platform1, to);
-		to += 2000;
-			
-		setTextBox(id1, to, "#id1_input");
-		to += 2800;
-			
-		var part_d = {
-			ele: "axis1_selector",	
-			interval: 50, 
-			val: scale1, 
-			func: function () {
-				console.log("Part axis1_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_d); 
-		changeDropVal("#axis1_selector", scale1, to);
-		to += 3100;
-			
-		setTimeout(function () {
-			console.log("Part add_row1");
-				demoClick("#add_row1", 100);
-		}, to);
-		to += 3200;
-			
-		var part_e = {
-			ele: "type2_selector",	
-			interval: 50, 
-			val: datatype2, 
-			func: function () {
-				console.log("Part type2_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_e); 
-		changeDropVal("#type2_selector", datatype2, to);
-		to += 3700;
-			
-		var part_f = {
-			ele: "platform2_selector",	
-			interval: 50, 
-			val: platform2, 
-			func: function () {
-				console.log("Part platform2_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_f); 
-		changeDropVal("#platform2_selector", platform2, to);
-		to += 4000;
-			
-		setTimeout(function () {
-			$("#id2_input").val(id2); 
-			id_keyup(2);
-		}, to);
-		to += 4300;
-			
-		var part_g = {
-			ele: "axis2_selector",	
-			interval: 50, 
-			val: scale2, 
-			func: function () {
-				console.log("Part axis2_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_g); 
-		changeDropVal("#axis2_selector", scale2, to);
-		to += 4600;
-			
-		var part_h = {
-			ele: "plot-type",	
-			interval: 50, 
-			val: plottype, 
-			func: function () {
-				console.log("Part plot-type");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_h); 
-		changeDropVal("#plot-type", plottype, to);
-		to += 4900;
-			
-		setTimeout(function () {
-			demoClick("#plot-button", 100);
-			sessionStorage.removeItem("demo");
-		}, to);
-		to += 5200;
-			
-		setTimeout(function () {
-			if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
-				alert("Click on any point on the graph to see the network behind")
+		comment("First - choose data source");
+		changeDropVal("#source_selector", source, to);
+		// name is _source_listener since this event, in fact, occurs after source_selector change
+		document.getElementById("cohort_selector").addEventListener("cohortselector_init_complete", function source_listener(e) {
+			comment("Second - choose the cohort");
+			document.getElementById("cohort_selector").addEventListener("cohortselector_update_complete", function cohort_listener(e) {
+				comment("Then choose datatype for the first variable (X axis)");
+				document.getElementById("type1_selector").addEventListener("typeselector_update_complete", function type1_listener(e) {
+					comment("After datatype - choose platform");
+					document.getElementById("platform1_selector").addEventListener("platformselector_update_complete", function platform1_listener(e) {
+						comment("Most of the platforms require IDs - gene names, protein names, drug names etc.");
+						document.getElementById("id1_input").addEventListener("typing_complete", function id1_listener(e) {
+							comment("Last but not least - choose scale for the axis");
+							document.getElementById("axis1_selector").addEventListener("axisselector_update_complete", function axis1_listener(e) {
+								comment("Add second axis (Y axis)");
+								document.getElementById("add_row1").addEventListener("row_added", function row1_listener(e) {
+									comment("Choose datatype for the second axis");
+									document.getElementById("type2_selector").addEventListener("typeselector_update_complete", function type2_listener(e) {
+										comment("Now choose platform");
+										document.getElementById("platform2_selector").addEventListener("platformselector_update_complete", function platform2_listener(e) {
+											comment("Again - enter and confirm ID (by pressing Enter)");
+											document.getElementById("id2_input").addEventListener("typing_complete", function id1_listener(e) {
+												document.getElementById("axis2_selector").addEventListener("axisselector_update_complete", function axis2_listener(e) {
+													document.getElementById("plot-type").addEventListener("plottype_changed", function plottype_listener(e) {
+														comment("Ready to plot!");
+														demoClick("#plot-button", 100);
+														setTimeout(function () {
+															closeCommentForm();
+														}, 200);
+														sessionStorage.removeItem("demo");
+														setTimeout(function () {
+															if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
+																alert("Click on any point on the graph to see the network behind")
+															}
+														}, 2*to);
+													}, {once: true});
+													var part_h = {
+														ele: "plot-type",	
+														interval: 50, 
+														val: plottype, 
+														func: function () {
+															console.log("Part plot-type");
+															demoClick("#" + this.ele, 100);
+														}	   
+													}
+													waitForElement(part_h); 
+													changeDropVal("#plot-type", plottype, to);
+												}, {once: true});
+											var part_g = {
+												ele: "axis2_selector",	
+												interval: 50, 
+												val: scale2, 
+												func: function () {
+													console.log("Part axis2_selector");
+													demoClick("#" + this.ele, 100);
+												}	   
+											}
+											waitForElement(part_g); 
+											changeDropVal("#axis2_selector", scale2, to);
+										}, {once: true});
+										setTextBox(id2, to, "#id2_input");
+									}, {once: true});
+										var part_f = {
+											ele: "platform2_selector",	
+											interval: 50, 
+											val: platform2, 
+											func: function () {
+												console.log("Part platform2_selector");
+												demoClick("#" + this.ele, 100);
+											}	   
+										}
+										waitForElement(part_f); 
+										changeDropVal("#platform2_selector", platform2, to);
+									}, {once: true});
+									var part_e = {
+										ele: "type2_selector",	
+										interval: 50, 
+										val: datatype2, 
+										func: function () {
+											console.log("Part type2_selector");
+											demoClick("#" + this.ele, 100);
+										}	   
+									}
+									waitForElement(part_e); 
+									changeDropVal("#type2_selector", datatype2, to);
+								}, {once: true});
+								console.log("Part add_row1");
+								demoClick("#add_row1", 100);
+							}, {once: true});
+							var part_d = {
+								ele: "axis1_selector",	
+								interval: 50, 
+								val: scale1, 
+								func: function () {
+									console.log("Part axis1_selector");
+									demoClick("#" + this.ele, 100);
+								}	   
+							}
+							waitForElement(part_d); 
+							changeDropVal("#axis1_selector", scale1, to);
+						}, {once: true});
+					setTextBox(id1, to, "#id1_input");
+					}, {once: true});
+					var part_c = {
+						ele: "platform1_selector",	
+						interval: 50, 
+						val: platform1, 
+						func: function () {
+							console.log("Part platform1_selector");
+							demoClick("#" + this.ele, 100);
+						}	   
+					}
+					waitForElement(part_c); 
+					changeDropVal("#platform1_selector", platform1, to);
+				}, {once: true});
+				var part_b = {
+					ele: "type1_selector",	
+					interval: 50, 
+					val: datatype1, 
+					func: function () {
+						console.log("Part type1_selector");
+						demoClick("#" + this.ele, 100);
+					}	   
+				}
+				waitForElement(part_b); 
+				changeDropVal("#type1_selector", datatype1, to);
+			}, {once: true});
+			var part_a = {
+				ele: "cohort_selector",	
+				interval: 50, 
+				val: cohort, 
+				func: function () {
+					console.log("Part cohort_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
 			}
-		}, to);
+			waitForElement(part_a); 
+			changeDropVal("#cohort_selector", cohort, to);	
+		}, {once: true});
 	}
 }
 
@@ -189,7 +267,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 // KM demo
 // plotid is id of the row on which button should be clicked
 // WARNING! Numeration can be weird, the first line can have number 5893 etc.
-function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
+async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 	if (sessionStorage.getItem("demo") == null) {
 		sessionStorage.setItem("demo", 1);
 		$("#tabs").tabs("option", "active", 1);
@@ -200,69 +278,79 @@ function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 			$('#cor_result_table').DataTable().clear();
 			$('#cor_result_table').DataTable().destroy();
 		}
-			
-		var to = 1200;
+		
+		var to = 1000;
+		showCommentForm();
+		
+		comment("First - choose source");
 		changeDropVal("#corSource_selector", source, to);
-		to += 2000; 
+		document.getElementById("corSource_selector").addEventListener("corsourceselector_update_complete", function source_listener(e) {
+			comment("Then - choose datatype");
+			var part_a = {
+				ele: "corDatatype_selector",	
+				interval: 50, 
+				val: datatype, 
+				func: function () {
+					console.log("Part corDatatype_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_a);
+			changeDropVal("#corDatatype_selector", datatype, to);
+			document.getElementById("corDatatype_selector").addEventListener("cortypeselector_update_complete", function datatype_listener(e) {
+				datatype_selector_updated = datatype_selector_updated + 1;
+				comment("After datatype - choose platform");
+				var part_b = {
+					ele: "corPlatform_selector",	
+					interval: 50, 
+					val: platform, 
+					func: function () {
+						console.log("Part corPlatform_selector");
+						demoClick("#" + this.ele, 100);
+					}	   
+				}
+				waitForElement(part_b);	
+				changeDropVal("#corPlatform_selector", platform, to);
+				document.getElementById("corPlatform_selector").addEventListener("corplatformselector_update_complete", function platform_listener(e) {
+					platform_selector_updated = platform_selector_updated + 1;
+					if (platform_selector_updated > -1) {
+						comment("Choose screen");
+						var part_c = {
+							ele: "corScreen_selector",	
+							interval: 50, 
+							val: screen, 
+							func: function () {
+								console.log("Part corScreen_selector");
+								demoClick("#" + this.ele, 100);
+							}	   
+						}
+						waitForElement(part_c);
+						changeDropVal("#corScreen_selector", screen, to);
+						document.getElementById("corScreen_selector").addEventListener("corscreenselector_update_complete", function screen_listener(e) {
+							screen_selector_updated = screen_selector_updated + 1;
+							comment("Type drug or gene name");
+							document.getElementById("corGeneFeature_input").addEventListener("typing_complete", function id_listener(e) {
+								setTimeout(function () {
+									demoClick("#FDR_input", 50);
+									$("#FDR_input").val(fdr); 
+								}, 2*to);
 			
-		var part_a = {
-			ele: "corDatatype_selector",	
-			interval: 50, 
-			val: datatype, 
-			func: function () {
-				console.log("Part corDatatype_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_a); 
-		changeDropVal("#corDatatype_selector", datatype, to);
-		to += 14500;            
+								setTimeout(function () {
+									demoClick("#retrieve-cor-button", 100);
+								}, 3*to);
 			
-		var part_b = {
-			ele: "corPlatform_selector",	
-			interval: 50, 
-			val: platform, 
-			func: function () {
-				console.log("Part corPlatform_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_b); 
-		changeDropVal("#corPlatform_selector", platform, to);
-		to += 14900;
-			
-		var part_c = {
-			ele: "corScreen_selector",	
-			interval: 50, 
-			val: screen, 
-			func: function () {
-				console.log("Part corScreen_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_c); 
-		changeDropVal("#corScreen_selector", screen, to);
-		to += 15100;
-			
-		setTextBox(id, to, "#corGeneFeature_input");
-		to += 15200;
-			
-		setTimeout(function () {
-			demoClick("#FDR_input", 50);
-			$("#FDR_input").val(fdr); 
-		}, to);
-		to += 15300;
-			
-		setTimeout(function () {
-			demoClick("#retrieve-cor-button", 100);
-		}, to);
-		to += 15400;
-			
-		setTimeout(function () {
-			demoClick("#cor-KM" + plotid, 100);
-			sessionStorage.removeItem("demo");
-		}, to);
-		to += 15800;
+								setTimeout(function () {
+									demoClick("#cor-KM" + plotid, 100);
+									closeCommentForm();											
+									sessionStorage.removeItem("demo");
+								}, 4*to);
+							}, {once: true});
+							setTextBox(id, to, "#corGeneFeature_input");
+						}
+					}, {once: true});
+				}, {once: true});	
+			}, {once: true});	
+		}, {once: true});	
 	}
 }
 
@@ -280,68 +368,73 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 			$('#cor_result_table').DataTable().destroy();
 		}
 			
-		var to = 1200;
+		var to = 1000;
+		showCommentForm();
+		
+		comment("First - choose source");
 		changeDropVal("#corSource_selector", source, to);
-		to += 1000;
+		document.getElementById("corSource_selector").addEventListener("corsourceselector_update_complete", function source_listener(e) {
+			comment("Then - choose datatype");		
+			var part_a = {
+				ele: "corDatatype_selector",	
+				interval: 50, 
+				val: datatype, 
+				func: function () {
+					console.log("Part corDatatype_selector");
+					demoClick("#" + this.ele, 100);
+				}	   
+			}
+			waitForElement(part_a); 
+			changeDropVal("#corDatatype_selector", datatype, to);
+			document.getElementById("corDatatype_selector").addEventListener("cortypeselector_update_complete", function datatype_listener(e) {
+				comment("After datatype - choose platform");
+				var part_b = {
+					ele: "corPlatform_selector",	
+					interval: 50, 
+					val: platform, 
+					func: function () {
+						console.log("Part corPlatform_selector");
+						demoClick("#" + this.ele, 100);
+					}	   
+				}
+				waitForElement(part_b); 
+				changeDropVal("#corPlatform_selector", platform, to);
+				document.getElementById("corPlatform_selector").addEventListener("corplatformselector_update_complete", function platform_listener(e) {
+					comment("Choose screen");
+					var part_c = {
+						ele: "corScreen_selector",	
+						interval: 50, 
+						val: screen, 
+						func: function () {
+							console.log("Part corScreen_selector");
+							demoClick("#" + this.ele, 100);
+						}	   
+					}
+					waitForElement(part_c); 
+					changeDropVal("#corScreen_selector", screen, to);
+					document.getElementById("corScreen_selector").addEventListener("corscreenselector_update_complete", function screen_listener(e) {
+						comment("Type drug or gene name");
+						document.getElementById("corGeneFeature_input").addEventListener("typing_complete", function id_listener(e) {
+							setTimeout(function () {
+								demoClick("#FDR_input", 50);
+								$("#FDR_input").val(fdr); 
+							}, to);
 			
-		var part_a = {
-			ele: "corDatatype_selector",	
-			interval: 50, 
-			val: datatype, 
-			func: function () {
-				console.log("Part corDatatype_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_a); 
-		changeDropVal("#corDatatype_selector", datatype, to);
-		to += 14500;
+							setTimeout(function () {
+								demoClick("#retrieve-cor-button", 100);
+							}, 1.5*to);
 			
-		var part_b = {
-			ele: "corPlatform_selector",	
-			interval: 50, 
-			val: platform, 
-			func: function () {
-				console.log("Part corPlatform_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_b); 
-		changeDropVal("#corPlatform_selector", platform, to);
-		to += 14900;
-			
-		var part_c = {
-			ele: "corScreen_selector",	
-			interval: 50, 
-			val: screen, 
-			func: function () {
-				console.log("Part corScreen_selector");
-				demoClick("#" + this.ele, 100);
-			}	   
-		}
-		waitForElement(part_c); 
-		changeDropVal("#corScreen_selector", screen, to);
-		to += 15100;
-			
-		setTextBox(id, to, "#corGeneFeature_input");
-		to += 15200;
-			
-		setTimeout(function () {
-			demoClick("#FDR_input", 50);
-			$("#FDR_input").val(fdr); 
-		}, to);
-		to += 15300;
-			
-		setTimeout(function () {
-			demoClick("#retrieve-cor-button", 100);
-		}, to);
-		to += 15400;
-			
-		setTimeout(function () {
-			demoClick("#cor-plot" + plotid, 100);
-			sessionStorage.removeItem("demo");
-		}, to);
-		to += 15800;
+							setTimeout(function () {
+								demoClick("#cor-plot" + plotid, 100);
+								closeCommentForm();											
+								sessionStorage.removeItem("demo");
+							}, 3*to);
+						}, {once: true});
+						setTextBox(id, to, "#corGeneFeature_input");
+					}, {once: true});
+				}, {once: true});		
+			}, {once: true});	
+		}, {once: true});
 	}
 }
 
@@ -620,7 +713,17 @@ function setTextBox (a, to, fld) {
 		setTimeout(function (ii) {$(fld).val( $(fld).val() + a[ii])}, to, i);
 	}
 	to += delta_local;
-	setTimeout(function (cl) {$(fld).removeClass(cl); $(fld).change();}, to, "demohighlight"); 
+	setTimeout(function (cl) {
+		$(fld).removeClass(cl); 
+		$(fld).change();
+		var event = new CustomEvent("typing_complete", {
+			detail: {
+				id: fld
+			}
+		});
+		// delete first symbol because it is #
+		document.getElementById(fld.substr(1)).dispatchEvent(event);
+	}, to, "demohighlight"); 
 	return(to + delta_local - 2000);
 }
 

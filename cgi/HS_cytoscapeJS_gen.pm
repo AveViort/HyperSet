@@ -11,17 +11,17 @@ use CGI::Carp qw(fatalsToBrowser);
 #use config;
 use strict;
 
-BEGIN {
-	require Exporter;
-	use Exporter;
-	require 5.002;
-	our($VERSION, @ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS);
-	$VERSION = 1.00;
-	@ISA = 			qw(Exporter);
-	#@EXPORT = 		qw();
-	%EXPORT_TAGS = 	();
-	@EXPORT_OK	 =	qw();
-}
+# BEGIN {
+	# require Exporter;
+	# use Exporter;
+	# require 5.002;
+	# our($VERSION, @ISA, @EXPORT, @EXPORT_OK, %EXPORT_TAGS);
+	# $VERSION = 1.00;
+	# @ISA = 			qw(Exporter);
+	# @EXPORT = 		qw();
+	# %EXPORT_TAGS = 	();
+	# @EXPORT_OK	 =	qw();
+# }
 our (%define,  $cs_menu_buttons, $toAdd);
 our $nodeScaleFactor = 2.0;
 our $edgeScaleFactor = 4;
@@ -37,7 +37,12 @@ our $nodeSizeScheme = '"mapData(weight, 0, 9, '. 1 * $nodeScaleFactor .', '. 40 
 our $edgeWeightScheme = '"width": "data(integerWeight)"';
 our $edgeOpacityScheme = '"opacity" : 1.0';
 our %nodeType; $nodeType{'cy_ags'} = 'diamond'; $nodeType{'cy_fgs'} = 'roundrectangle';
-our %nodeGroupColor; $nodeGroupColor{'cy_ags'} = '#ffc000'; $nodeGroupColor{'cy_fgs'} = '#ff3399'; $nodeGroupColor{'cy_both'} = '#ff6600';
+our %nodeGroupColor; 
+$nodeGroupColor{'cy_ags'} = '#ffc000'; 
+$nodeGroupColor{'cy_fgs'} = '#ff3399'; 
+$nodeGroupColor{'cy_both'} = '#ff6600';
+$nodeGroupColor{'cy_query'} = '#11aa11';
+$nodeGroupColor{'cy_other'} = '#999999';
 
 our @NEAusedFields = (
 'N_linksTotal_AGS', 
@@ -831,16 +836,17 @@ my($cs_menu_def) = define_menu('net', $instanceID);
 my $tbl = HS_html_gen::GeneGeneTable($network_links, $data, $node_features);
 my $id = '<table id="genegenetable_'.$instanceID.'" ';
 $tbl =~ s/\<table/$id/;
+my $dialogTitle = defined($FGS) ? 'Links between '.$AGS.' and '.$FGS : 'Sub-network for AGS genes';
+# 'action: '.$main::action.
+# '<p>Layout: '.($main::action  eq  "subnet-ags") ? $cs_selected_layout : 'arbor'.'</p>'.
+
 return(
 '<div id="cy_up">
 	<div id="geneNETtabs_'.$instanceID.'">
 		<ul>
 			<li id="id-net-tab"><a href="#net-tab">Sub-network</a></li>
 			<li id="id-tab-tab"><a href="#tab-tab">Table</a></li>
-		</ul>'.
-# join('<br>', keys(%{$data})).
-'
-<div id="net-tab">
+		</ul><div id="net-tab">
 <div  id="cyMenu_'.$instanceID.'" class="cyMenu cyMenuNet ui-widget-content ui-corner-all ui-helper-clearfix">'.$cs_menu_buttons.'</div>'.
 CyNMobject($network_links, $node_features, 'net', $instanceID).
 '</div>
@@ -861,7 +867,7 @@ $("#cy_up").dialog({
 		resizeStop: function( event, ui ) {cy'.$instanceID.'.resize();}, 
 		dragStop: function( event, ui ) {cy'.$instanceID.'.resize();}, 
         modal: false,
-		title: "Links between '.$AGS.' and '.$FGS.'",
+		title: "'.$dialogTitle.'",
         width:  "'.($HSconfig::cyPara->{size}->{net}->{width} + 120).'",
         height: "'.($HSconfig::cyPara->{size}->{net}->{height} + 100).'",
 		//position: { 		my: "right top", at: "right top" , of: "#net_up"		}, //, 		of: "#form_total"
@@ -1215,6 +1221,7 @@ sprintf("%x", 255 * ( 1 - (1 + (log(($links -> {$node1} -> {$node2} -> {confiden
 		$coef = '0'.$coef if length($coef) == 1;
 		} else {$coef = '00';} 
 $content .= 'confidence2opacity: "#'.$coef.$coef.'ff", ';
+# $content .= 'confidence2opacity: "#'.$coef.$coef.'aa", ';
 		
 $id = join($HS_html_gen::actionFieldDelimiter2, ('subnet-'.++$sn, $node1, $node2, 'fromCytoscapeJS'));
 $id =~ s/[\,\;\'\"\:\.\(\)\=]/_/g;
@@ -1290,7 +1297,7 @@ my($netType, $ID) = @_;
 # round-heptagon - 
 # round-hexagon - 
 # concave-hexagon - 
-
+# 
  my $content =   '
 <div id="' . $ID . '" class="cy_main ui-widget-content ui-corner-all ui-helper-clearfix"></div>
 <script type="text/javascript">
@@ -1300,9 +1307,9 @@ container: document.getElementById("' . $ID . '"),
 panningEnabled: 	true, 
 userPanningEnabled: true,
 boxSelectionEnabled: true,
-selectionType: "additive", 
+selectionType: "additive",  
 wheelSensitivity: 0.35,
-layout: {name: "'	.$cs_selected_layout.	'"}, 
+layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'arbor').	'"}, 
 //layout: {name: "grid", columns: 3}, 
 	style: cytoscape.stylesheet()
     .selector("node").css({ 

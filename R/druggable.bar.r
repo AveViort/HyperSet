@@ -61,7 +61,8 @@ if (status != 'ok') {
 	temp <- table(x_data[,2]);
 	p <- plot_ly(x = names(temp),
 		y = temp,
-		text = temp,
+		text = paste0(temp/nrow(x_data)*100, "%"),
+		hoverinfo = 'y+text',
 		type = 'bar') %>% 
 	add_annotations(xref = "paper",
 		yref = "paper",

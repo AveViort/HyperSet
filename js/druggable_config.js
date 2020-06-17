@@ -15,6 +15,7 @@ ids_placeholders.set("COPY", "Gene name or ID");
 ids_placeholders.set("METH", "Gene name or ID");
 ids_placeholders.set("PE", "Gene/protein/antibody name or ID");
 ids_placeholders.set("DRUG", "Drug name or ID");
+ids_placeholders.set("SENS", "Drug name or ID");
 ids_placeholders.set("NEA_GE", "Pathway name");
 ids_placeholders.set("NEA_MUT", "Pathway name");
 

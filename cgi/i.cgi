@@ -26,6 +26,7 @@ our $dbh = HS_SQL::dbh('hyperset');
 $CGI::POST_MAX=102400000;
 our $q = new CGI;
 our $species = $q->param("species") ? $q->param("species") : '';
+our $action = $q->param("action");
 # print STDERR '###########Species: '.$species .'<br>';
 # system('');
 # system('rm /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/offline/*');
@@ -56,7 +57,18 @@ $fileUploadTag = "_table";
 # open(my $fh, '>', $debug_filename);
 # print $fh "Params: ".$pcont."\n";
 # close $fh;
-
+if ($q->param('action')  eq  "subnet-ags") {
+		$HS_bring_subnet::keep_query                         = 	$q->param('keep_query');
+		$HS_bring_subnet::submitted_coff                     = 	$q->param('coff'); 
+		$HS_bring_subnet::order                              =	$q->param('order'); #network order
+		$HS_bring_subnet::reduce  =  'yes' if defined($q->param('reduce_by')); 
+		if ($HS_bring_subnet::reduce) {#choice of algorithm to reduce too large networks
+			$HS_bring_subnet::reduce_by           = $q->param('reduce_by');
+			$HS_bring_subnet::desired_links_total = $q->param('no_of_links');
+			$HS_bring_subnet::qvotering           = $q->param('qvotering');
+		}
+		# else {$HS_bring_subnet::desired_links_total = 1000000;}
+	 }
 our $uname = $q->param("username");
 $uname = 'Anonymous' if ((!defined($uname)) || ($uname eq ''));
 our $sign = $q->param("signature");
@@ -165,7 +177,7 @@ $step = 'shownet';
 # print $fh "subneturlbox=".$quasyURL."\n";
 # close $fh;
 } 
-if ($q->param("action") =~  m/^subnet\-ags/) {
+if ($q->param("action") eq  "subnet-ags") {
 $step = 'shownet';
 ($quasyURL, $callerNo, $AGS, $FGS) = (
 	HStextProcessor::subnetURL(
@@ -173,8 +185,8 @@ $step = 'shownet';
 		$AGSselected, 
 		$species, 
 		$HSconfig::netfieldprefix.join($HS_html_gen::fieldURLdelimiter.$HSconfig::netfieldprefix, $q->param('NETselector')),
-		1000, 
-		0, 
+		$q->param("nlinks") ? $q->param("nlinks") : 1000,
+		$q->param("order") ? $q->param("order") : 0, 
 		1), 
 undef, undef, undef);
 # my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
@@ -649,8 +661,9 @@ my $parname;
 my $pcont = '';
 my @parnames = $q->param;
 foreach $parname ( @parnames ) {$pcont =  $pcont.$parname."=".$q->param($parname).";";}  
+# customfield='.$bsURLstring.' 
 return(	
-	'<div id="net_graph" customfield='.$bsURLstring.' style="width: '.
+	'<div id="net_graph" style="width: '.
 		$HSconfig::cy_size->{net}->{width}.'px; height: '.$HSconfig::cy_size->{net}->{height}.'px;">'.
 		HS_cytoscapeJS_gen::printNet_JSON($data, $node, $callerNo, $AGS, $FGS).
 	'</div><!--/div-->');
@@ -1183,8 +1196,8 @@ elsif (($type eq 'display-file' )) {
 # print STDERR 'Filetype: '.$q->param('filetype')."\n";# if $debug; filetype
 # print STDERR 'SSSSSSSSSSSSSSSSSSSS: '.$q->param('selectradio-table-'.$q->param('filetype').'-ele')."\n";
 $content .= '<div>'.HS_html_gen::displayUserTable($q->param('selectradio-table-'.$q->param('filetype').'-ele'), $usersDir, $delimiter, $q->param('display-file-header')).'</div>';
-}
-
+} 
+ 
 elsif (
 ($type eq 'arc') or 
 ($type eq 'res') or 

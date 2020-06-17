@@ -31,6 +31,7 @@ our $keyvalueURLdelimiter = '=';
 our $actionFieldDelimiter1 = '###'; 
 our $actionFieldDelimiter2 = '___'; 
   our $webLinkPage_AGS2FGS_HS_link =  'reduce=;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;';    
+  # our $webLinkPage_AGS2FGS_HS_link =  'reduce=yes;reduce_by=aracne;qvotering=quota;show_names=Names;keep_query=yes;';    
   # our $webLinkPage_nealink =  'reduce=nealink;show_names=Names;keep_query=yes;';  
   our $webLinkPage_AGS2FGS_FClim_link = 'http://funcoup2.sbc.su.se/cgi-bin/bring_subnet.TEST01.cgi?fc_class=all;Run=Run;base=all;ortho_render=no;coff=0.25;reduce=yes;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;java=1;jsquid_screen=yes;wwidth=1000;wheight=700;structured_table=yes;single_table=yes;';
  
@@ -209,7 +210,7 @@ duration: 400
 
 'netTabHead' => 
 '<div name="analysisStep" id="net_tb"  class="analysis_step_area" style="width: 100%;">
-Select the network(s) to use in the analysis
+<p class="over">Select the network(s) to use in the analysis</p>
 <span class="next_tab icon-static ui-icon ui-icon-seek-next" title="Next step" onclick="$(\'#analysis_type_ne\').tabs(\'option\', \'active\', HSTabs.subtab.indices [\'Functional gene sets\']);"></span>
 <!--input type="hidden" name="analysis_type" value="###">
 <input type="hidden" name="type" value="net"-->', 
@@ -267,7 +268,7 @@ Paste a list of edges:<br>
 
 'fgsTabHead' => 
 '<div name="analysisStep" id="fgs_tb"  class="analysis_step_area" style="width: 100%;">
-Define functional groups that would help to characterize your data
+<p class="over">Define functional groups that would help to characterize your data</p>
 <span class="next_tab icon-static ui-icon ui-icon-seek-next" title="Next step" onclick="$(\'#analysis_type_ne\').tabs(\'option\', \'active\', HSTabs.subtab.indices [\'Check and submit\']);"></span>
 
 <!--input type="hidden" name="analysis_type" value="###">
@@ -351,7 +352,7 @@ $(function() {$( "#vertFGStabs" ).tabs({});});
 #AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS#AGS:
 'agsTabHead' => 
 '<div name="analysisStep" id="ags_tb"  class="analysis_step_area" style="width: 100%;">
-Select experimentally derived list(s) of genes/proteins that you want to characterize
+<p class="over">Select experimentally derived list(s) of genes/proteins that you want to characterize</p>
 <span class="next_tab icon-static ui-icon ui-icon-seek-next" title="Next step" onclick="$(\'#analysis_type_ne\').tabs(\'option\', \'active\', HSTabs.subtab.indices [\'Network\']);"></span>
 
 <!--input type="hidden" name="analysis_type" value="###">
@@ -568,7 +569,7 @@ my $nw_list = HS_SQL::list_network_to_be_merged($main::species);
 
 for $net(sort {$b cmp $a} keys(%{$nw_list})) {
     $listTableNET .= '<TR><TD><INPUT type="checkbox" 
-'.($HSconfig::netNames{$net} eq $dft ? ' dft="yes" ' : '').' onclick="updatechecksbm(\'net\', \'coll\')" onchange="updatechecksbm(\'net\', \'coll\')"
+'.($net eq $dft ? ' dft="yes" ' : '').' onclick="updatechecksbm(\'net\', \'coll\')" onchange="updatechecksbm(\'net\', \'coll\')"
 				name="NETselector" value="'.$net.'" class="alternative_input venn_box_control"></TD>
 			   <TD>'.$HSconfig::netNames{$net}.'</TD>
 				<TD class="integer">'.$nw_list->{$net}->{nnodes}.'</TD>
@@ -605,19 +606,19 @@ $con .= '
 <a href="https://doi.org/10.1371/journal.pcbi.1007244" target="_blank"><img src="pics/ten.jpeg"  class="showme"></a></div>
 </td>
 
-<!-- start comment>
+<!-- start comment>< -->
 <td title="Heatmap">
 <div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"> 
 </div>
 
-	<select name="hclust_method" id="hclust_method">
+	<select class="extra_para" name="hclust_method" id="hclust_method">
       <option selected="selected">ward.D2</option>
       <option>complete</option>
       <option>average</option>
       <option>centroid</option>
     </select>	
-	<select name="normalize" id="normalize">
+	<select class="extra_para" name="normalize" id="normalize">
       <option selected="selected">Normalize</option>
       <option>As is</option>
     </select>
@@ -700,9 +701,20 @@ $con .= '</select>
 </td></tr></table>
 	<script type="text/javascript">
 	
+$(".extra_para" ).each(
+function() { 
+var l; var maxl = 0;
+var eles = $(this).children();
+for (i = 0; i < eles.length; i++) {
+l = eles[i].childNodes[0].length
+if (l > maxl) {
+maxl = l;
+}}
+$( this ).selectmenu({width: "\'" + maxl + "em\'"});
+} );
 
-  $( function() {    $( "#hclust_method" ).selectmenu();  } );
-  $( function() {    $( "#normalize" ).selectmenu();  } );
+  /*$( function() {    $( "#hclust_method" ).selectmenu();  } );
+  $( function() {    $( "#normalize" ).selectmenu();  } );*/
 
 $( function() {
 var opts = $("#species-ele").prop("options");
@@ -779,6 +791,19 @@ ui.jqXHR.error(function() {
 		"height": "'.($HSconfig::img_size->{venn}->{height} + 30) .'px"
 		});	
 });' : '').
+(($main_type eq 'sbm') ? '$(".show_subnet" ).each(
+function() { 
+var l; var maxl = 0;
+var eles = $(this).children();
+for (i = 0; i < eles.length; i++) {
+l = eles[i].childNodes[0].length
+if (l > maxl) {
+maxl = l;
+}}
+//console.log(maxl + "em");
+$( this ).selectmenu({width: "\'" + maxl + "em\'"});
+} );' : '')
+.
 (($main_type eq 'net') ? '
 		 $(function() {
 $( "#showROCs" ).dialog({
@@ -822,11 +847,11 @@ $("#" + tbl).DataTable({
 });
 }
 
+
+ updatechecksbmAll();
 /*console.log("#############");
 $(\'[name="FGScollection"][dft="yes"]\').click();
 $(\'[name="NETselector"][dft="yes"]\').click();*/
-
- updatechecksbmAll();
 
 //var Proto = $("#listupload-button"); 
 //$("#listbutton-icon").css({"margin": "10px 15px 12px", "width": Proto.css("width"), "height": Proto.css("height")})
@@ -1088,32 +1113,61 @@ $pre .=   '<div id="arc-content">###listTableARC###</div> ';
 
 elsif ($ty eq 'sbm') {
 my($ll, $selected);
-$pre = 'Parameter overview  before submission:
-<table>
-<tr>
-<td>
-<span>Selected AGS:&nbsp;&nbsp;&nbsp;&nbsp;</span> 
-</td><td>
+$pre = '<p class="over">Parameter overview  before submission</p>
+<table class="parameter_overview ui-corner-all">
+<tr><td colspan="2" class="parameter_area_enabled">
+<p class="parameter_options1"><span>Selected AGS:&nbsp;&nbsp;&nbsp;&nbsp;</span> 
 <INPUT type="text"  name="sbm-selected-ags" title ="undefined" value="" class="checkbeforesubmit ui-corner-all"  autocomplete="off"/>
-</td>
-<td>
-<button type="submit" id="subnet-ags" class="ui-widget-header ui-corner-all">Show sub-network for AGS genes</button>  
-
-</td>
-</tr>
-<tr><td>
-<span>Selected network:&nbsp</span>
-</td><td>
+</p>
+<p class="parameter_options1"><span>Selected network:&nbsp</span>
 <INPUT type="text"  name="sbm-selected-net"  title ="undefined" value="" class="checkbeforesubmit ui-corner-all"  autocomplete="off"/>
-</td><td>
-<!--span class="clickable" onclick="openTab(\'analysis_type_ne\', HSTabs.subtab.indices[\'Network\']);" title="To modify, return to the \'Network\' tab" >change</span-->
+</p>
 </td></tr>
-<tr>
-<td>
+<tr><td id="execute_nea" class="parameter_area_enabled" onclick="$(\'#execute_nea\').removeClass(\'parameter_area_enabled\'); $(\'#execute_nea\').addClass(\'parameter_area_disabled\'); ">
+<p class="parameter_options2">
 <span>Selected FGS:&nbsp;&nbsp;&nbsp;&nbsp;</span>
-</td><td>
 <INPUT type="text"  name="sbm-selected-fgs"  title ="undefined" value="" class="checkbeforesubmit ui-corner-all"  autocomplete="off"/>
-</td><td>
+</p>
+<p class="parameter_options2">
+<label for="genewiseAGS" title="Each gene/protein will appear as if it is a separate \'single node\' AGS. Please consider that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the AGS genes/proteins individually
+<INPUT TYPE="checkbox" NAME="genewiseAGS" id="genewiseAGS" VALUE="genewise"></label>
+</p>
+<p class="parameter_options2">
+<label for="genewiseFGS" title="Each gene/protein will appear as if it is a separate \'single node\' FGS. Please consider that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the FGS genes/proteins individually
+<INPUT TYPE="checkbox" NAME="genewiseFGS" id="genewiseFGS" VALUE="genewise"></label>
+</p>
+<p><button type="submit" id="sbmSubmit" class="ui-widget-header ui-corner-all">Calculate network enrichment</button>  </p>
+
+</td> 
+<td  id="display_subnet" class="parameter_area_disabled" onclick="$(\'#display_subnet\').removeClass(\'parameter_area_disabled\'); $(\'#display_subnet\').addClass(\'parameter_area_enabled\'); ">
+	<p class="parameter_options2">Sub-network expansion <select  class="show_subnet" name="order" id="order">
+      <option selected="selected">0</option>
+      <option>1</option>
+    </select>	
+	</p>
+	<p class="parameter_options2">Algorithm for reducing too large sub-networks 
+	<select class="show_subnet" name="reduce_by" id="reduce_by">
+      <option selected="selected">noislets</option>
+      <option>maxcoverage</option>
+      <option>aracne</option>
+    </select>	
+	</p>
+	<p class="parameter_options2">Max. no of edges <select  class="show_subnet" name="no_of_links" id="no_of_links">
+      <option >1</option>
+      <option selected="selected">3</option>
+      <option>10</option>
+      <option>30</option>
+      <option>100</option>
+      <option>300</option>
+    </select>	
+	
+	</p>
+<p class="parameter_options2">Reduce if graph is too large <INPUT TYPE="checkbox" NAME="reduce" id="reduce" VALUE="yes" checked="checked"></p>
+	<p><button type="submit" id="subnet-ags" class="ui-widget-header ui-corner-all">Show sub-network for AGS genes</button>  </p>
+</td></tr>
+<tr><td>
+<span style="float: right; font-size: 75%; color: #666666;" ><label for="jid" title="Assigned job ID">
+Job&nbsp;<input type="text" id="jid" name="jid" value="" class="checkbeforesubmit ui-corner-all sbm-controls" style="color: #aaaaaa; height: " readonly=""> </label></span>
 </td></tr>
 </table>
 <br>
@@ -1123,25 +1177,7 @@ $pre = 'Parameter overview  before submission:
 <INPUT TYPE="checkbox" NAME="commandline" id="line_ne" VALUE="line" checked="checked">
 <INPUT TYPE="checkbox" NAME="archive" id="archive_ne" VALUE="archive" > 
 </div>
-<!--br>Show self-enrichment<INPUT TYPE="checkbox" NAME="showself" id="showself" VALUE="showself" checked="checked">
-<br-->
-<label for="genewiseAGS" class="ui-corner-all " title="Each gene/protein will appear as if it is a separate \'single node\' AGS. Please consider that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the AGS genes/proteins individually
-<INPUT TYPE="checkbox" NAME="genewiseAGS" id="genewiseAGS" VALUE="genewise"></label>
-<br>
-<label for="genewiseFGS" class="ui-corner-all " title="Each gene/protein will appear as if it is a separate \'single node\' FGS. Please consider that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the FGS genes/proteins individually
-<INPUT TYPE="checkbox" NAME="genewiseFGS" id="genewiseFGS" VALUE="genewise"></label>
 
-<table><tr><td>
-<button type="submit" id="sbmSubmit" class="ui-widget-header ui-corner-all">Calculate network enrichment</button>  
-
-
-</td><td>
-<!--label for="user-email" class="ui-corner-all sbm-controls" title="E-mail is normally not required. However if the job takes too long, you can save the permanent link that is going to appear and use it later. If you want to be notified when the job is completed, then fill in you e-mail address. IMPORTANT: under no circumstances the address will be used for other purposes or passed to third parties.">
-<INPUT type="text" name="user-email" id="user-email" value="" style="background-color: #ffff88;" size="40" placeholder="[ -- email -- ]" ></label-->
-</td></tr></table>
-<span style="float: right;"><label for="jid" class="checkbeforesubmit ui-corner-all sbm-controls" title="Assigned job ID">
-Job&nbsp;<input type="text" id="jid" name="jid" value="" class="checkbeforesubmit ui-corner-all sbm-controls" style="color: #aaaaaa;" readonly="" > </label></span>
-</p></td></tr></table>
 '; 
 } 
 

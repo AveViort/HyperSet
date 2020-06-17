@@ -309,3 +309,45 @@ united_interaction_table <- function(filename, synonyms, rch) {
   }
   print(paste0("Total rows: ", counter));
 }
+
+import_sensitivity <- function(data_table, rch, table_name) {
+  screens <- names(data_table$CLIN$DRUGSCREEN);
+  query <- paste0("CREATE TABLE ", table_name, " (sample character varying(256), id character varying (256)");
+  for (screen in screens) {
+    query <- paste0(query, ", ", tolower(gsub("\\.", "", screen)), " numeric");
+  }
+  query <- paste0(query, ");");
+  print(query);
+  sqlQuery(rch, query);
+  for (screen in screens) {
+    screen_name <- tolower(gsub("\\.", "", screen));
+    sensitivity_measure <- '';
+    sensitivity_measure <- switch(screen_name,
+      "ctrpv20" = "AUC_INVNORM_LOW",
+      "gdsc1" = "LN_IC50_INVNORM_ROW",
+      "gdsc2" = "LN_IC50_INVNORM_ROW",
+      names(d1$CLIN$DRUGSCREEN[[screen]])[1]
+    );
+    #print(paste0(screen_name, " ", sensitivity_measure));
+    # see the function in db/druggable/functions.sql
+    for (sample_name in colnames(data_table$CLIN$DRUGSCREEN[[screen]][[sensitivity_measure]])) {
+      for (id in rownames(data_table$CLIN$DRUGSCREEN[[screen]][[sensitivity_measure]])) {
+        value <- data_table$CLIN$DRUGSCREEN[[screen]][[sensitivity_measure]][id,sample_name];
+        if (!is.na(value)) {
+          query <- paste0("SELECT insert_or_update('", table_name, "','", screen_name, "','", sample_name, "','", id, "',", value, ");");
+          sqlQuery(rch, query);
+        }
+      }
+    }
+  }
+}
+
+import_ccle_depmap <- function(data_table, rch) {
+  query <- paste0("CREATE TABLE ccle_links (sample character varying(256), depmap_id character varying (256));");
+  print(query);
+  sqlQuery(rch, query);
+  for (i in 1:(nrow(data_table))) {
+    query <- paste0("INSERT INTO ccle_links (sample, depmap_id) VALUES ('", tolower(data_table$stripped_cell_line_name[1]), "','", depmap_id$DepMap_ID[i],"');");
+    sqlQuery(rch, query);
+  }
+} 
