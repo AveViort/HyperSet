@@ -115,8 +115,8 @@ console.log("Starting syn_worker " + Date.now());
 syn_worker.onmessage = function(event) {
 	console.log("Received message from syn_worker " + Date.now());
 		var syn_proto = event.data;
-		for (i=0; i<=syn_proto.length-2; i=i+2) {
-			synonyms.set(syn_proto[i], syn_proto[i+1]);
+		for (i=0; i<=syn_proto.length-3; i=i+3) {
+			synonyms.set(syn_proto[i], [syn_proto[i+1], syn_proto[i+2]]);
 		}
 		syn_worker.terminate();
 };

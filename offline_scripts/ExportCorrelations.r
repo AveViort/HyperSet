@@ -347,7 +347,7 @@ import_ccle_depmap <- function(data_table, rch) {
   print(query);
   sqlQuery(rch, query);
   for (i in 1:(nrow(data_table))) {
-    query <- paste0("INSERT INTO ccle_links (sample, depmap_id) VALUES ('", tolower(data_table$stripped_cell_line_name[1]), "','", depmap_id$DepMap_ID[i],"');");
+    query <- paste0("INSERT INTO ccle_links (sample, depmap_id) VALUES ('", tolower(data_table$stripped_cell_line_name[i]), "','", data_table$DepMap_ID[i],"');");
     sqlQuery(rch, query);
   }
 } 

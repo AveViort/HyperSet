@@ -571,6 +571,49 @@ add_synonyms <- function(table_name, key_file = "HS_SQL.conf") {
 	odbcClose(rch);
 	print(paste0("Created/updated ", k, " records"));
 }
+
+# FUNCTIONS TO COPY BEHAVIOUR
+# e.g. after adding new platform point "the new platform has the same plots as this one"
+
+# function to copy plot types 
+copy_plot_types <- function(new_platform, original_platform, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+	}
+	sqlQuery(rch, paste0("SELECT copy_plot_types ('", new_platform, "','", original_platform, "');"));
+	if (drch == '') {
+		odbcClose(rch);
+	}
+}
+
+# function to copy platform compatibility (new _platform will be compatible with the same platforms as original_platform)
+copy_platform_compatibility <- function(new_platform, original_platform, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+	}
+	sqlQuery(rch, paste0("SELECT copy_plot_types ('", new_platform, "','", original_platform, "');"));
+	if (drch == '') {
+		odbcClose(rch);
+	}
+}
+
+# function to copy platform behaviour as a variable
+copy_variable_info <- function(new_variable, original_variable, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
+	}
+	sqlQuery(rch, paste0("SELECT copy_variable_info ('", new_variable, "','", original_variable, "');"));
+	if (drch == '') {
+		odbcClose(rch);
+	}
+}
+
 # COMMON FUNCTIONS
 
 # basic function, reads data from sql table to csv

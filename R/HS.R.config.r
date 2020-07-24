@@ -96,6 +96,13 @@ druggable.plotly.tissue_colours <- c(
 					"UVEA" = "#2b2bd3",
 					"VULVA" = "#00c710"
                 );
+druggable.plotly.brca_colours <- c(
+					"HER" = "#49D1A3",
+					"Lum A" = "#F79646",
+					"Lum B" = "#4BACC6",
+					"Lum HER" = "#EEEF46",
+					"TNB" = "#47DC57"
+				);
 
 # datatypes which use patients, not samples
 druggable.patient.datatypes <- c("clin", "immuno", "drug");

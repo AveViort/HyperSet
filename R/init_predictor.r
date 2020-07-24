@@ -91,22 +91,47 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 	Betas <- model$glmnet.fit$beta;
 	Lc <- NULL;
 	if (crossval) {
-		Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
+		if (is.list(Betas)) {
+			Lc = colnames(Betas[[1]])[which(model$lambda == model$lambda.1se)];
+		} else {
+			Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
+		}
 	} else {
 		Betas <- model$beta;
-		Lc <- colnames(Betas)[ncol(Betas)];
+		# for multinomial model
+		if (is.list(Betas)) {
+			Lc <- colnames(Betas[[1]])[ncol(Betas[[1]])];
+		} else {
+			Lc <- colnames(Betas)[ncol(Betas)];
+		}
 	}
 	# NB: write else statement for the following line
 	if (Lc == "s0") {
+		if (is.list(Betas)) {
+			Lc = colnames(Betas[[1]])[which(model$lambda == model$lambda.min)];
+		} else {
 			Lc = colnames(Betas)[which(model$lambda == model$lambda.min)];
+		}
 	}
-	c1 <- Betas[,Lc];
-	co <- c1[which(c1 != 0)];
-	co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
 	TypeDelimiter = "___";
 	Terms <- NULL;
-	for (cc in names(co)) {
-		Terms <- c(Terms, toupper(ifelse(grepl(TypeDelimiter, cc), paste0(sub(TypeDelimiter, "(", cc), ")"), cc)));
+	co <- NULL;
+	if (is.list(Betas)) {
+		for (resp in names(Betas)) {
+			c1 <- Betas[[resp]][,Lc];
+			co <- c1[which(c1 != 0)];
+			co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+			for (cc in names(co)) {
+				Terms <- c(Terms, toupper(ifelse(grepl(TypeDelimiter, cc), paste0(resp, " ",sub(TypeDelimiter, "(", cc), ")"), cc)));
+			}
+		}
+	} else {
+		c1 <- Betas[,Lc];
+		co <- c1[which(c1 != 0)];
+		co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+		for (cc in names(co)) {
+			Terms <- c(Terms, toupper(ifelse(grepl(TypeDelimiter, cc), paste0(sub(TypeDelimiter, "(", cc), ")"), cc)));
+		}
 	}
 	json_string <- "{\"data\":[";
 	values <- c()

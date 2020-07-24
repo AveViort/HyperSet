@@ -56,7 +56,7 @@ createGLMnetSignature <- function (
 	c1 <- Betas <- model <- NULL;
 	rnds <- c("training");
 	if (independentValidation) {
-		rnds <- c(rnds, "validation");
+		rnds <- c(rnds, "validation", "roc");
 	}
 	
 	#if (is.null(nrow(predictorSpace))) {
@@ -113,6 +113,7 @@ createGLMnetSignature <- function (
 						nlambda = Nlambda, 
 						lambda.min.ratio = minLambda,
 						standardize = STD));
+			save(model, file=paste0(File, ".RData"));
 			if (grepl("Error|fitter|levels", t1[1])) {
 				print("Error occured");
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
@@ -125,20 +126,39 @@ createGLMnetSignature <- function (
             }
 			Betas <- model$beta;
 			A0 <- model$a0;
-			Lc = colnames(Betas)[ncol(Betas)];	  
+			if (Family == "multinomial") {
+				Lc = colnames(Betas[[1]])[ncol(Betas[[1]])];
+			} else {
+				Lc = colnames(Betas)[ncol(Betas)];
+			}	
 		}
 		if (Lc == "s0") {
-			Lc = colnames(Betas)[which(model$lambda == model$lambda.min)];
+			if (Family == "multinomial") {
+				Lc = colnames(Betas[[1]])[which(model$lambda == model$lambda.min)];
+			} else {
+				Lc = colnames(Betas)[which(model$lambda == model$lambda.min)];
+			}
 		}
-		if (Lc != "s0") {		
-			Intercept <- ifelse(is.null(A0), 0,  A0[Lc]);
-			c1 <- Betas[,Lc];
-			co <- c1[which(c1 != 0)];
-			co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
-			print(co);
-			n <- length(MG[Sample1]);
-			pred <- as.vector(Intercept + PW[Sample1,] %*% c1);
-			names(pred) <- rownames(PW[Sample1,]);
+		if (Lc != "s0") {
+			if (Family == "multinomial") {
+				Intercept <- ifelse(is.null(A0), 0,  A0[,Lc]);
+				c1 <- Betas[[1]][,Lc];
+				co <- c1[which(c1 != 0)];
+				co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+				print(co);
+				n <- length(MG[Sample1]);
+				pred <- as.vector(Intercept + PW[Sample1,] %*% c1);
+				names(pred) <- rownames(PW[Sample1,]);
+			} else {
+				Intercept <- ifelse(is.null(A0), 0,  A0[Lc]);
+				c1 <- Betas[,Lc];
+				co <- c1[which(c1 != 0)];
+				co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+				print(co);
+				n <- length(MG[Sample1]);
+				pred <- as.vector(Intercept + PW[Sample1,] %*% c1);
+				names(pred) <- rownames(PW[Sample1,]);
+			}
 			if (Family != "cox") {  
 				k <- length(co) + 2;
 				GLM = coef(lm(MG[Sample1] ~ pred)); #print(GLM);
@@ -201,6 +221,7 @@ createGLMnetSignature <- function (
 			}
 			pred <- as.vector(Intercept + PW[smp,] %*% c1);
 			names(pred) <- rownames(PW[smp,]);	
+			
 			if (Family != "cox") {  
 				Obs <- MG[smp];
 				if (is.factor(Obs)) {
@@ -226,8 +247,11 @@ createGLMnetSignature <- function (
 				}
 				States = sort(unique(MG[smp]))
 				axis(1, at=States, labels=States);
-				text(MG[smp], pred, labels=toupper(names(MG[smp])), cex=Cex.lbl, srt=45);
-				abline(coef(lm(pred ~ MG[smp])), col="green", lty=2);
+				#text(MG[smp], pred, labels=toupper(names(MG[smp])), cex=Cex.lbl, srt=45);
+				points(MG[smp], pred);
+				if (Family != "multinomial") {
+					abline(coef(lm(pred ~ MG[smp])), col="green", lty=2);
+				}
 			} else {
 				Cls = c("red2", "green2");
 				names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?

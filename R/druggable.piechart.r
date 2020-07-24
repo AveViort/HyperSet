@@ -17,9 +17,13 @@ if (!empty_value(ids[1])) {
 	if (platforms[1] == "drug") {
 		condition <- paste0(condition, "drug='", internal_id, "'");
 	} else {
-		condition <- paste0(condition, "id='", internal_id, "' AND ", platforms[1], " IS NOT NULL");
+		condition <- paste0(condition, "id='", internal_id, "'");
 	}
 }
+if (condition != " WHERE ") {
+	condition <- paste0(condition, " AND ")
+}
+condition <- paste0(condition, platforms[1], " IS NOT NULL");
 query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[1]), "';");
 table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", platforms[1], " FROM ", table_name, ifelse(condition == " WHERE ", "", condition), ";");
@@ -42,7 +46,7 @@ if (status != 'ok') {
 		x_data[,1] <- as.character(x_data[,1]);
 		x_data[,2] <- TRUE;
 		rownames(x_data) <- x_data[,1];
-		# patients who did not
+		# patients who did not receive treatment
 		query <- paste0("SELECT DISTINCT sample,FALSE FROM ", table_name, " WHERE drug<>'", ids[1], "';");
 		print(query);
 		temp <- sqlQuery(rch, query);

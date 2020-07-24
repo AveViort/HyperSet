@@ -43,7 +43,7 @@ platforms <- unlist(strsplit(Par["platforms"], split = ","));
 print(platforms);
 ids <- unlist(strsplit(Par["ids"], split = ","));
 # rare bug - if we have N empty ids, length of ids will be n-1, so ids[n] will return error
-if (all(ids == "")) {
+if (all(empty_value(ids))) {
 	ids <- c(ids, "");
 }
 print(ids);

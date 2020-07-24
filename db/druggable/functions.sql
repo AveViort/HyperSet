@@ -61,15 +61,16 @@ CREATE OR REPLACE FUNCTION synonyms_list() RETURNS setof text AS $$
 DECLARE
 id text;
 syn text;
+link text;
 BEGIN
-FOR syn,id IN SELECT external_id,internal_id FROM synonyms WHERE (id_type='gene') OR (id_type='pathway') OR (id_type='antibody')
+FOR syn,id, link IN SELECT external_id,internal_id, url FROM synonyms WHERE (id_type='gene') OR (id_type='pathway') OR (id_type='antibody')
 LOOP
-RETURN NEXT syn || '|' || id;
+RETURN NEXT syn || '|' || id || '|' || link;
 END LOOP;
 -- drugs are special case! We use external_id for them
-FOR syn,id IN SELECT external_id,external_id FROM synonyms WHERE id_type='drug'
+FOR syn,id, link IN SELECT external_id,external_id, url FROM synonyms WHERE id_type='drug'
 LOOP
-RETURN NEXT syn || '|' || id;
+RETURN NEXT syn || '|' || id || '|' || link;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -232,15 +233,27 @@ END IF;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION glmnet_family (response_datatype_n text) RETURNS setof text
+-- families may be defined for certain platforms (variables) or datatypes
+CREATE OR REPLACE FUNCTION glmnet_family (response_variable_n text, response_datatype_n text) RETURNS setof text
 AS $$
 DECLARE
 res text;
+flag boolean;
 BEGIN
+SELECT EXISTS (SELECT family FROM glmnet_families_exceptions WHERE response_variable=response_variable_n) INTO flag;
+-- if our variable is exceptional
+IF flag THEN
+FOR res IN SELECT family FROM glmnet_families_exceptions WHERE response_variable=response_variable_n
+LOOP
+RETURN NEXT res;
+END LOOP;
+ELSE
+-- if variable not exceptional - return families for the datatype
 FOR res IN SELECT family FROM glmnet_families WHERE response_datatype=response_datatype_n
 LOOP
 RETURN NEXT res;
 END LOOP;
+END IF;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -1132,9 +1145,10 @@ query := query || E' \|\| \'\|\' \|\| ' || columns_array[i];
 -- i does not save it's value! Reassign
 --RAISE notice '%: query: %', i, query;
 END LOOP;
+query := query || E' \|\| \'\|\' \|\| get_url(upper(' || columns_array[1] || E')) \|\| \'\|\' \|\| get_url(drug_synonym(' || columns_array[2] || '))';
 i := array_length(columns_array, 1);
 query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\', ' || fdr || ')  FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
---RAISE notice '%: query: %', i, query;
+-- RAISE notice '%: query: %', i, query;
 EXECUTE query INTO res;
 --RAISE notice 'Query complete, number of rows: %', array_length(res,1);
 IF array_length(res,1) > 0
@@ -1157,7 +1171,7 @@ measure_n text;
 res text;
 BEGIN
 res := '';
-FOR cohort_n, platform_n, measure_n IN SELECT cohort,platform,measure FROM significant_interactions WHERE feature=drug_name AND id=target_id AND datatype=data_type AND interaction<coff AND drug>0.25
+FOR cohort_n, platform_n, measure_n IN SELECT DISTINCT cohort,platform,measure FROM significant_interactions WHERE feature=drug_name AND id=target_id AND datatype=data_type AND interaction<coff AND drug>0.25
 LOOP
 res := res || cohort_n || '#' || data_type || '#' || platform_n || '#' || measure_n || ',';
 END LOOP;
@@ -1509,6 +1523,9 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, previous_datatypes text) RETURNS text AS $$
 DECLARE
 res text;
+temp text;
+res_array text array;
+temp_array text array;
 table_n text;
 datatypes_array text array;
 source_n text;
@@ -1522,18 +1539,29 @@ SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (t
 IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
 SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n;
 flag := TRUE;
+ELSE 
+flag := FALSE;
 END IF;
 IF (previous_datatypes <> '') THEN
 datatypes_array := string_to_array(previous_datatypes, ',');
+res_array := string_to_array(res, ',');
 FOR i IN 1 .. array_length(datatypes_array, 1)
 LOOP
 SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
 IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
+SELECT codes INTO temp FROM tcga_codes WHERE table_name = table_n;
+temp_array := string_to_array(temp, ',');
+IF (array_length(res_array, 1) > 0) THEN
+res_array := array_intersect(res_array, temp_array);
+ELSE
+res_array := temp_array;
+END IF;
 flag := flag AND TRUE;
 ELSE
 flag := FALSE;
 END IF;
 END LOOP;
+res := array_to_string(res_array, ',');
 END IF;
 IF (flag = TRUE) THEN
 res := 'all,healthy,cancer,' || res;
@@ -1828,6 +1856,19 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- intersection of two arrays
+-- code taken from https://stackoverflow.com/questions/756871/postgres-function-to-return-the-intersection-of-2-arrays
+CREATE FUNCTION array_intersect(anyarray, anyarray)
+  RETURNS anyarray
+  language sql
+as $FUNCTION$
+    SELECT ARRAY(
+        SELECT UNNEST($1)
+        INTERSECT
+        SELECT UNNEST($2)
+    );
+$FUNCTION$;
+
 -- either adds new row or updates the existing row
 -- pay attention! val is numeric!
 -- true = update, false = insert
@@ -1855,6 +1896,37 @@ IF (res = FALSE) THEN
 EXECUTE 'INSERT INTO ' || table_name || '(sample,drug,' || column_name || E') VALUES(\'' || sample_name || E'\',\'' || drug_name || E'\',' || val || ');';
 ELSE
 EXECUTE 'UPDATE ' || table_name || ' SET ' || column_name || '=' || val || E' WHERE (sample=\'' || sample_name || E'\') AND (drug=\'' || drug_name || E'\');';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, for clinical records or other tables without id column
+-- this version for numeric values
+CREATE OR REPLACE FUNCTION insert_or_update_clin(table_name text, column_name text, sample_name text, val numeric) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+EXECUTE 'SELECT EXISTS (SELECT * FROM ' || table_name || E' WHERE (sample=\'' || sample_name || E'\') AND (' || column_name || ' IS NULL));' INTO res;
+IF (res = FALSE) THEN 
+EXECUTE 'INSERT INTO ' || table_name || '(sample,' || column_name || E') VALUES(\'' || sample_name || E'\',' || val || ');';
+ELSE
+EXECUTE 'UPDATE ' || table_name || ' SET ' || column_name || '=' || val || E' WHERE (sample=\'' || sample_name || E'\');';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this version for char values
+CREATE OR REPLACE FUNCTION insert_or_update_clin(table_name text, column_name text, sample_name text, val text) RETURNS boolean AS $$
+DECLARE
+res boolean;
+BEGIN
+EXECUTE 'SELECT EXISTS (SELECT * FROM ' || table_name || E' WHERE (sample=\'' || sample_name || E'\') AND (' || column_name || ' IS NULL));' INTO res;
+IF (res = FALSE) THEN 
+EXECUTE 'INSERT INTO ' || table_name || '(sample,' || column_name || E') VALUES(\'' || sample_name || E'\',\'' || val || E'\');';
+ELSE
+EXECUTE 'UPDATE ' || table_name || ' SET ' || column_name || E'=\'' || val || E'\' WHERE (sample=\'' || sample_name || E'\');';
 END IF;
 RETURN res;
 END;
@@ -2193,6 +2265,116 @@ RETURN true;
 ELSE
 RETURN false;
 END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- FUNCTIONS TO COPY BEHAVIOUR
+
+-- copy platform compatibility
+CREATE OR REPLACE FUNCTION copy_platform_compatibility(new_platform text, original_platform text) RETURNS boolean AS $$
+DECLARE
+platform1_n text;
+platform2_n text;
+new_platform1 text;
+new_platform2 text;
+BEGIN
+FOR platform1_n, platform2_n IN SELECT platform1, platform2 FROM platforms_compatibility WHERE (platform1=original_platform) OR (platform2=original_platform) LOOP
+IF (platform1_n=original_platform) THEN
+new_platform1 := new_platform;
+ELSE
+new_platform1 := platform1_n;
+END IF;
+IF (platform2_n=original_platform) THEN
+new_platform2 := new_platform;
+ELSE
+new_platform2 := platform2_n;
+END IF;
+INSERT INTO platforms_compatibility (platform1,platform2) VALUES (new_platform1, new_platform2);
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to copy plot types for new platform
+CREATE OR REPLACE FUNCTION copy_plot_types(new_platform text, original_platform text) RETURNS boolean AS $$
+DECLARE
+plot_type text;
+platform1_n text;
+platform2_n text;
+platform3_n text;
+new_platform1 text;
+new_platform2 text;
+new_platform3 text;
+BEGIN
+FOR platform1_n, platform2_n, platform3_n, plot_type IN SELECT platform1, platform2, platform3, plot FROM plot_types WHERE (platform1=original_platform) OR (platform2=original_platform) OR (platform3=original_platform) LOOP
+IF (platform3_n IS NULL) THEN
+IF (platform2_n IS NULL) THEN
+--RAISE notice '1D';
+INSERT INTO plot_types(platform1,plot) VALUES (new_platform,plot_type);
+END IF;
+--RAISE notice '2D';
+IF (platform1_n=original_platform) THEN
+new_platform1 := new_platform;
+ELSE
+new_platform1 := platform1_n;
+END IF;
+IF (platform2_n=original_platform) THEN
+new_platform2 := new_platform;
+ELSE
+new_platform2 := platform2_n;
+END IF;
+INSERT INTO plot_types(platform1,platform2,plot) VALUES (new_platform1,new_platform2,plot_type);
+ELSE
+--RAISE notice '3D';
+IF (platform1_n=original_platform) THEN
+new_platform1 := new_platform;
+ELSE
+new_platform1 := platform1_n;
+END IF;
+IF (platform2_n=original_platform) THEN
+new_platform2 := new_platform;
+ELSE
+new_platform2 := platform2_n;
+END IF;
+IF (platform3_n=original_platform) THEN
+new_platform3 := new_platform;
+ELSE
+new_platform3 := platform3_n;
+END IF;
+INSERT INTO plot_types(platform1,platform2,platform3,plot) VALUES (new_platform1,new_platform2,new_platform3,plot_type);
+END IF;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- copy variable info: use existing variable as an example
+CREATE OR REPLACE FUNCTION copy_variable_info(new_variable text, original_variable text) RETURNS boolean AS $$
+DECLARE
+predictor_flag boolean;
+response_flag boolean;
+exception_flag boolean;
+exception_family boolean;
+flag boolean;
+BEGIN
+flag := FALSE;
+SELECT predictor, response INTO predictor_flag, response_flag FROM variable_guide_table WHERE variable_name=original_variable;
+IF (predictor_flag IS NOT NULL) OR (response_flag IS NOT NULL) THEN
+flag := TRUE;
+INSERT INTO variable_guide_table (variable_name, predictor, response) VALUES (new_variable, predictor_flag, response_flag);
+-- check if original_variable has glmnet family defined different from its datatype
+-- e.g. CLIN datatype by default has 'cox' family, but 'subtype' platform/variable has 'multinomial' family
+SELECT EXISTS (SELECT * FROM glmnet_families_exceptions WHERE response_variable=original_variable) INTO exception_flag;
+IF (exception_flag) THEN
+-- normally we have only 1 family for variable, but this may be changed in future
+FOR exception_family IN SELECT family FROM glmnet_families_exceptions WHERE response_variable=original_variable
+LOOP
+INSERT INTO glmnet_families_exceptions(response_variable,family) VALUES (new_variable,exception_family);
+END LOOP;
+END IF;
+END IF;
+RETURN flag;
 END;
 $$ LANGUAGE plpgsql;
 

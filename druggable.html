@@ -95,6 +95,11 @@ li.tab:hover ul {
 .no-titlebar .ui-dialog-titlebar {
     display: none;
 }
+
+.dataTables_wrapper .dt-buttons {
+  float:none;  
+  text-align:center;
+}
 </style>
 </HEAD>
 
@@ -1057,14 +1062,26 @@ function retrieve_correlations() {
 	var data_table = $('#cor_result_table').DataTable({
 		"ordering": true,
 		"ajax": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source),
-        "columns": cor_visible_columns.get(source),
-		buttons: [
+        "initComplete": function(settings, json) {
+			console.log("Correlations retrieved");
+			var event = new CustomEvent("correlations_retrieved", {
+				detail: {
+					timestamp: new Date().getTime()
+				}
+			});
+			document.getElementById("cor_result_table").dispatchEvent(event);
+		},
+		"columns": cor_visible_columns.get(source),
+		"dom": "lfBrtip",
+		"buttons": [
             'excel', 'copy', 'csv'
         ],
 		columnDefs: [
 			{ className: "dt-center", targets: "_all" }
-		]});
-		data_table.buttons().container().prependTo( $("#cor_result_table_wrapper"));
+		]
+	});
+	data_table.buttons().container().prependTo( $("#cor_result_table_wrapper"));
+	
 }
 
 function tcga_km_from_cor(i, drug) {
@@ -1206,7 +1223,7 @@ function add_plot_options_row(i) {
 	else {
 		$('#tcga_selector').find('option').remove().end();
 		$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_tcga_code_selector('tcga_selector');
+		init_tcga_code_selector(i+1);
 		$('#tcga_selector').selectmenu( "refresh" );
 	}
 	sessionStorage.removeItem("add_row");
@@ -1272,7 +1289,8 @@ function delete_plot_options_row(i) {
 		}
 		$('#tcga_selector').find('option').remove().end();
 		$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_tcga_code_selector('tcga_selector');
+		// not a good solution
+		init_tcga_code_selector(1);
 		$('#tcga_selector').selectmenu( "refresh" );
 	}
 	// artificially trigger change event for all available inputs
@@ -1347,7 +1365,7 @@ function init_cohortselector() {
 		$('#tcga_selector').find('option').remove().end();
 		$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	}
-	init_tcga_code_selector('tcga_selector');
+	init_tcga_code_selector(1);
 	init_plot_type_selector();
 	$("#open_info1").button({icon: "ui-icon-extlink",
         showLabel: false});
@@ -1555,27 +1573,36 @@ function init_axis_type_selector(selector_id) {
 	document.getElementById(selector_id).dispatchEvent(event);
 }
 
-function init_tcga_code_selector(selector_id) {
+function init_tcga_code_selector(n) {
 	var total = $('#plot_options tr').length-1;
 	// in this case 'previous' mean 'previous in time', not 'in order'
 	// e.g. platform3_selector can be set before platform1_selector
 	var previous_datatypes = [];
 	for (j=1; j<=total; j++) {
-		previous_datatypes.push($("#type" + j +"_selector option:selected").val());
+		if (j != n) {
+			previous_datatypes.push($("#type" + j +"_selector option:selected").val());
+		}
 	}
 	// this can be modified - we don't need second variable anymore
-	var tcga_codes = get_tcga_codes($("#cohort_selector option:selected").val(), $("#type" + 1 + "_selector option:selected").val(), previous_datatypes);
-	options = [];
-	for (i in tcga_codes) {
-		options.push("<option value='"+ tcga_codes[i] + "'>" + tcga_codes[i] + "</option>");
+	var tcga_codes = get_tcga_codes($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_datatypes);
+	if (tcga_codes[0] != "") {
+		options = [];
+		for (i in tcga_codes) {
+			options.push("<option value='"+ tcga_codes[i] + "'>" + tcga_codes[i] + "</option>");
+		}
+		// in case if we have 0 codes tcga_codes is [""]
+		//var flag = (($("#source_selector option:selected").val() != "TCGA") || (tcga_codes[0] == ""));
+		$("#tcga_selector").append(options.join("")).selectmenu({
+			width: "100px",
+			disabled: false
+		});
 	}
-	// in case if we have 0 codes tcga_codes is [""]
-	var flag = (($("#source_selector option:selected").val() != "TCGA") || (tcga_codes[0] == ""));
-	$("#" + selector_id).append(options.join("")).selectmenu({
-        width: "100px",
-		disabled: flag
-    });
-	$('#tcga'+ j + '_selector').selectmenu( "refresh" );
+	else {
+		$("#tcga_selector").selectmenu({
+			width: "100px",
+			disabled: true
+		});
+	}
 }
 
 function init_plot_type_selector() {
@@ -2065,7 +2092,8 @@ function init_response_multiselector() {
 function init_glmnet_family_selector() {
 	var options = [];
 	var response_datatype = $("#responseDatatype_selector option:selected").val();
-	var families = get_glmnet_family(response_datatype);
+	var response_variable = $("#responseVariable_selector option:selected").val();
+	var families = get_glmnet_family(response_variable, response_datatype);
 	for (i in families) {
 		options.push("<option value='" + families[i] + "'>" + families[i] +"</option>");
 	}
@@ -2097,7 +2125,7 @@ function update_cohort() {
 	$('#platform1_selector').selectmenu( "refresh" );
 	$('#tcga_selector').find('option').remove().end();
 	$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_tcga_code_selector('tcga_selector');
+	init_tcga_code_selector(1);
 	$('#tcga_selector').selectmenu( "refresh" );
 	sessionStorage.removeItem("add_row");
 	$('#id1_input').val("");
@@ -2126,7 +2154,7 @@ function update_type(n) {
 				//console.log("Updating TCGA selector number " + i + " out of " + total + " Initator: platform" + n + "_selector");
 				$('#tcga_selector').find('option').remove().end();
 				$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-				init_tcga_code_selector('tcga_selector');
+				init_tcga_code_selector(n);
 				$('#tcga_selector').selectmenu( "refresh" );
 			}
 			$('#platform' + n + '_selector').find('option').remove().end();
@@ -2269,6 +2297,11 @@ function update_platform(n) {
 			//$(".main_header").removeClass("ajax_loading");
 			plot_type_changed();
 		}
+		$('#tcga_selector').find('option').remove().end();
+		$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+		// not a good solution
+		init_tcga_code_selector(n);
+		$('#tcga_selector').selectmenu( "refresh" );
 		// do not move this operation - otherwise will cause bug
 		id_keyup(n);
 		var event = new CustomEvent("platformselector_update_complete", {
@@ -2438,10 +2471,6 @@ function update_response_datatype_selector() {
 	$('#responseVariable_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 	init_response_variable_selector();
 	$('#responseVariable_selector').selectmenu( "refresh" );
-	$('#family').find('option').remove().end();
-	$('#family').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_glmnet_family_selector();
-	$('#family').selectmenu( "refresh" );
 }
 
 function update_response_variable_selector() {
@@ -2451,6 +2480,10 @@ function update_response_variable_selector() {
 	for (var i = length-1; i >= 0; i--) {
 		document.getElementById("responseMulti_selector").options[i] = null;
 	}
+	$('#family').find('option').remove().end();
+	$('#family').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_glmnet_family_selector();
+	$('#family').selectmenu( "refresh" );
 	init_response_multiselector();
 }
 
@@ -2561,14 +2594,12 @@ function update(initiator) {
 					update_cor_cohort_selector();
 					update_cor_platform_selector();
 				} 
-				else {
-					var event = new CustomEvent("corsourceselector_update_complete", {
-						detail: {
-							source: $("#corSource_selector option:selected").val()
-						}
-					});
-					document.getElementById("corSource_selector").dispatchEvent(event);
-				}
+				var event = new CustomEvent("corsourceselector_update_complete", {
+					detail: {
+						source: $("#corSource_selector option:selected").val()
+					}
+				});
+				document.getElementById("corSource_selector").dispatchEvent(event);
 				break;
 			case "corDatatype":
 				if (selector_value != previous_value) {
@@ -2750,13 +2781,20 @@ function id_keyup(k) {
 			temp_flag = available_ids.includes(valueSoFar);
 			if ((temp_flag) && (valueSoFar != "")) {
 				console.log("Value so far: " + valueSoFar);
-				var confirmed = synonyms.get($("#id" + k + "_input").val());
+				var confirmed = synonyms.get($("#id" + k + "_input").val())[0];
 				console.log("Confirmed: " + confirmed);
+				var url = synonyms.get($("#id" + k + "_input").val())[1];
+				var resource_name = get_resource_name(url);
 				$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
 				setTimeout(function(){$("#id" + k + "_input").css('border-color', '');
 								$("#id" + k + "_input").css('background-color', '')}, 500);
 				$("#id" + k + "_input").css('border-color', 'chartreuse');
 				$("#id" + k + "_input").css('background-color', 'chartreuse');
+				$("#open_info" + k).qtip({ 
+					content: {
+						text: "Open external information page (" + resource_name + ")" 
+					}
+				});
 			}
 		}
 		if ((typeof $("#plot-type option:selected").val() == 'undefined') || ($("#plot-type option:selected").val() == "")) {
@@ -2833,7 +2871,7 @@ function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
 						plot_title = 'Scatterplot of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ' vs ' + datatypes[2] + ':' + platforms[2] + ':' + scales[2] + ')';
 					}
 					else {
-						plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ')';
+						plot_title = 'Scatterplot of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ')';
 					}
 				}
 				else {

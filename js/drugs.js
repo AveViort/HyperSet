@@ -233,10 +233,11 @@ function get_response_multiselector_values(source, cohort, datatype, variable) {
 	return values;
 }
 
-function get_glmnet_family(datatype) {
+// variable = platform
+function get_glmnet_family(variable, datatype) {
 	var families;
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/glmnet_family.cgi?datatype=" + encodeURIComponent(datatype), false);
+	xmlhttp.open("GET", "cgi/glmnet_family.cgi?variable=" + encodeURIComponent(variable) + "&datatype=" + encodeURIComponent(datatype), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			families = this.responseText;}
@@ -639,4 +640,34 @@ function autocomplete_filled(cohort, platform) {
 		}
 	xmlhttp.send();
 	return flag;
+}
+
+// function to get pretty-printed site names from urls
+function get_resource_name(url) {
+	var resource_name;
+	var site = url.split("/")[2].split(".")[1];
+	switch (site) {
+		case "genecards":
+			resource_name = "GeneCards";
+			break;
+		case "broadinstitute":
+			resource_name = "MSigDB";
+			break;
+		case "nlm":
+			resource_name = "PubChem";
+			break;
+		case "ncbi":
+			resource_name = "PubChem";
+			break;
+		case "wikipathways":
+			resource_name = "WikiPathways";
+			break;
+		case "jp":
+			resource_name = "KEGG";
+			break;
+		case "google":
+			resource_name = "Google";
+			break;
+	}
+	return resource_name;
 }

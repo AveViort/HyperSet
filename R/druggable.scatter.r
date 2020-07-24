@@ -66,10 +66,12 @@ for (i in 1:length(datatypes)) {
 	rownames(temp[[i]]) <- temp_rownames;
 }
 common_samples <- rownames(temp[[1]]);
+print(paste0("Common samples after iteration 1: ", length(common_samples)));
 for (i in 2:length(datatypes)) {
 	# MUT is an exclusion! All samples that are not specified in MUT table are mutation-negative
 	if (datatypes[i] != "mut") {
 		common_samples <- intersect(common_samples, rownames(temp[[i]]));
+		print(paste0("Common samples after iteration ",i ,": ", length(common_samples)));
 	}
 }
 status <- ifelse(length(common_samples) > 0, 'ok', 'error');
@@ -222,7 +224,7 @@ if (status != 'ok') {
 			print(c(min(z_data), max(z_data)));
 			z_axis <- adjust_string(paste0(ifelse(!empty_value(ids[3]), paste0(ifelse(grepl(":", ids[3]), strsplit(ids[3], ":")[[1]][1], ids[3])), ""), " (", readable_platforms[platforms[3],2], ",", scales[3], ")"), druggable.axis.label.threshold);
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
-				text = ~paste("Patient: ", common_samples), color = z_data) %>% 
+				text = ~paste("Patient:", common_samples), color = z_data) %>% 
 			colorbar(title = z_axis) %>%
 			onRender(paste0("
 				function(el) { 
@@ -231,11 +233,31 @@ if (status != 'ok') {
 						var platform='", platforms[1],"';
 						console.log('Datatype: ', datatype);
 						console.log('Platform: ', platform);
-						console.log('ID: ', d[0].text);",
-					ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) { 
+						console.log('ID: ', d.points[0].text);
+					});",
+					ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) {
 						var id = ((d.points[0].text).split(' '))[1];
 						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
-					});"), ""),
+					});"), ifelse(Par["source"] == "tcga", paste0("el.on('plotly_click', function(d) {
+						var id = ((d.points[0].text).split(' '))[1].toUpperCase();
+						console.log(id);
+						window.open('https://www.cbioportal.org/patient?studyId=", Par["cohort"], "_tcga&",
+							ifelse(any(datatypes %in% druggable.patient.datatypes), 
+								"caseId='", 
+								"sampleId='"),
+							"+id,'_blank');
+						});"), ifelse(Par["source"] == "ccle", "el.on('plotly_click', function(d) { 
+							var id = ((d.points[0].text).split(' '))[1];
+							var depmap_id = '';
+							var xmlhttp = new XMLHttpRequest();
+							xmlhttp.open('GET', 'https://dev.evinet.org/cgi/get_depmap_id.cgi?celline=' + encodeURIComponent(id), false);
+							xmlhttp.onreadystatechange = function() {
+							if (this.readyState == 4 && this.status == 200) {
+								depmap_id = this.responseText;}
+							}
+							xmlhttp.send();	
+							window.open('https://depmap.org/portal/cell_line/' + depmap_id,'_blank');
+						});", ""))),
 					"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 				}
 			")) %>%
@@ -293,7 +315,12 @@ if (status != 'ok') {
 				tickfont = font2);
 			types <- unique(z_data);
 			marker_shapes <- druggable.plotly.marker_shapes[1:length(types)];
-			tissue_colours <- druggable.plotly.tissue_colours;
+			marker_colours <- NULL;
+			if (platforms[k] == "tissue") {
+				marker_colours <- druggable.plotly.tissue_colours;
+			} else {
+				marker_colours <- druggable.plotly.brca_colours;
+			}
 			names(marker_shapes) <- types;
 			script_file_name <- paste0(fname, ".r");
 			script_file <- file(script_file_name, "w")
@@ -305,11 +332,11 @@ if (status != 'ok') {
 				scripte_line <- '';
 				if (platforms[k] == "tissue") {
 					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-											name='", i, "', marker = list(color = '", tissue_colours[i], "', symbol = '",
+											name='", i, "', marker = list(color = '", marker_colours[i], "', symbol = '",
 											marker_shapes[1], "')) %>%");
 				} else {
 					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-											name='", i, "', marker = list(color = '", tissue_colours[i],"', symbol = '",
+											name='", i, "', marker = list(color = '", marker_colours[i],"', symbol = '",
 											marker_shapes[i], "')) %>%");
 				}
 				write(script_line, file = script_file, append = TRUE);
