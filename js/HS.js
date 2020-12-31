@@ -828,15 +828,16 @@ var Type = null;
 		var cids = [];
 		var j = 0;
 		for (i = 0; i < cs.length; i++) {
-			console.log(i);
+			// console.log(i);
 			if (cs[i]) {
 				cids[j++] = i;
 				}
 		}
+					console.log(cids.join("***"));
 		Href = "cgi/i.cgi?" + dynamicHref() + 
 			";action=run-exploratory-" + Type + 
 			";colnames=" + cids.join("***") + 
-			";rownames=" +  $('[name="sgs_list"]').val().replace(/\s/g, "***") + 
+			";rownames=" +  $('[name="sgs_list"]').val().replace(/\s+/g, "***") + 
 			";normalize=" +  $('[name="normalize"]').val() + 
 			";hclust_method=" +  $('[name="hclust_method"]').val() + 
 			";table=" + $("#selectradio-table-ags-ele").attr("value") + ";"; 

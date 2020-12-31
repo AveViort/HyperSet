@@ -27,6 +27,10 @@ names(Rescale[["TStage"]]) 					<- c("T1", "T2", "T3", "T4", "T4a");
 Rescale[["TStage_binarized"]] <- c(1,1,2,2,2)
 names(Rescale[["TStage_binarized"]]) <- c("T1", "T2", "T3", "T4", "T4a");
 survival_platforms <- c("os", "dfs", "pfs", "rfs", "dfi", "pfi", "rfi");
+# these are platforms which have characters and should be transformed into dummy matrices
+dummy_platforms <- c("subtype");
+
+crossval_flag <- TRUE;
 
 createGLMnetSignature <- function (
 	responseVector, 
@@ -49,15 +53,12 @@ createGLMnetSignature <- function (
 	TypeDelimiter = "___",
 	cu0=NULL) {
 	
-	print("createGLMnetSignature");
+	#print("createGLMnetSignature");
 	
 	perf <- as.list(NULL);
+	perf_frame <- data.frame(Measure = character(), Value = numeric());
 	lt1 = 1; st1 = 0; Niter = 0; 
 	c1 <- Betas <- model <- NULL;
-	rnds <- c("training");
-	if (independentValidation) {
-		rnds <- c(rnds, "validation", "roc");
-	}
 	
 	#if (is.null(nrow(predictorSpace))) {
 	#	temp_names <- names(predictorSpace);
@@ -67,18 +68,23 @@ createGLMnetSignature <- function (
 	
 	while (((Family == "cox" & lt1 >  min.fit) | (Family != "cox" & st1 < min.fit)) & Niter < 10) {
 		Niter = Niter + 1;
-		Ncases = ncol(predictorSpace) * validationFraction;
+		Ncases = ncol(predictorSpace) * (1 - validationFraction);
 		if (independentValidation & (ncol(predictorSpace) > Ncases) & (Ncases > 9)) {
 			Sample1 <- sample(colnames(predictorSpace), Ncases, replace = FALSE);
 			Sample2 <- setdiff(colnames(predictorSpace), Sample1);
 			print(paste0(length(Sample2), " cases are retained as validation set..."));
+			crossval_flag <<- TRUE;
 		} else {
 			Sample1 <- Sample2 <- colnames(predictorSpace);
 			print("Validation subset is not created...");
+			crossval_flag <<- FALSE;
+			#system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_training.png"));
+			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_validation.png"));
+			#system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_roc.png"));
 		}
 		MG <- responseVector;
 		PW = t(predictorSpace);
-		if (independentValidation) {
+		if (crossval_flag) {
 			print(paste0(Nfolds, "-fold cross-validation"));
 			print("PW[Sample1,]:");
 			print(PW[Sample1,]);
@@ -102,9 +108,14 @@ createGLMnetSignature <- function (
 				text(x=1, y=0.5, labels = t1[1], cex = 1);
 				return(NA);
             }
+			#save(model, file=paste0(File, ".RData"));
 			Betas <- model$glmnet.fit$beta;
 			A0 <- model$glmnet.fit$a0;
-			Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
+			if (Family == "multinomial") {
+				Lc = colnames(Betas[[1]])[which(model$lambda == model$lambda.1se)];
+			} else {
+				Lc = colnames(Betas)[which(model$lambda == model$lambda.1se)];
+			}
 		} else {
 			print(paste0("No cross-validation"))
 			t1 <- try(model <- glmnet(PW[Sample1,], MG[Sample1],  
@@ -113,7 +124,7 @@ createGLMnetSignature <- function (
 						nlambda = Nlambda, 
 						lambda.min.ratio = minLambda,
 						standardize = STD));
-			save(model, file=paste0(File, ".RData"));
+			#save(model, file=paste0(File, ".RData"));
 			if (grepl("Error|fitter|levels", t1[1])) {
 				print("Error occured");
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
@@ -132,6 +143,7 @@ createGLMnetSignature <- function (
 				Lc = colnames(Betas)[ncol(Betas)];
 			}	
 		}
+
 		if (Lc == "s0") {
 			if (Family == "multinomial") {
 				Lc = colnames(Betas[[1]])[which(model$lambda == model$lambda.min)];
@@ -145,7 +157,7 @@ createGLMnetSignature <- function (
 				c1 <- Betas[[1]][,Lc];
 				co <- c1[which(c1 != 0)];
 				co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
-				print(co);
+				#print(co);
 				n <- length(MG[Sample1]);
 				pred <- as.vector(Intercept + PW[Sample1,] %*% c1);
 				names(pred) <- rownames(PW[Sample1,]);
@@ -169,6 +181,7 @@ createGLMnetSignature <- function (
 				perf$RSS = sum((10 * MG[Sample1] - 10 * Ypred) ** 2, na.rm = T);
 				perf$AIC <- 2 * k + n * log(perf$RSS);
 				perf$BIC <- log(n) * k + log(perf$RSS/n) * n;
+				
 				st1 = cor(as.numeric(MG[Sample1]), pred[Sample1], use="pairwise.complete.obs", method="spearman");
 			} else {
 				k <- length(co);
@@ -183,6 +196,8 @@ createGLMnetSignature <- function (
 					# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6874104/
 					perf$AIC <- AIC(t1);
 					perf$BIC <- BIC(t1);
+					perf_frame <- rbind(perf_frame, data.frame(Measure = "AIC(training)", Value = round(perf$AIC,3)));
+					perf_frame <- rbind(perf_frame, data.frame(Measure = "BIC(training)", Value = round(perf$BIC,3)));
 					lt1 <- summary(t1)$logtest["pvalue"];
 				} else {
 					stop(t1[1]);
@@ -193,7 +208,14 @@ createGLMnetSignature <- function (
 		}
 	}
 	
+	rnds <- c("training");
+	if (crossval_flag) {
+		rnds <- c(rnds, "validation");
+	}
+	
 	if (length(co) > 0) {
+		print("co:");
+		print(co);
 		png(file=paste0(baseName, "_model.png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 		plot(model);
 		Cex.main  = 0.85; Cex.lbl = 0.35; Cex.leg = 0.5;
@@ -201,6 +223,7 @@ createGLMnetSignature <- function (
 		for (pe in names(perf)[which(!grepl(paste(rnds, collapse="|"), names(perf), fixed=FALSE))]) {
 			va =	round(perf[[pe]], digits=3); 
 			ppe <- paste(ppe, paste0(pe, "=", va), sep="\n");
+			perf_frame <- rbind(perf_frame, data.frame(Measure = paste0(pe, "(training)"), Value = va));
 		}
 		legend("topleft", legend=paste(
 			ifelse(!independentValidation, "", paste0("Cross-validation: ", Nfolds, "-fold")),  
@@ -211,29 +234,47 @@ createGLMnetSignature <- function (
 			ppe, 
 			sep="\n"), bty="n", cex=Cex.leg * 1.5); 
 		dev.off();
-	
+		
 		for (Round in rnds) {
+			print(Round);
 			png(file=paste0(baseName, "_", Round,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 			if (Round == "training") {
 				smp = Sample1;
 			} else {
 				smp = Sample2;
 			}
-			pred <- as.vector(Intercept + PW[smp,] %*% c1);
-			names(pred) <- rownames(PW[smp,]);	
+			print("smp:");
+			print(smp);
+			if (Family != "multinomial") {
+				pred <- as.vector(Intercept + PW[smp,] %*% c1);
+				names(pred) <- rownames(PW[smp,]);
+			} else {
+				pred <- predict(model, newx = PW[smp,]);
+				# multinomial regression gives 3D matrix of size n*m*1, but we need 2D 
+				pred <- pred[,,1];
+			}
+			print("Prediction complete");
 			
 			if (Family != "cox") {  
 				Obs <- MG[smp];
-				if (is.factor(Obs)) {
-					Obs <- as.numeric(Obs);
+				if (Family != "multinomial") {
+					if (is.factor(Obs)) {
+						Obs <- as.numeric(Obs);
+					}
+					perf[[paste0("Spearman R(", Round, ")")]] = cor(Obs, pred[smp], use="pairwise.complete.obs", method="spearman");
+					perf[[paste0("Kendall tau(", Round, ")")]] = cor(Obs, pred[smp], use="pairwise.complete.obs", method="kendall");
+					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Spearman R(", Round, ")"), Value = round(perf[[paste0("Spearman R(", Round, ")")]],3)));
+					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Kendall tau(", Round, ")"), Value = round(perf[[paste0("Kendall tau(", Round, ")")]],3)));
+				} else {
+					pred_rounded <- round(pred);
+					# accuracy metrics for multinomial models should be here
 				}
-				perf[[paste0("Spearman R(", Round, ")")]] = cor(Obs, pred[smp], use="pairwise.complete.obs", method="spearman");
-				perf[[paste0("Kendall tau(", Round, ")")]] = cor(Obs, pred[smp], use="pairwise.complete.obs", method="kendall");
 			} else {
 				cu <- cu0[smp,]
 				t1 <- try(coxph(Formula, data=as.data.frame(PW[smp,]), control=coxph.control(iter.max = 5)), silent=FALSE);
 				if (!grepl("Error|fitter|levels", t1[1]) & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
 					perf[[paste0("P(logtest, ", Round, ")")]] <- summary(t1)$logtest["pvalue"];
+					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("P(logtest, ", Round, ")"), Value = round(perf[[paste0("P(logtest, ", Round, ")")]],3)));
 				} else {
 					stop(t1[1]);
 				}
@@ -241,6 +282,15 @@ createGLMnetSignature <- function (
 			title.main=Round;
 
 			if (Family != "cox") {
+				MSE <- mean((MG[smp] - pred)^2);
+				R2 <- 1 - (sum((MG[smp] - pred)^2)/sum((MG[smp] - mean(MG[smp]))^2));
+				#print(paste0("R2 (", Round, ")"));
+				#print(paste0("SSreg: ", sum((MG[smp] - pred)^2)));
+				#print(paste0("SStot: ", sum((MG[smp] - mean(MG[smp]))^2)));
+				
+				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("MSE(", Round, ")"), Value = round(MSE,3)));
+				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("R^2(", Round, ")"), Value = round(R2,3)));				
+				
 				plot(MG[smp], pred, type="n", xlab="Observed", ylab="Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
 				if (!is.na(title.sub)) {
 					title(sub = title.sub, line=1, cex.sub=Cex.leg * 1.5);
@@ -275,7 +325,8 @@ createGLMnetSignature <- function (
 		print("No non-zero terms identified...");
 		dev.off();
 	}
-	return(model);
+	res <- list(model = model, perf = perf_frame);
+	return(res);
 }
 
 print(Sys.time());
@@ -297,8 +348,12 @@ if (Par["source"] == "ccle") {
 	for (tissue in multiopt) {
 		tissues <- c(tissues, tissue);
 	}
-	tissues <- paste0("'{", paste(tissues, collapse=","), "}'::text[]");
-	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+	if (tissues != 'ALL') {
+		tissues <- paste0("'{", paste(tissues, collapse=","), "}'::text[]");
+		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+	} else {
+		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue;");
+	}
 	print(query);
 	tissue_samples <- sqlQuery(rch,query)[,1];
 	print("Tissue samples:");
@@ -312,10 +367,26 @@ for (i in 1:length(x_datatypes)) {
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(x_datatypes[i]), "';");
 	print(query);
 	table_name <- sqlQuery(rch, query)[1,1];
-	query <- paste0("SELECT sample,", ifelse(!x_datatypes[i] %in% druggable.patient.datatypes, "id,", ""), x_platforms[i], " FROM ", table_name);
-	condition <- paste0(" WHERE ", x_platforms[i], " IS NOT NULL");
+	condition <- "";
+	if (x_datatypes[i] != "mut") {
+		query <- paste0("SELECT sample,", ifelse(!x_datatypes[i] %in% druggable.patient.datatypes, "id,", ""), x_platforms[i], " FROM ", table_name);
+		condition <- paste0(" WHERE ", x_platforms[i], " IS NOT NULL");
+	} else {
+		query <- paste0("SELECT sample,id,", x_platforms[i], " FROM ", table_name);
+	}
 	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
-		condition <- paste0(condition, " AND id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+		condition <- ifelse(condition == "", " WHERE ", paste0(condition, " AND "));
+		if ("[all]" %in% x_ids[[i]]) {
+			if (x_platforms[i] == rplatform) {
+				# we want to exclude dependent variable from independent ones
+				condition <- paste0(condition, "id NOT LIKE '", rid, "'");
+			} else {
+				# this line is redundant, for debug purpose only
+				condition <- paste0(condition, "id LIKE '%'");
+			}
+		} else {
+			condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+		}
 		if (Par["source"] == "tcga") {
 			tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
 			condition <- paste0(condition, " AND sample LIKE ", tcga_array);
@@ -384,22 +455,53 @@ for (ty in names(Platform)) {
 	X.add <- Platform[[ty]][X.variables[[ty]],];
 	#print("X.add:");
 	#print(X.add);
-	# again, we can sometimes have a vector instead of a matrix
-	if (is.null(nrow(X.add))) {
-		temp_names <- names(X.add);
-		X.add <- matrix(X.add, 1, length(X.add));
-		colnames(X.add) <- temp_names;
-		rownames(X.add) <- X.variables[[ty]];
-	}
-	if (ty == "mut") {
-		for (i in 1:nrow(X.add)) {
-			X.add[i,which(empty_value(X.add[i,]))] <- "0";
-			X.add[i,which(X.add[i,] != "0")] <- "1";
+	if (ty %in% dummy_platforms) {
+		dummy_names <- unique(X.add);
+		#print(dummy_names);
+		temp <- matrix(0, length(X.add), length(dummy_names));
+		rownames(temp) <- names(X.add);
+		colnames(temp) <- dummy_names;
+		for (dummy_variable in dummy_names) {
+			temp[which(X.add == dummy_variable),dummy_variable] <- 1;
 		}
+		#print("X.add temp:");
+		#print(temp);
+		X.add <- t(temp);
+		#temp_names <- names(X.add);
+		#X.add <- matrix(as.factor(X.add), 1, length(X.add));
+		#X.add <- as.factor(X.add);
+		#colnames(X.add) <- temp_names;
+		#rownames(X.add) <- X.variables[[ty]];
+		TypeDelimiter = "___";
+		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed=FALSE)
+		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
+		#print("Factor X.add:");
+		#print(X.add);
+	} else {
+		# again, we can sometimes have a vector instead of a matrix
+		if (is.null(nrow(X.add))) {
+			temp_names <- names(X.add);
+			X.add <- matrix(X.add, 1, length(X.add));
+			colnames(X.add) <- temp_names;
+			rownames(X.add) <- X.variables[[ty]];
+		}
+		if (ty == "maf") {
+			for (i in 1:nrow(X.add)) {
+				X.add[i,which(empty_value(X.add[i,]))] <- "0";
+				X.add[i,which(X.add[i,] != "0")] <- "1";
+			}
+		}
+		if (ty %in% names(Rescale)) {
+			# rewrite it with apply?
+			for (i in 1:nrow(X.add)) {
+				X.add[i,] <- Rescale[[ty]][X.add[i,]];
+			}
+			X.add[is.na(X.add[,1])] <- mean(X.add[,1], na.rm = TRUE);
+		}
+		TypeDelimiter = "___";
+		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@", "_", rownames(X.add), fixed=FALSE)
+		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 	}
-	TypeDelimiter = "___";
-	rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@", "_", rownames(X.add), fixed=FALSE)
-	rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 	if (ty == names(Platform)[1]) {
 		X.matrix <- X.add;
 	} else {
@@ -417,13 +519,11 @@ for (ty in names(Platform)) {
 	#print(dim(X.matrix))
 }
 #print(dim(X.matrix));
+X.matrix[which(is.na(X.matrix))] <- "0";
 #print("Original X.matrix:");
 #print(X.matrix);
-print(colnames(X.matrix));
+#print(colnames(X.matrix));
 stop_flag = FALSE;
-# have to make an exclusion for tissues, otherwise will get an error:
-# Error in lognet(x, is.sparse, ix, jx, y, weights, offset, alpha, nobs,  : 
-#  one multinomial or binomial class has 1 or 0 observations; not allowed
 if (Par["source"] == "ccle") {
 	X.matrix <- X.matrix[,which(colnames(X.matrix) %in% tissue_samples)];
 }
@@ -496,11 +596,36 @@ if (!stop_flag) {
 			#print(resp);
 			temp_names <- names(resp);
 			resp <- unlist(lapply(resp, function(el) {return(Rescale[[rplatform]][el])}));
+			resp[is.na(resp)] <- mean(resp, na.rm = TRUE);
 			names(resp) <- temp_names;
 		}
 		resp <- resp[!is.na(resp)];
 		if ((Par["source"] == "tcga") & (any(x_datatypes %in% druggable.patient.datatypes) & (!rdatatype %in% druggable.patient.datatypes))) {
 			names(resp) <- gsub(sample_mask, "", names(resp), fixed=FALSE);
+		}
+		# for multinomial - exclude all categories which are less than 3% of cohort or 10 samples
+		if (fam == "multinomial") {
+			temp_names <- names(resp);
+			resp <- as.character(resp);
+			names(resp) <- temp_names;
+			categories_count <- table(resp);
+			#print(categories_count);
+			exclude_categories <- names(categories_count)[which((categories_count < 0.03*sum(categories_count)) | (categories_count < 10))];
+			# we must have at least 2 categories
+			if (length(exclude_categories) + 1 > length(categories_count)) {
+				print(paste0("Total number of classes: ", length(categories_count), " Classes to exclude: ", length(exclude_categories)));
+				resp <- c();
+			} else {
+				# we have to do it like that - otherwise we lose names
+				temp_names <- names(resp[which(!resp %in% exclude_categories)]);
+				print("Samples to keep:");
+				print(temp_names);
+				resp <- resp[temp_names];
+				#print("After cleaning:");
+				#print(table(resp));
+				resp <- as.factor(resp);
+				names(resp) <- temp_names;
+			}
 		}
 		#print(resp);
 		#print(str(resp));
@@ -508,14 +633,13 @@ if (!stop_flag) {
 	
 	#print(str(X.matrix));
 	for (i in 1:nrow(X.matrix)) {
-		#print(i);
 		X.matrix[i,which(is.na(X.matrix[i,]))] <- mean(X.matrix[i,], na.rm=TRUE);
 	}
 	#print(str(X.matrix));
 	temp_rownames <- rownames(X.matrix);
 	temp_colnames <- intersect(names(resp),colnames(X.matrix));
 	X.matrix <- X.matrix[,temp_colnames];
-	if (is.null(nrow(X.matrix))) {
+	if ((is.null(nrow(X.matrix))) || (length(resp) == 0)) {
 		for (type in c("model", "training", "validation")) {
 			png(file=paste0(File, "_", type,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 			print("Error occured: only one variable left");
@@ -528,30 +652,36 @@ if (!stop_flag) {
 			dev.off();
 		}
 	} else {
-		model <- createGLMnetSignature(
-					responseVector = resp, 
-					predictorSpace = X.matrix,
-					Family = fam,
-					type.measure = mea, 
-					independentValidation = validation, 
-					validationFraction = validation_fraction,
-					Nfolds = nfolds,
-					Alpha = alpha, 
-					Nlambda = nlambda, 
-					minLambda = minlambda, 
-					STD = standardize,
-					min.fit = 0.1, 
-					title.main = NA, 
-					title.sub = NA,
-					ve = "v1", 
-					plotModel = TRUE,
-					baseName = File,
-					TypeDelimiter = TypeDelimiter, 
-					cu0=cu
-		);
+		model_data <- createGLMnetSignature(
+						responseVector = resp, 
+						predictorSpace = X.matrix,
+						Family = fam,
+						type.measure = mea, 
+						independentValidation = validation, 
+						validationFraction = validation_fraction,
+						Nfolds = nfolds,
+						Alpha = alpha, 
+						Nlambda = nlambda, 
+						minLambda = minlambda, 
+						STD = standardize,
+						min.fit = 0.1, 
+						title.main = NA, 
+						title.sub = NA,
+						ve = "v1", 
+						plotModel = TRUE,
+						baseName = File,
+						TypeDelimiter = TypeDelimiter, 
+						cu0=cu
+					);
+		model <- model_data[["model"]];
+		perf_frame <- model_data[["perf"]];
 		if (!is.na(model)) {
 			save(model, file=paste0(File, ".RData"));
-			saveJSON(model, paste0("coeff.", Par["out"], ".json"), validation, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, rid, multiopt);
+			# use crossval_flag variable which is a global variable set in createGLMnetSignature
+			# bad style, but otherwise we have to return several objects
+			# print(paste0("crossval_flag: ", crossval_flag));
+			saveJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, rid, multiopt);
+			savePerformanceJSON(perf_frame, paste0("perf.", Par["out"], ".json"));
 		}
 	}
 }

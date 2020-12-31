@@ -1,45 +1,30 @@
 -- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
 
 -- return all drugs/features and genes for given combination of parameters (for correlations)
-CREATE OR REPLACE FUNCTION feature_gene_list(source_n text, data_type text, cohort_n text, platform_n text, screen_name text, sensitivity_m text) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION feature_gene_list(source_n text, data_type text, cohort_n text, platform_n text, screen_name text, sensitivity_m text) RETURNS text AS $$
 DECLARE
 table_n text;
+res_temp text;
 res text;
-res_array text array;
 sensitivity_array text array;
 i numeric;
 BEGIN
-res_array = ARRAY[]::text[];
+res := '';
 IF (data_type = '%') AND (cohort_n = '%') AND (platform_n = '%') AND (screen_name = '%')
 THEN
-FOR res IN EXECUTE 'SELECT id FROM cor_all_ids_' || source_n
+FOR res_temp IN EXECUTE 'SELECT id FROM cor_all_ids_' || source_n
 LOOP
-SELECT array_append(res_array, res) INTO res_array;
+res := res || '|' || res_temp;
 END LOOP;
 ELSE
 sensitivity_array := string_to_array(sensitivity_m, ',');
 FOR table_n IN SELECT table_name FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_name AND sensitivity_measure=ANY(sensitivity_array)
 LOOP
-FOR res IN EXECUTE 'SELECT DISTINCT feature FROM ' || table_n || ';'
-LOOP
-IF NOT (SELECT res = ANY (res_array))
-THEN
-SELECT array_append(res_array, res) INTO res_array;
-END IF;
-END LOOP;
-FOR res IN EXECUTE 'SELECT DISTINCT upper(gene) FROM ' || table_n || ';'
-LOOP
-IF NOT (SELECT res = ANY (res_array))
-THEN
-SELECT array_append(res_array, res) INTO res_array;
-END IF;
-END LOOP;
+SELECT genes_features INTO res_temp FROM cor_genes_features WHERE table_name=table_n;
+res := res || res_temp;
 END LOOP;
 END IF;
-FOR i IN 1..array_length(res_array, 1)
-LOOP
-RETURN NEXT res_array[i];
-END LOOP;
+RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -105,6 +90,23 @@ query := 'SELECT DISTINCT tissue FROM ' || table_n || ';';
 FOR res IN EXECUTE query
 LOOP
 RETURN NEXT res;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but returns number as well
+CREATE OR REPLACE FUNCTION get_tissue_types_n(cohort_n text) RETURNS setof text AS $$
+DECLARE
+table_n text;
+query text;
+tissue_name text;
+n numeric;
+BEGIN
+SELECT table_name INTO table_n FROM guide_table WHERE cohort=cohort_n AND type='TISSUE';
+query := 'SELECT tissue, COUNT(tissue) AS total FROM ' || table_n || ' GROUP BY tissue ORDER BY total DESC;';
+FOR tissue_name, n IN EXECUTE query
+LOOP
+RETURN NEXT tissue_name || '|' || n;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -200,6 +202,7 @@ response_flag boolean;
 table_n text;
 data_types text array;
 cohorts text array;
+n_samp numeric;
 BEGIN
 data_types := ARRAY['all', data_type];
 cohorts := ARRAY['all', cohort_n];
@@ -209,20 +212,21 @@ WHERE tablename  = 'response_variables')
 THEN
 DELETE FROM response_variables;
 ELSE
-CREATE TABLE response_variables (variable_n character varying(256), visible_name character varying(256));
+-- n_samp - number of samples/patients for the given table
+CREATE TABLE response_variables (variable_n character varying(256), visible_name character varying(256), n_samp numeric);
 END IF;
 query := E'SELECT table_name FROM model_guide_table WHERE source=\'' || source_n || E'\'AND cohort=\'' || cohort_n || E'\' AND datatype=\'' || data_type || E'\' AND table_type=\'response\';';
 EXECUTE query INTO table_n;
 -- if table exists
 IF (table_n IS NOT NULL) THEN
-EXECUTE E'INSERT INTO response_variables SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
-FOR variable_nm, description IN SELECT * FROM response_variables 
+EXECUTE 'INSERT INTO response_variables SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname,variable_samples.' || cohort_n || E' FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) JOIN variable_samples ON druggable.INFORMATION_SCHEMA.COLUMNS.column_name=variable_samples.variable_name WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
+FOR variable_nm, description, n_samp IN SELECT * FROM response_variables 
 LOOP
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=variable_nm) INTO exclude;
 SELECT response INTO response_flag FROM variable_guide_table WHERE variable_name=variable_nm;
 IF ((NOT exclude) AND response_flag)
 THEN 
-RETURN NEXT variable_nm || '|' || description;
+RETURN NEXT variable_nm || '|' || description || '|' || n_samp;
 END IF;
 END LOOP;
 -- if table does not exist
@@ -533,7 +537,7 @@ DECLARE
 res text;
 description_n text;
 BEGIN
-FOR res IN SELECT DISTINCT cohort FROM guide_table WHERE source=source_n
+FOR res IN SELECT DISTINCT cohort FROM guide_table WHERE source=source_n ORDER BY cohort ASC 
 LOOP
 SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
@@ -550,7 +554,7 @@ description_n text;
 sensitivity_array text array;
 BEGIN
 sensitivity_array := string_to_array(sensitivity_m, ',');
-FOR res IN SELECT DISTINCT cohort FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) AND datatype LIKE datatype_n 
+FOR res IN SELECT DISTINCT cohort FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) AND datatype LIKE datatype_n ORDER BY cohort ASC 
 LOOP
 SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
@@ -1118,8 +1122,10 @@ $$ LANGUAGE plpgsql;
 -- cor_columns is a string with comma-separated columns to use for query 
 -- first column is ALWAYS gene
 -- second column is ALWAYS feature
--- last column is ALWAYS used for filtration (it can be q)
-CREATE OR REPLACE FUNCTION retrieve_correlations(source_n text, data_type text, cohort_n text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text) RETURNS setof text AS $$
+-- last column is used for filtering, can be used twice
+-- limit_by is name of the column by which table will be sorted (one of p-value columns)
+-- limit_num is max num of records (e.g. 100 smallest p-values)
+CREATE OR REPLACE FUNCTION retrieve_correlations(source_n text, data_type text, cohort_n text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text, limit_by text, limit_num numeric) RETURNS setof text AS $$
 DECLARE
 table_n text;
 datatype_name text;
@@ -1131,26 +1137,58 @@ res text array;
 columns_array text array;
 sensitivity_array text array;
 query text;
+temp_table text;
 i numeric;
 BEGIN
 columns_array := string_to_array(cor_columns, ',');
 sensitivity_array := string_to_array(sensitivity_m, ',');
+temp_table := 'cor' || floor(random() * 10000);
+query := 'CREATE TABLE ' || temp_table || '(gene text,feature text,datatype text,cohort text,platform text,screen text,sensitivity text';
+FOR i IN 3..(array_length(columns_array, 1)-1)
+LOOP
+query := query || ',' || columns_array[i] || ' numeric';
+END LOOP;
+-- special case, 2 last columns may be identical
+IF (columns_array[array_length(columns_array,1)] NOT LIKE columns_array[array_length(columns_array,1)-1])
+THEN
+query := query || ',' || columns_array[array_length(columns_array,1)] || ' numeric';
+END IF;
+query := query ||',url1 text,url2 text,cohorts text);';
+--RAISE notice 'query: %', query;
+EXECUTE query;
 FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity_type IN SELECT table_name,datatype,cohort,platform,screen,sensitivity_measure FROM cor_guide_table WHERE datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_n AND sensitivity_measure=ANY(sensitivity_array) 
 LOOP
 --RAISE notice 'table name: %', table_name;
-query := 'SELECT ARRAY (SELECT upper(' || columns_array[1] || E') \|\| \'\|\' \|\| drug_synonym(' || columns_array[2] || E') \|\| \'\|\' \|\| \'' || datatype_name || E'\' \|\| \'\|\' \|\| \'' || cohort_name || E'\' \|\| \'\|\' \|\| \'' || platform_name || E'\' \|\| \'\|\' \|\| \'' || screen_name || E'\' \|\| \'\|\' \|\| \'' || sensitivity_type || E'\'';
-FOR i IN 3..array_length(columns_array, 1)
+query := 'INSERT INTO ' || temp_table || ' SELECT upper(' || columns_array[1] || ') AS gene,drug_synonym(' || columns_array[2] || E') AS feature,\'' || datatype_name || E'\' AS datatype,\'' || cohort_name || E'\' AS cohort,\'' || platform_name || E'\' AS platform, \'' || screen_name || E'\' AS screen' || E',\'' || sensitivity_type || E'\' AS sensitivity';
+FOR i IN 3..(array_length(columns_array, 1)-1)
 LOOP
-query := query || E' \|\| \'\|\' \|\| ' || columns_array[i]; 
--- i does not save it's value! Reassign
---RAISE notice '%: query: %', i, query;
+query := query || ',' || columns_array[i]; 
 END LOOP;
-query := query || E' \|\| \'\|\' \|\| get_url(upper(' || columns_array[1] || E')) \|\| \'\|\' \|\| get_url(drug_synonym(' || columns_array[2] || '))';
+IF (columns_array[array_length(columns_array,1)] NOT LIKE columns_array[array_length(columns_array,1)-1])
+THEN
+query := query || ',' || columns_array[array_length(columns_array,1)];
+END IF;
+query := query || ',get_url(';
+IF (datatype_name LIKE '%NEA%') THEN
+query := query || columns_array[1];
+ELSE
+query :=  query || 'upper(' || columns_array[1] || ')';
+END IF;
 i := array_length(columns_array, 1);
-query := query || E' \|\| \'\|\' \|\| retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\', ' || fdr || ')  FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || columns_array[i] || ' DESC);'; 
--- RAISE notice '%: query: %', i, query;
+query := query || ') AS url1,get_url(drug_synonym(' || columns_array[2] || ')) AS url2,retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\',' || fdr || ') AS cohorts FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || limit_by || ' ASC LIMIT ' || limit_num || ';'; 
+--RAISE notice 'query: %', query;
+EXECUTE query;
+END LOOP;
+query := E'SELECT ARRAY(SELECT gene \|\| \'\|\' \|\| feature \|\| \'\|\' \|\| datatype \|\| \'\|\' \|\| cohort \|\| \'\|\' \|\| platform \|\| \'\|\' \|\| screen \|\| \'\|\' \|\| sensitivity';
+FOR i IN 3..(array_length(columns_array, 1)-1)
+LOOP
+query := query || E'\|\| \'\|\' \|\|' || columns_array[i]; 
+END LOOP;
+query := query || E'\|\| \'\|\' \|\| url1 \|\| \'\|\' \|\| url2 \|\| \'\|\' \|\| cohorts FROM ' || temp_table || ' ORDER BY ' || limit_by || ' LIMIT ' || limit_num || ');';
+--RAISE notice 'query: %', query;
 EXECUTE query INTO res;
---RAISE notice 'Query complete, number of rows: %', array_length(res,1);
+query := 'DROP TABLE ' || temp_table || ';';
+EXECUTE query;
 IF array_length(res,1) > 0
 THEN
 FOR i in 1..array_length(res, 1)
@@ -1158,7 +1196,6 @@ LOOP
 RETURN NEXT res[i];
 END LOOP;
 END IF;
-END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -1226,7 +1263,7 @@ DECLARE
 res text;
 link text;
 BEGIN
-FOR link IN SELECT url FROM synonyms WHERE external_id=ext_id
+FOR link IN SELECT url FROM synonyms WHERE (external_id=ext_id)
 LOOP
 res := link;
 END LOOP;
@@ -1571,6 +1608,47 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+-- simplified fucntion, but also returns numbers per code
+-- USE ONLY FOR MULTISELECTOR!
+CREATE OR REPLACE FUNCTION get_tcga_codes_n(cohort_n text, datatype_n text) RETURNS text AS $$
+DECLARE
+res text;
+temp_codes text;
+temp_n text;
+codes_array text array;
+n_array text array;
+table_n text;
+source_n text;
+i integer;
+flag boolean;
+BEGIN
+res := '';
+SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
+IF (source_n = 'TCGA') THEN
+SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
+SELECT codes INTO temp_codes FROM tcga_codes WHERE table_name = table_n;
+SELECT counts INTO temp_n FROM tcga_codes WHERE table_name = table_n;
+codes_array := string_to_array(temp_codes, ',');
+n_array := string_to_array(temp_n, ',');
+res := codes_array[1] || ',' || n_array [1];
+FOR i in 2 .. array_length(codes_array, 1)
+LOOP
+res := res || ',' || codes_array[i] || ',' || n_array[i];
+END LOOP;
+flag := TRUE;
+ELSE 
+flag := FALSE;
+END IF;
+IF (flag = TRUE) THEN
+-- 2nd, 4th and 6th 'all' are not codes - they are n values
+res := 'all,all,healthy,all,cancer,all,' || res;
+END IF;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
 -- function to create table with sample codes available for TCGA tables
 -- if table contains patients - it is not present here
 CREATE OR REPLACE FUNCTION create_tcga_codes_table() RETURNS boolean AS $$
@@ -1603,6 +1681,35 @@ table_codes := array_to_string(temp_array, ',');
 INSERT INTO tcga_codes(table_name, codes) VALUES (table_n, table_codes);
 END IF;
 RAISE NOTICE 'table_codes: %', table_codes;
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- count samples per code - use it after the previous function (create_tcga_codes_table())
+CREATE OR REPLACE FUNCTION count_tcga_codes() RETURNS boolean AS $$
+DECLARE
+table_n text;
+table_codes text;
+temp_array text array;
+code_counts numeric array;
+i numeric;
+n numeric;
+code_count_str text;
+BEGIN
+FOR table_n,table_codes IN SELECT table_name,codes FROM tcga_codes 
+LOOP
+RAISE NOTICE 'Table: %', table_n;
+temp_array := string_to_array(table_codes,',');
+code_counts := ARRAY[]::numeric[];
+FOR i in 1 .. array_length(temp_array,1)
+LOOP
+EXECUTE 'SELECT COUNT (DISTINCT sample) FROM ' || table_n || E' WHERE sample LIKE \'%-' || temp_array[i] || E'\';' INTO n;
+code_counts := array_append (code_counts, n);
+RAISE NOTICE '%: %', temp_array[i], code_counts[i];
+END LOOP;
+code_count_str := array_to_string(code_counts, ',');
+UPDATE tcga_codes SET counts=code_count_str WHERE table_name=table_n;
 END LOOP;
 RETURN TRUE;
 END;
@@ -1655,8 +1762,6 @@ datatype text;
 synonym_type text;
 ids_array text array;
 query_string text;
-i integer;
-j integer;
 BEGIN
 IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
 WHERE tablename  = 'synonyms')
@@ -1707,6 +1812,71 @@ INSERT INTO synonyms VALUES(visible_name, internal_name, syn_type, annot);
 res := TRUE;
 END IF;
 RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- FUNCTIONS TO WORK WITH GENES AND FEATURES - SIMILAR TO SYNONYMS
+CREATE OR REPLACE FUNCTION create_genes_features_table() RETURNS boolean AS $$
+DECLARE
+table_n text;
+gene_n text;
+feature_n text;
+genes text;
+features text;
+query_string text;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'cor_genes_features')
+THEN
+DELETE FROM cor_genes_features;
+ELSE
+CREATE TABLE cor_genes_features (table_name character varying(256), genes_features text);
+END IF;
+FOR table_n IN SELECT table_name FROM cor_guide_table
+LOOP
+RAISE NOTICE 'Current table: %', table_n;
+genes := '';
+features := '';
+query_string := 'SELECT DISTINCT upper(gene) FROM ' || table_n || ';';
+FOR gene_n IN EXECUTE query_string
+LOOP
+genes := genes || gene_n || '|';
+END LOOP;
+query_string := 'SELECT DISTINCT feature FROM ' || table_n || ';';
+FOR feature_n IN EXECUTE query_string
+LOOP
+features := features || feature_n || '|';
+END LOOP;
+INSERT INTO cor_genes_features(table_name, genes_features) VALUES(table_n, genes || features);
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, for one table
+CREATE OR REPLACE FUNCTION create_genes_features_single(table_n text) RETURNS boolean AS $$
+DECLARE
+gene_n text;
+feature_n text;
+genes text;
+features text;
+query_string text;
+BEGIN
+RAISE NOTICE 'Current table: %', table_n;
+genes := '';
+features := '';
+query_string := 'SELECT DISTINCT upper(gene) FROM ' || table_n || ';';
+FOR gene_n IN EXECUTE query_string
+LOOP
+genes := genes || gene_n || '|';
+END LOOP;
+query_string := 'SELECT DISTINCT feature FROM ' || table_n || ';';
+FOR feature_n IN EXECUTE query_string
+LOOP
+features := features || feature_n || '|';
+END LOOP;
+INSERT INTO cor_genes_features(table_name, genes_features) VALUES(table_n, genes || features);
+RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -2265,6 +2435,35 @@ RETURN true;
 ELSE
 RETURN false;
 END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to update variable_samples - this table is used to show how many unique samples each platform has (4th tab)
+CREATE OR REPLACE FUNCTION update_variable_samples() RETURNS boolean AS $$
+DECLARE
+col_n text;
+var_n text;
+cohort_n text;
+table_n text;
+n_samp text;
+BEGIN
+DELETE FROM variable_samples;
+FOR var_n IN SELECT variable_name FROM variable_guide_table 
+LOOP
+INSERT INTO variable_samples(variable_name) VALUES (var_n);
+END LOOP;
+FOR table_n, cohort_n IN SELECT table_name, cohort FROM guide_table
+LOOP
+FOR col_n IN SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE table_name=table_n
+LOOP
+IF EXISTS (SELECT * FROM variable_guide_table WHERE variable_name=col_n)
+THEN
+EXECUTE 'SELECT COUNT (DISTINCT sample) FROM ' || table_n || ' WHERE ' || col_n || ' IS NOT NULL;' INTO n_samp;
+EXECUTE 'UPDATE variable_samples SET ' || cohort_n || '=' || n_samp || E' WHERE variable_name=\'' || col_n || E'\';';
+END IF;
+END LOOP;
+END LOOP;
+RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 

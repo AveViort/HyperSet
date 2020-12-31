@@ -205,8 +205,8 @@ function get_response_variables(source, cohort, datatype) {
 	xmlhttp.send();
 	variables = variables.split("|");
 	var variable_array = [];
-	for (i=1; i<variables.length-1; i=i+2) {
-		variable_array.push({variable: variables[i], name: variables[i+1]});
+	for (i=1; i<variables.length-1; i=i+3) {
+		variable_array.push({variable: variables[i], name: variables[i+1], n: variables[i+2]});
 	}
 	return [variables[0], variable_array];
 }
@@ -230,7 +230,11 @@ function get_response_multiselector_values(source, cohort, datatype, variable) {
 	if (values[values.length-1] == "") {
 		values = values.slice(0, values.length-1);
 	}
-	return values;
+	var multiselector_array = [];
+	for (i=0; i<values.length-1; i=i+2) {
+		multiselector_array.push({val: values[i], n:values[i+1]});
+	}
+	return multiselector_array;
 }
 
 // variable = platform

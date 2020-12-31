@@ -2,8 +2,26 @@
 <HTML lang="en-US">
 <HEAD>
 
-<TITLE>Drug screen data</TITLE>
-<LINK href="pics/favicon.ico" rel="shortcut icon">
+<TITLE>Drug screen data analysis</TITLE>
+<LINK href="pics/drugg/favicon.ico" rel="shortcut icon">
+<link rel="apple-touch-icon" sizes="57x57" href="pics/drugg/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="pics/drugg/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="pics/drugg/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="pics/drugg/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="pics/drugg/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="pics/drugg/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="pics/drugg/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="pics/drugg/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="pics/drugg/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="pics/drugg/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="pics/drugg/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="pics/drugg/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="pics/drugg/favicon-16x16.png">
+<link rel="manifest" href="pics/drugg/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="pics/drugg/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+
 <meta http-equiv="content-type" content="charset=utf-8">
 <META http-equiv="Content-Script-Type" content="application/javascript" >
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,6 +52,7 @@
 <script src="js/druggable_config.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/autotests.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/druggable_event_manager.js" type="text/javascript" charset="utf-8"></script>
 
 <style>
 
@@ -107,7 +126,7 @@ li.tab:hover ul {
 <div class="xmlhttp_header"></div>
 <h1 class="main_header ui-widget-header ui-corner-all">Druggable</h1>
 <p class="main_header" style="background-color: #eeeeee; font-size: large;">Molecular data &mdash; global interaction network &mdash; drug response</p>
-<!--div id="progressbar" style="display: inline-block; width: 40%;"></div-->
+<div id="progressbar" style="display: inline-block; width: 40%;"></div>
 <div  style="display: inline; width: 35%;">
 	<table>
 		<tr>
@@ -362,7 +381,7 @@ li.tab:hover ul {
 							<td title="Relative influence of lasso vs. ridge approaches">Alpha
 							</td>
 							<td>
-								<input type="number" id="alpha" class="spinNumber ui-corner-all" min=0 max=1 step=0.05 value=1> 
+								<input type="number" id="alpha" class="spinNumber ui-corner-all" min=0 max=1 step=0.01 value=1> 
 							</td>
 						</tr>
 						<tr>
@@ -435,6 +454,7 @@ li.tab:hover ul {
 				<td id="d-response" colspan="3">
 					<table id="table-response">
 						<tr>
+							<span class="subheader">Dependent variable</span>
 							<td title="Data type">
 								<select id="responseDatatype_selector">
 							</td>
@@ -453,6 +473,7 @@ li.tab:hover ul {
 			</tr>		
 			<tr id="r-2buttons">
 				<td id="d-2buttons" colspan="3">
+					<span class="subheader">Independent variables</span>
 					<div id="div-2buttons" style="float: right; display: inline-block; position: relative;" title="Add/delete predictor variables of certain data type">
 						<button id="add_variable" onclick="add_model_options_row();">+</button>
 						<button id="delete_variable" onclick="delete_model_options_row(); ">-</button>
@@ -593,6 +614,7 @@ $(document).ready(function(){
 	$("#retrieve-cor-button").button();
 	$("#retrieve-cor-button").button("disable");
 	init_cor_source_selector("CCLE");
+	usetCookie("corSource_selector", "CCLE", druggable_cookie_time);
 	init_cor_datatype_selector();
 	init_cor_cohort_selector();
 	init_cor_platform_selector();
@@ -701,7 +723,7 @@ function reload_model_options() {
 function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
 	// get all child nodes of #tabs
 	var nodes = $("#tabs").tabs()[0].childNodes;
-	// this is the node used to attach plot - pay attention to 6+2*!
+	// this is the node used to attach plot - pay attention to 4+2*!
 	var parent_tab = "#" + nodes[4+2*$("#tabs").tabs("option", "active")].getAttribute("id");		
 	// variables are initialised when this function is called from correlations table, otherwise - initialise them
 	if (type == undefined) {
@@ -871,10 +893,17 @@ function build_and_show_model() {
 				variable_count = variable_count + 1;
 			}
 			else {
-				variable_count = variable_count + temp.length
+				// do this to avoid 1D analysis for one 'all' 
+				if (temp == "all") {
+					variable_count = variable_count + 10;
+				}
+				else {
+					variable_count = variable_count + temp.length;
+				}
 			}
 			x_ids.push(temp);
 		}
+		console.log(variable_count);
 		
 		// check if we have 1D analysis
 		if (variable_count == 1) {
@@ -979,7 +1008,8 @@ function build_and_show_model() {
 					<ul> \
 						<li><a href="#' + model_name + '_model">Model overview</a></li> \
 						<li><a href="#' + model_name + '_training">Training</a></li>'
-						+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : ('')) +
+						+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : (''))
+						+ '<li><a href="#' + model_name + '_performance">Performance</a></li>' +
 					'</ul> \
 					<div id="' + model_name + '_model"> \
 						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="720" height="720"></iframe> \
@@ -991,7 +1021,17 @@ function build_and_show_model() {
 					'<div id="' + model_name + '_validation"> \
 						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="720" height="720"></iframe> \
 					</div>') : ('')) +
-				'</div> \
+					'<div id = "' + model_name + '_performance"> \
+						<table id="' + model_name + '_perf" class="display" style="width:100%"> \
+							<thead> \
+								<tr> \
+									<th>Measure</th> \
+									<th></th> \
+								</tr> \
+							</thead> \
+						</table>\
+					</div> \
+				</div> \
 				<br> \
 				<table id="' + model_name + '_coef" class="display" style="width:100%"> \
 					<thead> \
@@ -1033,7 +1073,14 @@ function build_and_show_model() {
 				],
 				"order": [[ 1, "desc" ]],
 			});
-			
+			$('#' + model_name + '_perf').DataTable( {
+				"ajax": "https://" + window.location.hostname + "/pics/plots/perf." + model_name + ".json",
+				"columns": [
+					{ "data": "Measure"},
+					{ "data": "Value"}
+				],
+				"order": [[ 0, "desc" ]],
+			});
 		}
 	}
 	else {
@@ -1042,6 +1089,7 @@ function build_and_show_model() {
 }
 
 function retrieve_correlations() {
+	window.postMessage("show_progressbar");
 	var n = $('#cor_result_table tr').length;
 	if (n > 1) {
 		$('#cor_result_table').DataTable().clear();
@@ -1058,7 +1106,7 @@ function retrieve_correlations() {
 	document.getElementById("cor_result_table").innerHTML = '<table><thead>' + cor_headers.get(source) + '</thead></table>';
 	// variable min_pat_drug_number defined in druggable_config.js and used for defining if TCGA cohort should be offered for KM plot
 	// i.e. if min_pat_drug_number=10 and BRCA has 12 patients with drug A - BRCA will be offered
-	//console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source));
+	console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source));
 	var data_table = $('#cor_result_table').DataTable({
 		"ordering": true,
 		"ajax": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source),
@@ -1070,6 +1118,7 @@ function retrieve_correlations() {
 				}
 			});
 			document.getElementById("cor_result_table").dispatchEvent(event);
+			window.postMessage("hide_progressbar");
 		},
 		"columns": cor_visible_columns.get(source),
 		"dom": "lfBrtip",
@@ -1081,7 +1130,6 @@ function retrieve_correlations() {
 		]
 	});
 	data_table.buttons().container().prependTo( $("#cor_result_table_wrapper"));
-	
 }
 
 function tcga_km_from_cor(i, drug) {
@@ -1276,12 +1324,12 @@ function delete_plot_options_row(i) {
 		$("#cohort_selector").selectmenu("enable");
 		$("#cohort_selector-wrapper").qtip("disable");
 	}
-	if (i == 1) {
-		$('#type1_selector').find('option').remove().end();
-		$('#type1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_dataselector('type1_selector');
-		$('#type1_selector').selectmenu( "refresh" );
-	}
+	//if (i == 1) {
+	//	$('#type1_selector').find('option').remove().end();
+	//	$('#type1_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	//	init_dataselector('type1_selector');
+	//	$('#type1_selector').selectmenu( "refresh" );
+	//}
 	if (sessionStorage.getItem("cascade_delete") == null) {
 		update_plot_types();
 		if (i<n) {
@@ -1437,9 +1485,9 @@ function init_platformselector(selector_id) {
 	//console.log('previous platforms: ' + previous_platforms);
 	//console.log($("#cohort_selector option:selected").val() + ' ' + $("#type" + n + "_selector option:selected").val() + ' ' + previous_platforms);
 	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_platforms);
-	console.log(platforms);
+	//console.log(platforms);
 	var empty = (platforms[1].length == 0);
-	console.log(empty);
+	//console.log(empty);
 	if (!empty) {
 		// check if we have ids or no for the chosen datatype;
 		// cannot use ?...:... here, because we need to shift platforms anyway
@@ -1634,12 +1682,12 @@ function init_plot_type_selector() {
 }
 
 function init_cor_source_selector(default_value) {
-	console.log(default_value);
+	// console.log(default_value);
 	var sources = get_correlation_sources();
 	var options = [];
 	if (default_value != undefined) {
 		var ind = sources.indexOf(default_value);
-		console.log(ind);
+		// console.log(ind);
 		if (ind >-1 ) {
 			options.push("<option value='" + sources[ind] + "'>" + sources[ind] +"</option>");
 			sources.splice(ind, 1);
@@ -1654,7 +1702,7 @@ function init_cor_source_selector(default_value) {
 	{
         width: "150px"
     });
-	$('#corSource_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corSource_selector")} );
+	$('#corSource_selector').off().on( "selectmenuchange", function( event, ui ) {update("corSource_selector")} );
 	var event = new CustomEvent("corsourceselector_init_complete", {
 		detail: {
 			cor_source_selector: $('#corSource_selector option:selected').val()
@@ -1679,7 +1727,7 @@ function init_cor_datatype_selector() {
         width: "150px",
 		disabled: cor_source == "undef"
     });
-	$('#corDatatype_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
+	$('#corDatatype_selector').off().on( "selectmenuchange", function( event, ui ) {update("corDatatype_selector")} );
 	var event = new CustomEvent("cortypeselector_init_complete", {
 		detail: {
 			cor_type_selector: $('#corDatatype_selector option:selected').val()
@@ -1704,7 +1752,7 @@ function init_cor_cohort_selector() {
         width: "175px",
 		disabled: $("#corSource_selector option:selected").val() == "CCLE"
     });
-	$('#corCohort_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corCohort_selector")} );
+	$('#corCohort_selector').off().on( "selectmenuchange", function( event, ui ) {update("corCohort_selector")} );
 	var event = new CustomEvent("corcohortselector_init_complete", {
 		detail: {
 			cor_cohort_selector: $('#corCohort_selector option:selected').val()
@@ -1730,7 +1778,7 @@ function init_cor_platform_selector() {
         width: "175px",
 		disabled: cor_datatype == "undef"
     });
-	$('#corPlatform_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corPlatform_selector")} );
+	$('#corPlatform_selector').off().on( "selectmenuchange", function( event, ui ) {update("corPlatform_selector")} );
 	var event = new CustomEvent("corplatformselector_init_complete", {
 		detail: {
 			cor_platform_selector: $('#corPlatform_selector option:selected').val()
@@ -1759,7 +1807,7 @@ function init_cor_screen_selector() {
 	setInputFilter(document.getElementById("FDR_input"), function(value) {
 		return /^\d*\.?\d*$/.test(value);
 	});
-	$('#corScreen_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("corScreen_selector")} );
+	$('#corScreen_selector').off().on( "selectmenuchange", function( event, ui ) {update("corScreen_selector")} );
 	document.getElementById('FDR_input').setAttribute("onkeyup", 'cor_id_keyup()');
 	document.getElementById('FDR_input').setAttribute("onchange", 'cor_id_keyup()');
 	document.getElementById('corGeneFeature_input').setAttribute("onkeyup", 'cor_id_keyup()');
@@ -1925,9 +1973,18 @@ function init_model_genearea(n) {
 		// example from https://jqueryui.com/autocomplete/#multiple
 		$("#genes_area" + n)
 		// don't navigate away from the field on tab when selecting an item
-			.on( "keydown", function( event ) {
+			.on("keydown", function( event ) {
 				if ( event.keyCode === $.ui.keyCode.TAB && $( this ).autocomplete( "instance" ).menu.active ) {
 					event.preventDefault();
+				}
+			})
+			.on("focus", function( event ) {
+				console.log("gene_area" + n + " got focus");
+				if (document.getElementById("transfer_window") != null) {
+					$("#transfer_copy_ids").text("Copy chosen IDs to predictor " + n);
+					$("#transfer_copy_ids").unbind();
+					$("#transfer_copy_ids").on("click", function() {copy_ids_to_predictor(n);});
+					$("#transfer_copy_ids").button("enable");
 				}
 			})
 			.autocomplete({
@@ -2003,7 +2060,7 @@ function init_response_variable_selector() {
 	var variable_ids = [];
 	for (i in variables) {
 		for (j in variables[i]) {
-			options.push("<option value='" + variables[i][j].variable + "'>" + variables[i][j].name +"</option>");
+			options.push("<option value='" + variables[i][j].variable + "'>" + variables[i][j].name + " (N=" + variables[i][j].n + ")" + "</option>");
 			variable_ids.push(variables[i][j].variable);
 		}
 	}
@@ -2068,7 +2125,7 @@ function init_response_multiselector() {
 		response_variable = "";
 	}
 	var values = [];
-	if ((model_source == "TCGA") & ((response_datatype == "MUT") | (response_datatype == "CLIN"))) {
+	if ((model_source == "TCGA") & (response_datatype == "CLIN")) {
 		values = ["01", "06"];
 	}
 	else {
@@ -2076,7 +2133,7 @@ function init_response_multiselector() {
 	}
 	//console.log(values);
 	for (i in values) {
-		options.push("<option value='" + values[i] + "'>" + values[i] +"</option>");
+		options.push("<option value='" + values[i].val + "'>" + values[i].val + (values[i].n != "all" ? (" (n=" + values[i].n + ")") : "") +"</option>");
 	}
 	$("#responseMulti_selector").append(options.join(""));
     document.getElementById("responseMulti_selector").disabled = (values[0] == "");
@@ -2374,31 +2431,33 @@ function update_cor_platform_selector() {
 }
 
 function update_cor_screen_selector() {
-	// do not allow input in any case (normal selector value or "undef")
-	document.getElementById("corGeneFeature_input").disabled = true;
-	$("#corGeneFeature_input").val("");
-	document.getElementById("FDR_input").disabled = true;
-	var selector_value = $("#corScreen_selector option:selected").val();
-	if (selector_value != "undef") {
-		// do not allow changing datatype/platform/screen etc. until this request is not complete
-		$("#corScreen_selector").selectmenu("disable");
-		$("#corDatatype_selector").selectmenu("disable");
-		$("#corCohort_selector").selectmenu("disable");
-		$("#corPlatform_selector").selectmenu("disable");
-		$("#corScreen_selector").selectmenu("disable");
-		usetCookie("corScreen_selector", selector_value, druggable_cookie_time);
-		init_cor_genefeature_input();
-		$("#corDatatype_selector").selectmenu("enable");
-		if ($("#corSource_selector option:selected").val() != "CCLE") {
-			$("#corCohort_selector").selectmenu("enable");
+	if (!$("#corScreen_selector").is(":disabled")) {
+		// do not allow input in any case (normal selector value or "undef")
+		document.getElementById("corGeneFeature_input").disabled = true;
+		$("#corGeneFeature_input").val("");
+		document.getElementById("FDR_input").disabled = true;
+		var selector_value = $("#corScreen_selector option:selected").val();
+		if (selector_value != "undef") {
+			// do not allow changing datatype/platform/screen etc. until this request is not complete
+			$("#corScreen_selector").selectmenu("disable");
+			$("#corDatatype_selector").selectmenu("disable");
+			$("#corCohort_selector").selectmenu("disable");
+			$("#corPlatform_selector").selectmenu("disable");
+			$("#corScreen_selector").selectmenu("disable");
+			usetCookie("corScreen_selector", selector_value, druggable_cookie_time);
+			init_cor_genefeature_input();
+			$("#corDatatype_selector").selectmenu("enable");
+			if ($("#corSource_selector option:selected").val() != "CCLE") {
+				$("#corCohort_selector").selectmenu("enable");
+			}
+			$("#corPlatform_selector").selectmenu("enable");
+			if ($("#corSource_selector option:selected").val() != "TCGA") {
+				$("#corScreen_selector").selectmenu("enable");
+			}
+			document.getElementById("corGeneFeature_input").disabled = false;
+			document.getElementById("FDR_input").disabled = false;
+			cor_id_keyup();
 		}
-		$("#corPlatform_selector").selectmenu("enable");
-		if ($("#corSource_selector option:selected").val() != "TCGA") {
-			$("#corScreen_selector").selectmenu("enable");
-		}
-		document.getElementById("corGeneFeature_input").disabled = false;
-		document.getElementById("FDR_input").disabled = false;
-		cor_id_keyup();
 	}
 }
 
@@ -2757,6 +2816,128 @@ function open_info_page(id) {
 		url = "https://www.google.com/search?q=" + external_id;
 	}
 	window.open(url, "_blank");
+}
+
+// this function is used to transfer IDs from the second tab (correlates) to independent variables of the fourth tab 
+function transfer_id (source, cohort, datatype, platform, id) {
+	show_transfer_buffer_window("#tab-signif");
+	var current_ids = sessionStorage.getItem("transfer");
+	var t = $('#transfer_buffer_table').DataTable();
+	if (current_ids == null) {
+		sessionStorage.setItem("transfer", [id, platform, datatype, cohort, source]);
+		t.row.add([
+			"",
+			id,
+			platform,
+			datatype,
+			cohort,
+			source
+			]).draw(false);
+	}
+	else {
+		current_ids = current_ids.split(",");
+		var flag = false;
+		for (i = 0; i < current_ids.length - 1; i = i+5) {
+			if ((current_ids[i] == id) && 
+				(current_ids[i+1] == platform) && 
+				(current_ids[i+2] == datatype) && 
+				(current_ids[i+3] == cohort) &&
+				(current_ids[i+4] == source))
+			{
+				flag = true;
+			}
+		}
+		if (!flag) {
+			current_ids.push([id,platform,datatype,cohort,source]);
+			sessionStorage.setItem("transfer", current_ids);
+			t.row.add(["",id, platform, datatype, cohort, source]).draw(false);
+		}
+	}
+}
+
+// function to open window with IDs to transfer
+function show_transfer_buffer_window(parent_tab) {
+	if (document.getElementById("transfer_window") == null) {
+		var transfer_window = '<div id="transfer_window"> \
+			<table id="transfer_buffer_table" style="text-align:center"> \
+				<thead> \
+					<th></th>\
+					<th>ID</th> \
+					<th>Platform</th> \
+					<th>Data type</th> \
+					<th>Cohort</th> \
+					<th>Source</th> \
+				</thead> \
+			</table></div>';
+		$(parent_tab).append(transfer_window);
+		$("#transfer_window").dialog({
+			title: "IDs to transfer",
+			buttons: [
+				{
+					text: "Copy chosen IDs to predictor 1",
+					icon: "ui-icon-arrowreturnthick-1-n",
+					id: "transfer_copy_ids",
+					disabled: parent_tab == "#tab-signif",
+					click: function() {copy_ids_to_predictor(1);}
+				},
+				{
+					text: (parent_tab == "#tab-signif") ? "To model creation" : "Find significant correlates",
+					icon: "ui-icon-transferthick-e-w",
+					id: "transfer_switch_tab",
+					click: function() {$("#tabs").tabs("option", "active", (parent_tab == "#tab-signif") ? 3 : 1);},
+				},
+				{
+					text: "Clear clipboard",
+					icon: "ui-icon-minus",
+					click: function() {sessionStorage.removeItem("transfer"); $('#transfer_buffer_table').DataTable().clear().draw();}
+				}
+			],
+			height: 'auto',
+			width: 'auto',
+			modal: false,
+			position: { my: "right", at: "top", of: window }, 
+			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+		});
+		var t = $('#transfer_buffer_table').DataTable({
+				"columnDefs": [
+					{
+						"data": null,
+						"defaultContent": '<input type="checkbox">',
+						"targets": 0
+					}
+				],
+				"pageLength": 15
+			});
+		var current_ids = sessionStorage.getItem("transfer");
+		if (current_ids != null) {
+			current_ids = current_ids.split(",");
+			for (i = 0; i < current_ids.length - 1; i = i + 5) {
+				t.row.add(["",current_ids[i], current_ids[i+1], current_ids[i+2], current_ids[i+3], current_ids[i+4]]).draw(false);
+			}
+		}
+	}
+}
+
+function copy_ids_to_predictor(position) {
+	var t = $('#transfer_buffer_table').DataTable();
+	var ids = [];
+	t.rows().every( function (index, element) {
+		var row = $(this.node());
+		var statusElement = row.children()[0].children[0];
+		var isChecked = statusElement.checked;
+		if(isChecked) {
+			// un-check ID
+			statusElement.click();
+			ids.push($(row.children()[1]).text());
+		}
+	});
+	console.log("IDs to transfer: " + ids);
+	if ($("#genes_area" + position).val().length == 0) {
+		$("#genes_area" + position).val(ids);
+	}
+	else {
+		$("#genes_area" + position).val($("#genes_area" + position).val() + ',' + ids);
+	}
 }
 
 function id_keyup(k) {
@@ -3119,6 +3300,7 @@ function report_model_tab() {
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript"></script>
 <script src="//cdn.datatables.net/tabletools/2.2.3/js/dataTables.tableTools.js" type="text/javascript"></script>
 <script src="//cdn.datatables.net/responsive/1.0.4/js/dataTables.responsive.js" type="text/javascript"></script>
+<script src="//cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js" type="text/javascript"></script>
 
 
 <!--script src="js/Cytoscape.js/cytoscape.js-qtip-master/jquery.cytoscape.js-qtip.js" type="text/javascript"></script-->

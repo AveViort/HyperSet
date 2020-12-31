@@ -43,7 +43,7 @@ Col = Rnb[as.character(round(10*(w-Min)/(Max - Min)))];
 names(Col) <- NULL;
 # print(Col)
 # print(colnames(tbl))
-Col = ifelse((as.numeric(gsub("PH_", "", rownames(p1$loadings))) %% 2) == 0, "red3", "blue3");
+###Col = ifelse((as.numeric(gsub("PH_", "", rownames(p1$loadings))) %% 2) == 0, "red3", "blue3");
 htmlwidgets::saveWidget(scatterplot3js(x,y,z, color=Col, labels=rownames(p1$loadings), brush=TRUE), out, selfcontained=F, libdir = "3js_dependencies")
 # return(NULL);
 }

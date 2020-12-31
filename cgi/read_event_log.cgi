@@ -36,8 +36,9 @@ while (@row = $sth->fetchrow_array()) {
 	my $acknowledged = "<input type='checkbox' onclick='toggle_event_acknowledgement_status(\\\"".$pass."\\\", \\\"".$event_time."\\\", \\\"".$event_level."\\\", this.checked)'". (@field_values[6] eq "true" ? " checked" : "") .">";
 	my $event_message = @field_values[7];
 	# need to replace \n with <br> for Datatables
-	# also, JSON does not support \n - it should be replaced with "\n"
 	$event_message =~ s/\n/"<br>"/eg;
+	# remove double quotes
+	$event_message =~ s/"/'/g;
 	
 	print '"event_time":"'.$event_time.'",';
 	print '"event_source":"'.$event_source.'",';

@@ -32,6 +32,14 @@ our %sensitivity_m = (
 "TCGA"	=>	'os,rfs,pfi'
 );
 
+# use this variable to set bt which column should correlations be filtered (one of p-value columns) and limited
+our %limit_column = (
+"CCLE"	=>	'ancova_p_1x',
+"TCGA"	=>	'interaction'
+);
+# this variable is an addition to limit_column - how many records (max) should be taken?
+our $limit_num = 1000000;
+
 # do we need this?
 our $cols;
 @{$cols} = ("dataset", "datatype", "platform", "screen", "drug", "feature", "correlation", "pvalue", "fdr", "validn", "plot");

@@ -814,6 +814,7 @@ $borderWidthScheme = 3;
 $borderStyleScheme = '"solid"';
 $nodeColoringScheme = '"background-color": "data(groupColor)"';
 $borderColoringScheme = '"border-color": "data(groupColor)"';
+# $borderColoringScheme = '"border-color": "red"';
 $arrowHeadScheme = '"none"';
 # $edgeColoringScheme = '"data(confidence2opacity)"';
 $edgeColoringScheme = '"#b8cce4"';

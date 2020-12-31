@@ -64,7 +64,6 @@ plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax=NA, Cls, Title=NA, 
 	if (is.na(Xmax)) {
 		Xmax = max(cu[survSamples, "Time"], na.rm=T)
 	}
-	c1 <- coxph(Surv(cu[survSamples, "Time"], cu[survSamples, "Stat"]) ~ as.factor(Grouping[survSamples]))
 	plot(fit, mark.time=markTime, col=Cls, xlab='Follow-up, days', ylab=s.type, main=Title, bty="n", cex.main=0.65, lty=1:4, lwd=1.5, xmax=Xmax); #max(Time[,2], na.rm=T)
 	t1 <- table(Grouping[survSamples])
 	Leg = paste(names(Cls), "; N=", t1[names(Cls)], sep="");
@@ -88,9 +87,10 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 	}
 	plot_types <- c();
 	
-	Betas <- model$glmnet.fit$beta;
 	Lc <- NULL;
+	print(paste0("Crossval: ", crossval));
 	if (crossval) {
+		Betas <- model$glmnet.fit$beta;
 		if (is.list(Betas)) {
 			Lc = colnames(Betas[[1]])[which(model$lambda == model$lambda.1se)];
 		} else {
@@ -105,6 +105,7 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 			Lc <- colnames(Betas)[ncol(Betas)];
 		}
 	}
+	print(paste0("Lc: ", Lc));
 	# NB: write else statement for the following line
 	if (Lc == "s0") {
 		if (is.list(Betas)) {
@@ -134,10 +135,15 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 		}
 	}
 	json_string <- "{\"data\":[";
-	values <- c()
+	values <- c();
+	#print("Betas:");
+	#print(Betas);
+	#print(co);
 	for (i in 1:length(co)) {
+		#print(paste0("Terms[", i, "]: ", Terms[i]));
 		temp <- unlist(strsplit(substr(Terms[i], 1, nchar(Terms[i])-1), split="\\("));
 		temp_id <- (temp[1]);
+		#print(temp_id);
 		temp_platform <- tolower(temp[2]);
 		temp_datatype <- x_datatypes[which(x_platforms == temp_platform)];
 		if (tolower(temp_id) %in% x_platforms) {
@@ -157,7 +163,7 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 			} else {
 				query <- paste0("SELECT available_plot_types('", temp_platform, ",", rplatform,"');");
 				print(query);
-				plot_type <- sqlQuery(rch, query)[1,1];
+				plot_type <- as.character(sqlQuery(rch, query)[1,1]);
 				temp_names <- c(names(plot_types), temp);
 				plot_types <- c(plot_types, plot_type);
 				names(plot_types) <- temp_names;
@@ -168,6 +174,16 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "]}");
+	fileConn <- file(filename);
+	writeLines(json_string, fileConn);
+	close(fileConn);
+}
+
+# this function relies on frameToJSON function from common_functions.r
+# perf_frame is a data frame where the first column represents measures and the second represents respective values
+# the first column is always called "Measure", the second is always "Value"
+savePerformanceJSON <- function(perf_frame, filename) {
+	json_string <- frameToJSON(perf_frame);
 	fileConn <- file(filename);
 	writeLines(json_string, fileConn);
 	close(fileConn);
@@ -205,11 +221,15 @@ for (i in 1:length(x_ids)) {
 	temp <- gsub("\\[|\\]", "", x_ids[[i]]);
 	temp <- unlist(strsplit(temp, split = "\\|"));
 	if (length(temp) > 0) {
-		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse=","), "}'::text[]);"); 
-		print(query);
-		internal_ids <- sqlQuery(rch, query);
-		print(internal_ids);
-		x_ids[[i]] <- internal_ids[,"internal_id"];
+		if (any(temp == 'all')) {
+			x_ids[[i]] == c("all");
+		} else {
+			query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse=","), "}'::text[]);"); 
+			print(query);
+			internal_ids <- sqlQuery(rch, query);
+			print(internal_ids);
+			x_ids[[i]] <- internal_ids[,"internal_id"];
+		}
 	} else {
 		x_ids[[i]] <- "";
 	}

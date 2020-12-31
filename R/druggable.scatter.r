@@ -87,6 +87,12 @@ if (status != 'ok') {
 		"&scales=", paste(ids, collapse = ",")),
 		"Plot succesfully generated, but it is empty");
 } else {
+	tissue_types <- NULL;
+	if (Par["source"] == "ccle") {
+		query <- paste0("SELECT sample,tissue FROM ctd_tissue;");
+		tissue_types <- sqlQuery(rch, query);	
+		rownames(tissue_types) <- tissue_types[,1];
+	}
 	if (length(datatypes) == 2) {
 		x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
 		print("str(x_data):");
@@ -129,7 +135,7 @@ if (status != 'ok') {
 			tickangle = 0,
 			tickfont = font2);
 		p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', 
-			text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples, " (click to open cBioPortal information)")) %>% 
+			text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples, tissue_types[common_samples,2], " (click to open cBioPortal information)")) %>% 
 		onRender(paste0("
 			function(el) { 
 				el.on('plotly_hover', function(d) {

@@ -9,7 +9,8 @@ use HS_SQL;
 use Aconfig;
 
 our ($dbh, $stat);
-my @id;
+my $ids;
+my @ids_array;
 
 my $query = new CGI;
 my $source = $query->param("source");
@@ -28,9 +29,10 @@ print "Content-type: text/html\n\n";
 $stat = qq/SELECT feature_gene_list(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\);/;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
-while (@id = $sth->fetchrow_array()) {
-    print(@id);
-	print("|");
-}
+$ids = $sth->fetchrow_array();
+@ids_array = split /\|/, $ids;
+my @unique = keys { map { $_ => 1 } @ids_array };
+$ids = join( "|", @unique);
+print $ids;
 $sth->finish;
 $dbh->disconnect;

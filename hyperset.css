@@ -49,7 +49,7 @@ font-weight: 700;
 
 .main_header {
 	background-color: #AED0EA; 
-	width:97%; 
+	width: 98%; 
 	padding: 5px;
     margin: 5px 50px 5px 10px;
 	text-align: center; 
@@ -183,12 +183,6 @@ font-weight: 700;
     color: red; 
 }
 
-/*.text_table {
-padding: 2px;
-width: 100%;
-font-size: xx-small;
-}*/
-
 span.ui-icon {
 	background-color: white; 
 	color: #2e6e9e;
@@ -196,23 +190,21 @@ span.ui-icon {
 	border-radius: 4px;
 }
 
-.ui-icon:not(.icon-static):hover { 
+.ui-icon:not(.icon-static, .adj-icon):hover { /*, .adj-icon*/
 	border-style: 	inset;
-	border-color: 	brown;
-	border-width: 	1px;
-	box-shadow: 	4px 3px;
+	border-color: 	#aa0000;
+	border-width: 	0.65px;
+	box-shadow: 	3px 2px 1px 1px;
 }
 
 .ui-icon-circle-close:hover{
-   /*background:rgb(255,150,50);*/
    box-shadow: 3px 3px 15px #ff0000; 
 }
 
+	
 .standby {
 	opacity: 0.35
 	}
-
-
 
 .demo_button {
 	display: inline-block;
