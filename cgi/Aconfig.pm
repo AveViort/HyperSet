@@ -38,7 +38,13 @@ our %limit_column = (
 "TCGA"	=>	'interaction'
 );
 # this variable is an addition to limit_column - how many records (max) should be taken?
-our $limit_num = 1000000;
+our $limit_num = 25000;
+# this variable is used for batch model creation
+our $batch_limit_num = 200;
+# max number of tasks in queue, including the running one
+our $queue_size = 10;
+# number of seconds to wait before checking if job can be run
+our $job_wait = 60;
 
 # do we need this?
 our $cols;

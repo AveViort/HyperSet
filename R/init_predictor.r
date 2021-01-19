@@ -208,8 +208,12 @@ for (a in Args) {
 
 setwd(r.plots);
 
-File <- paste0(r.plots, "/", Par["out"])
-print(File)
+File <- paste0(r.plots, "/", Par["out"]);
+print(File);
+# file name (without extension) to which performance metrics should be printed, usefull for batch jobs
+statf <- Par["statf"];
+# if header should be printed or no
+header <- as.logical(Par["header"]);
 print(names(Par));
 x_datatypes <- unlist(strsplit(Par["xdatatypes"], split = ","));
 print(x_datatypes);

@@ -11,20 +11,27 @@ pathway <- NA;
 nea_platform <- NA;
 temp <- list();
 common_samples <- c();
+tissue_samples <- c();
 internal_ids <- ids;
 for (i in 1:length(ids)) {
 	if (!empty_value(ids[i])) {
-		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[i], "';"); 
-		print(query);
-		internal_ids[i] <- as.character(sqlQuery(rch, query)[1,1]);
-		if ((datatypes[i] == 'nea_ge') | (datatypes[i] == 'nea_mut')) {
+		if ((datatypes[i] == 'ge_nea') | (datatypes[i] == 'mut_nea') | (datatypes[i] == 'nea_ge') | (datatypes[i] == 'nea_mut')) {
+			ids[i] <- tolower(ids[i]);
 			pathway <- ids[i];
 			nea_platform <- platforms[i];
 		}
+		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[i], "';"); 
+		print(query);
+		internal_ids[i] <- as.character(sqlQuery(rch, query)[1,1]);
 	}
 }
 print("Internal ids:");
 print(internal_ids);
+
+if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue='", toupper(tcga_codes[1]), "';");
+	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
+}
 
 for (i in 1:length(datatypes)) {
 	condition <- " WHERE ";
@@ -39,6 +46,13 @@ for (i in 1:length(datatypes)) {
 			condition <- paste0(condition, "drug='", internal_ids[i], "'");
 		} else {
 			condition <- paste0(condition, "id='", internal_ids[i], "'");
+		}
+	}
+	if ((datatypes[i] == 'ge_nea') | (datatypes[i] == 'mut_nea')) {
+		datatypes[i] <- paste0(strsplit(datatypes[i], "_")[[1]][2], "_", strsplit(datatypes[i], "_")[[1]][1]);
+		platforms[i] <- paste0("z_", platforms[i]);
+		if ((Par["source"] == "ccle") & (datatypes[i] == 'nea_ge')) {
+			platforms[i] <- paste0(platforms[i], "_top100");
 		}
 	}
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[i]), "';");
@@ -64,6 +78,11 @@ for (i in 1:length(datatypes)) {
 	#print(length(unique(temp_rownames)));
 	#print(temp_rownames);
 	rownames(temp[[i]]) <- temp_rownames;
+	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+		print(paste0("Before tissue filtering: ", nrow(temp[[i]])));
+		temp[[i]] <- temp[[i]][tissue_samples,];
+		print(paste0("After tissue filtering: ", nrow(x_data)));
+	}
 }
 common_samples <- rownames(temp[[1]]);
 print(paste0("Common samples after iteration 1: ", length(common_samples)));

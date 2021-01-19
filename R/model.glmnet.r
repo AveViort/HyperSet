@@ -1,6 +1,9 @@
 source("../R/init_predictor.r");
 
 library(glmnet);
+# for parallel glmnet
+library(doParallel);
+registerDoParallel(4);
 
 usedSamples <- c();
 Stages 	<- c("X", "Tis", "Stage 0", "Stage I", "Stage IA",  "Stage IB",  "Stage IC",  "Stage II", "Stage IIA",  "Stage IIB",  "Stage IIC",  "Stage III", "Stage IIIA", "Stage IIIB", "Stage IIIC", "Stage IV" , "Stage IVA" , "Stage IVB" , "Stage IVC" );
@@ -51,7 +54,8 @@ createGLMnetSignature <- function (
 	plotModel = TRUE,
 	baseName = 'model_debug',
 	TypeDelimiter = "___",
-	cu0=NULL) {
+	cu0 = NULL
+	) {
 	
 	#print("createGLMnetSignature");
 	
@@ -91,13 +95,14 @@ createGLMnetSignature <- function (
 			print("MG[Sample1]:");
 			print(MG[Sample1]);
 			t1 <- try(model <- cv.glmnet(PW[Sample1,], MG[Sample1], grouped = TRUE, 
-						family=Family, 
+						family = Family, 
 						alpha = Alpha, 
-						type.measure=type.measure,
+						type.measure = type.measure,
 						nlambda = Nlambda, 
 						nfolds = Nfolds,  
-						lambda.min.ratio=minLambda,
-						standardize = STD));
+						lambda.min.ratio = minLambda,
+						standardize = STD,
+						parallel = TRUE));
 			if (grepl("Error|fitter|levels", t1[1])) {
 				print("Error occured");
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
@@ -123,7 +128,8 @@ createGLMnetSignature <- function (
 						alpha = Alpha, 
 						nlambda = Nlambda, 
 						lambda.min.ratio = minLambda,
-						standardize = STD));
+						standardize = STD,
+						parallel = TRUE));
 			#save(model, file=paste0(File, ".RData"));
 			if (grepl("Error|fitter|levels", t1[1])) {
 				print("Error occured");
@@ -289,7 +295,7 @@ createGLMnetSignature <- function (
 				#print(paste0("SStot: ", sum((MG[smp] - mean(MG[smp]))^2)));
 				
 				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("MSE(", Round, ")"), Value = round(MSE,3)));
-				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("R^2(", Round, ")"), Value = round(R2,3)));				
+				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("R^2(", Round, ")"), Value = round(R2,3)));	
 				
 				plot(MG[smp], pred, type="n", xlab="Observed", ylab="Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
 				if (!is.na(title.sub)) {
@@ -682,6 +688,19 @@ if (!stop_flag) {
 			# print(paste0("crossval_flag: ", crossval_flag));
 			saveJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, rid, multiopt);
 			savePerformanceJSON(perf_frame, paste0("perf.", Par["out"], ".json"));
+			
+			stat_header <- "Model file,Perf file";
+			stat_line <- paste0(File, ".RData,", Par["out"], ".json");
+			stat_header <- paste0(stat_header, ",", paste(perf_frame[,"Measure"], collapse = ","));
+			stat_line <- paste0(stat_line, ",", paste(perf_frame[,"Value"], collapse = ","));
+			if (!empty_value(statf)) {
+				stat_filename <- ifelse(statf == "auto", paste0(File, ".csv"), paste0(statf, ".csv"));
+				if (header) {
+					write(stat_header, file = stat_filename, append = TRUE);
+				}
+				write(stat_line, file = stat_filename, append = TRUE);
+			}
+			
 		}
 	}
 }

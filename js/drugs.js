@@ -252,7 +252,7 @@ function get_glmnet_family(variable, datatype) {
 }
 
 function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
-	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent) 
+	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, stat_file, header) 
 {
 	var file; 
 	var xids = [];
@@ -278,7 +278,9 @@ function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_dat
 		"&minlambda=" + encodeURIComponent(minlambda) +
 		"&validation=" + encodeURIComponent(crossvalidation) +
 		"&nfolds=" + encodeURIComponent(nfold) +
-		"&validation_fraction=" + encodeURIComponent(crossvalidation_percent), false);
+		"&validation_fraction=" + encodeURIComponent(crossvalidation_percent) +
+		"&stat_file=" + encodeURIComponent(stat_file) + 
+		"&header=" + encodeURIComponent(header), false);
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			file = this.responseText;
@@ -566,6 +568,29 @@ function get_tcga_codes(cohort, datatype, previous_datatypes) {
 		encodeURIComponent(datatype) + "&previous_datatypes=" + 
 		encodeURIComponent(previous_datatypes));
 	xmlhttp.open("GET", "cgi/tcga_codes.cgi?cohort=" + 
+		encodeURIComponent(cohort) + "&datatype=" + 
+		encodeURIComponent(datatype) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes), false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			codes = this.responseText;}
+		}
+	xmlhttp.send();
+	codes = codes.split(",");
+	return codes;
+}
+
+// improvement upon get_tcga_codes: returns TCGA codes for TCGA and tissues for CCLE
+function get_codes(source, cohort, datatype, previous_datatypes) {
+	var codes;
+	var xmlhttp = new XMLHttpRequest();
+	console.log("cgi/plot_multiselector.cgi?source=" + 
+		encodeURIComponent(source) + "&cohort=" + 
+		encodeURIComponent(cohort) + "&datatype=" + 
+		encodeURIComponent(datatype) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes));
+	xmlhttp.open("GET", "cgi/plot_multiselector.cgi?source=" + 
+		encodeURIComponent(source) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
 		encodeURIComponent(datatype) + "&previous_datatypes=" + 
 		encodeURIComponent(previous_datatypes), false);

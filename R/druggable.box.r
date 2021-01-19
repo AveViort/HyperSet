@@ -63,6 +63,11 @@ print(temp_tcga_codes);
 
 temp <- list();
 common_samples <- c();
+tissue_samples <- c();
+if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue='", toupper(tcga_codes[1]), "';");
+	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
+}
 for (i in 1:length(temp_datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(temp_datatypes[i] %in% druggable.patient.datatypes))) {
@@ -86,8 +91,8 @@ for (i in 1:length(temp_datatypes)) {
 	time2 <- Sys.time();
 	time3 <- time2 - time1;
 	print(paste0("Query took ", round(time3, digits=2), " seconds"));
-	print(str(temp[[i]]));
-	print(length(unique(temp[[i]][,1])));
+	#print(str(temp[[i]]));
+	#print(length(unique(temp[[i]][,1])));
 	# we can have several drugs for one patinet, so we have to binarize data
 	# but only if the drug is not specified!
 	if ((Par["source"] == "tcga") & (temp_platforms[i] == "drugs")) {
@@ -98,10 +103,15 @@ for (i in 1:length(temp_datatypes)) {
 	if ((Par["source"] == "tcga") & (any(temp_datatypes %in% druggable.patient.datatypes))) {
 		temp_rownames <- unlist(lapply(temp_rownames, function(x) regmatches(x, regexpr("tcga-[0-9a-z]{2}-[0-9a-z]{4}", x))));
 	}
-	print(length(temp_rownames));
+	#print(length(temp_rownames));
 	#print(length(unique(temp_rownames)));
 	#print(temp_rownames);
 	rownames(temp[[i]]) <- temp_rownames;
+	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+		print(paste0("Before tissue filtering: ", nrow(temp[[i]])));
+		temp[[i]] <- temp[[i]][tissue_samples,];
+		print(paste0("After tissue filtering: ", nrow(x_data)));
+	}
 }
 common_samples <- rownames(temp[[1]]);
 for (i in 2:length(temp_datatypes)) {

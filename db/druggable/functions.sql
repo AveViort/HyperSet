@@ -1,4 +1,4 @@
--- FUNCTIONS WHICH RETURNS COHORTS, DATATYPES, DRUGS ETC.
+-- FUNCTIONS WHICH RETURN COHORTS, DATATYPES, DRUGS ETC.
 
 -- return all drugs/features and genes for given combination of parameters (for correlations)
 CREATE OR REPLACE FUNCTION feature_gene_list(source_n text, data_type text, cohort_n text, platform_n text, screen_name text, sensitivity_m text) RETURNS text AS $$
@@ -1143,6 +1143,7 @@ BEGIN
 columns_array := string_to_array(cor_columns, ',');
 sensitivity_array := string_to_array(sensitivity_m, ',');
 temp_table := 'cor' || floor(random() * 10000);
+--RAISE notice 'temp_table: %', temp_table;
 query := 'CREATE TABLE ' || temp_table || '(gene text,feature text,datatype text,cohort text,platform text,screen text,sensitivity text';
 FOR i IN 3..(array_length(columns_array, 1)-1)
 LOOP
@@ -1158,7 +1159,7 @@ query := query ||',url1 text,url2 text,cohorts text);';
 EXECUTE query;
 FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity_type IN SELECT table_name,datatype,cohort,platform,screen,sensitivity_measure FROM cor_guide_table WHERE datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_n AND sensitivity_measure=ANY(sensitivity_array) 
 LOOP
---RAISE notice 'table name: %', table_name;
+--RAISE notice 'table name: %', table_n;
 query := 'INSERT INTO ' || temp_table || ' SELECT upper(' || columns_array[1] || ') AS gene,drug_synonym(' || columns_array[2] || E') AS feature,\'' || datatype_name || E'\' AS datatype,\'' || cohort_name || E'\' AS cohort,\'' || platform_name || E'\' AS platform, \'' || screen_name || E'\' AS screen' || E',\'' || sensitivity_type || E'\' AS sensitivity';
 FOR i IN 3..(array_length(columns_array, 1)-1)
 LOOP
@@ -1193,6 +1194,56 @@ IF array_length(res,1) > 0
 THEN
 FOR i in 1..array_length(res, 1)
 LOOP
+--RAISE notice 'res[%]: %', i, res[i];
+RETURN NEXT res[i];
+END LOOP;
+END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- this function is used for batch jobs, it's signature is the same as retrieve_correlations, but most columns are ommited
+-- additionally, returns only distinct records
+CREATE OR REPLACE FUNCTION retrieve_correlations_simplified(source_n text, data_type text, cohort_n text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text, limit_by text, limit_num numeric) RETURNS setof text AS $$
+DECLARE
+table_n text;
+datatype_name text;
+cohort_name text;
+platform_name text;
+screen_name text;
+sensitivity_type text;
+res text array;
+columns_array text array;
+sensitivity_array text array;
+query text;
+temp_table text;
+i numeric;
+BEGIN
+columns_array := string_to_array(cor_columns, ',');
+sensitivity_array := string_to_array(sensitivity_m, ',');
+temp_table := 'cor' || floor(random() * 10000);
+--RAISE notice 'temp_table: %', temp_table;
+query := 'CREATE TABLE ' || temp_table || '(gene text,feature text,datatype text,cohort text,platform text,fdr numeric);';
+--RAISE notice 'query: %', query;
+EXECUTE query;
+i := array_length(columns_array, 1);
+FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity_type IN SELECT table_name,datatype,cohort,platform,screen,sensitivity_measure FROM cor_guide_table WHERE datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_n AND sensitivity_measure=ANY(sensitivity_array) 
+LOOP
+--RAISE notice 'table name: %', table_n;
+query := 'INSERT INTO ' || temp_table || ' SELECT DISTINCT upper(' || columns_array[1] || ') AS gene,drug_synonym(' || columns_array[2] || E') AS feature,\'' || datatype_name || E'\' AS datatype,\'' || cohort_name || E'\' AS cohort,\'' || platform_name || E'\' AS platform,' || limit_by || E' AS fdr FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || limit_by || ' ASC LIMIT ' || limit_num || ';'; 
+--RAISE notice 'query: %', query;
+EXECUTE query;
+END LOOP;
+-- unfortunatelly, cannot use DISTINCT here, refer to this page: https://dba.stackexchange.com/questions/34951/order-by-clause-is-allowed-over-column-that-is-not-in-select-list
+query := E'SELECT ARRAY(SELECT gene \|\| \'\|\' \|\| feature \|\| \'\|\' \|\| datatype \|\| \'\|\' \|\| cohort \|\| \'\|\' \|\| platform \|\| \'\|\' \|\| fdr FROM ' || temp_table || ' ORDER BY fdr LIMIT ' || limit_num || ');';
+--RAISE notice 'query: %', query;
+EXECUTE query INTO res;
+query := 'DROP TABLE ' || temp_table || ';';
+EXECUTE query;
+IF array_length(res,1) > 0
+THEN
+FOR i in 1..array_length(res, 1)
+LOOP
+--RAISE notice 'res[%]: %', i, res[i];
 RETURN NEXT res[i];
 END LOOP;
 END IF;
@@ -1815,7 +1866,10 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
+
+
 -- FUNCTIONS TO WORK WITH GENES AND FEATURES - SIMILAR TO SYNONYMS
+
 CREATE OR REPLACE FUNCTION create_genes_features_table() RETURNS boolean AS $$
 DECLARE
 table_n text;
@@ -1879,6 +1933,8 @@ INSERT INTO cor_genes_features(table_name, genes_features) VALUES(table_n, genes
 RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
+
+
 
 -- FUNCTIONS TO WORK WITH MODELS
 
@@ -1963,6 +2019,78 @@ temp := register_model_vars_from_table(t_source, t_cohort, t_datatype, t_type);
 n := n + temp;
 END LOOP;
 RETURN n;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- FUNCTIONS TO WORK WITH JOB QUEUE
+
+-- return all jids
+CREATE OR REPLACE FUNCTION current_jobs() RETURNS setof numeric AS $$
+DECLARE
+job_id numeric;
+BEGIN
+FOR job_id IN SELECT jid FROM job_queue
+LOOP
+RETURN NEXT job_id;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- try to add a new job
+-- job_id (jid) is generated by Perl script - this is timestamp (in ms)
+-- process_id (pid) is a system pid of parent Perl process 
+-- responsible_mail is specified by user (one user = one job)
+-- max_jobs is a max number of jobs in queue (including running job) defined in Aconfig.pm
+CREATE OR REPLACE FUNCTION add_job(job_id numeric, process_id numeric, responsible_mail text, max_jobs numeric) RETURNS text AS $$
+DECLARE
+res text;
+current_num numeric;
+BEGIN
+res := '';
+SELECT COUNT (*) INTO current_num FROM job_queue;
+IF (current_num >= max_jobs)
+THEN
+res := 'max_capacity_reached';
+ELSE
+-- if we have 0 jobs - we can start the job right away
+IF (current_num = 0)
+THEN
+INSERT INTO job_queue(jid,pid,mail) VALUES (job_id, process_id, responsible_mail);
+res := 'start';
+ELSE
+-- check if user already has other registered jobs
+SELECT COUNT (*) INTO current_num FROM job_queue WHERE mail=responsible_mail;
+IF (current_num > 0)
+THEN
+res := 'user_declined';
+ELSE
+INSERT INTO job_queue(jid,pid,mail) VALUES (job_id, process_id, responsible_mail);
+res := 'scheduled';
+END IF;
+END IF;
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- remove job using provided jid
+CREATE OR REPLACE FUNCTION remove_job(job_id numeric) RETURNS boolean AS $$
+BEGIN
+DELETE FROM job_queue WHERE jid=job_id;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- check which job is running now - this function is used for creating wait loop in Perl
+CREATE OR REPLACE FUNCTION running_job() RETURNS numeric AS $$
+DECLARE
+earliest_registered numeric;
+BEGIN
+-- since jids are time in ms - select the earliest registered job using MIN
+SELECT MIN(jid) INTO earliest_registered FROM job_queue;
+RETURN earliest_registered;
 END;
 $$ LANGUAGE plpgsql;
 

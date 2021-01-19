@@ -33,6 +33,7 @@ $dbh = HS_SQL::dbh('druggable');
 $stat = qq/SELECT retrieve_correlations(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\, \'$id'\, $fdr, $mindrug, \'$columns'\, \'$Aconfig::limit_column{$source}'\, $Aconfig::limit_num);/;
 
 print $query->header("application/json");
+print "";
 print '{"data":';
 print "[";
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
@@ -63,7 +64,7 @@ while (@row = $sth->fetchrow_array()) {
 		# } else {
 			# $plot = '<button id=\"cor-plot'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'box\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'drug\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
 		# }
-				 my $plot = '<span id=\"cor-plot'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-bars\" onclick=\"plot(\''.(($field_values[2] eq "MUT") ? "box" : "scatter").'\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'drug\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\" title=\"Plot\"></span>';
+		my $plot = '<span id=\"cor-plot'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-bars\" onclick=\"plot(\''.(($field_values[2] eq "MUT") ? "box" : "scatter").'\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'drug\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\" title=\"Plot\"></span>';
 		my $url1 = $field_values[$colnumber-3];
 		my @temp = split /\//, $url1;
 		my $site_name = (split /\./,$temp[2])[1];

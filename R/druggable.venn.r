@@ -5,6 +5,11 @@ library(htmltools);
 print("druggable.venn.r");
 
 if (datatypes[1] == datatypes[2]) {
+	tissue_samples <- c();
+	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue='", toupper(tcga_codes[1]), "';");
+		tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
+	}
 	query <- paste0("SELECT table_name from guide_table WHERE cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[1]), "';");
 	print(query);
 	table1 <- sqlQuery(rch, query)[1,1];
@@ -21,6 +26,12 @@ if (datatypes[1] == datatypes[2]) {
 	first_set <- sqlQuery(rch, query);
 	# factors are returned by default
 	first_set[,1] <- as.character(first_set[,1]);
+	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+		rownames(first_set) <- first_set[,1];
+		print(paste0("Before tissue filtering: ", nrow(first_set)));
+		first_set <- first_set[tissue_samples,];
+		print(paste0("After tissue filtering: ", nrow(first_set)));
+	}
 
 	if (empty_value(ids[2])) {
 		query <- paste0("SELECT sample,binarize(", platforms[2], ") FROM ", table1, ";");
@@ -33,6 +44,12 @@ if (datatypes[1] == datatypes[2]) {
 	print(query);
 	second_set <- sqlQuery(rch, query);
 	second_set[,1] <- as.character(second_set[,1]);
+	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+		rownames(second_set) <- second_set[,1];
+		print(paste0("Before tissue filtering: ", nrow(second_set)));
+		second_set <- second_set[tissue_samples,];
+		print(paste0("After tissue filtering: ", nrow(second_set)));
+	}
 	
 	print("Before autocomplement:");
 	print(str(first_set));

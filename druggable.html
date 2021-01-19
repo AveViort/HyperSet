@@ -119,6 +119,10 @@ li.tab:hover ul {
   float:none;  
   text-align:center;
 }
+
+table.simple_table td { 
+	border: 1px solid black; 
+}
 </style>
 </HEAD>
 
@@ -180,6 +184,175 @@ li.tab:hover ul {
 		<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
 			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
 			</p>
+			
+			<br>
+				<table id="help_data_sources" class="simple_table">
+					<thead>
+						<tr>
+							<th></th>
+							<th colspan="2">CCLE</th>
+							<th>BRCA</th>
+							<th>COAD</th>
+							<th>GBM</th>
+							<th>LUAD</th>
+							<th>LUSC</th>
+							<th>OV</th>
+							<th>PAAD</th>
+							<th>PRAD</th>
+							<th>SKCM</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>COPY</td>
+							<td colspan="2"></td>
+							<td><a href="./help/correlates_data/BRCA_COPY_SNP6_all_data.txt">SNP6 (3748 genes)</a></td>
+							<td><a href="./help/correlates_data/COAD_COPY_SNP6_all_data.txt">SNP6 (1497 genes)</a></td>
+							<td><a href="./help/correlates_data/GBM_COPY_SNP6_all_data.txt">SNP6 (2558 genes)</a></td>
+							<td><a href="./help/correlates_data/LUAD_COPY_SNP6_all_data.txt">SNP6 (2724 genes)</a></td>
+							<td><a href="./help/correlates_data/LUSC_COPY_SNP6_all_data.txt">SNP6 (3849 genes)</a></td>
+							<td><a href="./help/correlates_data/OV_COPY_SNP6_all_data.txt">SNP6 (9020 genes)</a></td>
+							<td><a href="./help/correlates_data/PAAD_COPY_SNP6_all_data.txt">SNP6 (1640 genes)</a></td>
+							<td><a href="./help/correlates_data/PRAD_COPY_SNP6_all_data.txt">SNP6 (1587 genes)</a></td>
+							<td><a href="./help/correlates_data/SKCM_COPY_SNP6_all_data.txt">SNP6 (3522 genes)</a></td>
+						</tr>
+						<tr>
+							<td rowspan="6">GE</td>
+							<td rowspan="6">RNAseq</td>
+							<td><a href="./help/correlates_data/CCLE_GE_RNAseq_GDSC1.txt">GDSC1 (16549 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/BRCA_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (20501 genes)</a></td>
+							<td rowspan="6"><a href="./help/correlates_data/COAD_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (19982 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/GBM_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (19960 genes)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/LUAD_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (20080 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/LUSC_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (20501 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/OV_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (19982 genes)</a></td>
+							<td rowspan="6"><a href="./help/correlates_data/PAAD_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (19692 genes)</a></td>
+							<td rowspan="6"><a href="./help/correlates_data/PRAD_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (19942 genes)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/SKCM_GE_IlluminaHiSeq_RNASeqV2_all_data.txt">IlluminaHiSeq_RNASeqV2 (20158 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_GE_RNAseq_GDSC2.txt">GDSC2 (15455 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_GE_RNAseq_CTRPv2.0.txt">CTRP v2.0 (17150 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/BRCA_GE_IlluminaHiSeq_RNASeq_all_data.txt">IlluminaHiSeq_RNASeq (20502 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/GBM_GE_Affymetrix_all_data.txt">Affymetrix (12042 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/LUSC_GE_IlluminaHiSeq_RNASeq_all_data.txt">IlluminaHiSeq_RNASeq (20502 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/OV_GE_IlluminaHiSeq_RNASeq_all_data.txt">IlluminaHiSeq_RNASeq (20781 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_GE_RNAseq_Basu2013.txt">Basu 2013 (12982 genes)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/LUAD_GE_IlluminaHiSeq_RNASeq_all_data.txt">IlluminaHiSeq_RNASeq (20350 genes)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/SKCM_GE_IlluminaHiSeq_RNASeqV2_log2FPKM_all_data.txt">IlluminaHiSeq_RNASeqV2_logFPKM (29955 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_GE_RNAseq_Garnett2012.txt">Garnett 2012 (10562 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/BRCA_GE_Agilent_all_data.txt">Agilent (17813 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/GBM_GE_Agilent_all_data.txt">Agilent (17813 genes)</a></td>
+							<td><a href="./help/correlates_data/LUSC_GE_Agilent_all_data.txt">Agilent (17813 genes)</a></td>
+							<td rowspan="2"><a href="./help/correlates_data/OV_GE_Agilent_all_data.txt">Agilent (17813 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_GE_RNAseq_Barretina2012.txt">Barretina 2012 (7655 genes)</a></td>
+							<td rowspan><a href="./help/correlates_data/LUSC_GE_Affymetrix_all_data.txt">Affymetrix (12042 genes)</a></td>
+						</tr>
+						<tr>
+							<td rowspan="10">MUT</td>
+							<td rowspan="5">CCLE EXOME 2019</td>
+							<td><a href="./help/correlates_data/CCLE_MUT_CCLE_EXOME_2019_GDSC2.txt">GDSC2 (64 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/BRCA_MUT_MAF_all_data.txt">MAF (1919 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/COAD_MUT_MAF_all_data.txt">MAF (3232 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/GBM_MUT_MAF_all_data.txt">MAF (126 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/LUAD_MUT_MAF_all_data.txt">MAF (5086 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/LUSC_MUT_MAF_all_data.txt">MAF (1138 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/OV_MUT_MAF_all_data.txt">MAF (130 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/PAAD_MUT_MAF_all_data.txt">MAF (1275 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/PRAD_MUT_MAF_all_data.txt">MAF (123 genes)</a></td>
+							<td rowspan="10"><a href="./help/correlates_data/SKCM_MUT_MAF_all_data.txt">MAF (6952 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_CCLE_EXOME_2019_CTRPv2.0.txt">CTRP v2.0 (68 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_CCLE_EXOME_2019_Basu2013.txt">Basu 2013 (435 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_CCLE_EXOME_2019_Garnett2012.txt">Garnett 2012 (68 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_CCLE_EXOME_2019_Barretina2012.txt">Barretina 2012 (422 genes)</a></td>
+						</tr>
+						<tr>
+							<td rowspan="5">Cosmic Exome 2014</td>
+							<td><a href="./help/correlates_data/CCLE_MUT_COSMIC_EXOME_2014_GDSC2.txt">GDSC2 (46 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_COSMIC_EXOME_2014_CTRPv2.0.txt">CTRP v2.0 (89 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_COSMIC_EXOME_2014_Basu2013.txt">Basu 2013 (787 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_COSMIC_EXOME_2014_Garnett2012.txt">Garnett 2012 (114 genes)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_COSMIC_EXOME_2014_Barretina2012.txt">Barretina 2012 (353 genes)</a></td>
+						</tr>
+						<tr>
+							<td>PE</td>
+							<td colspan="2"></td>
+							<td><a href="./help/correlates_data/BRCA_PE_BOTH_RPPA_all_data.txt">RPPA (260 proteins)</a></td>
+							<td></td>
+							<td><a href="./help/correlates_data/GBM_PE_BOTH_RPPA_all_data.txt">RPPA (314 proteins)</a></td>
+							<td><a href="./help/correlates_data/LUAD_PE_BOTH_RPPA_all_data.txt">RPPA (268 proteins)</a></td>
+							<td><a href="./help/correlates_data/LUSC_PE_BOTH_RPPA_all_data.txt">RPPA (322 proteins)</a></td>
+							<td></td>
+							<td><a href="./help/correlates_data/PAAD_PE_BOTH_RPPA_all_data.txt">RPPA (385 proteins)</a></td>
+							<td><a href="./help/correlates_data/PRAD_PE_BOTH_RPPA_all_data.txt">RPPA (350 proteins)</a></td>
+							<td><a href="./help/correlates_data/SKCM_PE_BOTH_RPPA_all_data.txt">RPPA (291 proteins)</a></td>
+						</tr>
+						<tr>
+							<td rowspan="3">NEA (GE)</td>
+							<td rowspan="3">RNAseq</td>
+							<td><a href="./help/correlates_data/CCLE_GE_NEA_RNAseq_GDSC1.txt">GDSC1 (1466 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/BRCA_GE_NEA_IlluminaHiSeq_RNASeqV2_top_100_all_data.txt">IlluminaHiSeq_RNASeqV2 (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/COAD_GE_NEA_IlluminaHiSeq_RNASeqV2_top_100_all_data.txt">IlluminaHiSeq_RNASeqV2 (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/GBM_GE_NEA_Agilent_top_100_all_data.txt.txt">Agilent (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/LUAD_GE_NEA_IlluminaHiSeq_RNASeqV2_top_100_all_data.txt">IlluminaHiSeq_RNASeqV2 (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/LUSC_GE_NEA_IlluminaHiSeq_RNASeqV2_top_100_all_data.txt">IlluminaHiSeq_RNASeqV2 (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/OV_GE_NEA_Agilent_top_100_all_data.txt">Agilent (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/PAAD_GE_NEA_IlluminaHiSeq_RNASeqV2_top_100_all_data.txt">IlluminaHiSeq_RNASeqV2 (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/PRAD_GE_NEA_IlluminaHiSeq_RNASeqV2_top_100_all_data.txt">IlluminaHiSeq_RNASeqV2 (top 100) (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/SKCM_GE_NEA_IlluminaHiSeq_RNASeqV2_log2FPKM_top_100_all_data.txt">IlluminaHiSeq_RNASeqV2_log2FPKM_top_100 (1469 pathways)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_GE_NEA_RNAseq_GDSC2.txt">GDSC2 (1466 pathways)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_GE_NEA_RNAseq_CTRPv2.0.txt">CTRP v2.0 (1466 pathways)</a></td>
+						</tr>
+						<tr>
+							<td rowspan="3">NEA (MUT)</td>
+							<td rowspan="3">CCLE EXOME 2019</td>
+							<td><a href="./help/correlates_data/CCLE_MUT_NEA_CCLE_EXOME_2019_GDSC1.txt">GDSC1 (1466 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/BRCA_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/GBM_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/GBM_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/LUAD_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/LUSC_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>	
+							<td rowspan="3"><a href="./help/correlates_data/OV_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/PAAD_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/PRAD_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+							<td rowspan="3"><a href="./help/correlates_data/SKCM_MUT_NEA_MAF_all_data.txt">MAF (1469 pathways)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_NEA_CCLE_EXOME_2019_GDSC2.txt">GDSC2 (1466 pathways)</a></td>
+						</tr>
+						<tr>
+							<td><a href="./help/correlates_data/CCLE_MUT_NEA_CCLE_EXOME_2019_CTRPv2.0.txt">CTRP v2.0 (1466 pathways)</a></td>
+						</tr>
+					</tbody>
+				</table>
 		</div>
 		
 		<div id="table-help-menu" style="display: inline;">
@@ -610,6 +783,10 @@ $(document).ready(function(){
 				target: $("#clean_reload_button")
 			}
 	});
+	
+	$("#help-tab-data").css("overflow", "auto");
+	$("#help_data_sources").css("border", "1px solid black");
+	//$("#help_data_sources").DataTable();
 
 	$("#retrieve-cor-button").button();
 	$("#retrieve-cor-button").button("disable");
@@ -779,9 +956,9 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				"&tcga_codes=" + tcga_codes.join() +
 				"&scales=" + scales.join(),
 				"<a href=https://" + window.location.hostname + "/pics/plots/" + plot_filename + " target=_blank>View</a>");
+				sessionStorage.setItem(plot_filename, plot_description);
 		}
 		plot_id = plot_filename.substring(0, plot_filename.length-5);
-		sessionStorage.setItem(plot_filename, plot_description);
 		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 		$(parent_tab).append(graph_window);
 		$("#plot_window_" + plot_id).dialog({
@@ -903,7 +1080,7 @@ function build_and_show_model() {
 			}
 			x_ids.push(temp);
 		}
-		console.log(variable_count);
+		//console.log(variable_count);
 		
 		// check if we have 1D analysis
 		if (variable_count == 1) {
@@ -954,7 +1131,7 @@ function build_and_show_model() {
 			
 			var ErrorStack = check_error_stack(new Error().stack);
 			var model_name = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
-				family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent);
+				family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, "", false);
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
 			xmlhttp.send();
@@ -1159,6 +1336,14 @@ function add_plot_options_row(i) {
 		document.getElementById('open_info' + (j+1)).setAttribute("onclick", 'open_info_page(' + (j+1) + ')');
 		usetCookie("type" + (j+1) + "_selector", (getCookie("type" + j + "_selector").split("|"))[0], druggable_cookie_time);
 		usetCookie("platform" + (j+1) + "_selector", (getCookie("platform" + j + "_selector").split("|"))[0], druggable_cookie_time);
+	}
+	// fixes potential bug caused by plot_type_changed for "drug" platform
+	if (n+1 == 2) {
+		if ($("#platform1_selector option:selected").val() == "drug") {
+			document.getElementById("id1_input").disabled = false;
+			document.getElementById("id1_input").hidden = false;
+			document.getElementById("id1_confirmed").hidden = false;
+		}
 	}
 		
 	sessionStorage.setItem("add_row", 1);
@@ -1385,6 +1570,17 @@ function delete_model_options_row() {
 	}
 	$("#d-x" + n).remove();
 	$("#add_variable").button("enable");
+	// prevent passing saved ids to deleted option row
+	if (document.getElementById("transfer_window") != null) {
+		// extract button text to determine row number to which ids will be transfered
+		var button_text_array = $("#transfer_copy_ids").text().split();
+		var current = button_text_array[button_text_array.length-1];
+		if (current == n) {
+			$("#transfer_copy_ids").text("Copy chosen IDs to predictor 1");
+			$("#transfer_copy_ids").unbind();
+			$("#transfer_copy_ids").on("click", function() {copy_ids_to_predictor(1);});
+		}
+	}
 }
 
 function init_cohortselector() {
@@ -1632,11 +1828,11 @@ function init_tcga_code_selector(n) {
 		}
 	}
 	// this can be modified - we don't need second variable anymore
-	var tcga_codes = get_tcga_codes($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_datatypes);
-	if (tcga_codes[0] != "") {
+	var codes = get_codes($("#source_selector option:selected").val(), $("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_datatypes);
+	if (codes[0] != "") {
 		options = [];
-		for (i in tcga_codes) {
-			options.push("<option value='"+ tcga_codes[i] + "'>" + tcga_codes[i] + "</option>");
+		for (i in codes) {
+			options.push("<option value='"+ codes[i] + "'>" + codes[i] + "</option>");
 		}
 		// in case if we have 0 codes tcga_codes is [""]
 		//var flag = (($("#source_selector option:selected").val() != "TCGA") || (tcga_codes[0] == ""));
@@ -2126,7 +2322,7 @@ function init_response_multiselector() {
 	}
 	var values = [];
 	if ((model_source == "TCGA") & (response_datatype == "CLIN")) {
-		values = ["01", "06"];
+		values = [{val: "01", n: "all"} , {val: "06", n: "all"}];
 	}
 	else {
 		values = get_response_multiselector_values(model_source, model_cohort, response_datatype, response_variable);

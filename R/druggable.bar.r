@@ -25,6 +25,14 @@ table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", platforms[1], " FROM ", table_name, ifelse(condition == " WHERE ", "", condition), ";");
 print(query);
 x_data <- sqlQuery(rch, query);
+if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+	rownames(x_data) <- x_data[,"sample"];
+	print(paste0("Before tissue filtering: ", nrow(x_data)));
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue='", toupper(tcga_codes[1]), "';");
+	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
+	x_data <- x_data[tissue_samples,];
+	print(paste0("After tissue filtering: ", nrow(x_data)));
+}
 status <- ifelse(nrow(x_data) != 0, 'ok', 'error');
 
 if (status != 'ok') {
@@ -131,6 +139,10 @@ if (status != 'ok') {
 			temp <-  sqlQuery(rch, query);
 			colnames(temp) <- colnames(y_data);
 			y_data <- rbind(y_data,temp);
+		}
+		if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+			rownames(y_data) <- y_data[,"sample"];
+			y_data <- y_data[tissue_samples,];
 		}
 		
 		if ((Par["source"] == "tcga") & (any(datatypes %in% druggable.patient.datatypes))) {
