@@ -3,7 +3,8 @@ source("../R/init_predictor.r");
 library(glmnet);
 # for parallel glmnet
 library(doParallel);
-registerDoParallel(4);
+cl <- makeCluster(6);
+registerDoParallel(cl);
 
 usedSamples <- c();
 Stages 	<- c("X", "Tis", "Stage 0", "Stage I", "Stage IA",  "Stage IB",  "Stage IC",  "Stage II", "Stage IIA",  "Stage IIB",  "Stage IIC",  "Stage III", "Stage IIIA", "Stage IIIB", "Stage IIIC", "Stage IV" , "Stage IVA" , "Stage IVB" , "Stage IVC" );
@@ -128,8 +129,7 @@ createGLMnetSignature <- function (
 						alpha = Alpha, 
 						nlambda = Nlambda, 
 						lambda.min.ratio = minLambda,
-						standardize = STD,
-						parallel = TRUE));
+						standardize = STD));
 			#save(model, file=paste0(File, ".RData"));
 			if (grepl("Error|fitter|levels", t1[1])) {
 				print("Error occured");
@@ -187,6 +187,7 @@ createGLMnetSignature <- function (
 				perf$RSS = sum((10 * MG[Sample1] - 10 * Ypred) ** 2, na.rm = T);
 				perf$AIC <- 2 * k + n * log(perf$RSS);
 				perf$BIC <- log(n) * k + log(perf$RSS/n) * n;
+				perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
 				
 				st1 = cor(as.numeric(MG[Sample1]), pred[Sample1], use="pairwise.complete.obs", method="spearman");
 			} else {
@@ -202,8 +203,9 @@ createGLMnetSignature <- function (
 					# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6874104/
 					perf$AIC <- AIC(t1);
 					perf$BIC <- BIC(t1);
-					perf_frame <- rbind(perf_frame, data.frame(Measure = "AIC(training)", Value = round(perf$AIC,3)));
-					perf_frame <- rbind(perf_frame, data.frame(Measure = "BIC(training)", Value = round(perf$BIC,3)));
+					perf_frame <- rbind(perf_frame, data.frame(Measure = "AIC(testing)", Value = round(perf$AIC,3)));
+					perf_frame <- rbind(perf_frame, data.frame(Measure = "BIC(testing)", Value = round(perf$BIC,3)));
+					perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
 					lt1 <- summary(t1)$logtest["pvalue"];
 				} else {
 					stop(t1[1]);
@@ -373,35 +375,79 @@ for (i in 1:length(x_datatypes)) {
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(x_datatypes[i]), "';");
 	print(query);
 	table_name <- sqlQuery(rch, query)[1,1];
+	# sometimes we have extremely long queries - we have to do them in several steps
+	temp <- NULL;
 	condition <- "";
-	if (x_datatypes[i] != "mut") {
-		query <- paste0("SELECT sample,", ifelse(!x_datatypes[i] %in% druggable.patient.datatypes, "id,", ""), x_platforms[i], " FROM ", table_name);
-		condition <- paste0(" WHERE ", x_platforms[i], " IS NOT NULL");
-	} else {
-		query <- paste0("SELECT sample,id,", x_platforms[i], " FROM ", table_name);
-	}
-	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
-		condition <- ifelse(condition == "", " WHERE ", paste0(condition, " AND "));
-		if ("[all]" %in% x_ids[[i]]) {
-			if (x_platforms[i] == rplatform) {
-				# we want to exclude dependent variable from independent ones
-				condition <- paste0(condition, "id NOT LIKE '", rid, "'");
-			} else {
-				# this line is redundant, for debug purpose only
-				condition <- paste0(condition, "id LIKE '%'");
-			}
+	print(paste0("Number of ids: ", length(x_ids[[i]])));
+	if (length(x_ids[[i]]) < 100) {
+		if (x_datatypes[i] != "mut") {
+			query <- paste0("SELECT sample,", ifelse(!x_datatypes[i] %in% druggable.patient.datatypes, "id,", ""), x_platforms[i], " FROM ", table_name);
+			condition <- paste0(" WHERE ", x_platforms[i], " IS NOT NULL");
 		} else {
-			condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+			query <- paste0("SELECT sample,id,", x_platforms[i], " FROM ", table_name);
 		}
-		if (Par["source"] == "tcga") {
-			tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
-			condition <- paste0(condition, " AND sample LIKE ", tcga_array);
+		if (!x_datatypes[i] %in% druggable.patient.datatypes) {
+			condition <- ifelse(condition == "", " WHERE ", paste0(condition, " AND "));
+			if ("[all]" %in% x_ids[[i]]) {
+				if (x_platforms[i] == rplatform) {
+					# we want to exclude dependent variable from independent ones
+					condition <- paste0(condition, "id NOT LIKE '", rid, "'");
+				} else {
+					# this line is redundant, for debug purpose only
+					condition <- paste0(condition, "id LIKE '%'");
+				}
+			} else {
+				condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+			}
+			if (Par["source"] == "tcga") {
+				tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
+				condition <- paste0(condition, " AND sample LIKE ", tcga_array);
+			}
+		}
+		# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
+		query <- paste0(query, condition, ";");
+		print(query);
+		print(object.size(query));
+		temp <- sqlQuery(rch, query);
+	} else {
+		print(paste0("Long query avoided, number of xids[[", i, "]]: ", length(x_ids[[i]])));
+		j <- 1;
+		temp2 <- NULL;
+		while (j<length(x_ids[[i]])) {
+			condition <- "";
+			if (x_datatypes[i] != "mut") {
+				query <- paste0("SELECT sample,", ifelse(!x_datatypes[i] %in% druggable.patient.datatypes, "id,", ""), x_platforms[i], " FROM ", table_name);
+				condition <- paste0(" WHERE ", x_platforms[i], " IS NOT NULL");
+			} else {
+				query <- paste0("SELECT sample,id,", x_platforms[i], " FROM ", table_name);
+			}
+			if (!x_datatypes[i] %in% druggable.patient.datatypes) {
+				condition <- ifelse(condition == "", " WHERE ", paste0(condition, " AND "));
+				if ("[all]" %in% x_ids[[i]]) {
+					if (x_platforms[i] == rplatform) {
+						# we want to exclude dependent variable from independent ones
+						condition <- paste0(condition, "id NOT LIKE '", rid, "'");
+					} else {
+						# this line is redundant, for debug purpose only
+						condition <- paste0(condition, "id LIKE '%'");
+					}
+				} else {
+					condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]][j:(j+99)], collapse=","), "}'::text[])");
+				}
+				if (Par["source"] == "tcga") {
+					tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
+					condition <- paste0(condition, " AND sample LIKE ", tcga_array);
+				}
+			}
+			# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
+			query <- paste0(query, condition, ";");
+			print(query);
+			print(object.size(query));
+			temp2 <- sqlQuery(rch, query);
+			temp <- rbind(temp, temp2);
+			j <- j + 100;
 		}
 	}
-	# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
-	query <- paste0(query, condition, ";");
-	print(query);
-	temp <- sqlQuery(rch, query);
 	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
 		X.variables[[x_platforms[i]]] <- unique(as.character(temp[,"id"]));
 		temp <- dcast(temp, id ~ sample, value.var = x_platforms[i]);
@@ -442,8 +488,10 @@ if (rdatatype == "clin") {
 		condition <- paste0(condition, " AND ", rplatform,"_time<>0");
 	}
 } else {
+	print(paste0("rid: ", rid, " empty_value(rid): ", empty_value(rid)));
 	if (Par["source"] == "tcga") {
-		condition <- paste0(condition, " AND sample LIKE ANY ('{", paste0("%-", multiopt, collapse=","), "}'::text[])");
+		tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
+		condition <- paste0(condition, " AND sample LIKE ", tcga_array);
 	}
 	if (!(empty_value(rid))) {
 		condition <- paste0(condition, " AND id='", rid, "'")

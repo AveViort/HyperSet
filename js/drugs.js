@@ -560,17 +560,21 @@ function get_axis_types(cohort, datatype, platform) {
 	return types.slice(0, types.length-1);
 }
 
-function get_tcga_codes(cohort, datatype, previous_datatypes) {
+function get_tcga_codes(cohort, datatype, platform, previous_datatypes, previous_platforms) {
 	var codes;
 	var xmlhttp = new XMLHttpRequest();
 	console.log("cgi/tcga_codes.cgi?cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
-		encodeURIComponent(datatype) + "&previous_datatypes=" + 
-		encodeURIComponent(previous_datatypes));
+		encodeURIComponent(datatype) + "&platform=" + 
+		encodeURIComponent(platform) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes) + "&previous_platforms=" +
+		encodeURIComponent(previous_platforms));
 	xmlhttp.open("GET", "cgi/tcga_codes.cgi?cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
-		encodeURIComponent(datatype) + "&previous_datatypes=" + 
-		encodeURIComponent(previous_datatypes), false);
+		encodeURIComponent(datatype) + "&platform=" + 
+		encodeURIComponent(platform) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes) + "&previous_platforms=" +
+		encodeURIComponent(previous_platforms), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			codes = this.responseText;}
@@ -581,19 +585,23 @@ function get_tcga_codes(cohort, datatype, previous_datatypes) {
 }
 
 // improvement upon get_tcga_codes: returns TCGA codes for TCGA and tissues for CCLE
-function get_codes(source, cohort, datatype, previous_datatypes) {
+function get_codes(source, cohort, datatype, platform, previous_datatypes, previous_platforms) {
 	var codes;
 	var xmlhttp = new XMLHttpRequest();
 	console.log("cgi/plot_multiselector.cgi?source=" + 
 		encodeURIComponent(source) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
-		encodeURIComponent(datatype) + "&previous_datatypes=" + 
-		encodeURIComponent(previous_datatypes));
+		encodeURIComponent(datatype) + "&platform=" + 
+		encodeURIComponent(platform) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes) + "&previous_platforms=" +
+		encodeURIComponent(previous_platforms));
 	xmlhttp.open("GET", "cgi/plot_multiselector.cgi?source=" + 
 		encodeURIComponent(source) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
-		encodeURIComponent(datatype) + "&previous_datatypes=" + 
-		encodeURIComponent(previous_datatypes), false);
+		encodeURIComponent(datatype) + "&platform=" + 
+		encodeURIComponent(platform) + "&previous_datatypes=" + 
+		encodeURIComponent(previous_datatypes) + "&previous_platforms=" +
+		encodeURIComponent(previous_platforms), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			codes = this.responseText;}
@@ -699,4 +707,53 @@ function get_resource_name(url) {
 			break;
 	}
 	return resource_name;
+}
+
+// submit a batch job - some parameters are taken from druggable_config.js
+// be careful! This function submits a job and does not return status at the moment!
+function submit_batch_job(
+	// first - parameters required for retrieving correlations
+	source, datatype, cohort, platform, screen, id, fdr,
+	// next - model parameters
+	// data options
+	method, model_cohort, multiopt, rdatatype, rplatform, rid, xdatatypes, xplatforms, 
+	// model options
+	family, measure, alpha, nlambda, minlambda, validation, validation_fraction, nfolds, standardize,
+	// third - batch options
+	iter, stat_file, mail
+	) 
+
+{
+	// mindrug and columns are defined in druggable_config.js
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "cgi/models_from_correlation_batch.cgi?source=" + encodeURIComponent(source) + 
+		"&datatype=" + encodeURIComponent(datatype) +
+		"&cohort=" + encodeURIComponent(cohort) +
+		"&platform=" + encodeURIComponent(platform) +
+		"&screen=" + encodeURIComponent(screen) +
+		"&id=" + encodeURIComponent(id) +
+		"&fdr=" + encodeURIComponent(fdr) +
+		"&min_drug=" + encodeURIComponent(min_pat_drug_number) +
+		"&columns=" + encodeURIComponent(cor_sql_columns.get(source)) +
+		"&method=" + encodeURIComponent(method) +
+		"&model_cohort=" + encodeURIComponent(model_cohort) +
+		"&multiopt=" + encodeURIComponent(multiopt) +
+		"&rdatatype=" + encodeURIComponent(rdatatype) +
+		"&rplatform=" + encodeURIComponent(rplatform) +
+		"&rid=" + encodeURIComponent(rid) +
+		"&xdatatypes=" + encodeURIComponent(xdatatypes) +
+		"&xplatforms=" + encodeURIComponent(xplatforms) +
+		"&family=" + encodeURIComponent(family) +
+		"&measure=" + encodeURIComponent(measure) +
+		"&alpha=" + encodeURIComponent(alpha) +
+		"&nlambda=" + encodeURIComponent(nlambda) +
+		"&minlambda=" + encodeURIComponent(minlambda) +
+		"&validation=" + encodeURIComponent(validation) +
+		"&validation_fraction=" + encodeURIComponent(validation_fraction) +
+		"&nfolds=" + encodeURIComponent(nfolds) +
+		"&standardize=" + encodeURIComponent(standardize) +
+		"&iter=" + encodeURIComponent(iter) +
+		"&stat_file=" + encodeURIComponent(stat_file) +
+		"&mail=" + encodeURIComponent(mail), true);
+	xmlhttp.send();
 }

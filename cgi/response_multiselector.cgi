@@ -10,8 +10,8 @@ my(@val);
 
 my $query = new CGI;
 my $source = $query->param("source");
-my $datatype = $query->param("datatype"); 
 my $cohort = $query->param("cohort"); 
+my $datatype = $query->param("datatype"); 
 my $variable = $query->param("variable");
 
 print "Content-type: text/html\n\n";
@@ -26,7 +26,7 @@ if ($source eq "CCLE") {
 }
 else {
 	if ($source eq "TCGA") {
-		$stat = qq/SELECT get_tcga_codes_n(\'$cohort'\, \'$datatype'\)/;
+		$stat = qq/SELECT get_tcga_codes_n(\'$cohort'\, \'$datatype'\, \'$variable'\)/;
 	}
 }
 # case when multiselector should not be initialized

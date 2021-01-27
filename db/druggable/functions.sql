@@ -1608,14 +1608,18 @@ $$ LANGUAGE plpgsql;
 -- if datatype uses patients (not samples) - return emplty string
 -- it also takes previous datatypes into account: if one of the chose datatypes
 -- uses patients - do not allow meta-codes ("all", "cancer", "healthy")
-CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, previous_datatypes text) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, platform_n text, previous_datatypes text, previous_platforms text) RETURNS text AS $$
 DECLARE
 res text;
+meta_res text;
 temp text;
 res_array text array;
 temp_array text array;
+meta_res_array text array;
+meta_temp_array text array;
 table_n text;
 datatypes_array text array;
+platforms_array text array;
 source_n text;
 i integer;
 flag boolean;
@@ -1624,20 +1628,24 @@ res := '';
 SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
 IF (source_n = 'TCGA') THEN
 SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
-IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
-SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n;
+-- we assume that tcga_codes and tcga_meta_codes are synchronized
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platform_n)) THEN
+SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n || '_' || platform_n;
+SELECT codes INTO meta_res FROM tcga_metacodes WHERE table_name = table_n || '_' || platform_n;
 flag := TRUE;
 ELSE 
 flag := FALSE;
 END IF;
 IF (previous_datatypes <> '') THEN
 datatypes_array := string_to_array(previous_datatypes, ',');
+platforms_array := string_to_array(previous_platforms, ',');
 res_array := string_to_array(res, ',');
+meta_res_array := string_to_array(meta_res, ',');
 FOR i IN 1 .. array_length(datatypes_array, 1)
 LOOP
 SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
-IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
-SELECT codes INTO temp FROM tcga_codes WHERE table_name = table_n;
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platforms_array[i])) THEN
+SELECT codes INTO temp FROM tcga_codes WHERE table_name = table_n || '_' || platforms_array[i];
 temp_array := string_to_array(temp, ',');
 IF (array_length(res_array, 1) > 0) THEN
 res_array := array_intersect(res_array, temp_array);
@@ -1651,9 +1659,23 @@ END IF;
 END LOOP;
 res := array_to_string(res_array, ',');
 END IF;
-IF (flag = TRUE) THEN
-res := 'all,healthy,cancer,' || res;
 END IF;
+IF (flag = TRUE) THEN
+IF (previous_datatypes <> '') THEN
+FOR i IN 1 .. array_length(datatypes_array, 1)
+LOOP
+SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
+IF (EXISTS (SELECT * FROM tcga_metacodes WHERE table_name = table_n || '_' || platforms_array[i])) THEN
+SELECT codes INTO temp FROM tcga_metacodes WHERE table_name = table_n || '_' || platforms_array[i];
+temp_array := string_to_array(temp, ',');
+meta_res_array := array_intersect(meta_res_array, temp_array);
+END IF;
+END LOOP;
+-- do this to order, so 'all' will be the first
+meta_res_array := ARRAY(SELECT unnest(meta_res_array) ORDER BY unnest);
+meta_res := array_to_string(meta_res_array, ',');
+END IF;
+res := meta_res || ',' || res;
 END IF;
 RETURN res;
 END;
@@ -1661,9 +1683,11 @@ $$ LANGUAGE plpgsql;
 
 -- simplified fucntion, but also returns numbers per code
 -- USE ONLY FOR MULTISELECTOR!
-CREATE OR REPLACE FUNCTION get_tcga_codes_n(cohort_n text, datatype_n text) RETURNS text AS $$
+CREATE OR REPLACE FUNCTION get_tcga_codes_n(cohort_n text, datatype_n text, platform_n text) RETURNS text AS $$
 DECLARE
 res text;
+-- we have a special result variable for meta-codes, sp they will be in order all-healthy-cancer and before the actual codes
+meta_res text;
 temp_codes text;
 temp_n text;
 codes_array text array;
@@ -1674,12 +1698,13 @@ i integer;
 flag boolean;
 BEGIN
 res := '';
+meta_res := '';
 SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
 IF (source_n = 'TCGA') THEN
 SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
-IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n)) THEN
-SELECT codes INTO temp_codes FROM tcga_codes WHERE table_name = table_n;
-SELECT counts INTO temp_n FROM tcga_codes WHERE table_name = table_n;
+IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platform_n)) THEN
+SELECT codes INTO temp_codes FROM tcga_codes WHERE table_name = table_n || '_' || platform_n;
+SELECT counts INTO temp_n FROM tcga_codes WHERE table_name = table_n || '_' || platform_n;
 codes_array := string_to_array(temp_codes, ',');
 n_array := string_to_array(temp_n, ',');
 res := codes_array[1] || ',' || n_array [1];
@@ -1692,8 +1717,16 @@ ELSE
 flag := FALSE;
 END IF;
 IF (flag = TRUE) THEN
--- 2nd, 4th and 6th 'all' are not codes - they are n values
-res := 'all,all,healthy,all,cancer,all,' || res;
+SELECT codes INTO temp_codes FROM tcga_metacodes WHERE table_name = table_n || '_' || platform_n;
+SELECT counts INTO temp_n FROM tcga_metacodes WHERE table_name = table_n || '_' || platform_n;
+codes_array := string_to_array(temp_codes, ',');
+n_array := string_to_array(temp_n, ',');
+meta_res := codes_array[1] || ',' || n_array [1];
+FOR i in 2 .. array_length(codes_array, 1)
+LOOP
+meta_res := meta_res || ',' || codes_array[i] || ',' || n_array[i];
+END LOOP;
+res := meta_res || ',' || res;
 END IF;
 END IF;
 RETURN res;
@@ -1702,6 +1735,8 @@ $$ LANGUAGE plpgsql;
 
 -- function to create table with sample codes available for TCGA tables
 -- if table contains patients - it is not present here
+-- WARNING! This function creates codes for tables, not platforms in tables! Results can be very different!
+-- use the new function (create_count_tcga_codes_table) instead
 CREATE OR REPLACE FUNCTION create_tcga_codes_table() RETURNS boolean AS $$
 DECLARE
 table_n text;
@@ -1794,6 +1829,118 @@ table_codes := array_to_string(temp_array, ',');
 INSERT INTO tcga_codes(table_name, codes) VALUES (table_n, table_codes);
 RAISE NOTICE 'table_codes: %', table_codes;
 END IF;
+END IF;
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION create_count_tcga_codes_table() RETURNS boolean AS $$
+DECLARE
+table_n text;
+platform_n text;
+platform_codes text;
+-- this variable is used to test if table contains patients or samples
+table_sample text;
+flag boolean;
+temp_array text array;
+code_counts text;
+code_count numeric;
+i numeric;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'tcga_codes')
+THEN
+DELETE FROM tcga_codes;
+ELSE
+CREATE TABLE tcga_codes (table_name character varying(256), codes character varying(256), counts character varying(256));
+END IF;
+FOR table_n IN SELECT table_name FROM guide_table WHERE source = 'TCGA'
+LOOP
+RAISE NOTICE 'Table: %', table_n;
+EXECUTE 'SELECT sample FROM ' || table_n || ' LIMIT 1;' INTO table_sample;
+--RAISE NOTICE 'Chosen sample: %', table_sample;
+-- tables with samples have two digits in the end
+SELECT table_sample LIKE '%-__' INTO flag;
+IF (flag = TRUE) THEN
+FOR platform_n IN EXECUTE E'SELECT column_name FROM information_schema.columns A INNER JOIN platform_descriptions B ON A.column_name=B.shortname WHERE A.table_name=\'' || table_n || E'\' AND B.visibility=true'
+LOOP
+RAISE NOTICE 'platform: %', platform_n;
+platform_codes := '';
+code_counts := '';
+EXECUTE 'SELECT ARRAY(SELECT DISTINCT (left_trim(sample, 13)) FROM ' || table_n || ' WHERE ' || platform_n || ' IS NOT NULL);' INTO temp_array;
+EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || E' WHERE (sample LIKE \'%-' || temp_array[1] || E'\') AND (' || platform_n || ' IS NOT NULL);' INTO code_count;
+platform_codes := platform_codes || temp_array[1];
+code_counts := code_counts || code_count;
+FOR i IN 2..array_length(temp_array, 1)
+LOOP
+EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || E' WHERE (sample LIKE \'%-' || temp_array[i] || E'\') AND (' || platform_n || ' IS NOT NULL);' INTO code_count;
+IF (code_count <> 0)
+THEN
+platform_codes := platform_codes || ',' || temp_array[i];
+code_counts := code_counts || ',' || code_count;
+END IF;
+END LOOP;
+RAISE NOTICE 'platform_codes: %', platform_codes;
+INSERT INTO tcga_codes(table_name, codes, counts) VALUES (table_n || '_' || platform_n, platform_codes, code_counts);
+END LOOP;
+END IF;
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- similar to create_tcga_codes_table + count_tcga_codes (or create_count_tcga_codes_table), but works with meta-codes
+CREATE OR REPLACE FUNCTION create_tcga_metacodes_table() RETURNS boolean AS $$
+DECLARE
+table_n text;
+platform_n text;
+platform_codes text;
+-- this variable is used to test if table contains patients or samples
+table_sample text;
+flag boolean;
+code_count numeric;
+code_counts text;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'tcga_metacodes')
+THEN
+DELETE FROM tcga_metacodes;
+ELSE
+CREATE TABLE tcga_metacodes (table_name character varying(256), codes character varying(256), counts character varying(256));
+END IF;
+FOR table_n IN SELECT table_name FROM guide_table WHERE source = 'TCGA'
+LOOP
+RAISE NOTICE 'Table: %', table_n;
+EXECUTE 'SELECT sample FROM ' || table_n || ' LIMIT 1;' INTO table_sample;
+-- tables with samples have two digits in the end
+SELECT table_sample LIKE '%-__' INTO flag;
+IF (flag = TRUE) THEN
+-- codes are created for evey visible platform
+FOR platform_n IN EXECUTE E'SELECT column_name FROM information_schema.columns A INNER JOIN platform_descriptions B ON A.column_name=B.shortname WHERE A.table_name=\'' || table_n || E'\' AND B.visibility=true'
+LOOP
+RAISE NOTICE 'platform: %', platform_n;
+-- first - all samples
+EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || ' WHERE ' || platform_n || ' IS NOT NULL;' INTO code_count;
+platform_codes := 'all';
+code_counts := '' || code_count;
+-- second - healthy
+EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || E' WHERE (sample LIKE \'%-1_\') AND (' || platform_n || ' IS NOT NULL);' INTO code_count;
+IF (code_count <> 0)
+THEN
+platform_codes := platform_codes || ',healthy';
+code_counts := code_counts || ',' || code_count;
+END IF;
+-- last - cancer samples
+EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || E' WHERE (sample LIKE \'%-0_\') AND (' || platform_n || ' IS NOT NULL);' INTO code_count;
+IF (code_count <> 0)
+THEN
+platform_codes := platform_codes || ',cancer';
+code_counts := code_counts || ',' || code_count;
+END IF;
+RAISE NOTICE 'table_codes: %', platform_codes;
+INSERT INTO tcga_metacodes(table_name, codes, counts) VALUES (table_n || '_' || platform_n, platform_codes, code_counts);
+END LOOP;
 END IF;
 END LOOP;
 RETURN TRUE;
