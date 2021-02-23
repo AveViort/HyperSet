@@ -40,7 +40,7 @@ our %limit_column = (
 # this variable is an addition to limit_column - how many records (max) should be taken?
 our $limit_num = 25000;
 # this variable is used for batch model creation
-our $batch_limit_num = 250;
+our $batch_limit_num = 650;
 # max number of tasks in queue, including the running one
 our $queue_size = 10;
 # number of seconds to wait before checking if job can be run

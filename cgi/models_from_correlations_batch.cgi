@@ -35,6 +35,7 @@ my $multiopt = $query->param('multiopt');
 # datatatypes and platforms must be specified by user, ids are taken from correlations
 my $xdatatypes = $query->param('xdatatypes');
 my $xplatforms = $query->param('xplatforms');
+my $additional_xids = $query->param('additional_xids');
 my @xids;
 
 # dependent variables
@@ -57,26 +58,41 @@ my $standardize 		= $query->param('standardize');
 my $iter = $query->param('iter');
 # file, where stats should be stored
 my $batch_file = $query->param('stat_file');
+# extended output for the file - include some model creation data
+my $extended_output = $query->param('extended_output');
 
 # send notifications to this address
 my $mail = $query->param('mail');
 
 # split our parameters
-my @split_datatypes		= split /\,/, $datatypes;
-my @split_cohorts 		= split /,/, $cohorts;
-my @split_platforms		= split /,/, $platforms;
-my @split_screens		= split /,/, $screens;
-my @split_ids			= split /,/, $ids;
+my @split_datatypes			= split /\,/, $datatypes;
+my @split_cohorts 			= split /\,/, $cohorts;
+my @split_platforms			= split /\,/, $platforms;
+my @split_screens			= split /\,/, $screens;
+my @split_ids				= split /\,/, $ids;
+my @split_additional_xids 	= split /\,/, $additional_xids;
 # iterator
 my $i, $j;
 
 # verify parameters
 my $email_pattern= '^([a-zA-Z][\w\_\.]{6,24})\@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$';
 my $verification_flag;
+my $cor_screens_verification_flag;
+my $cor_platforms_verification_flag = 0;
+my $model_rplatform_verification_flag;
+my $model_xplatforms_verification_flag;
 
 print "Content-type: text/html\n\n";
 # verify email
 $verification_flag = ($mail =~ email_pattern);
+# verify correlation platforms 
+
+# if platforms are correct - verify screens;
+
+# verify response platform
+
+# verify predictor platforms
+
 if (verification_flag) {
 	srand();
 	# this variable is unused by defaut - keep it as a reminder of table structure and for future possible uses
@@ -131,10 +147,14 @@ if (verification_flag) {
 				# print @xids.'|'.@unique_xids;
 				# print join(",", @{ $unique_xids[$i] });
 				# refer to build_model function in drugs.js for understanding $all_ids format 
-				if (($i != 0) && ($i != @split_datatypes-1)) {
+				if ($i != 0) {
 					$all_ids = $all_ids.",";
 				}
-				$all_ids = $all_ids."[".join("|", @{ $unique_xids[$i] })."]"; 
+				$all_ids = $all_ids."[".join("|", @{ $unique_xids[$i] });
+				if (($additional_xids ne '') && (@split_additional_xids[$i] ne '')) {
+					$all_ids = $all_ids."|".@split_additional_xids[$i];
+				}
+				$all_ids = $all_ids."]";
 			}
 
 			foreach $j(1..$iter) {
@@ -150,8 +170,9 @@ if (verification_flag) {
 				system("Rscript ../R/model.".$method.".r --vanilla --args ".
 					"source=$source cohort=$model_cohort rdatatype=$rdatatype rplatform=$rplatform rid=$rid ".
 					"xdatatypes=$xdatatypes xplatforms=$xplatforms xids='$all_ids' multiopt='$multiopt' ".
-					"family=$family measure=$measure alpha=$alpha nlambda=$nlambda minlambda=$minlambda validation=$validation " .
-					"validation_fraction=$validation_fraction nfolds=$nfolds standardize=$standardize out=$file statf=$batch_file header=$header");
+					"family=$family measure=$measure alpha=$alpha nlambda=$nlambda minlambda=$minlambda validation=$validation ".
+					"validation_fraction=$validation_fraction nfolds=$nfolds standardize=$standardize out=$file ".
+					"statf=$batch_file header=$header extended_output=$extended_output");
 			}
 			
 			$stat = qq/SELECT remove_job(\'$jid'\);/;
@@ -171,11 +192,11 @@ if (verification_flag) {
 			my $smtp = Net::SMTP->new('localhost') or die $!;
 			my $from = 'webmaster@evinet.org';
 			my $subject = 'Your Druggable batch job is done';
-			my $message = 'Dear Druggable user, \n\n'. 
-				'the job you have submitted to Druggable is done. You can find results here: '.$stat_file.' \r\n\r\n'. 
-				'Regards,\r\nDruggable';
+			my $message = "Dear Druggable user, \n\n". 
+				"the job you have submitted to Druggable is done. You can find results here: ".$stat_file." \r\n\r\n". 
+				"Regards,\r\nDruggable";
 			if ($passed_iterations < $iter) {
-				$message = $message.'\r\nPlease note that some iterations failed.';
+				$message = $message."\r\nPlease note that some iterations failed.";
 			}
 			$smtp->mail( $from );
 			$smtp->to( $mail );
@@ -198,9 +219,9 @@ if (verification_flag) {
 			my $smtp = Net::SMTP->new('localhost') or die $!;
 			my $from = 'webmaster@evinet.org';
 			my $subject = 'Your Druggable batch job is scheduled';
-			my $message = 'Dear Druggable user, \r\n\r\n'. 
-				'the job you have submitted to Druggable is placed to the queue. You will receive a message with the link to the results once it is done \r\n\r\n'. 
-				'Regards,\r\nDruggable';
+			my $message = "Dear Druggable user, \r\n\r\n". 
+				"the job you have submitted to Druggable is placed to the queue. You will receive a message with the link to the results once it is done \r\n\r\n". 
+				"Regards,\r\nDruggable";
 			$smtp->mail( $from );
 			$smtp->to( $mail );
 			$smtp->data();
@@ -231,9 +252,9 @@ if (verification_flag) {
 			my $smtp = Net::SMTP->new('localhost') or die $!;
 			my $from = 'webmaster@evinet.org';
 			my $subject = 'Cannot submit Druggable job';
-			my $message = 'Dear Druggable user, \r\n\r\n'. 
-				'At the moment your job cannot be submitted since the job queue reached its maximum capacity. Please try to submit your job later. \r\n\r\n'. 
-				'Regards,\r\nDruggable';
+			my $message = "Dear Druggable user, \r\n\r\n". 
+				"At the moment your job cannot be submitted since the job queue reached its maximum capacity. Please try to submit your job later. \r\n\r\n". 
+				"Regards,\r\nDruggable";
 			$smtp->mail( $from );
 			$smtp->to( $mail );
 			$smtp->data();
@@ -254,9 +275,9 @@ if (verification_flag) {
 			my $smtp = Net::SMTP->new('localhost') or die $!;
 			my $from = 'webmaster@evinet.org';
 			my $subject = 'Cannot submit Druggable job';
-			my $message = 'Dear Druggable user, \n\n'. 
-				'Your job cannot be submitted since you have already one job running. Please try to submit your job later, when the first job is donw (you will recieve a mail notification). \n\n'. 
-				'Regards,\nDruggable';
+			my $message = "Dear Druggable user, \n\n". 
+				"Your job cannot be submitted since you have already one job running. Please try to submit your job later, when the first job is donw (you will recieve a mail notification). \n\n". 
+				"Regards,\nDruggable";
 			$smtp->mail( $from );
 			$smtp->to( $mail );
 			$smtp->data();

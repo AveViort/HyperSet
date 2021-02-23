@@ -5,7 +5,8 @@ usedSink = localSink;
 sink(file(paste(usedDir, "runExploratory.", usedSink, ".output.Rout", sep=""), open = "wt"), append = F, type = "output")
 sink(file(paste(usedDir, "runExploratory.", usedSink, ".message.Rout", sep=""), open = "wt"), append = F, type = "message")
 options(warn = 1); # options(warn = 0);
-# message("TEST1");
+message("MESSAGE1");
+print("PRINT1");
 
 Debug = 1;
 
@@ -27,6 +28,7 @@ library("crosstalk")
 library("threejs")
 
 if (na.action=="zero") {tbl[which(is.na(tbl))] = 0;}
+if (!is.null(Col)) {tbl = tbl[,names(Col)];}
 p1 <- princomp(tbl);
 x <- p1$loadings[,1];
 y <- p1$loadings[,2];
@@ -109,8 +111,11 @@ if (0 %in% cnms) {cnms <- cnms[-which(cnms == 0)];}
 tbl <- as.matrix(tbl[rnms,as.numeric(cnms)])
 
 ########################
-Col <- c("#0000FF", "#0000FF", "#00FFFF", "#00FFFF", "#7FFFD4", "#7FFFD4", "#7FFF00", "#7FFF00");
-names(Col) <- c("FB_1", "FB_2", "DI_1", "DI_2", "MB_1", "MB_2", "HB_1", "HB_2");
+# Col <- c("#0000FF", "#0000FF", "#00FFFF", "#00FFFF", "#7FFFD4", "#7FFFD4", "#7FFF00", "#7FFF00");
+# names(Col) <- c("FB_1", "FB_2", "DI_1", "DI_2", "MB_1", "MB_2", "HB_1", "HB_2");
+
+Colnames <- colnames(tbl)[as.numeric(cnms)];
+Col <- NULL;  Col[Colnames[grep("^V", Colnames, fixed=FALSE)]] <- "gray90"; Col[Colnames[grep("^T1", Colnames, fixed=FALSE)]] <- "darkorchid4"; Col[Colnames[grep("^T2", Colnames, fixed=FALSE)]] <- "dodgerblue4";
 ########################
 if (Param$mode == "pca") {
 st <- system.time(res <- pca(tbl, na.action="zero", out=Param$out, Col=Col));

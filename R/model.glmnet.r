@@ -3,7 +3,7 @@ source("../R/init_predictor.r");
 library(glmnet);
 # for parallel glmnet
 library(doParallel);
-cl <- makeCluster(6);
+cl <- makeCluster(8);
 registerDoParallel(cl);
 
 usedSamples <- c();
@@ -55,13 +55,15 @@ createGLMnetSignature <- function (
 	plotModel = TRUE,
 	baseName = 'model_debug',
 	TypeDelimiter = "___",
-	cu0 = NULL
+	cu0 = NULL,
+	saveCoordinates = FALSE
 	) {
 	
 	#print("createGLMnetSignature");
 	
 	perf <- as.list(NULL);
 	perf_frame <- data.frame(Measure = character(), Value = numeric());
+	coordinates <- NULL;
 	lt1 = 1; st1 = 0; Niter = 0; 
 	c1 <- Betas <- model <- NULL;
 	
@@ -85,7 +87,6 @@ createGLMnetSignature <- function (
 			crossval_flag <<- FALSE;
 			#system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_training.png"));
 			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_validation.png"));
-			#system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_roc.png"));
 		}
 		MG <- responseVector;
 		PW = t(predictorSpace);
@@ -245,7 +246,7 @@ createGLMnetSignature <- function (
 		
 		for (Round in rnds) {
 			print(Round);
-			png(file=paste0(baseName, "_", Round,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
+			png(file = paste0(baseName, "_", Round,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 			if (Round == "training") {
 				smp = Sample1;
 			} else {
@@ -291,13 +292,21 @@ createGLMnetSignature <- function (
 
 			if (Family != "cox") {
 				MSE <- mean((MG[smp] - pred)^2);
+				MPE <- mean(abs(MG[smp] - pred)/abs(MG[smp]));
 				R2 <- 1 - (sum((MG[smp] - pred)^2)/sum((MG[smp] - mean(MG[smp]))^2));
 				#print(paste0("R2 (", Round, ")"));
 				#print(paste0("SSreg: ", sum((MG[smp] - pred)^2)));
 				#print(paste0("SStot: ", sum((MG[smp] - mean(MG[smp]))^2)));
 				
 				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("MSE(", Round, ")"), Value = round(MSE,3)));
+				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("MPE(", Round, ")"), Value = round(MPE,3)));
 				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("R^2(", Round, ")"), Value = round(R2,3)));	
+				
+				# save predicted and observed with sample names in case of extended_output
+				if ((Round == "validation") & (saveCoordinates)) {
+					coordinates <- data.frame(predicted = pred, observed = MG[smp]);
+					rownames(coordinates) <- smp;
+				}
 				
 				plot(MG[smp], pred, type="n", xlab="Observed", ylab="Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
 				if (!is.na(title.sub)) {
@@ -333,7 +342,7 @@ createGLMnetSignature <- function (
 		print("No non-zero terms identified...");
 		dev.off();
 	}
-	res <- list(model = model, perf = perf_frame);
+	res <- list(model = model, perf = perf_frame, coordinates = coordinates);
 	return(res);
 }
 
@@ -442,7 +451,7 @@ for (i in 1:length(x_datatypes)) {
 			# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
 			query <- paste0(query, condition, ";");
 			print(query);
-			print(object.size(query));
+			#print(object.size(query));
 			temp2 <- sqlQuery(rch, query);
 			temp <- rbind(temp, temp2);
 			j <- j + 100;
@@ -693,6 +702,8 @@ if (!stop_flag) {
 	temp_rownames <- rownames(X.matrix);
 	temp_colnames <- intersect(names(resp),colnames(X.matrix));
 	X.matrix <- X.matrix[,temp_colnames];
+	print("X.matrix dim:");
+	print(dim(X.matrix));
 	if ((is.null(nrow(X.matrix))) || (length(resp) == 0)) {
 		for (type in c("model", "training", "validation")) {
 			png(file=paste0(File, "_", type,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
@@ -725,28 +736,60 @@ if (!stop_flag) {
 						plotModel = TRUE,
 						baseName = File,
 						TypeDelimiter = TypeDelimiter, 
-						cu0=cu
+						cu0 = cu,
+						saveCoordinates = extended_output
 					);
 		model <- model_data[["model"]];
+		model[["metainfo"]] <- list();
+		model[["metainfo"]][["x_datatypes"]] <- x_datatypes;
+		model[["metainfo"]][["x_platforms"]] <- x_platforms;
+		model[["metainfo"]][["x_ids"]] <- x_ids;
+		model[["metainfo"]][["rdatatype"]] <- rdatatype;
+		model[["metainfo"]][["rplatform"]] <- rplatform;
+		model[["metainfo"]][["rid"]] <- rid;
+		model[["metainfo"]][["multiopt"]] <- multiopt;
 		perf_frame <- model_data[["perf"]];
 		if (!is.na(model)) {
 			save(model, file=paste0(File, ".RData"));
 			# use crossval_flag variable which is a global variable set in createGLMnetSignature
 			# bad style, but otherwise we have to return several objects
 			# print(paste0("crossval_flag: ", crossval_flag));
-			saveJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, rid, multiopt);
+			saveJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, rid, multiopt, fam);
 			savePerformanceJSON(perf_frame, paste0("perf.", Par["out"], ".json"));
 			
-			stat_header <- "Model file,Perf file";
-			stat_line <- paste0(File, ".RData,", Par["out"], ".json");
-			stat_header <- paste0(stat_header, ",", paste(perf_frame[,"Measure"], collapse = ","));
-			stat_line <- paste0(stat_line, ",", paste(perf_frame[,"Value"], collapse = ","));
 			if (!empty_value(statf)) {
+				stat_header <- "Model file,Perf file";
+				stat_line <- paste0(File, ".RData,", Par["out"], ".json");
+				stat_header <- paste0(stat_header, ",", paste(perf_frame[,"Measure"], collapse = ","));
+				stat_line <- paste0(stat_line, ",", paste(perf_frame[,"Value"], collapse = ","));
 				stat_filename <- ifelse(statf == "auto", paste0(File, ".csv"), paste0(statf, ".csv"));
 				if (header) {
+					if (extended_output) {
+						stat_header <- paste0("source,cohort,rdatatype,rplatform,rid,multiopt,xdatatypes,xplatform,alpha,standardize,", 
+											ifelse("script_line" %in% names(Par), "script_line,", ""), stat_header);
+					}
 					write(stat_header, file = stat_filename, append = TRUE);
 				}
+				if (extended_output) {
+					stat_line <- paste(c(Par["source"], Par["cohort"], rdatatype, rplatform, as.character(rid), multiopt, 
+									paste(x_datatypes, collapse = ";"), paste(x_platforms, collapse = ";"), alpha, standardize,
+									ifelse("script_line" %in% names(Par), Par["script_line"], NULL), stat_line), collapse = ",");
+				}
 				write(stat_line, file = stat_filename, append = TRUE);
+				# separate file with coordinates - one predicted/observed scatter plot for batch job
+				if (extended_output) {
+					plot_header <- "source,cohort,rdatatype,rplatform,rid,multiopt,xdatatypes,xplatforms,alpha,standardize,sample,predicted,observed";
+					if (header) {
+						write(plot_header, file = paste0("plot_data.", stat_filename), append = TRUE);
+					}
+					for (i in 1:nrow(model_data[["coordinates"]])) {
+						plot_line <- paste(c(Par["source"], Par["cohort"], rdatatype, rplatform, as.character(rid), multiopt, 
+									paste(x_datatypes, collapse = ";"), paste(x_platforms, collapse = ";"), alpha, standardize,
+									rownames(model_data[["coordinates"]])[i], model_data[["coordinates"]][i,"predicted"], model_data[["coordinates"]][i,"observed"]),
+									collapse = ",");
+						write(plot_line, file = paste0("plot_data.", stat_filename), append = TRUE);
+					}
+				}
 			}
 			
 		}

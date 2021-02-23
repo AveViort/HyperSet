@@ -96,7 +96,6 @@ li.tab:hover ul {
 .ui-dialog .ui-dialog-content {
     padding: 0;
     margin: 0;
-    overflow: hidden;
 }
 
 .footer {
@@ -116,13 +115,14 @@ li.tab:hover ul {
 }
 
 .dataTables_wrapper .dt-buttons {
-  float:none;  
-  text-align:center;
+  float: none;  
+  text-align: center;
 }
 
 table.simple_table td { 
 	border: 1px solid black; 
 }
+
 </style>
 </HEAD>
 
@@ -411,6 +411,7 @@ table.simple_table td {
 				<li><a href="#help-tab-faq">FAQ</a></li>
 				<li><a href="#help-tab-demo">Demo</a></li>
 				<li><a href="#help-tab-comp">Compatibility</a></li>
+				<li><a href="#help-tab-rest">REST API</a></li>
 				<li><a href="#help-tab-citation">Citation</a></li>
 				<li><a href="#help-tab-version">Version</a></li>
 			</ul>
@@ -437,6 +438,125 @@ table.simple_table td {
 				This site best works with Google Chrome <span style="color: #00aa00;">(v. 71 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 60 or later)</span>. It is also compatible with Edge.
 				<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span>.
 				<br>The site also works with Apple Safari (v. 12.1, macOS Mojave v10.14.6), other versions of Safari browser can have compatibility issues.
+			</div>
+			
+			<div id="help-tab-rest">
+				<p>
+					Druggable offers REST API for all functional tabs. Some functions, such as batch jobs, are available only via REST API. All scripts are accessible through https://www.evinet.org/cgi/<i>script_name</i>.
+				</p>
+				<br>
+				<b>Retrieving correlations</b>
+				<br>
+				<p>
+					<b>Script name:</b> cor_datatables_json.cgi<br>
+					<b>Returns:<b> correlations in JSON format<br>
+					<b>Parameters:<b><br>
+						<i>source</i>: mandatory, correlation source (TCGA/CCLE);<br>
+						<i>datatype</i>: mandatory, data type (e.g. GE, COPY...). Can be set to 'all';<br>
+						<i>cohort</i>: mandatory, data cohort, can be set to 'all' for TCGA, must be set to 'all' for CCLE;<br>
+						<i>platform</i>: mandatory, correlaion platform (e.g. Agilent), can be set to 'all';<br>
+						<i>screen</i>: mandatory, correlation screen (e.g. GDSC1), can be set to 'all' for CCLE, must be set to 'all' for TCGA;</br>
+						<i>id</i>: mandatory, gene/protein/pathway/drug name;<br>
+						<i>fdr</i>: mandatory, FDR, use dot as delimeter;<br>
+						<i>mindrug</i>: mandatory, minimal number of samples treated with drug;<br>
+						<i>columns</i>: mandatory, list of columns to retrieve from SQL:<br>
+							<i>	for CCLE</i>: gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature,ancova_q_2x_feature<br>
+							<i>	for TCGA</i>: gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q<br>
+					<b>Example:</b><br>
+				</p>
+				<br>
+				<b>Creating plots</b>
+				<br>
+				<p>
+					<b>Script name:</b> rplot.cgi<br>
+					<b>Returns:</b> plot file name<br>
+					<b>Parameters:<b><br>
+						<i>type</i>: mandatory, plot type (e.g. scatter);<br>
+						<i>source</i>: mandatory, data source (TCGA or CCLE);<br>
+						<i>cohort</i>: mandatory, used cohort;<br>
+						<i>datatypes</i>: mandatory, list of datatypes spearated by commas;<br>
+						<i>platforms</i>: mandatory, list of platforms separated by commas;<br>
+						<i>ids</i>: mandatory, list of genes/antibodies/pathways/drugs names, must match length of datatypes/platforms, if platform has no id - id should be skipped (e.g. 'tp53,,mdm2');<br>
+						<i>codes</i>: mandatory, TCGA codes (01, 06...) or metacodes (all, healthy...) for TCGA, 'all' or tissue name for CCLE;<br>
+						<i>scales</i>: mandatory for the most types of plots, axis scales (linear...).<br>
+					<b>Example:</b><br>
+					<b>Usage tips:</b>This script can return either an html page (plotly plots, for the majority of plot types) or png image (for Venn diagrams).<br>
+				</p>
+				<br>
+				<b>Creating models</b>
+				<br>
+				<p>
+					<b>Script name:<b> model_predict.cgi<br>
+					<b>Returns:<b> model name (without any file extenstions)<br>
+					<b>Parameters:<b><br>
+						<i>method</i>: mandatory, method for creating models, at the moment only 'glmnet' is supported;<br>
+						<i>source</i>: mandatory, data source for model creation (TCGA/CCLE);<br>
+						<i>cohort</i>: mandatory, cohort for model creation;<br>
+						<i>multiopt</i>: mandatory, TCGA codes or metacodes (for TCGA) or CCLE tissues;<br>
+						<i>xdatatypes</i>: mandatory, comma-separated list of data types for independent variables;<br>
+						<i>xplatforms</i>: mandatory, comma-separated list of platforms for independent variables;<br>
+						<i>xids</i>: mandatory, lists of ids (if applicable) for independent variables, empty space if ids do not exist for the chosen platforms (refer to the examples for format);<br>
+						<i>rdatatype</i>: mandatory, datatype for independent (response) variable;<br>
+						<i>rplatform</i>: mandatory, platform for independent (response) variable;<br>
+						<i>rid</i>: mandatory, response variable id (if applicable, otherwise empty);<br>
+						<i>family</i>: mandatory for glmnet, glmnet family (gaussian/cox...), refer to glmnet documentation for further explanation;<br>
+						<i>measure</i>: mandatory for glmnet with cross-validation, which loss should be used to pick the best model, refer to glmnet documentation;<br>
+						<i>alpha</i>: mandatory for glmnet, mixing parameter describing balance between lasso and ridge regression (1 - lasso, 0 - ridge);<br>
+						<i>nlambda</i>: mandatory for glmnet, number of lambda values, refer to glmnet documentation;<br>
+						<i>minlambda</i>: mandatory for glmnet, min lambda value, refer to glmnet documentation;<br>
+						<i>validation</i>: mandatory, if cross-validation should be used (binary flag);<br>
+						<i>validation_fraction</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, numeric, defines share of records to be used for independent validation, use dot as decimal separator;<br>
+						<i>nfolds</i>: mandatory for glmnet with </i>validation</i> flag set to <i>TRUE</i>, number of folds for N-folds cross-validation (see <i>cv.glmnet</i> in glmnet documentation);<br>
+						<i>standardize</i>: mandatory for glmnet, if variables should be standardized (binary flag).<br>
+				</p>
+				<br>
+				<b>Batch models creation</b>
+				<p>
+					<b>Script name:</b> models_from_correlations_batch.cgi<br>
+					<b>Returns:</b> error or nothing ('done' returned only after all models are created, so don't use synchronous calls with it, link with the results will be sent to the specified email)<br>
+					<b>Parameters:</b><br>
+						<i>source</i>: mandatory, data source (TCGA/CCLE) for both correlation retrieval and model creation;<br>
+						<i>datatype</i>: mandatory, same as <i>datatype</i> for <i>cor_datatables_json.cgi</i>; however, several comma-separated values are allowed, number should be the same as number of predictor types;<br>
+						<i>cohort</i>: mandatory, same as <i>cohort</i> for <i>cor_datatables_json.cgi</i>; may be a comma-separated list, length matches with <i>datatype</i> parameter list;<br>
+						<i>screen</i>: mandatory, same as <i>screen</i> for <i>cor_datatables_json.cgi</i>; similar to <i>datatype</i> and <i>cohort</i> may be a list;<br>
+						<i>id</i>: mandatory, same as <i>id</i> for <i>cor_datatables_json.cgi</i>; similar to previous parameters;<br>
+						<i>fdr</i>: mandatory, same as <i>fdr</i> for <i>cor_datatables_json.cgi</i>; similar to previous parameters;<br>
+						<i>mindrug</i>: mandatory, same as <i>mindrug</i> for <i>cor_datatables_json.cgi</i>; unlike previous parameters, this one is always a single value;<br>
+						<i>columns</i>: mandatory, same as <i>columns</i> for <i>cor_datatables_json.cgi</i>;<br>
+						<i>method</i>: mandatory, same as <i>method</i> for <i>model_predict.cgi</i>;<br>
+						<i>model_cohort</i>: mandatory, same as <i>cohort</i> for <i>model_predict.cgi</i>;<br>
+						<i>multiopt</i>: mandatory, same as <i>multiopt</i> for <i>model_predict.cgi</i>;<br>
+						<i>xdatatypes</i>: mandatory, same as <i>xdatatypes</i> for <i>model_predict.cgi</i>;<br>
+						<i>xplatforms</i>: mandatory, same as <i>xplatforms</i> for <i>model_predict.cgi</i>;<br>
+						<i>additional_xids</i>: optional, specifies which ids should be passed to glmnet even if they do not suffice filters;<br>
+						<i>rdatatype</i>: mandatory, same as <i>rdatatype</i> for <i>model_predict.cgi</i>;<br>
+						<i>rplatform</i>: mandatory, same as <i>rplatform</i> for <i>model_predict.cgi</i>;<br>
+						<i>rid</i>: mandatory, same as <i>rid</i> for <i>model_predict.cgi</i>;<br>
+						<i>family</i>: mandatory for glmnet, same as <i>family</i> for <i>model_predict.cgi</i>;<br>
+						<i>measure</i>: mandatory for glmnet, same as <i>measure</i> for <i>model_predict.cgi</i>;<br>
+						<i>alpha</i>: mandatory for glmnet, same as <i>alpha</i> for <i>model_predict.cgi</i>;<br>
+						<i>nlambda</i>: mandatory for glmnet, same as <i>nlambda</i> for <i>model_predict.cgi</i>;<br>
+						<i>minlambda</i>: mandatory for glmnet, same as <i>minlambda</i> for <i>model_predict.cgi</i>;<br>
+						<i>validation</i>: mandatory, same as <i>validation</i> for <i>model_predict.cgi</i>;<br>
+						<i>validation_fraction</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, same as <i>validation_fraction</i> for <i>model_predict.cgi</i>;<br>
+						<i>nfolds</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, same as <i>nfolds</i> for <i>model_predict.cgi</i>;<br>
+						<i>standardize</i>: mandatory, same as <i>standardize</i> for <i>model_predict.cgi</i>;<br>
+						<i>iter</i>: mandatory, desired number of models;<br>
+						<i>stat_file</i>: mandatory, name of the file without extenstion to save your data in (try to give a unique name to your stat_file);<br>
+						<i>extended_output</i>: mandatory, binary flag, if set to <i>TRUE</i> - some additional info will be written into <i>stat_file</i> (such as <i>source</i>, <i>rdatatype</i> etc.);<br>
+						<i>mail</i>: mandatory, provide the correct email, links with the results will be sent to it when your batch jobe is done;<br>
+					<b>Example:</b><br>
+					<b>Usage tips:<b>
+				</p>
+				<br>
+				<b>Using JS API</b>
+				<br>
+				<p>
+					All the aforementioned functions are available through API specified in <i>drugs.js</i> module. Some parameters (like <i>columns</i>) are specified in <i>druggable_config.js</i>.
+				</p>
+				<br>
+				<b>Datatypes, platforms and screens</b>
+				<br>
 			</div>
 			
 			<div id="help-tab-citation">
@@ -702,6 +822,7 @@ table.simple_table td {
 		</table>
 		<button id="build_model_button" onclick="build_and_show_model()">Build model</button>
 		<button id="show_clipboard_button" onclick="show_transfer_buffer_window('#tab-predict')">Show IDs clipboard</button>
+		<button id="show_comparison_preview_button" onclick="show_compare_window()">Models to compare</button>
 	</div>
 	</div>
 </div>     
@@ -946,7 +1067,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 	// get all child nodes of #tabs
 	var nodes = $("#tabs").tabs()[0].childNodes;
 	// this is the node used to attach plot - pay attention to 4+2*!
-	var parent_tab = "#" + nodes[4+2*$("#tabs").tabs("option", "active")].getAttribute("id");		
+	var parent_tab = "#" + $("#tabs").tabs()[0].children[$("#tabs").tabs("option", "active") + 1].id;	
 	// variables are initialised when this function is called from correlations table, otherwise - initialise them
 	if (type == undefined) {
 		type = $('#plot-type option:selected').val();
@@ -1176,7 +1297,7 @@ function build_and_show_model() {
 			
 			var ErrorStack = check_error_stack(new Error().stack);
 			var model_name = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
-				family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, "auto", true);
+				family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, "auto", false, true);
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
 			xmlhttp.send();
@@ -1276,6 +1397,10 @@ function build_and_show_model() {
 							text: "Download model",
 							icon: "ui-icon-download",
 							click: function() {window.location.href = "https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData";},
+						},
+						{
+							text: "Add model to comparison",
+							click: function() {add_model_to_comparison(model_name);},
 						}
 					],
 					resize: function( event, ui ) {
@@ -3212,6 +3337,110 @@ function copy_all_ids_to_predictor(position) {
 	}
 	else {
 		$("#genes_area" + position).val($("#genes_area" + position).val() + ',' + ids);
+	}
+}
+
+function add_model_to_comparison(model) {
+	var models = sessionStorage.getItem('models');
+	if (models != null) {
+		models = models.split(',');
+		models.push(model);
+	}
+	else {
+		models = model;
+	}
+	// JS turns array in comma-separated string
+	sessionStorage.setItem('models', models);
+}
+
+function remove_model_from_comparison(model) {
+	var models = sessionStorage.getItem('models').split(',');
+	var model_index = models.indexOf(model);
+	if (model_index != -1) {
+		models.splice(model_index);
+	}
+	sessionStorage.setItem('models', models);
+}
+
+function show_compare_window() {
+	if (document.getElementById("model_compare_preview_window") == null) {
+		var compare_preview_window = '<div id="model_compare_preview_window"> \
+			<table id="models_to_compare_table" style="text-align:center"> \
+				<thead> \
+					<th>Model name</th>\
+					<th></th> \
+					<th></th> \
+					<th>Remove from comparison</th> \
+				</thead> \
+			</table></div>';
+		$("#tab-predict").append(compare_preview_window);
+		$("#model_compare_preview_window").dialog({
+			title: "Models to compare",
+			buttons: [
+				{
+					text: "Compare models",
+					icon: "ui-icon-arrowreturnthick-1-n",
+					id: "compare_models_button",
+					click: function() {compare_models()}
+				}
+			],
+			height: 'auto',
+			width: 'auto',
+			modal: false,
+			position: { my: "right", at: "top", of: window }, 
+			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+		});
+		var t = $('#models_to_compare_table').DataTable();
+		var models = sessionStorage.getItem('models').split(',');
+		for (var i in models) {
+			t.row.add(
+				[
+					models[i],
+					'<button onclick="window.location.href = \'https://\' + window.location.hostname + \'/pics/plots/' + models[i] + '.RData\';">Download model</button>',
+					'<button onclick="window.open(\'https://\' + window.location.hostname + \'/model_json.html#coeff.' + models[i] + '.json\', \'_blank\')">View coefficients</button>',
+					'<button onclick="table.row($(this).parents(\'tr\')).remove().draw(); remove_model_from_comparison(\'' + models[i] + '\');">Remove</button>'
+				]
+			).draw(false);
+		}
+	}
+}
+
+function compare_models() {
+	// function works only when comparisson preview window is open and no other comparison windows are open
+	if ((document.getElementById("model_compare_preview_window") != null) & (document.getElementById("model_compare_window") == null)) {
+		// Pay attention! Table head is generated dynamically later
+		var compare_window = '<div id="model_compare_window"> \
+			<table id="model_comparison_table" style="text-align:center"> \
+			</table></div>';
+		$("#tab-predict").append(compare_window);
+		$("#model_compare_window").dialog({
+			title: "Models comparison",
+			height: 'auto',
+			width: 'auto',
+			modal: false,
+			position: { my: "right", at: "top", of: window }, 
+			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+		});
+		// no need to turn them into array - comma-separated values are needed
+		var models = sessionStorage.getItem('models');
+		var token = Date.now();
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open("GET", "cgi/compare_models.cgi?models=" + encodeURIComponent(models) + "&filename=" + encodeURIComponent(token), false);
+		xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					// get the columns in table
+					columns_request = new XMLHttpRequest();
+					columns_request.open("GET", "https://" + window.location.hostname + "/pics/plots/" + token + ".table", false);
+					columns_request.send();
+					columns = columns_request.responseText;
+					console.log(columns);
+					document.getElementById('model_comparison_table').innerHTML = columns;
+					$('#model_comparison_table').DataTable( {
+						"ajax": "https://" + window.location.hostname + "/pics/plots/" + token + "_short.json"
+					} );
+				}
+		}
+	xmlhttp.send();
 	}
 }
 

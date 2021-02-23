@@ -252,7 +252,7 @@ function get_glmnet_family(variable, datatype) {
 }
 
 function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
-	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, stat_file, header) 
+	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, stat_file, extended_output, header) 
 {
 	var file; 
 	var xids = [];
@@ -280,6 +280,7 @@ function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_dat
 		"&nfolds=" + encodeURIComponent(nfold) +
 		"&validation_fraction=" + encodeURIComponent(crossvalidation_percent) +
 		"&stat_file=" + encodeURIComponent(stat_file) + 
+		"&extended_output=" + encodeURIComponent(extended_output) + 
 		"&header=" + encodeURIComponent(header), false);
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -383,7 +384,7 @@ function feature_list() {
 	return feature_array;
 }
 
-function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales) {
+function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales) {
 	var file; 
 	//var target = '#tab-lookup';
 	// $("#displayind").html('<span class="' + loadingClasses + '"></span>');
@@ -399,8 +400,8 @@ function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scal
 		encodeURIComponent(cohort) + "&datatypes=" + 
 		encodeURIComponent(datatypes.join()) + "&platforms=" + 
 		encodeURIComponent(platforms.join()) + "&ids=" + 
-		encodeURIComponent(ids.join()) + "&tcga_codes=" + 
-		encodeURIComponent(tcga_codes.join()) + "&scales=" +
+		encodeURIComponent(ids.join()) + "&codes=" + 
+		encodeURIComponent(codes.join()) + "&scales=" +
 		encodeURIComponent(scales.join()));
 	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
 		encodeURIComponent(type) + "&source=" +
@@ -408,8 +409,8 @@ function rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scal
 		encodeURIComponent(cohort) + "&datatypes=" + 
 		encodeURIComponent(datatypes.join()) + "&platforms=" + 
 		encodeURIComponent(platforms.join()) + "&ids=" + 
-		encodeURIComponent(ids.join()) + "&tcga_codes=" + 
-		encodeURIComponent(tcga_codes.join()) + "&scales=" +
+		encodeURIComponent(ids.join()) + "&codes=" + 
+		encodeURIComponent(codes.join()) + "&scales=" +
 		encodeURIComponent(scales.join()), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -720,7 +721,7 @@ function submit_batch_job(
 	// model options
 	family, measure, alpha, nlambda, minlambda, validation, validation_fraction, nfolds, standardize,
 	// third - batch options
-	iter, stat_file, mail
+	iter, stat_file, extended_output, mail
 	) 
 
 {
@@ -754,6 +755,7 @@ function submit_batch_job(
 		"&standardize=" + encodeURIComponent(standardize) +
 		"&iter=" + encodeURIComponent(iter) +
 		"&stat_file=" + encodeURIComponent(stat_file) +
+		"&extended_output=" + encodeURIComponent(extended_output) +
 		"&mail=" + encodeURIComponent(mail), true);
 	xmlhttp.send();
 }

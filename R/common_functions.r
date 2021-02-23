@@ -1,4 +1,4 @@
-# this fail contains functions which are common for plots, models etc.
+# this file contains functions which are common for plots, models etc.
 
 source("../R/HS.R.config.r");
 library(RODBC);

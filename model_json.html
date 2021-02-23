@@ -2,7 +2,7 @@
 <HTML lang="en-US">
 <HEAD>
 
-<TITLE>Datatables AJAX for models</TITLE>
+<TITLE>View model coefficients</TITLE>
 <LINK href="pics/favicon.ico" rel="shortcut icon">
 <meta http-equiv="content-type" content="charset=utf-8">
 <META http-equiv="Content-Script-Type" content="application/javascript" >
@@ -60,8 +60,8 @@ $(document).ready(function() {
         "ajax": "https://" + window.location.hostname + "/pics/plots/" + model,
         "columns": [
             { "data": "Term"},
-			{ "data": "Coef"},
-			{ "data": "Plot"}
+			{ "data": "Coef"}//,
+			//{ "data": "Plot"}
 		],
 		"order": [[ 1, "desc" ]],
 	});

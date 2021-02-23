@@ -39,6 +39,9 @@ my $stat_file 	= $query->param('stat_file');
 # binary, TRUE allows header, FALSE suppresses it
 # absolutely required for batch jobs - otherwise for n models header will be printed n times
 my $header		= $query->param('header');
+# binary, non-mandatory, specifies if extended ouput should be used
+# adds some information to stat file (like rdatatype, rplatform etc.) if set to TRUE
+my $extended_output = $query->param('extended_output');
 
 print "Content-type: text/html\n\n";
 srand();
@@ -47,6 +50,6 @@ my $file = 'model'.$1 if $r =~  m/0\.([0-9]{12})/;
 system("Rscript ../R/model.".$method.".r --vanilla --args ".
 	"source=$source cohort=$cohort rdatatype=$rdatatype rplatform=$rplatform rid=$rid ".
 	"xdatatypes=$xdatatypes xplatforms=$xplatforms xids='$xids' multiopt='$multiopt' ".
-	"family=$family measure=$measure alpha=$alpha nlambda=$nlambda minlambda=$minlambda validation=$validation " .
-	"validation_fraction=$validation_fraction nfolds=$nfolds standardize=$standardize out=$file statf=$stat_file header=$header");
+	"family=$family measure=$measure alpha=$alpha nlambda=$nlambda minlambda=$minlambda validation=$validation ".
+	"validation_fraction=$validation_fraction nfolds=$nfolds standardize=$standardize out=$file statf=$stat_file header=$header extended_output=$extended_output");
 print $file;

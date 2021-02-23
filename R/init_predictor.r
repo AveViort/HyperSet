@@ -77,7 +77,7 @@ plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax=NA, Cls, Title=NA, 
 
 # function to save model coefficients in JSON format
 # new format: we need information about response, multiopt etc. to offer plots 
-saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x_platforms, available_ids, rdatatype, rplatform, rid, multiopt) {
+saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x_platforms, available_ids, rdatatype, rplatform, rid, multiopt, family) {
 	if (empty_value(rid)) {
 		rid <- "";
 	} else {
@@ -153,22 +153,26 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 				temp_id <- tolower(temp_id);
 			}
 		}
-		plot_type <- "";
-		if (rdatatype == "clin") {
-			plot_type <- "KM";
-		} else {
-			temp <- paste0(temp_platform, "-", rplatform);
-			if (temp %in% names(plot_types)) {
-				plot_type <- plot_types[temp]; 
-			} else {
-				query <- paste0("SELECT available_plot_types('", temp_platform, ",", rplatform,"');");
-				print(query);
-				plot_type <- as.character(sqlQuery(rch, query)[1,1]);
-				temp_names <- c(names(plot_types), temp);
-				plot_types <- c(plot_types, plot_type);
-				names(plot_types) <- temp_names;
-			}
-		}
+		plot_type <- switch(family,
+			"cox" = "KM",
+			"multivariate" = "box",
+			"gaussian" = "scatter"
+		);
+		#if (rdatatype == "clin") {
+		#	plot_type <- "KM";
+		#} else {
+			#temp <- paste0(temp_platform, "-", rplatform);
+			#if (temp %in% names(plot_types)) {
+			#	plot_type <- plot_types[temp]; 
+			#} else {
+			#	query <- paste0("SELECT available_plot_types('", temp_platform, ",", rplatform,"');");
+			#	print(query);
+			#	plot_type <- as.character(sqlQuery(rch, query)[1,1]);
+			#	temp_names <- c(names(plot_types), temp);
+			#	plot_types <- c(plot_types, plot_type);
+			#	names(plot_types) <- temp_names;	
+		#	}
+		#}
 		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'linear\', \'linear\'], [\'', multiopt[1], '\', \'', multiopt[1], '\'])\\">Plot</button>');
 		values[i] <- paste0("{\"Term\":\"", Terms[i], "\", \"Coef\":\"", co[i], "\", \"Plot\":\"", button_code, "\"}");
 	}
@@ -210,11 +214,16 @@ setwd(r.plots);
 
 File <- paste0(r.plots, "/", Par["out"]);
 print(File);
+print(names(Par));
 # file name (without extension) to which performance metrics should be printed, usefull for batch jobs
 statf <- Par["statf"];
 # if header should be printed or no
 header <- as.logical(Par["header"]);
-print(names(Par));
+# extended output - FALSE by default
+extended_output <- FALSE;
+if ("extended_output" %in% names(Par)) {
+	extended_output <- as.logical(Par["extended_output"]);
+}
 x_datatypes <- unlist(strsplit(Par["xdatatypes"], split = ","));
 print(x_datatypes);
 x_platforms <- unlist(strsplit(Par["xplatforms"], split = ","));
@@ -228,6 +237,9 @@ for (i in 1:length(x_ids)) {
 		if (any(temp == 'all')) {
 			x_ids[[i]] == c("all");
 		} else {
+			if (grepl('nea', x_datatypes[i])) {
+				temp <- tolower(temp);
+			}
 			query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse=","), "}'::text[]);"); 
 			print(query);
 			internal_ids <- sqlQuery(rch, query);
