@@ -93,26 +93,22 @@ while (@row = $sth->fetchrow_array()) {
 			case "google"  			{ $info2 = "Google" }
 			else { $info2 = "Info" }
 		}
-		# my $cohort_selector = "";
+		my $cohort_selector = "";
 		my $km_button = "";
 		my $cohorts = $field_values[$colnumber-1];
 		if ($cohorts ne " ") {
 			my @cohort_list = split /,/, $cohorts;
-			my $cohort_selector = '<select id=\"TCGAcohortSelector'.$row_id.'\" class=\"ui-helper\">';
-			my $cohort_list = '<div id=\"TCGAcohortList'.$row_id.'\" class=\"\">';
+			$cohort_selector = '<select id=\"TCGAcohortSelector'.$row_id.'\">';
+			# $cohort_selector = '<button id=\"cor-KM'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot_dialog(\''.@field_values[1].','.@field_values[0].','.$cohorts.'\')\">KMs</button>';
 			foreach (@cohort_list) {
 				my ($cohort_name, $datatype_name, $platform_name, $measure) = split /\#/, $_;
-				$cohort_selector .= '<option value=\"'.$cohort_name.'#'.$datatype_name.'#'.$platform_name.'#'.$measure.'\">'.$cohort_name.'-'.$platform_name.'-'.$measure.'</option>';
-				$cohort_list .= '<p cohort=\"'.$cohort_name.'\" datatype_name=\"'.$datatype_name.'\" platform_name=\"'.$platform_name.'\" measure=\"'.$measure.'\" <a class=\"clickable\" href=\"\">'.$cohort_name.'-'.$platform_name.'-'.$measure.'</a></p>';
+				$cohort_selector .= '<option value=\"'.$cohort_name.'#'.$datatype_name.'#'.$platform_name.'#'.$measure.'#'.@field_values[1].'#'.@field_values[0].'\">'.$cohort_name.'-'.$platform_name.'-'.$measure.'</option>';
 			}
 			$cohort_selector .= '</select>';
-			$cohort_list .= '</div>';
-			$cohort_list = '<p cohort=\''.$cohort_name.'\'>ppp<p>';
-			$cohort_list = '';
 			# https://mkkeck.github.io/jquery-ui-iconfont/
 			# $km_button = '<button id=\"cor-KM'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'drug\', \'clin\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.$field_values[1].'\', \'\',\''.$field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\">KM</button>';		
 			# $km_button = '<span id=\"cor-KM'.$row_id.'\" class=\"ui-icon ui-icon-chart-line\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'drug\', \'clin\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.$field_values[1].'\', \'\',\''.$field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\"></span>';
-			$km_button = '<span id=\"cor-KM'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-line\" onclick=\"$(this).html(\\\\\''.$cohort_list.'\\\\\')\"></span>';
+			$km_button = '<span id=\"cor-KM'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-line\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'drug\', \'clin\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.@field_values[1].'\', \'\',\''.@field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\"></span>';
 		}
 		$platform = $field_values[4];
 		if ($source eq "CCLE") {
@@ -146,13 +142,7 @@ while (@row = $sth->fetchrow_array()) {
 		
 		print '"plot":"'.$plot.'",';
 		print '"cohort-selector":"'.$cohort_selector.'",';
-		print '"KM-button":"'.$km_button.'",';
-		# print '"info1":"<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"window.open(\''.$url1.'\', \'_blank\')\">'.$info1.'</button>",';
-		# print '"info1":"'.$span1.'",';
-		print '"info1":"",';
-		# print '"info2":"<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"window.open(\''.$url2.'\', \'_blank\')\">'.$info2.'</button>",';
-		# print '"info2":"'.$span2.'",';
-		print '"info2":"",';
+		#print '"KM-button":"'.$km_button.'",';
 		print '"trbut":"'.$transfer_button.'"';
 		print "}";
 		if ($row_id != $rows) { print ","; }

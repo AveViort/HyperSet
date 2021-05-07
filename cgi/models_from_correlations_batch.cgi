@@ -75,25 +75,73 @@ my @split_additional_xids 	= split /\,/, $additional_xids;
 my $i, $j;
 
 # verify parameters
-my $email_pattern= '^([a-zA-Z][\w\_\.]{6,24})\@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$';
-my $verification_flag;
-my $cor_screens_verification_flag;
-my $cor_platforms_verification_flag = 0;
-my $model_rplatform_verification_flag;
-my $model_xplatforms_verification_flag;
+my $email_pattern = '^([a-zA-Z][\w\_\.]{6,24})\@([a-zA-Z0-9.-]+)\.([a-zA-Z]{2,4})$';
+my $mail_verification_flag;
+my $cor_screens_verification_flag = 1;
+my $cor_platforms_verification_flag = 1;
+my $model_rplatform_verification_flag = 1;
+my $model_xplatforms_verification_flag = 1;
+my $temp_verification;
+
+$dbh = HS_SQL::dbh('druggable');
+my $sth;
+my $error_message = 'An error has occured. Please fix the following errors:<br>';
 
 print "Content-type: text/html\n\n";
 # verify email
-$verification_flag = ($mail =~ email_pattern);
+$mail_verification_flag = ($mail =~ email_pattern);
+if (not $mail_verification_flag) {
+ $error_message .= 'Invalid email address<br>'
+}
 # verify correlation platforms 
-
+foreach $i(0..@split_datatypes-1) {
+	if ($split_platforms[$i] ne 'all') {
+		$stat = qq/SELECT EXISTS(SELECT platform FROM cor_guide_table WHERE platform=\'$split_platforms[$i]'\);/;
+		$sth = $dbh->prepare($stat) or die $dbh->errstr;
+		$sth->execute( ) or die $sth->errstr;
+		$temp_verification = $sth->fetchrow_array;
+		if (not $temp_verification) {
+			$error_message .= "Wrong platform to retrieve correlations specified: ".$split_platforms[$i]."<br>";
+		}
+		$cor_platforms_verification_flag = $cor_platforms_verification_flag && $temp_verification;
+	}
+}
 # if platforms are correct - verify screens;
-
+if ($cor_platforms_verification_flag) {
+	foreach $i(0..@split_datatypes-1) {
+		if ($split_screens[$i] ne 'all') {
+			$stat = qq/SELECT EXISTS(SELECT screen FROM cor_guide_table WHERE screen=\'$split_screens[$i]'\ AND platform=\'$split_platforms[$i]'\);/;
+			$sth = $dbh->prepare($stat) or die $dbh->errstr;
+			$sth->execute( ) or die $sth->errstr;
+			$temp_verification = $sth->fetchrow_array;
+			if (not $temp_verification) {
+				$error_message .= "Wrong screen to retrieve correlations specified: ".$split_screens[$i]."<br>";
+			}
+			$cor_screens_verification_flag = $cor_screens_verification_flag && $temp_verification;
+		}
+	}
+}
 # verify response platform
-
+$stat = qq/SELECT EXISTS(SELECT response FROM variable_guide_table WHERE variable_name=\'$rplatform'\ AND response=TRUE);/;
+$sth = $dbh->prepare($stat) or die $dbh->errstr;
+$sth->execute( ) or die $sth->errstr;
+$model_rplatform_verification_flag = $sth->fetchrow_array;
+if (not $model_rplatform_verification_flag) {
+	$error_message .= "Wrong response platform specified: ".$rplatform."<br>";
+}
 # verify predictor platforms
+foreach $i(0..@split_datatypes-1) {
+	$stat = qq/SELECT EXISTS(SELECT response FROM variable_guide_table WHERE variable_name=\'$xplatforms[$i]'\ AND predictor=TRUE);/;
+	$sth = $dbh->prepare($stat) or die $dbh->errstr;
+	$sth->execute( ) or die $sth->errstr;
+	$temp_verification = $sth->fetchrow_array;
+	if (not $temp_verification) {
+		$error_message .= "Wrong platform for independent variables specified: ".$xplatforms[$i]."<br>";
+	}
+	$model_xplatforms_verification_flag = $model_xplatforms_verification_flag && $temp_verification;
+}
 
-if (verification_flag) {
+if ($mail_verification_flag && $cor_platforms_verification_flag && $cor_screens_verification_flag && $model_rplatform_verification_flag && $model_xplatforms_verification_flag) {
 	srand();
 	# this variable is unused by defaut - keep it as a reminder of table structure and for future possible uses
 	my @field_names = ("gene", "feature", "datatype", "cohort", "platform", "screen", "sensitivity");
@@ -102,7 +150,6 @@ if (verification_flag) {
 	my @unique_xids;
 	my $all_ids = "";
 	my $header;
-	$dbh = HS_SQL::dbh('druggable');
 
 	# generate job id based on time (time returns float, convert it to integer)
 	my $jid = int(time);
@@ -110,7 +157,7 @@ if (verification_flag) {
 	my $pid = $$;
 	# check if we can run the job
 	$stat = qq/SELECT add_job($jid, $pid, \'$mail'\, $Aconfig::queue_size);/;
-	my $sth = $dbh->prepare($stat) or die $dbh->errstr;
+	$sth = $dbh->prepare($stat) or die $dbh->errstr;
 	$sth->execute( ) or die $sth->errstr;
 	$dbh->commit;
 	my $job_status = $sth->fetchrow_array;
@@ -296,5 +343,5 @@ if (verification_flag) {
 	print $batch_file;
 }
 else {
-	print "Wrong email provided;";
+	print $error_message;
 }

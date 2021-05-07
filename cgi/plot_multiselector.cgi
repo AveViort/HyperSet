@@ -30,12 +30,12 @@ if ($source eq "TCGA") {
 	$codes = $sth->fetchrow_array;
 }
 else {
-	$stat = qq/SELECT get_tissue_types(\'$cohort'\)/;
-	# get_tissue_types() does not offer metacodes, so add manually
-	$codes = 'all';
+	$stat = qq/SELECT get_tissue_types_meta()/;
 	$sth = $dbh->prepare($stat) or die $dbh->errstr;
 	$sth->execute( ) or die $sth->errstr;
 	my @tissues;
+	@tissues = $sth->fetchrow_array();
+	$codes = @tissues[0];
 	while (@tissues = $sth->fetchrow_array()) {
 		$codes = $codes.','.@tissues[0];
 	}

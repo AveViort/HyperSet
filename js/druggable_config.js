@@ -29,8 +29,8 @@ var html_glm_regressors = "<div>Predictors, type ###:</div><table id ='table-reg
 // correlation tables settings
 // headers
 var cor_headers = new Map();
-cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th></th><th title=\'Drug short name\'>Drug</th><th></th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'></th><th title=\'\'>Cohorts in TCGA </th><th title=\'\'></th></tr>");
-cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th></th><th title=\'Drug short name\'>Drug</th><th></th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>TCGA cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th>Subset</th><th title=\'Type of patient response\n\tOverall survival (OS),\n\t Relapse-free survival (RFS),\n\t Progression-free survival (PFS),\n\t Disease-free interval (DFI)\'>Endpoint</th><th title=\'Fraction of the maximal follow-up time for the whole cohort\'>Follow-up part</th><th title=\'P-value for interaction term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Interaction</th><th title=\'P-value for drug term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Drug</th><th title=\'P-value for feature term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Feature</th><th title=\'No. of patients treated with the drug and available data\'>N(treated)</th><th title=\'No. of patients treated with available data\'>N(total)</th><th title=\'\'>Followup, days</th><th title=\'\'>Cohorts</th><th title=\'\'></th></tr>");
+cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'></th><th title=\'\'>Cohorts in TCGA </th><th title=\'\'></th></tr>");
+cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>TCGA cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th>Subset</th><th title=\'Type of patient response\n\tOverall survival (OS),\n\t Relapse-free survival (RFS),\n\t Progression-free survival (PFS),\n\t Disease-free interval (DFI)\'>Endpoint</th><th title=\'Fraction of the maximal follow-up time for the whole cohort\'>Follow-up part</th><th title=\'P-value for interaction term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Interaction</th><th title=\'P-value for drug term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Drug</th><th title=\'P-value for feature term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Feature</th><th title=\'No. of patients treated with the drug and available data\'>N(treated)</th><th title=\'No. of patients treated with available data\'>N(total)</th><th title=\'\'>Followup, days</th><th title=\'\'>Cohorts</th><th title=\'\'></th></tr>");
 // column names to retrieve from SQL
 var cor_sql_columns = new Map();
 cor_sql_columns.set("CCLE", "gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature,ancova_q_2x_feature");
@@ -39,10 +39,8 @@ cor_sql_columns.set("TCGA", "gene,feature,followup_part,interaction,drug,expr,n_
 var cor_visible_columns = new Map();
 cor_visible_columns.set("CCLE", [
             { "data": "gene" },
-			{ "data": "info1" },
 			{ "data": "trbut" },
             { "data": "feature" },
-			{ "data": "info2" },
             { "data": "datatype" },
             { "data": "platform" },
             { "data": "screen" },
@@ -59,16 +57,36 @@ cor_visible_columns.set("CCLE", [
 			  "render":  function (data) {
 				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
 			{ "data": "plot" },
-			{ "data": "cohort-selector" },
-			{ "data": "KM-button" }
+			{ "data": "cohort-selector"
+			 /*
+			  "render": function(data) {
+				  if (data.length > 1) {
+					//console.log(data);
+					var id_begin = data.indexOf("TCGAcohortSelector");
+					var id_end = data.indexOf("<option") - 2;
+					var id = '#' + data.substring(id_begin, id_end);
+					$( id ).each(
+						function() {
+							$(this).prop("title", $(this).val() );
+						})
+					$(id).selectmenu();
+					$(id).on( "selectmenuclose",
+						function( event, ui ) {
+							console.log($(this).val());
+							var selected_values = $(this).val().split('#'); 
+							plot('cor-KM', 'tcga',selected_values[0], ['drug', 'clin', selected_values[1]], ['drug', selected_values[3].toLowerCase(), selected_values[2]], [selected_values[4], '', selected_values[5]], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])
+						});
+				  }
+				  return(data);
+			  }
+			  */
+			}
         ]
 );
 cor_visible_columns.set("TCGA", [
             { "data": "gene" },
-			{ "data": "info1" },
 			{ "data": "trbut" },
             { "data": "feature" },
-			{ "data": "info2" },
             { "data": "datatype" },
 			{ "data": "cohort" },
             { "data": "platform" },
@@ -102,8 +120,8 @@ var max_model_rows = 3;
 
 // some restrictions for models
 nfolds_min = 3;
-nfolds_max = 10;
-validation_fraction_max = 50;
+nfolds_max = 25;
+validation_fraction_max = 80;
 
 // delimiters which can be used for model ids - write as a regexp
 var ids_delim = /[\s,;]+/;

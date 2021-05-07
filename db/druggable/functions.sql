@@ -111,6 +111,32 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- same as get_tissue_types, but with metacodes - does not require cohort name
+CREATE OR REPLACE FUNCTION get_tissue_types_meta() RETURNS setof text AS $$
+DECLARE
+tissue_name text;
+n numeric;
+BEGIN
+FOR tissue_name IN SELECT tissue FROM tissue_counts
+LOOP
+RETURN NEXT tissue_name;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but with counts
+CREATE OR REPLACE FUNCTION get_tissue_types_meta_n() RETURNS setof text AS $$
+DECLARE
+tissue_name text;
+n numeric;
+BEGIN
+FOR tissue_name, n IN SELECT tissue, counts FROM tissue_counts
+LOOP
+RETURN NEXT tissue_name || '|' || n;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
 -- return available screens for correlation tables
 CREATE OR REPLACE FUNCTION screen_list(source_n text, data_type text, cohort_n text, platform_n text, sensitivity_m text) RETURNS setof text AS $$
 DECLARE
@@ -1944,6 +1970,36 @@ END LOOP;
 END IF;
 END LOOP;
 RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- create table with tissue counts
+CREATE OR REPLACE FUNCTION create_tissue_counts_table() RETURNS boolean AS $$
+DECLARE
+query text;
+tissue_name text;
+n numeric;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'tissue_counts')
+THEN
+DELETE FROM tissue_counts;
+ELSE
+CREATE TABLE tissue_counts (tissue character varying(256), counts numeric);
+END IF;
+query := 'SELECT tissue, COUNT(tissue) AS total FROM ctd_tissue GROUP BY tissue ORDER BY total DESC;';
+FOR tissue_name, n IN EXECUTE query
+LOOP
+INSERT INTO tissue_counts(tissue,counts) VALUES (tissue_name,n);
+END LOOP;
+-- add meta-codes
+SELECT COUNT (*) INTO n FROM ctd_tissue;
+INSERT INTO tissue_counts(tissue,counts) VALUES ('all',n);
+SELECT COUNT (*) INTO n FROM ctd_tissue WHERE tissue=ANY('{CENTRAL_NERVOUS_SYSTEM,STOMACH,VULVA,URINARY_TRACT,BREAST,ADRENAL_CORTEX,CERVIX,PROSTATE,ENDOMETRIUM,LARGE_INTESTINE,SKIN,THYROID,TESTIS,LUNG,OESOPHAGUS,HAEMATOPOIETIC_AND_LYMPHOID,LIVER,PLEURA,PANCREAS,AUTONOMIC_GANGLIA,OVARY,UPPER_AERODIGESTIVE_TRACT,UVEA,BILIARY_TRACT,SALIVARY_GLAND,PLACENTA,BONE,KIDNEY,SMALL_INTESTINE,SOFT_TISSUE,PRIMARY}'::text[]);
+INSERT INTO tissue_counts(tissue,counts) VALUES ('cancer',n);
+SELECT COUNT (*) INTO n FROM ctd_tissue WHERE tissue=ANY('{FIBROBLAST,MATCHED_NORMAL_TISSUE}'::text[]);
+INSERT INTO tissue_counts(tissue,counts) VALUES ('healthy',n);
+RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 

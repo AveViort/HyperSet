@@ -47,6 +47,21 @@ createPostgreSQLregex <- function(tcga_code) {
 	return(regex);
 }
 
+# creates a comma-separated list of tissues from tissue codes and metacodes - but can return 'ALL' metacode
+createTissuesList <- function(multiopt) {
+	tissues <- c();
+	multiopt <- toupper(multiopt);
+	for (tissue in multiopt) {
+		tissues <- c(tissues, switch(tissue,
+									"CANCER" = {"CENTRAL_NERVOUS_SYSTEM,STOMACH,VULVA,URINARY_TRACT,BREAST,ADRENAL_CORTEX,CERVIX,PROSTATE,ENDOMETRIUM,LARGE_INTESTINE,SKIN,THYROID,TESTIS,LUNG,OESOPHAGUS,HAEMATOPOIETIC_AND_LYMPHOID,LIVER,PLEURA,PANCREAS,AUTONOMIC_GANGLIA,OVARY,UPPER_AERODIGESTIVE_TRACT,UVEA,BILIARY_TRACT,SALIVARY_GLAND,PLACENTA,BONE,KIDNEY,SMALL_INTESTINE,SOFT_TISSUE,PRIMARY"},
+									"HEALTHY" = {"FIBROBLAST,MATCHED_NORMAL_TISSUE"},
+									{tissue}
+									)
+					);
+	}
+	return(paste(tissues, collapse = ","));
+}
+
 # transform data frame with two columns into JSON string
 # data frame must have column names!
 frameToJSON <- function(data_frame) {

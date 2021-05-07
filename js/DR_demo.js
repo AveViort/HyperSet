@@ -307,8 +307,9 @@ async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 							}, 2*to);
 							
 							document.getElementById("cor_result_table").addEventListener("correlations_retrieved", function cor_listener(e) {
-								demoClick("#cor-KM" + plotid, 100);
-								closeCommentForm();											
+								demoClickSpan("#TCGAcohortSelector" + plotid + "-button", 100);
+								closeCommentForm();
+								demoClickSpan("#TCGAcohortSelector" + plotid + "-button", 120);
 								sessionStorage.removeItem("demo");
 							}, {once: true});
 							
@@ -392,7 +393,7 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 							}, to);
 							
 							document.getElementById("cor_result_table").addEventListener("correlations_retrieved", function cor_listener(e) {
-								demoClick("#cor-plot" + plotid, 100);
+								demoClickSpan("#cor-plot" + plotid, 100);
 								closeCommentForm();											
 								sessionStorage.removeItem("demo");
 							}, {once: true});
@@ -698,6 +699,15 @@ function demoClick(id,to){
 	setTimeout(function() {$(id).click()},to);
 	to += delta_local/1;
 	setTimeout(function() {$(id).removeClass("checkboxhighlight")},to);	
+	return(to);	
+}
+
+function demoClickSpan(id,to){
+	setTimeout(function() {$(id).toggle("hover")},to);
+	to += delta_local/2;
+	setTimeout(function() {$(id).click()},to);
+	to += delta_local/1;
+	setTimeout(function() {$(id).toggle("hover")},to);	
 	return(to);	
 }
 

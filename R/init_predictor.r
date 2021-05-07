@@ -140,12 +140,15 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 	#print(Betas);
 	#print(co);
 	for (i in 1:length(co)) {
-		#print(paste0("Terms[", i, "]: ", Terms[i]));
+		print(paste0("Terms[", i, "]: ", Terms[i]));
 		temp <- unlist(strsplit(substr(Terms[i], 1, nchar(Terms[i])-1), split="\\("));
-		temp_id <- (temp[1]);
+		# rewritten in case of variables such as ARGININE_DEGRADATION_VI_(ARGINASE_2_PATHWAY)(Z_RNASEQ_TOP100)
+		temp_id <- paste(temp[1:(length(temp)-1)]);
 		#print(temp_id);
-		temp_platform <- tolower(temp[2]);
+		temp_platform <- tolower(temp[length(temp)]);
+		#print(temp_platform);
 		temp_datatype <- x_datatypes[which(x_platforms == temp_platform)];
+		#print(temp_datatype);
 		if (tolower(temp_id) %in% x_platforms) {
 			temp_id <- "";
 		} else {

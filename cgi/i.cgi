@@ -435,7 +435,7 @@ my $jid = $q -> param("jid"); #generateJID();
 	$textFileFields,
 	$jobParameters -> {genewiseFGS},
 	$species, 
-	1);
+	0);
 	}
 	 
 	# print STDERR '---FGS: '.(defined($fgs) ? $fgs : '---')."\n" if $debug;
@@ -655,7 +655,7 @@ sub printNet {
 my($bsURLstring, $callerNo, $AGS, $FGS) = @_;
 my($data, $node);
 
-print $bsURLstring."\n"   if $debug;
+print $bsURLstring."\n" if $debug;
 ($data, $node) = HS_bring_subnet::bring_subnet($bsURLstring);
 my $parname;
 my $pcont = '';

@@ -28,7 +28,9 @@ x_data <- sqlQuery(rch, query);
 if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
 	rownames(x_data) <- x_data[,"sample"];
 	print(paste0("Before tissue filtering: ", nrow(x_data)));
-	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue='", toupper(tcga_codes[1]), "';");
+	tissues <- createTissuesList(multiopt);
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+	print(query);
 	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 	x_data <- x_data[tissue_samples,];
 	print(paste0("After tissue filtering: ", nrow(x_data)));
@@ -54,7 +56,7 @@ if (status != 'ok') {
 		x_data <- rbind(x_data,temp);
 	}
 	# 1D
-	if (is.null(datatypes[2])) {
+	if (length(datatypes) == 1) {
 		if ((platforms[1] == "drug") & (!empty_value(ids[1]))) {
 			# patients who took drug
 			x_data[,1] <- as.character(x_data[,1]);

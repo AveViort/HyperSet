@@ -568,7 +568,8 @@ my $nw_list = HS_SQL::list_network_to_be_merged($main::species);
 # 	
 
 for $net(sort {$b cmp $a} keys(%{$nw_list})) {
-    $listTableNET .= '<TR><TD><INPUT type="checkbox" 
+	if (defined($HSconfig::netDescription->{$sp}->{title}->{$net})) {
+		$listTableNET .= '<TR><TD><INPUT type="checkbox" 
 '.($net eq $dft ? ' dft="yes" ' : '').' onclick="updatechecksbm(\'net\', \'coll\')" onchange="updatechecksbm(\'net\', \'coll\')"
 				name="NETselector" value="'.$net.'" class="alternative_input venn_box_control"></TD>
 			   <TD>'.$HSconfig::netNames{$net}.'</TD>
@@ -577,7 +578,7 @@ for $net(sort {$b cmp $a} keys(%{$nw_list})) {
 				<!--TD title="'.$HSconfig::netDescription->{$sp}->{title}->{$net}.'" id="help-'.$main::ajax_help_id++.'" class="js_ui_help gs_collection"> ? </TD-->
 				<TD title="'.$HSconfig::netDescription->{$sp}->{title}->{$net}.' '.'<a href=\''.$HSconfig::netDescription->{$sp}->{link}->{$net}.'\' class=\'clickable\'>URL</a>" id="help-'.$main::ajax_help_id++.'" class="js_ui_help gs_collection"> ? </TD>
                            </TR>';
-} #$nw_list->{$net}->{$feature}
+}} #$nw_list->{$net}->{$feature}
 $elementContent{submitCollNET} =~ s/###listTableNET###/$listTableNET/;
 }
 if ($ty eq 'arc') {

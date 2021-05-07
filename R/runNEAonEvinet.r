@@ -150,6 +150,9 @@ if (isindividual) {
 	}
 }
 	gsl$list = as.list(gsl$list);
+	if ("score" %in% colnames(gs)) { gsl$score = as.list(gsl$score);}
+	if ("subset" %in% colnames(gs)) { gsl$subset = as.list(gsl$subset);}
+
 	for (gg in names(gsl$list)) {
 if (isindividual) {
 		pick <- which(gs[[col.name.gene]] == gg);

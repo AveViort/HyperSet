@@ -18,10 +18,10 @@ print "Content-type: text/html\n\n";
 $stat = "";
 if ($source eq "CCLE") {
 	if ($variable eq "tissue") {
-		$stat = qq/SELECT 'all'/;
+		$stat = qq/SELECT 'all|all'/;
 	}
 	else {
-		$stat = qq/SELECT get_tissue_types_n(\'$cohort'\)/;
+		$stat = qq/SELECT get_tissue_types_meta_n()/;
 	}
 }
 else {

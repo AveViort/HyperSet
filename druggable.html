@@ -27,8 +27,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <LINK href="hyperset.css" type="text/css" rel="stylesheet">
-<LINK href="js/jquery-ui-themes-1.12.1/themes/blitzer/jquery-ui.min.css" type="text/css" rel="stylesheet">
-<LINK href="js/jquery-ui-themes-1.12.1/themes/blitzer/jquery-ui-1.12.icon-font.min.css" type="text/css" rel="stylesheet">
+<LINK href="js/jquery-ui-themes-1.12.1/themes/pepper-grinder/jquery-ui.min.css" type="text/css" rel="stylesheet">
+<LINK href="js/jquery-ui-themes-1.12.1/themes/pepper-grinder/jquery-ui-1.12.icon-font.min.css" type="text/css" rel="stylesheet">
 <LINK href="js/qTip/jquery.qtip.min.css" type="text/css" rel="stylesheet">
 <!--link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/cytoscape.js-panzoom.css" rel="stylesheet" type="text/css" /-->
 <!--link href="js/Cytoscape.js/cytoscape-cytoscape.js-panzoom-c1dbe79/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css" /-->
@@ -114,15 +114,102 @@ li.tab:hover ul {
     display: none;
 }
 
-.dataTables_wrapper .dt-buttons {
-  float: none;  
-  text-align: center;
+.dt-buttons {
+  float:none;  
+  text-align:left;
+}
+.dataTables_wrapper  {
+  float:left;  
+  text-align:left;
+}
+
+div.container {
+        width: 75%;
+    }
+
+#cor_result_table thead th {
+    padding: 0.5em 2em 0.5em 1em;
+	}
+	
+#cor_result_table tbody td {
+    padding: 0.5em 1.0em;
+	}
+
+span.adj-icon {
+display: inline;
+margin-right: 0.25em; 
+margin-left: 1.0em;
+}
+
+.adj-icon:hover { 
+	font-size: large;
+}
+
+.ui-button-icon-only {
+border: 	none;
+background: 	none;
+}
+
+
+/*.ui-tabs .ui-tabs-nav {    display: flex;}
+.ui-tabs .ui-tabs-nav li {flex: 1; display: flex; white-space: normal;}*/
+/* https://stackoverflow.com/questions/9222139/jquery-ui-tabs-width-100 If placed in a small width sidebar or something like that disabling nowrap will fix the overflow issue */
+
+.ui-tabs .ui-tabs-panel {
+	width: 99%;
+	
+.minimized_title {
+font-size: x-small;
+//display: inline;
+display: block;
+float: left;
+}
 }
 
 table.simple_table td { 
 	border: 1px solid black; 
 }
 
+.sidebar {
+  height: 100%; 
+  width: 0; 
+  position: fixed; 
+  z-index: 1; 
+  top: 0;
+  right: 0;
+  background-color: #111; 
+  overflow-x: hidden; 
+  padding-top: 60px; 
+  transition: 0.5s; 
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
+  word-break: break-word;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  color: #111;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+}
 </style>
 </HEAD>
 
@@ -146,13 +233,16 @@ table.simple_table td {
 			</td>
 			<td>
 				<div id="demo-2">
-					<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
+					<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 548)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
 				</div>
 			</td>
 			<td>
 				<div id="demo-4">
 					<span class=" clickable demo_button sbm-controls" onclick="dr_demo4 ('glmnet', 'TCGA', 'SKCM', ['06'], 'CLIN', 'os', '', ['GE', 'IMMUNO'], ['illuminahiseq_rnaseqv2','macrophages_m0'], ['TP53, MYC, MYCN, BRAF', ''], 'cox', 'deviance', false, 1, 10, 0.01, true, 3, 50)" title="Demo - using expression data for several genes and M0 macrophage count to predict overall survival time in cutaneous and malignant skin melanoma (SKCM) TCGA cohort.">Demo "predictive models"</span>
 				</div>
+			</td>
+			<td>
+				<button id="dock-button" onclick=open_dock()>Docked plots</button>
 			</td>
 		</tr>
 	</table>
@@ -171,18 +261,24 @@ table.simple_table td {
 	  </p>
 	</div>	
 </div>
+
+<div id="sidebar_dock" class="sidebar">
+	<div>
+		<a href="javascript:void(0)" class="closebtn" onclick="close_dock()">&times;</a>
+	</div>
+</div>
 	
-<div id="tabs">
+<div id="tabs" "width: 99%;">
 	<ul>
-		<li><a href="#tab-home">Introduction and help</a></li>
+		<li><a href="#tab-home">Introduction</a></li>
 		<li><a href="#tab-signif">Correlates of drug response</a></li>
-		<li><a href="#tab-lookup">Data exploration and look up</a></li>
-		<li><a href="#tab-predict">Multidimensional prediction models</a></li>
+		<li><a href="#tab-lookup">Data exploration</a></li>
+		<li><a href="#tab-predict">Multidimensional models</a></li>
 	</ul>
 	
 	<div id="tab-home">
 		<div style="display: inline-block; width: 80%;"><p>Druggable supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
-			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots  of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
+			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of Druggable is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
 			</p>
 			
 			<br>
@@ -206,7 +302,7 @@ table.simple_table td {
 					<tr>
 						<td rowspan="6">CTD</td>
 						<td rowspan="6"><a href="./help/platforms_data/CTD_COPY_snp6.txt">snp6 (21217 genes)</a></td>
-						<td rowspan="2"><a href="./help/platforms_data/CTD_GE_rnaseq.txt">rnaseq (17893 genes)</td>
+						<td rowspan="2"><a href="./help/platforms_data/CTD_GE_rnaseq.txt">rnaseq (17893 genes)</a></td>
 						<td rowspan="6"></td>
 						<td rowspan="6"></td>
 						<td rowspan="3"><a href="./help/platforms_data/CTD_MUT_ccle_exome_2019.txt">CCLE Exome 2019 (19524 genes)</a></td>
@@ -398,7 +494,6 @@ table.simple_table td {
 				</tbody>	
 			</table>
 		</div>
-		
 		<div id="table-help-menu" style="display: inline;">
 			<span  id="help-qtip" style="float: right; margin-right: 4em; margin-left: 1em;  font-size: 250%; color: #c00;" class="ui-icon ui-icon-circle-help" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');">icon</span>
 		</div>
@@ -427,9 +522,9 @@ table.simple_table td {
 			<div id="help-tab-demo">
 				<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
 				<br>
-				<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
+				<span class=" clickable demo_button sbm-controls" onclick="dr_demo3('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
 				<br>
-				<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
+				<span class=" clickable demo_button sbm-controls" onclick="dr_demo2('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
 			</div>
 		
 			<div id="help-tab-comp">
@@ -449,8 +544,8 @@ table.simple_table td {
 				<br>
 				<p>
 					<b>Script name:</b> cor_datatables_json.cgi<br>
-					<b>Returns:<b> correlations in JSON format<br>
-					<b>Parameters:<b><br>
+					<b>Returns:</b> correlations in JSON format<br>
+					<b>Parameters:</b><br>
 						<i>source</i>: mandatory, correlation source (TCGA/CCLE);<br>
 						<i>datatype</i>: mandatory, data type (e.g. GE, COPY...). Can be set to 'all';<br>
 						<i>cohort</i>: mandatory, data cohort, can be set to 'all' for TCGA, must be set to 'all' for CCLE;<br>
@@ -462,7 +557,7 @@ table.simple_table td {
 						<i>columns</i>: mandatory, list of columns to retrieve from SQL:<br>
 							<i>	for CCLE</i>: gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature,ancova_q_2x_feature<br>
 							<i>	for TCGA</i>: gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q<br>
-					<b>Example:</b><br>
+					<b>Example:</b> https://www.evinet.org/cgi/cor_datatables_json.cgi?source=CCLE&datatype=GE&cohort=all&platform=RNAseq&screen=GDSC2&id=gemcitabine&fdr=0.01&mindrug=10&columns=gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature,ancova_q_2x_feature&_=1614857799773<br>
 				</p>
 				<br>
 				<b>Creating plots</b>
@@ -470,7 +565,7 @@ table.simple_table td {
 				<p>
 					<b>Script name:</b> rplot.cgi<br>
 					<b>Returns:</b> plot file name<br>
-					<b>Parameters:<b><br>
+					<b>Parameters:</b><br>
 						<i>type</i>: mandatory, plot type (e.g. scatter);<br>
 						<i>source</i>: mandatory, data source (TCGA or CCLE);<br>
 						<i>cohort</i>: mandatory, used cohort;<br>
@@ -479,16 +574,16 @@ table.simple_table td {
 						<i>ids</i>: mandatory, list of genes/antibodies/pathways/drugs names, must match length of datatypes/platforms, if platform has no id - id should be skipped (e.g. 'tp53,,mdm2');<br>
 						<i>codes</i>: mandatory, TCGA codes (01, 06...) or metacodes (all, healthy...) for TCGA, 'all' or tissue name for CCLE;<br>
 						<i>scales</i>: mandatory for the most types of plots, axis scales (linear...).<br>
-					<b>Example:</b><br>
+					<b>Example:</b> https://www.evinet.org/cgi/rplot.cgi?type=bar&source=TCGA&cohort=BRCA&datatypes=CLIN&platforms=vital_status&ids=%2C&codes=&scales=<br>
 					<b>Usage tips:</b>This script can return either an html page (plotly plots, for the majority of plot types) or png image (for Venn diagrams).<br>
 				</p>
 				<br>
 				<b>Creating models</b>
 				<br>
 				<p>
-					<b>Script name:<b> model_predict.cgi<br>
-					<b>Returns:<b> model name (without any file extenstions)<br>
-					<b>Parameters:<b><br>
+					<b>Script name:</b> model_predict.cgi<br>
+					<b>Returns:</b> model name (without any file extenstions)<br>
+					<b>Parameters:</b><br>
 						<i>method</i>: mandatory, method for creating models, at the moment only 'glmnet' is supported;<br>
 						<i>source</i>: mandatory, data source for model creation (TCGA/CCLE);<br>
 						<i>cohort</i>: mandatory, cohort for model creation;<br>
@@ -506,8 +601,52 @@ table.simple_table td {
 						<i>minlambda</i>: mandatory for glmnet, min lambda value, refer to glmnet documentation;<br>
 						<i>validation</i>: mandatory, if cross-validation should be used (binary flag);<br>
 						<i>validation_fraction</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, numeric, defines share of records to be used for independent validation, use dot as decimal separator;<br>
-						<i>nfolds</i>: mandatory for glmnet with </i>validation</i> flag set to <i>TRUE</i>, number of folds for N-folds cross-validation (see <i>cv.glmnet</i> in glmnet documentation);<br>
-						<i>standardize</i>: mandatory for glmnet, if variables should be standardized (binary flag).<br>
+						<i>nfolds</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, number of folds for N-folds cross-validation (see <i>cv.glmnet</i> in glmnet documentation);<br>
+						<i>standardize</i>: mandatory for glmnet, if variables should be standardized (binary flag);<br>
+						<i>stat_file</i>: mandatory, filename to which performance metrics should be saved (use <i>auto</i> to automatically assign the name - see the table below);<br>
+						<i>extended_output</i>: mandatory, if model creation parameters should be saved to the specified <i>stat_file</i>;<br>
+						<i>header</i>: mandatory, if specified <i>stat_file</i> should have header; recommended to be set to true. You can collect information on many models in one file, in this case specify this parameter as true only for the first query and make sure that all models belong to the same family and <i>validation</i> option is always the same - so columns are the same (also, <i>extended_output</i> should be set the same for all the models).<br>
+					<b>Example:</b> https://www.evinet.org/cgi/model_predict.cgi?method=glmnet&source=TCGA&cohort=BRCA&rdatatype=GE&rplatform=illuminahiseq_rnaseq&rid=TP53&xdatatypes=GE&xplatforms=illuminahiseq_rnaseq&xids=%5BA1CF%7CA2BP1%7CA4GALT%7CA4GNT%7CAAA1%7CAADAC%7CAADACL2%7CAADACL3%7CAADACL4%7CAADAT%7CAAK1%7CAANAT%7CAARS2%7CAASS%7CABCA4%7CABI2%7CABP1%7CABR%7CACAA1%7CACAN%7CACTA1%7CACTN1%7CADA%7CADAM7%7CADAP1%7CADAT2%7CADAT3%7CAFM%7CAGBL4%7CAHDC1%7CFOXA2%7CFOXB2%7CBCL2%7CTGFBI%7CTGFBRAP1%7CPTGFR%7CARID1A%7CARID1B%7CARID2%7CARID3B%7CARID4A%7CARID4B%7CCACNA1B%7CCACNA1C%7CCACNA2D1%7CCACNA2D2%7CCACNG2%7CCACNA2D4%7CCACNG3%7CCACNG4%7CCACNG7%7CCACNG8%7CVEGFC%7CHRAS%7CKRAS%7CNRAS%7CPDGFA%7CPDGFC%7CPDGFD%7CMDM1%7CMDM2%7CRBL1%7CRBL2%7CRBP1%7CCTRB1%7CPRB1%5D&multiopt=cancer&family=gaussian&measure=deviance&standardize=false&alpha=0.5&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=auto&extended_output=false&header=true<br>
+					<b>Usage tips:</b> Using just model name, you can access graphical interpretation of the created model, RData model file, coefficients (in JSON format) and performance metrics (in JSON and csv format). If you have received value 'model578045416464' from the script, you can access the following files in https://www.evinet.org/pics/plots/ :<br>
+					<table>
+						<thead>
+							<tr>
+								<th>File name</th>
+								<th>Meaning</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>model578045416464.RData</td>
+								<td>glmnet model for R environment</td>
+							</tr>
+							<tr>
+								<td>coeff.model578045416464.json</td>
+								<td>Model coefficients (with weights) in JSON format</td>
+							</tr>
+							<tr>
+								<td>model578045416464_model.png</td>
+								<td>Graphical abstract of the created model</td>
+							</tr>
+							<tr>
+								<td>model578045416464_training.png</td>
+								<td>Graphical abstract on training step</td>
+							</tr>
+							<tr>
+								<td>model578045416464_validation.png</td>
+								<td>Graphical abstract on validation step (if set)</td>
+							</tr>
+							<tr>
+								<td>model578045416464.csv</td>
+								<td>Performance metrics and some additional information in csv format with header</td>
+							</tr>
+							<tr>
+								<td>perf.model578045416464.json</td>
+								<td>Performance metrics in JSON format</td>
+							</tr>
+						</tbody>
+					</table>
+					<br>
 				</p>
 				<br>
 				<b>Batch models creation</b>
@@ -528,7 +667,7 @@ table.simple_table td {
 						<i>multiopt</i>: mandatory, same as <i>multiopt</i> for <i>model_predict.cgi</i>;<br>
 						<i>xdatatypes</i>: mandatory, same as <i>xdatatypes</i> for <i>model_predict.cgi</i>;<br>
 						<i>xplatforms</i>: mandatory, same as <i>xplatforms</i> for <i>model_predict.cgi</i>;<br>
-						<i>additional_xids</i>: optional, specifies which ids should be passed to glmnet even if they do not suffice filters;<br>
+						<i>additional_xids</i>: optional, specifies which ids should be passed to glmnet even if they do not suffice filters; recommended, if no additional xids - leave blank;<br>
 						<i>rdatatype</i>: mandatory, same as <i>rdatatype</i> for <i>model_predict.cgi</i>;<br>
 						<i>rplatform</i>: mandatory, same as <i>rplatform</i> for <i>model_predict.cgi</i>;<br>
 						<i>rid</i>: mandatory, same as <i>rid</i> for <i>model_predict.cgi</i>;<br>
@@ -544,9 +683,9 @@ table.simple_table td {
 						<i>iter</i>: mandatory, desired number of models;<br>
 						<i>stat_file</i>: mandatory, name of the file without extenstion to save your data in (try to give a unique name to your stat_file);<br>
 						<i>extended_output</i>: mandatory, binary flag, if set to <i>TRUE</i> - some additional info will be written into <i>stat_file</i> (such as <i>source</i>, <i>rdatatype</i> etc.);<br>
-						<i>mail</i>: mandatory, provide the correct email, links with the results will be sent to it when your batch jobe is done;<br>
-					<b>Example:</b><br>
-					<b>Usage tips:<b>
+						<i>mail</i>: mandatory, provide the correct email, links with the results will be sent to it when your batch job is done;<br>
+					<b>Example:</b> https://dev.evinet.org/cgi/models_from_correlations_batch.cgi?source=TCGA&datatype=GE&cohort=LUAD&platform=all&screen=all&id=gemcitabine&fdr=0.05&mindrug=10&columns=gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q&iter=3&model_cohort=LUAD;method=glmnet&rdatatype=CLIN&rplatform=os&xdatatypes=GE&xplatforms=illuminahiseq_rnaseqv2&additional_xids=&multiopt=01&family=cox&measure=deviance&standardize=false&alpha=1&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=/your_file/&mail=/your_email/<br>
+					<b>Usage tips:</b> Always try to specify a unique name for your output file! Files are created in the append mode, so if you (or someone) has used the specified file name before - you will get "mixed" results! When the job is done, the reults will be available in file https://www.evinet.org/pics/plots/your_file.csv<br>
 				</p>
 				<br>
 				<b>Using JS API</b>
@@ -557,6 +696,13 @@ table.simple_table td {
 				<br>
 				<b>Datatypes, platforms and screens</b>
 				<br>
+				<p>
+				Below you can find valid names of datatypes, platforms, variables to use with REST API.<br> 
+				</p>
+				<a href="https://dev.evinet.org/help/platforms_data/all_datatypes.txt" target="_blank">Datatypes</a><br>
+				<a href="https://dev.evinet.org/help/platforms_data/all_platforms.txt" target="_blank">Platforms</a><br>
+				<a href="https://dev.evinet.org/help/platforms_data/all_predictors.txt" target="_blank">Independent variables</a><br>
+				<a href="https://dev.evinet.org/help/platforms_data/all_responses.txt" target="_blank">Dependent variables</a><br>
 			</div>
 			
 			<div id="help-tab-citation">
@@ -576,131 +722,140 @@ table.simple_table td {
 				Version history:
 				<br>
 				1.0.0 (25th of March, 2020) - stable release: exploring correlations, creating and sharing plots, creating and downloading predictive models.
+				<br>
+				1.1.0 (8th of April, 2021) - stable release: improved functionality, model comparisson.
 			</div>
 		</div>
 	</div>
 
-	<div id="tab-signif">
-		<div class="inputarea inputareahighlight">
+	<div id="tab-signif" style="float: left; font-size: small; ">
+		<div class="inputarea inputareahighlight ui-corner-all">
 			<table id="select_layout">
 				<tr>
-				<td>
-				<select name="corSource_selector" id="corSource_selector" class="ui-helper" style="width: 40ch;" >
-				</td>
-				<td>
-				<select name="corDatatype_selector" id="corDatatype_selector" class="ui-helper" style="width: 40ch;" >
-				</td>
-				<td>
-				<select name="corCohort_selector" id="corCohort_selector" class="ui-helper" style="width: 40ch;" >
-				</td>
-				<td>
-				<select name="corPlatform_selector" id="corPlatform_selector" class="ui-helper" style="width: 40ch;" >
-				</td>
-				<td>
-				<select name="corScreen_selector" id="corScreen_selector" class="ui-helper" style="width: 40ch;" >
-				</td>
-				<td>
-				<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name">
-				</td>
-				<td>
-				<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
-				<td>
-				<button type="submit" id="retrieve-cor-button" name="retrieve-cor-button" onclick = retrieve_correlations() style="width: 150; visibility: visible;">Retrieve correlations</button>
-				</td>
+					<td>
+						<select name="corSource_selector" id="corSource_selector" class="ui-helper" style="width: 40ch;" >
+					</td>
+					<td>
+						<select name="corDatatype_selector" id="corDatatype_selector" class="ui-helper" style="width: 40ch;" >
+					</td>
+					<td>
+						<select name="corCohort_selector" id="corCohort_selector" class="ui-helper" style="width: 40ch;" >
+					</td>
+					<td>
+						<select name="corPlatform_selector" id="corPlatform_selector" class="ui-helper" style="width: 40ch;" >
+					</td>
+					<td>
+						<select name="corScreen_selector" id="corScreen_selector" class="ui-helper" style="width: 40ch;" >
+					</td>
+					<td>
+						<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name">
+					</td>
+					<td>
+						<input type="number" name="FDR_input" id="FDR_input"  min="0.001" max="1" value="0.05" step="0.001">
+					<td>
+						<button type="submit" id="retrieve-cor-button" name="retrieve-cor-button" onclick = retrieve_correlations() style="width: 150; visibility: visible;">Retrieve correlations</button>
+					</td>
 				</tr>
 			</table>
 		</div>	
 		<br>
-		<div class="container">
-			<table id="cor_result_table" class="ui-state-default ui-corner-all" style="width: 100%; font-size: x-small;">
+		<div class="container2">
+			<table id="cor_result_table" class="display ui-state-default ui-corner-all" style="font-size: x-small; width: 100%;">
 			</table>
 		</div>
 	</div>
 	
-	<div id="tab-lookup"><br>
-		<br>
-		<div id="plot-options-filters">
-			<table>
-				<tr>
-					<th>Source</th>
-					<th>Cohort</th>
-					<th>Code</th>
-				</tr>
-				<tr>
-					<td>
-						<div id="source_selector-wrapper">
-							<select id="source_selector" class="ui-helper" style="width: 40ch;">
-						</div>
-					</td>
-					<td>
-						<div id="cohort_selector-wrapper">
-							<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
-						</div>
-					</td>
-					<td>
-						<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
-					</td>
-				</tr>
-			</table>
-			<br>
-			<div class="inputarea inputareahighlight">
-				<table id ="plot_options">
-					<tr>
-						<th>Data type</th>
-						<th>Platform</th>
-						<th>ID</th>
-						<th></th>
-						<th></th>
-						<th>Scale</th>
-					</tr>
-					<tr id="plot_options_row1">
-						<td>
-							<select id="type1_selector" class="ui-helper" style="width: 40ch;">
-						</td>
-						<td>
-							<select id="platform1_selector" class="ui-helper" style="width: 40ch;">
-						</td>
-						<td>
-							<input id="id1_input" onkeyup="id_keyup(1)" onchange = "id_keyup(1)">
-						</td>
-						<td>
-							<input id="id1_confirmed" disabled>
-						</td>
-						<td>
-							<button id="open_info1" onclick="open_info_page(1)">Info</button>
-						</td>
-						<td>
-							<select id="axis1_selector" class="ui-helper" style="width: 20ch;">
-						</td>
-						<td>
-							<button id="add_row1" onclick="add_plot_options_row(1)">+</button>
-						</td>
-						<td>
-							<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<br>
-		<table>
+	<div id="tab-lookup" style="float: left; font-size: small; ">			
+		<table class="table-upper" style="float: left; width: 99%;">
 			<tr>
-				<td>
-					<select id="plot-type">
-				</td>
-				<td>
-					<div id="plot-button-wrapper">
-						<button id="plot-button" onclick="plot()">Plot</button>
+				<td class="td-left" style="width: 1%;">
+					<div id="plot-options-filters">
+						<table>
+							<tr>
+								<th>Source</th>
+								<th>Cohort</th>
+								<th>Code</th>
+							</tr>
+							<tr>
+								<td>
+									<div id="source_selector-wrapper">
+										<select id="source_selector" class="ui-helper" style="width: 40ch;">
+									</div>
+								</td>
+								<td>
+									<div id="cohort_selector-wrapper">
+										<select id="cohort_selector" class="ui-helper" style="width: 40ch;">
+									</div>
+								</td>
+								<td>
+									<select id="tcga_selector" class="ui-helper" style="width: 10ch;">
+								</td>
+							</tr>
+						</table>
+						<br>
+			
+						<div class="inputarea inputareahighlight ui-corner-all">
+							<table id="plot_options">
+								<tr>
+									<th>Data type</th>
+									<th>Platform</th>
+									<th>ID</th>
+									<th></th>
+									<th></th>
+									<th>Scale</th>
+								</tr>
+								<tr id="plot_options_row1">
+									<td>
+										<select id="type1_selector" class="ui-helper" style="width: auto;">
+									</td>
+									<td>
+										<select id="platform1_selector" class="ui-helper" style="width: auto;">
+									</td>
+									<td>
+										<input id="id1_input"  class="ui-corner-all" onkeyup="id_keyup(1)" onchange = "id_keyup(1)">
+									</td>
+									<td>
+										<input id="id1_confirmed"  class="ui-corner-all" disabled>
+									</td>
+									<td>
+										<button id="open_info1" onclick="open_info_page(1)">Info</button>
+									</td>
+									<td>
+										<select id="axis1_selector" class="ui-helper" style="width: auto;">
+									</td>
+									<td>
+										<button id="add_row1" onclick="add_plot_options_row(1)">+</button>
+									</td>
+									<td>
+										<button id="delete_row1" onclick="delete_plot_options_row(1)">-</button>
+									</td>
+								</tr>
+							</table>
+						</div>
 					</div>
+
+					<table>
+						<tr>
+							<td>
+								<select id="plot-type">
+							</td>
+							<td>
+								<div id="plot-button-wrapper">
+									<button id="plot-button" onclick="plot()">Plot</button>
+								</div>
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 		</table>
 	</div>
 	
 	<div id="tab-predict">
-		<table id="all_parameters" border="2" style="border-width: 2px; height: 150px; margin:10px">
+		<!--table id="all_parameters" style="border-width: 2px; height: 150px; margin:10px"-->
+		<table id="all_parameters" class="inputarea inputareahighlight ui-corner-all">
 			<tr id="r-1">
-				<td id="d-glmnet" rowspan="4">
+				<td id="d-glmnet" rowspan="4" class="inputarea inputareahighlight ui-corner-all" style="box-shadow: none;">
 					<table id="table-glmnet">
 						<tr>
 							<td>
@@ -711,7 +866,7 @@ table.simple_table td {
 							<td title="Set all variables on the same scale">Standardize
 							</td>
 							<td>
-								<input type="checkbox" id="standardize" class="alternative_input venn_box_control"> 
+								<input type="checkbox" id="standardize" class="alternative_input venn_box_control ui-corner-all"> 
 							</td>
 						</tr>
 						<tr>
@@ -732,7 +887,7 @@ table.simple_table td {
 							<td title="Depends on sample size relative to the number of variables. Set automatically">Lambda min ratio 
 							</td>
 							<td>
-								<input type="text" id="minlambda" class="alternative_input venn_box_control" value="0.01" disabled> 
+								<input type="text" id="minlambda" class="alternative_input venn_box_control ui-corner-all" value="0.01" disabled> 
 							</td>
 						</tr>
 						<tr>
@@ -745,13 +900,15 @@ table.simple_table td {
 						<tr>
 							<td>
 								<tr>
-									<td>
+									<td colspan="2">
+										
+										<!--div id="crossval_ctrls" class="ui-widget ui-widget-content ui-corner-all" class="inputarea inputareahighlight ui-corner-all"-->
+										<div id="crossval_ctrls" class="ui-widget ui-widget-content ui-corner-all">
 										<input type="checkbox" id="crossval" class="alternative_input venn_box_control">	
 										<span class="subheader">Model validation</span>
-										<div id="crossval_ctrls" class="ui-widget ui-widget-content ui-corner-all inputarea inputareahighlight">
-											<table id="crossval_table">
+											<table id="crossval_table" >
 												<tr>
-													<td title="Partitioning of the dataset into training and test fractions. The minimal 3-fold value means 2/3 used for training while 1/3 for testing. Can be as large as the sample size (leave-one-out cross-validation),">
+													<td title="Partitioning of the dataset into train ing and test fractions. The minimal 3-fold value means 2/3 used for training while 1/3 for testing. Can be as large as the sample size (leave-one-out cross-validation),">
 														No. of folds for cross-validation
 													</td>
 													<td>
@@ -775,7 +932,7 @@ table.simple_table td {
 					</table>
 				</td>
 				<td id="d-top" colspan="3">
-					<table id="table-top">
+					<table id="table-top" class="inputarea inputareahighlight ui-corner-all" style="box-shadow: none; width: 100%;">
 						<tr>
 							<td>
 								Source<select id="modelSource_selector">
@@ -783,15 +940,22 @@ table.simple_table td {
 							<td>
 								Cohort<select id="modelCohort_selector">
 							</td>
+							<td>
+								<select multiple id="responseMulti_selector" class="ui-corner-all">
+							</td>
 						</tr>
 					</table>
 				</td>
 			</tr>
 			<tr id="r-response">
 				<td id="d-response" colspan="3">
-					<table id="table-response">
+					<table id="table-response" class="inputarea inputareahighlight ui-corner-all" style="box-shadow: none; width: 100%;">
 						<tr>
-							<span class="subheader">Dependent variable</span>
+							<td>
+								<span class="subheader">Dependent variable</span>
+							</td>
+						</tr>
+						<tr>
 							<td title="Data type">
 								<select id="responseDatatype_selector">
 							</td>
@@ -799,31 +963,34 @@ table.simple_table td {
 								<select id="responseVariable_selector">
 							</td>
 							<td>
-								<input id="responseID_input">
+								<input id="responseID_input" class="ui-corner-all">
 							</td>
-							<td>
-								<select multiple id="responseMulti_selector">
-							</td>
+							<!--td>
+								<select multiple id="responseMulti_selector" class="ui-corner-all">
+							</td-->
 						</tr>
 					</table>
 				</td>
 			</tr>		
 			<tr id="r-2buttons">
-				<td id="d-2buttons" colspan="3">
-					<span class="subheader">Independent variables</span>
-					<div id="div-2buttons" style="float: right; display: inline-block; position: relative;" title="Add/delete predictor variables of certain data type">
-						<button id="add_variable" onclick="add_model_options_row();">+</button>
-						<button id="delete_variable" onclick="delete_model_options_row(); ">-</button>
+				<td id="d-2buttons" colspan="3" class="inputarea inputareahighlight ui-corner-all" style="box-shadow: none; width: 100%;">
+					<div>
+					<div class="subheader" style="float: left; margin-top: 0.20em; margin-right: 1.33em; margin-bottom: 0.33em; margin-left: 0.75em;">Independent variables</div>
+					<div id="div-2buttons" >
+						<button id="add_variable" onclick="add_model_options_row();" title="Add another type of predictor variables">+</button>
+						<button id="delete_variable" onclick="delete_model_options_row(); " title="Remove the last type of predictor variables">-</button>
 					</div>
+					</div>
+
+					<table >			
+						<tr id="r-x"></tr>
+					</table>
 				</td>
-			</tr>	
-			<tr id="r-x">
 			</tr>
 		</table>
-		<button id="build_model_button" onclick="build_and_show_model()">Build model</button>
-		<button id="show_clipboard_button" onclick="show_transfer_buffer_window('#tab-predict')">Show IDs clipboard</button>
-		<button id="show_comparison_preview_button" onclick="show_compare_window()">Models to compare</button>
-	</div>
+		<button id="build_model_button" class="inputarea inputareahighlight ui-button ui-corner-all ui-widget" onclick="build_and_show_model()">Build model</button>
+		<button id="show_clipboard_button" class="inputarea inputareahighlight ui-button ui-corner-all ui-widget" onclick="show_transfer_buffer_window('#tab-predict')">Show IDs clipboard</button>
+		<button id="show_comparison_preview_button" class="inputarea inputareahighlight ui-button ui-corner-all ui-widget" onclick="show_compare_window()">Models to compare</button>
 	</div>
 </div>     
 
@@ -927,16 +1094,19 @@ $(document).ready(function(){
 	// need this to hide message
 	checkCookiesAccepted();
 	
+	$("#dock-button").button();
+	$("#dock-button").button("disable");
+	
 	urlfixtabs("#tabs");
 	//$("#progressbar").progressbar({		value: false	});	$("#progressbar").css({"visibility": "hidden"});
 	$("#tabs").tabs({heightStyle: "fill"});
 	
-	var tabList = $( "#tabs" )[0].childNodes[1].children;
+	//var tabList = $( "#tabs" )[0].childNodes[1].children;
 	//console.log("tabList: " + tabList);
-	for (tt = 0; tt < tabList.length; tt++) {
+	//for (tt = 0; tt < tabList.length; tt++) {
 		//console.log(tabList[tt]);
 		//$(tabList[tt]).append( '<span id= "' + $(tabList[tt]).attr("aria-controls") + '-loading' + '" class="ui-icon ui-icon-loading-status-balls rotate"></span>' );	
-	}
+	//}
 	
 	$("#clean_reload_button").button();
 	$("#clean_reload_button").qtip({ 
@@ -1063,11 +1233,60 @@ function reload_model_options() {
 	} 
 }
 
+// show dialog window for 2nd tab with KM options
+function plot_dialog(param_string) {
+	console.log(param_string);
+	var dialog_window = '<div>';
+	var params = param_string.split(',');
+	console.log(params);
+	var drug = params.shift();
+	var id = params.shift();
+	for (var i in params) {
+		var par = params[i];
+		if (par != '') {
+			var pars = par.split('#');
+			console.log(par);
+			console.log(pars);
+			dialog_window = dialog_window + "<a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a><br>";
+		}
+	}
+	dialog_window = dialog_window + '</div>';
+	console.log(dialog_window);
+	$(dialog_window).dialog({
+				title: "Available KM plots",
+				height: 'auto',
+				width: 'auto',
+				modal: true,
+				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+			}).parent().appendTo("#tab-signif");
+}
+
+function plot_menu (param_string, caller) {
+
+	console.log(param_string);
+	var params = param_string.split(',');
+	console.log(params);
+	var drug = params.shift();
+	var id = params.shift();
+var par = params[0];
+			var pars = par.split('#');
+			console.log(par);
+			console.log(pars);
+			var drop_menu = "<select name=\"KMs\" id=\"" + caller + "-menu\" ><option>AA</option></select>";
+			// <a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a>
+	console.log(caller);	
+	// console.log(drop_menu);	
+	// $(drop_menu).selectmenu().parent().appendTo(caller);
+	// var DDD = '<div>CCC</div>'; 
+	$(drop_menu).appendTo($("#" + caller).parent());
+$("#" + caller + "-menu").selectmenu();
+// $("#" + caller + "-menu").css({"display": "block", "width": "25em", "height": "3em"});
+}
+
 function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
 	// get all child nodes of #tabs
-	var nodes = $("#tabs").tabs()[0].childNodes;
-	// this is the node used to attach plot - pay attention to 4+2*!
-	var parent_tab = "#" + $("#tabs").tabs()[0].children[$("#tabs").tabs("option", "active") + 1].id;	
+	//var nodes = $("#tabs").tabs()[0].childNodes;
+	var parent_tab = "#" + $("#tabs").tabs()[0].children[$("#tabs").tabs("option", "active")+1].id
 	// variables are initialised when this function is called from correlations table, otherwise - initialise them
 	if (type == undefined) {
 		type = $('#plot-type option:selected').val();
@@ -1087,7 +1306,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 			tcga_codes.push($("#tcga_selector option:selected").val());
 		}
 	}
-	var plot_description = "type:" + type + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
+	var plot_description = "type:" + type + "|source:" + source + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
 	var plot_filename = find_plot_in_history(plot_description);
 	var plot_id;
 	var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
@@ -1133,21 +1352,23 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				{
 					text: "Minimize",
 					icon: "ui-icon-minus",
-					click: function() {plot_minimize(this)},
+					click: function() {plot_minimize(this, plot_filename)},
+					showLabel: false
 				},
 				{
 					text: "Get link",
 					icon: "ui-icon-link",
-					click: function() {
-						navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
-						alert("The plot can be accessed at any time via the link:\n https://www.evinet.org/pics/plots/" + plot_filename + " \n, which is also copied to the clippboard.");
-						mark_plot(plot_filename);
-					},
-					showText: false
+					click: function() {copy_plot_link(plot_filename)},
+					showLabel: false
 				}
 			],
 			height: 'auto',
 			width: 'auto',
+			position: {
+				my: "right bottom",
+				at: "right bottom",
+				of: parent_tab
+			},
 			modal: false,
 			resize: function( event, ui ) {
 					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
@@ -1174,16 +1395,14 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 					{
 						text: "Minimize",
 						icon: "ui-icon-minus",
-						click: function() {plot_minimize(this)}
+						click: function() {plot_minimize(this, plot_filename)},
+						showLabel: false
 					},
 					{
 						text: "Get link",
 						icon: "ui-icon-link",
-						click: function() {
-							navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
-							alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
-							mark_plot(plot_filename);
-						}
+						click: function() {copy_plot_link(plot_filename)},
+						showLabel: false
 					}
 				],
 				height: 'auto',
@@ -1369,7 +1588,8 @@ function build_and_show_model() {
 							<thead> \
 								<tr> \
 									<th>Measure</th> \
-									<th></th> \
+									<th>Training</th> \
+									<th>Validation</th> \
 								</tr> \
 							</thead> \
 						</table>\
@@ -1414,17 +1634,77 @@ function build_and_show_model() {
 			$('#' + model_name + '_coef').DataTable( {
 				"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
 				"columns": [
-					{ "data": "Term"},
-					{ "data": "Coef"},
-					{ "data": "Plot"}
+					{ "data" : "Term"},
+					{ "data" : "Coef"},
+					{ "data" : "Plot"}
 				],
 				"order": [[ 1, "desc" ]],
 			});
 			$('#' + model_name + '_perf').DataTable( {
-				"ajax": "https://" + window.location.hostname + "/pics/plots/perf." + model_name + ".json",
+				"ajax": {
+					"url" : "https://" + window.location.hostname + "/pics/plots/perf." + model_name + ".json",
+					"dataSrc" : function(json) {
+						//console.log(json.data);
+						var pretty_print_data = new Array();
+						// collect available measures - remember about ()
+						var measures = new Array();
+						// use this to easily find indexes
+						var temp_index = new Array();
+						for (var i = 0; i < json.data.length; i++) {
+							var mark_start = json.data[i].Measure.lastIndexOf("(");
+							if (mark_start == -1) {
+								mark_start = json.data[i].Measure.length;
+							}
+							var measure = json.data[i].Measure.slice(0, mark_start);
+							//console.log(measure);
+							if (measures.indexOf(measure) == -1) {
+								measures.push(measure);
+							}
+							temp_index.push(json.data[i].Measure);
+						}
+						//console.log(measures);
+						//console.log(temp_index);
+						for (var i = 0; i < measures.length; i++) {
+							//console.log(measures[i]);
+							// JS cannot find all occurences using indexOf - do it manually
+							var occurences = new Array();
+							for (var j = 0; j < temp_index.length; j++) {
+								//console.log(temp_index[j]);
+								if (temp_index[j].indexOf(measures[i]) != -1) {
+									occurences.push(j);
+								}
+							}
+							//console.log(occurences);
+							// if we have more than 1 occurence - it means training/validation
+							if (occurences.length == 2) {
+								var training_ind = (temp_index[occurences[0]].indexOf("(training)") != -1 ? occurences[0] : occurences[1]);
+								var validation_ind = (temp_index[occurences[0]].indexOf("(validation)") != -1 ? occurences[0] : occurences[1]);
+								pretty_print_data.push({
+									'Measure' : measures[i],
+									'Value' : {
+										'Training' : json.data[training_ind].Value,
+										'Validation' : json.data[validation_ind].Value
+									}
+								});
+							}
+							else {
+								pretty_print_data.push({
+									'Measure' : measures[i],
+									'Value' : {
+										'Training' : json.data[occurences[0]].Value,
+										'Validation' : ''
+									}
+								});
+							}
+						}
+						//console.log(pretty_print_data);
+						return pretty_print_data;
+					}
+				},
 				"columns": [
 					{ "data": "Measure"},
-					{ "data": "Value"}
+					{ "data": "Value.Training"},
+					{ "data": "Value.Validation"}
 				],
 				"order": [[ 0, "desc" ]],
 			});
@@ -1466,6 +1746,36 @@ function retrieve_correlations() {
 			});
 			document.getElementById("cor_result_table").dispatchEvent(event);
 			window.postMessage("hide_progressbar");
+			/*
+			$( '[id*="TCGAcohortSelector"] > option' ).each(
+				function() {
+					$(this).prop("title", $(this).val() );
+			})
+			$('[id*="TCGAcohortSelector"]').selectmenu();
+			$('[id*="TCGAcohortSelector"]').on( "selectmenuclose",
+				function( event, ui ) {
+					console.log($(this).val());
+					var selected_values = $(this).val().split('#'); 
+					plot('cor-KM', 'tcga',selected_values[0], ['drug', 'clin', selected_values[1]], ['drug', selected_values[3].toLowerCase(), selected_values[2]], [selected_values[4], '', selected_values[5]], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])
+			});
+			*/
+			var table = $('#cor_result_table').DataTable();
+			table.rows().every( function (index, element) {
+				var row = $(this.node());
+				//console.log(row.children()[11]);
+				var selector = row.children()[11].children[0];
+					$( selector ).each(
+						function() {
+							$(this).prop("title", $(this).val() );
+						})
+					$(selector).selectmenu();
+					$(selector).on( "selectmenuclose",
+						function( event, ui ) {
+							console.log($(this).val());
+							var selected_values = $(this).val().split('#'); 
+							plot('cor-KM', 'tcga',selected_values[0], ['drug', 'clin', selected_values[1]], ['drug', selected_values[3].toLowerCase(), selected_values[2]], [selected_values[4], '', selected_values[5]], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])
+						});
+			});
 		},
 		"columns": cor_visible_columns.get(source),
 		"dom": "lfBrtip",
@@ -1637,6 +1947,7 @@ function add_plot_options_row(i) {
 		}
 	});
 	document.getElementById("add_row" + i).dispatchEvent(event);
+	$("input[id*='_input'],input[id*='_confirmed']").addClass("ui-corner-all");
 }
 
 function delete_plot_options_row(i) {
@@ -2295,7 +2606,7 @@ function init_model_datatype_selector(n) {
 	}
 	$("#modelDatatype" + n + "_selector").append(options.join("")).selectmenu(
 	{
-        width: "150px",
+        width: "auto",
 		disabled: model_source == "undef"
     });
 	$('#modelDatatype' + n + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelDatatype" + n + "_selector")} );
@@ -2319,7 +2630,7 @@ function init_model_platform_selector(n) {
 		platforms_ids.push(platforms[i].platform);
 	}
 	$("#modelPlatform" + n + "_selector").append(options.join("")).selectmenu({
-        width: "175px",
+        width: "auto",
 		disabled: model_datatype == "undef"
     });
 	$('#modelPlatform' + n + '_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("modelPlatform" + n + "_selector")} );
@@ -3149,38 +3460,70 @@ function find_plot_in_history(plot_description) {
 	return res;
 }
 
-function plot_minimize(graph_window) {
-	$(graph_window).dialog({"height": $( ".ui-dialog > .ui-dialog-titlebar" )[0].clientHeight});
-	// we need to change just first button, no need to do modify others
-	var buttons = $(graph_window).dialog("option", "buttons");
-	buttons[0] = {
-			text: "Maximize",
-			icon: "ui-icon-arrow-4-diag",
-			click: function() {plot_maximize(graph_window)},
-		},
-	$(graph_window).dialog( "option", "buttons", buttons);
+function plot_minimize(graph_window, plot_filename) {
+	var graph_id = graph_window.id.replace("#", "");
+	var newpane = $( $('[aria-describedby="' + graph_id + '"] > div.ui-dialog-titlebar > span.ui-dialog-title')[0]);
+	var title = newpane[0].innerHTML;
+	var docked_id = Date.now();
+	var new_entity = '<div id="' + docked_id + '"> \
+		<a>' + title + '</a> \
+		<br> \
+		<table width="100%">\
+		<tr> \
+		<td><button class="ui-button ui-widget ui-corner-all" title="Maximize" onclick=plot_maximize("' + plot_filename + '")> \
+			<span class="ui-icon ui-icon-arrow-4-diag"></span> \
+			<span class="ui-button-icon-space"></span> \
+			Maximize</button></td> \
+		<td><button class="ui-button ui-widget ui-corner-all" title="Copy link" onclick=copy_plot_link("' + plot_filename + '")> \
+			<span class="ui-icon ui-icon-link"></span> \
+			<span class="ui-button-icon-space"></span> \
+			Copy link</button></td> \
+		<td><button class="ui-button ui-widget ui-corner-all" title="Close" onclick=close_minimized_plot("' + docked_id + '");> \
+			<span class="ui-icon ui-icon-close"></span> \
+			<span class="ui-button-icon-space"></span> \
+			Close</button> \
+		</tr> \
+		</table></div>';
+	document.getElementById('sidebar_dock').innerHTML = document.getElementById('sidebar_dock').innerHTML + new_entity;
+	$("#" + graph_id).dialog('close');
+	$("#dock-button").button("enable");
 }
 
-function plot_maximize(graph_window) {
-	$(graph_window).dialog({"height": 800});
-	$(graph_window).dialog({"width": 1280});
-	var buttons = $(graph_window).dialog("option", "buttons");
-	buttons[0] = {
-			text: "Minimize",
-			icon: "ui-icon-minus",
-			click: function() {plot_minimize(graph_window)},
-		},
-	$(graph_window).dialog( "option", "buttons", buttons);
+function plot_maximize(plot_filename) {
+	var plot_description = sessionStorage.getItem(plot_filename);
+	var plot_params = plot_description.split("|");
+	var plot_type = plot_params[0].split(":")[1];
+	var source = plot_params[1].split(":")[1];
+	var cohort = plot_params[2].split(":")[1];
+	var datatypes = plot_params[3].split(":")[1].split(",");
+	var platforms = plot_params[4].split(":")[1].split(",");
+	var ids = plot_params[5].split(":")[1].split(",");
+	var codes = plot_params[6].split(":")[1].split(",");
+	var scales = plot_params[7].split(":")[1].split(",");
+	plot(plot_type, source, cohort, datatypes, platforms, ids, scales, codes);
 }
 
-function dock_plot(graph_window, plot_id) {
-	console.log($(graph_window).dialog( "option", "position" ));
-	if (sessionStorage.getItem(plot_id + "_docked") == null) {
-		var n = sessionStorage.getItem("docked_plots");
-		sessionStorage.setItem("docked_plots", n+1);
-		sessionStorage.setItem(plot_id + "_docked", n+1);	
+// remove plot from dock and check if dock button should be hidden or not
+function close_minimized_plot(docked_id) {
+	document.getElementById('sidebar_dock').removeChild(document.getElementById(docked_id));
+	if (document.getElementById('sidebar_dock').childNodes.length == 3) {
+		$("#dock-button").button("disable");
+		close_dock();
 	}
-	
+}
+
+function copy_plot_link(plot_filename) {
+	navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
+	alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
+	mark_plot(plot_filename);
+}
+
+function open_dock() {
+  document.getElementById("sidebar_dock").style.width = "30%";
+}
+
+function close_dock() {
+  document.getElementById("sidebar_dock").style.width = "0";
 }
 
 function open_info_page(id) {
@@ -3406,41 +3749,47 @@ function show_compare_window() {
 }
 
 function compare_models() {
-	// function works only when comparisson preview window is open and no other comparison windows are open
-	if ((document.getElementById("model_compare_preview_window") != null) & (document.getElementById("model_compare_window") == null)) {
-		// Pay attention! Table head is generated dynamically later
-		var compare_window = '<div id="model_compare_window"> \
-			<table id="model_comparison_table" style="text-align:center"> \
-			</table></div>';
-		$("#tab-predict").append(compare_window);
-		$("#model_compare_window").dialog({
-			title: "Models comparison",
-			height: 'auto',
-			width: 'auto',
-			modal: false,
-			position: { my: "right", at: "top", of: window }, 
-			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-		});
-		// no need to turn them into array - comma-separated values are needed
-		var models = sessionStorage.getItem('models');
-		var token = Date.now();
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open("GET", "cgi/compare_models.cgi?models=" + encodeURIComponent(models) + "&filename=" + encodeURIComponent(token), false);
-		xmlhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					// get the columns in table
-					columns_request = new XMLHttpRequest();
-					columns_request.open("GET", "https://" + window.location.hostname + "/pics/plots/" + token + ".table", false);
-					columns_request.send();
-					columns = columns_request.responseText;
-					console.log(columns);
-					document.getElementById('model_comparison_table').innerHTML = columns;
-					$('#model_comparison_table').DataTable( {
-						"ajax": "https://" + window.location.hostname + "/pics/plots/" + token + "_short.json"
-					} );
-				}
+	// function will not work if there are no models to compare
+	if ($("models_to_compare_table tr").length == 0) {
+		alert("No models for comparisson!");
+	}
+	else {
+		// function works only when comparisson preview window is open and no other comparison windows are open
+		if ((document.getElementById("model_compare_preview_window") != null) & (document.getElementById("model_compare_window") == null)) {
+			// Pay attention! Table head is generated dynamically later
+			var compare_window = '<div id="model_compare_window"> \
+				<table id="model_comparison_table" style="text-align:center"> \
+				</table></div>';
+			$("#tab-predict").append(compare_window);
+			$("#model_compare_window").dialog({
+				title: "Models comparison",
+				height: 'auto',
+				width: 'auto',
+				modal: false,
+				position: { my: "right", at: "top", of: window }, 
+				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+			});
+			// no need to turn them into array - comma-separated values are needed
+			var models = sessionStorage.getItem('models');
+			var token = Date.now();
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("GET", "cgi/compare_models.cgi?models=" + encodeURIComponent(models) + "&filename=" + encodeURIComponent(token), false);
+			xmlhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						// get the columns in table
+						columns_request = new XMLHttpRequest();
+						columns_request.open("GET", "https://" + window.location.hostname + "/pics/plots/" + token + ".table", false);
+						columns_request.send();
+						columns = columns_request.responseText;
+						console.log(columns);
+						document.getElementById('model_comparison_table').innerHTML = columns;
+						$('#model_comparison_table').DataTable( {
+							"ajax": "https://" + window.location.hostname + "/pics/plots/" + token + "_short.json"
+						} );
+					}
+			}
+		xmlhttp.send();
 		}
-	xmlhttp.send();
 	}
 }
 
@@ -3487,7 +3836,7 @@ function id_keyup(k) {
 		}
 		else {
 			for (var i = 1; i<=n; i++) {
-				if (!$("#id" + i + "_input").is(":hidden")) {
+				if (!document.getElementById("id" + i + "_input").hidden ) {
 					var valueSoFar = $("#id" + i + "_input").val();
 					// this variable declared in druggable_config.js
 					if (capitalized_datatypes.includes($("#type" + i + "_selector option:selected").val())) {
@@ -3573,9 +3922,11 @@ function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
 				break;
 			case "box": plot_title = type + ' of ' + cohort;
 				break;
-			case "KM": plot_title = type + ' of ' + cohort;
+			case "KM": plot_title = type + ' of ' + cohort + " " + datatypes[0] + ":" + platforms[0] + " vs " + datatypes[1] + ":" + platforms[1];
 				break;
-			case "piechart": plot_title = type + ' of ' + cohort;
+			case "cor-KM": plot_title = 'KM of ' + cohort + " " + datatypes[0] + ":" + ids[0] + " vs " + datatypes[1] + ":" + platforms[1] + " vs " + datatypes[2] + ":" + platforms[2];
+				break;
+			case "piechart": plot_title = type + ' of ' + cohort + '(' + datatypes[0] + ":" + platforms[0] + ')';
 				break;
 			case "bar": 
 				if (ids[1] = "") {
@@ -3765,6 +4116,11 @@ function report_model_tab() {
 	var minlambda = $("#minlambda").val();
 	var family = $("#family option:selected").val();
 	var measure = "deviance";
+	switch (family) {
+		case "gaussian":
+			measure = "mse";
+			break;
+	}
 	var crossvalidation = $("#crossval:checked").val();
 	var nfold = $("#nfold").val();
 	var crossvalidation_percent = $("#crossval_perc").val();

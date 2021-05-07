@@ -821,6 +821,16 @@ $edgeColoringScheme = '"#b8cce4"';
 $nodeSizeScheme = '"mapData(weight, 0, 9, '. 10 * $nodeScaleFactor .', '. 40 * $nodeScaleFactor .')"';
 $edgeWeightScheme = '"width": "data(integerWeight)"';#, 0, 6, '. 0.5 * $edgeScaleFactor .', '. 4 * $edgeScaleFactor .' 
 $edgeOpacityScheme = '"opacity" : 1.0';
+# open OUT2, ' > /var/www/html/research/users_tmp/_tmp.OUT2.dev';
+	# for my $nn(@{$genes}) {	print OUT2 $nn."\tgenes"."\n";}
+	# for my $nn(keys( %{$node_features } )) {	print OUT2 $nn."\tnode_features"."\n";}
+	# for my $nn(keys( %{ $found_genes->{'mmu'} } )) {	print OUT2 $nn."\tfound_genes"."\n";}
+# for my $nn(@{$initial_gene_set}) {	print OUT2 $nn."\tinitial_gene_set"."\n";}
+# for my $nn(@{$fnd_genes}) {	print OUT2 $nn."\tfnd_genes"."\n";}
+# for my $nn(@{$ags_genes}) {	print OUT2 $nn."\tags_genes"."\n";}
+# for my $nn(@{$fgs_genes}) {	print OUT2 $nn."\tfgs_genes"."\n";}
+# close OUT2;
+
 my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
 for $nn(sort {$a cmp $b} keys(%{$node_features})) {
 $node_features->{$nn}->{description} = 	
@@ -836,7 +846,7 @@ $node_features->{$nn}->{weight} = 0.1 * log($node_features->{ $nn }->{degree} + 
 my($cs_menu_def) = define_menu('net', $instanceID);
 my $tbl = HS_html_gen::GeneGeneTable($network_links, $data, $node_features);
 my $id = '<table id="genegenetable_'.$instanceID.'" ';
-$tbl =~ s/\<table/$id/;
+$tbl =~ s/\<table/$id/; #join(", ", keys(%{$node_features})).
 my $dialogTitle = defined($FGS) ? 'Links between '.$AGS.' and '.$FGS : 'Sub-network for AGS genes';
 # 'action: '.$main::action.
 # '<p>Layout: '.($main::action  eq  "subnet-ags") ? $cs_selected_layout : 'arbor'.'</p>'.
@@ -1024,13 +1034,13 @@ $gs_edges->{$AGS}->{$FGS} = processLinks(
  my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
 
 for $nn(sort {$a cmp $b} keys(%{$node_features})) { 
-my $type = uc($node_features->{$nn}->{type});
-$type =~ s/^CY_//;
-$node_features->{$nn}->{nodeShade} = '#'.sprintf("%.2x", 255 * ( sqrt( sqrt($node_features->{$nn}->{N_links} / $maxConnectivity) ))).'0000';
-$node_features->{$nn}->{subSet} = $nodeType{$node_features->{$nn}->{type}};
+my $type = uc($node_features->{$nn}->{type}) if defined($node_features->{$nn}->{type});
+$type =~ s/^CY_// if defined($type);
+$node_features->{$nn}->{nodeShade} = '#'.sprintf("%.2x", 255 * ( sqrt( sqrt($node_features->{$nn}->{N_links} / $maxConnectivity) ))).'0000' if defined($node_features->{$nn}->{N_links});
+$node_features->{$nn}->{subSet} = $nodeType{$node_features->{$nn}->{type}} if defined($node_features->{$nn}->{type});
 # if ($main::jobParameters -> {'genewise'.$type }) {
-my($id, $score, $subset) = split(':', $node_features->{$nn}->{uc($type).'_genes2'});
-if (uc($id) eq uc($nn)) {
+my($id, $score, $subset) = split(':', $node_features->{$nn}->{uc($type).'_genes2'}) if defined($type);
+if (defined($id) and (uc($id) eq uc($nn))) {
 $node_features->{$nn}->{nodeShade} =  HS_cytoscapeJS_gen::node_shade($score, "byExpression") if $score;
 $node_features->{$nn}->{subSet} =  lc($subset) if $subset;
 }
@@ -1154,7 +1164,7 @@ return($content);
 sub CyNMnode {
 my($id, $property_list, $property, $prefix, $postfix) = @_;
 my($pr, $qw);
- return '' if defined($property->{'groupColor'}) and ($property->{'groupColor'}  eq '#888888'); ###################
+ return '' if defined($property->{'groupColor'}) and ($property->{'groupColor'}  eq '#88aa88'); ###################
 
 
  my $content = $prefix.' data: {';
@@ -1167,8 +1177,10 @@ $content .= $pr.': '.$qw.$property->{$pr}.$qw.', ';
 }
 					}
 if (!defined($property->{'name'})) {
-$content .= 'name: '.'"'.$id.'"';
-}					
+$content .= 'name: '.'"'.$id.'", ';
+}
+# if (!defined($property->{'shape'}) and ($id eq uc('prkca'))) {$content .= 'subSet: '.'"star", ';}
+
 $content  =~ s/\,\s+$//;					
 $content .= ' }
 '.$postfix; #
@@ -1183,10 +1195,11 @@ $content = 'edges: [';
 for $node1(keys(%{$network_links})) { 
 $nodelist->{$node1} = 1;
 for $node2(keys(%{$network_links -> {$node1}})) {
+		if (($node1 ne $node2) and !$HSconfig::showGeneSelfLoops) {
 $nodelist->{$node2} = 1;
 $content .= '{'.CyEdge($network_links, $node1, $node2, $node1, $node2, $netType, $subnet_url, $sn, $gs_edges).'}, 
 '; 
-}}
+}}}
 if ($HSconfig::printMemberGenes) {
 for $node1(sort {$a cmp $b} keys(%{$nodelist})) {
 $toAdd .= CyGeneEdges($gs_edges, $node1, $node1, $netType, $subnet_url, $sn); 
@@ -1322,7 +1335,8 @@ layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'a
 		"border-style" : '	.$borderStyleScheme.',
         "text-outline-width": 0,
 		"color" : "black", 
-		"shape" : "ellipse",
+		//"shape" : "ellipse",
+		"shape" : "diamond",
         "text-outline-color": "black",
         '.$nodeColoringScheme.' ,
         "height": '	.$nodeSizeScheme.', 

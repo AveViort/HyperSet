@@ -35,6 +35,7 @@ our $fieldRdelimiter = '+'; #%3B
 our $file_stat_ext = ".file_stat";
 our $maxLinesDisplay = 5000;
 our $Rplots;
+our $showGeneSelfLoops = 0;
 ########################################################################################
 # 18:35 b4:/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/pics >>>> ln -s /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/plots/ .
 # users_tmp/plots/ is a physical location. 
@@ -236,7 +237,7 @@ our %users_file_extension = (
 'JSON' => 'json',
 'PNG' => 'png'
 );
-our $printMemberGenes = 1;
+our $printMemberGenes = 0;
 our(%spe, $typesOfEvidence, $network, $trueFBS, $fbsCutoff, $netAlias, $netDescription, $fgsAlias, $cmpAlias, $fgsDescription, $Sub_types, $cyPara, $vennPara, $img_size, $venn_coord, @projectdbShownHeader, %netNames);
 our $pivotal_confidence = lc('ChiSquare_FDR');
 our $NlinksExpected = lc('NlinksAnalyticRnd_AGS_to_FGS');
@@ -702,7 +703,7 @@ our $defaultOptions;
 'pwc9' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
 'proteincomplex' => 'CORUM and KEGG protein complexes', 
 'fc3' => 'Human FunCoup network of data integration, v. 3.0, edge confidence FBS > 8.140',
-'fc4' => 'Human FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.214',
+# 'fc4' => 'Human FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.214',
 
 'pwc8' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
 'PathwayCommons v.7' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
@@ -741,7 +742,7 @@ our $defaultOptions;
 'i2d' => 'Integrated known, experimental and predicted PPIs for five model organisms and human',
 'kegg' => 'A network produced by merging all KEGG pathways and protein complexes', 
 'fc3' => 'Mouse FunCoup network of data integration, v. 3.0, edge confidence FBS > 9.250',
-'fc4' => 'Mouse FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.110',
+# 'fc4' => 'Mouse FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.110',
 'phosphosite' => 'Kinase-substrate pairs of PhosphoSite.org', 
 'proteincomplex' => 'CORUM and KEGG protein complexes',
 'innatedb' => 'InnateDB is a publicly available database of the genes, proteins, experimentally-verified interactions and signaling pathways involved in the innate immune response to microbial infection', 
@@ -761,7 +762,7 @@ our $defaultOptions;
 'biogrid' => 'A public database that archives and disseminates genetic and protein interaction data from model organisms and human',
 'i2d' => 'Integrated known, experimental and predicted PPIs for five model organisms and human',
 'kegg' => 'A network produced by merging all KEGG pathways and protein complexes', 
-'fc4' => 'Rat FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.641',
+# 'fc4' => 'Rat FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.641',
 'fc3' => 'Rat FunCoup network of data integration, v. 3.0, edge confidence FBS > 7.376',
 'phosphosite' => 'Kinase-substrate pairs of PhosphoSite.org', 
 'proteincomplex' => 'CORUM and KEGG protein complexes',

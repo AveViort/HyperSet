@@ -29,7 +29,8 @@ print("Internal ids:");
 print(internal_ids);
 
 if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
-	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue='", toupper(tcga_codes[1]), "';");
+	tissues <- createTissuesList(tcga_codes[1]);
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
 	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 }
 

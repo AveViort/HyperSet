@@ -7,7 +7,8 @@ print("druggable.venn.r");
 if (datatypes[1] == datatypes[2]) {
 	tissue_samples <- c();
 	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
-		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue='", toupper(tcga_codes[1]), "';");
+		tissues <- createTissuesList(tcga_codes[1]);
+		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
 		tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 	}
 	query <- paste0("SELECT table_name from guide_table WHERE cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[1]), "';");

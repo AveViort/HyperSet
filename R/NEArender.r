@@ -432,10 +432,9 @@ stats$n.expected <- N.ags_fgs.expected;
 stats$chi <- chi;
 va = 'z'; stats[[va]] <- Z;
 Min = min(stats[[va]][which(!is.infinite(stats[[va]]))], na.rm=T) - 1;
+if (!is.infinite(Min)) {stats[[va]][which(is.infinite(stats[[va]]) & (stats[[va]] < 0))] = Min;}
 Max = max(stats[[va]][which(!is.infinite(stats[[va]]))], na.rm=T) + 1;
-stats[[va]][which(is.infinite(stats[[va]]) & (stats[[va]] < 0))] = Min;
-stats[[va]][which(is.infinite(stats[[va]]) & (stats[[va]] > 0))] = Max;
-# stats$p <- 10 ^ p.chi;
+if (!is.infinite(Max)) {stats[[va]][which(is.infinite(stats[[va]]) & (stats[[va]] > 0))] = Max;}
 stats$p <- p.chi;
 stats$q <- matrix(
 p.adjust(stats$p, method="BH"), 

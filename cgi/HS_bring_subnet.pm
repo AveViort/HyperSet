@@ -243,6 +243,7 @@ $submitted_species = $species{$submitted_species};
 		$end_it = 1;
 		goto END_IT1;
 	}
+
 data( $genes, $submitted_coff, $order, $networks );
 return ($data, $node);
 }
@@ -253,7 +254,11 @@ sub data { #brings most of the data to display the sub-network
 		$initial_gene_set, @links, $MAtable );
 
 	$start_species = $species{$submitted_species};
-	my $fcgenes = HS_SQL::gene_synonyms( $genes, $start_species, 'query' );
+
+
+my $fcgenes = HS_SQL::gene_synonyms( $genes, $start_species, 'query' );
+
+
 	if ( scalar( keys( %{ $found_genes->{$start_species} } ) ) < 1 ) {
 		print_no_id_dialog();
 		return;
@@ -282,11 +287,24 @@ sub data { #brings most of the data to display the sub-network
 
 	@{$initial_gene_set} = keys( %{ $found_genes->{$start_species} } );
 	for my $ge(@{$initial_gene_set}) {	$ge = uc($ge);	}
+
 	fc_links($initial_gene_set, $start_species, $fcgenes, $networks);
 	pubmed() if defined($allPubMed);
 	descriptions($fcgenes);
+
+# open OUT2, ' > /var/www/html/research/users_tmp/_tmp.OUT2.dev';
+	# for my $nn(@{$genes}) {	print OUT2 $nn."\tgenes"."\n";}
+	# for my $nn(keys( %{$node } )) {	print OUT2 $nn."\tnode"."\n";}
+	# for my $nn(keys( %{ $found_genes->{'mmu'} } )) {	print OUT2 $nn."\tfound_genes"."\n";}
+# for my $nn(@{$initial_gene_set}) {	print OUT2 $nn."\tinitial_gene_set"."\n";}
+# for my $nn(@{$fnd_genes}) {	print OUT2 $nn."\tfnd_genes"."\n";}
+# for my $nn(@{$ags_genes}) {	print OUT2 $nn."\tags_genes"."\n";}
+# for my $nn(@{$fgs_genes}) {	print OUT2 $nn."\tfgs_genes"."\n";}
+# close OUT2;	
+
 	my $fnd_genes = [keys( %{ $found_genes->{$submitted_species} } )];
-	group_labels($fnd_genes); #FunCoup mode
+group_labels($fnd_genes); #FunCoup mode
+	# group_labels([@{$genes}, @{$context_genes}]); 
 	group_labels($ags_genes,	$fgs_genes);
 	hubbiness2($initial_gene_set, $start_species, $networks);
 	hubbiness2($fnd_genes, $start_species, $networks); #FunCoup mode
@@ -302,11 +320,11 @@ my($ge, $intensity);
 	# $genes = [keys(%{$gsAttr->{id}})]; #->{attr};
 	# $context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
 if (!defined($group2)) { #FunCoup mode
-if ($node->{ $ge }->{'groupColor'}) { #FunCoup mode
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_query'};
-	} else {
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_other'};	
-	}
+# if ($node->{ $ge }->{'groupColor'}) { #FunCoup mode
+	# $node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_query'};
+	# } else {
+	# $node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_other'};	
+	# }
 } else { #NEA mode
 
 for $ge(@{$group1}) {
@@ -326,8 +344,36 @@ if ($node->{ $ge }->{'groupColor'}) {
 }
 for $ge(keys % {$node}) {
 	$node->{ $ge }->{'name'} = $node->{ $ge }->{'id'} if (!$node->{ $ge }->{'name'});
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_other'} if (!defined($node->{ $ge }->{'groupColor'}));
+	$node->{ $ge }->{'groupColor'} = '#88aa88' if (!defined($node->{ $ge }->{'groupColor'}));
 }
+}
+return undef;
+}
+
+sub group_labels_old {
+my($group1, $group2) = @_;
+my($ge, $intensity);
+
+	# $genes = [keys(%{$gsAttr->{id}})]; #->{attr};
+	# $context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
+for $ge(@{$group1}) {
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($gsAttr->{score}->{ $ge }, "byExpression") if (defined($gsAttr->{score}->{ $ge }));
+	$node->{ $ge }->{'subSet'} =  lc($gsAttr->{subset}->{ $ge }) if (defined($gsAttr->{subset}->{ $ge }));
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'};
+}
+for $ge(@{$group2}) {
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($cgsAttr->{score}->{ $ge }, "byExpression") if (defined($cgsAttr->{score}->{ $ge }));
+	$node->{ $ge }->{'subSet'} =  lc($cgsAttr->{subset}->{ $ge }) if (defined($cgsAttr->{subset}->{ $ge }));
+
+if ($node->{ $ge }->{'groupColor'}) {
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_both'};
+} else {
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'};
+}
+}
+for $ge(keys % {$node}) {
+	$node->{ $ge }->{'name'} = $node->{ $ge }->{'id'} if (!$node->{ $ge }->{'name'});
+	$node->{ $ge }->{'groupColor'} = '#888888' if (!defined($node->{ $ge }->{'groupColor'}));
 }
 return undef;
 }
@@ -657,7 +703,8 @@ $presence_cond = ($fc_cl =~ 'net_all_') ? ' AND (('.join(' IS NOT NULL) OR (', (
 		my $sth = $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT statement FC\n";
 		$sth->execute();
 while ($rows = $sth->fetchrow_hashref) {
-	$node->{uc($rows->{$pc})}->{'degree'} += $rows->{'count'};
+	# $node->{uc($rows->{$pc})}->{'degree'} += $rows->{'count'};
+	$node->{$rows->{$pc}}->{'degree'} += $rows->{'count'};
 }}
 
 	return undef;

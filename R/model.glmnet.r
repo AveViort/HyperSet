@@ -111,8 +111,8 @@ createGLMnetSignature <- function (
 					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
 					"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
 					"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
-				plot(0,type='n', axes=FALSE, ann=FALSE);
-				text(x=1, y=0.5, labels = t1[1], cex = 1);
+				plot(0,type = 'n', axes = FALSE, ann = FALSE);
+				text(x = 1, y = 0.5, labels = t1[1], cex = 1);
 				return(NA);
             }
 			#save(model, file=paste0(File, ".RData"));
@@ -138,8 +138,8 @@ createGLMnetSignature <- function (
 					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
 					"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
 					"&nlambda=", Nlambda, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
-				plot(0,type='n', axes=FALSE, ann=FALSE);
-				text(x=1, y=0.5, labels = t1[1], cex = 1);
+				plot(0,type = 'n', axes = FALSE, ann = FALSE);
+				text(x = 1, y = 0.5, labels = t1[1], cex = 1);
 				return(NA);
             }
 			Betas <- model$beta;
@@ -188,7 +188,10 @@ createGLMnetSignature <- function (
 				perf$RSS = sum((10 * MG[Sample1] - 10 * Ypred) ** 2, na.rm = T);
 				perf$AIC <- 2 * k + n * log(perf$RSS);
 				perf$BIC <- log(n) * k + log(perf$RSS/n) * n;
-				perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
+				#perf_frame <- rbind(perf_frame, data.frame(Measure = "RSS(training)", Value = round(perf$RSS,3)));
+				#perf_frame <- rbind(perf_frame, data.frame(Measure = "AIC(training)", Value = round(perf$AIC,3)));
+				#perf_frame <- rbind(perf_frame, data.frame(Measure = "BIC(training)", Value = round(perf$BIC,3)));
+				#perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
 				
 				st1 = cor(as.numeric(MG[Sample1]), pred[Sample1], use="pairwise.complete.obs", method="spearman");
 			} else {
@@ -204,14 +207,17 @@ createGLMnetSignature <- function (
 					# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6874104/
 					perf$AIC <- AIC(t1);
 					perf$BIC <- BIC(t1);
-					perf_frame <- rbind(perf_frame, data.frame(Measure = "AIC(testing)", Value = round(perf$AIC,3)));
-					perf_frame <- rbind(perf_frame, data.frame(Measure = "BIC(testing)", Value = round(perf$BIC,3)));
-					perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
+					#perf_frame <- rbind(perf_frame, data.frame(Measure = "RSS(training)", Value = round(perf$RSS,3)));
+					#perf_frame <- rbind(perf_frame, data.frame(Measure = "AIC(training)", Value = round(perf$AIC,3)));
+					#perf_frame <- rbind(perf_frame, data.frame(Measure = "BIC(training)", Value = round(perf$BIC,3)));
+					#perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
 					lt1 <- summary(t1)$logtest["pvalue"];
 				} else {
 					stop(t1[1]);
 				}
 			}
+			perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
+			perf_frame <- rbind(perf_frame, data.frame(Measure = "p", Value = nrow(predictorSpace)));
 		} else {
 			lt1 = 1; st1 = 0;
 		}
@@ -230,8 +236,8 @@ createGLMnetSignature <- function (
 		Cex.main  = 0.85; Cex.lbl = 0.35; Cex.leg = 0.5;
 		ppe <- NULL; 
 		for (pe in names(perf)[which(!grepl(paste(rnds, collapse="|"), names(perf), fixed=FALSE))]) {
-			va =	round(perf[[pe]], digits=3); 
-			ppe <- paste(ppe, paste0(pe, "=", va), sep="\n");
+			va = round(perf[[pe]], digits=3); 
+			ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
 			perf_frame <- rbind(perf_frame, data.frame(Measure = paste0(pe, "(training)"), Value = va));
 		}
 		legend("topleft", legend=paste(
@@ -241,7 +247,7 @@ createGLMnetSignature <- function (
 			paste0("n(training set)=", n),
 			paste0("k(model)=", k),			
 			ppe, 
-			sep="\n"), bty="n", cex=Cex.leg * 1.5); 
+			sep = "\n"), bty = "n", cex = Cex.leg * 1.5); 
 		dev.off();
 		
 		for (Round in rnds) {
@@ -280,7 +286,7 @@ createGLMnetSignature <- function (
 				}
 			} else {
 				cu <- cu0[smp,]
-				t1 <- try(coxph(Formula, data=as.data.frame(PW[smp,]), control=coxph.control(iter.max = 5)), silent=FALSE);
+				t1 <- try(coxph(Formula, data = as.data.frame(PW[smp,]), control = coxph.control(iter.max = 5)), silent=FALSE);
 				if (!grepl("Error|fitter|levels", t1[1]) & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
 					perf[[paste0("P(logtest, ", Round, ")")]] <- summary(t1)$logtest["pvalue"];
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("P(logtest, ", Round, ")"), Value = round(perf[[paste0("P(logtest, ", Round, ")")]],3)));
@@ -292,14 +298,14 @@ createGLMnetSignature <- function (
 
 			if (Family != "cox") {
 				MSE <- mean((MG[smp] - pred)^2);
-				MPE <- mean(abs(MG[smp] - pred)/abs(MG[smp]));
+				MRE <- mean(abs(MG[smp] - pred)/abs(MG[smp]));
 				R2 <- 1 - (sum((MG[smp] - pred)^2)/sum((MG[smp] - mean(MG[smp]))^2));
 				#print(paste0("R2 (", Round, ")"));
 				#print(paste0("SSreg: ", sum((MG[smp] - pred)^2)));
 				#print(paste0("SStot: ", sum((MG[smp] - mean(MG[smp]))^2)));
 				
 				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("MSE(", Round, ")"), Value = round(MSE,3)));
-				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("MPE(", Round, ")"), Value = round(MPE,3)));
+				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("MRE(", Round, ")"), Value = round(MRE,3)));
 				perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("R^2(", Round, ")"), Value = round(R2,3)));	
 				
 				# save predicted and observed with sample names in case of extended_output
@@ -308,35 +314,35 @@ createGLMnetSignature <- function (
 					rownames(coordinates) <- smp;
 				}
 				
-				plot(MG[smp], pred, type="n", xlab="Observed", ylab="Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
+				plot(MG[smp], pred, type = "n", xlab = "Observed", ylab = "Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
 				if (!is.na(title.sub)) {
-					title(sub = title.sub, line=1, cex.sub=Cex.leg * 1.5);
+					title(sub = title.sub, line = 1, cex.sub = Cex.leg * 1.5);
 				}
 				States = sort(unique(MG[smp]))
-				axis(1, at=States, labels=States);
+				axis(1, at = States, labels = States);
 				#text(MG[smp], pred, labels=toupper(names(MG[smp])), cex=Cex.lbl, srt=45);
 				points(MG[smp], pred);
 				if (Family != "multinomial") {
-					abline(coef(lm(pred ~ MG[smp])), col="green", lty=2);
+					abline(coef(lm(pred ~ MG[smp])), col = "green", lty = 2);
 				}
 			} else {
 				Cls = c("red2", "green2");
 				names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
-				plotSurv2(cu=cu0[names(pred),], Grouping=ifelse(pred > median(pred,na.rm=TRUE), "High", "Low"), s.type=NA, Xmax=NA, Cls, Title=title.main, markTime = TRUE);
+				plotSurv2(cu=cu0[names(pred),], Grouping=ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
 			}
 			ppe <-  paste0("n(",  Round, " set)=", length(smp),"\n"); 
-			for (pe in names(perf)[grep(Round, names(perf), fixed=TRUE)]) {
+			for (pe in names(perf)[grep(Round, names(perf), fixed = TRUE)]) {
 				va = ifelse(pe == "logtest", 
-					signif(perf[[pe]], digits=2), 
-					round(perf[[pe]], digits=3)
+					signif(perf[[pe]], digits = 2), 
+					round(perf[[pe]], digits = 3)
 				); 
-				ppe <- paste(ppe, paste0(pe, "=", va), sep="\n");
+				ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
 			}
-			legend("topleft", legend=paste( ppe,   sep="\n"), bty="n", cex=Cex.leg * 1.7); 
+			legend("topleft", legend=paste(ppe,   sep = "\n"), bty = "n", cex = Cex.leg * 1.7); 
 			dev.off();
 		}
 	} else {
-		png(file=paste0(baseName, "_model.png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
+		png(file=paste0(baseName, "_model.png"), width = plotSize/2, height = plotSize/2, type = "cairo");
 		plot(model, xvar = c("norm", "lambda", "dev")[1], label = TRUE);
 		legend("top", "No non-zero terms identified...");
 		print("No non-zero terms identified...");
@@ -360,13 +366,8 @@ if (Par["source"] == "tcga") {
 	print(paste0("Sample mask: ", sample_mask));
 }
 if (Par["source"] == "ccle") {
-	tissues <- c();
-	multiopt <- toupper(multiopt);
-	for (tissue in multiopt) {
-		tissues <- c(tissues, tissue);
-	}
+	tissues <- createTissuesList(multiopt);
 	if (tissues != 'ALL') {
-		tissues <- paste0("'{", paste(tissues, collapse=","), "}'::text[]");
 		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
 	} else {
 		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue;");
@@ -406,7 +407,7 @@ for (i in 1:length(x_datatypes)) {
 					condition <- paste0(condition, "id LIKE '%'");
 				}
 			} else {
-				condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse=","), "}'::text[])");
+				condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse = ","), "}'::text[])");
 			}
 			if (Par["source"] == "tcga") {
 				tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
@@ -470,14 +471,14 @@ for (i in 1:length(x_datatypes)) {
 		temp <- matrix(temp, 1, length(temp));
 		rownames(temp) <- x_platforms[i];
 		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
-			temp_names <- gsub(sample_mask, "", temp_names, fixed=FALSE)
+			temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE)
 		}
 		colnames(temp) <- temp_names;
 	} else {
 		rownames(temp) <- temp_names;
 		temp_names <- colnames(temp);
 		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
-			temp_names <- gsub(sample_mask, "", temp_names, fixed=FALSE)
+			temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE)
 		}
 		colnames(temp) <- temp_names;
 	}
