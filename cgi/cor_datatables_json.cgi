@@ -120,12 +120,12 @@ while (@row = $sth->fetchrow_array()) {
 		}
 		# my $transfer_button = '<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"transfer_id(\''.$source.'\', \''.$cohort.'\', \''. $field_values[2].'\', \''.$platform.'\', \''.$field_values[0].'\')\">+</button>';		 
 		# this.css({\"background-color\": \"green\"});
-		my $transfer_button = '<span class=\"adj-icon ui-icon ui-icon-circle-b-check\" onclick=\"transfer_id(\''.$source.'\', \''.$cohort.'\', \''. $field_values[2].'\', \''.$platform.'\', \''.$field_values[0].'\')\" title=\"Add to clipboard\"></span>';
+		my $transfer_button = '<span class=\"adj-icon ui-icon ui-icon-copy\" onclick=\"transfer_id(\''.$source.'\', \''.$cohort.'\', \''. $field_values[2].'\', \''.$platform.'\', \''.$field_values[0].'\')\" title=\"Add to clipboard\"></span>';
 		# my $transfer_button = '<span onclick=\"transfer_id(\''.$source.'\', \''.$cohort.'\', \''. $field_values[2].'\', \''.$platform.'\', \''.$field_values[0].'\')\"  style=\"float: left; margin-right: 0.5em;\"  class=\"ui-icon ui-icon-jquery\">icon</span>';
 		my %maxchar; 	$maxchar{'gene'} = 21; 		$maxchar{'feature'} = 14;
 		my($title, $display);
-		my $span1 = '<span class=\"adj-icon ui-icon ui-icon-extlink\" onclick=\"window.open(\''.$url1.'\', \'_blank\')\" title='.$info1.' >&nbsp;</span>';
-		my $span2 = '<span class=\"adj-icon ui-icon ui-icon-extlink\" onclick=\"window.open(\''.$url2.'\', \'_blank\')\" title='.$info2.' ></span>';
+		my $span1 = '<span class=\"adj-icon ui-icon ui-icon-extlink\" onclick=\"window.open(\''.$url1.'\', \'_blank\')\" onmouseover=\"var x = annotations.get(\''.$field_values[0].'\'.toLowerCase());if(typeof x != \'undefined\'){this.setAttribute(\'title\', x);}\" >&nbsp;</span>';
+		my $span2 = '<span class=\"adj-icon ui-icon ui-icon-extlink\" onclick=\"window.open(\''.$url2.'\', \'_blank\')\" title=\"'.$field_values[1].'\" ></span>';
 		foreach $i(0..$colnumber-4) {
 		if ($field_names[$i] eq 'gene' || $field_names[$i] eq 'feature') {
 					my $post_icon = $field_names[$i] eq 'gene' ? $span1 : $span2;

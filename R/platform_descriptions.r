@@ -4,6 +4,10 @@ library(RODBC);
 library(gtools);
 source("../R/plot_common_functions.r");
 
+
+
+
+
 # WORKING WITH COHORT DESCRIPTIONS
 
 update_cohort_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
@@ -18,11 +22,18 @@ update_cohort_descriptions_from_table <- function(table_name, key_file = "HS_SQL
 }
 
 # WORKING WITH DATATYPE DESCRIPTIONS
+# EXECUTE IN COMMAND LINE TO UPDATE:
+# In LINUX, on  file edited and saved by Excel:
+# cd /var/www/html/research/HyperSet/dev/HyperSet/R
+# cat platform_descriptions.4col.txt | gawk 'BEGIN {la = ""; FS="\t"; OFS = ";"} {if (1 == 1) print $1, $2, $3, $4}' | sed '{s/\"//g}' > platform_descriptions.4col.csv
+# cat datatype_descriptions.csv  | sed '{s/\"//g}' > _m 
+# mv _m datatype_descriptions.csv
+
+# In R:
 # setwd("/var/www/html/research/HyperSet/dev/HyperSet/R")
-# source("/var/www/html/research/HyperSet/dev/HyperSet/R/platform_descriptions.r")
-# update_platform_descriptions_from_table()
- # update_platform_descriptions_from_table("/var/www/html/research/HyperSet/dev/HyperSet/R/platform_descriptions.csv", key_file = "../cgi/HS_SQL.conf")
- # [1] "Created/updated 150 records"
+# source("platform_descriptions.r")
+# update_platform_descriptions_from_table("platform_descriptions.csv", "../cgi/HS_SQL.conf")
+# update_datatype_descriptions_from_table("datatype_descriptions.csv", "../cgi/HS_SQL.conf")
 
 update_datatype_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
 	table_data <- read.csv2(table_name, header = FALSE);
@@ -80,7 +91,6 @@ add_compatible_platforms_from_table <- function(table_name, key_file = "HS_SQL.c
 }
 
 # this function adds compatibility between platform and all platforms of given datatype
-# make_platform_and_datatype_compatible("ccle_exome_2019","COPY","/var/www/html/research/HyperSet/dev/HyperSet/cgi/HS_SQL.conf")
 make_platform_and_datatype_compatible <- function(platform1, datatype, key_file = "HS_SQL.conf", drch = '') {
 	rch <- NULL;
 	if (drch == '') {
@@ -95,7 +105,7 @@ make_platform_and_datatype_compatible <- function(platform1, datatype, key_file 
 	platforms <- '';
 	for (cohort in cohorts) {
 		# use SQL function to get platforms
-		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype,"', '');"));
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype,"', '', 'soft');"));
 		#print(temp);
 		platforms <- c(platforms, as.character(temp[,1]));
 	}
@@ -132,7 +142,8 @@ make_platforms_from_datatypes_compatible <- function(datatype1, datatype2, key_f
 	platforms1 <- '';
 	for (cohort in cohorts) {
 		# use SQL function to get platforms
-		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype1,"', '');"));
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype1,"', '', 'soft');"));
+		#print(temp);
 		platforms1 <- c(platforms1, as.character(temp[,1]));
 	}
 	platforms1 <- unique(platforms1);
@@ -497,6 +508,53 @@ add_plot_type_datatypes_3D <- function(datatype1, datatype2, datatype3, plot_typ
 		odbcClose(rch);
 	}
 	print(paste0(datatype1, " vs ", datatype2, " vs ", datatype3, ": added ", k, " records"));
+	return(k);
+}
+
+# same, but just for one platform - useful for 3D KM
+add_plot_type_datatypes_3D_platform <- function(datatype1, datatype2, platform3, plot_type, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
+	cohorts <- as.character(cohorts[,1]);
+	platforms1 <- c();
+	platforms2 <- c();
+	for (cohort in cohorts) {
+		# use SQL function to get platforms
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype1,"', '');"));
+		platforms1 <- c(platforms1, as.character(temp[,1]));
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype2,"', '');"));
+		platforms2 <- c(platforms2, as.character(temp[,1]));
+	}
+	platforms1 <- unique(platforms1);
+	platforms2 <- unique(platforms2);
+	# delete platform descriptions
+	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms1 <- unlist(platforms1);
+	platforms2 <- lapply(platforms2, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms2 <- unlist(platforms2);
+	platforms1 <- platforms1[which(platforms1!='')];
+	platforms2 <- platforms2[which(platforms2!='')];
+	#print(platforms1);
+	#print(platforms2);
+	#print(platforms3);
+	k <- 0;
+	for (platform1 in platforms1) {
+		for (platform2 in platforms2) {
+			stat <- add_plot_type(platform1, platform2, platform3, plot_type, key_file, rch);
+			#print(stat);
+			if (stat == TRUE) {k <- k+1;}
+		}
+	}
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	print(paste0(datatype1, " vs ", datatype2, " vs ", platform3, ": added ", k, " records"));
 	return(k);
 }
 

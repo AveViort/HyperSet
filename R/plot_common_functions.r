@@ -50,6 +50,18 @@ adjust_string <- function(long_string, threshold) {
 		print(pos);
 		adjusted_string <- paste0(substr(long_string, 1, spaces[pos]-1), "\n", substr(long_string, spaces[pos]+1, string_length));
 	}
-	print(adjusted_string);
+	#print(adjusted_string);
 	return(adjusted_string);
+}
+
+# generate plot title - platforms var is a character vector; other variables are strings
+# PAY ATTENTION! This function must be used only after HS.R.config.r is loaded
+generate_plot_title <- function(source_name, cohort, platforms, code) {
+	plot_title <- paste0(toupper(cohort), " ", platforms[1]);
+	for (i in 2:length(platforms)) {
+		plot_title <- paste0(plot_title, "\nvs ", platforms[i]);
+	}
+	plot_title <- paste0(plot_title, "\n", ifelse(source_name == "tcga", "Samples", "Tissue"), ": ", code);
+	plot_title <- adjust_string(plot_title, 25);
+	return(plot_title);
 }

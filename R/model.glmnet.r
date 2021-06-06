@@ -368,7 +368,7 @@ if (Par["source"] == "tcga") {
 if (Par["source"] == "ccle") {
 	tissues <- createTissuesList(multiopt);
 	if (tissues != 'ALL') {
-		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "'::text[]);");
 	} else {
 		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue;");
 	}

@@ -28,13 +28,13 @@ RETURN res;
 END;
 $$ LANGUAGE plpgsql;
 
--- get annotations for all genes and drugs/features, this function is used for qtips
+-- get annotations for all genes (pay attention to condition!), this function is used for qtips
 CREATE OR REPLACE FUNCTION annotation_list() RETURNS setof text AS $$
 DECLARE
 res_id text;
 res_annot text;
 BEGIN
-FOR res_id,res_annot IN SELECT internal_id,annotation FROM synonyms
+FOR res_id,res_annot IN SELECT DISTINCT internal_id,annotation FROM synonyms WHERE source='ENSEMBL Gene stable ID'
 LOOP
 RETURN NEXT res_id || '|' || res_annot;
 END LOOP;
@@ -74,6 +74,32 @@ END LOOP;
 FOR syn,id IN SELECT external_id,external_id FROM synonyms WHERE id_type='drug'
 LOOP
 RETURN NEXT E'{\"external\":\"' || syn || E'\",\"internal\":\"' || id || E'\"}';
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- retrieve platform and their external names
+CREATE OR REPLACE FUNCTION platform_synonyms() RETURNS setof text AS $$
+DECLARE
+platform_int_name text;
+platform_ext_name text;
+BEGIN
+FOR platform_int_name,platform_ext_name IN SELECT shortname,fullname FROM platform_descriptions WHERE visibility=TRUE
+LOOP
+RETURN NEXT platform_int_name || '|' || platform_ext_name;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, for datatypes
+CREATE OR REPLACE FUNCTION datatype_synonyms() RETURNS setof text AS $$
+DECLARE
+datatype_int_name text;
+datatype_ext_name text;
+BEGIN
+FOR datatype_int_name,datatype_ext_name IN SELECT shortname,fullname FROM datatype_descriptions WHERE visibility=TRUE
+LOOP
+RETURN NEXT datatype_int_name || '|' || datatype_ext_name;
 END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -288,13 +314,17 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- this version returns platforms and their human-readable names (without sources or data types!)
-CREATE OR REPLACE FUNCTION platform_list (cohort_n text, data_type text, previous_platforms text) RETURNS setof text
+-- filter_mode:
+-- soft: return platform if it is compatible with the previous platforms
+-- hard: return platform if it is compatible AND plot type is defined for the chosen combination
+CREATE OR REPLACE FUNCTION platform_list (cohort_n text, data_type text, previous_platforms text, filter_mode text) RETURNS setof text
 AS $$
 DECLARE
 table_n text;
 platforms_array text array;
 flag boolean;
 exclude boolean;
+plot_flag boolean;
 platform_n text;
 description text;
 nrows numeric;
@@ -323,6 +353,11 @@ SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND da
 IF NOT (previous_platforms = '')
 THEN
 SELECT check_platforms_compatibility(platform_n, platforms_array) INTO flag;
+IF (filter_mode = 'hard')
+THEN
+SELECT (SELECT COUNT (*) FROM (SELECT available_plot_types(platform_n || ',' || previous_platforms)) AS a WHERE a IS NOT NULL) != 0 INTO plot_flag;
+flag := flag AND plot_flag;
+END IF;
 IF (flag AND NOT exclude)
 THEN 
 IF NOT (data_type = 'CLIN')
@@ -340,7 +375,13 @@ END IF;
 END IF;
 END IF;
 ELSE
-IF NOT (exclude)
+IF (filter_mode = 'hard')
+THEN
+SELECT (SELECT COUNT (*) FROM (SELECT available_plot_types(platform_n)) AS a WHERE a IS NOT NULL) != 0 INTO plot_flag;
+ELSE
+plot_flag := true;
+END IF;
+IF plot_flag AND NOT (exclude)
 THEN
 IF NOT (data_type = 'CLIN')
 THEN
@@ -1075,6 +1116,78 @@ END LOOP;
 ELSE
 RETURN NEXT NULL;
 END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- faster function to check combinations
+CREATE OR REPLACE FUNCTION check_missing_plots_short() RETURNS numeric AS $$
+DECLARE
+i numeric;
+j numeric;
+k numeric;
+m numeric;
+t numeric;
+platforms text;
+platforms_array text array;
+previous_platforms text array;
+BEGIN
+t := 0;
+m := 0;
+SELECT ARRAY(SELECT DISTINCT shortname FROM platform_descriptions WHERE visibility=true) INTO platforms_array;
+-- 1D plots
+RAISE notice '1D plots';
+FOR i in 1..array_length(platforms_array, 1)
+LOOP
+IF ((SELECT COUNT (*) FROM (SELECT available_plot_types(platforms_array[i])) AS a WHERE a IS NOT NULL) = 0)
+THEN
+RAISE notice '%;;', platforms_array[i];
+m := m+1;
+END IF;
+t := t + 1;
+END LOOP;
+-- 2D plots
+RAISE notice '2D plots';
+FOR i in 1..array_length(platforms_array, 1)
+LOOP
+FOR j in i..array_length(platforms_array, 1)
+LOOP
+previous_platforms := string_to_array(platforms_array[i], ',');
+IF (SELECT check_platforms_compatibility(platforms_array[j], previous_platforms) = true)
+THEN
+platforms := platforms_array[i] || ',' || platforms_array[j];
+IF ((SELECT COUNT (*) FROM (SELECT available_plot_types(platforms)) AS a WHERE a IS NOT NULL) = 0)
+THEN
+RAISE notice '%;%;', platforms_array[i], platforms_array[j];
+m := m+1;
+END IF;
+t := t + 1;
+END IF;
+END LOOP;
+END LOOP;
+-- 3D plots
+RAISE notice '3D plots';
+FOR i in 1..array_length(platforms_array, 1)
+LOOP
+FOR j in i..array_length(platforms_array, 1)
+LOOP
+FOR k in j..array_length(platforms_array, 1)
+LOOP
+previous_platforms := string_to_array(platforms_array[i] || ',' || platforms_array[j], ',');
+IF (SELECT check_platforms_compatibility(platforms_array[k], previous_platforms) = true)
+THEN
+platforms := platforms_array[i] || ',' || platforms_array[j] || ',' || platforms_array[k];
+IF ((SELECT COUNT (*) FROM (SELECT available_plot_types(platforms)) AS a WHERE a IS NOT NULL) = 0)
+THEN
+RAISE notice '%;%;%', platforms_array[i], platforms_array[j], platforms_array[k];
+m := m+1;
+END IF;
+t := t + 1;
+END IF;
+END LOOP;
+END LOOP;
+END LOOP;
+RAISE notice 'Checked combinations (total): % Missing plots: %', t, m;
+RETURN m;
 END;
 $$ LANGUAGE plpgsql;
 

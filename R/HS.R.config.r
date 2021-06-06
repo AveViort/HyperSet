@@ -49,14 +49,18 @@ font2 <- list(
   size = 12,
   color = "black"
 );
+# https://plotly.com/r/legend/
 druggable.plotly.legend.style <- list(
-	x = 1,
-	y = 0.8,
+	x = 0.05,
+	y = 0.95,
 	font = list(
 		family = "sans-serif",
 		size = 12,
-		color = "#000"),
-	bgcolor = "#E2E2E2",
+		# color = "#000"
+		color = "#222" # CHANGE
+		),
+	# bgcolor = "#E2E2E2",
+	bgcolor = "rgba(0,0,0,0.2)", # CHANGE
 	bordercolor = "#FFFFFF",
 	borderwidth = 2)
 	
@@ -130,4 +134,8 @@ druggable.evinet.modebar <- list(
        window.open('https://www.evinet.org/druggable', '_blank');
     }"
   )
-)
+);
+
+
+
+

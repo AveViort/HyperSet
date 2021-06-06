@@ -318,6 +318,32 @@ function get_synonyms() {
 	return synonyms.slice(0, synonyms.length-1);
 }
 
+function get_druggable_platforms() {
+	var platform_synonyms;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "../cgi/platform_synonyms.cgi", false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			platform_synonyms = this.responseText;}
+		}
+	xmlhttp.send();
+	platform_synonyms = platform_synonyms.split("|");
+	return platform_synonyms.slice(0, platform_synonyms.length-1);
+}
+
+function get_druggable_datatypes() {
+	var datatype_synonyms;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", "../cgi/datatype_synonyms.cgi", false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			datatype_synonyms = this.responseText;}
+		}
+	xmlhttp.send();
+	datatype_synonyms = datatype_synonyms.split("|");
+	return datatype_synonyms.slice(0, datatype_synonyms.length-1);
+}
+
 function drug_sources() {
 	var sources;
 	var xmlhttp = new XMLHttpRequest();

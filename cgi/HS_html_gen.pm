@@ -239,7 +239,7 @@ disabled: [1,2]
 <div id="net-coll-h3" >
 <div id="net-coll-div">
 <div id="area-table-net-ele" class="inputarea inputareahighlight ui-corner-all" onclick=\'var sel = document.getElementsByName("NETselector"); $(sel).prop("disabled", false);\'>
-Multiple selected networks will be merged
+Multiple selected networks woulld be merged
                     <TABLE  id="list_net" class="compact ui-state-default ui-corner-all" style="font-size: '.$HSconfig::font->{list}->{size}.'px">
 <thead>
   <TR>

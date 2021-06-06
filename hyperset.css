@@ -32,10 +32,30 @@ font-weight: normal;
 	}
 }*/
 
-div,p {
+
+/*CHANGE BEGIN*/
+div,p,.text-content {
 color: #2e6e9e;
 }
 
+input {
+	border-width: 1px;/* to fix Chrome's ugly borders */
+}
+
+input[type="checkbox"] { /*this only works in Chrome. Firefox does not support checkbox styling https://stackoverflow.com/questions/4148499/how-to-style-a-checkbox-using-css
+*/
+	border-width: 1px;
+	border-color: #654b24;
+	border-radius: 3px;
+	}
+
+.parameter_area {
+border-style: solid;
+border-width: 1px; 
+border-color: #cbc7bd;
+border-radius: 6px;
+}
+/*CHANGE end*/
 p.over {
 	margin: 5px;
 	font-size: 1.1em;
@@ -588,7 +608,7 @@ td.parameter_area_enabled {
 }
 
 .inputareahighlight {  
-border: 2px solid #a6c9e2;
+border: 1px solid #a6c9e2;
 box-shadow: 5px 5px 10px; 
 }
 
@@ -604,13 +624,18 @@ box-shadow: 5px 5px 10px #e17009 ;
 .projecthighlight {  
 background: #31b131;
 color: #31b131;
-border: 3px solid 00bbbb;
+border: 2px solid 00bbbb;
 box-shadow: 15px 15px 30px #00ff00;  
+}
+
+.rowhighlight {  
+color: #b1b131;
+/*border: 1px solid bbbbbb; background-color: #31b131; box-shadow: 15px 15px 30px #00ff00;  */
 }
 
 .demohighlight {  
 background-color: #ffffaa;
-border: 4px solid red;
+border: 3px solid red;
 box-shadow: 10px 10px 30px; 
 }
 
@@ -771,6 +796,8 @@ text-decoration: line-through;
 color: red;
 }
 
+
+
 .venn_popup{
  position:absolute; 
  right:200px; 
@@ -825,7 +852,7 @@ width: 40%;
 
 .venn_box_control:hover{
    /*background:rgb(255,150,50);*/
-   box-shadow: 3px 3px 15px #00ff00; 
+   box-shadow: 3px 3px 15px #0055ff; 
 }
 
 /*.ags_box_title {}*/

@@ -22,7 +22,7 @@ $sth->execute( ) or die $sth->errstr;
 my $flag = $sth->fetchrow_array;
 print $flag;
 print "|";
-$stat = qq/SELECT platform_list(\'$cohort'\, \'$datatype'\, \'$previous_platforms'\)/;
+$stat = qq/SELECT platform_list(\'$cohort'\, \'$datatype'\, \'$previous_platforms'\, \'hard\')/;
 $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 while (@platform = $sth->fetchrow_array) {

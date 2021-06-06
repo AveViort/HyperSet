@@ -30,7 +30,8 @@ print(internal_ids);
 
 if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
 	tissues <- createTissuesList(tcga_codes[1]);
-	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "}'::text[]);");
+	print(query);
 	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 }
 
@@ -86,12 +87,15 @@ for (i in 1:length(datatypes)) {
 	}
 }
 common_samples <- rownames(temp[[1]]);
+print(common_samples);
 print(paste0("Common samples after iteration 1: ", length(common_samples)));
 for (i in 2:length(datatypes)) {
 	# MUT is an exclusion! All samples that are not specified in MUT table are mutation-negative
 	if (datatypes[i] != "mut") {
+		print(rownames(temp[[i]]));
 		common_samples <- intersect(common_samples, rownames(temp[[i]]));
 		print(paste0("Common samples after iteration ",i ,": ", length(common_samples)));
+		print(common_samples);
 	}
 }
 status <- ifelse(length(common_samples) > 0, 'ok', 'error');
@@ -113,34 +117,32 @@ if (status != 'ok') {
 		tissue_types <- sqlQuery(rch, query);	
 		rownames(tissue_types) <- tissue_types[,1];
 	}
+	print_platforms <- c();
+	for (i in 1:length(datatypes)) {
+		print_platforms <- c(print_platforms, as.character(readable_platforms[platforms[i],2]));
+	}
 	if (length(datatypes) == 2) {
 		x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
 		print("str(x_data):");
 		print(str(x_data));
 		y_data <- transformVars(temp[[2]][common_samples,2], scales[2]);
-		print("str(y_data):");
-		print(str(y_data));	
-		if (Par["source"] == "tcga") {
-			plot_title <- adjust_string(paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
-				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
-				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), "")), 25);
-		} else {
-			plot_title <- adjust_string(paste0("Scatterplot of ",  toupper(Par["cohort"]), " ",
-				readable_platforms[platforms[1],2], " and \n", 
-				readable_platforms[platforms[2],2]), 25);
-		}
+		#print("str(y_data):");
+		#print(str(y_data));
+		plot_title <- generate_plot_title(Par["source"], Par["cohort"], print_platforms, tcga_codes[1]);
 		cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
 		cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
-		ck = cor(x_data, y_data, use="pairwise.complete.obs", method="kendall");
+		# ck = cor(x_data, y_data, use="pairwise.complete.obs", method="kendall");
 		t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
 		f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
+#CHANGE:
 		plot_legend = paste(
 			plot_title,
-			ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
-			ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
+			# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
+			# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
 			paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
 			paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
-			paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), sep="\n");
+			# paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), 
+			sep="\n");
 		print(plot_legend);
 		x_axis <- list(
 			title = adjust_string(paste0(ifelse(!empty_value(ids[1]), paste0(ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"), druggable.axis.label.threshold),
@@ -192,25 +194,16 @@ if (status != 'ok') {
 				"el.on('plotly_selected', function(d) { console.log('Select: ', d) });
 			}
 		")) %>%
-		layout(legend = druggable.plotly.legend.style,
+		layout(legend = druggable.plotly.legend.style, # https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js#L51-L110
 			showlegend = TRUE,
+			# editable = TRUE,
 			xaxis = x_axis,
 			yaxis = y_axis,
-			margin = druggable.margins) %>%
-		config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
+			margin = druggable.margins) %>% # CHANGE
+		config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
-		if (Par["source"] == "tcga") {
-			plot_annotation <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
-				readable_platforms[platforms[1],2], ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n", 
-				readable_platforms[platforms[2],2], ifelse(!(datatypes[2] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""), " and \n",
-				readable_platforms[platforms[3],2], ifelse(!(datatypes[3] %in% druggable.patient.datatypes), paste0(" (samples: ", tcga_codes[1], ")"), ""));
-		} else {
-			plot_annotation <- paste0("Scatterplot of ", toupper(Par["cohort"]), " ",
-				readable_platforms[platforms[1],2], " and \n", 
-				readable_platforms[platforms[2],2], " and \n",
-				readable_platforms[platforms[3],2]);
-		}
+		plot_title <- generate_plot_title(Par["source"], Par["cohort"], print_platforms, tcga_codes[1]);
 		# in case with 3D plots we have not only numeric datatypes
 		# x and y must be numeric, but z can be character
 		# at the moment we cannot decide types of variables beforehand
@@ -231,6 +224,8 @@ if (status != 'ok') {
 			z_data <- transformVars(temp[[3]][common_samples,2], scales[3]);
 			print("str(z_data):");
 			print(str(z_data));
+			cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
+			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
 			x_axis <- list(
 				title = adjust_string(paste0(ifelse(!empty_value(ids[1]), paste0(ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ""), " (", readable_platforms[platforms[1],2], ",", scales[1], ")"), druggable.axis.label.threshold),
 				titlefont = font1,
@@ -243,6 +238,14 @@ if (status != 'ok') {
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
+			plot_legend = paste(
+				plot_title,
+				# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
+				# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
+				paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
+				paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
+				# paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), 
+				sep="\n");
 			print("Color bar limits:");
 			print("var_limits: ");
 			print(c(min(z_data), max(z_data)));
@@ -289,16 +292,16 @@ if (status != 'ok') {
 			")) %>%
 			add_annotations(xref = "paper",
 				yref = "paper",
-				x = 1,
+				x = 0.1,
 				y = -0.12,
-				text = plot_annotation,
+				text = plot_legend,
 				showarrow = FALSE) %>%
 			layout(legend = druggable.plotly.legend.style,
 				showlegend = TRUE,
 				xaxis = x_axis,
 				yaxis = y_axis,
 				margin = druggable.margins) %>%
-			config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
+			config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); # CHANGE
 			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		} else {
 			print("One of the columns contains characters");
@@ -315,6 +318,16 @@ if (status != 'ok') {
 			y_data <- transformVars(temp[[axis_index[2]]][common_samples,2], scales[axis_index[2]]);
 			print("str(y_data):");
 			print(str(y_data));	
+			cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
+			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
+			plot_legend = paste(
+				plot_title,
+				# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
+				# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
+				paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
+				paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)), 
+				# paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), 
+				sep="\n");
 			z_data <- NULL;
 			if (datatypes[axis_index[3]] == "mut") {
 				# create basic vector
@@ -367,17 +380,18 @@ if (status != 'ok') {
 				}
 				write(script_line, file = script_file, append = TRUE);
 			}
-			script_line <- paste0("add_annotations(xref = 'paper',
+			script_line <- paste0("add_annotations(xref = 'paper', # CHANGE
 					yref = 'paper',
 					x = 1,
 					y = -0.12,
-					text = plot_annotation,
+					text = plot_title,
 					showarrow = FALSE) %>%
 				layout(showlegend = TRUE,
 				legend = druggable.plotly.legend.style,
 				xaxis = x_axis,
 				yaxis = y_axis,
-				margin = druggable.margins) %>%");
+				margin = druggable.margins) %>% 		
+				config(editable = TRUE) %>%");
 			if (!is.na(nea_platform)) {
 				render_line < paste0("el.on('plotly_click', function(d) { 
 						var id = ((d.points[0].text).split(' '))[1];

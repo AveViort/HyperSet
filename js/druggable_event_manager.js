@@ -18,5 +18,5 @@ window.addEventListener("message", (event) => {
 			console.log("Unknown message received");
 			console.log(event);
 	}
-	}
+}
 );

@@ -277,7 +277,7 @@ fitSurvival2  <- function (
 	return.p=c("coefficient", "logtest", "sctest", "waldtest")[1] #which type p-value from coxph
 ) {
 
-print(table(Grouping[usedSamples]));
+	print(table(Grouping[usedSamples]));
 	vec = as.factor(Grouping[usedSamples]);
 	cu <- cutFollowup.full(clin, usedSamples, s.type, po=NA);
 	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm=T);}
@@ -322,7 +322,7 @@ if (length(platforms) == 2) {
 	print(query);
 	second_set_table <- sqlQuery(rch, query)[1,1];
 
-	query <- paste0("SELECT sample,", first_set_platform, ",", first_set_platform, "_time FROM ", first_set_table, ";")
+	query <- paste0("SELECT sample,", first_set_platform, ",", first_set_platform, "_time FROM ", first_set_table, " WHERE ", first_set_platform, "_time IS NOT NULL;")
 	first_set <- sqlQuery(rch, query);
 	rownames(first_set) <- as.character(first_set[,1]);
 	print(str(first_set));
@@ -602,7 +602,7 @@ if (length(platforms) == 2) {
 			label1 <- '';
 			label2 <- ''; 
 			if (second_set_datatype == "copy") {
-				label1 <- paste0("", toupper(second_set_id), "<0");
+				label1 <- paste0("", toupper(second_set_id), "<0", label1_col);
 				label2 <- paste0("", toupper(second_set_id), ">0", label2_col);
 				label3 <- paste0("", toupper(second_set_id), "=0", label3_col);
 				Pat.vector2[which(fe.drug < 0)] <- label1;
@@ -636,10 +636,11 @@ if (length(platforms) == 2) {
 		
 		Grouping <- paste(Pat.vector, Pat.vector2, sep=", ");
 		names(Grouping) <- usedSamples;
-		if (c('NA, NA', 'NA, ', ', NA') %in% Grouping) {
-			Grouping <- Grouping[-which((Grouping == 'NA, NA') | (Grouping == 'NA, ') | (Grouping == ', NA'))];
-		} 
-		#print(Grouping);
+		if (any(grepl("^NA,|NA, NA|, NA$", Grouping))) {
+			Grouping <- Grouping[-which(grepl("^NA,|NA, NA|, NA$", Grouping))];
+		}
+		print("");
+		print(Grouping);
 		
 		surv.fit <- fitSurvival2(Grouping, clin, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform, usedSamples=usedSamples);
 		#print("surv.fit:");

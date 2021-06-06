@@ -66,7 +66,7 @@ common_samples <- c();
 tissue_samples <- c();
 if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
 	tissues <- createTissuesList(tcga_codes[1]);
-	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY(", tissues, ");");
+	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "'::text[]);");
 	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 }
 for (i in 1:length(temp_datatypes)) {

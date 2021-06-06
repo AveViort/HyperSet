@@ -1,7 +1,7 @@
 #!/usr/bin/speedy -w
 # use warnings;
 
-# this function returns list ids (genes, drugs) and respective synonims with urls
+# this function returns list of external ids and respective internal ids + url
 use strict vars;
 use HS_SQL;
 
