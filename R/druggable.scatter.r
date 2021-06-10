@@ -1,7 +1,6 @@
 source("../R/init_plot.r");
 
 print("druggable.scatter.r");
-
 status <- '';
 plot_title <- '';
 x_data <- NULL;
@@ -38,7 +37,7 @@ if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
 for (i in 1:length(datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(datatypes[i] %in% druggable.patient.datatypes))) {
-		condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
+		condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes[1]), "'");
 	}
 	if (!empty_value(ids[i])) {
 		# check if this is the first term in condition or not
@@ -122,6 +121,10 @@ if (status != 'ok') {
 		print_platforms <- c(print_platforms, as.character(readable_platforms[platforms[i],2]));
 	}
 	if (length(datatypes) == 2) {
+		metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
+										datatypes, platforms, ids, scales, c(nrow(temp[[1]]), nrow(temp[[2]])), Par["out"]);
+		print(paste0("Metadata file: ", paste0(substr(File, 1, nchar(File)-5), '_meta.json')));
+		save_metadata(metadata, paste0(substr(File, 1, nchar(File)-5), '_meta.json'));
 		x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
 		print("str(x_data):");
 		print(str(x_data));
@@ -215,6 +218,9 @@ if (status != 'ok') {
 		# we have two possible types - "character varying" and "numeric"
 		if (all(status == "numeric")) {
 			print("Only numeric datatypes");
+			metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
+										datatypes, platforms, ids, scales, c(nrow(temp[[1]]), nrow(temp[[2]]), nrow(temp[[3]])), Par["out"]);
+			save_metadata(metadata, paste0(substr(File, 1, nchar(File)-5), '_meta.json'));							
 			x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
 			print("str(x_data):");
 			print(str(x_data));
@@ -312,6 +318,10 @@ if (status != 'ok') {
 			# use left shift
 			axis_index <- left_shift(c(1,2,3), k);
 			print(axis_index);
+			metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
+										datatypes[axis_index], platforms[axis_index], ids[axis_index], scales[axis_index], 
+										c(nrow(temp[[axis_index[1]]]), nrow(temp[[axis_index[2]]]), nrow(temp[[axis_index[3]]])), Par["out"]);
+			save_metadata(metadata, paste0(substr(File, 1, nchar(File)-5), '_meta.json'));		
 			x_data <- transformVars(temp[[axis_index[1]]][common_samples,2], scales[axis_index[1]]);
 			print("str(x_data):");
 			print(str(x_data));
@@ -401,8 +411,8 @@ if (status != 'ok') {
 			}
 			script_line <- paste0(script_line, "config(modeBarButtonsToAdd = list(druggable.evinet.modebar));");
 			write(script_line, file = script_file, append = TRUE);
-			close(script_file)
-			source(script_file_name)
+			close(script_file);
+			source(script_file_name);
 			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		}
 	}	

@@ -14,7 +14,7 @@ my $cohort = $query->param('cohort');
 my $previous_datatypes = $query->param('previous_datatypes');
 print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
-$stat = qq/SELECT datatype_list(\'$cohort'\, \'$previous_datatypes'\)/;
+$stat = qq/SELECT datatype_list(\'$cohort'\)/;
 $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 while (@datatype = $sth->fetchrow_array) {

@@ -6,7 +6,7 @@ status <- '';
 plot_annotation <- '';
 condition <- " WHERE ";
 if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes))) {
-	condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
+	condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes[1]), "'");
 }
 if (!empty_value(ids[1])) {
 	query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[1], "';"); 

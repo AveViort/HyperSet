@@ -269,6 +269,8 @@ table.simple_table td {
 			<thead>
 				<th>Type</th>
 				<th>Cohort</th>
+				<th>Samples</th>
+				<th>N</th>
 				<th>X</th>
 				<th>Y</th>
 				<th>Z</th>
@@ -1172,23 +1174,22 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		ids = [];
 		platforms = [];
 		scales = [];
-		tcga_codes = [];
+		codes = $("#tcga_selector option:selected").val();
 		for (i=1; i<=n; i++) {
 			datatypes.push($("#type" + i + "_selector option:selected").val());
 			platforms.push($("#platform" + i + "_selector option:selected").val());
 			ids.push($("#id" + i + "_input").val());
 			scales.push($("#axis" + i + "_selector option:selected").val());
-			tcga_codes.push($("#tcga_selector option:selected").val());
 		}
 	}
-	var plot_description = "type:" + type + "|source:" + source + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + tcga_codes + "|scales:" + scales;
+	var plot_description = "type:" + type + "|source:" + source + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + codes + "|scales:" + scales;
 	var plot_filename = find_plot_in_history(plot_description);
 	var plot_id;
-	var plot_data = generate_plot_data(type, cohort, datatypes, platforms, ids, scales);
+	var plot_data;
 	// new plot
 	if (plot_filename == "no") {
 		var ErrorStack = check_error_stack(new Error().stack);
-		plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, tcga_codes, scales);
+		plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, codes, scales);
 		// check if plot successfully created
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + plot_filename, false);
@@ -1201,9 +1202,10 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				"&datatypes=" + datatypes.join() + 
 				"&platforms=" + platforms.join() + 
 				"&ids=" + ids.join() +
-				"&tcga_codes=" + tcga_codes.join() +
+				"&tcga_codes=" + codes +
 				"&scales=" + scales.join(),
 				ErrorStack);
+				plot_data = generate_plot_data(null);
 		}
 		else {
 			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "plot_created", "type=" + type +
@@ -1212,13 +1214,15 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				"&datatypes" + datatypes.join() + 
 				"&platforms=" + platforms.join() + 
 				"&ids=" + ids.join() +
-				"&tcga_codes=" + tcga_codes.join() +
+				"&tcga_codes=" + codes +
 				"&scales=" + scales.join(),
 				"<a href=https://" + window.location.hostname + "/pics/plots/" + plot_filename + " target=_blank>View</a>");
+				plot_id = plot_filename.substring(0, plot_filename.length-5);
+				var metadata = read_metadata('https://dev.evinet.org/pics/plots/' + plot_id + '_meta.json');
+				plot_data = generate_plot_data(metadata);
 				sessionStorage.setItem(plot_filename, plot_description);
 				sessionStorage.setItem('meta_' + plot_filename, plot_data["meta"]);
 		}
-		plot_id = plot_filename.substring(0, plot_filename.length-5);
 		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 		$(parent_tab).append(graph_window);
 		$("#plot_window_" + plot_id).dialog({
@@ -1253,6 +1257,8 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		}
 		else {
 			console.log("Plot was closed");
+			// CHANGE this after commit! Not stable, metadata is not defined
+			plot_data = generate_plot_data(metadata);
 			var window_id = 'plot_window_' + plot_id;
 			var graph_window = '<div id="' + window_id + '"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 			$(graph_window).dialog({
@@ -1689,18 +1695,7 @@ function add_plot_options_row(i) {
 	row.id = "plot_options_row" + (i+1);
 	var TypeSelectorCell = row.insertCell(0);
 	TypeSelectorCell.innerHTML = '<select id="type' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
-	var for_delete = false;
-	var ErrorStack = check_error_stack(new Error().stack);
-	var flag = init_dataselector('type'+(i+1)+'_selector');
-	if (flag) {
-		alert('No more compatible datatypes!');
-		var previous_datatypes = [];
-		for (j=1; j<i; j++) {
-			previous_datatypes.push($("#type" + j +"_selector option:selected").val());
-		}
-		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_datatypes", "cohort=" + $("#cohort_selector option:selected").val() + "&previous_datatypes=" + previous_datatypes.join(), ErrorStack);
-		for_delete = true;
-	}
+	init_dataselector('type'+(i+1)+'_selector');
 	var PlatformSelectorCell = row.insertCell(1);
 	PlatformSelectorCell.innerHTML = '<select id="platform' + (i+1) +'_selector" class="ui-helper" style="width: 40ch;">';
 	var IdInput = row.insertCell(2);
@@ -1710,23 +1705,7 @@ function add_plot_options_row(i) {
 			text: "Open external information page"
 		}
 	});
-	var ErrorStack = check_error_stack(new Error().stack);
-	flag = init_platformselector('platform'+(i+1)+'_selector');
-	if (flag & !for_delete) {
-		alert('No more compatible platforms!');
-		var previous_datatypes = [];
-		var previous_platforms = [];
-		for (j=1; j<i; j++) {
-			previous_datatypes.push($("#type" + j +"_selector option:selected").val());
-			previous_platforms.push($("#platform" + j +"_selector option:selected").val());
-		}
-		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_platforms", 
-			"cohort=" + $("#cohort_selector option:selected").val() + 
-			"&previous_datatypes=" + previous_datatypes.join() + 
-			"&previous_platforms=" + previous_platforms.join(),
-			ErrorStack);
-		for_delete = true;
-	}
+	init_platformselector('platform'+(i+1)+'_selector');
 	var AxisSelector = row.insertCell(3);
 	AxisSelector.innerHTML = '<select id="axis' + (i+1) +'_selector" class="ui-helper" style="width: 20ch;">';
 	init_axis_type_selector('axis' + (i+1) + '_selector');
@@ -1782,15 +1761,10 @@ function add_plot_options_row(i) {
 	if (id_input_enabled) {
 		$("#plot-button").button("disable"); 
 	}
-	if (for_delete) {
-		delete_plot_options_row(i+1);
-	}
-	else {
-		$('#tcga_selector').find('option').remove().end();
-		$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		init_tcga_code_selector(i+1);
-		$('#tcga_selector').selectmenu( "refresh" );
-	}
+	$('#tcga_selector').find('option').remove().end();
+	$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_tcga_code_selector(i+1);
+	$('#tcga_selector').selectmenu( "refresh" );
 	sessionStorage.removeItem("add_row");
 	id_keyup(i+1);
 	var event = new CustomEvent("row_added", {
@@ -1968,12 +1942,7 @@ function init_cohortselector() {
 function init_dataselector(selector_id) {
 	var total = $('#plot_options tr').length-1;
 	var n = parseInt(selector_id.substr(4, selector_id.indexOf("_")-4));
-	var previous_datatypes = [];
-	for (j=1; j<n; j++) {
-		//console.log(j);
-		previous_datatypes.push($("#type" + j +"_selector option:selected").val());
-	}
-	var datatypes = get_cohort_datatypes($("#cohort_selector option:selected").val(), previous_datatypes);
+	var datatypes = get_cohort_datatypes($("#cohort_selector option:selected").val());
 	var empty = (datatypes.length == 0);
 	if (!empty) {
 		options = [];
@@ -2012,13 +1981,7 @@ function init_dataselector(selector_id) {
 function init_platformselector(selector_id) {
 	var total = $('#plot_options tr').length-1;
 	var n = parseInt(selector_id.substr(8, selector_id.indexOf("_")-8));
-	var previous_platforms = [];
-	for (j=1; j<n; j++) {
-		previous_platforms.push($("#platform" + j +"_selector option:selected").val());
-	}
-	//console.log('previous platforms: ' + previous_platforms);
-	//console.log($("#cohort_selector option:selected").val() + ' ' + $("#type" + n + "_selector option:selected").val() + ' ' + previous_platforms);
-	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), previous_platforms);
+	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val());
 	//console.log(platforms);
 	var empty = (platforms[1].length == 0);
 	//console.log(empty);
@@ -2193,29 +2156,24 @@ function init_tcga_code_selector(n) {
 }
 
 function init_plot_type_selector() {
-	console.log('init_plot_type_selector() invoked');
+	//console.log('init_plot_type_selector() invoked');
 	var platforms = [];
 	var n = $('#plot_options tr').length-1;
 	for (i=1; i<=n; i++) {
 		platforms.push($("#platform" + i + "_selector option:selected").val());
 	}
 	options = [];
-	var ErrorStack = check_error_stack(new Error().stack);
 	var plot_types = get_plot_types(platforms);
 	if (plot_types[0] == '') {
-		alert("The platforms you have chosen are compatible, but no plots have been tested, please choose another combination");
+		alert("Impossible combination, please choose another combination of platforms");
 		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "plot_types_missing", "platforms=" + platforms.join(), ErrorStack);	
 	}
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
 	}
-	$('#plot-type').append(options.join("")).selectmenu(
-	{
-        width: "125px"
-    });
+	$('#plot-type').append(options.join("")).selectmenu();
 	$('#plot-type').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {plot_type_changed()} );
 	plot_type_changed();
-	setElementWidths();
 	var event = new CustomEvent("plotselector_init_complete", {
 	});
 	document.getElementById("plot-type").dispatchEvent(event);
@@ -2770,48 +2728,14 @@ function update_type(n) {
 			}
 			$('#platform' + n + '_selector').find('option').remove().end();
 			$('#platform' + n + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-			var ErrorStack = check_error_stack(new Error().stack);
-			var empty = init_platformselector('platform' + n + '_selector');
+			init_platformselector('platform' + n + '_selector');
 			$('#platform'+ n + '_selector').selectmenu( "refresh" );
 			var total = $('#plot_options tr').length-1;
-			if (empty) {
-				alert("No more compatible platforms");
-				var previous_datatypes = [];
-				var previous_platforms = [];
-				for (j=1; j<n; j++) {
-					previous_datatypes.push($("#type" + j +"_selector option:selected").val());
-					previous_platforms.push($("#platform" + j +"_selector option:selected").val());
-				}
-				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "no_compatible_platforms", 
-					"cohort=" + $("#cohort_selector option:selected").val() + 
-					"&datatype=" + $('#type' + n + '_selector').val() +
-					"&previous_datatypes=" + previous_datatypes.join() + 
-					"&previous_platforms=" + previous_platforms.join(),
-					ErrorStack);
-				sessionStorage.setItem("cascade_delete", 1);
-				for (i=total; i>=n; i--) {
-					console.log("Cascade delete invoked. Removing row " + i + " (removing from " + total + " till " + n + ")");
-					delete_plot_options_row(i);
-				}
-				sessionStorage.removeItem("cascade_delete");
-				status = 'deleted';
-			}
-			else {
-				if (n<total) {
-					$('#type'+ (n+1) + '_selector').find('option').remove().end();
-					$('#type'+ (n+1) + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-					var flag = init_dataselector('type' + (n+1) + '_selector');
-					$('#type' + (n+1) + '_selector').selectmenu( "refresh" );
-					if (flag) {
-						alert("No more compatible datatypes");
-						sessionStorage.setItem("cascade_delete", 1);
-						for (i=total; i>n; i--) {
-							delete_plot_options_row(i);
-						}
-						sessionStorage.removeItem("cascade_delete");
-						status = 'deleted';
-					}
-				}
+			if (n<total) {
+				$('#type'+ (n+1) + '_selector').find('option').remove().end();
+				$('#type'+ (n+1) + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+				init_dataselector('type' + (n+1) + '_selector');
+				$('#type' + (n+1) + '_selector').selectmenu( "refresh" );
 			}
 		}
 	}
@@ -3851,32 +3775,41 @@ function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
 	return plot_title;
 }
 
-function generate_plot_data(type, cohort, datatypes, platforms, ids, scales) {
-//https://stackoverflow.com/questions/1098040/checking-if-a-key-exists-in-a-javascript-object
-	var data = ["title", "meta"];
-	var plot_title = generate_plot_title(type, cohort, datatypes, platforms, ids, scales);
+function generate_plot_data(metadata) {
+	console.log(metadata);
+	var type = metadata["plot_type"];
+	var cohort = metadata["cohort"];
+	var datatypes = metadata["datatypes"];
+	console.log(Object.keys(datatypes));
+	var platforms = metadata["platforms"];
+	var ids = metadata["ids"];
+	var scales = metadata["scales"];
+	var n = metadata["n"];
+	var datestring = metadata["timestamp"];
+	var scales_order = ["x", "y", "z"];
+	var code = metadata["code"];
+	var data = [];
 	var meta = [];	
 	var text = [];	
-	var d = new Date();
-	var datestring = d.toGMTString().replace(" GMT", "");	
-	datestring = datestring.replace(/^[A-Za-z]+, /, "");
+	var title = [];	
 	for (var i = 0; i<=2; i++) {
-		if (datatypes.length > i) {
+		if (Object.keys(datatypes).length > i) {
+			title[i] = ids[scales_order[i]];
 			meta[i] = [
-				ids[i] == "" ? 'Sample values' : "ID: " + ids[i], 
-				"Data: " + datatype_names.get(datatypes[i]), 
-				"Platform: " + platform_names.get(platforms[i]), 
-				"Scale: " + scale_names.get(scales[i])
+				ids[scales_order[i]] == "" ? 'Sample values' : "ID: " + ids[scales_order[i]], 
+				"Data: " + datatype_names.get(datatypes[scales_order[i]]), 
+				"Platform: " + platform_names.get(platforms[scales_order[i]]), 
+				"Scale: " + scale_names.get(scales[scales_order[i]])
 			].join('\n');
-			text[i] = (ids[i] == "") ? platform_names.get(platforms[i]) : ids[i];
-			//console.log(i + ": " + !(i in ids));
+			text[i] = (ids[scales_order[i]] == "") ? platform_names.get(platforms[scales_order[i]]) : ids[scales_order[i]];
 		}
 		else {
+			title[i] = "";
 			meta[i] = ["undefined"];
 		}
 	}
-	data["title"] = plot_title;	
-	data["meta"] = '<tr>' + '<td>' + type + '</td>' + '<td>' + cohort + '</td>';
+	data["title"] = cohort + ': ' + title.join(' vs. ');	
+	data["meta"] = '<tr>' + '<td>' + type + '</td><td>' + cohort + '</td><td>' + code + '</td><td>' + n + '</td>';
 	for (var j = 0; j<=2; j++) {
 		data["meta"] = data["meta"] + (meta[j][0] == "undefined" ? ('<td></td>') : ('<td title=\'' + meta[j] + '\'>' + text[j] + '</td>')); //
 	}

@@ -5,13 +5,10 @@ library(gtools);
 source("../R/plot_common_functions.r");
 
 
-
-
-
 # WORKING WITH COHORT DESCRIPTIONS
 
 update_cohort_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
+	table_data <- read.table(table_name, header = FALSE, sep = "\t");
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 	for (i in 1:nrow(table_data)) {
@@ -36,7 +33,7 @@ update_cohort_descriptions_from_table <- function(table_name, key_file = "HS_SQL
 # update_datatype_descriptions_from_table("datatype_descriptions.csv", "../cgi/HS_SQL.conf")
 
 update_datatype_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
+	table_data <- read.table(table_name, header = FALSE, sep = "\t");
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 	for (i in 1:nrow(table_data)) {
@@ -49,150 +46,25 @@ update_datatype_descriptions_from_table <- function(table_name, key_file = "HS_S
 # WORKING WITH PLATFORM DESCRIPTIONS
 
 update_platform_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
+	table_data <- read.table(table_name, header = FALSE, sep = "\t", na.strings = "");
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 	for (i in 1:nrow(table_data)) {
-		sqlQuery(rch, paste0("SELECT update_platform_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3],")"));
+		sqlQuery(rch, paste0("SELECT update_platform_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3], ", '", table_data[i,4], "','", table_data[i,5], "')"));
 	}
 	print(paste0("Created/updated ", i, " records"));
 	odbcClose(rch);
 }
 
 
-# table_name = name of desired Excel (csv) file
+# table_name = name of desired Excel (tsv) file
 get_platform_descriptions <- function(table_name, key_file = "HS_SQL.conf") {
 	temp <- druggable_get_table("platform_descriptions", key_file);
 	temp[,3] <- sapply(temp[,3], as.logical);
 	View(temp);
-	write.table(temp, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = ";", file = table_name);
+	write.table(temp, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = "\t", file = table_name);
 }
 
-# WORKING WITH PLATFORM COMPATIBILITY
-
-# this function REWRITES table in database. Use full file only!
-update_compatible_platforms_from_table  <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
-	credentials <- getDbCredentials(key_file);
-	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
-	sqlQuery(rch, "DELETE FROM platforms_compatibility;");	
-	for (i in 1:nrow(table_data)) {
-		sqlQuery(rch, paste0("INSERT INTO platforms_compatibility(platform1, platform2) VALUES ('", table_data[i,1], "','", table_data[i,2], "');"));
-	}
-	print(paste0("Created/updated ", i, " records"));
-	odbcClose(rch);
-}
-
-# this function adds pairs of compatible platforms to the existing table
-# SQL function avoids doubles
-add_compatible_platforms_from_table <- function(table_name, key_file = "HS_SQL.conf") {
-	k <- change_platform_compatibility(table_name, "compatible", key_file);
-	print(paste0("Added ", k, " records"));
-}
-
-# this function adds compatibility between platform and all platforms of given datatype
-make_platform_and_datatype_compatible <- function(platform1, datatype, key_file = "HS_SQL.conf", drch = '') {
-	rch <- NULL;
-	if (drch == '') {
-		credentials <- getDbCredentials(key_file);
-		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
-	} else {
-		rch <- drch;
-	}
-	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
-	cohorts <- as.character(cohorts[,1]);
-	#print(cohorts);
-	platforms <- '';
-	for (cohort in cohorts) {
-		# use SQL function to get platforms
-		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype,"', '', 'soft');"));
-		#print(temp);
-		platforms <- c(platforms, as.character(temp[,1]));
-	}
-	platforms <- unique(platforms);
-	platforms <- platforms[which(platforms!='')];
-	# delete platform descriptions
-	platforms <- lapply(platforms, function(x) unlist(strsplit(x, "\\|"))[1]);
-	platforms <- unlist(platforms);
-	#print(platforms);
-	k <- 0;
-	for (platform2 in platforms) {
-		stat <- stat <- sqlQuery(rch, paste0("SELECT make_platforms_compatible('", platform1, "','", platform2, "');")); 
-		if (stat[1,1] == TRUE) {k <- k+1;}
-	}
-	if (drch == '') {
-		odbcClose(rch);
-	}
-	print(paste0(platform1, " vs ", datatype, ": added ", k, " records"));
-	return(k);
-}
-
-# this functions adds compatibility between all platforms of given datatypes
-make_platforms_from_datatypes_compatible <- function(datatype1, datatype2, key_file = 'HS_SQL.conf', drch = '') {
-	rch <- NULL;
-	if (drch == '') {
-		credentials <- getDbCredentials(key_file);
-		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
-	} else {
-		rch <- drch;
-	}
-	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
-	cohorts <- as.character(cohorts[,1]);
-	#print(cohorts);
-	platforms1 <- '';
-	for (cohort in cohorts) {
-		# use SQL function to get platforms
-		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype1,"', '', 'soft');"));
-		#print(temp);
-		platforms1 <- c(platforms1, as.character(temp[,1]));
-	}
-	platforms1 <- unique(platforms1);
-	platforms1 <- platforms1[which(platforms1!='')];
-	# delete platform descriptions
-	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
-	platforms1 <- unlist(platforms1);
-	#print(platforms1);
-	k <- 0;
-	for (platform1 in platforms1) {
-		n <- make_platform_and_datatype_compatible(platform1, datatype2, key_file, rch);
-		k <- k+n;
-	}
-	if (drch == '') {
-		odbcClose(rch);
-	}
-	print(paste0(datatype1, " vs ", datatype2, ": added ", k, " records"));
-	return(k);
-}
-
-# this function removes only pairs of platforms specified in file
-# pair "platform1,platform2" is equivalent to "platform2,platform1"
-make_platforms_incompatible <- function(table_name, key_file = "HS_SQL.conf") {
-	k <- change_platform_compatibility(table_name, "incompatible", key_file);
-	print(paste0("Removed ", k, " records"));
-	odbcClose(rch);
-}
-
-# basic function used by add_compatible_platforms and make_platforms_incompatible
-# set = "compatible/incompatible" 
-change_platform_compatibility <- function(table_name, set, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
-	credentials <- getDbCredentials(key_file);
-	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
-	k <- 0;
-	func <- ifelse(set == "compatible", "make_platforms_compatible", "make_platforms_incompatible");
-	for (i in 1:nrow(table_data)) {
-		stat <- sqlQuery(rch, paste0("SELECT ", func, " ('", table_data[i,1], "','", table_data[i,2], "');"));
-		if (stat[1,1] == TRUE) {k <- k+1;}
-	}
-	odbcClose(rch);
-	return(k);
-}
-
-get_compatible_platforms <- function (table_name, key_file = "HS_SQL.conf") {
-	temp <- druggable_get_table("platforms_compatibility", key_file);
-	View(temp);
-	write.table(temp, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = ";", file = table_name);
-}
 
 # WORKING WITH PLOT TYPES
 
@@ -203,7 +75,7 @@ get_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
 }
 
 update_plot_types  <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
+	table_data <- read.table(table_name, header = FALSE, sep = "\t");
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
 	sqlQuery(rch, "DELETE FROM plot_types;");	
@@ -230,9 +102,9 @@ update_plot_types  <- function(table_name, key_file = "HS_SQL.conf") {
 # this function adds plot types from the specified table
 # function avoids doubles
 # REMEBER! Always 4 (four) columns
-# platform1-platform2-platform3-plot
-# for 2D plots it will be platform1-platform2-''-plot
-# for 1D plots it will be platform1-''-''-plot
+# datatype1-datatype2-datatype3-plot
+# for 2D plots it will be datatype1-datatype2-''-plot
+# for 1D plots it will be datatype1-''-''-plot
 
 # cat plots_all.csv | grep \;NA\;KM | sed '{s/NA/drug/g}' > plots.KM_2x2.csv
 # add_plot_types("plots.KM_2x2.csv", key_file = "../cgi/HS_SQL.conf")
@@ -251,7 +123,7 @@ remove_plot_types <- function(table_name, key_file = "HS_SQL.conf") {
 # basic function used by add_plot_types and remove_plot_types
 # op = operation "add"/"remove"
 change_plot_types <- function(table_name, op, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
+	table_data <- read.table(table_name, header = FALSE, sep = "\t");
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
 	k <- 0;
@@ -270,38 +142,38 @@ change_plot_types <- function(table_name, op, key_file = "HS_SQL.conf") {
 }
 
 # this function create condition for 1/2/3 dim plots
-# cond_args is a vector of 4 elements: 3 for platforms and 1 for plot type
+# cond_args is a vector of 4 elements: 3 for data types (continuous, binary, survival...) and 1 for plot type
 generate_condition <- function(cond_args) {
-	platforms <- cond_args[1:3];
+	datatypes <- cond_args[1:3];
 	plot_type <- cond_args[4];
 	# we always have 4 columns, which means for 1/2D plots we have 2/1 empty values
 	# we have to delete '' values
-	platforms <- platforms[which(platforms != '')];
+	datatypes <- datatypes[which(datatypes != '')];
 	condition <- '';
 	temp <- c();
-	# check if we have all different values in platforms, otherwise we will get error 'too few different elements'
-	if (length(platforms) == length(unique(platforms))) {
-		temp <- permutations(n=length(platforms), r=length(platforms), v=platforms, repeats.allowed=FALSE);
+	# check if we have all different values in datatypes, otherwise we will get error 'too few different elements'
+	if (length(datatypes) == length(unique(datatypes))) {
+		temp <- permutations(n = length(datatypes), r = length(datatypes), v = datatypes, repeats.allowed = FALSE);
 	} else {
-		# only 1 unique platform
-		if (length(unique(platforms)) == 1) {
-			temp <- rbind(temp, platforms);
+		# only 1 unique datatype
+		if (length(unique(datatypes)) == 1) {
+			temp <- rbind(temp, datatypes);
 		}
-		# 3D case, 2 unique platforms
+		# 3D case, 2 unique datatypes
 		else {
 			# after this we will have 2x2 table
-			temp <- permutations(n=2, r=2, v=unique(platforms), repeats.allowed=FALSE);
+			temp <- permutations(n = 2, r = 2, v = unique(datatypes), repeats.allowed=FALSE);
 			# add duplicated platform as the third column
-			temp <- cbind(temp, rep(platforms[duplicated(platforms)], 2));
-			# add last row - two duplicated platforms as first two columns, unique as last
-			temp <- rbind(temp, c(rep(platforms[duplicated(platforms)], 2), platforms[which(platforms != platforms[duplicated(platforms)])]));
+			temp <- cbind(temp, rep(datatypes[duplicated(datatypes)], 2));
+			# add last row - two duplicated datatypes as first two columns, unique as last
+			temp <- rbind(temp, c(rep(datatypes[duplicated(datatypes)], 2), datatypes[which(datatypes != datatypes[duplicated(datatypes)])]));
 		}
 	}
 	for (i in 1:nrow(temp)) {
 		condition <- ifelse(i == 1, '(', paste0(condition,' OR ('));
 		for (j in 1:ncol(temp)) {
 			condition <- ifelse(j == 1, paste0(condition,'('), paste0(condition,' AND ('));
-			condition <- paste0(condition, 'platform', j, "=\\'", temp[i,j], "\\')");
+			condition <- paste0(condition, 'datatype', j, "=\\'", temp[i,j], "\\')");
 		}
 		condition <- paste0(condition, " AND (plot=\\'", plot_type, "\\'))");
 	}
@@ -319,7 +191,7 @@ supported_plots <- function(key_file = "HS_SQL.conf") {
 
 # add plot type from console: 1/2/3D plots
 # drch is an open RODBC channel
-add_plot_type <- function(platform1, platform2 = '', platform3 = '', plot_type, key_file = "HS_SQL.conf", drch = '') {
+add_plot_type <- function(datatype1, datatype2 = '', datatype3 = '', plot_type, key_file = "HS_SQL.conf", drch = '') {
 	rch <- NULL;
 	if (drch == '') {
 		credentials <- getDbCredentials(key_file);
@@ -329,15 +201,15 @@ add_plot_type <- function(platform1, platform2 = '', platform3 = '', plot_type, 
 	}
 	query <- '';
 	# 1D case
-	if (platform2 == '') {
-		query <- paste0("SELECT add_plot_type('", platform1, ",,,", plot_type, "',E'", generate_condition(c(as.character(platform1), '', '', as.character(plot_type))), "');");
+	if (datatype2 == '') {
+		query <- paste0("SELECT add_plot_type('", datatype1, ",,,", plot_type, "',E'", generate_condition(c(as.character(datatype1), '', '', as.character(plot_type))), "');");
 	} else {
 		# 2D case
-		if (platform3 == '') {
-			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",,", plot_type, "',E'", generate_condition(c(as.character(platform1), as.character(platform2), '', as.character(plot_type))), "');");
+		if (datatype3 == '') {
+			query <- paste0("SELECT add_plot_type('", datatype1, ",", datatype2, ",,", plot_type, "',E'", generate_condition(c(as.character(datatype1), as.character(datatype2), '', as.character(plot_type))), "');");
 		} else {
 			# 3D case
-			query <- paste0("SELECT add_plot_type('", platform1, ",", platform2, ",", platform3, ",", plot_type, "',E'", generate_condition(c(as.character(platform1), as.character(platform2), as.character(platform3), as.character(plot_type))), "');");
+			query <- paste0("SELECT add_plot_type('", datatype1, ",", datatype2, ",", datatype3, ",", plot_type, "',E'", generate_condition(c(as.character(datatype1), as.character(datatype2), as.character(datatype3), as.character(plot_type))), "');");
 		}
 	}
 	#print(query);
@@ -606,7 +478,7 @@ get_synonims <- function(table_name, key_file = "HS_SQL.conf") {
 }
 
 update_synonyms  <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
+	table_data <- read.table(table_name, header = FALSE, sep = "\t");
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
 	sqlQuery(rch, "DELETE FROM synonims;");	
@@ -618,7 +490,7 @@ update_synonyms  <- function(table_name, key_file = "HS_SQL.conf") {
 }
 
 add_synonyms <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.csv2(table_name, header = FALSE);
+	table_data <- read.table(table_name, header = FALSE, sep = "\t");
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
 	k <- 0;
@@ -688,4 +560,132 @@ druggable_get_table <- function(sql_table, key_file = "HS_SQL.conf", drch = '') 
 		odbcClose(rch);
 	}
 	return(temp);
+}
+
+# DEPRECATED - DELETE IT
+
+# WORKING WITH PLATFORM COMPATIBILITY
+
+# this function REWRITES table in database. Use full file only!
+update_compatible_platforms_from_table  <- function(table_name, key_file = "HS_SQL.conf") {
+	table_data <- read.csv2(table_name, header = FALSE);
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	sqlQuery(rch, "DELETE FROM platforms_compatibility;");	
+	for (i in 1:nrow(table_data)) {
+		sqlQuery(rch, paste0("INSERT INTO platforms_compatibility(platform1, platform2) VALUES ('", table_data[i,1], "','", table_data[i,2], "');"));
+	}
+	print(paste0("Created/updated ", i, " records"));
+	odbcClose(rch);
+}
+
+# this function adds pairs of compatible platforms to the existing table
+# SQL function avoids doubles
+add_compatible_platforms_from_table <- function(table_name, key_file = "HS_SQL.conf") {
+	k <- change_platform_compatibility(table_name, "compatible", key_file);
+	print(paste0("Added ", k, " records"));
+}
+
+# this function adds compatibility between platform and all platforms of given datatype
+make_platform_and_datatype_compatible <- function(platform1, datatype, key_file = "HS_SQL.conf", drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
+	cohorts <- as.character(cohorts[,1]);
+	#print(cohorts);
+	platforms <- '';
+	for (cohort in cohorts) {
+		# use SQL function to get platforms
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype,"', '', 'soft');"));
+		#print(temp);
+		platforms <- c(platforms, as.character(temp[,1]));
+	}
+	platforms <- unique(platforms);
+	platforms <- platforms[which(platforms!='')];
+	# delete platform descriptions
+	platforms <- lapply(platforms, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms <- unlist(platforms);
+	#print(platforms);
+	k <- 0;
+	for (platform2 in platforms) {
+		stat <- stat <- sqlQuery(rch, paste0("SELECT make_platforms_compatible('", platform1, "','", platform2, "');")); 
+		if (stat[1,1] == TRUE) {k <- k+1;}
+	}
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	print(paste0(platform1, " vs ", datatype, ": added ", k, " records"));
+	return(k);
+}
+
+# this functions adds compatibility between all platforms of given datatypes
+make_platforms_from_datatypes_compatible <- function(datatype1, datatype2, key_file = 'HS_SQL.conf', drch = '') {
+	rch <- NULL;
+	if (drch == '') {
+		credentials <- getDbCredentials(key_file);
+		rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	} else {
+		rch <- drch;
+	}
+	cohorts <- sqlQuery(rch, "SELECT DISTINCT cohort FROM guide_table WHERE cohort IS NOT NULL;");
+	cohorts <- as.character(cohorts[,1]);
+	#print(cohorts);
+	platforms1 <- '';
+	for (cohort in cohorts) {
+		# use SQL function to get platforms
+		temp <- sqlQuery(rch, paste0("SELECT platform_list('", cohort,"', '", datatype1,"', '', 'soft');"));
+		#print(temp);
+		platforms1 <- c(platforms1, as.character(temp[,1]));
+	}
+	platforms1 <- unique(platforms1);
+	platforms1 <- platforms1[which(platforms1!='')];
+	# delete platform descriptions
+	platforms1 <- lapply(platforms1, function(x) unlist(strsplit(x, "\\|"))[1]);
+	platforms1 <- unlist(platforms1);
+	#print(platforms1);
+	k <- 0;
+	for (platform1 in platforms1) {
+		n <- make_platform_and_datatype_compatible(platform1, datatype2, key_file, rch);
+		k <- k+n;
+	}
+	if (drch == '') {
+		odbcClose(rch);
+	}
+	print(paste0(datatype1, " vs ", datatype2, ": added ", k, " records"));
+	return(k);
+}
+
+# this function removes only pairs of platforms specified in file
+# pair "platform1,platform2" is equivalent to "platform2,platform1"
+make_platforms_incompatible <- function(table_name, key_file = "HS_SQL.conf") {
+	k <- change_platform_compatibility(table_name, "incompatible", key_file);
+	print(paste0("Removed ", k, " records"));
+	odbcClose(rch);
+}
+
+# basic function used by add_compatible_platforms and make_platforms_incompatible
+# set = "compatible/incompatible" 
+change_platform_compatibility <- function(table_name, set, key_file = "HS_SQL.conf") {
+	table_data <- read.csv2(table_name, header = FALSE);
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	k <- 0;
+	func <- ifelse(set == "compatible", "make_platforms_compatible", "make_platforms_incompatible");
+	for (i in 1:nrow(table_data)) {
+		stat <- sqlQuery(rch, paste0("SELECT ", func, " ('", table_data[i,1], "','", table_data[i,2], "');"));
+		if (stat[1,1] == TRUE) {k <- k+1;}
+	}
+	odbcClose(rch);
+	return(k);
+}
+
+get_compatible_platforms <- function (table_name, key_file = "HS_SQL.conf") {
+	temp <- druggable_get_table("platforms_compatibility", key_file);
+	View(temp);
+	write.table(temp, col.names = FALSE, row.names = FALSE, quote = FALSE, sep = ";", file = table_name);
 }

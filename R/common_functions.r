@@ -38,10 +38,12 @@ getDbCredentials <- function(key_file = "HS_SQL.conf") {
 createPostgreSQLregex <- function(tcga_code) {
 	regex <- '';
 	switch (tcga_code,
-		"all" = {regex <- "%";},
-		"healthy" = {regex <- "%-1_";},
-		"cancer" = {regex <- "%-0_";},
-		{regex <- paste0("%-",tcga_code);}
+		"all" = {regex <- '[a-z0-9-]*';},
+		"healthy" = {regex <- "-1[0-9]$";},
+		"cancer" = {regex <- "-(0[0-9]{1}|20)$";},
+		"metastatic" = {regex <- "-0(6|7)$"},
+		"non_metastatic" = {regex <- "-(0[0-5,8,9]{1})$"},
+		{regex <- paste0("-", tcga_code, "$");}
 		
 	);
 	return(regex);

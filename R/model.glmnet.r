@@ -411,7 +411,7 @@ for (i in 1:length(x_datatypes)) {
 			}
 			if (Par["source"] == "tcga") {
 				tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
-				condition <- paste0(condition, " AND sample LIKE ", tcga_array);
+				condition <- paste0(condition, " AND sample ~ ", tcga_array);
 			}
 		}
 		# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 

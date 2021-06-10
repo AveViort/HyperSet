@@ -6,7 +6,7 @@ status <- '';
 plot_annotation <- '';
 condition <- " WHERE ";
 if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes))) {
-	condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
+	condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes[1]), "'");
 }
 if (!empty_value(ids[1])) {
 	# check if this is the first term in condition or not
@@ -49,7 +49,7 @@ if (status != 'ok') {
 } else {
 	temp <- NULL;
 	if (datatypes[1] == "mut") {
-		query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "';");
+		query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample ~ '", createPostgreSQLregex(tcga_codes[1]), "';");
 		print(query);
 		temp <-  sqlQuery(rch, query);
 		colnames(temp) <- colnames(x_data);
@@ -116,7 +116,7 @@ if (status != 'ok') {
 		
 		condition <- " WHERE ";
 		if((Par["source"] == "tcga") & (!(datatypes[2] %in% druggable.patient.datatypes))) {
-			condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "'");
+			condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes[1]), "'");
 		}
 		if (!empty_value(ids[2])) {
 			# check if this is the first term in condition or not
@@ -136,7 +136,7 @@ if (status != 'ok') {
 		print(query);
 		y_data <- sqlQuery(rch, query);
 		if (datatypes[2] == "mut") {
-			query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample LIKE '", createPostgreSQLregex(tcga_codes[1]), "';");
+			query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample ~ '", createPostgreSQLregex(tcga_codes[1]), "';");
 			print(query);
 			temp <-  sqlQuery(rch, query);
 			colnames(temp) <- colnames(y_data);

@@ -427,7 +427,7 @@ function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales) {
 		encodeURIComponent(datatypes.join()) + "&platforms=" + 
 		encodeURIComponent(platforms.join()) + "&ids=" + 
 		encodeURIComponent(ids.join()) + "&codes=" + 
-		encodeURIComponent(codes.join()) + "&scales=" +
+		encodeURIComponent(codes) + "&scales=" +
 		encodeURIComponent(scales.join()));
 	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
 		encodeURIComponent(type) + "&source=" +
@@ -436,16 +436,11 @@ function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales) {
 		encodeURIComponent(datatypes.join()) + "&platforms=" + 
 		encodeURIComponent(platforms.join()) + "&ids=" + 
 		encodeURIComponent(ids.join()) + "&codes=" + 
-		encodeURIComponent(codes.join()) + "&scales=" +
+		encodeURIComponent(codes) + "&scales=" +
 		encodeURIComponent(scales.join()), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-			file = this.responseText;
-			//$("#progressbar").css({"visibility": "hidden"});
-				//$("#displayind2").removeClass("being_removed"); 
-				// $("#displayind2").html('');
-				// $("#displayind2").html('progress');
-	console.log("After: " + $("#displayind2").css("visibility"));
+				file = this.responseText;
 			}
 		}
 	xmlhttp.send();
@@ -493,11 +488,11 @@ function get_plot_cohorts(source) {
 	return cohorts_array;
 }
 
-function get_cohort_datatypes(cohort, previous_datatypes) {
+function get_cohort_datatypes(cohort) {
 	var datatypes;
 	// console.log('previous datatypes: ' + previous_datatypes);
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("GET", "cgi/plot_datatypes.cgi?cohort=" + encodeURIComponent(cohort) + "&previous_datatypes=" + encodeURIComponent(previous_datatypes.join()), false);
+	xmlhttp.open("GET", "cgi/plot_datatypes.cgi?cohort=" + encodeURIComponent(cohort), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			datatypes = this.responseText;}
@@ -512,15 +507,14 @@ function get_cohort_datatypes(cohort, previous_datatypes) {
 	return datatypes_array;
 }
 
-function get_platforms(cohort, datatype, previous_platforms) {
+function get_platforms(cohort, datatype) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
 	//console.log("cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
 	//	"&datatype=" + encodeURIComponent(datatype) +
 	//	"&previous_platforms=" + encodeURIComponent(previous_platforms));
 	xmlhttp.open("GET", "cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
-		"&datatype=" + encodeURIComponent(datatype) +
-		"&previous_platforms=" + encodeURIComponent(previous_platforms), false);
+		"&datatype=" + encodeURIComponent(datatype), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 			platforms = this.responseText;}
@@ -547,6 +541,20 @@ function get_plot_types(platforms) {
 	xmlhttp.send();
 	plot_types = plot_types.split("|");
 	return plot_types.slice(0, plot_types.length-1);
+}
+
+// this function can be used to read values from any JSON file
+function read_metadata(filename) {
+	var file_contents;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", filename, false);
+	xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+			file_contents = this.responseText;}
+		}
+	xmlhttp.send();
+	var metadata = JSON.parse(file_contents);
+	return metadata;
 }
 
 function get_autocomplete_ids(cohort, datatype, platform) {
@@ -619,9 +627,7 @@ function get_codes(source, cohort, datatype, platform, previous_datatypes, previ
 		encodeURIComponent(source) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
 		encodeURIComponent(datatype) + "&platform=" + 
-		encodeURIComponent(platform) + "&previous_datatypes=" + 
-		encodeURIComponent(previous_datatypes) + "&previous_platforms=" +
-		encodeURIComponent(previous_platforms));
+		encodeURIComponent(platform));
 	xmlhttp.open("GET", "cgi/plot_multiselector.cgi?source=" + 
 		encodeURIComponent(source) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 

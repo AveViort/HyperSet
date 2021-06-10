@@ -65,3 +65,61 @@ generate_plot_title <- function(source_name, cohort, platforms, code) {
 	plot_title <- adjust_string(plot_title, 25);
 	return(plot_title);
 }
+
+# axis_n is a vector, represents number of samples for x, y, z (before common_samples applied)
+generate_plot_metadata <- function(plot_type, source_name, cohort, code, n, datatypes, platforms, ids, scales, axis_n, plot_filename = NA) {
+	metadata <- list(plot_type, source_name, toupper(cohort), code, n);
+	names(metadata) <- c("plot_type", "source", "cohort", "code", "n");
+	axis_names <- c("x", "y", "z");
+	metadata[["datatypes"]] <- list();
+	metadata[["platforms"]] <- list();
+	metadata[["ids"]] <- list();
+	metadata[["scales"]] <- list();
+	for (i in 1:length(datatypes)) {
+		metadata[["datatypes"]][[axis_names[i]]] <- toupper(datatypes[i]);
+		metadata[["platforms"]][[axis_names[i]]] <- platforms[i];
+		metadata[["ids"]][[axis_names[i]]] <- ids[i];
+		metadata[["scales"]][[axis_names[i]]] <- scales[i];
+		temp <- list();
+		temp[["datatype"]] <- toupper(datatypes[i]);
+		temp[["platform"]] <- platforms[i];
+		temp[["id"]] <- ifelse(!empty_value(ids[i]), ids[i], "");
+		temp[["scale"]] <- ifelse(!empty_value(scales[i]), scales[i], "");
+		temp[["n"]] <- axis_n[i];
+		metadata[[axis_names[i]]] <- temp;
+	}
+	if (!is.na(plot_filename)) {
+		metadata[["plot_filename"]] <- plot_filename;
+	}
+	metadata[["timestamp"]] <- paste0(format(Sys.time(), tz="GMT"), " GMT");
+	return(metadata);
+}
+
+# write plot metadata to json file
+# metadata is a named list, can have up to 2 levels
+save_metadata <- function(metadata, filename = NA) {
+	json_params <- c();
+	for (i in 1:length(metadata)) {
+		temp <- paste0('"', names(metadata)[i], '":');
+		if (is.list(metadata[[i]])) {
+			temp <- paste0(temp, '{');
+			temp2 <- c();
+			for (j in 1:length(metadata[[i]])) {
+				temp2 <- c(temp2, paste0('"', names(metadata[[i]])[j], '":"', metadata[[i]][[j]], '"'));
+			}
+			temp <- paste0(temp, paste(temp2, collapse = ','),'}');
+		} else {
+			temp <- paste0(temp, '"', metadata[[i]], '"');
+		}
+		json_params <- c(json_params, temp);
+	}
+	json_string <- paste0('{', paste(json_params, collapse = ','), '}');
+	print(paste0("JSON file: ", filename));
+	print(paste0("JSON string: ", json_string));
+	if (!is.na(filename)) {
+		fileConn <- file(filename);
+		writeLines(json_string, fileConn);
+		close(fileConn);
+	}
+	return(json_string);
+}

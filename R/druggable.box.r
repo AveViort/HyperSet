@@ -72,7 +72,7 @@ if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
 for (i in 1:length(temp_datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(temp_datatypes[i] %in% druggable.patient.datatypes))) {
-		condition <- paste0(condition, "sample LIKE '", createPostgreSQLregex(temp_tcga_codes[i]), "'");
+		condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(temp_tcga_codes[i]), "'");
 	}
 	if (!empty_value(temp_ids[i])) {
 		# check if this is the first term in condition or not
