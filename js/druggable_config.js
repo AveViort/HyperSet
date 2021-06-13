@@ -23,18 +23,16 @@ ids_placeholders.set("NEA_MUT", "Pathway name");
 var druggable_cookie_time = 168;
 
 //var html_glm_regressors = "<td id='d-x###'><table id ='table-regressors###'><tr><tr><td>Predictors, type ###:</td><td></td></tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table></td>";
-	/*CHANGE BEGIN*/
 var html_glm_regressors = "<div>Predictors, type ###:</div><table id ='table-regressors###' class='parameter_area ' style='border-collapse: collapse;'><tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  class='ui-corner-all ui-widget' style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table>"; //   border-style: solid; border-width: 1px; border-color: #cbc7bd; border-radius: 6px; border-collapse: collapse;
-	/*CHANGE END*/
 // correlation tables settings
 // headers
 var cor_headers = new Map();
 cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'></th><th title=\'\'>Cohorts in TCGA </th><th title=\'\'></th></tr>");
-cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>TCGA cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th>Subset</th><th title=\'Type of patient response\n\tOverall survival (OS),\n\t Relapse-free survival (RFS),\n\t Progression-free survival (PFS),\n\t Disease-free interval (DFI)\'>Endpoint</th><th title=\'Fraction of the maximal follow-up time for the whole cohort\'>Follow-up part</th><th title=\'P-value for interaction term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Interaction</th><th title=\'P-value for drug term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Drug</th><th title=\'P-value for feature term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Feature</th><th title=\'No. of patients treated with available data\'>N(total)</th><th title=\'No. of patients treated with the drug and available data\'>N(treated)</th><th title=\'\'>Followup, days</th><th title=\'\'>Cohorts</th><th title=\'\'></th></tr>");
+cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>TCGA cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th>Subset</th><th title=\'Type of patient response\n\tOverall survival (OS),\n\t Relapse-free survival (RFS),\n\t Progression-free survival (PFS),\n\t Disease-free interval (DFI)\'>Endpoint</th><th title=\'P-value for interaction term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Interaction</th><th title=\'P-value for drug term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Drug</th><th title=\'P-value for feature term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Feature</th><th title=\'No. of patients treated with available data\'>N(total)</th><th title=\'No. of patients treated with the drug and available data\'>N(treated)</th><th title=\'\'>Followup, days</th><th title=\'\'>Cohorts</th><th title=\'\'></th></tr>");
 // column names to retrieve from SQL
 var cor_sql_columns = new Map();
 cor_sql_columns.set("CCLE", "gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature,ancova_q_2x_feature");
-cor_sql_columns.set("TCGA", "gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q");
+cor_sql_columns.set("TCGA", "gene,feature,followup,followup_part,interaction,drug,expr,n_patients,n_treated,q");
 // visible columns
 var cor_visible_columns = new Map();
 cor_visible_columns.set("CCLE", [
@@ -69,7 +67,6 @@ cor_visible_columns.set("TCGA", [
             { "data": "platform" },
             { "data": "screen" },
 			{ "data": "sensitivity" },
-			{ "data": "followup_part" },
             { "data": "interaction",
 			  "render":  function (data) {
 				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
@@ -81,9 +78,7 @@ cor_visible_columns.set("TCGA", [
 				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
 			{ "data": "n_patients" },
 			{ "data": "n_treated" },
-			{ "data": "followup", 
-				"render" : function (data) {
-					return parseInt(data);}},
+			{ "data": "followup" },
 			{ "data": "cohort-selector" }
         ]
 );

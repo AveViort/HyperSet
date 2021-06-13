@@ -58,6 +58,10 @@ if (datatypes[1] == datatypes[2]) {
 	query <- paste0("SELECT DISTINCT sample FROM ", table1, ";");
 	all_samples <- sqlQuery(rch, query);
 
+	metadata <- generate_plot_metadata("venn", Par["source"], Par["cohort"], tcga_codes[1], nrow(all_samples),
+										datatypes, platforms, ids, c("-", "-"), c(nrow(first_set), nrow(second_set)), Par["out"]);
+	metadata <- save_metadata(metadata);
+
 	first_category <- "";
 	second_category <- "";
 	if ((ids[1] == "") | (is.na(ids[1]))) {

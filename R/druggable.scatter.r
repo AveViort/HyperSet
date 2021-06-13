@@ -12,6 +12,7 @@ temp <- list();
 common_samples <- c();
 tissue_samples <- c();
 internal_ids <- ids;
+metadata <- '';
 for (i in 1:length(ids)) {
 	if (!empty_value(ids[i])) {
 		if ((datatypes[i] == 'ge_nea') | (datatypes[i] == 'mut_nea') | (datatypes[i] == 'nea_ge') | (datatypes[i] == 'nea_mut')) {
@@ -57,6 +58,7 @@ for (i in 1:length(datatypes)) {
 		}
 	}
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[i]), "';");
+	print(query);
 	table_name <- sqlQuery(rch, query)[1,1];
 	query <- "SELECT ";
 	# for drugs - binarize patients!
@@ -123,8 +125,7 @@ if (status != 'ok') {
 	if (length(datatypes) == 2) {
 		metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
 										datatypes, platforms, ids, scales, c(nrow(temp[[1]]), nrow(temp[[2]])), Par["out"]);
-		print(paste0("Metadata file: ", paste0(substr(File, 1, nchar(File)-5), '_meta.json')));
-		save_metadata(metadata, paste0(substr(File, 1, nchar(File)-5), '_meta.json'));
+		metadata <- save_metadata(metadata);
 		x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
 		print("str(x_data):");
 		print(str(x_data));
@@ -202,7 +203,7 @@ if (status != 'ok') {
 			# editable = TRUE,
 			xaxis = x_axis,
 			yaxis = y_axis,
-			margin = druggable.margins) %>% # CHANGE
+			margin = druggable.margins) %>%
 		config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
@@ -220,7 +221,7 @@ if (status != 'ok') {
 			print("Only numeric datatypes");
 			metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
 										datatypes, platforms, ids, scales, c(nrow(temp[[1]]), nrow(temp[[2]]), nrow(temp[[3]])), Par["out"]);
-			save_metadata(metadata, paste0(substr(File, 1, nchar(File)-5), '_meta.json'));							
+			metadata <- save_metadata(metadata);							
 			x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
 			print("str(x_data):");
 			print(str(x_data));
@@ -321,7 +322,7 @@ if (status != 'ok') {
 			metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
 										datatypes[axis_index], platforms[axis_index], ids[axis_index], scales[axis_index], 
 										c(nrow(temp[[axis_index[1]]]), nrow(temp[[axis_index[2]]]), nrow(temp[[axis_index[3]]])), Par["out"]);
-			save_metadata(metadata, paste0(substr(File, 1, nchar(File)-5), '_meta.json'));		
+			metadata <- save_metadata(metadata);		
 			x_data <- transformVars(temp[[axis_index[1]]][common_samples,2], scales[axis_index[1]]);
 			print("str(x_data):");
 			print(str(x_data));
@@ -390,18 +391,20 @@ if (status != 'ok') {
 				}
 				write(script_line, file = script_file, append = TRUE);
 			}
-			script_line <- paste0("add_annotations(xref = 'paper', # CHANGE
+			script_line <- paste0("add_annotations(xref = 'paper', 
 					yref = 'paper',
 					x = 1,
 					y = -0.12,
 					text = plot_title,
-					showarrow = FALSE) %>%
-				layout(showlegend = TRUE,
-				legend = druggable.plotly.legend.style,
-				xaxis = x_axis,
-				yaxis = y_axis,
-				margin = druggable.margins) %>% 		
-				config(editable = TRUE) %>%");
+					showarrow = FALSE) %>%");
+			if (length(types) > 1) {
+				script_line <- paste0(script_line, "layout(showlegend = TRUE,
+					legend = druggable.plotly.legend.style,
+					xaxis = x_axis,
+					yaxis = y_axis,
+					margin = druggable.margins) %>%");
+			}		
+			script_line <- paste0(script_line, "config(editable = TRUE) %>%");
 			if (!is.na(nea_platform)) {
 				render_line < paste0("el.on('plotly_click', function(d) { 
 						var id = ((d.points[0].text).split(' '))[1];
@@ -418,3 +421,5 @@ if (status != 'ok') {
 	}	
 }
 odbcClose(rch)
+sink(console_output, type = "output");
+print(metadata)

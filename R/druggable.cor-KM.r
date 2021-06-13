@@ -345,7 +345,7 @@ if (!empty_value(second_set_id)) {
 	}
 }
 if ((Par["source"]=="tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))) {
-	query <- paste0(query, " AND sample LIKE '", createPostgreSQLregex(tcga_codes[m]),"'");
+	query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes[m]),"'");
 }
 query <- paste0(query, ";");
 print(query);
@@ -385,6 +385,14 @@ fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
 fe.other <- fe.other[which(!is.na(fe.other))];
 names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
 names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
+
+metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes[1], 
+										length(intersect(names(fe.drug), names(fe.other))),
+										c(first_set_datatype, second_set_datatype, third_set_datatype), 
+										c(first_set_platform, second_set_platform, third_set_platform),
+										c('', second_set_id, third_set_id), c("-", "-", "-"), 
+										c(nrow(first_set), nrow(second_set), nrow(third_set)), Par["out"]);
+metadata <- save_metadata(metadata);
 
 if (all(is.na(fe.drug))) {
 	print("All NAs, shutting down");
@@ -459,3 +467,5 @@ if (all(is.na(fe.drug))) {
 	p <- ggplotly(a);
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 } 
+sink(console_output, type = "output");
+print(metadata)

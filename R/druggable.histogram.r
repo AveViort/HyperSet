@@ -72,4 +72,6 @@ if (status != 'ok') {
 	config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 }
-odbcClose(rch)
+odbcClose(rch);
+sink(console_output, type = "output");
+print(metadata)

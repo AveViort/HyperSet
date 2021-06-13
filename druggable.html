@@ -1162,7 +1162,7 @@ function plot_menu (param_string, caller) {
 	// $("#" + caller + "-menu").css({"display": "block", "width": "25em", "height": "3em"});
 }
 
-function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_codes) {
+function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 	var parent_tab = "#" + $("#tabs").tabs()[0].children[$("#tabs").tabs("option", "active")+1].id
 	// variables are initialised when this function is called from correlations table, otherwise - initialise them
 	if (type == undefined) {
@@ -1174,7 +1174,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		ids = [];
 		platforms = [];
 		scales = [];
-		codes = $("#tcga_selector option:selected").val();
+		code = $("#tcga_selector option:selected").val();
 		for (i=1; i<=n; i++) {
 			datatypes.push($("#type" + i + "_selector option:selected").val());
 			platforms.push($("#platform" + i + "_selector option:selected").val());
@@ -1182,14 +1182,18 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 			scales.push($("#axis" + i + "_selector option:selected").val());
 		}
 	}
-	var plot_description = "type:" + type + "|source:" + source + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + codes + "|scales:" + scales;
+	var plot_description = "type:" + type + "|source:" + source + "|cohort:" + cohort + "|datatypes:" + datatypes + "|platforms:" + platforms + "|ids:" + ids + "|tcga_codes:" + code + "|scales:" + scales;
 	var plot_filename = find_plot_in_history(plot_description);
 	var plot_id;
-	var plot_data;
+	var plot_data = [];
+	var raw_metadata;
+	var metadata;
 	// new plot
 	if (plot_filename == "no") {
 		var ErrorStack = check_error_stack(new Error().stack);
-		plot_filename = rplot(type, source, cohort, datatypes, platforms, ids, codes, scales);
+		raw_metadata = rplot(type, source, cohort, datatypes, platforms, ids, code, scales);
+		metadata = JSON.parse(raw_metadata);
+		plot_filename = metadata["plot_filename"];
 		// check if plot successfully created
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + plot_filename, false);
@@ -1202,10 +1206,10 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				"&datatypes=" + datatypes.join() + 
 				"&platforms=" + platforms.join() + 
 				"&ids=" + ids.join() +
-				"&tcga_codes=" + codes +
+				"&code=" + code +
 				"&scales=" + scales.join(),
 				ErrorStack);
-				plot_data = generate_plot_data(null);
+				plot_data["title"] = "Error";
 		}
 		else {
 			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "plot_created", "type=" + type +
@@ -1214,14 +1218,13 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 				"&datatypes" + datatypes.join() + 
 				"&platforms=" + platforms.join() + 
 				"&ids=" + ids.join() +
-				"&tcga_codes=" + codes +
+				"&code=" + code +
 				"&scales=" + scales.join(),
 				"<a href=https://" + window.location.hostname + "/pics/plots/" + plot_filename + " target=_blank>View</a>");
 				plot_id = plot_filename.substring(0, plot_filename.length-5);
-				var metadata = read_metadata('https://dev.evinet.org/pics/plots/' + plot_id + '_meta.json');
 				plot_data = generate_plot_data(metadata);
 				sessionStorage.setItem(plot_filename, plot_description);
-				sessionStorage.setItem('meta_' + plot_filename, plot_data["meta"]);
+				sessionStorage.setItem('meta_' + plot_filename, raw_metadata);
 		}
 		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 		$(parent_tab).append(graph_window);
@@ -1257,7 +1260,10 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, tcga_code
 		}
 		else {
 			console.log("Plot was closed");
-			// CHANGE this after commit! Not stable, metadata is not defined
+			console.log(plot_filename);
+			raw_metadata = sessionStorage.getItem('meta_' + plot_filename);
+			console.log(raw_metadata);
+			metadata = JSON.parse(raw_metadata);
 			plot_data = generate_plot_data(metadata);
 			var window_id = 'plot_window_' + plot_id;
 			var graph_window = '<div id="' + window_id + '"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
@@ -1624,19 +1630,21 @@ function retrieve_correlations() {
 			var table = $('#cor_result_table').DataTable();
 			table.rows().every( function (index, element) {
 				var row = $(this.node());
-				//console.log(row.children()[11]);
-				var selector = row.children()[11].children[0];
+				// not a good solution - assumes that cohort selector is always the last column
+				var ind = row.children().length - 1;
+				//console.log(row.children()[ind]);
+				var selector = row.children()[ind].children[0];
 					$( selector ).each(
 						function() {
 							$(this).prop("title", $(this).val() );
 						})
 					$(selector).selectmenu();
 					$(selector).on( "selectmenuclose",
-						function( event, ui ) {
-							console.log($(this).val());
-							var selected_values = $(this).val().split('#'); 
-							plot('cor-KM', 'tcga',selected_values[0], ['drug', 'clin', selected_values[1]], ['drug', selected_values[3].toLowerCase(), selected_values[2]], [selected_values[4], '', selected_values[5]], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])
-						});
+					function( event, ui ) {
+						console.log($(this).val());
+						var selected_values = $(this).val().split('#'); 
+						plot('cor-KM', 'tcga',selected_values[0], ['drug', 'clin', selected_values[1]], ['drug', selected_values[3].toLowerCase(), selected_values[2]], [selected_values[4], '', selected_values[5]], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])
+					});
 			});
 		},
 		"columns": cor_visible_columns.get(source),
@@ -3278,17 +3286,20 @@ function restore_history_dock() {
 	for (i in keys) {
 		if ((keys[i].includes("tmp")) & (!keys[i].includes("meta"))) {
 			var plot_filename = keys[i];
-			var meta = sessionStorage.getItem('meta_' + plot_filename);
-			if (meta != null) {
+			var raw_metadata = sessionStorage.getItem('meta_' + plot_filename);
+			//console.log(raw_metadata);
+			if (raw_metadata != null) {
+				var metadata = generate_plot_data(JSON.parse(raw_metadata));
+				metadata = metadata["meta"];
 				var docked_id = Date.now();
 
 				var addButtons = 	"<td><button type=\'button\' class=\'ui-button ui-corner-all ui-widget ui-button-icon-only\' title=\'Restore plot\' onclick=\"plot_maximize(\'" + plot_filename + "\',\'" + docked_id + "\')\"><span class=\'ui-button-icon ui-icon ui-icon-window\'></span><span class=\'ui-button-icon-space\'> </span></button></td>" + 
 									"<td><button type=\'button\' class=\'ui-button ui-corner-all ui-widget ui-button-icon-only\' title=\'Copy link\' onclick=\"copy_plot_link(\'" + plot_filename + "\')\"><span class=\'ui-button-icon ui-icon ui-icon-link\'></span><span class=\'ui-button-icon-space\'> </span></button></td>"  +
 									"<td><button type=\'button\' class=\'ui-button ui-corner-all ui-widget ui-button-icon-only\' title=\'Delete plot\' onclick=\"remove_plot_from_history(\'" + docked_id + "\',\'" + plot_filename + "\')\"><span class=\'ui-button-icon ui-icon ui-icon-trash-b\'></span><span class=\'ui-button-icon-space\'> </span></button></td>";
 	
-				meta = meta.replace("<tr>", "<tr id='" + docked_id + "'>");
-				meta = meta.replace("</tr>", addButtons + "</tr>");
-				var new_row = $(meta);
+				metadata = metadata.replace("<tr>", "<tr id='" + docked_id + "'>");
+				metadata = metadata.replace("</tr>", addButtons + "</tr>");
+				var new_row = $(metadata);
 				var t1 = $('#sidebar_table').DataTable();
 				var rowNode = t1.row.add(new_row).draw().node();
 			}
@@ -3305,9 +3316,9 @@ function plot_maximize(plot_filename, docked_id) {
 	var datatypes = plot_params[3].split(":")[1].split(",");
 	var platforms = plot_params[4].split(":")[1].split(",");
 	var ids = plot_params[5].split(":")[1].split(",");
-	var codes = plot_params[6].split(":")[1].split(",");
+	var code = plot_params[6].split(":")[1];
 	var scales = plot_params[7].split(":")[1].split(",");
-	plot(plot_type, source, cohort, datatypes, platforms, ids, scales, codes);
+	plot(plot_type, source, cohort, datatypes, platforms, ids, scales, code);
 }
 
 // remove plot from dock and check if dock should be closed or not
@@ -3729,58 +3740,10 @@ function toggle_selectors(flag) {
 	}
 }
 
-function generate_plot_title(type, cohort, datatypes, platforms, ids, scales) {
-	var plot_title = '';
-	switch (type) {
-			case "scatter": 
-				if (ids.every((val, i, arr) => val === "")) {
-					if (ids.length == 3) {
-						plot_title = 'Scatterplot of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ' vs ' + datatypes[2] + ':' + platforms[2] + ':' + scales[2] + ')';
-					}
-					else {
-						plot_title = 'Scatterplot of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + scales[1] + ')';
-					}
-				}
-				else {
-					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + scales[0] + ' vs ' + datatypes[1] + ':' + platforms[1] + ':' + ids[1] + ':' + scales[1] + ')';
-				}
-				break;
-			case "histogram": 
-				if (ids[1] = "") {
-					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + scales[0] + ')';
-				}
-				else {
-					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + scales[0] + ')';
-				}
-				break;
-			case "box": plot_title = type + ' of ' + cohort;
-				break;
-			case "KM": plot_title = type + ' of ' + cohort + " " + datatypes[0] + ":" + platforms[0] + " vs " + datatypes[1] + ":" + platforms[1];
-				break;
-			case "cor-KM": plot_title = 'KM of ' + cohort + " " + datatypes[0] + ":" + ids[0] + " vs " + datatypes[1] + ":" + platforms[1] + " vs " + datatypes[2] + ":" + platforms[2];
-				break;
-			case "piechart": plot_title = type + ' of ' + cohort + '(' + datatypes[0] + ":" + platforms[0] + ')';
-				break;
-			case "bar": 
-				if (ids[1] = "") {
-					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ')';
-				}
-				else {
-					plot_title = type + ' of ' + cohort + ' (' + datatypes[0] + ':' + platforms[0] + ':' + ids[0] + ':' + ')';
-				}
-				break;
-			case "venn": plot_title = type + ' of ' + cohort;
-				break;
-		}
-	return plot_title;
-}
-
 function generate_plot_data(metadata) {
-	console.log(metadata);
 	var type = metadata["plot_type"];
 	var cohort = metadata["cohort"];
 	var datatypes = metadata["datatypes"];
-	console.log(Object.keys(datatypes));
 	var platforms = metadata["platforms"];
 	var ids = metadata["ids"];
 	var scales = metadata["scales"];

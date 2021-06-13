@@ -55,44 +55,10 @@ while (@row = $sth->fetchrow_array()) {
 		#print '"id":"',$row_id,'",';
 		# all columns except for the last one - which has to be transformed into HTML element
 		$colnumber = @field_values;
-		# foreach $i(0..$colnumber-4) {
-			# print '"'.$field_names[$i].'":"'.$field_values[$i].'",';
-		# }
-		# my $plot = "";
-		# if ($field_values[2] ne "MUT") {
-			# $plot = '<button id=\"cor-plot'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'scatter\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'drug\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
-		# } else {
-			# $plot = '<button id=\"cor-plot'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'box\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'drug\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\">Plot</button>';
-		# }
-		my $plot = '<span id=\"cor-plot'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-bars\" onclick=\"plot(\''.(($field_values[2] eq "MUT") ? "box" : "scatter").'\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'drug\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\" title=\"Plot\"></span>';
+		my $plot = '<span id=\"cor-plot'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-bars\" onclick=\"plot(\''.(($field_values[2] eq "MUT") ? "box" : "scatter").'\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'sens\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], [\'all\', \'all\'])\" title=\"Plot\"></span>';
 		my $url1 = $field_values[$colnumber-3];
-		my @temp = split /\//, $url1;
-		my $site_name = (split /\./,$temp[2])[1];
-		my $info1 = 'Info';
-		switch($site_name) {
-			case "genecards" 		{ $info1 = "GeneCards" }
-			case "broadinstitute" 	{ $info1 = "MSigDB" }
-			case "nlm"				{ $info1 = "PubChem" }
-			case "ncbi" 			{ $info1 = "PubChem" }
-			case "wikipathways"		{ $info1 = "WikiPathways" }
-			case "jp"				{ $info1 = "KEGG" }
-			case "google"  			{ $info1 = "Google" }
-			else { $info1 = "Info" }
-		}
 		my $url2 = $field_values[$colnumber-2];
 		@temp = split /\//, $url2;
-		$site_name = (split /\./, $temp[2])[1];
-		my $info2 = 'Info';
-		switch($site_name) {
-			case "genecards" 		{ $info2 = "GeneCards" }
-			case "broadinstitute" 	{ $info2 = "MSigDB" }
-			case "nlm"				{ $info2 = "PubChem" }
-			case "ncbi" 			{ $info2 = "PubChem" }
-			case "wikipathways"		{ $info2 = "WikiPathways" }
-			case "jp"				{ $info2 = "KEGG" }
-			case "google"  			{ $info2 = "Google" }
-			else { $info2 = "Info" }
-		}
 		my $cohort_selector = "";
 		my $km_button = "";
 		my $cohorts = $field_values[$colnumber-1];
@@ -106,9 +72,7 @@ while (@row = $sth->fetchrow_array()) {
 			}
 			$cohort_selector .= '</select>';
 			# https://mkkeck.github.io/jquery-ui-iconfont/
-			# $km_button = '<button id=\"cor-KM'.$row_id.'\" class=\"ui-button ui-widget ui-corner-all\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'drug\', \'clin\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.$field_values[1].'\', \'\',\''.$field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\">KM</button>';		
-			# $km_button = '<span id=\"cor-KM'.$row_id.'\" class=\"ui-icon ui-icon-chart-line\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'drug\', \'clin\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.$field_values[1].'\', \'\',\''.$field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\"></span>';
-			$km_button = '<span id=\"cor-KM'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-line\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'drug\', \'clin\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.@field_values[1].'\', \'\',\''.@field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\"></span>';
+			$km_button = '<span id=\"cor-KM'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-line\" onclick=\"plot(\'cor-KM\', \'tcga\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[0], [\'DRUG\', \'CLIN\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[1]], [\'drug\', $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[3].toLowerCase(), $(\'#TCGAcohortSelector'.$row_id.' option:selected\').val().split(\'#\')[2]], [\''.@field_values[1].'\', \'\',\''.@field_values[0].'\'], [\'linear\', \'linear\', \'linear\'], [\'all\', \'all\', \'all\'])\"></span>';
 		}
 		$platform = $field_values[4];
 		if ($source eq "CCLE") {
@@ -119,7 +83,6 @@ while (@row = $sth->fetchrow_array()) {
 			}
 		}
 		# my $transfer_button = '<button class=\"ui-button ui-widget ui-corner-all\" onclick=\"transfer_id(\''.$source.'\', \''.$cohort.'\', \''. $field_values[2].'\', \''.$platform.'\', \''.$field_values[0].'\')\">+</button>';		 
-		# this.css({\"background-color\": \"green\"});
 		my $transfer_button = '<span class=\"adj-icon ui-icon ui-icon-copy\" onclick=\"transfer_id(\''.$source.'\', \''.$cohort.'\', \''. $field_values[2].'\', \''.$platform.'\', \''.$field_values[0].'\')\" title=\"Add to clipboard\"></span>';
 		# my $transfer_button = '<span onclick=\"transfer_id(\''.$source.'\', \''.$cohort.'\', \''. $field_values[2].'\', \''.$platform.'\', \''.$field_values[0].'\')\"  style=\"float: left; margin-right: 0.5em;\"  class=\"ui-icon ui-icon-jquery\">icon</span>';
 		my %maxchar; 	$maxchar{'gene'} = 21; 		$maxchar{'feature'} = 14;
@@ -127,16 +90,26 @@ while (@row = $sth->fetchrow_array()) {
 		my $span1 = '<span class=\"adj-icon ui-icon ui-icon-extlink\" onclick=\"window.open(\''.$url1.'\', \'_blank\')\" onmouseover=\"var x = annotations.get(\''.$field_values[0].'\'.toLowerCase());if(typeof x != \'undefined\'){this.setAttribute(\'title\', x);}\" >&nbsp;</span>';
 		my $span2 = '<span class=\"adj-icon ui-icon ui-icon-extlink\" onclick=\"window.open(\''.$url2.'\', \'_blank\')\" title=\"'.$field_values[1].'\" ></span>';
 		foreach $i(0..$colnumber-4) {
-		if ($field_names[$i] eq 'gene' || $field_names[$i] eq 'feature') {
-					my $post_icon = $field_names[$i] eq 'gene' ? $span1 : $span2;
+			if ($field_names[$i] eq 'gene' || $field_names[$i] eq 'feature') {
+				my $post_icon = $field_names[$i] eq 'gene' ? $span1 : $span2;
 				$display = $field_values[$i];
 				if (length($field_values[$i]) > $maxchar{$field_names[$i]}) {
-			$title = 'title=\"'.$field_values[$i].'\"';
-			$display = '<span '.$title.'>'.substr($field_values[$i], 0, $maxchar{$field_names[$i]}).'...</span>';
-			}
+					$title = 'title=\"'.$field_values[$i].'\"';
+					$display = '<span '.$title.'>'.substr($field_values[$i], 0, $maxchar{$field_names[$i]}).'...</span>';
+				}
 				print '"'.$field_names[$i].'":"'.$display.$post_icon.'",';
-		} else {
-			print '"'.$field_names[$i].'":"'.$field_values[$i].'",';
+			} else {
+				if ($field_names[$i] eq 'followup') {
+					# we assume that followup_part always comes right after followup
+					my $followup_with_qtip = '<a title=\"'.$field_values[$i+1].' of cohort\">'.$field_values[$i].'</a>';
+					print '"'.$field_names[$i].'":"'.$followup_with_qtip.'",';
+				} else {
+					if($field_names[$i] eq 'followup') {
+						# do nothing - ignore this column, we use it for qtips only
+					} else {
+						print '"'.$field_names[$i].'":"'.$field_values[$i].'",';
+					}
+				}
 			}
 		}
 		

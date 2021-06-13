@@ -25,8 +25,8 @@ if (k != 0) {
 	else {
 		temp_ids <- '';
 	}
-	if (!is.na(tcga_codes[k])) {
-		temp_tcga_codes <- tcga_codes[k];
+	if (!is.na(tcga_codes[1])) {
+		temp_tcga_codes <- tcga_codes[1];
 	}
 	else {
 		temp_tcga_codes <- '';
@@ -121,6 +121,9 @@ for (i in 2:length(temp_datatypes)) {
 		common_samples <- intersect(common_samples, rownames(temp[[i]]));
 	}
 }
+metadata <- generate_plot_metadata("box", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
+										temp_datatypes, temp_platforms, temp_ids, temp_scales, c(nrow(temp[[1]]), nrow(temp[[2]])), Par["out"]);
+metadata <- save_metadata(metadata);
 status <- ifelse(length(common_samples) > 0, 'ok', 'error');
 
 if (status != 'ok') {
@@ -201,4 +204,6 @@ if (status != 'ok') {
 	time3 <- time2 - time1;
 	print(paste0("Plotting and saving took ", round(time3, digits=2), " seconds"));
 }
-odbcClose(rch)
+odbcClose(rch);
+sink(console_output, type = "output");
+print(metadata)

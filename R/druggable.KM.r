@@ -140,7 +140,7 @@ sus <- function (cu, fe, return.p=c("anova", "coefficient", "logtest", "sctest",
 
 # these are modified functions from plotly website
 # original: https://plot.ly/ipython-notebooks/survival-analysis-r-vs-python/
-ggsurv <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
+ggsurv <- function(s, CI = FALSE, plot.cens = T, surv.col = 'gg.def',
                    cens.col = 'red', lty.est = 1, lty.ci = 2,
                    cens.shape = 3, back.white = F, xlab = 'Time',
                    ylab = 'Survival', main = ''){
@@ -303,6 +303,7 @@ second_set_table <- '';
 second_set_datatype <- '';
 second_set_platform <- '';
 second_set_id <- '';
+metadata <- '';
 # 1D case
 if (length(platforms) == 1) {
 	first_set_platform <- ifelse(grepl("_time", platforms[1]), strsplit(platforms[1], "_")[[1]][1], platforms[1]);
@@ -313,9 +314,12 @@ if (length(platforms) == 1) {
 	first_set <- sqlQuery(rch, query);
 	rownames(first_set) <- as.character(first_set[,1]);
 	print(str(first_set));
+	metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], "all", nrow(first_set),
+										datatypes, platforms, c(""), "-", c(nrow(first_set)), Par["out"]);
+	metadata <- save_metadata(metadata);
 	surv.data = survfit(Surv(first_set[,paste0(first_set_platform, "_time")], first_set[,first_set_platform]) ~ 1);
 	print(surv.data);
-	a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = "");
+	a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = "", CI = "def");
 	#print("a:");
 	#print(str(a));
 	p <- ggplotly(a);
@@ -368,7 +372,6 @@ if (length(platforms) == 1) {
 		query <- paste0(query, ";");
 		print(query);
 		second_set <- sqlQuery(rch, query);
-		odbcClose(rch);
 		fe <- as.character(second_set[,2]);
 		# we also have numeric data
 		x <- suppressWarnings(all(!is.na(as.numeric(fe[which(!is.na(fe))])))); 
@@ -390,6 +393,11 @@ if (length(platforms) == 1) {
 			fe <- c(fe, temp);
 		}
 		print(str(fe));
+		metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes[1], 
+										length(intersect(rownames(first_set), rownames(second_set))),
+										c(first_set_datatype, second_set_datatype), c(first_set_platform, second_set_platform),
+										c('', second_set_id), c("-", "-"), c(nrow(first_set), nrow(second_set)), Par["out"]);
+		metadata <- save_metadata(metadata);
 		if (all(is.na(fe))) {
 			print("All NAs, shutting down");
 			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
@@ -495,6 +503,13 @@ if (length(platforms) == 1) {
 		print(query);
 		third_set <- sqlQuery(rch, query);
 		print(str(third_set));
+		
+		metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes[1], 
+										length(intersect(rownames(first_set), intersect(rownames(second_set), rownames(third_set)))),
+										c(first_set_datatype, second_set_datatype), c(first_set_platform, second_set_platform),
+										c('', second_set_id, third_set_id), c("-", "-", "-"), 
+										c(nrow(first_set), nrow(second_set), nrow(third_set)), Par["out"]);
+		metadata <- save_metadata(metadata);
 		
 		fe.drug <- c();
 		fe.other <- c();
@@ -672,3 +687,6 @@ if (length(platforms) == 1) {
 		}
 	}
 }
+odbcClose(rch);
+sink(console_output, type = "output");
+print(metadata)

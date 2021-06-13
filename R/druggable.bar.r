@@ -35,6 +35,10 @@ if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
 	x_data <- x_data[tissue_samples,];
 	print(paste0("After tissue filtering: ", nrow(x_data)));
 }
+# metadata generated twice: general case (for 1D and error) and, later, for stacked bar plot
+metadata <- generate_plot_metadata("bar", Par["source"], Par["cohort"], tcga_codes[1], nrow(x_data),
+										datatypes, platforms, ids, scales, c(nrow(x_data)), Par["out"]);
+metadata <- save_metadata(metadata);
 status <- ifelse(nrow(x_data) != 0, 'ok', 'error');
 
 if (status != 'ok') {
@@ -162,6 +166,9 @@ if (status != 'ok') {
 			temp2 <- table(y_data[which(y_data[,1] %in% category_samples),2]);
 		}
 		#print(temp2);
+		metadata <- generate_plot_metadata("bar", Par["source"], Par["cohort"], tcga_codes[1], length(y_data[which(y_data[,1] %in% category_samples),2]),
+										datatypes, platforms, ids, scales, c(nrow(x_data), nrow(y_data)), Par["out"]);
+		metadata <- save_metadata(metadata);
 		# don't use ifelse here - list will be unnamed for some reason
 		if (platforms[1] == "subtype") {
 			marker_colour <- list(color = druggable.plotly.brca_colours[categories[1]]);
@@ -203,4 +210,6 @@ if (status != 'ok') {
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	}
 }
-odbcClose(rch)
+odbcClose(rch);
+sink(console_output, type = "output");
+print(metadata)
