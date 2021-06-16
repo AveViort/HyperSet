@@ -40,7 +40,26 @@ fitSurvival  <- function (
 			Pat.vector[which(fe == 0)] <- label3;
 		}
 		else {
-			Zs <- quantile(fe, 0.5, na.rm = TRUE);
+			Probs <- seq(from = 0.12, to = 0.86, by = 0.02); 
+			QQ1 <- quantile(fe, na.rm = TRUE, probs = Probs);
+			p0 <- rep(NA, times = length(QQ1));
+			names(p0) <-  names(QQ1);
+			for (qu1 in names(QQ1)) {
+				e.co1 = QQ1[qu1];
+				Pat.vector = (fe > e.co1); 
+				t1 <- table(Pat.vector);
+				if (length(t1) > 1 & min(t1) > 3) {
+					Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ as.factor(Pat.vector)"));
+					da = cbind(cu, Pat.vector)
+					t2 <- try(coxph(Formula, data = da, control = coxph.control(iter.max = 5)), silent = FALSE);
+					p0[qu1] = signif(summary(t2)$coefficients[1,"Pr(>|z|)"], digits = 3);
+				}
+			}
+			Pm <- min(p0, na.rm = TRUE);
+			co <- NULL;
+			Wh <- which(p0 == Pm)[1];
+			co$Wh <- names(p0)[Wh];
+			Zs <- QQ1[co$Wh];
 			label1_col <- length(which(fe < Zs));
 			label2_col <- length(which(fe >= Zs));
 			if (id == '') {
@@ -427,12 +446,30 @@ if (all(is.na(fe.drug))) {
 			Pat.vector[which(fe.other == 0)] <- label3;
 		}
 		else {
-			Zs <- quantile(fe.other, 0.5, na.rm = TRUE);
-			# label1_col <- length(which(fe.other < Zs));
-			# label2_col <- length(which(fe.other >= Zs));
+			cu <- cutFollowup.full(clin, usedSamples, first_set_platform, po = NA);
+			Probs <- seq(from = 0.12, to = 0.86, by = 0.02); 
+			QQ1 <- quantile(fe.other, na.rm = TRUE, probs = Probs);
+			p0 <- rep(NA, times = length(QQ1));
+			names(p0) <-  names(QQ1);
+			for (qu1 in names(QQ1)) {
+				e.co1 = QQ1[qu1];
+				Pat.vector = (fe.other > e.co1); 
+				t1 <- table(Pat.vector);
+				if (length(t1) > 1 & min(t1) > 3) {
+					Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ as.factor(Pat.vector)"));
+					da = cbind(cu, Pat.vector)
+					t2 <- try(coxph(Formula, data = da, control = coxph.control(iter.max = 5)), silent = FALSE);
+					p0[qu1] = signif(summary(t2)$coefficients[1,"Pr(>|z|)"], digits = 3);
+				}
+			}
+			Pm <- min(p0, na.rm = TRUE);
+			co <- NULL;								
+			Wh <- which(p0 == Pm)[1];
+			co$Wh <- names(p0)[Wh];
+			Zs <- QQ1[co$Wh];
 			if (third_set_id == '') {
-				label1 <- paste0("[", min(fe.other, na.rm=TRUE), "...", Zs, ")");
-				label2 <- paste0("[", Zs, "...", max(fe.other, na.rm=TRUE), "]");
+				label1 <- paste0("[", min(fe.other, na.rm = TRUE), "...", Zs, ")");
+				label2 <- paste0("[", Zs, "...", max(fe.other, na.rm = TRUE), "]");
 			} else {
 				label1 <- paste0(toupper(third_set_id), " < ", Zs);
 				label2 <- paste0(toupper(third_set_id), " >= ", Zs);

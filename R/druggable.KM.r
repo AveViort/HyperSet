@@ -7,11 +7,11 @@ plotSurvival_DR  <- function (
 	clin, # modified! 3 columns: sample, xx, xx.time
 	datatype, # COPY, GE, PE etc.
 	id, # gene name etc. Can be empty string, but cannot be NA
-	s.type="os", # survival type : OS, RFS, DFI, DSS, RFI, PFI
-	fu.length=NA, # length of follow-up time at which to cut, in respective time units
-	estimateIntervals=TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
-	usedSamples=NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))
-	return.p=c("coefficient", "logtest", "sctest", "waldtest")[1] #which type p-value from coxph
+	s.type = "os", # survival type : OS, RFS, DFI, DSS, RFI, PFI
+	fu.length = NA, # length of follow-up time at which to cut, in respective time units
+	estimateIntervals = TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
+	usedSamples = NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))
+	return.p = c("coefficient", "logtest", "sctest", "waldtest")[1] #which type p-value from coxph
 ) {
 	if (is.na(usedSamples)) {usedSamples <- intersect(names(fe), rownames(clin));}
 	#print("usedSamples (inside of plotSurvival):")
@@ -19,6 +19,10 @@ plotSurvival_DR  <- function (
 	fe <- fe[usedSamples];
 	#print("fe(inside of plotSurvival):")
 	#print(str(fe));
+	cu <- cutFollowup.full(clin, usedSamples, s.type, po=NA);
+	#print("cu (inside of plotSurvival):")
+	#print(str(cu));
+	# cu <- cu[which(!is.na(cu$Stat) & !is.na(cu$Time)),]
 	if (mode(fe) == "numeric") {
 		label1 <- '';
 		label2 <- '';
@@ -38,7 +42,26 @@ plotSurvival_DR  <- function (
 			Pat.vector[which(fe == 0)] <- label3;
 		}
 		else {
-			Zs <- quantile(fe, 0.5, na.rm = TRUE);
+			Probs <- seq(from = 0.12, to = 0.86, by = 0.02); 
+			QQ1 <- quantile(fe, na.rm = TRUE, probs = Probs);
+			p0 <- rep(NA, times = length(QQ1));
+			names(p0) <-  names(QQ1);
+			for (qu1 in names(QQ1)) {
+				e.co1 = QQ1[qu1];
+				Pat.vector = (fe > e.co1); 
+				t1 <- table(Pat.vector);
+				if (length(t1) > 1 & min(t1) > 3) {
+					Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ as.factor(Pat.vector)"));
+					da = cbind(cu, Pat.vector)
+					t2 <- try(coxph(Formula, data = da, control = coxph.control(iter.max = 5)), silent = FALSE);
+					p0[qu1] = signif(summary(t2)$coefficients[1,"Pr(>|z|)"], digits = 3);
+				}
+			}
+			Pm <- min(p0, na.rm = TRUE);
+			co <- NULL;
+			Wh <- which(p0 == Pm)[1];
+			co$Wh <- names(p0)[Wh];
+			Zs <- QQ1[co$Wh];
 			label1_col <- length(which(fe < Zs));
 			label2_col <- length(which(fe >= Zs));
 			if (id == '') {
@@ -70,10 +93,6 @@ plotSurvival_DR  <- function (
 	vec = as.factor(Pat.vector);
 	#print(vec);
 	
-	cu <- cutFollowup.full(clin, usedSamples, s.type, po=NA);
-	#print("cu (inside of plotSurvival):")
-	#print(str(cu));
-	# cu <- cu[which(!is.na(cu$Stat) & !is.na(cu$Time)),]
 	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm=T);}
 	if (estimateIntervals) {POs <- round(c(fu.length/4, fu.length/2, fu.length/1));} else {POs <- c(fu.length);}
 	pval <- NULL;
@@ -367,7 +386,7 @@ if (length(platforms) == 1) {
 			}
 		}
 		if ((Par["source"]=="tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))) {
-			query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes[1]),"'");
+			query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes),"'");
 		}
 		query <- paste0(query, ";");
 		print(query);
@@ -393,12 +412,12 @@ if (length(platforms) == 1) {
 			fe <- c(fe, temp);
 		}
 		print(str(fe));
-		metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes[1], 
+		metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes, 
 										length(intersect(rownames(first_set), rownames(second_set))),
 										c(first_set_datatype, second_set_datatype), c(first_set_platform, second_set_platform),
 										c('', second_set_id), c("-", "-"), c(nrow(first_set), nrow(second_set)), Par["out"]);
 		metadata <- save_metadata(metadata);
-		if (all(is.na(fe))) {
+		if ((all(is.na(fe))) | (length(fe) < 10)) {
 			print("All NAs, shutting down");
 			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
 			report_event("druggable.KM.r", "warning", "empty_plot", paste0("plot_type=KM&source=", Par["source"], 
@@ -406,7 +425,7 @@ if (length(platforms) == 1) {
 				"&datatypes=", paste(datatypes,  collapse = ","),
 				"&platform=", paste(platforms, collapse = ","), 
 				"&ids=", paste(ids, collapse = ","), 
-				ifelse((Par["source"] == "tcga") & (!(second_set_datatype %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes[1]), "")),
+				ifelse((Par["source"] == "tcga") & (!(second_set_datatype %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes), "")),
 				"Plot succesfully generated, but it is empty");
 		} else {
 			plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
@@ -473,7 +492,7 @@ if (length(platforms) == 1) {
 			}
 		}
 		if ((Par["source"]=="tcga") & (!(second_set_datatype %in% druggable.patient.datatypes))) {
-			query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes[m]),"'");
+			query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes),"'");
 		}
 		query <- paste0(query, ";");
 		print(query);
@@ -497,193 +516,317 @@ if (length(platforms) == 1) {
 			}
 		}
 		if ((Par["source"]=="tcga") & (!(third_set_datatype %in% druggable.patient.datatypes))) {
-			query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes[n]),"'");
+			query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes),"'");
 		}
 		query <- paste0(query, ";");
 		print(query);
 		third_set <- sqlQuery(rch, query);
 		print(str(third_set));
 		
-		metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes[1], 
-										length(intersect(rownames(first_set), intersect(rownames(second_set), rownames(third_set)))),
-										c(first_set_datatype, second_set_datatype), c(first_set_platform, second_set_platform),
-										c('', second_set_id, third_set_id), c("-", "-", "-"), 
-										c(nrow(first_set), nrow(second_set), nrow(third_set)), Par["out"]);
-		metadata <- save_metadata(metadata);
-		
-		fe.drug <- c();
-		fe.other <- c();
-		if (any(datatypes %in% c("mut", "drug"))) {
+		# 3D case can become 2D case
+		if ((nrow(second_set) == 0) | (nrow(third_set) == 0)) {
+			print("One of the sets has 0 patients, switching to 2D");
+			if (nrow(second_set) == 0) {
+				print("Second set is empty; reassigning value from the third set");
+				second_set <- third_set;
+			} else {
+				print("Third set is empty; no need to reassign values");
+			}
+			
+			# refactor this! DRY!
+			fe <- as.character(second_set[,2]);
+			# we also have numeric data
+			x <- suppressWarnings(all(!is.na(as.numeric(fe[which(!is.na(fe))])))); 
+			if ((length(x) != 0) & (x == TRUE)) {
+				fe <- as.numeric(fe);
+			}
+			if (grepl("tcga-[0-9a-z]{2}-[0-9a-z]{4}-[0-9]{2}$", as.character(second_set[1,1]))) {
+				names(fe) <- unlist(lapply(as.character(second_set[,1]), function(x) regmatches(x, regexpr("tcga-[0-9a-z]{2}-[0-9a-z]{4}", x))));
+			} else {
+				names(fe) <- as.character(second_set[,1]);
+			}
+
 			if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
-				fe.drug <- as.character(second_set[,2]);
-				names(fe.drug) <- as.character(second_set[,1]);
-				# we also have numeric data
-				x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
-				if ((length(x) != 0) & (x == TRUE)) {
-					fe.drug <- as.numeric(fe.drug);
-				}
 				# add mising patients
-				missing_patients <- setdiff(rownames(first_set), names(fe.drug));
-				print(paste0("Adding ", length(missing_patients), " missing patients to fe.drug"));
+				missing_patients <- setdiff(rownames(first_set), names(fe));
+				print(paste0("Adding ", length(missing_patients), " missing patients to fe"));
 				temp <- rep(NA, length(missing_patients));
 				names(temp) <- missing_patients;
-				fe.drug <- c(fe.drug, temp);
-				fe.drug[missing_patients] <- "no drug";
-				fe.other <- third_set[,2];
-				names(fe.other) <- as.character(third_set[,1]);
-				fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
-				fe.other <- fe.other[which(!is.na(fe.other))];
-				names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
-				names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
+				fe <- c(fe, temp);
 			}
-			if ((third_set_datatype == "mut") | (third_set_datatype == "drug")) {
-				fe.drug <- as.character(third_set[,2]);
-				names(fe.drug) <- as.character(third_set[,1]);
-				# we also have numeric data
-				x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
-				if ((length(x) != 0) & (x == TRUE)) {
-					fe.drug <- as.numeric(fe.drug);
-				}
-				# add mising patients
-				missing_patients <- setdiff(rownames(first_set), names(fe.drug));
-				print(paste0("Adding ", length(missing_patients), " missing patients to fe.drug"));
-				temp <- rep(NA, length(missing_patients));
-				names(temp) <- missing_patients;
-				fe.drug <- c(fe.drug, temp);
-				fe.drug[missing_patients] <- "no drug";
-				fe.other <- second_set[,2];
-				names(fe.other) <- as.character(second_set[,1]);
-				fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
-				fe.other <- fe.other[which(!is.na(fe.other))];
-				names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
-				names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
-			}
-		}
-		clin <- first_set;
-		if (length(fe.drug) == 0) {
-			fe.drug <- second_set[,2];
-			names(fe.drug) <- as.character(second_set[,1]);
-			names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
-		}
-		if (length(fe.other) == 0) {
-			fe.other <- third_set[,2];
-			names(fe.other) <- as.character(third_set[,1]);
-			names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
-		}
-		
-		if (all(is.na(fe.drug))) {
+			print(str(fe));
+			
+			metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes, 
+										length(intersect(rownames(first_set), rownames(second_set))),
+										c(first_set_datatype, second_set_datatype), c(first_set_platform, second_set_platform),
+										c('', second_set_id), c("-", "-"), c(nrow(first_set), nrow(second_set)), Par["out"]);
+			metadata <- save_metadata(metadata);
+			
+			if ((all(is.na(fe))) | (length(fe) < 10)) {
 			print("All NAs, shutting down");
 			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+			report_event("druggable.KM.r", "warning", "empty_plot", paste0("plot_type=KM&source=", Par["source"], 
+				"&cohort=", Par["cohort"], 
+				"&datatypes=", paste(datatypes,  collapse = ","),
+				"&platform=", paste(platforms, collapse = ","), 
+				"&ids=", paste(ids, collapse = ","), 
+				ifelse((Par["source"] == "tcga") & (!(second_set_datatype %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes), "")),
+				"Plot succesfully generated, but it is empty");
+			} else {
+				plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
+				if (!empty_value(second_set_id)) {
+					plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
+				}
+				surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
+				#print("surv.data:");
+				#print(str(surv.data));
+
+				a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = plot_title);
+				#print("a:");
+				#print(str(a));
+				p <- ggplotly(a);
+				htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
+			}			
 		} else {
-			plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
-			if (!empty_value(second_set_id)) {
-				plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
-			}
-
-			usedSamples <- intersect(names(fe.drug), rownames(clin));
-			print("Round 1:");
-			print(usedSamples);
-			# print("usedSamples1");	print(usedSamples);
-			usedSamples <- intersect(names(fe.other), usedSamples);
-			# print("clin"); 	print(clin);
-			print("Round 2:");
-			print(usedSamples);
-			fe.drug <- fe.drug[usedSamples];
-			fe.other <- fe.other[usedSamples];
-			clin <- clin[usedSamples,];
-			Pat.vector <- rep(NA, times=length(usedSamples));
-			names(Pat.vector) <- usedSamples;
-			Pat.vector2 <- rep(NA, times=length(usedSamples));
-			names(Pat.vector2) <- usedSamples;
-			if (mode(fe.other) == "numeric") {
-				label1 <- '';
-				label2 <- ''; 
-				if (second_set_datatype == "copy") {
-					label1 <- paste0("", toupper(third_set_id), "<0");
-					label2 <- paste0("", toupper(third_set_id), ">0", label2_col);
-					label3 <- paste0("", toupper(third_set_id), "=0", label3_col);
-					Pat.vector[which(fe.other < 0)] <- label1;
-					Pat.vector[which(fe.other > 0)] <- label2;
-					Pat.vector[which(fe.other == 0)] <- label3;
-				}
-				else {
-					Zs <- quantile(fe.other, 0.5, na.rm = TRUE);
-					if (empty_value(third_set_id)) {
-						label1 <- paste0("[", min(fe.other, na.rm=TRUE), "...", Zs, ")");
-						label2 <- paste0("[", Zs, "...", max(fe.other, na.rm=TRUE), "]");
-					} else {
-						label1 <- paste0(toupper(third_set_id), " < ", Zs);
-						label2 <- paste0(toupper(third_set_id), " >= ", Zs);
+			#real 3D case
+			metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes, 
+											length(intersect(rownames(first_set), intersect(rownames(second_set), rownames(third_set)))),
+											c(first_set_datatype, second_set_datatype), c(first_set_platform, second_set_platform),
+											c('', second_set_id, third_set_id), c("-", "-", "-"), 
+											c(nrow(first_set), nrow(second_set), nrow(third_set)), Par["out"]);
+			metadata <- save_metadata(metadata);
+			
+			fe.drug <- c();
+			fe.other <- c();
+			if (any(datatypes %in% c("mut", "drug"))) {
+				if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
+					fe.drug <- as.character(second_set[,2]);
+					names(fe.drug) <- as.character(second_set[,1]);
+					# we also have numeric data
+					x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
+					if ((length(x) != 0) & (x == TRUE)) {
+						fe.drug <- as.numeric(fe.drug);
 					}
-					Pat.vector[which(fe.other < Zs)] <- label1;
-					Pat.vector[which(fe.other >= Zs)] <- label2;
+					# add mising patients
+					missing_patients <- setdiff(rownames(first_set), names(fe.drug));
+					print(paste0("Adding ", length(missing_patients), " missing patients to fe.drug"));
+					temp <- rep(NA, length(missing_patients));
+					names(temp) <- missing_patients;
+					fe.drug <- c(fe.drug, temp);
+					fe.drug[missing_patients] <- "no drug";
+					fe.other <- third_set[,2];
+					names(fe.other) <- as.character(third_set[,1]);
+					fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
+					fe.other <- fe.other[which(!is.na(fe.other))];
+					names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
+					names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
 				}
-			} 
-			else {
-				if (third_set_datatype == "mut") {
-					label1 <- paste0(toupper(third_set_id), " Wt");
-					label2 <- paste0(toupper(third_set_id), " Mut");
-					Pat.vector = fe.other;
-					Pat.vector[which(is.na(fe.other))] <- label1;
-					Pat.vector[which(!is.na(fe.other))] <- label2;
-				} else {
-					Pat.vector = fe.other; 
-				}
-			}
-			
-			if (mode(fe.drug) == "numeric") {
-				label1 <- '';
-				label2 <- ''; 
-				if (second_set_datatype == "copy") {
-					label1 <- paste0("", toupper(second_set_id), "<0", label1_col);
-					label2 <- paste0("", toupper(second_set_id), ">0", label2_col);
-					label3 <- paste0("", toupper(second_set_id), "=0", label3_col);
-					Pat.vector2[which(fe.drug < 0)] <- label1;
-					Pat.vector2[which(fe.drug > 0)] <- label2;
-					Pat.vector2[which(fe.drug == 0)] <- label3;
-				}
-				else {
-					Zs <- quantile(fe.drug, 0.5, na.rm = TRUE);
-					if (empty_value(second_set_id)) {
-						label1 <- paste0("[", min(fe.drug, na.rm=TRUE), "...", Zs, ")");
-						label2 <- paste0("[", Zs, "...", max(fe.drug, na.rm=TRUE), "]");
-					} else {
-						label1 <- paste0(toupper(second_set_id), " < ", Zs);
-						label2 <- paste0(toupper(second_set_id), " >= ", Zs);
+				if ((third_set_datatype == "mut") | (third_set_datatype == "drug")) {
+					fe.drug <- as.character(third_set[,2]);
+					names(fe.drug) <- as.character(third_set[,1]);
+					# we also have numeric data
+					x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
+					if ((length(x) != 0) & (x == TRUE)) {
+						fe.drug <- as.numeric(fe.drug);
 					}
-					Pat.vector2[which(fe.drug < Zs)] <- label1;
-					Pat.vector2[which(fe.drug >= Zs)] <- label2;
-				}
-			} 
-			else {
-				if (second_set_datatype == "mut") {
-					label1 <- paste0(toupper(second_set_id), " Wt");
-					label2 <- paste0(toupper(second_set_id), " Mut");
-					Pat.vector2 = fe.drug;
-					Pat.vector2[which(is.na(fe.drug))] <- label1;
-					Pat.vector2[which(!is.na(fe.drug))] <- label2;
-				} else {
-					Pat.vector2 = fe.drug; 
+					# add mising patients
+					missing_patients <- setdiff(rownames(first_set), names(fe.drug));
+					print(paste0("Adding ", length(missing_patients), " missing patients to fe.drug"));
+					temp <- rep(NA, length(missing_patients));
+					names(temp) <- missing_patients;
+					fe.drug <- c(fe.drug, temp);
+					fe.drug[missing_patients] <- "no drug";
+					fe.other <- second_set[,2];
+					names(fe.other) <- as.character(second_set[,1]);
+					fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
+					fe.other <- fe.other[which(!is.na(fe.other))];
+					names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
+					names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
 				}
 			}
-			
-			Grouping <- paste(Pat.vector, Pat.vector2, sep=", ");
-			names(Grouping) <- usedSamples;
-			if (any(grepl("^NA,|NA, NA|, NA$", Grouping))) {
-				Grouping <- Grouping[-which(grepl("^NA,|NA, NA|, NA$", Grouping))];
+			clin <- first_set;
+			if (length(fe.drug) == 0) {
+				fe.drug <- second_set[,2];
+				names(fe.drug) <- as.character(second_set[,1]);
+				names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
 			}
-			print("");
-			print(Grouping);
+			if (length(fe.other) == 0) {
+				fe.other <- third_set[,2];
+				names(fe.other) <- as.character(third_set[,1]);
+				names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
+			}
 			
-			surv.fit <- fitSurvival2(Grouping, clin, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform, usedSamples=usedSamples);
-			#print("surv.fit:");
-			#print(str(surv.fit));
+			if (all(is.na(fe.drug))) {
+				print("All NAs, shutting down");
+				system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+			} else {
+				plot_title <- paste0('Kaplan-Meier: ', readable_platforms[second_set_platform,2]);
+				if (!empty_value(second_set_id)) {
+					plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
+				}
 
-			a <- ggsurv(surv.fit, ylab = toupper(first_set_platform), main = plot_title);
-			#print("a:");
-			#print(str(a));
-			p <- ggplotly(a);
-			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
+				usedSamples <- intersect(names(fe.drug), rownames(clin));
+				print("Round 1:");
+				print(usedSamples);
+				# print("usedSamples1");	print(usedSamples);
+				usedSamples <- intersect(names(fe.other), usedSamples);
+				# print("clin"); 	print(clin);
+				print("Round 2:");
+				print(usedSamples);
+				if (length(usedSamples) < 10) {
+					system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", File));
+					print("Not enough common samples/patients for the chosen conditions, shutting down");
+				} else {
+					fe.drug <- fe.drug[usedSamples];
+					fe.other <- fe.other[usedSamples];
+					clin <- clin[usedSamples,];
+					Pat.vector <- rep(NA, times=length(usedSamples));
+					names(Pat.vector) <- usedSamples;
+					Pat.vector2 <- rep(NA, times=length(usedSamples));
+					names(Pat.vector2) <- usedSamples;
+					if (mode(fe.other) == "numeric") {
+						label1 <- '';
+						label2 <- ''; 
+						if (second_set_datatype == "copy") {
+							label1 <- paste0("", toupper(third_set_id), "<0");
+							label2 <- paste0("", toupper(third_set_id), ">0", label2_col);
+							label3 <- paste0("", toupper(third_set_id), "=0", label3_col);
+							Pat.vector[which(fe.other < 0)] <- label1;
+							Pat.vector[which(fe.other > 0)] <- label2;
+							Pat.vector[which(fe.other == 0)] <- label3;
+						}
+						else {
+							cu <- cutFollowup.full(clin, usedSamples, first_set_platform, po = NA);
+							print("cu, fe.other");
+							print(cu);
+							Probs <- seq(from = 0.12, to = 0.86, by = 0.02); 
+							QQ1 <- quantile(fe.other, na.rm = TRUE, probs = Probs);
+							print(str(QQ1));
+							p0 <- rep(NA, times = length(QQ1));
+							names(p0) <-  names(QQ1);
+							print(names(p0));
+							for (qu1 in names(QQ1)) {
+								e.co1 = QQ1[qu1];
+								print(e.co1);
+								Pat.vector = (fe.other > e.co1); 
+								print(Pat.vector);
+								t1 <- table(Pat.vector);
+								print(t1);
+								if (length(t1) > 1 & min(t1) > 3) {
+									Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ as.factor(Pat.vector)"));
+									print(Formula);
+									da = cbind(cu, Pat.vector);
+									print(da);
+									t2 <- try(coxph(Formula, data = da, control = coxph.control(iter.max = 5)), silent = FALSE);
+									print(t2);
+									p0[qu1] = signif(summary(t2)$coefficients[1,"Pr(>|z|)"], digits = 3);
+								}
+							}
+							Pm <- min(p0, na.rm = TRUE);
+							co <- NULL;								
+							Wh <- which(p0 == Pm)[1];
+							co$Wh <- names(p0)[Wh];
+							Zs <- QQ1[co$Wh];
+							if (empty_value(third_set_id)) {
+								label1 <- paste0("[", min(fe.other, na.rm=TRUE), "...", Zs, ")");
+								label2 <- paste0("[", Zs, "...", max(fe.other, na.rm=TRUE), "]");
+							} else {
+								label1 <- paste0(toupper(third_set_id), " < ", Zs);
+								label2 <- paste0(toupper(third_set_id), " >= ", Zs);
+							}
+							Pat.vector[which(fe.other < Zs)] <- label1;
+							Pat.vector[which(fe.other >= Zs)] <- label2;
+						}
+					} 
+					else {
+						if (third_set_datatype == "mut") {
+							label1 <- paste0(toupper(third_set_id), " Wt");
+							label2 <- paste0(toupper(third_set_id), " Mut");
+							Pat.vector = fe.other;
+							Pat.vector[which(is.na(fe.other))] <- label1;
+							Pat.vector[which(!is.na(fe.other))] <- label2;
+						} else {
+							Pat.vector = fe.other; 
+						}
+					}
+					
+					if (mode(fe.drug) == "numeric") {
+						label1 <- '';
+						label2 <- ''; 
+						if (second_set_datatype == "copy") {
+							label1 <- paste0("", toupper(second_set_id), "<0", label1_col);
+							label2 <- paste0("", toupper(second_set_id), ">0", label2_col);
+							label3 <- paste0("", toupper(second_set_id), "=0", label3_col);
+							Pat.vector2[which(fe.drug < 0)] <- label1;
+							Pat.vector2[which(fe.drug > 0)] <- label2;
+							Pat.vector2[which(fe.drug == 0)] <- label3;
+						}
+						else {
+							cu <- cutFollowup.full(clin, usedSamples, first_set_platform, po = NA);
+							print("cu, fe.drug");
+							print(cu);
+							Probs <- seq(from = 0.12, to = 0.86, by = 0.02); 
+							QQ1 <- quantile(fe.drug, na.rm = TRUE, probs = Probs);
+							p0 <- rep(NA, times = length(QQ1));
+							names(p0) <-  names(QQ1);
+							for (qu1 in names(QQ1)) {
+								e.co1 = QQ1[qu1];
+								Pat.vector2 = (fe.drug > e.co1); 
+								t1 <- table(Pat.vector2);
+								if (length(t1) > 1 & min(t1) > 3) {
+									Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ as.factor(Pat.vector2)"));
+									da = cbind(cu, Pat.vector2)
+									t2 <- try(coxph(Formula, data = da, control = coxph.control(iter.max = 5)), silent = FALSE);
+									p0[qu1] = signif(summary(t2)$coefficients[1,"Pr(>|z|)"], digits = 3);
+								}
+							}
+							Pm <- min(p0, na.rm = TRUE);
+							co <- NULL;
+							Wh <- which(p0 == Pm)[1];
+							co$Wh <- names(p0)[Wh];
+							Zs <- QQ1[co$Wh];
+							if (empty_value(second_set_id)) {
+								label1 <- paste0("[", min(fe.drug, na.rm = TRUE), "...", Zs, ")");
+								label2 <- paste0("[", Zs, "...", max(fe.drug, na.rm = TRUE), "]");
+							} else {
+								label1 <- paste0(toupper(second_set_id), " < ", Zs);
+								label2 <- paste0(toupper(second_set_id), " >= ", Zs);
+							}
+							Pat.vector2[which(fe.drug < Zs)] <- label1;
+							Pat.vector2[which(fe.drug >= Zs)] <- label2;
+						}
+					} 
+					else {
+						if (second_set_datatype == "mut") {
+							label1 <- paste0(toupper(second_set_id), " Wt");
+							label2 <- paste0(toupper(second_set_id), " Mut");
+							Pat.vector2 = fe.drug;
+							Pat.vector2[which(is.na(fe.drug))] <- label1;
+							Pat.vector2[which(!is.na(fe.drug))] <- label2;
+						} else {
+							Pat.vector2 = fe.drug; 
+						}
+					}
+					
+					Grouping <- paste(Pat.vector, Pat.vector2, sep=", ");
+					names(Grouping) <- usedSamples;
+					if (any(grepl("^NA,|NA, NA|, NA$", Grouping))) {
+						Grouping <- Grouping[-which(grepl("^NA,|NA, NA|, NA$", Grouping))];
+					}
+					print("");
+					print(Grouping);
+					
+					surv.fit <- fitSurvival2(Grouping, clin, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform, usedSamples=usedSamples);
+					#print("surv.fit:");
+					#print(str(surv.fit));
+
+					a <- ggsurv(surv.fit, ylab = toupper(first_set_platform), main = plot_title);
+					#print("a:");
+					#print(str(a));
+					p <- ggplotly(a);
+					htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
+				}
+			}
 		}
 	}
 }
