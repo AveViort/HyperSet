@@ -1601,10 +1601,10 @@ function retrieve_correlations() {
 	document.getElementById("cor_result_table").innerHTML = '<table><thead>' + cor_headers.get(source) + '</thead></table>';
 	// variable min_pat_drug_number defined in druggable_config.js and used for defining if TCGA cohort should be offered for KM plot
 	// i.e. if min_pat_drug_number=10 and BRCA has 12 patients with drug A - BRCA will be offered
-	console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source));
+	console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&data_columns=" + cor_sql_data_columns.get(source) + "&filter_columns=" + cor_sql_filter_columns.get(source) + "&concat_operator=" + cor_concatenation_operators.get(source));
 	var data_table = $('#cor_result_table').DataTable({
 		"ordering": true,
-		"ajax": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&columns=" + cor_sql_columns.get(source),
+		"ajax": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&data_columns=" + cor_sql_data_columns.get(source) + "&filter_columns=" + cor_sql_filter_columns.get(source) + "&concat_operator=" + cor_concatenation_operators.get(source),
         "initComplete": function(settings, json) {
 			console.log("Correlations retrieved");
 			var event = new CustomEvent("correlations_retrieved", {

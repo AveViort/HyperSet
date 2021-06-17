@@ -13,15 +13,17 @@ our ($dbh, $stat);
 my @row;
 
 my $query = new CGI;
-my $source 		= $query->param("source"); 
-my $datatype 	= $query->param("datatype");
-my $cohort 		= $query->param("cohort"); 
-my $platform 	= $query->param("platform");
-my $screen 		= $query->param("screen");
-my $id 			= $query->param("id");
-my $fdr 		= $query->param("fdr");
-my $mindrug 	= $query->param("mindrug");
-my $columns 	= $query->param("columns");
+my $source 			= $query->param("source"); 
+my $datatype 		= $query->param("datatype");
+my $cohort 			= $query->param("cohort"); 
+my $platform 		= $query->param("platform");
+my $screen 			= $query->param("screen");
+my $id 				= $query->param("id");
+my $fdr 			= $query->param("fdr");
+my $mindrug 		= $query->param("mindrug");
+my $data_columns 	= $query->param("data_columns");
+my $filter_columns	= $query->param("filter_columns");
+my $concat_operator	= $query->param("concat_operator");
 
 $datatype	= "%" if $datatype	eq "all";
 $cohort		= "%" if $cohort	eq "all";
@@ -30,9 +32,10 @@ $screen 	= "%" if $screen	eq "all";
 $id 		= "%" if $id 		eq "";
 
 $dbh = HS_SQL::dbh('druggable');
-$stat = qq/SELECT retrieve_correlations(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\, \'$id'\, $fdr, $mindrug, \'$columns'\, \'$Aconfig::limit_column{$source}'\, $Aconfig::limit_num);/;
+$stat = qq/SELECT retrieve_correlations(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\, \'$id'\, $fdr, $mindrug, \'$data_columns'\, \'$filter_columns'\, \'$concat_operator'\, \'$Aconfig::limit_column{$source}'\, $Aconfig::limit_num);/;
 
 print $query->header("application/json");
+#print $stat;
 print "";
 print '{"data":';
 print "[";
@@ -41,7 +44,7 @@ $sth->execute( ) or die $sth->errstr;
 my $row_id = 1;
 # carefull! This method is driver-dependent!
 my $rows = $sth->rows;
-my @column_names = split /,/, $columns;
+my @column_names = split /,/, $data_columns;
 my @field_names = ("gene", "feature", "datatype", "cohort", "platform", "screen", "sensitivity");
 my $colnumber = @column_names;
 my $i;

@@ -834,13 +834,14 @@ $$ LANGUAGE plpgsql;
 
 -- function to retrieve correlations
 -- mindrug is a min number of patients which have to be treated with the specific drug to offer KM plot for this drug
--- cor_columns is a string with comma-separated columns to use for query 
+-- cor_data_columns is a string with comma-separated columns to use for query 
 -- first column is ALWAYS gene
 -- second column is ALWAYS feature
--- last column is used for filtering, can be used twice
+-- cor_filter_columns is a string with comma-separated columns to use for filtration
+-- concat_op is a string containing either one logical operator or comma-separated string with n-1 operators (n = number of columns in cor_data_columns)
 -- limit_by is name of the column by which table will be sorted (one of p-value columns)
 -- limit_num is max num of records (e.g. 100 smallest p-values)
-CREATE OR REPLACE FUNCTION retrieve_correlations(source_n text, data_type text, cohort_n text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_columns text, limit_by text, limit_num numeric) RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION retrieve_correlations(source_n text, data_type text, cohort_n text, platform_n text, screen_n text, sensitivity_m text, id text, fdr numeric, mindrug numeric, cor_data_columns text, cor_filter_columns text, concat_op text, limit_by text, limit_num numeric) RETURNS setof text AS $$
 DECLARE
 table_n text;
 datatype_name text;
@@ -851,24 +852,20 @@ sensitivity_type text;
 res text array;
 columns_array text array;
 sensitivity_array text array;
+filter_cond text;
 query text;
 temp_table text;
 i numeric;
 BEGIN
-columns_array := string_to_array(cor_columns, ',');
+columns_array := string_to_array(cor_data_columns, ',');
 sensitivity_array := string_to_array(sensitivity_m, ',');
 temp_table := 'cor' || floor(random() * 10000);
 --RAISE notice 'temp_table: %', temp_table;
 query := 'CREATE TABLE ' || temp_table || '(gene text,feature text,datatype text,cohort text,platform text,screen text,sensitivity text';
-FOR i IN 3..(array_length(columns_array, 1)-1)
+FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || ',' || columns_array[i] || ' numeric';
 END LOOP;
--- special case, 2 last columns may be identical
-IF (columns_array[array_length(columns_array,1)] NOT LIKE columns_array[array_length(columns_array,1)-1])
-THEN
-query := query || ',' || columns_array[array_length(columns_array,1)] || ' numeric';
-END IF;
 query := query ||',url1 text,url2 text,cohorts text);';
 --RAISE notice 'query: %', query;
 EXECUTE query;
@@ -876,14 +873,10 @@ FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity
 LOOP
 --RAISE notice 'table name: %', table_n;
 query := 'INSERT INTO ' || temp_table || ' SELECT upper(' || columns_array[1] || ') AS gene,drug_synonym(' || columns_array[2] || E') AS feature,\'' || datatype_name || E'\' AS datatype,\'' || cohort_name || E'\' AS cohort,\'' || platform_name || E'\' AS platform, \'' || screen_name || E'\' AS screen' || E',\'' || sensitivity_type || E'\' AS sensitivity';
-FOR i IN 3..(array_length(columns_array, 1)-1)
+FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || ',' || columns_array[i]; 
 END LOOP;
-IF (columns_array[array_length(columns_array,1)] NOT LIKE columns_array[array_length(columns_array,1)-1])
-THEN
-query := query || ',' || columns_array[array_length(columns_array,1)];
-END IF;
 query := query || ',get_url(';
 IF (datatype_name LIKE '%NEA%') THEN
 query := query || columns_array[1];
@@ -891,12 +884,13 @@ ELSE
 query :=  query || 'upper(' || columns_array[1] || ')';
 END IF;
 i := array_length(columns_array, 1);
-query := query || ') AS url1,get_url(drug_synonym(' || columns_array[2] || ')) AS url2,retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\',' || fdr || ') AS cohorts FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || columns_array[i] || '<=' || fdr || ') ORDER BY ' || limit_by || ' ASC LIMIT ' || limit_num || ';'; 
+SELECT generate_filter_condition(datatype_name, cor_filter_columns, concat_op, fdr) INTO filter_cond;
+query := query || ') AS url1,get_url(drug_synonym(' || columns_array[2] || ')) AS url2,retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\',\'drug,expr,interaction\',\'' || concat_op || E'\',' || fdr || ') AS cohorts FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || filter_cond || ') ORDER BY ' || limit_by || ' ASC LIMIT ' || limit_num || ';'; 
 --RAISE notice 'query: %', query;
 EXECUTE query;
 END LOOP;
 query := E'SELECT ARRAY(SELECT gene \|\| \'\|\' \|\| feature \|\| \'\|\' \|\| datatype \|\| \'\|\' \|\| cohort \|\| \'\|\' \|\| platform \|\| \'\|\' \|\| screen \|\| \'\|\' \|\| sensitivity';
-FOR i IN 3..(array_length(columns_array, 1)-1)
+FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || E'\|\| \'\|\' \|\|' || columns_array[i]; 
 END LOOP;
@@ -965,16 +959,51 @@ END IF;
 END;
 $$ LANGUAGE plpgsql;
 
--- function to get TCGA cohorts for retrieve_correlations
-CREATE OR REPLACE FUNCTION retrieve_cohorts_for_drug(target_id character varying, drug_name character varying, data_type character varying, coff numeric) RETURNS text AS $$
+-- function to generate filtering conditions for correlations retrieval + cohorts retrieval
+CREATE OR REPLACE FUNCTION generate_filter_condition(data_type character varying, cor_filter_columns character varying, concat_op character varying, fdr numeric) RETURNS text AS $$
+DECLARE
+columns_array text array;
+op_array text array;
+i numeric;
+res text;
+BEGIN
+columns_array := string_to_array(cor_filter_columns, ',');
+op_array := string_to_array(concat_op, ',');
+IF (array_length(op_array,1) = 1)
+THEN
+FOR i IN 2..array_length(columns_array,1)
+LOOP
+op_array[i] := concat_op;
+END LOOP;
+END IF;
+res := columns_array[1] || '<=' || fdr;
+FOR i IN 2..array_length(columns_array,1)
+LOOP
+res := res || ' ' || op_array[i-1] || ' ' || columns_array[i] || '<=' || fdr;
+END LOOP;
+IF ((data_type = 'GE_NEA') OR (data_type = 'MUT_NEA'))
+THEN
+res := res || ' AND meanfeature>1 AND sdevfeature>2';
+END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to get cohorts for retrieve_correlations
+CREATE OR REPLACE FUNCTION retrieve_cohorts_for_drug(target_id character varying, drug_name character varying, data_type character varying, cor_filter_columns character varying, concat_op character varying, coff numeric) RETURNS text AS $$
 DECLARE
 cohort_n text;
 platform_n text;
 measure_n text;
+query text;
+filter_cond text;
 res text;
 BEGIN
 res := '';
-FOR cohort_n, platform_n, measure_n IN SELECT DISTINCT cohort,platform,measure FROM significant_interactions WHERE feature=drug_name AND id=target_id AND datatype=data_type AND interaction<coff AND drug>0.25
+query := E'SELECT DISTINCT cohort,platform,measure FROM significant_interactions WHERE feature=\'' || drug_name || E'\' AND id=\'' || target_id || E'\' AND datatype=\'' || data_type || E'\' AND ';
+SELECT generate_filter_condition(data_type, cor_filter_columns, concat_op, coff) INTO filter_cond;
+query := query || filter_cond || ';'; 
+FOR cohort_n, platform_n, measure_n IN EXECUTE query
 LOOP
 res := res || cohort_n || '#' || data_type || '#' || platform_n || '#' || measure_n || ',';
 END LOOP;
