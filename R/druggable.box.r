@@ -25,8 +25,8 @@ if (k != 0) {
 	else {
 		temp_ids <- '';
 	}
-	if (!is.na(tcga_codes[1])) {
-		temp_tcga_codes <- tcga_codes[1];
+	if (!is.na(tcga_codes)) {
+		temp_tcga_codes <- tcga_codes;
 	}
 	else {
 		temp_tcga_codes <- '';
@@ -39,7 +39,7 @@ if (k != 0) {
 			temp_datatypes <- c(temp_datatypes, datatypes[i]);
 			temp_platforms <- c(temp_platforms, platforms[i]);
 			temp_scales <- c(temp_scales, scales[i]);
-			temp_tcga_codes <- c(temp_tcga_codes, tcga_codes[i]);
+			temp_tcga_codes <- c(temp_tcga_codes, tcga_codes);
 			if (!is.na(ids[i])) {
 				temp_ids <- c(temp_ids, ids[i]);
 			}
@@ -53,26 +53,25 @@ if (k != 0) {
 	temp_datatypes <- datatypes;
 	temp_platforms <- platforms;
 	temp_scales <- scales;
-	temp_tcga_codes <- tcga_codes;
 	temp_ids <- ids;
 }
 print(temp_datatypes);
 print(temp_platforms);
 print(temp_ids);
-print(temp_tcga_codes);
+print(tcga_codes);
 
 temp <- list();
 common_samples <- c();
 tissue_samples <- c();
-if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
-	tissues <- createTissuesList(tcga_codes[1]);
+if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
+	tissues <- createTissuesList(tcga_codes);
 	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "'::text[]);");
 	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 }
 for (i in 1:length(temp_datatypes)) {
 	condition <- " WHERE ";
 	if((Par["source"] == "tcga") & (!(temp_datatypes[i] %in% druggable.patient.datatypes))) {
-		condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(temp_tcga_codes[i]), "'");
+		condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes), "'");
 	}
 	if (!empty_value(temp_ids[i])) {
 		# check if this is the first term in condition or not
@@ -108,7 +107,7 @@ for (i in 1:length(temp_datatypes)) {
 	#print(length(unique(temp_rownames)));
 	#print(temp_rownames);
 	rownames(temp[[i]]) <- temp_rownames;
-	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+	if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
 		print(paste0("Before tissue filtering: ", nrow(temp[[i]])));
 		temp[[i]] <- temp[[i]][tissue_samples,];
 		print(paste0("After tissue filtering: ", nrow(x_data)));
@@ -121,7 +120,7 @@ for (i in 2:length(temp_datatypes)) {
 		common_samples <- intersect(common_samples, rownames(temp[[i]]));
 	}
 }
-metadata <- generate_plot_metadata("box", Par["source"], Par["cohort"], tcga_codes[1], length(common_samples),
+metadata <- generate_plot_metadata("box", Par["source"], Par["cohort"], tcga_codes, length(common_samples),
 										temp_datatypes, temp_platforms, temp_ids, temp_scales, c(nrow(temp[[1]]), nrow(temp[[2]])), Par["out"]);
 metadata <- save_metadata(metadata);
 status <- ifelse(length(common_samples) > 0, 'ok', 'error');
@@ -133,7 +132,7 @@ if (status != 'ok') {
 		"&datatypes=", paste(datatypes,  collapse = ","),
 		"&platform=", paste(platforms, collapse = ","), 
 		"&ids=", paste(ids, collapse = ","),  
-		ifelse((Par["source"] == "tcga") & (!(all(datatypes %in% druggable.patient.datatypes))), paste0("&tcga_codes=", tcga_codes[1]), ""),
+		ifelse((Par["source"] == "tcga") & (!(all(datatypes %in% druggable.patient.datatypes))), paste0("&tcga_codes=", tcga_codes), ""),
 		"&scales=", paste(ids, collapse = ",")),
 		"Plot succesfully generated, but it is empty");
 } else {

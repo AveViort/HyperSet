@@ -18,7 +18,7 @@ Rescale <- list(
 	pr_status_by_ihc = c(-1, 0, 0, 1), 
 	her2_status_by_ihc 	= 	c(-1, 0, 0, 1) 
 );
-names(Rescale[["cd44"]]) 					<- Levels;
+names(Rescale[["cd44"]]) 							<- Levels;
 names(Rescale[["clinical_stage"]]) 					<- Stages;
 names(Rescale[["ajcc_pathologic_tumor_stage"]]) 	<- Stages;
 names(Rescale[["er_status_by_ihc"]]) 				<- Stata;
@@ -417,7 +417,7 @@ for (i in 1:length(x_datatypes)) {
 		# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
 		query <- paste0(query, condition, ";");
 		print(query);
-		print(object.size(query));
+		#print(object.size(query));
 		temp <- sqlQuery(rch, query);
 	} else {
 		print(paste0("Long query avoided, number of xids[[", i, "]]: ", length(x_ids[[i]])));
@@ -481,6 +481,10 @@ for (i in 1:length(x_datatypes)) {
 			temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE)
 		}
 		colnames(temp) <- temp_names;
+	}
+	# METH data should be transformed into M-values, function defined in plot_common_functions.r
+	if (x_datatypes[i] == "METH") {
+		temp[,1] <- transformVars(temp[,1], "mvalue");
 	}
 	Platform[[x_platforms[i]]] <- temp;
 	#print(temp);
@@ -755,7 +759,8 @@ if (!stop_flag) {
 			# use crossval_flag variable which is a global variable set in createGLMnetSignature
 			# bad style, but otherwise we have to return several objects
 			# print(paste0("crossval_flag: ", crossval_flag));
-			saveJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, rid, multiopt, fam);
+			# pay attention! We use Par["rid"] instead of rid, because rid is already an internal id, and plot function expects to see external id
+			saveJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, Par["rid"], multiopt, fam);
 			savePerformanceJSON(perf_frame, paste0("perf.", Par["out"], ".json"));
 			
 			if (!empty_value(statf)) {

@@ -153,7 +153,7 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 			temp_id <- "";
 		} else {
 			if (!temp_datatype %in% c("copy", "ge", "meth", "mirna", "mut")) {
-				temp_id <- tolower(temp_id);
+				#temp_id <- tolower(temp_id);
 			}
 		}
 		plot_type <- switch(family,
@@ -176,7 +176,7 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 			#	names(plot_types) <- temp_names;	
 		#	}
 		#}
-		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'linear\', \'linear\'], [\'', multiopt[1], '\', \'', multiopt[1], '\'])\\">Plot</button>');
+		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'linear\', \'linear\'], [\'', multiopt[1], '\'])\\">Plot</button>');
 		values[i] <- paste0("{\"Term\":\"", Terms[i], "\", \"Coef\":\"", co[i], "\", \"Plot\":\"", button_code, "\"}");
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))

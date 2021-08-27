@@ -6,7 +6,7 @@ status <- '';
 plot_annotation <- '';
 condition <- " WHERE ";
 if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes))) {
-	condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes[1]), "'");
+	condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes), "'");
 }
 if (!empty_value(ids[1])) {
 	# check if this is the first term in condition or not
@@ -25,7 +25,7 @@ table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", platforms[1], " FROM ", table_name, ifelse(condition == " WHERE ", "", condition), ";");
 print(query);
 x_data <- sqlQuery(rch, query);
-if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
 	rownames(x_data) <- x_data[,"sample"];
 	print(paste0("Before tissue filtering: ", nrow(x_data)));
 	tissues <- createTissuesList(multiopt);
@@ -36,7 +36,7 @@ if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
 	print(paste0("After tissue filtering: ", nrow(x_data)));
 }
 # metadata generated twice: general case (for 1D and error) and, later, for stacked bar plot
-metadata <- generate_plot_metadata("bar", Par["source"], Par["cohort"], tcga_codes[1], nrow(x_data),
+metadata <- generate_plot_metadata("bar", Par["source"], Par["cohort"], tcga_codes, nrow(x_data),
 										datatypes, platforms, ids, scales, c(nrow(x_data)), Par["out"]);
 metadata <- save_metadata(metadata);
 status <- ifelse(nrow(x_data) != 0, 'ok', 'error');
@@ -48,12 +48,12 @@ if (status != 'ok') {
 		"&datatype=", datatypes[1],
 		"&platform=", platforms[1], 
 		"&ids=", ids[1], 
-		ifelse((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes[1]), "")),
+		ifelse((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes), "")),
 		"Plot succesfully generated, but it is empty");
 } else {
 	temp <- NULL;
 	if (datatypes[1] == "mut") {
-		query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample ~ '", createPostgreSQLregex(tcga_codes[1]), "';");
+		query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample ~ '", createPostgreSQLregex(tcga_codes), "';");
 		print(query);
 		temp <-  sqlQuery(rch, query);
 		colnames(temp) <- colnames(x_data);
@@ -77,11 +77,12 @@ if (status != 'ok') {
 			x_data <- rbind(x_data, temp);
 		}
 		if (Par["source"] == "tcga") {
-			plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
+			plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes), ''));
 		} else {
 			plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''));
 		}
 		plot_annotation <- paste0(plot_annotation, " N=", nrow(x_data));
+		plot_legend <- generate_plot_legend(plot_annotation);
 		if (datatypes[1] == "mut") {
 			temp <- table(unlist(strsplit(as.character(x_data[,2]), ",|;")));
 		} else {
@@ -91,14 +92,21 @@ if (status != 'ok') {
 			y = temp,
 			text = paste0(temp/nrow(x_data)*100, "%"),
 			hoverinfo = 'y+text',
+			name = plot_legend,
 			type = 'bar') %>% 
-		add_annotations(xref = "paper",
-			yref = "paper",
-			x = 1,
-			y = -0.1,
-			text = plot_annotation,
-			showarrow = FALSE) %>%
-		layout(margin = druggable.margins) %>%
+		#add_annotations(xref = "paper",
+		#	yref = "paper",
+		#	x = 1,
+		#	y = -0.1,
+		#	text = plot_annotation,
+		#	showarrow = FALSE) %>%
+		#layout(margin = druggable.margins) %>%
+		layout(legend = druggable.plotly.legend.style(plot_legend),
+			showlegend = TRUE,
+			editable = TRUE,
+			xaxis = x_axis,
+			yaxis = y_axis,
+			margin = druggable.margins) %>%
 		config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
@@ -120,7 +128,7 @@ if (status != 'ok') {
 		
 		condition <- " WHERE ";
 		if((Par["source"] == "tcga") & (!(datatypes[2] %in% druggable.patient.datatypes))) {
-			condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes[1]), "'");
+			condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes), "'");
 		}
 		if (!empty_value(ids[2])) {
 			# check if this is the first term in condition or not
@@ -140,13 +148,13 @@ if (status != 'ok') {
 		print(query);
 		y_data <- sqlQuery(rch, query);
 		if (datatypes[2] == "mut") {
-			query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample ~ '", createPostgreSQLregex(tcga_codes[1]), "';");
+			query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample ~ '", createPostgreSQLregex(tcga_codes), "';");
 			print(query);
 			temp <-  sqlQuery(rch, query);
 			colnames(temp) <- colnames(y_data);
 			y_data <- rbind(y_data,temp);
 		}
-		if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+		if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
 			rownames(y_data) <- y_data[,"sample"];
 			y_data <- y_data[tissue_samples,];
 		}
@@ -166,7 +174,7 @@ if (status != 'ok') {
 			temp2 <- table(y_data[which(y_data[,1] %in% category_samples),2]);
 		}
 		#print(temp2);
-		metadata <- generate_plot_metadata("bar", Par["source"], Par["cohort"], tcga_codes[1], length(y_data[which(y_data[,1] %in% category_samples),2]),
+		metadata <- generate_plot_metadata("bar", Par["source"], Par["cohort"], tcga_codes, length(y_data[which(y_data[,1] %in% category_samples),2]),
 										datatypes, platforms, ids, scales, c(nrow(x_data), nrow(y_data)), Par["out"]);
 		metadata <- save_metadata(metadata);
 		# don't use ifelse here - list will be unnamed for some reason

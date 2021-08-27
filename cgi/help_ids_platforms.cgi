@@ -24,7 +24,7 @@ print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
 # if flag==0 - show visible platforms for the given platforms and datatype
 if ($flag == 0) {
-	$stat = qq/SELECT platform_list(\'$cohort'\, \'$datatype'\, \''\);/;
+	$stat = qq/SELECT platform_list(\'$cohort'\, \'$datatype'\);/;
 }
 # else - list ids
 else {

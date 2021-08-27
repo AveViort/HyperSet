@@ -599,11 +599,21 @@ CREATE OR REPLACE FUNCTION get_available_transformations(cohort text, datatype t
 DECLARE
 table_name text;
 column_type text;
+query text;
 res text;
 BEGIN
+query := '';
+-- exceptions: datatype/platform in the following table
+IF EXISTS(SELECT * FROM data_transform_exclusions WHERE variable_name=datatype OR variable_name=platform)
+THEN
+-- pay attention: datatypes and platforms are mixed in this table
+query := E'SELECT transform_type FROM data_transform_exclusions WHERE variable_name=\'' || datatype || E'\' OR variable_name=\'' || platform || E'\';';
+ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO table_name;
 EXECUTE E'SELECT data_type FROM information_schema.columns WHERE table_name=\'' || table_name || E'\' AND column_name=\'' || platform || E'\';' INTO column_type;
-FOR res IN EXECUTE E'SELECT transform_type FROM data_transform_types WHERE variable_type=\'' || column_type || E'\';' 
+query := E'SELECT transform_type FROM data_transform_types WHERE variable_type=\'' || column_type || E'\';';
+END IF;
+FOR res IN EXECUTE query
 LOOP
 RETURN NEXT res;
 END LOOP;
@@ -714,20 +724,20 @@ $$ LANGUAGE plpgsql;
 
 -- function to return platform types
 -- used by 3D scatter to decide: if z axis is numeric or character
-CREATE OR REPLACE FUNCTION get_platform_types(cohort text, datatype1 text, platform1 text, datatype2 text DEFAULT '', platform2 text DEFAULT '', datatype3 text DEFAULT '', platform3 text DEFAULT '') RETURNS setof text AS $$
+CREATE OR REPLACE FUNCTION get_platform_types(cohort_name text, datatype1 text, platform1 text, datatype2 text DEFAULT '', platform2 text DEFAULT '', datatype3 text DEFAULT '', platform3 text DEFAULT '') RETURNS setof text AS $$
 DECLARE
 table_n text;
 res text;
 BEGIN
-table_n := cohort || '_' || datatype1;
+SELECT table_name INTO table_n FROM guide_table WHERE cohort=cohort_name AND type=datatype1;
 SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform1;
 RETURN NEXT res;
 IF (datatype2 <> '') THEN
-table_n := cohort || '_' || datatype2;
+SELECT table_name INTO table_n FROM guide_table WHERE cohort=cohort_name AND type=datatype2;
 SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform2;
 RETURN NEXT res;
 IF (datatype3 <> '') THEN
-table_n := cohort || '_' || datatype3;
+SELECT table_name INTO table_n FROM guide_table WHERE cohort=cohort_name AND type=datatype3;
 SELECT data_type INTO res FROM information_schema.columns WHERE table_name = table_n AND column_name = platform3;
 RETURN NEXT res;
 END IF;
@@ -866,13 +876,13 @@ FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || ',' || columns_array[i] || ' numeric';
 END LOOP;
-query := query ||',url1 text,url2 text,cohorts text);';
+query := query ||',url1 text);';
 --RAISE notice 'query: %', query;
 EXECUTE query;
 FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity_type IN SELECT table_name,datatype,cohort,platform,screen,sensitivity_measure FROM cor_guide_table WHERE datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_n AND sensitivity_measure=ANY(sensitivity_array) 
 LOOP
 --RAISE notice 'table name: %', table_n;
-query := 'INSERT INTO ' || temp_table || ' SELECT upper(' || columns_array[1] || ') AS gene,drug_synonym(' || columns_array[2] || E') AS feature,\'' || datatype_name || E'\' AS datatype,\'' || cohort_name || E'\' AS cohort,\'' || platform_name || E'\' AS platform, \'' || screen_name || E'\' AS screen' || E',\'' || sensitivity_type || E'\' AS sensitivity';
+query := 'INSERT INTO ' || temp_table || ' SELECT upper(' || columns_array[1] || ') AS gene,' || columns_array[2] || E' AS feature,\'' || datatype_name || E'\' AS datatype,\'' || cohort_name || E'\' AS cohort,\'' || platform_name || E'\' AS platform, \'' || screen_name || E'\' AS screen' || E',\'' || sensitivity_type || E'\' AS sensitivity';
 FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || ',' || columns_array[i]; 
@@ -885,20 +895,25 @@ query :=  query || 'upper(' || columns_array[1] || ')';
 END IF;
 i := array_length(columns_array, 1);
 SELECT generate_filter_condition(datatype_name, cor_filter_columns, concat_op, fdr) INTO filter_cond;
-query := query || ') AS url1,get_url(drug_synonym(' || columns_array[2] || ')) AS url2,retrieve_cohorts_for_drug(' || columns_array[1] || ',' || columns_array[2] || E',\'' || datatype_name || E'\',\'drug,expr,interaction\',\'' || concat_op || E'\',' || fdr || ') AS cohorts FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || filter_cond || ') ORDER BY ' || limit_by || ' ASC LIMIT ' || limit_num || ';'; 
+query := query || ') AS url1 FROM ' || table_n || E' WHERE ((gene LIKE \'' || id || E'\') OR (feature LIKE \'' || id || E'\')) AND (' || filter_cond || ') ORDER BY ' || limit_by || ' ASC LIMIT ' || limit_num || ';'; 
 --RAISE notice 'query: %', query;
 EXECUTE query;
 END LOOP;
-query := E'SELECT ARRAY(SELECT gene \|\| \'\|\' \|\| feature \|\| \'\|\' \|\| datatype \|\| \'\|\' \|\| cohort \|\| \'\|\' \|\| platform \|\| \'\|\' \|\| screen \|\| \'\|\' \|\| sensitivity';
+query := 'CREATE TABLE ' || temp_table || '2 AS SELECT * FROM ' || temp_table || ' ORDER BY ' || limit_by || ' LIMIT ' || limit_num || ';';
+EXECUTE query;
+query := 'DROP TABLE ' || temp_table || ';';
+EXECUTE query;
+query := E'SELECT ARRAY(SELECT gene \|\| \'\|\' \|\| drug_synonym(feature) \|\| \'\|\' \|\| datatype \|\| \'\|\' \|\| cohort \|\| \'\|\' \|\| platform \|\| \'\|\' \|\| screen \|\| \'\|\' \|\| sensitivity';
 FOR i IN 3..array_length(columns_array, 1)
 LOOP
 query := query || E'\|\| \'\|\' \|\|' || columns_array[i]; 
 END LOOP;
-query := query || E'\|\| \'\|\' \|\| url1 \|\| \'\|\' \|\| url2 \|\| \'\|\' \|\| cohorts FROM ' || temp_table || ' ORDER BY ' || limit_by || ' LIMIT ' || limit_num || ');';
+query := query || E'\|\| \'\|\' \|\| url1 \|\| \'\|\' \|\| get_url(drug_synonym(feature)) \|\| \'\|\' \|\| retrieve_cohorts_for_drug_extended(LOWER(gene),LOWER(feature),\'' || source_n || E'\',cohort,datatype,platform,screen,sensitivity,' || fdr || ') FROM ' || temp_table || '2);';
 --RAISE notice 'query: %', query;
 EXECUTE query INTO res;
-query := 'DROP TABLE ' || temp_table || ';';
+query := 'DROP TABLE ' || temp_table || '2;';
 EXECUTE query;
+--RAISE notice '%2', temp_table;
 IF array_length(res,1) > 0
 THEN
 FOR i in 1..array_length(res, 1)
@@ -1000,9 +1015,10 @@ filter_cond text;
 res text;
 BEGIN
 res := '';
-query := E'SELECT DISTINCT cohort,platform,measure FROM significant_interactions WHERE feature=\'' || drug_name || E'\' AND id=\'' || target_id || E'\' AND datatype=\'' || data_type || E'\' AND ';
+query := E'SELECT DISTINCT cohort,platform,measure FROM significant_interactions WHERE feature=\'' || drug_name || E'\' AND id=\'' || target_id || E'\' AND datatype=\'' || data_type || E'\' AND (';
 SELECT generate_filter_condition(data_type, cor_filter_columns, concat_op, coff) INTO filter_cond;
-query := query || filter_cond || ';'; 
+query := query || filter_cond || ');'; 
+--RAISE notice '%', query;
 FOR cohort_n, platform_n, measure_n IN EXECUTE query
 LOOP
 res := res || cohort_n || '#' || data_type || '#' || platform_n || '#' || measure_n || ',';
@@ -1010,6 +1026,74 @@ END LOOP;
 IF (res='') THEN
 res := ' ';
 END IF;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same as retrieve_cohorts_for_drug, but has extended format. It additionally returns:
+-- type of plot, cohort
+-- first entry is always a plot pointing to self
+-- no generate_filter_condition to decrease latency
+CREATE OR REPLACE FUNCTION retrieve_cohorts_for_drug_extended(target_id character varying, drug_name character varying, target_source character varying, target_cohort character varying, data_type character varying, target_platform character varying, target_screen character varying, target_measure character varying, coff numeric) RETURNS text AS $$
+DECLARE
+source_n text;
+cohort_n text;
+platform_n text;
+measure_n text;
+screen_n text;
+query text;
+filter_cond text;
+res text;
+temp_flag boolean;
+verification_flag boolean;
+BEGIN
+res := '';
+verification_flag := FALSE;
+IF (target_source = 'CCLE')
+THEN
+res := 'CCLE#CTD#' || data_type || '#' || target_platform || '#' || target_screen || ',';
+ELSE
+-- check if we have data on the 3rd tab to offer KM plot
+query := E'SELECT EXISTS (SELECT * FROM information_schema.columns WHERE table_name=\'' || LOWER(target_cohort) || E'_clin\' AND column_name=\'' || target_measure || E'\');';
+--RAISE notice '%', query;
+EXECUTE query INTO temp_flag;
+IF (temp_flag = TRUE)
+THEN
+res := target_source || '#' || target_cohort || '#' || data_type || '#' || target_platform || '#' || target_measure || ',';
+END IF;
+END IF;
+-- significant TCGA correlations
+query := E'SELECT DISTINCT cohort,platform,measure FROM significant_interactions WHERE feature=\'' || drug_name || E'\' AND id=\'' || target_id || E'\' AND datatype=\'' || data_type || E'\' AND (';
+filter_cond := 'min_expr_drug_interaction<' || coff;
+query := query || filter_cond || E') AND NOT (cohort=\'' || target_cohort || E'\');'; 
+--RAISE notice '%', query;
+FOR cohort_n, platform_n, measure_n IN EXECUTE query
+LOOP
+res := res || 'TCGA#' || cohort_n || '#' || data_type || '#' || platform_n || '#' || measure_n || ',';
+verification_flag := TRUE;
+END LOOP;
+-- significant CCLE correlations
+query := E'SELECT DISTINCT platform,screen FROM significant_interactions WHERE source=\'CCLE\' AND';
+filter_cond := ' ancova_q_2x_feature<' || coff;
+query := query || filter_cond;
+IF (target_source = 'CCLE')
+THEN
+query := query || E' AND NOT (screen=\'' || target_screen || E'\')';
+END IF;
+query := query || E' AND datatype=\'' || data_type || E'\' AND id=\'' || target_id || E'\' AND feature=\'' || drug_name || E'\';';
+--RAISE notice '%', query;
+FOR platform_n,screen_n IN EXECUTE query
+LOOP
+res := res || 'CCLE#CTD#' || data_type || '#' || platform_n || '#' || screen_n || ',';
+verification_flag := TRUE;
+END LOOP;
+IF (verification_flag = TRUE)
+THEN
+res := res || 'yes';
+ELSE
+res := res || ' ';
+END IF;
+res := res || ',';
 RETURN res;
 END;
 $$ LANGUAGE plpgsql;
@@ -1026,7 +1110,7 @@ flag numeric;
 query text;
 res text;
 BEGIN
-FOR cohort_n, measure_n IN SELECT DISTINCT cohort, measure FROM significant_interactions
+FOR cohort_n, measure_n IN SELECT DISTINCT cohort, measure FROM significant_interactions WHERE source='TCGA'
 LOOP
 table_n := LOWER(cohort_n) || '_clin';
 query := E'SELECT COUNT (druggable.INFORMATION_SCHEMA.COLUMNS.column_name) FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true) AND (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=\'' || LOWER(measure_n) || E'\');';
@@ -1045,7 +1129,8 @@ DECLARE
 res text;
 syn text;
 BEGIN
-FOR syn IN SELECT external_id FROM synonyms WHERE internal_id=drug AND id_type='drug'
+-- external_id=drug is weird, but otherwise we have problems with retrieving correlations
+FOR syn IN SELECT external_id FROM synonyms WHERE (internal_id=drug OR external_id=drug OR internal_id=LOWER(drug)) AND id_type='drug'
 LOOP
 res := syn;
 END LOOP;
@@ -1233,7 +1318,7 @@ $$ LANGUAGE plpgsql;
 -- FUNCTIONS TO WORK WITH PLATFORM DESCRIPTIONS, VISIBILITY ETC.
 
 -- this functions adds ALL platforms to platform_descriptions and makes them visible
--- use ONLY for initialization!
+-- use ONLY for initialization! Does not add platform types!
 CREATE OR REPLACE FUNCTION import_platforms() RETURNS boolean AS $$
 DECLARE
 table_n text;
@@ -2096,6 +2181,137 @@ RETURN n;
 END;
 $$ LANGUAGE plpgsql;
 
+-- function to create table with "optimal" FDRs
+CREATE OR REPLACE FUNCTION create_fdr_table() RETURNS numeric AS $$
+DECLARE
+res numeric;
+i numeric;
+j numeric;
+k numeric;
+l numeric;
+opt_fdr numeric;
+total_records numeric;
+temp numeric;
+query text;
+table_n text;
+source_n text;
+cohort_n text;
+cohort_array text array;
+datatype_array text array;
+platform_array text array;
+screen_array text array;
+measure_array text array;
+comb_n text;
+BEGIN
+IF EXISTS (SELECT * FROM pg_catalog.pg_tables 
+WHERE tablename  = 'optimal_fdrs')
+THEN
+DELETE FROM optimal_fdrs;
+ELSE
+CREATE TABLE optimal_fdrs (combination_name character varying(256), fdr numeric);
+END IF;
+res := 0;
+FOR source_n IN SELECT DISTINCT source FROM cor_guide_table
+LOOP
+RAISE notice 'Source: %', source_n;
+IF (source_n = 'CCLE')
+THEN
+SELECT string_to_array('LN_IC50_INVNORM_ROW,AUC_INVNORM_ROW',',') INTO measure_array;
+ELSE
+SELECT string_to_array('os,rfs,pfi',',') INTO measure_array;
+END IF;
+SELECT ARRAY (SELECT DISTINCT datatype FROM cor_guide_table WHERE source=source_n) INTO datatype_array;
+IF (source_n = 'TCGA')
+THEN
+SELECT array_append(datatype_array, '%') INTO datatype_array;
+END IF;
+FOR i IN 1..array_length(datatype_array, 1)
+LOOP
+IF (source_n = 'CCLE')
+THEN
+SELECT string_to_array('all_data', ',') INTO cohort_array;
+ELSE
+SELECT ARRAY (SELECT DISTINCT cohort FROM cor_guide_table WHERE source=source_n AND datatype LIKE datatype_array[i]) INTO cohort_array;
+SELECT array_append(cohort_array, '%') INTO cohort_array;
+END IF;
+FOR j IN 1..array_length(cohort_array, 1)
+LOOP
+SELECT ARRAY (SELECT DISTINCT platform FROM cor_guide_table WHERE source=source_n AND datatype LIKE datatype_array[i] AND cohort LIKE cohort_array[j]) INTO platform_array;
+SELECT array_append(platform_array, '%') INTO platform_array;
+FOR k IN 1..array_length(platform_array, 1)
+LOOP
+IF (source_n = 'CCLE')
+THEN
+SELECT ARRAY (SELECT DISTINCT screen FROM cor_guide_table WHERE source=source_n AND datatype LIKE datatype_array[i] AND cohort LIKE cohort_array[j] AND platform LIKE platform_array[k]) INTO screen_array;
+SELECT array_append(screen_array, '%') INTO screen_array;
+ELSE
+SELECT string_to_array('all_data', ',') INTO screen_array;
+END IF;
+FOR l IN 1..array_length(screen_array, 1)
+LOOP
+total_records := 10000000;
+opt_fdr := 0.05025;
+WHILE (total_records>100000) AND (opt_fdr > 0.00025)
+LOOP
+total_records := 0;
+opt_fdr := opt_fdr - 0.00025;
+FOR table_n IN SELECT table_name FROM cor_guide_table WHERE source=source_n AND datatype LIKE datatype_array[i] AND cohort LIKE cohort_array[j] AND platform LIKE platform_array[k] AND screen LIKE screen_array[l] AND sensitivity_measure=ANY(measure_array)
+LOOP
+--RAISE notice '%', table_n;
+query := 'SELECT COUNT (*) FROM ' || table_n || ' WHERE ';
+IF (source_n='CCLE')
+THEN
+query := query || 'ancova_q_2x_feature<' || opt_fdr;
+ELSE
+query := query || 'drug<' || opt_fdr || ' OR expr<' || opt_fdr || ' OR interaction<' || opt_fdr; 
+END IF;
+query := query || ';';
+EXECUTE query INTO temp;
+total_records := total_records + temp;
+--RAISE notice '%:%', opt_fdr, total_records;
+END LOOP;
+END LOOP;
+res := res + 1;
+comb_n := LOWER(source_n) || '_';
+IF datatype_array[i]='%'
+THEN
+comb_n := comb_n || 'all';
+ELSE
+comb_n := comb_n || LOWER(datatype_array[i]);
+END IF;
+comb_n := comb_n || '_';
+IF (cohort_array[j]='%') OR (cohort_array[j]='all_data')
+THEN
+comb_n := comb_n || 'all';
+ELSE
+comb_n := comb_n || LOWER(cohort_array[j]);
+END IF;
+comb_n := comb_n || '_';
+IF platform_array[k]='%'
+THEN
+comb_n := comb_n || 'all';
+ELSE
+comb_n := comb_n || LOWER(platform_array[k]);
+END IF;
+comb_n := comb_n || '_';
+IF (screen_array[l]='%') OR (screen_array[l]='all_data')
+THEN
+comb_n := comb_n || 'all';
+ELSE
+comb_n := comb_n || LOWER(screen_array[l]);
+END IF;
+INSERT INTO optimal_fdrs VALUES (comb_n, opt_fdr);
+RAISE notice '%: %', comb_n, opt_fdr;
+END LOOP;
+END LOOP;
+END LOOP;
+END LOOP;
+END LOOP;
+RAISE notice 'Checked combinations: %', res;
+RETURN res;
+END;
+$$ LANGUAGE plpgsql;
+
 -- additional function for transforming values into TRUE/FALSE
 CREATE OR REPLACE FUNCTION binarize (t_value text) RETURNS text AS $$
 DECLARE
@@ -2619,29 +2835,3 @@ $$ LANGUAGE plpgsql;
 
 
 -- DEPRECATED FUNCTIONS
-
--- this version uses tables specific for data type, one table can store results for multiple platforms
-CREATE OR REPLACE FUNCTION feature_list_source (source_n text) RETURNS
-TABLE (
-screen_name character varying(64),
-feature_name character varying(256))
-AS $$
-BEGIN
-IF
-EXISTS (SELECT * FROM pg_catalog.pg_tables 
-WHERE tablename  = 'features')
-THEN
-DELETE FROM features;
-ELSE
-CREATE TABLE features (source character varying(64), feature character varying(256));
-END IF;
-IF (source_n = 'all') THEN
-INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts ORDER BY screen;
-ELSE
-INSERT INTO features SELECT DISTINCT screen, platform FROM best_drug_corrs_counts WHERE (screen = source_n) ORDER BY screen;
-END IF;
-UPDATE features SET source=subquery.show_name FROM (SELECT DISTINCT screen, display_name FROM guide_table) AS subquery(source_name,show_name) WHERE features.source=subquery.source_name;
-UPDATE features SET feature=subquery.show_name FROM (SELECT DISTINCT short_name, full_name FROM feature_table) AS subquery(short,show_name) WHERE features.feature=subquery.short;
-RETURN QUERY SELECT * FROM features WHERE feature IN (SELECT full_name FROM feature_table) ORDER BY source;
-END;
-$$ LANGUAGE plpgsql;

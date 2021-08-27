@@ -31,7 +31,7 @@ foreach(@cohorts) {
 	foreach(@datatypes) {
 		$datatype = $_;
 		#print $cohort.'|'.$datatype.'<br>';
-		$stat = qq/SELECT platform_list(\'$cohort'\, \'$datatype'\, \''\);/;
+		$stat = qq/SELECT platform_list(\'$cohort'\, \'$datatype'\);/;
 		my $sth2 = $dbh->prepare($stat) or die $dbh->errstr;
 		$sth2->execute( ) or die $sth->errstr;
 		my @platform_description;
@@ -67,13 +67,13 @@ foreach(@all_datatypes) {
 		if (exists($cohorts_info{$cohort}{$datatype})) {
 			my @platforms = keys $cohorts_info{$cohort}{$datatype};
 			if (($datatype eq "CLIN") or ($datatype eq "IMMUNO")) {
-				print '<a href="https://dev.evinet.org/cgi/help_ids_platforms.cgi?cohort='.$cohort.'&datatype='.$datatype.'">'.@platforms.' variables</a>';
+				print '<a href="https://dev.evinet.org/cgi/help_ids_platforms.cgi?cohort='.$cohort.'&datatype='.$datatype.'" target="_blank">'.@platforms.' variables</a>';
 			}
 			else {
 				foreach(@platforms){
 					$platform = $_;
 					$description = $cohorts_info{$cohort}{$datatype}{$platform};
-					print '<a href="https://dev.evinet.org/cgi/help_ids_platforms.cgi?cohort='.$cohort.'&datatype='.$datatype.'&platform='.$platform.'">'.$description.'</a><br>';
+					print '<a href="https://dev.evinet.org/cgi/help_ids_platforms.cgi?cohort='.$cohort.'&datatype='.$datatype.'&platform='.$platform.'" target="_blank">'.$description.'</a><br>';
 				}
 			}
 		}

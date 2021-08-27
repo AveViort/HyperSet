@@ -50,19 +50,35 @@ font2 <- list(
   color = "black"
 );
 # https://plotly.com/r/legend/
-druggable.plotly.legend.style <- list(
-	x = 0.05,
-	y = 0.95,
-	font = list(
-		family = "sans-serif",
-		size = 12,
-		# color = "#000"
-		color = "#222" # CHANGE
+# legend_rows is numeric, number of lines in legend, used to calculate font size
+druggable.plotly.legend.style <- function(legend_text, header_text = "") {
+	legend_rows <- length(unlist(strsplit(paste0(legend_text, "\n", header_text), "\n")));
+	header_font_size <- 12;
+	font_size <- 12;
+	if (legend_rows > 6) {
+		font_size <- ifelse(legend_rows > 10, 8, 14 - 0.4*legend_rows);
+		header_font_size <- 9;
+	}
+	print(paste0("Legend rows: ", legend_rows, " Font size: ", font_size));
+	return(list(
+		title = list(
+			text = header_text,
+			size = header_font_size
 		),
-	# bgcolor = "#E2E2E2",
-	bgcolor = "rgba(0,0,0,0.2)", # CHANGE
-	bordercolor = "#FFFFFF",
-	borderwidth = 2)
+		x = 100,
+		y = 0.95,
+		font = list(
+			family = "sans-serif",
+			size = font_size,
+			# color = "#000"
+			color = "#222"
+		),
+		# bgcolor = "#E2E2E2",
+		bgcolor = "rgba(0,0,0,0.2)",
+		bordercolor = "#FFFFFF",
+		borderwidth = 2)
+	);
+}
 	
 druggable.plotly.marker_shapes <- c("circle", "triangle-up", "square", "diamond", "x", "star", "cross", "triangle-down", "hexagon", "octagon");
 druggable.plotly.tissue_colours <- c(
@@ -120,18 +136,21 @@ druggable.margins <- list(
 	pad = 4);
 	
 # max number of characters in axis labels
-druggable.axis.label.threshold <- 60;
+druggable.axis.label.threshold <- 90;
+
+# max number of characters in "short" string (otherwise string will be truncated with ... in the end)
+druggable.short.string.threshold <- 45;
 
 # custom modebar button - leads to EviNet website
 druggable.evinet.modebar <- list(
-  name = "This plot was generated on EviNet Druggable website",
+  name = "This plot was generated on EviCor website",
   icon = list(
     path = 'M17.659,9.597h-1.224c-0.199-3.235-2.797-5.833-6.032-6.033V2.341c0-0.222-0.182-0.403-0.403-0.403S9.597,2.119,9.597,2.341v1.223c-3.235,0.2-5.833,2.798-6.033,6.033H2.341c-0.222,0-0.403,0.182-0.403,0.403s0.182,0.403,0.403,0.403h1.223c0.2,3.235,2.798,5.833,6.033,6.032v1.224c0,0.222,0.182,0.403,0.403,0.403s0.403-0.182,0.403-0.403v-1.224c3.235-0.199,5.833-2.797,6.032-6.032h1.224c0.222,0,0.403-0.182,0.403-0.403S17.881,9.597,17.659,9.597 M14.435,10.403h1.193c-0.198,2.791-2.434,5.026-5.225,5.225v-1.193c0-0.222-0.182-0.403-0.403-0.403s-0.403,0.182-0.403,0.403v1.193c-2.792-0.198-5.027-2.434-5.224-5.225h1.193c0.222,0,0.403-0.182,0.403-0.403S5.787,9.597,5.565,9.597H4.373C4.57,6.805,6.805,4.57,9.597,4.373v1.193c0,0.222,0.182,0.403,0.403,0.403s0.403-0.182,0.403-0.403V4.373c2.791,0.197,5.026,2.433,5.225,5.224h-1.193c-0.222,0-0.403,0.182-0.403,0.403S14.213,10.403,14.435,10.403',
     transform = 'matrix(1 0 0 1 -2 -2) scale(0.9)'
   ),
   click = htmlwidgets::JS(
     "function() {
-       window.open('https://www.evinet.org/druggable', '_blank');
+       window.open('https://www.evinet.org/evicor', '_blank');
     }"
   )
 );

@@ -6,7 +6,7 @@ status <- '';
 plot_annotation <- '';
 condition <- " WHERE ";
 if((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes))) {
-	condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes[1]), "'");
+	condition <- paste0(condition, "sample ~ '", createPostgreSQLregex(tcga_codes), "'");
 }
 if (!empty_value(ids[1])) {
 	# check if this is the first term in condition or not
@@ -29,16 +29,19 @@ table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", platforms[1], " FROM ", table_name, ifelse(condition == " WHERE ", "", condition), ";");
 print(query);
 x_data <- sqlQuery(rch, query);
-if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
 	rownames(x_data) <- x_data[,"sample"];
 	print(paste0("Before tissue filtering: ", nrow(x_data)));
-	tissues <- createTissuesList(tcga_codes[1]);
+	tissues <- createTissuesList(tcga_codes);
 	query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "'::text[]);");
 	print(query);
 	tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 	x_data <- x_data[tissue_samples,];
 	print(paste0("After tissue filtering: ", nrow(x_data)));
 }
+metadata <- generate_plot_metadata("piechart", Par["source"], Par["cohort"], tcga_codes, nrow(x_data),
+										datatypes, platforms, ids, scales, c(nrow(x_data)), Par["out"]);
+metadata <- save_metadata(metadata);
 status <- ifelse(nrow(x_data) != 0, 'ok', 'error');
 
 if (status != 'ok') {
@@ -48,7 +51,7 @@ if (status != 'ok') {
 		"&datatype=", datatypes[1],
 		"&platform=", platforms[1], 
 		"&ids=", ids[1], 
-		ifelse((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes[1]), "")),
+		ifelse((Par["source"] == "tcga") & (!(datatypes[1] %in% druggable.patient.datatypes)), paste0("&tcga_codes=", tcga_codes), "")),
 		"Plot succesfully generated, but it is empty");
 } else {
 	if ((platforms[1] == "drug") & (!empty_value(ids[1]))) {
@@ -72,22 +75,28 @@ if (status != 'ok') {
 		slices <- c(slices, length(which(x_data[,2] == ufactor)));
 	}
 	if (Par["source"] == "tcga") {
-		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes[1]), ''));
+		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes), ''));
 	} else {
 		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''));
 	}
 	plot_annotation <- paste0(plot_annotation, " N=", nrow(x_data));
+	plot_legend <- generate_plot_legend(plot_annotation);
 	p <- plot_ly(labels = factors,
 		values = slices,
+		name = plot_legend,
 		type = 'pie') %>% 
-	add_annotations(xref = "paper",
-		yref = "paper",
-		x = 1,
-		y = -0.1,
-		text = plot_annotation,
-		showarrow = FALSE) %>%
-	layout(margin = druggable.margins) %>%
+	#add_annotations(xref = "paper",
+	#	yref = "paper",
+	#	x = 1,
+	#	y = -0.1,
+	#	text = plot_annotation,
+	#	showarrow = FALSE) %>%
+	layout(legend = druggable.plotly.legend.style(paste(factors, collapse = "\n")),
+			showlegend = TRUE,
+			margin = druggable.margins) %>%
 	config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 }
-odbcClose(rch)
+odbcClose(rch);
+sink(console_output, type = "output");
+print(metadata)

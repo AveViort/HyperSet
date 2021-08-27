@@ -6,8 +6,8 @@ print("druggable.venn.r");
 
 if (datatypes[1] == datatypes[2]) {
 	tissue_samples <- c();
-	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
-		tissues <- createTissuesList(tcga_codes[1]);
+	if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
+		tissues <- createTissuesList(tcga_codes);
 		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "'::text[]);");
 		tissue_samples <- as.character(sqlQuery(rch,query)[,1]);
 	}
@@ -27,7 +27,7 @@ if (datatypes[1] == datatypes[2]) {
 	first_set <- sqlQuery(rch, query);
 	# factors are returned by default
 	first_set[,1] <- as.character(first_set[,1]);
-	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+	if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
 		rownames(first_set) <- first_set[,1];
 		print(paste0("Before tissue filtering: ", nrow(first_set)));
 		first_set <- first_set[tissue_samples,];
@@ -45,7 +45,7 @@ if (datatypes[1] == datatypes[2]) {
 	print(query);
 	second_set <- sqlQuery(rch, query);
 	second_set[,1] <- as.character(second_set[,1]);
-	if ((Par["source"] == "ccle") & (tcga_codes[1] != 'all')) {
+	if ((Par["source"] == "ccle") & (tcga_codes != 'all')) {
 		rownames(second_set) <- second_set[,1];
 		print(paste0("Before tissue filtering: ", nrow(second_set)));
 		second_set <- second_set[tissue_samples,];
@@ -58,7 +58,7 @@ if (datatypes[1] == datatypes[2]) {
 	query <- paste0("SELECT DISTINCT sample FROM ", table1, ";");
 	all_samples <- sqlQuery(rch, query);
 
-	metadata <- generate_plot_metadata("venn", Par["source"], Par["cohort"], tcga_codes[1], nrow(all_samples),
+	metadata <- generate_plot_metadata("venn", Par["source"], Par["cohort"], tcga_codes, nrow(all_samples),
 										datatypes, platforms, ids, c("-", "-"), c(nrow(first_set), nrow(second_set)), Par["out"]);
 	metadata <- save_metadata(metadata);
 
@@ -130,7 +130,7 @@ if (datatypes[1] == datatypes[2]) {
 		"&datatypes=", paste(datatypes,  collapse = ","),
 		"&platform=", paste(platforms, collapse = ","), 
 		"&ids=", paste(ids, collapse = ","),  
-		ifelse((Par["source"] == "tcga") & (!(all(datatypes %in% druggable.patient.datatypes))), paste0("&tcga_codes=", tcga_codes[1]), ""),
+		ifelse((Par["source"] == "tcga") & (!(all(datatypes %in% druggable.patient.datatypes))), paste0("&tcga_codes=", tcga_codes), ""),
 		"&scales=", paste(ids, collapse = ",")),
 		"Plot succesfully generated, but it is empty");
 }

@@ -46,11 +46,19 @@ ids <- unlist(strsplit(Par["ids"], split = ","));
 # rare bug - if we have N empty ids, length of ids will be n-1, so ids[n] will return error
 if (all(empty_value(ids))) {
 	ids <- c(ids, "");
+} else {
+	# if we have at least one id - get descriptions
+	query <- paste0("SELECT external_id, annotation FROM synonyms WHERE external_id=ANY(ARRAY[", paste0("'", paste(ids, collapse = "','"), "'"), "]) AND ",
+	"NOT (annotation=ANY(ARRAY[", paste0("'", paste(ids, tolower(ids), collapse = "','", sep = "','"), "'"), "]));");
+	print(query);
+	ids_descriptions <- sqlQuery(rch, query);
+	rownames(ids_descriptions) <- ids_descriptions[,1];
+	print(ids_descriptions);
 }
 print(ids);
 scales <- unlist(strsplit(Par["scales"], split = ","));
 print(scales);
-tcga_codes <- unlist(strsplit(Par["tcga_codes"], split = ","));
+tcga_codes <- Par["tcga_codes"];
 print(tcga_codes);
 fname <- substr(Par["out"], 4, gregexpr(pattern = "\\.", Par["out"])[[1]][1]-1);
 query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(platforms, collapse = "','"), "'"),"]);");

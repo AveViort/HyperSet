@@ -28,7 +28,7 @@ $Rplots->{imgSize} = 580;
 our $tableDir = '/var/www/html/research/HyperSet/db/input_files/';
 # use this variable to set, which sensitivity measure should be used for correlations
 our %sensitivity_m = (
-"CCLE"	=>	'LN_IC50_INVNORM_ROW,AUC_INVNORM_ROW',
+"CCLE"	=>	'AUC_INVNORM_ROW',
 "TCGA"	=>	'os,rfs,pfi'
 );
 
@@ -38,7 +38,7 @@ our %limit_column = (
 "TCGA"	=>	'interaction'
 );
 # this variable is an addition to limit_column - how many records (max) should be taken?
-our $limit_num = 25000;
+our $limit_num = 10000;
 # this variable is used for batch model creation
 our $batch_limit_num = 650;
 # max number of tasks in queue, including the running one

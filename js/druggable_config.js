@@ -22,25 +22,29 @@ ids_placeholders.set("NEA_MUT", "Pathway name");
 //lifetime for cookies
 var druggable_cookie_time = 168;
 
+// default dimensions for plots
+var default_plot_height = 960;
+var default_plot_width = 600;
+
 //var html_glm_regressors = "<td id='d-x###'><table id ='table-regressors###'><tr><tr><td>Predictors, type ###:</td><td></td></tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table></td>";
 var html_glm_regressors = "<div>Predictors, type ###:</div><table id ='table-regressors###' class='parameter_area ' style='border-collapse: collapse;'><tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  class='ui-corner-all ui-widget' style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table>"; //   border-style: solid; border-width: 1px; border-color: #cbc7bd; border-radius: 6px; border-collapse: collapse;
 // correlation tables settings
 // headers
 var cor_headers = new Map();
-cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'></th><th title=\'\'>Cohorts in TCGA </th><th title=\'\'></th></tr>");
-cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>TCGA cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th>Subset</th><th title=\'Type of patient response\n\tOverall survival (OS),\n\t Relapse-free survival (RFS),\n\t Progression-free survival (PFS),\n\t Disease-free interval (DFI)\'>Endpoint</th><th title=\'P-value for interaction term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Interaction</th><th title=\'P-value for drug term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Drug</th><th title=\'P-value for feature term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Feature</th><th title=\'No. of patients treated with available data\'>N(total)</th><th title=\'No. of patients treated with the drug and available data\'>N(treated)</th><th title=\'\'>Followup, days</th><th title=\'\'>Cohorts</th><th title=\'\'></th></tr>");
+cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'>Cohorts</th><th>Verification</th></tr>");
+cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>TCGA cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th>Subset</th><th title=\'Type of patient response\n\tOverall survival (OS),\n\t Relapse-free survival (RFS),\n\t Progression-free survival (PFS),\n\t Disease-free interval (DFI)\'>Endpoint</th><th title=\'P-value for interaction term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Interaction</th><th title=\'P-value for drug term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Drug</th><th title=\'P-value for feature term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Feature</th><th title=\'No. of patients treated with available data\'>N(total)</th><th title=\'No. of patients treated with the drug and available data\'>N(treated)</th><th title=\'\'>Followup, days</th><th title=\'\'>Cohorts</th><th>Verification</th></tr>");
 // these columns are visible in the 2nd tab
 var cor_sql_data_columns = new Map();
 cor_sql_data_columns.set("CCLE", "gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature");
 cor_sql_data_columns.set("TCGA", "gene,feature,followup,followup_part,interaction,drug,expr,n_patients,n_treated");
 // these columns are used for filtering (2nd tab)
 var cor_sql_filter_columns = new Map();
-cor_sql_filter_columns.set("CCLE", "ancova_q_2x_feature");
+cor_sql_filter_columns.set("CCLE", "ancova_q_1x,ancova_q_2x_feature");
 cor_sql_filter_columns.set("TCGA", "drug,expr,interaction");
 // how to concatenate terms: either one operator (for all) or N-1 operators for N columns in cor_sql_filter_columns
 var cor_concatenation_operators = new Map();
-cor_concatenation_operators.set("CCLE", "AND");
-cor_concatenation_operators.set("TCGA", "AND");
+cor_concatenation_operators.set("CCLE", "OR");
+cor_concatenation_operators.set("TCGA", "OR");
 // visible columns
 var cor_visible_columns = new Map();
 cor_visible_columns.set("CCLE", [
@@ -52,18 +56,22 @@ cor_visible_columns.set("CCLE", [
             { "data": "screen" },
             { "data": "ancova_p_1x",
 			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+			},
 			{ "data": "ancova_p_2x_cov1",
 			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+			},
 			{ "data": "ancova_p_2x_feature",
 			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+			},
 			{ "data": "ancova_q_2x_feature",
 			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
-			{ "data": "plot" },
-			{ "data": "cohort-selector" }
+					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+			},
+			{ "data": "cohort-selector" },
+			{ "data": "verification" }
         ]
 );
 cor_visible_columns.set("TCGA", [
@@ -77,17 +85,21 @@ cor_visible_columns.set("TCGA", [
 			{ "data": "sensitivity" },
             { "data": "interaction",
 			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+			},
 			{ "data": "drug",
 			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+			},
 			{ "data": "expr",
 			  "render":  function (data) {
-				return data.length < 5 ? parseFloat(data) : parseFloat(data).toExponential(2);}},
+					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+			},
 			{ "data": "n_patients" },
 			{ "data": "n_treated" },
 			{ "data": "followup" },
-			{ "data": "cohort-selector" }
+			{ "data": "cohort-selector" },
+			{ "data": "verification" }
         ]
 );
 
@@ -140,31 +152,39 @@ var scale_names = new Map();
 scale_names.set('linear', 'standard');
 scale_names.set('log', 'log');
 scale_names.set('sqrt', 'square root');
-scale_names.set('mean_arcsine', 'standard');
+scale_names.set('mvalue', 'M-value');
 scale_names.set('beta', 'beta');
 scale_names.set('logit', 'logit');
 
 // for platforms
 var platform_names = new Map();
-platform_worker = new Worker("js/druggable_platforms_grubber.js");
-platform_worker.onmessage = function(event) {
-	var platform_proto = event.data;
-	for (i=0; i<=platform_proto.length-2; i=i+2) {
-		platform_names.set(platform_proto[i], platform_proto[i+1]);
-	}
-	platform_worker.terminate();
-};
+//platform_worker = new Worker("js/druggable_platforms_grubber.js");
+//platform_worker.onmessage = function(event) {
+//	var platform_proto = event.data;
+//	for (i=0; i<=platform_proto.length-2; i=i+2) {
+//		platform_names.set(platform_proto[i], platform_proto[i+1]);
+//	}
+//	platform_worker.terminate();
+//};
+var platform_proto = get_druggable_platforms();
+for (i=0; i<=platform_proto.length-2; i=i+2) {
+	platform_names.set(platform_proto[i], platform_proto[i+1]);
+}
 
 // for datatypes
 var datatype_names = new Map();
-datatype_worker = new Worker("js/druggable_datatypes_grubber.js");
-datatype_worker.onmessage = function(event) {
-	var datatype_proto = event.data;
-	for (i=0; i<=datatype_proto.length-2; i=i+2) {
-		datatype_names.set(datatype_proto[i], datatype_proto[i+1]);
-	}
-	datatype_worker.terminate();
-};
+//datatype_worker = new Worker("js/druggable_datatypes_grubber.js");
+//datatype_worker.onmessage = function(event) {
+//	var datatype_proto = event.data;
+//	for (i=0; i<=datatype_proto.length-2; i=i+2) {
+//		datatype_names.set(datatype_proto[i], datatype_proto[i+1]);
+//	}
+//	datatype_worker.terminate();
+//};
+var datatype_proto = get_druggable_datatypes();
+for (i=0; i<=datatype_proto.length-2; i=i+2) {
+	datatype_names.set(datatype_proto[i], datatype_proto[i+1]);
+}
 
 // minimal number of patients with specified drug in cohort to display (for "Significant results" tab)
 var min_pat_drug_number = 10;
