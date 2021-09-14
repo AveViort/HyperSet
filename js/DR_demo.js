@@ -76,44 +76,33 @@ async function waitForCompletion() {
 // sometimes we have to ignore the event once 
 // e.g. for demo 2 - nearly all the events are fired at once (when source selector changed - it updates datatype, screen, platform)
 // ele is element id (without hash)
-// ev is event na,e
+// ev is event name
 function ignoreEvent(ele, ev) {
 	document.getElementById(ele).addEventListener(ev, function(e) {
 		console.log("Event " + ev + " ignored");
 	}, {once: true});
 }
 
-// comment form shows comments (what's happening now)
-function showCommentForm() {
-	$("#demoComment" ).css({"display": "block", "visibility": "visible"});
-	$("#demoComment" ).dialog({
-		dialogClass: "no-titlebar",
-		modal: false,
-		width: 480,
-		position: { my: 'top', at: 'top' },
-		resizable: false,
-		closeOnEscape: false
-	});
-}
-
 function closeCommentForm() {
-	$("#demoComment").dialog("close");
-}
-
-function comment(comment_text) {
-	$("#commentSection").text(comment_text);
+	close_slidedown_alert();
 }
 
 function delayed_comment(comment_text, delay) {
 	setTimeout(function() {
-		$("#commentSection").text(comment_text);
+		show_slidedown_alert(comment_text, 0);
 	}, delay)
+}
+
+function comment(comment_text) {
+		delayed_comment(comment_text,0);
 }
 
 // demo for the third tab - 2D plot
 function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, datatype2, platform2, id2, scale2, plottype) {
 	if (sessionStorage.getItem("demo") == null) {
-		$("#tabs").tabs("option", "active", 2);
+		$(".ui-dialog-content").dialog("close");
+		close_dock("demos_dock");
+		$("#tabs").tabs("option", "active", 1);
 		
 		// prepare everything for demo
 		var n = $('#plot_options tr').length-1;
@@ -124,40 +113,39 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 			}
 		}
 		var to = 1000;
-		showCommentForm();
 		// if user clicked demo before synonyms arrived
 		if (synonyms.size == 0) {
-			comment("Initializing demo, please wait...");
+			delayed_comment("Initializing demo, please wait...", 0);
 			setTimeout(dr_demo1, 300, source, cohort, code, datatype1, platform1, id1, scale1, datatype2, platform2, id2, scale2, plottype);
 		}
 		else {
 			sessionStorage.setItem("demo", 1);
 			
-			comment("First - choose data source");
+			delayed_comment("First - choose data source", 0);
 			changeDropVal("#source_selector", source, to);
 			// name is _source_listener since this event, in fact, occurs after source_selector change
 			document.getElementById("cohort_selector").addEventListener("cohortselector_init_complete", function source_listener(e) {
-				comment("Second - choose the cohort");
+				delayed_comment("Second - choose the cohort", 0);
 				document.getElementById("cohort_selector").addEventListener("cohortselector_update_complete", function cohort_listener(e) {
-					comment("Then choose datatype for the first variable (X axis)");
+					delayed_comment("Then choose datatype for the first variable (X axis)",0);
 					document.getElementById("type1_selector").addEventListener("typeselector_update_complete", function type1_listener(e) {
-						comment("After datatype - choose platform");
+						delayed_comment("After datatype - choose platform",0);
 						document.getElementById("platform1_selector").addEventListener("platformselector_update_complete", function platform1_listener(e) {
-							comment("Most of the platforms require IDs - gene names, protein names, drug names etc.");
+							delayed_comment("Most of the platforms require IDs - gene names, protein names, drug names etc.",0);
 							document.getElementById("id1_input").addEventListener("typing_complete", function id1_listener(e) {
-								comment("Last but not least - choose scale for the axis");
+								delayed_comment("Last but not least - choose scale for the axis",0);
 								document.getElementById("axis1_selector").addEventListener("axisselector_update_complete", function axis1_listener(e) {
-									comment("Add second axis (Y axis)");
+									delayed_comment("Add second axis (Y axis)",0);
 									document.getElementById("add_row1").addEventListener("row_added", function row1_listener(e) {
-										comment("Choose datatype for the second axis");
+										delayed_comment("Choose datatype for the second axis",0);
 										document.getElementById("type2_selector").addEventListener("typeselector_update_complete", function type2_listener(e) {
-											comment("Now choose platform");
+											delayed_comment("Now choose platform",0);
 											document.getElementById("platform2_selector").addEventListener("platformselector_update_complete", function platform2_listener(e) {
-												comment("Again - enter and confirm ID (by pressing Enter)");
+												delayed_comment("Again - enter and confirm ID (by pressing Enter)",0);
 												document.getElementById("id2_input").addEventListener("typing_complete", function id1_listener(e) {
 													document.getElementById("axis2_selector").addEventListener("axisselector_update_complete", function axis2_listener(e) {
 														document.getElementById("plot-type").addEventListener("plottype_changed", function plottype_listener(e) {
-															comment("Ready to plot!");
+															delayed_comment("Ready to plot!",0);
 															demoClick("#plot-button", 100);
 															setTimeout(function () {
 																closeCommentForm();
@@ -283,7 +271,9 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 	if (sessionStorage.getItem("demo") == null) {
 		sessionStorage.setItem("demo", 1);
-		$("#tabs").tabs("option", "active", 1);
+		$(".ui-dialog-content").dialog("close");
+		close_dock("demos_dock");
+		$("#tabs").tabs("option", "active", 0);
 			
 		// if we had previous results - delete them
 		var n = $('#cor_result_table tr').length;
@@ -293,13 +283,12 @@ async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 		}
 		
 		var to = 1000;
-		showCommentForm();
 		
 		document.getElementById("corSource_selector").addEventListener("corsourceselector_update_complete", function source_listener(e) {
 			document.getElementById("corDatatype_selector").addEventListener("cortypeselector_update_complete", function datatype_listener(e) {
 				document.getElementById("corPlatform_selector").addEventListener("corplatformselector_update_complete", function platform_listener(e) {
 					document.getElementById("corScreen_selector").addEventListener("corscreenselector_update_complete", function screen_listener(e) {
-						comment("Type drug or gene name");
+						delayed_comment("Type drug or gene name",0);
 						document.getElementById("corGeneFeature_input").addEventListener("typing_complete", function id_listener(e) {
 							setTimeout(function () {
 								demoClick("#FDR_input", 50);
@@ -307,9 +296,8 @@ async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 							}, 2*to);
 							
 							document.getElementById("cor_result_table").addEventListener("correlations_retrieved", function cor_listener(e) {
-								demoClickSpan("#TCGAcohortSelector" + plotid + "-button", 100);
 								closeCommentForm();
-								demoClickSpan("#TCGAcohortSelector" + plotid + "-button", 120);
+								changeDropValKeyboard("TCGAcohortSelector" + plotid, 1);
 								sessionStorage.removeItem("demo");
 							}, {once: true});
 							
@@ -368,8 +356,10 @@ async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 // this is demo of "Plot" button for the second tab
 function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 	if (sessionStorage.getItem("demo") == null) {
-		sessionStorage.setItem("demo", 1);	
-		$("#tabs").tabs("option", "active", 1);
+		sessionStorage.setItem("demo", 0);
+		$(".ui-dialog-content").dialog("close");
+		close_dock("demos_dock");
+		$("#tabs").tabs("option", "active", 0);
 			
 		// if we had previous results - delete them
 		var n = $('#cor_result_table tr').length;
@@ -379,7 +369,6 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 		}
 			
 		var to = 1000;
-		showCommentForm();
 		
 		document.getElementById("corSource_selector").addEventListener("corsourceselector_update_complete", function source_listener(e) {
 			document.getElementById("corDatatype_selector").addEventListener("cortypeselector_update_complete", function datatype_listener(e) {
@@ -393,8 +382,8 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 							}, to);
 							
 							document.getElementById("cor_result_table").addEventListener("correlations_retrieved", function cor_listener(e) {
-								demoClickSpan("#cor-plot" + plotid, 100);
-								closeCommentForm();											
+								closeCommentForm();	
+								changeDropValKeyboard("TCGAcohortSelector" + plotid, 1);								
 								sessionStorage.removeItem("demo");
 							}, {once: true});
 							
@@ -478,6 +467,8 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 	
 	if (sessionStorage.getItem("demo") == null) {
 		sessionStorage.setItem("demo", 1);
+		$(".ui-dialog-content").dialog("close");
+		close_dock("demos_dock");
 		$("#tabs").tabs("option", "active", 3);
 		
 		// prepare tab for demo
@@ -490,8 +481,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 		
 		var to = 1000;
 		changeDropVal("#modelSource_selector", source, to);
-		showCommentForm();
-		comment("First - choose data source");
+		delayed_comment("First - choose data source", to);
 		to += 800;
 			
 		var part_a = {
@@ -762,37 +752,38 @@ function setTextBox (a, to, fld) {
 
 
 function setCheckBox (a, to, Tab, shake) {
-//Type = (Tab == "Network") ? "NET" : "FGS";
-Type = ((Tab == "Network") ? "NET" : "FGS") + "selector";
-if (Tab == "Altered gene sets"){
-Type = "ags-switch"
-} 
-var fld = "input[value='" + a + "']";
-//ui-tabs-loading
+	//Type = (Tab == "Network") ? "NET" : "FGS";
+	Type = ((Tab == "Network") ? "NET" : "FGS") + "selector";
+	if (Tab == "Altered gene sets"){
+	Type = "ags-switch"
+	} 
+	var fld = "input[value='" + a + "']";
+	//ui-tabs-loading
 
-to += delta_local * quickly;
-setTimeout(enableTab, to, 'div[id="' + divID + '"]', HSTabs.subtab.indices[Tab], shake);
-if (Tab == "Functional gene sets") {
-to += delta_local * quickly;
-setTimeout(enableTab, to, 'div[id="vertFGStabs"]', elementContent.fgs.subtabs.coll.order, shake);
-}
-if (Tab == "Network") {
-to += delta_local * quickly;
-setTimeout(enableTab, to, 'div[id="vertNETtabs"]', elementContent.net.subtabs.coll.order, shake);
-}
+	to += delta_local * quickly;
+	setTimeout(enableTab, to, 'div[id="' + divID + '"]', HSTabs.subtab.indices[Tab], shake);
+	if (Tab == "Functional gene sets") {
+		to += delta_local * quickly;
+		setTimeout(enableTab, to, 'div[id="vertFGStabs"]', elementContent.fgs.subtabs.coll.order, shake);
+	}
+	if (Tab == "Network") {
+		to += delta_local * quickly;
+		setTimeout(enableTab, to, 'div[id="vertNETtabs"]', elementContent.net.subtabs.coll.order, shake);
+	}
 
-to += delta_local;
-setTimeout(function (cl) {$(fld).addClass(cl)}, to, "checkboxhighlight");
+	to += delta_local;
+	setTimeout(function (cl) {$(fld).addClass(cl)}, to, "checkboxhighlight");
 
-to += delta_local;
-setTimeout(function () {
-$("input[value='" + a + "']").prop( "checked", true); } , to);
+	to += delta_local;
+	setTimeout(function () {
+		$("input[value='" + a + "']").prop( "checked", true); }, 
+		to);
 
-to += delta_local;
-setTimeout(function (cl) {
-$(fld).removeClass(cl); 
-updatechecksbm("ags", "list");
-updatechecksbm("fgs", "coll");
+	to += delta_local;
+	setTimeout(function (cl) {
+	$(fld).removeClass(cl); 
+	updatechecksbm("ags", "list");
+	updatechecksbm("fgs", "coll");
 	updatechecksbm("net", "coll");
 	}, to, "checkboxhighlight");
 	return(to);
@@ -803,4 +794,15 @@ function enableTab (Div, Tb, shake) {
 	if (shake) {
 		$(".ui-tabs-active").effect( "bounce", "slow" );
 	}
+}
+
+// function which opens jQuery UI selector, simulates N presses of "down" key and then "Enter" key
+function changeDropValKeyboard(ele, n) {
+	$("#" + ele + "-button").click();
+	var e = jQuery.Event( "keydown", { keyCode: 40, which: 40 } );
+	for (var i = 1; i<= n; i++) {
+		$("#" + ele + "-menu").trigger(e);
+	}
+	e = jQuery.Event( "keydown", { keyCode: 13, which: 13 } );
+	$("#" + ele + "-menu").trigger(e);
 }

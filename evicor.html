@@ -43,7 +43,6 @@
 <script src="js/qTip/jquery.qtip.min.js" type="text/javascript"></script>
 <script src="js/overlib.js" type="text/javascript"></script>
 
-<script src="js/HS.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/drugs.js" type="text/javascript"></script>
 <script src="js/cookies.js" type="text/javascript"></script>
 <script src="js/DR_demo.js" type="text/javascript"></script>
@@ -121,13 +120,13 @@ li.tab:hover ul {
   text-align:left;
 }
 .dataTables_wrapper  {
-  float:left;  
-  text-align:left;
+	float:left;  
+	text-align:left;
 }
 
 div.container {
-        width: 75%;
-    }
+	width: 75%;
+}
 
 #cor_result_table thead th {
     padding: 0.5em 2em 0.5em 1em;
@@ -138,9 +137,9 @@ div.container {
 	}
 
 span.adj-icon {
-display: inline;
-margin-right: 0.25em; 
-margin-left: 1.0em;
+	display: inline;
+	margin-right: 0.25em; 
+	margin-left: 1.0em;
 }
 
 .adj-icon:hover { 
@@ -148,10 +147,9 @@ margin-left: 1.0em;
 }
 
 .ui-button-icon-only {
-border: 	none;
-background: 	none;
+	border: 	none;
+	background: 	none;
 }
-
 
 /*.ui-tabs .ui-tabs-nav {    display: flex;}
 .ui-tabs .ui-tabs-nav li {flex: 1; display: flex; white-space: normal;}*/
@@ -169,13 +167,20 @@ background: 	none;
 }
 
 table.simple_table td { 
-//	border: 1px solid black; 
+//	border: 1px solid black;
+	//word-break: break-word;
+	word-wrap: break-word;
+}
+
+table.simple_table td a{ 
+	font-size: small;
+	word-wrap: break-word;
 }
 
 .sidebar {
 	position: fixed; 
 	z-index: 1; 
-	opacity: 0.65;
+	opacity: 0.75;
 	overflow-x: auto; 
 	padding-top: 60px; 
 	transition: 0.5s; 
@@ -197,8 +202,22 @@ table.simple_table td {
 
 .sidebar_bottom {
 	width: 100%; 
+	padding-top: 0px;
+	padding-left: 40px;
+	padding-right: 60px; 
 	height: 0; 
 	bottom: 0;
+	right: 0;
+}
+
+.sidebar_top {
+	width: 100%; 
+	padding-top: 0px; 
+	padding-left: 60px;
+	padding-right: 60px;
+	opacity: 0.8;	
+	height: 0; 
+	top: 0;
 	right: 0;
 }
 
@@ -213,7 +232,7 @@ table.simple_table td {
 }
 
 .sidebar a:hover {
-  color: #f1f1f1;
+  color: #0f0d52;
 }
 
 .sidebar .closebtn {
@@ -229,55 +248,87 @@ table.simple_table td {
   .sidebar {padding-top: 15px;}
   .sidebar a {font-size: 18px;}
 }
+
+.compact-button {
+   font-size: .5em !important;
+}
+
+.slide-down-alert {
+	position: relative; 
+	width: 100%; 
+	padding-top: 0px; 
+	opacity: 0.85;
+	display: block;
+	word-break: break-word;	
+	height: 0; 
+	top: 0;
+	right: 0;
+	z-index: 5; 
+	overflow-x: auto; 
+	transition: 0.5s;
+}
+
+.hyperparameter {
+
+}
 </style>
 </HEAD>
 
 <BODY class="ui-state-default ui-corner-all">
-<div class="xmlhttp_header"></div>
-<h1 class="main_header ui-widget-header ui-corner-all">EviCor</h1>
-<p class="main_header" style="background-color: #eeeeee; font-size: large;">Molecular data &mdash; global interaction network &mdash; drug response</p>
-<div id="progressbar" style="display: inline-block; width: 40%;"></div>
-<div  style="display: inline; width: 35%;">
-	<table>
-		<tr>
-			<td>
-				<div id="demo-1">
-					<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
-				</div>
-			</td>
-			<td>
-				<div id="demo-3">
-					<span class=" clickable demo_button sbm-controls" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
-				</div>
-			</td>
-			<td>
-				<div id="demo-2">
-					<span class=" clickable demo_button sbm-controls" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC1', 'tamoxifen', 0.05, 1)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
-				</div>
-			</td>
-			<td>
-				<div id="demo-4">
-					<span class=" clickable demo_button sbm-controls" onclick="dr_demo4 ('glmnet', 'TCGA', 'SKCM', ['06'], 'CLIN', 'os', '', ['GE', 'IMMUNO'], ['illuminahiseq_rnaseqv2','macrophages_m0'], ['TP53, MYC, MYCN, BRAF', ''], 'cox', 'deviance', false, 1, 10, 0.01, true, 3, 50)" title="Demo - using expression data for several genes and M0 macrophage count to predict overall survival time in cutaneous and malignant skin melanoma (SKCM) TCGA cohort.">Demo "predictive models"</span>
-				</div>
-			</td>
-			<td>
-				<button id="dock-button" onclick="open_dock('sidebar_history_dock', 'history_table_wrapper')">Previous plots</button>
-			</td>
-		</tr>
-	</table>
+
+<div id="pop_alert" class="slide-down-alert" style="padding-right: 60px;">
+	<div id="pop_alert_text" style="padding-right: 67px;">
+		Slide down alert
+	</div>
+	<a href="javascript:void(0)" style = "position: absolute; top: 0; color: #111; right: 70px; font-size: 36px;" onclick="close_slidedown_alert()">&times;</a>
 </div>
 
-<div id="demoComment" style="display: none; visibility: hidden">
-	<div id="commentSection"></div>
+<div class="xmlhttp_header"></div>
+<div>
+	<h1 class="main_header ui-widget-header ui-corner-all" style="position: relative">
+		<div style="position: absolute; left: 0; top: 0%">
+			<button id="general_help-button" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');" class="compact-button">Help</span>
+			<button id="help_table_toggle" title="Show available data sources, types and platforms" onclick="load_help_table();open_dock('help_sources_dock', 'help_data_sources_wrapper')" class="compact-button">Show available data</button>
+			<button id="demos-button" title="Interactive demos" class="compact-button" onclick="open_dock('demos_dock', 'demos_wrapper')">Demos</button>
+		</div>
+		<div style="position: absolute; right: 0; top: 0%;">
+			<button id="history_dock-button" title="Show plot archive" onclick="open_dock('sidebar_history_dock', 'history_table_wrapper')" class="compact-button">Previous plots</button>
+			<button id="show_clipboard-button" title="Show IDs clipboard" class="compact-button" onclick="show_transfer_buffer_window('#tab-predict')">Show IDs clipboard</button>
+			<button id="reload-button" class="compact-button" onclick=clean_reload()>Reload completely</button>
+		</div>
+		EviCor
+	</h1>
 </div>
+<p class="main_header" style="background-color: #eeeeee; font-size: large;">Molecular data &mdash; global interaction network &mdash; drug response</p>
+<div id="progressbar" style="display: inline-block; width: 40%;"></div>
 
 <div id="cookiewarning">
 	<div role="alert" class="ui-widget-header ui-corner-all" style=" margin: 5px; padding: 5px;">
-	<p style="width: 95%; height: 60px; display: block; text-align: right; margin: 5px; padding: 5px;">This website uses cookies. To learn more about our cookie policy, click <a class="clickable" style="color: #e17009" href="https://dev.evinet.org/help/faq-evi/dr-faq.html#security">here</a>
+	<p style="width: 95%; height: 60px; display: block; text-align: right; margin: 5px; padding: 5px;">This website uses cookies. To learn more about our cookie policy, click <a class="clickable" style="color: #e17009" href="https://dev.evicor.org/help/faq-evi/dr-faq.html#security">here</a>
 	  <br>  <br>
 	  <button type="button" id="ackcookies" class="ui-widget-header ui-corner-all" style="vertical-align: middle; align: right;" onclick="acceptCookies()">Ok</button>
 	  </p>
 	</div>	
+</div>
+
+<div id="demos_dock" class = "sidebar sidebar_top ui-widget ui-widget-content">
+	<div>
+		<a href="javascript:void(0)" class="closebtn" onclick="close_dock('demos_dock')">&times;</a>
+		<table id="demos_wrapper" style="max-width: 80%; margin-left:auto; margin-right:auto;">
+			<tr>
+				<td>A quick demo for 2D plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.</td>
+				<td>Correlation between cell line response to alisertib and a gene expression.</td>
+				<td>Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.</td>
+				<td>Demo - using expression data for several genes and M0 macrophage count to predict overall survival time in cutaneous and malignant skin melanoma (SKCM) TCGA cohort.</td>
+			</tr>
+			<tr style="text-align:center">
+				<td><button onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')">Demo 1</button></td>
+				<td><button onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)">Demo 2</button></td>
+				<td><button onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC1', 'tamoxifen', 0.05, 1)">Demo 3</button></td>
+				<td><button onclick="dr_demo4 ('glmnet', 'TCGA', 'SKCM', '06', 'CLIN', 'os', '', ['GE', 'IMMUNO'], ['illuminahiseq_rnaseqv2','macrophages_m0'], ['TP53, MYC, MYCN, BRAF', ''], 'cox', 'deviance', false, 1, 10, 0.01, true, 3, 50)">Demo 4</button></td>
+			</tr>
+		</table>
+	</div>
 </div>
 
 <div id="sidebar_history_dock" class="sidebar sidebar_right ui-widget ui-widget-content">
@@ -301,47 +352,49 @@ table.simple_table td {
 	</div>
 </div>
 
-<div id="help_sources_dock" class = "sidebar sidebar_right ui-widget ui-widget-content">
+<div id="help_sources_dock" class = "sidebar sidebar_left ui-widget ui-widget-content">
 	<div>
 		<a href="javascript:void(0)" class="closebtn" onclick="close_dock('help_sources_dock')">&times;</a>
-		<table id="help_data_sources" class="simple_table" class="inputarea inputareahighlight ui-corner-all"  style="font-size: small; width: 100%; border-collapse: collapse; ">	
+		<table id="help_data_sources" class="display simple_table"  style="font-size: small; width: 100%; border-collapse: collapse; ">	
 		</table>
 	</div>
 </div>
 	
 <div id="tabs" "width: 99%;">
 	<ul>
-		<li><a href="#tab-home">Introduction</a></li>
 		<li><a href="#tab-signif">Correlates of drug response</a></li>
 		<li><a href="#tab-lookup">Data exploration</a></li>
 		<li><a href="#tab-predict">Multivariate models</a></li>
 	</ul>
 	
-	<div id="tab-home">
-		<div style="display: inline-block; width: 80%;"><p>EviCor supports simple user requests regarding correlation of molecular profiles in large scale datasets.  This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.<p></p>
-			<p>The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots of gene, protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical treatment profiles in TCGA. An extra feature of EviCor is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
-			</p>
-			
-			<br>
-			<button id="help_table_toggle" onclick="load_help_table();open_dock('help_sources_dock', 'help_data_sources_wrapper')">Show available data</button>
-			<br>
-		</div>
-		<div id="table-help-menu" style="display: inline;">
-			<span  id="help-qtip" style="float: right; margin-right: 4em; margin-left: 1em;  font-size: 250%; color: #c00;" class="ui-icon ui-icon-circle-help" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');">icon</span>
-		</div>
-	</div>
-	
 	<div id="help-dialog-dr">
 		<div id="help-tabs-dr">
 
 			<ul>
+				<li><a href="#help-tab-intro">Intro</a></li>
 				<li><a href="#help-tab-faq">FAQ</a></li>
 				<li><a href="#help-tab-demo">Demo</a></li>
+				<li><a href="#help-tab-plots">Plots</a></li>
+				<li><a href="#help-tab-models">Models</a></li>
 				<li><a href="#help-tab-comp">Compatibility</a></li>
 				<li><a href="#help-tab-rest">REST API</a></li>
 				<li><a href="#help-tab-citation">Citation</a></li>
 				<li><a href="#help-tab-version">Version</a></li>
 			</ul>
+			
+			<div id="help-tab-intro">
+				<p>
+					EviCor supports simple user requests regarding correlation of molecular profiles in large scale datasets. 
+					This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response.
+				</p>
+				<p>
+					The data from major public resources, <a  target="_blank" class="clickable" href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers">The Cancer Genome Atlas</a> 
+					and <a target="_blank" class="clickable" href="https://portals.broadinstitute.org/ccle/">The Cancer Cell Line Encyclopedia</a> can be either explored as plots of gene, 
+					protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical 
+					treatment profiles in TCGA. An extra feature of EviCor is network context. This is instrumental in both <a target="_blank" class="clickable" href="https://doi.org/10.1038/s41598-019-39019-2">biomarker discovery</a> 
+					and evaluation of candidate molecules in the <a target="_blank" class="clickable" href="https://doi.org/10.1093/nar/gky485">network context</a>.
+				</p>
+			</div>
 			
 			<div id="help-tab-faq">
 				<p>
@@ -358,6 +411,14 @@ table.simple_table td {
 				<br>
 				<span class=" clickable demo_button sbm-controls" onclick="dr_demo2('CCLE', 'GE', 'RNAseq', 'GDSC2', 'tamoxifen', 0.05, 1745)" title="Correlation between a gene expression and senstivity to tamoxifen was first discovered in cell lines. Then  it was validated in breast cancer TCGA cohort: survival of tamoxifen-treated patients depended on expression of the same gene.">Demo "survival"</span>
 			</div>
+			
+			<div id="help-tab-plots">
+			
+			</div>
+			
+			<div id="help-tab-models">
+			
+			</div> 
 		
 			<div id="help-tab-comp">
 				Known compatibility issues:
@@ -369,7 +430,7 @@ table.simple_table td {
 			
 			<div id="help-tab-rest">
 				<p>
-					EviCor offers REST API for all functional tabs. Some functions, such as batch jobs, are available only via REST API. All scripts are accessible through https://www.evinet.org/cgi/<i>script_name</i>.
+					EviCor offers REST API for all functional tabs. Some functions, such as batch jobs, are available only via REST API. All scripts are accessible through https://www.evicor.org/cgi/<i>script_name</i>.
 				</p>
 				<br>
 				<b>Retrieving correlations</b>
@@ -409,7 +470,7 @@ table.simple_table td {
 						<i>ids</i>: mandatory, list of genes/antibodies/pathways/drugs names, must match length of datatypes/platforms, if platform has no id - id should be skipped (e.g. 'tp53,,mdm2');<br>
 						<i>codes</i>: mandatory, TCGA codes (01, 06...) or metacodes (all, healthy...) for TCGA, 'all' or tissue name for CCLE;<br>
 						<i>scales</i>: mandatory for the most types of plots, axis scales (linear...).<br>
-					<b>Example:</b> https://www.evinet.org/cgi/rplot.cgi?type=bar&source=TCGA&cohort=BRCA&datatypes=CLIN&platforms=vital_status&ids=%2C&codes=&scales=<br>
+					<b>Example:</b> https://www.evicor.org/cgi/rplot.cgi?type=bar&source=TCGA&cohort=BRCA&datatypes=CLIN&platforms=vital_status&ids=%2C&codes=&scales=<br>
 					<b>Usage tips:</b>This script returns plot filename and plot metadata. Plot can either be an html page (plotly plots, for the majority of plot types) or png image (for Venn diagrams). If only the plot name was returned - this is a sign of mistake. REST API does not provide mistake explanations.<br>
 				</p>
 				<br>
@@ -441,8 +502,8 @@ table.simple_table td {
 						<i>stat_file</i>: mandatory, filename to which performance metrics should be saved (use <i>auto</i> to automatically assign the name - see the table below);<br>
 						<i>extended_output</i>: mandatory, if model creation parameters should be saved to the specified <i>stat_file</i>;<br>
 						<i>header</i>: mandatory, if specified <i>stat_file</i> should have header; recommended to be set to true. You can collect information on many models in one file, in this case specify this parameter as true only for the first query and make sure that all models belong to the same family and <i>validation</i> option is always the same - so columns are the same (also, <i>extended_output</i> should be set the same for all the models).<br>
-					<b>Example:</b> https://www.evinet.org/cgi/model_predict.cgi?method=glmnet&source=TCGA&cohort=BRCA&rdatatype=GE&rplatform=illuminahiseq_rnaseq&rid=TP53&xdatatypes=GE&xplatforms=illuminahiseq_rnaseq&xids=%5BA1CF%7CA2BP1%7CA4GALT%7CA4GNT%7CAAA1%7CAADAC%7CAADACL2%7CAADACL3%7CAADACL4%7CAADAT%7CAAK1%7CAANAT%7CAARS2%7CAASS%7CABCA4%7CABI2%7CABP1%7CABR%7CACAA1%7CACAN%7CACTA1%7CACTN1%7CADA%7CADAM7%7CADAP1%7CADAT2%7CADAT3%7CAFM%7CAGBL4%7CAHDC1%7CFOXA2%7CFOXB2%7CBCL2%7CTGFBI%7CTGFBRAP1%7CPTGFR%7CARID1A%7CARID1B%7CARID2%7CARID3B%7CARID4A%7CARID4B%7CCACNA1B%7CCACNA1C%7CCACNA2D1%7CCACNA2D2%7CCACNG2%7CCACNA2D4%7CCACNG3%7CCACNG4%7CCACNG7%7CCACNG8%7CVEGFC%7CHRAS%7CKRAS%7CNRAS%7CPDGFA%7CPDGFC%7CPDGFD%7CMDM1%7CMDM2%7CRBL1%7CRBL2%7CRBP1%7CCTRB1%7CPRB1%5D&multiopt=cancer&family=gaussian&measure=deviance&standardize=false&alpha=0.5&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=auto&extended_output=false&header=true<br>
-					<b>Usage tips:</b> Using just model name, you can access graphical interpretation of the created model, RData model file, coefficients (in JSON format) and performance metrics (in JSON and csv format). If you have received value 'model578045416464' from the script, you can access the following files in https://www.evinet.org/pics/plots/ :<br>
+					<b>Example:</b> https://www.evicor.org/cgi/model_predict.cgi?method=glmnet&source=TCGA&cohort=BRCA&rdatatype=GE&rplatform=illuminahiseq_rnaseq&rid=TP53&xdatatypes=GE&xplatforms=illuminahiseq_rnaseq&xids=%5BA1CF%7CA2BP1%7CA4GALT%7CA4GNT%7CAAA1%7CAADAC%7CAADACL2%7CAADACL3%7CAADACL4%7CAADAT%7CAAK1%7CAANAT%7CAARS2%7CAASS%7CABCA4%7CABI2%7CABP1%7CABR%7CACAA1%7CACAN%7CACTA1%7CACTN1%7CADA%7CADAM7%7CADAP1%7CADAT2%7CADAT3%7CAFM%7CAGBL4%7CAHDC1%7CFOXA2%7CFOXB2%7CBCL2%7CTGFBI%7CTGFBRAP1%7CPTGFR%7CARID1A%7CARID1B%7CARID2%7CARID3B%7CARID4A%7CARID4B%7CCACNA1B%7CCACNA1C%7CCACNA2D1%7CCACNA2D2%7CCACNG2%7CCACNA2D4%7CCACNG3%7CCACNG4%7CCACNG7%7CCACNG8%7CVEGFC%7CHRAS%7CKRAS%7CNRAS%7CPDGFA%7CPDGFC%7CPDGFD%7CMDM1%7CMDM2%7CRBL1%7CRBL2%7CRBP1%7CCTRB1%7CPRB1%5D&multiopt=cancer&family=gaussian&measure=deviance&standardize=false&alpha=0.5&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=auto&extended_output=false&header=true<br>
+					<b>Usage tips:</b> Using just model name, you can access graphical interpretation of the created model, RData model file, coefficients (in JSON format) and performance metrics (in JSON and csv format). If you have received value 'model578045416464' from the script, you can access the following files in https://www.evicor.org/pics/plots/ :<br>
 					<table>
 						<thead>
 							<tr>
@@ -519,8 +580,8 @@ table.simple_table td {
 						<i>stat_file</i>: mandatory, name of the file without extenstion to save your data in (try to give a unique name to your stat_file);<br>
 						<i>extended_output</i>: mandatory, binary flag, if set to <i>TRUE</i> - some additional info will be written into <i>stat_file</i> (such as <i>source</i>, <i>rdatatype</i> etc.);<br>
 						<i>mail</i>: mandatory, provide the correct email, links with the results will be sent to it when your batch job is done;<br>
-					<b>Example:</b> https://dev.evinet.org/cgi/models_from_correlations_batch.cgi?source=TCGA&datatype=GE&cohort=LUAD&platform=all&screen=all&id=gemcitabine&fdr=0.05&mindrug=10&columns=gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q&iter=3&model_cohort=LUAD;method=glmnet&rdatatype=CLIN&rplatform=os&xdatatypes=GE&xplatforms=illuminahiseq_rnaseqv2&additional_xids=&multiopt=01&family=cox&measure=deviance&standardize=false&alpha=1&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=/your_file/&mail=/your_email/<br>
-					<b>Usage tips:</b> Always try to specify a unique name for your output file! Files are created in the append mode, so if you (or someone) has used the specified file name before - you will get "mixed" results! When the job is done, the reults will be available in file https://www.evinet.org/pics/plots/your_file.csv<br>
+					<b>Example:</b> https://www.evicor.org/cgi/models_from_correlations_batch.cgi?source=TCGA&datatype=GE&cohort=LUAD&platform=all&screen=all&id=gemcitabine&fdr=0.05&mindrug=10&columns=gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q&iter=3&model_cohort=LUAD;method=glmnet&rdatatype=CLIN&rplatform=os&xdatatypes=GE&xplatforms=illuminahiseq_rnaseqv2&additional_xids=&multiopt=01&family=cox&measure=deviance&standardize=false&alpha=1&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=/your_file/&mail=/your_email/<br>
+					<b>Usage tips:</b> Always try to specify a unique name for your output file! Files are created in the append mode, so if you (or someone) has used the specified file name before - you will get "mixed" results! When the job is done, the reults will be available in file https://www.evicor.org/pics/plots/your_file.csv<br>
 				</p>
 				<br>
 				<b>Using JS API</b>
@@ -534,10 +595,10 @@ table.simple_table td {
 				<p>
 				Below you can find valid names of datatypes, platforms, variables to use with REST API.<br> 
 				</p>
-				<a href="https://dev.evinet.org/help/platforms_data/all_datatypes.txt" target="_blank">Datatypes</a><br>
-				<a href="https://dev.evinet.org/help/platforms_data/all_platforms.txt" target="_blank">Platforms</a><br>
-				<a href="https://dev.evinet.org/help/platforms_data/all_predictors.txt" target="_blank">Independent variables</a><br>
-				<a href="https://dev.evinet.org/help/platforms_data/all_responses.txt" target="_blank">Dependent variables</a><br>
+				<a href="https://www.evicor.org/help/platforms_data/all_datatypes.txt" target="_blank">Datatypes</a><br>
+				<a href="https://www.evicor.org/help/platforms_data/all_platforms.txt" target="_blank">Platforms</a><br>
+				<a href="https://www.evicor.org/help/platforms_data/all_predictors.txt" target="_blank">Independent variables</a><br>
+				<a href="https://www.evicor.org/help/platforms_data/all_responses.txt" target="_blank">Dependent variables</a><br>
 			</div>
 			
 			<div id="help-tab-citation">
@@ -675,10 +736,9 @@ table.simple_table td {
 	
 	<div id="tab-predict" style="font-size: small;">
 	<div>
-		<!--table id="all_parameters" style="border-width: 2px; height: 150px; margin:10px"-->
 		<table id="all_parameters" class="inputarea inputareahighlight ui-corner-all"  style="font-size: small; width: 80%; border-collapse: collapse;">
 			<tr id="r-1">
-							<td id="d-top" rowspan="4">
+					<td id="d-top" rowspan="4">
 					<table id="table-top" class="inputarea inputareahighlight ui-corner-all" style="box-shadow: none; border: none; width: 100%; ">
 						<tr>
 							<td>
@@ -702,38 +762,38 @@ table.simple_table td {
 					<table id="table-glmnet" style="border-collapse: collapse;">
 						<tr>
 							<td  colspan="2" style="text-align: center;">
-								<span  class="subheader">GLMnet parameters</span>
+								<span  class="subheader">Model hyperparameters</span>
 							</td>
 						</tr>
-						<tr class="parameter_section" title="Set all variables on the same scale">
+						<tr id ="standardize_section" class="parameter_section hyperparameter" title="Set all variables on the same scale">
 							<span ><td>Standardize
 							</td>
 							<td>
 								<input type="checkbox" id="standardize" class="alternative_input venn_box_control ui-corner-all"> 
 							</td>
 						</span></tr>
-						<tr class="parameter_section" title="Relative influence of lasso (few variables, strong coefficients) vs. ridge (many variables, close-to-zero coefficients allowed) approaches\nAlpha=0: pure ridge\nAlpha=1: pure lasso">
+						<tr id="alpha_section" class="parameter_section hyperparameter" title="Relative influence of lasso (few variables, strong coefficients) vs. ridge (many variables, close-to-zero coefficients allowed) approaches\nAlpha=0: pure ridge\nAlpha=1: pure lasso">
 							<td>Alpha
 							</td>
 							<td>
 								<input type="number" id="alpha" class="spinNumber ui-corner-all" min=0 max=1 step=0.01 value=1> 
 							</td>
 						</tr>
-						<tr class="parameter_section" title="Determines the number of steps to find the optimum">
+						<tr id="nlambda_section" class="parameter_section hyperparameter" title="Determines the number of steps to find the optimum">
 							<td>No. of lambda steps
 							</td>
 							<td>
 								<input type="number" id="nlambda" class="spinNumber ui-corner-all" min=5 max=100 step=1 value=10> 
 							</td>
 						</tr>
-						<tr class="parameter_section" title="Depends on sample size relative to the number of variables. Set automatically">
+						<tr id="minlambda_section" class="parameter_section hyperparameter" title="Depends on sample size relative to the number of variables. Set automatically">
 							<td>Lambda min ratio 
 							</td>
 							<td>
 								<input type="text" id="minlambda" class="alternative_input venn_box_control ui-corner-all" value="0.01" disabled title="Parameter is fixed"> 
 							</td>
 						</tr>
-						<tr  class="parameter_section" title="Should correspond to distributions of the dependent variable">
+						<tr id="family_section" class="parameter_section hyperparameter" title="Should correspond to distributions of the dependent variable">
 							<td>Family
 							</td>
 							<td>
@@ -745,7 +805,7 @@ table.simple_table td {
 								<tr>
 									<td colspan="2">
 										<div id="crossval_ctrls"  class="parameter_section">
-										<input type="checkbox" id="crossval" class="alternative_input venn_box_control">	
+										<input type="checkbox" id="crossval" class="alternative_input venn_box_control" onclick="toggle_validation_section()">	
 										<span class="subheader">Model validation</span>
 											<table id="crossval_table" >
 												<tr>
@@ -816,16 +876,14 @@ table.simple_table td {
 			</tr>
 		</table>
 		<button id="build_model_button" class="inputarea inputareahighlight ui-button ui-corner-all ui-widget" onclick="build_and_show_model()">Build model</button>
-		<button id="show_clipboard_button" class="inputarea inputareahighlight ui-button ui-corner-all ui-widget" onclick="show_transfer_buffer_window('#tab-predict')">Show IDs clipboard</button>
-		<button id="show_comparison_preview_button" class="inputarea inputareahighlight ui-button ui-corner-all ui-widget" onclick="show_compare_window()">Models to compare</button>
+		<button id="show_comparison_preview_button" onclick="show_compare_window()">Models to compare</button>
 		
 	</div>
 	</div>
 </div>     
 
 <div class="footer ui-widget-header ui-corner-all" id="druggable_footer">
-	<P style="width:33%;text-align:right;">Ver. 1.0.0. Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
-	<P><button id="clean_reload_button" onclick=clean_reload()>Reload site completely</button></P>
+	<P style="width:33%;text-align:right;">Ver. 1.3.0. Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
 </div>
 
 <script>
@@ -851,20 +909,13 @@ $(function() {
 		show: {
 			//effect: "blind", duration: 380
 		},
-		close: function() {
-			//$("#help-dialog-dr").css({"visibility": hidden});
-			//$("#help-dialog-dr").html("");
-			//$("[id*='qtip-'][aria-hidden='false']" ).remove(); //span:nth-child(3)
-			//$( this ).dialog( "destroy" );
-		}
+		close: function() {}
 	});
-	//$('[aria-describedby="help-dialog-dr"]').css({"z-index": 1001});
-	//$(".nea_loading").removeClass("nea_loading");
-	//$("#usable-url").html("");
-	//openTab( "analysis_type_ne", HSTabs.subtab.indices["'.$backTab.'"]);
-	// $( "#rocOpener" ).click(function() {$( "#showError" ).dialog( "open" );});
 });
 
+function openDialog (dia) {
+	$( "#" + dia ).dialog( "open" );
+}
 function showDialogStatic (title, message) {
 	$("#error-dialog-dr").html(message);
 	$("#error-dialog-dr").dialog({
@@ -916,45 +967,69 @@ $("#help-qtip").qtip({
 	};
 })();
 
-
+function urlfixtabs(selector) { // a workaround from https://www.tjvantoll.com/2013/02/17/using-jquery-ui-tabs-with-the-base-tag/
+	$( selector ).find( "ul a" ).each( function() {
+		//console.log(window.location.search );
+		var Href = $( this ).attr( "href" );
+		var newHref = window.location.protocol + "//" + window.location.hostname + window.location.pathname + Href;
+		if (newHref.indexOf("cgi") > 0) {
+			var newHref = window.location.protocol + '//' + window.location.hostname + window.location.pathname + window.location.search + Href;
+			// console.log(newHref);
+			//window.location.protocol + "//" + window.location.hostname + "/result.html" + Href;
+		}
+		// var newHref = window.location.href;
+		// newHref = newHref.replace(/\/$/, "");
+		if ( Href.indexOf( "#" ) == 0 ) {$(this).attr("href", newHref);}
+	});
+	//$( selector ).tabs();
+};
 
 $(document).ready(function(){
 	safe_clear();
 	// need this to hide message
 	checkCookiesAccepted();
+	if (!getCookie("cookies_accepted")) {
+		show_slidedown_alert("<p>" + 
+					"EviCor supports simple user requests regarding correlation of molecular profiles in large scale datasets." + 
+					"This may be helpful in a range of contexts, from evaluating agreement between omics platforms to identifying potential markers of drug response." +
+				"</p>" + 
+				"<p>" +
+					"The data from major public resources, <a  target='_blank' class='clickable' href='https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga/studied-cancers'>The Cancer Genome Atlas</a>" +  
+					"and <a target='_blank' class='clickable' href='https://portals.broadinstitute.org/ccle/'>The Cancer Cell Line Encyclopedia</a> can be either explored as plots of gene, " + 
+					"protein, and drug sensitivity profiles or help in identifying correlates of response to anti-cancer drugs. Furthermore, such correlaions can be traced to clinical " + 
+					"treatment profiles in TCGA. An extra feature of EviCor is network context. This is instrumental in both <a target='_blank' class='clickable' href='https://doi.org/10.1038/s41598-019-39019-2'>biomarker discovery</a> " +
+					"and evaluation of candidate molecules in the <a target='_blank' class='clickable' href='https://doi.org/10.1093/nar/gky485'>network context</a>." + 
+				"</p>", 0);
+	}
 	
-	$("#dock-button").button({icon: "ui-icon-archive"});
-	$('#history_table').DataTable();
+	$("#general_help-button").button({icon: "ui-icon-circle-help", text: false});
+	$("#help_table_toggle").button({icon: "ui-icon-file-table", text: false});
+	$("#demos-button").button({icon: "ui-icon-play", text: false});
+	$("#show_clipboard-button").button({icon: "ui-icon-clipboard", text: false});
+	$("#show_clipboard-button").button("disable");
+	$("#history_dock-button").button({icon: "ui-icon-archive", text: false});
+	$("#history_table").DataTable();
 	restore_history_dock();
+	// if we only have a title
+	if(document.getElementById("history_table").rows.length == 1) {
+		$("#history_dock-button").button("disable");
+	}
+	$("#show_comparison_preview_button").button();
+	if (sessionStorage.getItem("models") == null) {
+		$("#show_comparison_preview_button").button("disable");
+	}
+	$("#reload-button").button({icon: "ui-icon-closethick", text: false});
+	$( "#reload-button" ).tooltip({
+		content: "Press this button to delete all cookies and clear session storage. The site will return to the original state like you have never used it before.<br>EviCor stores some user data in cookies and session storage for better user experience. We don't store your personal data. To read more about our privacy policy, refer to the Help page",
+		position: { my: "left center", at: "right top", collision: "flipfit" }
+	});
 	
 	urlfixtabs("#tabs");
 	//$("#progressbar").progressbar({		value: false	});	$("#progressbar").css({"visibility": "hidden"});
 	$("#tabs").tabs({heightStyle: "fill"});
 	
-	$("#help_table_toggle").button();
-	
-	//var tabList = $( "#tabs" )[0].childNodes[1].children;
-	//console.log("tabList: " + tabList);
-	//for (tt = 0; tt < tabList.length; tt++) {
-		//console.log(tabList[tt]);
-		//$(tabList[tt]).append( '<span id= "' + $(tabList[tt]).attr("aria-controls") + '-loading' + '" class="ui-icon ui-icon-loading-status-balls rotate"></span>' );	
-	//}
-	
-	$("#clean_reload_button").button();
-	$("#clean_reload_button").qtip({ 
-			content: {
-				text: "Press this button to delete all cookies and clear session storage. The site will return to the original state like you have never used it before.\nEviCor stores some user data in cookies and session storage for better user experience. We don't store your personal data. To read more about our privacy policy, refer to the Help page"
-			},
-			position: {
-				my: 'bottom left',  
-				at: 'top right',
-				target: $("#clean_reload_button")
-			}
-	});
-	
 	$("#help-tab-data").css("overflow", "auto");
 	$("#help_data_sources").css("border", "1px solid black");
-	//$("#help_data_sources").DataTable();
 
 	$("#retrieve-cor-button").button();
 	$("#retrieve-cor-button").button("disable");
@@ -1028,6 +1103,18 @@ $(document).ready(function(){
 	if (getCookie("modelDatatype2_selector") != "") {
 		reload_model_options();
 	}
+	// IMPORTANT! THE FOLLOWING CODE MUST BE PLACED INTO A SPECIAL FUNCTION LATER
+	// it's decided which parameters to show on each change of method (glmnet, svm...) selector (and on init)
+	var method = "glmnet";
+	//console.log(model_hyperparameters);
+	$('.hyperparameter').each(function(i, obj) {obj.style.visibility = "hidden"});
+	document.getElementById("crossval_table").style.visibility = "hidden";
+	var visible_elements = model_hyperparameters.get(method);
+	for (var i=0; i<visible_elements.length; i++) {
+		//console.log(visible_elements[i]);
+		document.getElementById(visible_elements[i]).style.visibility = "visible";
+	}
+	// end
 	init_response_datatype_selector();
 	init_response_variable_selector();
 	init_response_multiselector();
@@ -1232,7 +1319,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 				"&datatypes=" + datatypes.join() + 
 				"&platforms=" + platforms.join() + 
 				"&ids=" + ids.join() +
-				"&code=" + code +
+				"&codes=" + code +
 				"&scales=" + scales.join(),
 				ErrorStack);
 				plot_data["title"] = "Error";
@@ -1241,10 +1328,10 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "plot_created", "type=" + type +
 				"&source=" + source + 
 				"&cohort=" + cohort + 
-				"&datatypes" + datatypes.join() + 
+				"&datatypes=" + datatypes.join() + 
 				"&platforms=" + platforms.join() + 
 				"&ids=" + ids.join() +
-				"&code=" + code +
+				"&codes=" + code +
 				"&scales=" + scales.join(),
 				"<a href=https://" + window.location.hostname + "/pics/plots/" + plot_filename + " target=_blank>View</a>");
 				plot_id = plot_filename.substring(0, plot_filename.length-5);
@@ -1252,7 +1339,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 				sessionStorage.setItem(plot_filename, plot_description);
 				sessionStorage.setItem('meta_' + plot_filename, raw_metadata);
 		}
-		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
+		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evicor.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 		$(parent_tab).append(graph_window);
 		$("#plot_window_" + plot_id).dialog({
 			title: plot_data["title"],
@@ -1280,10 +1367,11 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 			children('div')[0]).children('button')[0].children[0].classList.add("ui-icon-folder-collapsed");
 		$('[aria-describedby="plot_window_' + plot_id + '"]').
 			find( 'div.ui-dialog-titlebar').
-				append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-100px\">" +
+				append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-120px\">" +
+						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Show help\" onclick=\"openDialog('help-dialog-dr'); $('#help-tabs-dr').tabs('option', 'active', 3);\"><span class=\"ui-button-icon ui-icon ui-icon-help\"></span><span class=\"ui-button-icon-space\"></span>Help</button>" +
 						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Copy plot link\" onclick=\"copy_plot_link(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-link\"></span><span class=\"ui-button-icon-space\"></span>Copy link</button>" +
 						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Maximize window\" onclick=\"maximize_plot_window(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-fullscreen-on\"></span><span class=\"ui-button-icon-space\"></span>Fullscreen</button>" +
-						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Compact window\" onclick=\"normalize_plot_window(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-fullscreen-off\"></span><span class=\"ui-button-icon-space\"></span>Normal size</button>" +
+						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Default size window\" onclick=\"default_plot_window(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-fullscreen-off\"></span><span class=\"ui-button-icon-space\"></span>Original size</button>" +
 						"</div>"
 					);
 		move_plot_to_dock('plot_window_' + plot_id, plot_filename, plot_data["meta"]);
@@ -1311,7 +1399,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 				plot_height = plot_size.split('*')[0];
 				plot_width = plot_size.split('*')[1];
 			}
-			var graph_window = '<div id="' + window_id + '"><iframe src="https://www.evinet.org/pics/plots/' + plot_filename + '" height="95%" width="95%"></div>';
+			var graph_window = '<div id="' + window_id + '"><iframe src="https://www.evicor.org/pics/plots/' + plot_filename + '" height="99%" width="100%"></div>';
 			$(graph_window).dialog({
 				title: plot_data["title"],
 				closeText: "Collapse to list of previous plots.\nNote: your changes will be lost.",
@@ -1324,7 +1412,6 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 					of: window
 				},
 				resize: function( event, ui ) {
-					console.log("Resize triggered");
 					($(this).children('iframe'))[0].setAttribute("height", $(this).height());
 					($(this).children('iframe'))[0].setAttribute("width", $(this).width());
 				},
@@ -1339,10 +1426,11 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 				children('div')[0]).children('button')[0].children[0].classList.add("ui-icon-folder-collapsed");
 			$('[aria-describedby="' + window_id + '"]').
 				find( 'div.ui-dialog-titlebar').
-				append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-100px\">" +
+				append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-120px\">" +
+						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Show help\" onclick=\"openDialog('help-dialog-dr'); $('#help-tabs-dr').tabs('option', 'active', 3);\"><span class=\"ui-button-icon ui-icon ui-icon-help\"></span><span class=\"ui-button-icon-space\"></span>Help</button>" +
 						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Copy plot link\" onclick=\"copy_plot_link(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-link\"></span><span class=\"ui-button-icon-space\"> </span>Copy link</button>" +
 						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Maximize window\" onclick=\"maximize_plot_window(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-fullscreen-on\"></span><span class=\"ui-button-icon-space\"></span>Fullscreen</button>" +
-						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Compact window\" onclick=\"normalize_plot_window(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-fullscreen-off\"></span><span class=\"ui-button-icon-space\"></span>Normal size</button>" +
+						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Default size window\" onclick=\"default_plot_window(\'" + plot_filename + "\')\"><span class=\"ui-button-icon ui-icon ui-icon-fullscreen-off\"></span><span class=\"ui-button-icon-space\"></span>Original size</button>" +
 						"</div>"
 				);	
 		}
@@ -1373,10 +1461,18 @@ function build_and_show_model() {
 			x_platforms.push($("#modelPlatform" + i + "_selector option:selected").val());
 			// if id input contain delimeter at the last position - empty array element will be generated; prevent this
 			var temp = $("#genes_area" + i).val();
+			// can't use x_datatypes[i] here - error for the first entity
+			if (capitalized_datatypes.includes($("#modelDatatype" + i + "_selector option:selected").val())) {
+				temp = temp.toUpperCase();
+				//console.log(temp);
+			}
 			// delete all spaces - otherwise "a, b, c" will turn into ["a", " b", " c"]
-			temp = temp.replace(/\s/g, '');
+			// carefull! \s matches new line etc.
+			//temp = temp.replace(/\s/g, '');
+			//console.log(temp);
 			// regexp, defined in druggable_config.js
 			temp = temp.split(ids_delim);
+			//console.log(temp);
 			for (var j=0; j<temp.length; j++) { 
 				if (temp[j] == "") {
 					temp.splice(j, 1); 
@@ -1402,7 +1498,7 @@ function build_and_show_model() {
 		if (variable_count == 1) {
 			var plot_types = get_plot_types([x_platforms[0], r_platform]);
 			if (plot_types[0] == '') {
-				alert("Unable to make analysis with chosen parameters");
+				show_slidedown_alert("Unable to make analysis with chosen parameters", 3000);
 			}
 			else {
 				var scales = ['linear', 'linear'];
@@ -1434,7 +1530,13 @@ function build_and_show_model() {
 			var nlambda = $("#nlambda").val();
 			var minlambda = $("#minlambda").val();
 			var family = $("#family option:selected").val();
+			// default value
 			var measure = "deviance";
+			switch (family) {
+				case "multinomial":
+					measure = "class";
+					break;
+			}
 			var crossvalidation = $("#crossval:checked").val();
 			if (crossvalidation == "on") {
 				crossvalidation = true;
@@ -1445,9 +1547,15 @@ function build_and_show_model() {
 			var nfold = $("#nfold").val();
 			var crossvalidation_percent = $("#crossval_perc").val()/100;
 			
+			var params = [];
+			switch (method) {
+				case 'glmnet':
+					params = generate_params_glmnet(alpha, nlambda, minlambda);
+					break;
+			}
 			var ErrorStack = check_error_stack(new Error().stack);
 			var model_name = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
-				family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, "auto", false, true);
+				family, measure, standardize, params, crossvalidation, nfold, crossvalidation_percent, "auto", false, true);
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
 			xmlhttp.send();
@@ -1496,8 +1604,8 @@ function build_and_show_model() {
 					"<a href=https://" + window.location.hostname + "/model_json.html#coeff." + model_name + ".json target=_blank>View coefficients</a> " +
 					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData target=_blank>Download</a> ");
 			}
-			var model_window = '<div id="' + model_name + '_window">' +
-				'<div id="' + model_name + '_tabs"> \
+			var model_window = '<div id="' + model_name + '_window" style="display: table;">' +
+				'<div id="' + model_name + '_tabs" style="display: table-cell;"> \
 					<ul> \
 						<li><a href="#' + model_name + '_model">Model overview</a></li> \
 						<li><a href="#' + model_name + '_training">Training</a></li>'
@@ -1505,14 +1613,14 @@ function build_and_show_model() {
 						+ '<li><a href="#' + model_name + '_performance">Performance</a></li>' +
 					'</ul> \
 					<div id="' + model_name + '_model"> \
-						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="720" height="720"></iframe> \
+						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="640px" height="640px"></iframe> \
 					</div> \
 					<div id="' + model_name + '_training"> \
-						<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="720" height="720"></iframe> \
+						<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="640px" height="640px"></iframe> \
 					</div>'
 					+ ((crossvalidation) ? (
 					'<div id="' + model_name + '_validation"> \
-						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="720" height="720"></iframe> \
+						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="640px" height="640px"></iframe> \
 					</div>') : ('')) +
 					'<div id = "' + model_name + '_performance"> \
 						<table id="' + model_name + '_perf" class="display" style="width:100%"> \
@@ -1527,7 +1635,7 @@ function build_and_show_model() {
 					</div> \
 				</div> \
 				<br> \
-				<table id="' + model_name + '_coef" class="display" style="width:100%"> \
+				<table id="' + model_name + '_coef" class="display" style="width:100%; display: table-cell;"> \
 					<thead> \
 						<tr> \
 							<th>Coefficient</th> \
@@ -1539,7 +1647,7 @@ function build_and_show_model() {
 				</div>';
 				$("#tab-predict").append(model_window);
 				$("#" + model_name + "_window").dialog({
-					title: "Model viewer",
+					title: "Model: " + (r_id != "" ? r_id : platform_names.get(r_platform)) + ("~") + platform_names.get(x_platforms[0]) + (n>1 ? ("+" + platform_names.get(x_platforms[1])) : "") + (n>2 ? ("+" + platform_names.get(x_platforms[2])) : ""),
 					height: 'auto',
 					width: 'auto',
 					modal: false,
@@ -1601,7 +1709,8 @@ function build_and_show_model() {
 							var occurences = new Array();
 							for (var j = 0; j < temp_index.length; j++) {
 								//console.log(temp_index[j]);
-								if (temp_index[j].indexOf(measures[i]) != -1) {
+								// use == 0 instead of != -1, otherwise for measure "p" string "Spearman R(training)" will match
+								if (temp_index[j].indexOf(measures[i]) == 0) {
 									occurences.push(j);
 								}
 							}
@@ -1611,7 +1720,8 @@ function build_and_show_model() {
 								var training_ind = (temp_index[occurences[0]].indexOf("(training)") != -1 ? occurences[0] : occurences[1]);
 								var validation_ind = (temp_index[occurences[0]].indexOf("(validation)") != -1 ? occurences[0] : occurences[1]);
 								pretty_print_data.push({
-									'Measure' : measures[i],
+									// measureQtip defined in druggable_config.js
+									'Measure' : measures[i] + '<a title=\"' + measureQtip[i] + '\"></a>',
 									'Value' : {
 										'Training' : json.data[training_ind].Value,
 										'Validation' : json.data[validation_ind].Value
@@ -1620,7 +1730,7 @@ function build_and_show_model() {
 							}
 							else {
 								pretty_print_data.push({
-									'Measure' : measures[i],
+									'Measure' : measures[i]  + '<a title=\"' + measureQtip[i] + '\"></a>',
 									'Value' : {
 										'Training' : json.data[occurences[0]].Value,
 										'Validation' : ''
@@ -1639,11 +1749,22 @@ function build_and_show_model() {
 				],
 				"order": [[ 0, "desc" ]],
 			});
+			$('[aria-describedby="' + model_name + "_window" + '"]').
+				find( 'div.ui-dialog-titlebar').
+				append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-60px\">" +
+						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Show help\" onclick=\"openDialog('help-dialog-dr'); $('#help-tabs-dr').tabs('option', 'active', 4);\"><span class=\"ui-button-icon ui-icon ui-icon-help\"></span><span class=\"ui-button-icon-space\"></span>Help</button>" +
+						"</div>"
+				);
 		}
 	}
 	else {
-		alert("Please fix the following problems to build the model:" + status);
+		show_slidedown_alert("Please fix the following problems to build the model:" + status, 3000);
 	}
+}
+
+function generate_params_glmnet(alpha, nlambda, minlambda) {
+	var params = ["alpha=" + alpha, "nlambda=" + nlambda, "minlambda=" + minlambda];
+	return params;
 }
 
 function retrieve_correlations() {
@@ -1688,7 +1809,7 @@ function retrieve_correlations() {
 				"&filter_columns=" + cor_sql_filter_columns.get(source) + 
 				"&concat_operator=" + cor_concatenation_operators.get(source),
 				ErrorStack);
-				alert("An error has occured. Please reload the page and try to do the following:\n1) Make a narrower (more specific) query;\n2) Lower FDR");
+				show_slidedown_alert("An error has occured. Please reload the page and try to do the following:<br>1) Make a narrower (more specific) query;<br>2) Lower FDR", 3000);
 			}
 		},
         "initComplete": function(settings, json) {
@@ -1711,9 +1832,9 @@ function retrieve_correlations() {
 		]
 	});
 		
-	$('#cor_result_table').off('daw.dt').on('draw.dt', function () {
+	$('#cor_result_table').off('draw.dt').on('draw.dt', function () {
 		//console.log($('#cor_result_table tr').length);
-		if($('#cor_result_table tr').length > 2) {
+		if($('#cor_result_table tr').length > 1) {
 			$("select[id*=TCGAcohortSelector]").selectmenu({select: function( event, ui ) {
 					console.log($(this).val());
 					var selected_values = $(this).val().split('#');	
@@ -2252,7 +2373,7 @@ function init_plot_type_selector() {
 	options = [];
 	var plot_types = get_plot_types(platforms);
 	if (plot_types[0] == '') {
-		alert("Impossible combination, please choose another combination of platforms");
+		show_slidedown_alert("An error has occured: Impossible combination, please choose another combination of platforms", 3000);
 		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "plot_types_missing", "platforms=" + platforms.join(), ErrorStack);	
 	}
 	for (i in plot_types) {
@@ -2657,13 +2778,13 @@ function init_response_variable_selector() {
 		document.getElementById("responseID_input").setAttribute("placeholder", ids_placeholders.get(response_datatype));
 	}
 	var variable_ids = [];
+	variables = variables[0];
 	for (i in variables) {
-		for (j in variables[i]) {
-			options.push("<option value='" + variables[i][j].variable + "'>" + variables[i][j].name + " (N=" + variables[i][j].n + ")" + "</option>");
-			variable_ids.push(variables[i][j].variable);
-		}
+		options.push("<option value='" + variables[i].variable + "'>" + variables[i].name + " (N=" + variables[i].n + ")" + "</option>");
+		variable_ids.push(variables[i].variable);
 	}
 	$("#responseVariable_selector").append(options.join("")).selectmenu();
+	$("#responseVariable_selector").selectmenu("refresh");
 	$('#responseVariable_selector').off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {update("responseVariable_selector")} );
 	var previous_selection = (getCookie("responseVariable_selector").split("|"))[0];
 	if (variable_ids.includes(previous_selection)) {
@@ -2913,7 +3034,7 @@ function update_platform(n) {
 				$('#platform' + (n+1) + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 				var flag = init_platformselector('platform' + (n+1) + '_selector');
 				if (flag) {
-					alert("No more compatible platforms");
+					show_slidedown_alert("No more available platforms", 3000);
 					sessionStorage.setItem("cascade_delete", 1);
 					for (i=total; i>n; i--) {
 						delete_plot_options_row(i);
@@ -3106,6 +3227,7 @@ function update_response_datatype_selector() {
 	usetCookie("responseDatatype_selector", selector_value, druggable_cookie_time);
 	$('#responseVariable_selector').find('option').remove().end();
 	$('#responseVariable_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
+	init_response_variable_selector();
 	$('#responseVariable_selector').selectmenu( "refresh" );
 }
 
@@ -3121,7 +3243,6 @@ function update_response_variable_selector() {
 	init_glmnet_family_selector();
 	$('#family').selectmenu( "refresh" );
 	init_response_multiselector();
-	init_response_variable_selector();
 }
 
 // WARNING! Use this function with extreme caution! It is a potential source of bugs
@@ -3367,6 +3488,7 @@ function move_plot_to_dock(graph_id, plot_filename, meta) {
 	var t1 = $('#history_table').DataTable();
 	var rowNode = t1.row.add(new_row).draw().node();
 	$( rowNode ).addClass('rowhighlight').removeClass('rowhighlight', 2000);
+	$("#history_dock-button").button("enable");
 }
 
 function restore_history_dock() {
@@ -3379,7 +3501,7 @@ function restore_history_dock() {
 			if (raw_metadata != null) {
 				var metadata = generate_plot_data(JSON.parse(raw_metadata));
 				metadata = metadata["meta"];
-				console.log(metadata);
+				//console.log(metadata);
 				var docked_id = Date.now();
 
 				var addButtons = 	"<td><button type=\'button\' class=\'ui-button ui-corner-all ui-widget ui-button-icon-only\' title=\'Restore plot\' onclick=\"plot_maximize(\'" + plot_filename + "\',\'" + docked_id + "\')\"><span class=\'ui-button-icon ui-icon ui-icon-window\'></span><span class=\'ui-button-icon-space\'> </span></button></td>" + 
@@ -3413,16 +3535,18 @@ function plot_maximize(plot_filename, docked_id) {
 
 // makes dialog close to full screen
 function maximize_plot_window(plot_filename) {
-	plot_filename = plot_filename.slice(0, -5);
+	var plot_id = plot_filename.slice(0, -5);
 	var active_height = window.innerHeight;
 	var active_width = window.innerWidth - $("#sidebar_history_dock").width();
-	$("#plot_window_" + plot_filename).dialog( "option", "height", active_height);
-	$("#plot_window_" + plot_filename).dialog( "option", "width", active_width);
-	$("#plot_window_" + plot_filename).dialog().trigger("dialogresize");
+	$("#plot_window_" + plot_id).dialog( "option", "height", active_height);
+	$("#plot_window_" + plot_id).dialog( "option", "width", active_width);
+	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("height", "98%");
+	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("width", "100%");
+	sessionStorage.setItem("plot_window_" + plot_id + "_size", active_height + "*" + active_width);
 }
 
 function normalize_plot_window(plot_filename) {
-	plot_filename = plot_filename.slice(0, -5);
+	var plot_id = plot_filename.slice(0, -5);
 	var active_height = window.innerHeight;
 	var active_width = window.innerWidth - $("#sidebar_history_dock").width();
 	// assume we have 4:3 viewport - find the closest one
@@ -3436,9 +3560,21 @@ function normalize_plot_window(plot_filename) {
 		active_heigth = 350;
 		active_width = 550;
 	}
-	$("#plot_window_" + plot_filename).dialog( "option", "height", active_height);
-	$("#plot_window_" + plot_filename).dialog( "option", "width", active_width);
-	$("#plot_window_" + plot_filename).dialog().trigger("dialogresize");
+	$("#plot_window_" + plot_id).dialog( "option", "height", active_height);
+	$("#plot_window_" + plot_id).dialog( "option", "width", active_width);
+	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("height", "98%");
+	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("width", "100%");
+	sessionStorage.setItem("plot_window_" + plot_id + "_size", active_height + "*" + active_width);
+}
+
+// return plot window to default size defined in druggable_config.js
+function default_plot_window(plot_filename) {
+	var plot_id = plot_filename.slice(0, -5);
+	$("#plot_window_" + plot_id).dialog( "option", "height", default_plot_height);
+	$("#plot_window_" + plot_id).dialog( "option", "width", default_plot_width);
+	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("height", "98%");
+	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("width", "100%");
+	sessionStorage.setItem("plot_window_" + plot_id + "_size", default_plot_height + "*" + default_plot_width);
 }
 
 // remove plot from dock and check if dock should be closed or not
@@ -3449,22 +3585,23 @@ function remove_plot_from_history(docked_id, plot_filename) {
 	t1.row("#" + docked_id).remove().draw();
 	if (!t1.data().any()) {
 		close_dock('sidebar_history_dock');
+		$("#history_dock-button").button("disable");
 	}
 }
 
 function copy_plot_link(plot_filename) {
-	navigator.clipboard.writeText("https://www.evinet.org/pics/plots/" + plot_filename);
-	alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evinet.org/pics/plots/" + plot_filename);
+	navigator.clipboard.writeText("https://www.evicor.org/pics/plots/" + plot_filename);
+	show_slidedown_alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evicor.org/pics/plots/" + plot_filename, 3000);
 	mark_plot(plot_filename);
 }
 
 // pay attention! We need both wrapper id here and dock id
 function open_dock(dock_id, wrapper_id) {
 	// check if we have vertical or horizontal dock
-	if(document.getElementById(dock_id).classList.contains('sidebar_right', 'sidebar_left')) {
+	if((document.getElementById(dock_id).classList.contains('sidebar_right')) | (document.getElementById(dock_id).classList.contains('sidebar_left'))) {
 		// can't use "auto" - transition animation does not work in this case
 		var wrapper_width = document.getElementById(wrapper_id).offsetWidth;
-		document.getElementById(dock_id).style.width = wrapper_width + "px";
+		document.getElementById(dock_id).style.width = wrapper_width + 20 + "px";
 	}
 	else {
 		var wrapper_height = document.getElementById(wrapper_id).offsetHeight;
@@ -3473,11 +3610,11 @@ function open_dock(dock_id, wrapper_id) {
 }
 
 function close_dock(dock_id) {
-	if(document.getElementById(dock_id).classList.contains('sidebar_right', 'sidebar_left')) {
-		document.getElementById(dock_id).style.width = "0";
+	if((document.getElementById(dock_id).classList.contains('sidebar_right')) | (document.getElementById(dock_id).classList.contains('sidebar_left'))) {
+		document.getElementById(dock_id).style.width = "0px";
 	}
 	else {
-		document.getElementById(dock_id).style.height = "0";
+		document.getElementById(dock_id).style.height = "0px";
 	}
 }
 
@@ -3486,16 +3623,47 @@ function load_help_table() {
 		// load table only once
 		if (document.getElementById('help_data_sources').rows.length == 0) {
 			var table_request = new XMLHttpRequest();
-			table_request.open("GET", "https://dev.evinet.org/cgi/generate_help_table.cgi", false);
+			table_request.open("GET", "cgi/generate_help_table.cgi", false);
 			table_request.send();
 			table_content = table_request.responseText;
 			document.getElementById("help_data_sources").innerHTML = table_content;
-			$("#help_data_sources").DataTable();
+			$("#help_data_sources").DataTable({
+				"scrollY":        window.innerHeight * 0.85 + "px",
+				//"scrollX":        window.innerWidth * 0.9 + "px",
+				"scrollCollapse": true,
+				"autoWidth": 	false,
+				"scrollX": true,
+				"paging":         false,
+				columnDefs: [
+					{ targets: '_all', className: "dt-head-center" }
+				]
+			});
+			$("#help_data_sources_wrapper").css("width", window.innerWidth * 0.9 + "px");
+			$("#help_data_sources").DataTable().draw();
 		}
 }
 
-function close_help_table() {
-	$("#help_data_sources").hide();
+function show_slidedown_alert(alert_text, timeout) {
+	document.getElementById("pop_alert_text").innerHTML = alert_text;
+	var wrapper_height = document.getElementById("pop_alert_text").offsetHeight;
+	document.getElementById("pop_alert").style.height = (wrapper_height + 10) + "px";
+	if (timeout > 0) {
+		close_slidedown_after(timeout);
+	}
+}
+
+function close_slidedown_alert() {
+	document.getElementById("pop_alert").style.height = "0px";
+}
+
+function close_slidedown_after(time_ms) {
+	setTimeout(close_slidedown_alert, time_ms);
+}
+
+function toggle_validation_section() {
+	var crossvalidation = $("#crossval:checked").val();
+	var visibility = crossvalidation == "on" ? "visible" : "hidden";
+	document.getElementById("crossval_table").style.visibility = visibility;
 }
 
 function open_info_page(id) {
@@ -3543,6 +3711,7 @@ function transfer_id (source, cohort, datatype, platform, id) {
 			t.row.add(["",id, platform, datatype, cohort, source]).draw(false);
 		}
 	}
+	$("#show_clipboard-button").button("enable");
 }
 
 // function to open window with IDs to transfer
@@ -3582,14 +3751,14 @@ function show_transfer_buffer_window(parent_tab) {
 					icon: "ui-icon-transferthick-e-w",
 					id: "transfer_switch_tab",
 					click: function() {
-						$("#tabs").tabs("option", "active", (parent_tab == "#tab-signif") ? 3 : 1);
+						$("#tabs").tabs("option", "active", (parent_tab == "#tab-signif") ? 2 : 0);
 						$("#transfer_window").dialog({position: { my: "bottom right", at: "right bottom", of: window }});
 					},
 				},
 				{
 					text: "Clear clipboard",
 					icon: "ui-icon-minus",
-					click: function() {sessionStorage.removeItem("transfer"); $('#transfer_buffer_table').DataTable().clear().draw();}
+					click: function() {sessionStorage.removeItem("transfer"); $('#transfer_buffer_table').DataTable().clear().draw(); $("#show_clipboard-button").button("disable");}
 				}
 			],
 			height: 'auto',
@@ -3669,6 +3838,7 @@ function add_model_to_comparison(model) {
 	}
 	// JS turns array in comma-separated string
 	sessionStorage.setItem('models', models);
+	$("#show_comparison_preview_button").button("enable");
 }
 
 function remove_model_from_comparison(model) {
@@ -3677,7 +3847,12 @@ function remove_model_from_comparison(model) {
 	if (model_index != -1) {
 		models.splice(model_index);
 	}
-	sessionStorage.setItem('models', models);
+	if (models == "") {
+		sessionStorage.removeItem('models');
+	}
+	else {
+		sessionStorage.setItem('models', models);
+	}
 }
 
 function show_compare_window() {
@@ -3708,15 +3883,15 @@ function show_compare_window() {
 			position: { my: "right", at: "top", of: window }, 
 			beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 		});
-		var t = $('#models_to_compare_table').DataTable();
+		var t1 = $('#models_to_compare_table').DataTable();
 		var models = sessionStorage.getItem('models').split(',');
 		for (var i in models) {
-			t.row.add(
+			t1.row.add(
 				[
 					models[i],
 					'<button onclick="window.location.href = \'https://\' + window.location.hostname + \'/pics/plots/' + models[i] + '.RData\';">Download model</button>',
 					'<button onclick="window.open(\'https://\' + window.location.hostname + \'/model_json.html#coeff.' + models[i] + '.json\', \'_blank\')">View coefficients</button>',
-					'<button onclick="table.row($(this).parents(\'tr\')).remove().draw(); remove_model_from_comparison(\'' + models[i] + '\');">Remove</button>'
+					'<button onclick="$(\'#models_to_compare_table\').DataTable().row($(this).parents(\'tr\')).remove().draw(); remove_model_from_comparison(\'' + models[i] + '\'); if (!$(\'#models_to_compare_table\').DataTable().data().any()) {$(\'#show_comparison_preview_button\').button(\'disable\');}">Remove</button>'
 				]
 			).draw(false);
 		}
@@ -3725,8 +3900,8 @@ function show_compare_window() {
 
 function compare_models() {
 	// function will not work if there are no models to compare
-	if ($("models_to_compare_table tr").length == 0) {
-		alert("No models for comparisson!");
+	if ($("#models_to_compare_table tr").length == 0) {
+		show_slidedown_alert("No models for comparisson!", 3000);
 	}
 	else {
 		// function works only when comparisson preview window is open and no other comparison windows are open
@@ -3904,7 +4079,7 @@ function generate_plot_data(metadata) {
 			meta[i] = ["undefined"];
 		}
 	}
-	data["title"] = cohort + ': ' + title.join(' vs. ');	
+	data["title"] = cohort + ': ' + title.filter(function(value, index, arr){return value != "" & value != "NA"}).join(' vs. ');	
 	data["meta"] = '<tr>' + '<td>' + type + '</td><td>' + cohort + '</td><td>' + code + '</td><td>' + n + '</td>';
 	for (var j = 0; j<=2; j++) {
 		data["meta"] = data["meta"] + (meta[j][0] == "undefined" ? ('<td></td>') : ('<td title=\'' + meta[j] + '\'>' + text[j] + '</td>')); //
@@ -3913,7 +4088,7 @@ function generate_plot_data(metadata) {
 	return data;
 }
 
-// function for technical purposes - use this to safely clear the sessionStorage, affects only SOME druggable.evinet values
+// function for technical purposes - use this to safely clear the sessionStorage, affects only SOME evicort values
 function safe_clear() {
 	sessionStorage.removeItem("add_row");
 	sessionStorage.removeItem("updates_triggered");
@@ -3979,7 +4154,7 @@ function check_model_input() {
 				}
 			}
 			if (temp.length == 0) {
-				message = message + "\nEmpty IDs for variable " + j;
+				message = message + "\nEmpty IDs for variable " + (j+1);
 			}
 			variable_count = variable_count + 1;
 		}
@@ -3989,7 +4164,7 @@ function check_model_input() {
 	}
 	var multiopt = $("#responseMulti_selector").val();
 	if (multiopt.length == 0) {
-		message = message + "\nAt least one values for multiselector should be selected";
+		message = message + "\nPlease select sample type in Samples multiselector";
 	}
 	if (!document.getElementById("responseID_input").disabled) {
 		if ($("#responseID_input").val().length == 0) {

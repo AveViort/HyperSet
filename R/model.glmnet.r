@@ -264,7 +264,7 @@ createGLMnetSignature <- function (
 				pred <- as.vector(Intercept + PW[smp,] %*% c1);
 				names(pred) <- rownames(PW[smp,]);
 			} else {
-				pred <- predict(model, newx = PW[smp,]);
+				pred <- predict(model, newx = PW[smp,], type = "response");
 				# multinomial regression gives 3D matrix of size n*m*1, but we need 2D 
 				pred <- pred[,,1];
 			}
@@ -281,8 +281,15 @@ createGLMnetSignature <- function (
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Spearman R(", Round, ")"), Value = round(perf[[paste0("Spearman R(", Round, ")")]],3)));
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Kendall tau(", Round, ")"), Value = round(perf[[paste0("Kendall tau(", Round, ")")]],3)));
 				} else {
-					pred_rounded <- round(pred);
-					# accuracy metrics for multinomial models should be here
+					predicted_classes <- apply(pred, 1, function(x) {return(names(x)[which.max(x)])});
+					#print(File);
+					#save(pred, file=paste0(File, "_pred.RData"));
+					#save(predicted_classes, file=paste0(File, "_predicted_classes.RData"));
+					#save(Obs, file=paste0(File, "_Obs.RData"));
+					confusion_matrix <- table(predicted_classes, as.character(Obs));
+					#print(confusion_matrix);
+					perf[[paste0("Accuracy (", Round, ")")]] = sum(diag(confusion_matrix))/sum(confusion_matrix);
+					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Accuracy (", Round, ")"), Value = round(perf[[paste0("Accuracy (", Round, ")")]])));
 				}
 			} else {
 				cu <- cu0[smp,]
@@ -296,7 +303,7 @@ createGLMnetSignature <- function (
 			}
 			title.main=Round;
 
-			if (Family != "cox") {
+			if (!Family %in% c("cox", "multinomial")) {
 				MSE <- mean((MG[smp] - pred)^2);
 				MRE <- mean(abs(MG[smp] - pred)/abs(MG[smp]));
 				R2 <- 1 - (sum((MG[smp] - pred)^2)/sum((MG[smp] - mean(MG[smp]))^2));
@@ -326,9 +333,14 @@ createGLMnetSignature <- function (
 					abline(coef(lm(pred ~ MG[smp])), col = "green", lty = 2);
 				}
 			} else {
-				Cls = c("red2", "green2");
-				names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
-				plotSurv2(cu=cu0[names(pred),], Grouping=ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
+				if(Family == "cox") {
+					Cls = c("red2", "green2");
+					names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
+					plotSurv2(cu=cu0[names(pred),], Grouping=ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
+				} else {
+					# placeholder!
+					plot(rnorm(100));
+				}
 			}
 			ppe <-  paste0("n(",  Round, " set)=", length(smp),"\n"); 
 			for (pe in names(perf)[grep(Round, names(perf), fixed = TRUE)]) {
@@ -368,7 +380,7 @@ if (Par["source"] == "tcga") {
 if (Par["source"] == "ccle") {
 	tissues <- createTissuesList(multiopt);
 	if (tissues != 'ALL') {
-		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "'::text[]);");
+		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue WHERE tissue=ANY('{", tissues, "}'::text[]);");
 	} else {
 		query <- paste0("SELECT DISTINCT sample FROM ctd_tissue;");
 	}
@@ -442,11 +454,11 @@ for (i in 1:length(x_datatypes)) {
 						condition <- paste0(condition, "id LIKE '%'");
 					}
 				} else {
-					condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]][j:(j+99)], collapse=","), "}'::text[])");
+					condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]][j:(j+min(99, length(x_ids[[i]])-j))], collapse=","), "}'::text[])");
 				}
 				if (Par["source"] == "tcga") {
 					tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
-					condition <- paste0(condition, " AND sample LIKE ", tcga_array);
+					condition <- paste0(condition, " AND sample~", tcga_array);
 				}
 			}
 			# NOTE! This query basically uses OR statement, e.g. if we have a list with 3 genes - patients with at least 1 of these genes will be returned! 
@@ -458,8 +470,10 @@ for (i in 1:length(x_datatypes)) {
 			j <- j + 100;
 		}
 	}
+	print("Temp formation: done");
 	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
 		X.variables[[x_platforms[i]]] <- unique(as.character(temp[,"id"]));
+		print(temp);
 		temp <- dcast(temp, id ~ sample, value.var = x_platforms[i]);
 	} else {
 		X.variables[[x_platforms[i]]] <- c(x_platforms[i]);
@@ -470,6 +484,7 @@ for (i in 1:length(x_datatypes)) {
 	if (is.null(nrow(temp))) {
 		temp <- matrix(temp, 1, length(temp));
 		rownames(temp) <- x_platforms[i];
+		print(x_platforms[i]);
 		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
 			temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE)
 		}
@@ -505,7 +520,7 @@ if (rdatatype == "clin") {
 	print(paste0("rid: ", rid, " empty_value(rid): ", empty_value(rid)));
 	if (Par["source"] == "tcga") {
 		tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
-		condition <- paste0(condition, " AND sample LIKE ", tcga_array);
+		condition <- paste0(condition, " AND sample~", tcga_array);
 	}
 	if (!(empty_value(rid))) {
 		condition <- paste0(condition, " AND id='", rid, "'")

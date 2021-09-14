@@ -111,7 +111,7 @@ generate_plot_title <- function(source_name, cohort, platforms, code, common_sam
 }
 
 generate_plot_legend <- function(params) {
-	plot_legend <- paste(params, collapse = "\n");
+	plot_legend <- paste(unlist(lapply(params, adjust_string, threshold = 25)), collapse = "\n");
 	return(plot_legend);
 }
 

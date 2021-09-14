@@ -158,7 +158,7 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 		}
 		plot_type <- switch(family,
 			"cox" = "KM",
-			"multivariate" = "box",
+			"multinomial" = "box",
 			"gaussian" = "scatter"
 		);
 		#if (rdatatype == "clin") {
@@ -195,6 +195,9 @@ savePerformanceJSON <- function(perf_frame, filename) {
 	writeLines(json_string, fileConn);
 	close(fileConn);
 }
+
+# create sample_mask from TCGA codes - pay attention, it is not the same as createPostgreSQLregex from  coomon_functions.r
+
 
 Args <- commandArgs(trailingOnly = T);
 if (Debug>0) {print(paste(Args, collapse=" "));}

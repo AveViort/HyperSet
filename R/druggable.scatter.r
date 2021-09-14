@@ -204,8 +204,9 @@ if (status != 'ok') {
 		#print(paste0("x_data: ", length(x_data)));
 		#print(paste0("y_data: ", length(y_data)));
 		#print(paste0("Common samples: ", length(common_samples)));
+		regression_model <- lm(y_data~x_data);
 		p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', 
-			text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples, tissue_types[common_samples,2], " (click to open information)")) %>% 
+			text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples, tissue_types[common_samples,2], " (click to open information)")) %>%
 		onRender(paste0("
 			function(el) { 
 				el.on('plotly_hover', function(d) {
@@ -244,6 +245,11 @@ if (status != 'ok') {
 		")) %>%
 		layout(legend = druggable.plotly.legend.style(plot_legend), # https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js#L51-L110
 			showlegend = TRUE,
+			shapes = list(type='line', line = list(color = 'red', dash = 'dash'), 
+						x0 = min(x_data), 
+						x1 = max(x_data), 
+						y0 = predict(regression_model, data.frame(x_data = min(x_data))),
+						y1 = predict(regression_model, data.frame(x_data = max(x_data)))),
 			# editable = TRUE,
 			xaxis = x_axis,
 			yaxis = y_axis,
@@ -340,6 +346,7 @@ if (status != 'ok') {
 					""), " (", 
 				readable_platforms[platforms[3],2], ",", scales[3], ")"), 
 				druggable.axis.label.threshold);
+			regression_model <- lm(y_data~x_data);
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
 				text = ~paste("Patient:", common_samples), color = z_data) %>% 
 			colorbar(title = z_axis) %>%
@@ -380,6 +387,11 @@ if (status != 'ok') {
 			")) %>%
 			layout(legend = druggable.plotly.legend.style(plot_legend),
 				showlegend = TRUE,
+				shapes = list(type='line', line = list(color = 'red', dash = 'dash'), 
+						x0 = min(x_data), 
+						x1 = max(x_data), 
+						y0 = predict(regression_model, data.frame(x_data = min(x_data))),
+						y1 = predict(regression_model, data.frame(x_data = max(x_data)))),
 				xaxis = x_axis,
 				yaxis = y_axis,
 				margin = druggable.margins) %>%
@@ -481,9 +493,11 @@ if (status != 'ok') {
 			}
 			names(marker_shapes) <- types;
 			script_file_name <- paste0(fname, ".r");
-			script_file <- file(script_file_name, "w")
-			script_line <- "p <- plot_ly() %>%";
+			script_file <- file(script_file_name, "w");
+			script_line <- paste0("x_data <- c(", paste(x_data, collapse = ",") , "); y_data <- c(", paste(y_data, collapse = ","), "); regression_model <- lm(y_data~x_data);");
 			write(script_line, file = script_file, sep = "");
+			script_line <- "p <- plot_ly() %>%";
+			write(script_line, file = script_file, append = TRUE);
 			for (i in names(types)) {
 				x_val <- paste(x_data[which(z_data == i)], collapse = ",");
 				y_val <- paste(y_data[which(z_data == i)], collapse = ",");
@@ -501,6 +515,11 @@ if (status != 'ok') {
 			}
 			if (length(types) > 1) {
 				script_line <- paste0(script_line, "layout(showlegend = TRUE,
+					shapes = list(type='line', line = list(color = 'red', dash = 'dash'), 
+						x0 = min(x_data), 
+						x1 = max(x_data), 
+						y0 = predict(regression_model, data.frame(x_data = min(x_data))),
+						y1 = predict(regression_model, data.frame(x_data = max(x_data)))),
 					legend = druggable.plotly.legend.style('", paste(types, collapse = "\n"), "','", plot_legend, "'),
 					xaxis = x_axis,
 					yaxis = y_axis,

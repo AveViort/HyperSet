@@ -28,7 +28,13 @@ if ($flag == 0) {
 }
 # else - list ids
 else {
-	$stat = qq/SELECT autocomplete_ids(\'$cohort'\, \'$platform'\)/;
+	#$stat = qq/SELECT autocomplete_ids(\'$cohort'\, \'$platform'\)/;
+	#if (not($datatype eq "DRUG")) {
+	#	$stat = qq/SELECT DISTINCT upper(id) FROM $cohort\_$datatype WHERE $platform IS NOT NULL;/;
+	#} else {
+	#	$stat = qq/SELECT DISTINCT upper(drug) FROM $cohort\_$datatype;/;
+	#}
+	$stat = qq/SELECT autocomplete_ids_simplified(\'$cohort'\, \'$platform'\)/;
 }
 #print $stat;
 $sth = $dbh->prepare($stat) or die $dbh->errstr;
@@ -40,12 +46,13 @@ while (@res = $sth->fetchrow_array) {
 		print $temp[0].'<br>';
 	}
 	else {
-		@temp = split /\|\|/, $res[0];
-		foreach(@temp) {
-			print $_.'<br>';
-		}
+		#@temp = split /\|\|/, $res[0];
+		#foreach(@temp) {
+		#	print $_.'<br>';
+		#}
+		print $res[0].'<br>';
 	}
 }
 
-#$sth->finish;
+$sth->finish;
 $dbh->disconnect;

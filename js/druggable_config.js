@@ -22,9 +22,9 @@ ids_placeholders.set("NEA_MUT", "Pathway name");
 //lifetime for cookies
 var druggable_cookie_time = 168;
 
-// default dimensions for plots
-var default_plot_height = 960;
-var default_plot_width = 600;
+// default dimensions for plots - measured for 960*640 iframe
+var default_plot_height = 644;
+var default_plot_width = 962;
 
 //var html_glm_regressors = "<td id='d-x###'><table id ='table-regressors###'><tr><tr><td>Predictors, type ###:</td><td></td></tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table></td>";
 var html_glm_regressors = "<div>Predictors, type ###:</div><table id ='table-regressors###' class='parameter_area ' style='border-collapse: collapse;'><tr><td>Data type</td><td><select id='modelDatatype###_selector'></td></tr><tr><td>Platform</td><td><select id='modelPlatform###_selector'></td></tr><tr><td>IDs</td><td><textarea  class='ui-corner-all ui-widget' style='width: 95%;' id='genes_area###' rows='2' cols='16'></textarea></td></tr></table>"; //   border-style: solid; border-width: 1px; border-color: #cbc7bd; border-radius: 6px; border-collapse: collapse;
@@ -56,19 +56,19 @@ cor_visible_columns.set("CCLE", [
             { "data": "screen" },
             { "data": "ancova_p_1x",
 			  "render":  function (data) {
-					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "ancova_p_2x_cov1",
 			  "render":  function (data) {
-					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "ancova_p_2x_feature",
 			  "render":  function (data) {
-					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "ancova_q_2x_feature",
 			  "render":  function (data) {
-					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "cohort-selector" },
 			{ "data": "verification" }
@@ -85,15 +85,15 @@ cor_visible_columns.set("TCGA", [
 			{ "data": "sensitivity" },
             { "data": "interaction",
 			  "render":  function (data) {
-					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "drug",
 			  "render":  function (data) {
-					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "expr",
 			  "render":  function (data) {
-					return (typeof(data) !== 'undefined') && (data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2);}
+					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "n_patients" },
 			{ "data": "n_treated" },
@@ -115,7 +115,7 @@ nfolds_max = 25;
 validation_fraction_max = 80;
 
 // delimiters which can be used for model ids - write as a regexp
-var ids_delim = /[\s,;]+/;
+var ids_delim = /[\s\r\n,;]+/;
 
 // maximum number of elements in autocomplete list
 var max_autocomplete = 50;
@@ -188,3 +188,24 @@ for (i=0; i<=datatype_proto.length-2; i=i+2) {
 
 // minimal number of patients with specified drug in cohort to display (for "Significant results" tab)
 var min_pat_drug_number = 10;
+
+// qTips for second tab
+var measureQtip = [];
+measureQtip["Spearman R"] = "Spearman rank correlation value";
+measureQtip["Kendall tau"] = "Kendall tau rank correlation value";
+measureQtip["RSS"] = "Residual sum of squares";
+measureQtip["p"] = "The initial number of variables";
+measureQtip["R^2"] = "Squared correlation:\nfraction of total variance explained by the model";
+measureQtip["MSE"] = "Mean squared error";
+measureQtip["MRE"] = "Magnitude of Relative Error";
+measureQtip["k"] = "Model complexity:\nno. of variables in the model + 2(which are the intercept and regression slope terms).";
+measureQtip["AIC"] = "Akaike information criterium";
+measureQtip["BIC"] = "Bayesian information criterium";
+
+// different types of models should have different options allowed
+// PAY ATTENTION! Values are names of the elements which must be set visible!
+var model_hyperparameters = new Map();
+model_hyperparameters.set("glmnet", ["alpha_section", "nlambda_section", "minlambda_section", "family_section"]);
+
+// this map is used for caching autocomplete ids
+var cached_autocomplete = new Map();

@@ -586,7 +586,7 @@ DECLARE
 res text;
 description_n text;
 BEGIN
-FOR res IN SELECT DISTINCT cohort FROM model_guide_table WHERE source=source_n AND table_type='predictor' 
+FOR res IN SELECT DISTINCT cohort FROM model_guide_table WHERE source=source_n AND table_type='response' 
 LOOP
 SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
@@ -1051,7 +1051,7 @@ res := '';
 verification_flag := FALSE;
 IF (target_source = 'CCLE')
 THEN
-res := 'CCLE#CTD#' || data_type || '#' || target_platform || '#' || target_screen || ',';
+res := 'CCLE#CCLE#' || data_type || '#' || target_platform || '#' || target_screen || ',';
 ELSE
 -- check if we have data on the 3rd tab to offer KM plot
 query := E'SELECT EXISTS (SELECT * FROM information_schema.columns WHERE table_name=\'' || LOWER(target_cohort) || E'_clin\' AND column_name=\'' || target_measure || E'\');';
@@ -1084,7 +1084,7 @@ query := query || E' AND datatype=\'' || data_type || E'\' AND id=\'' || target_
 --RAISE notice '%', query;
 FOR platform_n,screen_n IN EXECUTE query
 LOOP
-res := res || 'CCLE#CTD#' || data_type || '#' || platform_n || '#' || screen_n || ',';
+res := res || 'CCLE#CCLE#' || data_type || '#' || platform_n || '#' || screen_n || ',';
 verification_flag := TRUE;
 END LOOP;
 IF (verification_flag = TRUE)
@@ -1159,6 +1159,13 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION autocomplete_ids(cohort text, platform text) RETURNS setof text AS $$
 BEGIN
 RETURN QUERY EXECUTE 'SELECT ' || platform || E' FROM druggable_ids WHERE cohort=\''|| cohort || E'\' AND ' || platform || ' IS NOT NULL;';
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but "simplified" version: limited types of synonyms, <br> as separator, no whitespaces
+CREATE OR REPLACE FUNCTION autocomplete_ids_simplified(cohort text, platform text) RETURNS setof text AS $$
+BEGIN
+RETURN QUERY EXECUTE 'SELECT ' || platform || E' FROM druggable_ids_compact WHERE cohort=\''|| cohort || E'\' AND ' || platform || ' IS NOT NULL;';
 END;
 $$ LANGUAGE plpgsql;
 
@@ -1287,6 +1294,99 @@ RETURN i;
 END;
 $$ LANGUAGE plpgsql;
 
+-- simplified version of create_ids_for_platform - uses only gene symbols/pathway names/drug names
+CREATE OR REPLACE FUNCTION create_ids_for_platform_simplified(cohort text, datatype text, platform text) RETURNS text AS $$
+DECLARE
+res text;
+id_string text;
+data_table text;
+flag boolean;
+query_string text;
+id_synonym text;
+synonym_type text;
+BEGIN
+res := '';
+synonym_type = '';
+EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO data_table;
+EXECUTE E'SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name=\'druggable_ids_compact\' AND column_name=\'' || platform || E'\');' INTO flag;
+IF (flag=false) THEN
+EXECUTE 'ALTER TABLE druggable_ids_compact ADD ' || platform || ' text;';
+END IF;
+IF (datatype='DRUG') THEN
+query_string := 'SELECT DISTINCT(drug) FROM ' || data_table || ';';
+synonym_type := 'Drug';
+ELSE
+query_string := 'SELECT DISTINCT(id) FROM ' || data_table || ' WHERE ' || platform || ' IS NOT NULL;';
+CASE datatype
+WHEN 'PE' THEN synonym_type := 'RPPA';
+WHEN 'SENS' THEN synonym_type := 'Drug';
+WHEN 'NEA_MUT' THEN synonym_type := '1469 pathways';
+WHEN 'NEA_GE' THEN synonym_type := '1469 pathways';
+ELSE synonym_type := 'Gene symbol';
+END CASE;
+END IF;
+FOR id_string IN EXECUTE query_string
+LOOP
+FOR id_synonym IN EXECUTE E'SELECT external_id FROM synonyms WHERE internal_id=\'' || id_string || E'\' AND source=\'' || synonym_type || E'\';'
+LOOP
+res := res || '<br>' || id_synonym;
+END LOOP;
+END LOOP;
+--EXECUTE E'SELECT EXISTS(SELECT ' || platform || E' FROM druggable_ids_compact WHERE cohort=\'' || cohort || E'\' AND ' || platform || ' IS NOT NULL);' INTO flag;
+EXECUTE E'SELECT EXISTS(SELECT cohort FROM druggable_ids_compact WHERE cohort=\'' || cohort || E'\');' INTO flag;
+-- if we have - delete old value
+IF (flag=true) THEN
+EXECUTE 'UPDATE druggable_ids_compact SET ' || platform || E'=\'' || res || E'\' WHERE cohort=\'' || cohort || E'\';';
+ELSE
+EXECUTE 'INSERT INTO druggable_ids_compact(cohort,'|| platform || E') VALUES(\'' || cohort || E'\',\'' || res || E'\');';
+END IF;
+RETURN 'ok';
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION autocreate_ids_simplified(target_cohort text) RETURNS boolean AS $$
+DECLARE
+datatable text;
+datatype text;
+platform text;
+flag boolean;
+temp text;
+platform_offset numeric;
+BEGIN
+FOR datatable,datatype IN SELECT table_name,type FROM guide_table WHERE (cohort=target_cohort)
+LOOP
+platform_offset := 2;
+SELECT check_ids_availability(datatype) INTO flag;
+IF (datatype='DRUG') THEN
+platform_offset := 1;
+flag := TRUE;
+END IF;
+IF (flag=true) THEN
+FOR platform IN SELECT column_name FROM information_schema.columns WHERE table_name=datatable OFFSET platform_offset
+LOOP
+raise notice 'table name: % datatype: % platform: %', datatable, datatype, platform;
+SELECT create_ids_for_platform_simplified(target_cohort, datatype, platform) INTO temp;
+raise notice 'status: %', temp;
+END LOOP;
+END IF;
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION autocreate_ids_all_simplified() RETURNS boolean AS $$
+DECLARE
+cohort_n text;
+BEGIN
+FOR cohort_n IN SELECT DISTINCT cohort FROM guide_table WHERE cohort<>''
+LOOP
+raise notice 'Current cohort: %', cohort_n;
+PERFORM autocreate_ids_simplified(cohort_n);
+raise notice '------------';
+END LOOP;
+RETURN true;
+END;
+$$ LANGUAGE plpgsql;
 
 -- function to check if dataset has ids or not
 CREATE OR REPLACE FUNCTION check_ids_availability(datatype text) RETURNS boolean AS $$
@@ -1365,16 +1465,16 @@ $$ LANGUAGE plpgsql;
 
 -- function to create/update records in platform_descriptions
 -- can be used standalone or from R code
-CREATE OR REPLACE FUNCTION update_platform_description (platform_n text, description text, display boolean, datatype text, stats text) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION update_platform_description (platform_n text, fullname text, display boolean, datatype text, description text, stats text) RETURNS boolean AS $$
 DECLARE
 flag boolean;
 BEGIN
 EXECUTE E'SELECT EXISTS (SELECT * FROM platform_descriptions WHERE shortname=\'' || platform_n || E'\');' INTO flag;
 IF (flag = true)
 THEN
-EXECUTE E'UPDATE platform_descriptions SET fullname=\'' || description || E'\',visibility='|| display || E',datatype=\'' || datatype || E'\',stats=\'' || stats || E'\' WHERE shortname=\'' || platform_n || E'\';';
+EXECUTE E'UPDATE platform_descriptions SET fullname=\'' || fullname || E'\',visibility='|| display || E',datatype=\'' || datatype || E'\'description=\'' || description || E'\',stats=\'' || stats || E'\' WHERE shortname=\'' || platform_n || E'\';';
 ELSE
-EXECUTE E'INSERT INTO platform_descriptions VALUES (\'' || platform_n || E'\', \'' || description || E'\', ' || display || E',\'' || datatype || E'\',\'' || stats || E'\');';
+EXECUTE E'INSERT INTO platform_descriptions VALUES (\'' || platform_n || E'\', \'' || fullname || E'\', ' || display || E',\'' || datatype || E'\',\'' || description || E'\',\'' || stats || E'\');';
 END IF;
 RETURN true;
 END;

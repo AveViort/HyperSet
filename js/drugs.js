@@ -252,7 +252,7 @@ function get_glmnet_family(variable, datatype) {
 }
 
 function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
-	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent, stat_file, extended_output, header) 
+	family, measure, standardize, params, crossvalidation, nfold, crossvalidation_percent, stat_file, extended_output, header)
 {
 	var file; 
 	var xids = [];
@@ -273,9 +273,7 @@ function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_dat
 		"&family=" + encodeURIComponent(family) + 
 		"&measure=" + encodeURIComponent(measure) +
 		"&standardize=" + encodeURIComponent(standardize) +
-		"&alpha=" + encodeURIComponent(alpha) +
-		"&nlambda=" + encodeURIComponent(nlambda) +
-		"&minlambda=" + encodeURIComponent(minlambda) +
+		"&" + params.join('&') +
 		"&validation=" + encodeURIComponent(crossvalidation) +
 		"&nfolds=" + encodeURIComponent(nfold) +
 		"&validation_fraction=" + encodeURIComponent(crossvalidation_percent) +
@@ -559,22 +557,29 @@ function read_metadata(filename) {
 
 function get_autocomplete_ids(cohort, datatype, platform) {
 	var ids;
-	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/autocomplete_ids.cgi?cohort=" + cohort + "&platform=" + platform);
-	xmlhttp.open("GET", "cgi/autocomplete_ids.cgi?cohort=" + 
-		encodeURIComponent(cohort) + "&platform=" + 
-		encodeURIComponent(platform), false);
-	xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-			ids = this.responseText;}
+	// WARNING! This function uses variables capitalized_datatypes and cached_autocomplete from druggable_config.js
+	// this file is loaded by evicor.html
+	if (cached_autocomplete.has(cohort + "-" + datatype + "-" + platform)) {
+		console.log("Reloading autocomplete from cache");
+		ids = cached_autocomplete.get(cohort + "-" + datatype + "-" + platform);
+	}
+	else {
+		var xmlhttp = new XMLHttpRequest();
+		console.log("cgi/autocomplete_ids.cgi?cohort=" + cohort + "&platform=" + platform);
+		xmlhttp.open("GET", "cgi/autocomplete_ids.cgi?cohort=" + 
+			encodeURIComponent(cohort) + "&platform=" + 
+			encodeURIComponent(platform), false);
+		xmlhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				ids = this.responseText;}
+			}
+		xmlhttp.send();
+		ids = ids.split("||");
+		ids = ids.slice(1, ids.length);
+		if (capitalized_datatypes.includes(datatype)) {
+			ids = ids.map(function(x){ return x.toUpperCase() });
 		}
-	xmlhttp.send();
-	ids = ids.split("||");
-	// WARNING! This function uses variable capitalized_datatypes from druggable_config.js
-	// this file is loaded by druggable.html
-	ids = ids.slice(1, ids.length);
-	if (capitalized_datatypes.includes(datatype)) {
-		ids = ids.map(function(x){ return x.toUpperCase() });
+		cached_autocomplete.set(cohort + "-" + datatype + "-" + platform, ids);
 	}
 	return ids;
 }

@@ -2,7 +2,8 @@
 # please use druggable_get_table for creating new functions
 library(RODBC);
 library(gtools);
-source("../R/plot_common_functions.r");
+# load getDbCredentials from the following source manually
+# source("common_functions.r");
 
 
 # WORKING WITH COHORT DESCRIPTIONS
@@ -50,7 +51,9 @@ update_platform_descriptions_from_table <- function(table_name, key_file = "HS_S
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 	for (i in 1:nrow(table_data)) {
-		sqlQuery(rch, paste0("SELECT update_platform_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3], ", '", table_data[i,4], "','", table_data[i,5], "')"));
+		if (is.na(table_data[i,5])) {table_data[i,5] <- ''};
+		if (is.na(table_data[i,5])) {table_data[i,6] <- ''};
+		sqlQuery(rch, paste0("SELECT update_platform_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3], ", '", table_data[i,4],  "', '", table_data[i,5], "','", table_data[i,6], "')"));
 	}
 	print(paste0("Created/updated ", i, " records"));
 	odbcClose(rch);

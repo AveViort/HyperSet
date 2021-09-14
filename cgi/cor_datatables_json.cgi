@@ -44,18 +44,21 @@ my $row_id = 1;
 # carefull! This method is driver-dependent!
 my $rows = $sth->rows;
 my @column_names = split /,/, $data_columns;
+my $colnumber;
 my @field_names = ("gene", "feature", "datatype", "cohort", "platform", "screen", "sensitivity");
-my $i;
-foreach $i(2..$colnumber-1) {
-	push(@field_names, $column_names[$i]);
-}
 while (@row = $sth->fetchrow_array()) {
 	if ($row[0] ne '') {
 		print "{";
 		my @field_values = split /\|/, $row[0];
+		if ($row_id == 1) {
+			# all columns except for the last one - which has to be transformed into HTML element
+			$colnumber = @field_values;
+			my $i;
+			foreach $i(2..$colnumber-1) {
+				push(@field_names, $column_names[$i]);
+			}
+		}
 		#print '"id":"',$row_id,'",';
-		# all columns except for the last one - which has to be transformed into HTML element
-		$colnumber = @field_values;
 		#my $plot = '<span id=\"cor-plot'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-bars\" onclick=\"plot(\''.(($field_values[2] eq "MUT") ? "box" : "scatter").'\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'sens\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], \'all\')\" title=\"Plot\"></span>';
 		my $url1 = $field_values[$colnumber-3];
 		my $url2 = $field_values[$colnumber-2];

@@ -5,6 +5,7 @@
 use strict vars;
 use CGI; # qw(-no_xhtml);
 use CGI::Carp qw ( fatalsToBrowser );
+use Switch;
 
 my $query = new CGI;
 # common options
@@ -47,9 +48,13 @@ print "Content-type: text/html\n\n";
 srand();
 my $r = rand();
 my $file = 'model'.$1 if $r =~  m/0\.([0-9]{12})/;
-system("Rscript ../R/model.".$method.".r --vanilla --args ".
-	"source=$source cohort=$cohort rdatatype=$rdatatype rplatform=$rplatform rid=$rid ".
-	"xdatatypes=$xdatatypes xplatforms=$xplatforms xids='$xids' multiopt='$multiopt' ".
-	"family=$family measure=$measure alpha=$alpha nlambda=$nlambda minlambda=$minlambda validation=$validation ".
-	"validation_fraction=$validation_fraction nfolds=$nfolds standardize=$standardize out=$file statf=$stat_file header=$header extended_output=$extended_output");
+#switch($method) { 
+#	case "glmnet"	{
+		system("Rscript ../R/model.".$method.".r --vanilla --args ".
+			"source=$source cohort=$cohort rdatatype=$rdatatype rplatform=$rplatform rid=$rid ".
+			"xdatatypes=$xdatatypes xplatforms=$xplatforms xids='$xids' multiopt='$multiopt' ".
+			"family=$family measure=$measure alpha=$alpha nlambda=$nlambda minlambda=$minlambda validation=$validation ".
+			"validation_fraction=$validation_fraction nfolds=$nfolds standardize=$standardize out=$file statf=$stat_file header=$header extended_output=$extended_output");
+#	}
+#}
 print $file;
