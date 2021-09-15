@@ -1,3 +1,6 @@
+// this map is used for caching autocomplete ids
+var cached_autocomplete = new Map();
+
 // ids (if available) for these datatypes will be capitalized (in drugs.js and analysis.html)
 var capitalized_datatypes = ["COPY", "GE", "METH", "MIRNA", "MUT"];
 
@@ -206,6 +209,3 @@ measureQtip["BIC"] = "Bayesian information criterium";
 // PAY ATTENTION! Values are names of the elements which must be set visible!
 var model_hyperparameters = new Map();
 model_hyperparameters.set("glmnet", ["alpha_section", "nlambda_section", "minlambda_section", "family_section"]);
-
-// this map is used for caching autocomplete ids
-var cached_autocomplete = new Map();

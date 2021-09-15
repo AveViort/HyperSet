@@ -59,17 +59,37 @@ empty_value <- function(value) {
 adjust_string <- function(long_string, threshold) {
 	#print(long_string);
 	#print(threshold);
-	string_length <- nchar(long_string);
 	adjusted_string <- long_string;
-	if (string_length > threshold) {
-		spaces <- gregexpr(pattern =' ', long_string)[[1]];
-		#print(spaces);
-		# cut string into approximately equal halves
-		pos <- which.min(abs(string_length/2-spaces));
-		#print(pos);
-		adjusted_string <- paste0(substr(long_string, 1, spaces[pos]-1), "\n", substr(long_string, spaces[pos]+1, string_length));
+	# check if string is multiline
+	if (grepl("\n", long_string)) {
+		adjust_multiline_string(long_string, threshold);
+	} else {
+		string_length <- nchar(long_string);	
+		if (string_length > threshold) {
+			spaces <- gregexpr(pattern =' ', long_string)[[1]];
+			#print(spaces);
+			# cut string into approximately equal halves
+			pos <- which.min(abs(string_length/2-spaces));
+			#print(pos);
+			adjusted_string <- paste0(substr(long_string, 1, spaces[pos]-1), "\n", substr(long_string, spaces[pos]+1, string_length));
+		}
+		#print(adjusted_string);
 	}
-	#print(adjusted_string);
+	return(adjusted_string);
+}
+
+# splits multiline strings by \n and adjusts easch of the substrings
+adjust_multiline_string <- function(multiline_string, threshold) {
+	adjusted_string <- multiline_string;
+	# if sum of all lines length with separators is smaller than threshold - do nothing
+	string_length <- nchar(multiline_string);
+	if (string_length < threshold) {
+		sublines <- unlist(strsplit(multiline_string, "\n"));
+		for (i in 1:length(sublines)) {
+			sublines[i] <- adjust_string(sublines[i], threshold);
+		}
+		adjusted_string <- paste(sublines, collapse = "\n");
+	}
 	return(adjusted_string);
 }
 

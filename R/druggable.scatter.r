@@ -62,10 +62,18 @@ for (i in 1:length(datatypes)) {
 	}
 	if ((datatypes[i] == 'ge_nea') | (datatypes[i] == 'mut_nea')) {
 		datatypes[i] <- paste0(strsplit(datatypes[i], "_")[[1]][2], "_", strsplit(datatypes[i], "_")[[1]][1]);
+		rownames(readable_platforms)[which(rownames(readable_platforms) == platforms[i])] <- paste0("z_", platforms[i]);
 		platforms[i] <- paste0("z_", platforms[i]);
 		if ((Par["source"] == "ccle") & (datatypes[i] == 'nea_ge')) {
 			platforms[i] <- paste0(platforms[i], "_top100");
 		}
+		query <- paste0("SELECT fullname FROM platform_descriptions WHERE shortname='", platforms[i], "';");
+		print(query);
+		print("readable_platforms before:");
+		print(readable_platforms);
+		readable_platforms[platforms[i],2] <- sqlQuery(rch, query, stringsAsFactors = FALSE)[1,1];
+		print("readable_platforms after:");
+		print(readable_platforms);
 	}
 	query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par["source"]), "' AND cohort='", toupper(Par["cohort"]), "' AND type='", toupper(datatypes[i]), "';");
 	print(query);
@@ -130,8 +138,10 @@ if (status != 'ok') {
 		tissue_types <- sqlQuery(rch, query);	
 		rownames(tissue_types) <- tissue_types[,1];
 	}
+	print("Generating print_platforms: ");
 	print_platforms <- c();
 	for (i in 1:length(datatypes)) {
+		print(paste0(i, ": platform: ", platforms[i], " print_platform: ", readable_platforms[platforms[i],2]));
 		print_platforms <- c(print_platforms, as.character(readable_platforms[platforms[i],2]));
 	}
 	if (length(datatypes) == 2) {
@@ -139,8 +149,8 @@ if (status != 'ok') {
 										datatypes, platforms, ids, scales, c(nrow(temp[[1]]), nrow(temp[[2]])), Par["out"]);
 		metadata <- save_metadata(metadata);
 		x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
-		print("str(x_data):");
-		print(str(x_data));
+		#print("str(x_data):");
+		#print(str(x_data));
 		y_data <- transformVars(temp[[2]][common_samples,2], scales[2]);
 		#print("str(y_data):");
 		#print(str(y_data));
@@ -153,7 +163,6 @@ if (status != 'ok') {
 		# ck = ifelse(is.na(ck), 0, ck);
 		t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
 		f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
-#CHANGE:
 		plot_legend = generate_plot_legend(c(
 			plot_title,
 			# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
@@ -527,7 +536,7 @@ if (status != 'ok') {
 			}		
 			script_line <- paste0(script_line, "config(editable = FALSE) %>%");
 			if (!is.na(nea_platform)) {
-				render_line < paste0("el.on('plotly_click', function(d) { 
+				render_line <- paste0("el.on('plotly_click', function(d) { 
 						var id = ((d.points[0].text).split(' '))[1];
 						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
 					});");

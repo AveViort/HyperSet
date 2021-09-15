@@ -62,5 +62,5 @@ tcga_codes <- Par["tcga_codes"];
 print(tcga_codes);
 fname <- substr(Par["out"], 4, gregexpr(pattern = "\\.", Par["out"])[[1]][1]-1);
 query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(platforms, collapse = "','"), "'"),"]);");
-readable_platforms <- sqlQuery(rch, query);
+readable_platforms <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 rownames(readable_platforms) <- readable_platforms[,1];
