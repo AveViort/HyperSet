@@ -41,7 +41,6 @@
 <script src="js/jquery-ui-contextmenu-master/jquery.ui-contextmenu.min.js" type="text/javascript"></script>  
 <script src="js/jquery.form.js" type="text/javascript"></script> 
 <script src="js/qTip/jquery.qtip.min.js" type="text/javascript"></script>
-<script src="js/overlib.js" type="text/javascript"></script>
 
 <script src="js/drugs.js" type="text/javascript"></script>
 <script src="js/cookies.js" type="text/javascript"></script>
@@ -414,11 +413,101 @@ table.simple_table td a{
 			</div>
 			
 			<div id="help-tab-plots">
-			
+				EviCor website offers a variety of interactive plots. User can use plots for explorative data analysis. Plots can be shared vi automatically generated urls.
+				<br>
+				<h3>Available plot types</h3>
+				Plot type is always decided on the data types of chosen variables. The following table describes available plot types and their dimensionality.
+				<br>
+				<table>
+					<tr>
+						<th>Plot type</th>
+						<th>Dimensionality</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>Bar</td>
+						<td>1D</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Pie</td>
+						<td>1D</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Histogram</td>
+						<td>1D/2D</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Venn</td>
+						<td>2D</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Box</td>
+						<td>2D</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Kaplan-Meier plot</td>
+						<td>2D/3D</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Scatter</td>
+						<td>2D/3D</td>
+						<td></td>
+					</tr>
+				</table>
+				<br>
+				
+				<h3>Available data transformations</h3>
+				EviCor allows user to scale data when working with numerical data types. The following transformations are available:
+				<br>
+				<table>
+					<tr>
+						<th>Scale</th>
+						<th>Description</th>
+					</tr>
+					<tr>
+						<td>Linear</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Square root (sqrt)</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Logarithmic (log)</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Beta</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>M (M-value)</td>
+						<td></td>
+					</tr>
+				</table>
+				<br>
+				
+				<h3>Plot legends</h3>
+				
+				<br>
+				
+				<h3>REST API</h3>
+				EviCor web platform allows user to create plots using REST API. Refer to the respective tab for more details.
+				</br>
+				
 			</div>
 			
 			<div id="help-tab-models">
-			
+				EviCor web platform can create predictive models from pre-loaded data. 
+				
+				<h3>Available models</h3>
+				At the moment EviCor supports only <i>glmnet</i> models. GLMnet is an implementation of elastic net algorithm. You can find more information on GLmnet, including original publications, on the <a href="https://cran.r-project.org/web/packages/glmnet/index.html">official CRAN page</a> of the respective package.
 			</div> 
 		
 			<div id="help-tab-comp">
@@ -454,7 +543,7 @@ table.simple_table td a{
 						<i>filter_columns</i>: mandatory, columns to use for filtering (e.g. column with FDR values);<br>
 						<i>concat_operator</i>: mandatory if more than one value specified in <i>filter_columns</i>, comma-separated list of logical operators to use for filtering conditions generation. For <i>n</i> columns in <i>filter_columns</i> this list should either contain <i>n-1</i> operators (applied in order) or one operator (applied to all).<br>
 					<b>Example:</b> <br>
-					<b>Usage tips:</b> Option <i>concat_operator</i> may be confusing. The following short example is designed to clarify it. Let's say columns col1, col2 and col3 are chosen for filtering, FDR threshold is 0.05. If <i>concat_operator</i> is set to OR,AND the resulting condition will be: (col1&<0.05) OR (col2&<0.05) AND (col3&<0.05). Setting this parameter to AND will result in the following filtering condition: (col1&<0.05) OR (col2&<0.05) AND (col3&<0.05).<br>
+					<b>Usage tips:</b> Option <i>concat_operator</i> may be confusing. The following short example is designed to clarify it. Let's say columns col1, col2 and col3 are chosen for filtering, FDR threshold is 0.05. If <i>concat_operator</i> is set to OR,AND the resulting condition will be: (col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05). Setting this parameter to AND will result in the following filtering condition: (col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05).<br>
 				</p>
 				<br>
 				<b>Creating plots</b>
@@ -620,7 +709,11 @@ table.simple_table td a{
 				<br>
 				1.0.0 (25th of March, 2020) - stable release: exploring correlations, creating and sharing plots, creating and downloading predictive models.
 				<br>
-				1.1.0 (8th of April, 2021) - stable release: improved functionality, model comparisson.
+				1.1.0 (8th of April, 2021) - stable release: improved functionality, model comparisson, REST API.
+				<br>
+				1.2.0 (21st of June, 2021) - experimental version: improved functionality, more responsive design.
+				<br>
+				1.3.0 (10th of September, 2021) - stable version: improved REST API, improved performance, new data, style changes, new tools for working with plots and models.
 			</div>
 		</div>
 	</div>
@@ -3539,28 +3632,6 @@ function maximize_plot_window(plot_filename) {
 	var plot_id = plot_filename.slice(0, -5);
 	var active_height = window.innerHeight;
 	var active_width = window.innerWidth - $("#sidebar_history_dock").width();
-	$("#plot_window_" + plot_id).dialog( "option", "height", active_height);
-	$("#plot_window_" + plot_id).dialog( "option", "width", active_width);
-	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("height", "98%");
-	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("width", "100%");
-	sessionStorage.setItem("plot_window_" + plot_id + "_size", active_height + "*" + active_width);
-}
-
-function normalize_plot_window(plot_filename) {
-	var plot_id = plot_filename.slice(0, -5);
-	var active_height = window.innerHeight;
-	var active_width = window.innerWidth - $("#sidebar_history_dock").width();
-	// assume we have 4:3 viewport - find the closest one
-	var scale = active_width/4*3 <= active_height ? active_width/4 : active_height/3;
-	//console.log("Height: " + active_height + " Width: " + active_width + " Scale: " + scale + " Plot filename:" + plot_filename);
-	// 40% of full viewport
-	var fraction = 0.4;
-	active_height = scale*3*fraction;
-	active_width = scale*4*fraction;
-	if (active_height < 350 || active_width < 550) {
-		active_heigth = 350;
-		active_width = 550;
-	}
 	$("#plot_window_" + plot_id).dialog( "option", "height", active_height);
 	$("#plot_window_" + plot_id).dialog( "option", "width", active_width);
 	($("#plot_window_" + plot_id).children('iframe'))[0].setAttribute("height", "98%");

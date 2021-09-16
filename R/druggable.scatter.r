@@ -13,6 +13,9 @@ common_samples <- c();
 tissue_samples <- c();
 internal_ids <- ids;
 metadata <- '';
+# this variable is needed for on.click for NEA when one of the variables belongs to patient data types
+# e.g. if one of the datat types is CLIN, this script will make "tcga-a8-a07p" out of "tcga-a8-a07p-01"
+patient_suffix <- '';
 for (i in 1:length(ids)) {
 	if (!empty_value(ids[i])) {
 		if ((datatypes[i] == 'ge_nea') | (datatypes[i] == 'mut_nea') | (datatypes[i] == 'nea_ge') | (datatypes[i] == 'nea_mut')) {
@@ -22,7 +25,7 @@ for (i in 1:length(ids)) {
 		}
 		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[i], "';"); 
 		print(query);
-		internal_ids[i] <- as.character(sqlQuery(rch, query)[1,1]);
+		internal_ids[i] <- sqlQuery(rch, query, stringsAsFactors = FALSE)[1,1];
 	}
 }
 print("Internal ids:");
@@ -93,6 +96,7 @@ for (i in 1:length(datatypes)) {
 	temp_rownames <- c();
 	if ((Par["source"] == "tcga") & (any(datatypes %in% druggable.patient.datatypes))) {
 		temp_rownames <- unlist(lapply(as.character(temp[[i]][,1]), function(x) regmatches(x, regexpr("tcga-[0-9a-z]{2}-[0-9a-z]{4}", x))));
+		patient_suffix <- paste0("-", tcga_codes);
 	} else {
 		temp_rownames <- as.character(temp[[i]][,1]);
 	}
@@ -228,7 +232,7 @@ if (status != 'ok') {
 						console.log('ID: ', id);
 					});",
 				ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) {
-						var id = ((d.points[0].text).split(' '))[1];
+						var id = ((d.points[0].text).split(' '))[1] + '", patient_suffix, "';
 						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
 					});"), ifelse(Par["source"] == "tcga", paste0("el.on('plotly_click', function(d) {
 						var id = ((d.points[0].text).split(' '))[1].toUpperCase();
@@ -369,7 +373,7 @@ if (status != 'ok') {
 						console.log('ID: ', d.points[0].text);
 					});",
 					ifelse(!is.na(nea_platform), paste0("el.on('plotly_click', function(d) {
-						var id = ((d.points[0].text).split(' '))[1];
+						var id = ((d.points[0].text).split(' '))[1]+ '", patient_suffix, "';
 						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
 					});"), ifelse(Par["source"] == "tcga", paste0("el.on('plotly_click', function(d) {
 						var id = ((d.points[0].text).split(' '))[1].toUpperCase();
@@ -508,38 +512,45 @@ if (status != 'ok') {
 			script_line <- "p <- plot_ly() %>%";
 			write(script_line, file = script_file, append = TRUE);
 			for (i in names(types)) {
-				x_val <- paste(x_data[which(z_data == i)], collapse = ",");
-				y_val <- paste(y_data[which(z_data == i)], collapse = ",");
+				print(paste0("Current type: ", i));
+				chosen_samples <- common_samples[which(z_data == i)];
+				# do this - because we occasionaly have sample names like 697, which will be transformed into 697=-1.144 later
+				chosen_samples <- unlist(lapply(chosen_samples, function(ele) return(paste0("'", ele, "'"))));
+				x_val <- paste(chosen_samples, x_data[which(z_data == i)], sep = "=", collapse = ",");
+				y_val <- paste(chosen_samples, y_data[which(z_data == i)], sep = "=", collapse = ",");
 				scripte_line <- '';
 				if (platforms[k] == "tissue") {
 					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-											name='", types[i], "', marker = list(color = '", marker_colours[i], "', symbol = '",
-											marker_shapes[1], "')) %>%");
+											name='", types[i], "', text = ~paste('Patient:', c(", paste(chosen_samples, collapse = ","), ")),
+											marker = list(color = '", marker_colours[i], "', symbol = '", marker_shapes[1], "')) %>%");
 				} else {
 					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-											name='", types[i], "', marker = list(color = '", marker_colours[i],"', symbol = '",
-											marker_shapes[i], "')) %>%");
+											name='", types[i], "', text = ~paste('Patient:', c(", paste(chosen_samples, collapse = ","), ")),
+											marker = list(color = '", marker_colours[i],"', symbol = '", marker_shapes[i], "')) %>%");
 				}
 				write(script_line, file = script_file, append = TRUE);
 			}
-			if (length(types) > 1) {
-				script_line <- paste0(script_line, "layout(showlegend = TRUE,
-					shapes = list(type='line', line = list(color = 'red', dash = 'dash'), 
+			script_line <- paste0("layout(shapes = list(type='line', line = list(color = 'red', dash = 'dash'), 
 						x0 = min(x_data), 
 						x1 = max(x_data), 
 						y0 = predict(regression_model, data.frame(x_data = min(x_data))),
-						y1 = predict(regression_model, data.frame(x_data = max(x_data)))),
+						y1 = predict(regression_model, data.frame(x_data = max(x_data))))");
+			if (length(types) > 1) {
+				script_line <- paste0(script_line, ",showlegend = TRUE,
 					legend = druggable.plotly.legend.style('", paste(types, collapse = "\n"), "','", plot_legend, "'),
 					xaxis = x_axis,
 					yaxis = y_axis,
-					margin = druggable.margins) %>%");
+					margin = druggable.margins");
 			}		
-			script_line <- paste0(script_line, "config(editable = FALSE) %>%");
+			script_line <- paste0(script_line, ") %>% config(editable = TRUE) %>%");
 			if (!is.na(nea_platform)) {
-				render_line <- paste0("el.on('plotly_click', function(d) { 
-						var id = ((d.points[0].text).split(' '))[1];
-						window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
-					});");
+				render_line <- paste0("function(el) {
+						el.on('plotly_click', function(d) { 
+							console.log(d.points);
+							var id = ((d.points[0].text).split(' '))[1] + '", patient_suffix, "';
+							window.open('https://www.evinet.org/subnet.html#id=' + id + ';platform=", sub("^*[azAZ]_", "", nea_platform),";pathway=", pathway,"','_blank');
+						});
+					}");
 				script_line <- paste0(script_line, 'onRender("', render_line, '") %>%');
 			}
 			script_line <- paste0(script_line, "config(modeBarButtonsToAdd = list(druggable.evinet.modebar));");
