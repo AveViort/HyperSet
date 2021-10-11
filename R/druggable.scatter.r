@@ -159,57 +159,39 @@ if (status != 'ok') {
 		#print("str(y_data):");
 		#print(str(y_data));
 		plot_title <- generate_plot_title(Par["source"], Par["cohort"], print_platforms, tcga_codes, length(common_samples));
-		cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
+		axis_subheader <- generate_subheader_axis_info(readable_platforms[platforms[1:2],2],
+														ids,
+														NA,
+														scales,
+														readable_platforms[platforms[1:2],3],
+														druggable.short.string.threshold);
+		cp = cor(x_data, y_data, use = "pairwise.complete.obs", method = "spearman");
 		cp = ifelse(is.na(cp), 0, cp);
-		cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
+		cs = cor(x_data, y_data, use = "pairwise.complete.obs", method = "pearson");
 		cs = ifelse(is.na(cs), 0, cs);
-		# ck = cor(x_data, y_data, use="pairwise.complete.obs", method="kendall");
+		# ck = cor(x_data, y_data, use = "pairwise.complete.obs", method = "kendall");
 		# ck = ifelse(is.na(ck), 0, ck);
-		t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
-		f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
+		# t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
+		# f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
 		plot_legend = generate_plot_legend(c(
 			plot_title,
-			# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
-			# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
+			# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered) = ", round(f1$estimate, digits = druggable.precision.cor.legend))), 
+			# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test) = ", signif(f1$p.value, digits=druggable.precision.pval.legend))),
+			adjust_string(axis_subheader, 25),
 			"  Correlation: ", 
-			paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
-			paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)) 
-			# paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend))
+			paste0("Pearson linear R=", round(cp, digits = druggable.precision.cor.legend)), 
+			paste0("Spearman rank R=", round(cs, digits = druggable.precision.cor.legend)) 
+			# paste0("Kendall tau=", round(ck, digits = druggable.precision.cor.legend))
 		));
-		print(str(plot_legend));
 		print(plot_legend);
 		x_axis <- list(
-			title = adjust_string(paste0(
-									ifelse(!empty_value(ids[1]),
-										paste0(
-											ifelse(grepl(":", ids[1]),
-												strsplit(ids[1], ":")[[1]][1],
-												ids[1]), 
-											ifelse(ids[1] %in% rownames(ids_descriptions),
-												paste0(":", shorten_string(ids_descriptions[ids[1],2], druggable.short.string.threshold)),
-												"")
-											), 
-										""), " (", 
-									readable_platforms[platforms[1],2], ",", scales[1], ")"), 
-								druggable.axis.label.threshold),
+			title = "X",
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
 			tickfont = font2);
 		y_axis <- list(
-			title = adjust_string(paste0(
-									ifelse(!empty_value(ids[2]), 
-										paste0(
-											ifelse(grepl(":", ids[2]), 
-												strsplit(ids[2], ":")[[1]][1], 
-												ids[2]),
-											ifelse(ids[2] %in% rownames(ids_descriptions),
-												paste0(":", shorten_string(ids_descriptions[ids[2],2], druggable.short.string.threshold)),
-												"")
-											),
-										"")," (", 
-									readable_platforms[platforms[2],2], ",", scales[2], ")"), 
-								druggable.axis.label.threshold),
+			title = "Y",
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
@@ -218,7 +200,7 @@ if (status != 'ok') {
 		#print(paste0("y_data: ", length(y_data)));
 		#print(paste0("Common samples: ", length(common_samples)));
 		regression_model <- lm(y_data~x_data);
-		p <- plot_ly(x = x_data, y = y_data, name = plot_legend, type = 'scatter', 
+		p <- plot_ly(x = x_data, y = y_data, type = 'scatter', 
 			text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples, tissue_types[common_samples,2], " (click to open information)")) %>%
 		onRender(paste0("
 			function(el) { 
@@ -299,70 +281,42 @@ if (status != 'ok') {
 			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
 			cs = ifelse(is.na(cs), 0, cs);
 			x_axis <- list(
-				title = adjust_string(paste0(
-										ifelse(!empty_value(ids[1]), 
-											paste0(
-												ifelse(grepl(":", ids[1]), 
-													strsplit(ids[1], ":")[[1]][1], 
-													ids[1]),
-												ifelse(ids[1] %in% rownames(ids_descriptions),
-													paste0(":", shorten_string(ids_descriptions[ids[1],2], druggable.short.string.threshold)),
-													"")
-												),
-											""), " (", 
-										readable_platforms[platforms[1],2], ",", scales[1], ")"), 
-									druggable.axis.label.threshold),
+				title = "X",
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = adjust_string(paste0(
-										ifelse(!empty_value(ids[2]), 
-											paste0(
-												ifelse(grepl(":", ids[2]), 
-													strsplit(ids[2], ":")[[1]][1], 
-													ids[2]),
-												ifelse(ids[2] %in% rownames(ids_descriptions),
-													paste0(":", shorten_string(ids_descriptions[ids[2],2], druggable.short.string.threshold)),
-													"")
-												), 
-											""), " (", 
-										readable_platforms[platforms[2],2], ",", scales[2], ")"), 
-									druggable.axis.label.threshold),
+				title = "Y",
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
+			axis_subheader <- generate_subheader_axis_info(readable_platforms[platforms[1:3],2],
+														ids,
+														NA,
+														scales,
+														readable_platforms[platforms[1:3],3],
+														druggable.short.string.threshold);
 			plot_legend = generate_plot_legend(c(
 				plot_title,
+				adjust_string(axis_subheader, 25),
 				# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
 				# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
-				paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
-				paste0("Spearman rank R=", round(cs, digits=druggable.precision.cor.legend)) 
-				# paste0("Kendall tau=", round(ck, digits=druggable.precision.cor.legend)), 
+				paste0("Pearson linear R=", round(cp, digits = druggable.precision.cor.legend)), 
+				paste0("Spearman rank R=", round(cs, digits = druggable.precision.cor.legend)) 
+				# paste0("Kendall tau=", round(ck, digits = druggable.precision.cor.legend)), 
 				));
 			print("Color bar limits:");
 			print("var_limits: ");
 			print(c(min(z_data), max(z_data)));
 			print("bar_limits: ");
 			print(c(min(z_data), max(z_data)));
-			z_axis <- adjust_string(paste0(
-				ifelse(!empty_value(ids[3]), 
-					paste0(
-						ifelse(grepl(":", ids[3]), 
-							strsplit(ids[3], ":")[[1]][1], 
-							ids[3]),
-						ifelse(ids[3] %in% rownames(ids_descriptions),
-							paste0(":", shorten_string(ids_descriptions[ids[3],2], druggable.short.string.threshold)),
-							"")),
-					""), " (", 
-				readable_platforms[platforms[3],2], ",", scales[3], ")"), 
-				druggable.axis.label.threshold);
+			z_axis <- "Z";
 			regression_model <- lm(y_data~x_data);
-			p <- plot_ly(x = x_data, y = y_data, type = 'scatter',
-				text = ~paste("Patient:", common_samples), color = z_data) %>% 
-			colorbar(title = z_axis) %>%
+			p <- plot_ly(x = x_data, y = y_data, type = 'scatter', name = ' ',
+				text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples), color = z_data) %>% 
+			colorbar(title = plot_legend, yanchor = 'top', len = 1) %>%
 			onRender(paste0("
 				function(el) { 
 					el.on('plotly_hover', function(d) { 
@@ -433,8 +387,15 @@ if (status != 'ok') {
 			cp = ifelse(is.na(cp), 0, cp);
 			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
 			cs = ifelse(is.na(cs), 0, cs);
+			axis_subheader <- generate_subheader_axis_info(readable_platforms[platforms[axis_index[1:3]],2],
+														ids[axis_index[1:3]],
+														NA,
+														scales[axis_index[1:3]],
+														readable_platforms[platforms[axis_index[1:3]],3],
+														druggable.short.string.threshold);
 			plot_legend = generate_plot_legend(c(
 				plot_title,
+				adjust_string(axis_subheader, 25),
 				# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered)=", round(f1$estimate, digits=druggable.precision.cor.legend))), 
 				# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test)=", signif(f1$p.value, digits=druggable.precision.pval.legend))), 
 				paste0("Pearson linear R=", round(cp, digits=druggable.precision.cor.legend)), 
@@ -453,37 +414,13 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = adjust_string(paste0(
-										ifelse(!empty_value(ids[axis_index[1]]), 
-											paste0(
-												ifelse(grepl(":", ids[axis_index[1]]), 
-													strsplit(ids[axis_index[1]], ":")[[1]][1], 
-													ids[axis_index[1]]),
-												ifelse(ids[axis_index[1]] %in% rownames(ids_descriptions),
-													paste0(":", shorten_string(ids_descriptions[ids[axis_index[1]],2], druggable.short.string.threshold)),
-													"")
-												),
-											""), " (", 
-										readable_platforms[platforms[axis_index[1]],2], ",", scales[axis_index[1]], ")"), 
-									druggable.axis.label.threshold),
+				title = "X",
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = adjust_string(paste0(
-										ifelse(!empty_value(ids[axis_index[2]]), 
-											paste0(
-												ifelse(grepl(":", ids[axis_index[2]]), 
-													strsplit(ids[axis_index[2]], ":")[[1]][1],
-													ids[axis_index[2]]),
-												ifelse(ids[axis_index[2]] %in% rownames(ids_descriptions),
-													paste0(":", shorten_string(ids_descriptions[ids[axis_index[2]],2], druggable.short.string.threshold)),
-													"")
-												),
-											""), " (", 
-										readable_platforms[platforms[axis_index[2]],2], ",", scales[axis_index[2]], ")"), 
-									druggable.axis.label.threshold),
+				title = "Y",
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,

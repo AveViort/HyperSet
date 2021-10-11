@@ -51,7 +51,7 @@ if (all(empty_value(ids))) {
 	query <- paste0("SELECT external_id, annotation FROM synonyms WHERE external_id=ANY(ARRAY[", paste0("'", paste(ids, collapse = "','"), "'"), "]) AND ",
 	"NOT (annotation=ANY(ARRAY[", paste0("'", paste(ids, tolower(ids), collapse = "','", sep = "','"), "'"), "]));");
 	print(query);
-	ids_descriptions <- sqlQuery(rch, query);
+	ids_descriptions <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 	rownames(ids_descriptions) <- ids_descriptions[,1];
 	print(ids_descriptions);
 }
@@ -61,6 +61,8 @@ print(scales);
 tcga_codes <- Par["tcga_codes"];
 print(tcga_codes);
 fname <- substr(Par["out"], 4, gregexpr(pattern = "\\.", Par["out"])[[1]][1]-1);
-query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(platforms, collapse = "','"), "'"),"]);");
+query <- paste0("SELECT shortname,fullname,axis_prefix FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(platforms, collapse = "','"), "'"),"]);");
+print(query);
 readable_platforms <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 rownames(readable_platforms) <- readable_platforms[,1];
+print(readable_platforms);

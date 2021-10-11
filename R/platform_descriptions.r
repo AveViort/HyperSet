@@ -46,14 +46,17 @@ update_datatype_descriptions_from_table <- function(table_name, key_file = "HS_S
 
 # WORKING WITH PLATFORM DESCRIPTIONS
 
+# table format: 7 columns
+# shortname - fullname - visibility - datatype - description(optional) - stats(optional) - axis_prefix(optional)
 update_platform_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
-	table_data <- read.table(table_name, header = FALSE, sep = "\t", na.strings = "");
+	table_data <- read.table(table_name, header = FALSE, sep = "\t", na.strings = "", stringsAsFactors = FALSE);
 	credentials <- getDbCredentials(key_file);
 	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]); 
 	for (i in 1:nrow(table_data)) {
-		if (is.na(table_data[i,5])) {table_data[i,5] <- ''};
-		if (is.na(table_data[i,5])) {table_data[i,6] <- ''};
-		sqlQuery(rch, paste0("SELECT update_platform_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3], ", '", table_data[i,4],  "', '", table_data[i,5], "','", table_data[i,6], "')"));
+		if (empty_value(table_data[i,5])) {table_data[i,5] <- ''};
+		if (empty_value(table_data[i,6])) {table_data[i,6] <- ''};
+		if (empty_value(table_data[i,7])) {table_data[i,7] <- ''};
+		sqlQuery(rch, paste0("SELECT update_platform_description('", table_data[i,1], "', '", table_data[i,2] , "', ", table_data[i,3], ", '", table_data[i,4],  "', '", table_data[i,5], "','", table_data[i,6], "','", table_data[i,7], "')"));
 	}
 	print(paste0("Created/updated ", i, " records"));
 	odbcClose(rch);

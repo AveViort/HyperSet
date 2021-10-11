@@ -1,12 +1,12 @@
 # this file contains functions which are commonly used by plot functions
 transformVars <- function (x, axis_scale) {
-return(switch(axis_scale,
-         "sqrt" = if(min(x, na.rm = TRUE)>=0) {sqrt(x)} else {sqrt(x-min(x, na.rm = TRUE))},
-         "log" = if(min(x, na.rm = TRUE)>0) {log(x)} else {if(any(x != 0)) {log(x+1.1*abs(min(x[x!=0], na.rm = TRUE)))} else {x}},
-         "linear" = x,
-		 "beta" = arcsine2beta(x),
-		 "mvalue" = beta2Mvalue(arcsine2beta(x))
-         ));
+	return(switch(axis_scale,
+		"sqrt" = if(min(x, na.rm = TRUE)>=0) {sqrt(x)} else {sqrt(x-min(x, na.rm = TRUE))},
+		"log" = if(min(x, na.rm = TRUE)>0) {log(x)} else {if(any(x != 0)) {log(x+1.1*abs(min(x[x!=0], na.rm = TRUE)))} else {x}},
+		"original" = x,
+		"beta" = arcsine2beta(x),
+		"mvalue" = beta2Mvalue(arcsine2beta(x))
+	));
 }
 
 # support functions for transformVars
@@ -62,9 +62,10 @@ adjust_string <- function(long_string, threshold) {
 	adjusted_string <- long_string;
 	# check if string is multiline
 	if (grepl("\n", long_string)) {
-		adjust_multiline_string(long_string, threshold);
+		adjusted_string <- adjust_multiline_string(long_string, threshold);
 	} else {
 		string_length <- nchar(long_string);	
+		#print(string_length);
 		if (string_length > threshold) {
 			spaces <- gregexpr(pattern =' ', long_string)[[1]];
 			#print(spaces);
@@ -83,8 +84,9 @@ adjust_multiline_string <- function(multiline_string, threshold) {
 	adjusted_string <- multiline_string;
 	# if sum of all lines length with separators is smaller than threshold - do nothing
 	string_length <- nchar(multiline_string);
-	if (string_length < threshold) {
+	if (string_length > threshold) {
 		sublines <- unlist(strsplit(multiline_string, "\n"));
+		#print(sublines);
 		for (i in 1:length(sublines)) {
 			sublines[i] <- adjust_string(sublines[i], threshold);
 		}
@@ -123,9 +125,10 @@ shorten_string <- function(long_string, threshold) {
 # generate plot title - platforms var is a character vector; other variables are strings
 # PAY ATTENTION! This function must be used only after HS.R.config.r is loaded
 generate_plot_title <- function(source_name, cohort, platforms, code, common_samples = 0) {
-	plot_title <- toupper(cohort);
-	plot_title <- paste0(plot_title, " ",  paste(platforms, collapse="\nvs "));
+	plot_title <- paste0("<b>", toupper(cohort));
+	# plot_title <- paste0(plot_title, " ",  paste(platforms, collapse="\nvs "));
 	plot_title <- paste0(plot_title, "\n", ifelse(source_name == "tcga", "Samples", "Tissue"), ": ", code, ifelse(common_samples > 0, paste0(" (n=", common_samples, ")"), ""));
+	plot_title <- paste0(plot_title, "</b>");
 	# plot_title <- adjust_string(plot_title, 25);
 	return(plot_title);
 }
@@ -133,6 +136,33 @@ generate_plot_title <- function(source_name, cohort, platforms, code, common_sam
 generate_plot_legend <- function(params) {
 	plot_legend <- paste(unlist(lapply(params, adjust_string, threshold = 25)), collapse = "\n");
 	return(plot_legend);
+}
+
+# this function is used to generate subheader with axis legends: X, Y, Z...
+generate_subheader_axis_info <- function(platform_names, ids = NA, id_descriptions = NA, axis_scales = NA, axis_prefixes = NA, description_threshold = 100) {
+	subheader <- c();
+	axis_labels <- c("X", "Y", "Z");
+	for (i in 1:length(platform_names)) {
+		subheader <- c(subheader, paste0(axis_labels[i], ": ", generate_axis_title(platform_names[i], ids[i], id_descriptions[i], axis_scales[i], axis_prefixes[i], description_threshold)));
+	}
+	subheader <- paste(subheader, collapse = "\n");
+	return(subheader);
+}
+
+# generate text for axis
+generate_axis_title <- function(platform_name, id = NA, id_description = NA, axis_scale = NA, axis_prefix = NA, description_threshold = 100) {
+	axis_title <- ifelse(is.na(axis_prefix), platform_name, axis_prefix);
+	axis_title <- paste0(axis_title, ifelse(is.na(id), '', paste0(' ', ifelse(grepl(":", id), strsplit(id, ":")[[1]][1], id))));
+	axis_title <- paste0(axis_title, ifelse(is.na(id_description), '', paste0(":", shorten_string(id_description, description_threshold))));
+	axis_title <- paste0(axis_title, ifelse(is.na(axis_prefix), '', paste0(' (', platform_name, ifelse(is.na(axis_scale), ')', ''))));
+	axis_title <- paste0(axis_title, ifelse(is.na(axis_scale), 
+										'', 
+										paste0(ifelse(is.na(axis_prefix), 
+												' (', ', '), 
+												paste0(axis_scale, ' scale'), ')')
+									)
+						);
+	return(axis_title);
 }
 
 # axis_n is a vector, represents number of samples for x, y, z (before common_samples applied)

@@ -164,17 +164,10 @@ if (status != 'ok') {
 	print(str(y_data));
 	y_axis_name = '';
 	print(readable_platforms);
-	x_axis_name = paste0(toupper(temp_datatypes[2]), ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", as.character(readable_platforms[temp_platforms[2],2])));
-	if (length(temp_scales) != 0) {
-		if (!empty_value(temp_ids[1])) {
-			y_axis_name <- paste0(readable_platforms[temp_platforms[1], 2], " (", ifelse(grepl(":", temp_ids[1]), strsplit(temp_ids[1], ":")[[1]][1], temp_ids[1]), ",", temp_scales[1], ")");
-		} else {
-			y_axis_name <- paste0(readable_platforms[temp_platforms[1], 2], " (", temp_scales[1], ")");
-		}
-	} else {
-		y_axis_name <- paste0(readable_platforms[temp_platforms[1], 2]);
-	}	
+	x_axis_name = paste0(toupper(temp_datatypes[2]), ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", readable_platforms[temp_platforms[2],2]));
+	y_axis_name <- generate_axis_title(readable_platforms[temp_platforms[1], 2], temp_ids[1], id_description = NA, temp_scales[1], axis_prefix = readable_platforms[temp_platforms[1], 3], 25);
 	plot_annotation <- paste0("Cohort: ", toupper(Par["cohort"]));
+	plot_legend <- generate_plot_legend(plot_annotation);
 	x_axis <- list(
 		title = adjust_string(x_axis_name, druggable.axis.label.threshold),
 		titlefont = font1,
@@ -186,22 +179,14 @@ if (status != 'ok') {
 		showticklabels = TRUE,
 		tickangle = 0,
 		tickfont = font2);
-	p <- plot_ly(y = x_data, x = y_data, type = "box") %>% 
-	add_annotations(xref = "paper",
-		yref = "paper",
-		x = 1,
-		y = -0.1,
-		text = plot_annotation,
-		showarrow = FALSE) %>%
-	layout(xaxis = x_axis,
-		yaxis = y_axis,
-		margin = druggable.margins) %>%
+	p <- plot_ly(y = x_data, x = y_data, type = "box", name = readable_platforms[temp_platforms[2], 2]) %>% 
+	layout(legend = druggable.plotly.legend.style(plot_legend),
+			showlegend = TRUE,
+			margin = druggable.margins,
+			xaxis = x_axis,
+			yaxis = y_axis) %>%
 	config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
-	time1 <- Sys.time();
 	htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
-	time2 <- Sys.time();
-	time3 <- time2 - time1;
-	print(paste0("Plotting and saving took ", round(time3, digits=2), " seconds"));
 }
 odbcClose(rch);
 sink(console_output, type = "output");

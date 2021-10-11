@@ -611,7 +611,7 @@ query := E'SELECT transform_type FROM data_transform_exclusions WHERE variable_n
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO table_name;
 EXECUTE E'SELECT data_type FROM information_schema.columns WHERE table_name=\'' || table_name || E'\' AND column_name=\'' || platform || E'\';' INTO column_type;
-query := E'SELECT transform_type FROM data_transform_types WHERE variable_type=\'' || column_type || E'\';';
+query := E'SELECT transform_type FROM data_transform_types WHERE variable_type=\'' || column_type || E'\' ORDER BY CASE WHEN transform_type=\'original\' THEN 1 END;';
 END IF;
 FOR res IN EXECUTE query
 LOOP
@@ -1124,6 +1124,49 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- check which platforms from significant interactions are not present in tables from guide_table
+CREATE OR REPLACE FUNCTION check_missing_platforms() RETURNS numeric AS $$
+DECLARE
+i numeric;
+cohort_n text;
+datatype_n text;
+platform_n text;
+table_name text;
+query text;
+flag boolean;
+BEGIN
+i := 0;
+FOR cohort_n IN SELECT DISTINCT cohort FROM significant_interactions
+LOOP
+RAISE NOTICE 'Cohort: %', cohort_n;
+FOR datatype_n IN SELECT DISTINCT datatype FROM significant_interactions WHERE cohort=cohort_n
+LOOP
+IF (datatype_n = 'MUT_NEA') THEN
+datatype_n := 'NEA_MUT';
+ELSE
+IF (datatype_n = 'GE_NEA') THEN
+datatype_n := 'NEA_GE';
+END IF;
+END IF;
+query := E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort_n || E'\' AND type=\'' || datatype_n || E'\';';
+--RAISE NOTICE '%', query;
+EXECUTE query INTO table_name;
+FOR platform_n IN SELECT DISTINCT platform FROM significant_interactions WHERE cohort=cohort_n AND datatype=datatype_n
+LOOP
+EXECUTE E'SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name=\'' || table_name || E'\' AND column_name=\'' || LOWER(platform_n) || E'\');' INTO flag;
+IF (NOT flag)
+THEN
+RAISE NOTICE 'Missing platform % in %', LOWER(platform_n), table_name;
+i := i + 1;
+END IF;
+END LOOP;
+END LOOP;
+END LOOP;
+RAISE NOTICE 'Total number of missing platforms: %', i;
+RETURN i;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION drug_synonym(drug text) RETURNS text AS $$
 DECLARE
 res text;
@@ -1465,16 +1508,16 @@ $$ LANGUAGE plpgsql;
 
 -- function to create/update records in platform_descriptions
 -- can be used standalone or from R code
-CREATE OR REPLACE FUNCTION update_platform_description (platform_n text, fullname text, display boolean, datatype text, description text, stats text) RETURNS boolean AS $$
+CREATE OR REPLACE FUNCTION update_platform_description (platform_n text, fullname text, display boolean, datatype text, description text, stats text, axis_prefix text) RETURNS boolean AS $$
 DECLARE
 flag boolean;
 BEGIN
 EXECUTE E'SELECT EXISTS (SELECT * FROM platform_descriptions WHERE shortname=\'' || platform_n || E'\');' INTO flag;
 IF (flag = true)
 THEN
-EXECUTE E'UPDATE platform_descriptions SET fullname=\'' || fullname || E'\',visibility='|| display || E',datatype=\'' || datatype || E'\'description=\'' || description || E'\',stats=\'' || stats || E'\' WHERE shortname=\'' || platform_n || E'\';';
+EXECUTE E'UPDATE platform_descriptions SET fullname=\'' || fullname || E'\',visibility='|| display || E',datatype=\'' || datatype || E'\',description=\'' || description || E'\',stats=\'' || stats || E'\',axis_prefix=\'' || axis_prefix || E'\' WHERE shortname=\'' || platform_n || E'\';';
 ELSE
-EXECUTE E'INSERT INTO platform_descriptions VALUES (\'' || platform_n || E'\', \'' || fullname || E'\', ' || display || E',\'' || datatype || E'\',\'' || description || E'\',\'' || stats || E'\');';
+EXECUTE E'INSERT INTO platform_descriptions VALUES (\'' || platform_n || E'\', \'' || fullname || E'\', ' || display || E',\'' || datatype || E'\',\'' || description || E'\',\'' || stats || E'\',\'' || axis_prefix || E'\');';
 END IF;
 RETURN true;
 END;

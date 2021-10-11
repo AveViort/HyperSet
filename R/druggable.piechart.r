@@ -85,12 +85,6 @@ if (status != 'ok') {
 		values = slices,
 		name = plot_legend,
 		type = 'pie') %>% 
-	#add_annotations(xref = "paper",
-	#	yref = "paper",
-	#	x = 1,
-	#	y = -0.1,
-	#	text = plot_annotation,
-	#	showarrow = FALSE) %>%
 	layout(legend = druggable.plotly.legend.style(paste(factors, collapse = "\n")),
 			showlegend = TRUE,
 			margin = druggable.margins) %>%

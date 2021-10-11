@@ -94,13 +94,6 @@ if (status != 'ok') {
 			hoverinfo = 'y+text',
 			name = plot_legend,
 			type = 'bar') %>% 
-		#add_annotations(xref = "paper",
-		#	yref = "paper",
-		#	x = 1,
-		#	y = -0.1,
-		#	text = plot_annotation,
-		#	showarrow = FALSE) %>%
-		#layout(margin = druggable.margins) %>%
 		layout(legend = druggable.plotly.legend.style(plot_legend),
 			showlegend = TRUE,
 			editable = TRUE,
@@ -183,7 +176,7 @@ if (status != 'ok') {
 		} else {
 			marker_colour <- NULL;
 		}
-		print(marker_colour);
+		#print(marker_colour);
 		p <- plot_ly(x = names(temp2),
 			y = temp2,
 			name = categories[1],
@@ -209,11 +202,12 @@ if (status != 'ok') {
 			p <- p %>% add_trace(y = temp2, name = categories[i], marker = marker_colour);
 		}
 		p <- p %>% layout(margin = druggable.margins, barmode = 'stack') %>%
-		add_annotations(
-			x = length(temp2)+0.5,
-			y = -4.5,
-			text = plot_annotation,
-			showarrow = FALSE) %>%
+		layout(legend = druggable.plotly.legend.style(plot_legend),
+			showlegend = TRUE,
+			editable = TRUE,
+			xaxis = x_axis,
+			yaxis = y_axis,
+			margin = druggable.margins) %>%
 		config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	}
