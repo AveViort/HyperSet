@@ -123,7 +123,7 @@ if (length(platforms) == 1) {
 			if (!empty_value(second_set_id)) {
 				plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
 			}
-			surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
+			surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, platform = second_set_platform, id = second_set_id, s.type = first_set_platform);
 			#print("surv.data:");
 			#print(str(surv.data));
 
@@ -268,7 +268,7 @@ if (length(platforms) == 1) {
 				if (!empty_value(second_set_id)) {
 					plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
 				}
-				surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform);
+				surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, platform = second_set_platform, id = second_set_id, s.type = first_set_platform);
 				#print("surv.data:");
 				#print(str(surv.data));
 
@@ -418,6 +418,7 @@ if (length(platforms) == 1) {
 					if (mode(fe.drug) == "numeric") {
 						label1 <- '';
 						label2 <- ''; 
+						fe.drug <- correctData(fe.drug, second_set_platform);
 						if (second_set_datatype == "copy") {
 							label1 <- paste0("", toupper(second_set_id), "<0", label1_col);
 							label2 <- paste0("", toupper(second_set_id), ">0", label2_col);

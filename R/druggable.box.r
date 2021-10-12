@@ -136,7 +136,8 @@ if (status != 'ok') {
 		"&scales=", paste(ids, collapse = ",")),
 		"Plot succesfully generated, but it is empty");
 } else {
-	x_data <- transformVars(temp[[1]][common_samples,2], temp_scales[1]);
+	x_data <- correctData(temp[[1]][common_samples,2], platforms[1]);
+	x_data <- transformVars(x_data, temp_scales[1]);
 	names(x_data) <- common_samples;
 	print("str(x_data):");
 	print(str(x_data));

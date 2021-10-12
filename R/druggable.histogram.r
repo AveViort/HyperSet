@@ -47,7 +47,8 @@ if (status != 'ok') {
 		"&scales=", scales[1]),
 		"Plot succesfully generated, but it is empty");
 } else {
-	x_data <- transformVars(x_data[,platforms[1]], scales[1]);
+	x_data <- correctData(x_data[,platforms[1]], platforms[1]);
+	x_data <- transformVars(x_data, scales[1]);
 	#print(x_data);
 	if (Par["source"] == "tcga") {
 		plot_annotation <- paste0(toupper(Par["cohort"]), ifelse(!empty_value(ids[1]), paste0(' ', ifelse(grepl(":", ids[1]), strsplit(ids[1], ":")[[1]][1], ids[1])), ''), ifelse(!(datatypes[1] %in% druggable.patient.datatypes), paste0(' samples: ', tcga_codes), ''));

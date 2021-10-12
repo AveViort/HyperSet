@@ -1,5 +1,15 @@
 # this file contains functions which are commonly used by plot functions
-transformVars <- function (x, axis_scale) {
+
+# some platforms have to be corrected before re-scaling
+correctData <- function (x, platform_name) {
+	return(switch(platform_name,
+		"gdsc1" = -exp(x) + 1,
+		"gdsc2" = -exp(x) + 1,
+		x
+	));
+}
+
+transformVars <- function(x, axis_scale) {
 	return(switch(axis_scale,
 		"sqrt" = if(min(x, na.rm = TRUE)>=0) {sqrt(x)} else {sqrt(x-min(x, na.rm = TRUE))},
 		"log" = if(min(x, na.rm = TRUE)>0) {log(x)} else {if(any(x != 0)) {log(x+1.1*abs(min(x[x!=0], na.rm = TRUE)))} else {x}},
@@ -10,7 +20,7 @@ transformVars <- function (x, axis_scale) {
 }
 
 # support functions for transformVars
-arcsine2beta <- function (x) {
+arcsine2beta <- function(x) {
 	if (min(x, na.rm=TRUE) < 0) {return("Error: negative value(s) detected...");}
 	if (max(x, na.rm=TRUE) > 1) {return("Error: values > 1 are not allowed...");}
 	return(sin((x * pi) / 2) **2);

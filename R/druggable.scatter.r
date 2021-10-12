@@ -152,10 +152,12 @@ if (status != 'ok') {
 		metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes, length(common_samples),
 										datatypes, platforms, ids, scales, c(nrow(temp[[1]]), nrow(temp[[2]])), Par["out"]);
 		metadata <- save_metadata(metadata);
-		x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
+		x_data <- correctData(temp[[1]][common_samples,2], platforms[1]);
+		x_data <- transformVars(x_data, scales[1]);
 		#print("str(x_data):");
 		#print(str(x_data));
-		y_data <- transformVars(temp[[2]][common_samples,2], scales[2]);
+		y_data <- correctData(temp[[2]][common_samples,2], platforms[2]);
+		y_data <- transformVars(y_data, scales[2]);
 		#print("str(y_data):");
 		#print(str(y_data));
 		plot_title <- generate_plot_title(Par["source"], Par["cohort"], print_platforms, tcga_codes, length(common_samples));
@@ -171,12 +173,12 @@ if (status != 'ok') {
 		cs = ifelse(is.na(cs), 0, cs);
 		# ck = cor(x_data, y_data, use = "pairwise.complete.obs", method = "kendall");
 		# ck = ifelse(is.na(ck), 0, ck);
-		# t1 <- table(x_data > median(x_data, na.rm=TRUE), y_data > median(y_data, na.rm=TRUE));
+		# t1 <- table(x_data > median(x_data, na.rm = TRUE), y_data > median(y_data, na.rm = TRUE));
 		# f1 <- NA; if (length(t1) == 4) {f1 <- fisher.test(t1);}
 		plot_legend = generate_plot_legend(c(
 			plot_title,
 			# ifelse(!is.list(f1), "", paste0("Fisher's exact test enrichment \n statistic (median-centered) = ", round(f1$estimate, digits = druggable.precision.cor.legend))), 
-			# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test) = ", signif(f1$p.value, digits=druggable.precision.pval.legend))),
+			# ifelse(!is.list(f1), "", paste0("P(Fisher's exact test) = ", signif(f1$p.value, digits = druggable.precision.pval.legend))),
 			adjust_string(axis_subheader, 25),
 			"  Correlation: ", 
 			paste0("Pearson linear R=", round(cp, digits = druggable.precision.cor.legend)), 
@@ -266,19 +268,22 @@ if (status != 'ok') {
 			print("Only numeric datatypes");
 			metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes, length(common_samples),
 										datatypes, platforms, ids, scales, c(nrow(temp[[1]]), nrow(temp[[2]]), nrow(temp[[3]])), Par["out"]);
-			metadata <- save_metadata(metadata);							
-			x_data <- transformVars(temp[[1]][common_samples,2], scales[1]);
+			metadata <- save_metadata(metadata);	
+			x_data <- correctData(temp[[1]][common_samples,2], platforms[1]);
+			x_data <- transformVars(x_data, scales[1]);
 			print("str(x_data):");
 			print(str(x_data));
-			y_data <- transformVars(temp[[2]][common_samples,2], scales[2]);
+			y_data <- correctData(temp[[2]][common_samples,2], platforms[2]);
+			y_data <- transformVars(y_data, scales[2]);
 			print("str(y_data):");
 			print(str(y_data));
-			z_data <- transformVars(temp[[3]][common_samples,2], scales[3]);
+			z_data <- correctData(temp[[3]][common_samples,2], platforms[3]);
+			z_data <- transformVars(z_data, scales[3]);
 			print("str(z_data):");
 			print(str(z_data));
-			cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
+			cp = cor(x_data, y_data, use = "pairwise.complete.obs", method = "spearman");
 			cp = ifelse(is.na(cp), 0, cp);
-			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
+			cs = cor(x_data, y_data, use = "pairwise.complete.obs", method = "pearson");
 			cs = ifelse(is.na(cs), 0, cs);
 			x_axis <- list(
 				title = "X",
@@ -362,7 +367,7 @@ if (status != 'ok') {
 				xaxis = x_axis,
 				yaxis = y_axis,
 				margin = druggable.margins) %>%
-			config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); # CHANGE
+			config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
 			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		} else {
 			print("One of the columns contains characters");
@@ -376,16 +381,18 @@ if (status != 'ok') {
 			metadata <- generate_plot_metadata("scatter", Par["source"], Par["cohort"], tcga_codes, length(common_samples),
 										datatypes[axis_index], platforms[axis_index], ids[axis_index], scales[axis_index], 
 										c(nrow(temp[[axis_index[1]]]), nrow(temp[[axis_index[2]]]), nrow(temp[[axis_index[3]]])), Par["out"]);
-			metadata <- save_metadata(metadata);		
-			x_data <- transformVars(temp[[axis_index[1]]][common_samples,2], scales[axis_index[1]]);
+			metadata <- save_metadata(metadata);	
+			x_data <- correctData(temp[[axis_index[1]]][common_samples,2], platforms[axis_index[1]]);
+			x_data <- transformVars(x_data, scales[axis_index[1]]);
 			print("str(x_data):");
 			print(str(x_data));
-			y_data <- transformVars(temp[[axis_index[2]]][common_samples,2], scales[axis_index[2]]);
+			y_data <- correctData(temp[[axis_index[2]]][common_samples,2], platforms[axis_index[2]]);
+			y_data <- transformVars(y_data, scales[axis_index[2]]);
 			print("str(y_data):");
 			print(str(y_data));	
-			cp = cor(x_data, y_data, use="pairwise.complete.obs", method="spearman");
+			cp = cor(x_data, y_data, use = "pairwise.complete.obs", method = "spearman");
 			cp = ifelse(is.na(cp), 0, cp);
-			cs = cor(x_data, y_data, use="pairwise.complete.obs", method="pearson");
+			cs = cor(x_data, y_data, use = "pairwise.complete.obs", method = "pearson");
 			cs = ifelse(is.na(cs), 0, cs);
 			axis_subheader <- generate_subheader_axis_info(readable_platforms[platforms[axis_index[1:3]],2],
 														ids[axis_index[1:3]],

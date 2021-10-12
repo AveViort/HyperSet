@@ -1,8 +1,10 @@
+# plot_common_functions must be loaded beforehand in order to correctly use this function
 plotSurvival_DR  <- function (
 	fe, #feature: a dependent variable, formatted as a vector of named elements
 	clin, # modified! 3 columns: sample, xx, xx.time
 	datatype, # COPY, GE, PE etc.
 	id, # gene name etc. Can be empty string, but cannot be NA
+	platform = NA, # used only for correction
 	s.type = "os", # survival type : OS, RFS, DFI, DSS, RFI, PFI
 	fu.length = NA, # length of follow-up time at which to cut, in respective time units
 	estimateIntervals = TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
@@ -15,14 +17,15 @@ plotSurvival_DR  <- function (
 	fe <- fe[usedSamples];
 	#print("fe(inside of plotSurvival):")
 	#print(str(fe));
-	cu <- cutFollowup.full(clin, usedSamples, s.type, po=NA);
+	cu <- cutFollowup.full(clin, usedSamples, s.type, po = NA);
 	#print("cu (inside of plotSurvival):")
 	#print(str(cu));
 	# cu <- cu[which(!is.na(cu$Stat) & !is.na(cu$Time)),]
 	if (mode(fe) == "numeric") {
 		label1 <- '';
 		label2 <- '';
-		Pat.vector <- fe;
+		# defined in plot_common_functions.r
+		Pat.vector <- correctData(fe, platform);
 		if (datatype == "copy") {
 			label1_col <- length(which(fe < 0));
 			label2_col <- length(which(fe > 0));
