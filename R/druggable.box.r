@@ -120,6 +120,8 @@ for (i in 2:length(temp_datatypes)) {
 		common_samples <- intersect(common_samples, rownames(temp[[i]]));
 	}
 }
+#print("Common samples:");
+#print(common_samples);
 metadata <- generate_plot_metadata("box", Par["source"], Par["cohort"], tcga_codes, length(common_samples),
 										temp_datatypes, temp_platforms, temp_ids, temp_scales, c(nrow(temp[[1]]), nrow(temp[[2]])), Par["out"]);
 metadata <- save_metadata(metadata);
@@ -137,7 +139,9 @@ if (status != 'ok') {
 		"Plot succesfully generated, but it is empty");
 } else {
 	x_data <- correctData(temp[[1]][common_samples,2], platforms[1]);
-	x_data <- transformVars(x_data, temp_scales[1]);
+	if (is.numeric(x_data)) {
+		x_data <- transformVars(x_data, temp_scales[1]);
+	}
 	names(x_data) <- common_samples;
 	print("str(x_data):");
 	print(str(x_data));
@@ -166,7 +170,7 @@ if (status != 'ok') {
 	y_axis_name = '';
 	print(readable_platforms);
 	x_axis_name = paste0(toupper(temp_datatypes[2]), ":", ifelse(((temp_platforms[2] == "drug") & (!empty_value(temp_ids[2]))), "status", readable_platforms[temp_platforms[2],2]));
-	y_axis_name <- generate_axis_title(readable_platforms[temp_platforms[1], 2], temp_ids[1], id_description = NA, temp_scales[1], axis_prefix = readable_platforms[temp_platforms[1], 3], 25);
+	y_axis_name <- generate_axis_title(readable_platforms[temp_platforms[1], 2], temp_ids[1], id_description = NA, ifelse(is.numeric(x_data), temp_scales[1], NA), axis_prefix = readable_platforms[temp_platforms[1], 3], 25);
 	plot_annotation <- paste0("Cohort: ", toupper(Par["cohort"]));
 	plot_legend <- generate_plot_legend(plot_annotation);
 	x_axis <- list(

@@ -12,8 +12,8 @@ Stata <- c("Negative", "Equivocal", "Indeterminate", "Positive")
 Levels <- c("absent", "medium", "strong", "weak");
 Rescale <- list(
 	cd44 = 0:3,  
-	clinical_stage = c(NA, 0, seq(from=0, to=length(Stages)-1, by=1)),
-	ajcc_pathologic_tumor_stage = 	c(NA, 0, seq(from=0, to=length(Stages)-1, by=1)),
+	clinical_stage = c(NA, 0, seq(from = 0, to = length(Stages)-1, by = 1)),
+	ajcc_pathologic_tumor_stage = 	c(NA, 0, seq(from = 0, to = length(Stages)-1, by = 1)),
 	er_status_by_ihc = c(-1, 0, 0, 1), 
 	pr_status_by_ihc = c(-1, 0, 0, 1), 
 	her2_status_by_ihc 	= 	c(-1, 0, 0, 1) 
@@ -47,7 +47,7 @@ createGLMnetSignature <- function (
 	Alpha = 1, 
 	Nlambda = 10, 
 	minLambda = 0.01, 
-	STD=FALSE,
+	STD = FALSE,
 	min.fit = 0.05, 
 	title.main = NA, 
 	title.sub = NA,
@@ -85,7 +85,6 @@ createGLMnetSignature <- function (
 			Sample1 <- Sample2 <- colnames(predictorSpace);
 			print("Validation subset is not created...");
 			crossval_flag <<- FALSE;
-			#system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_training.png"));
 			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_validation.png"));
 		}
 		MG <- responseVector;
@@ -185,7 +184,7 @@ createGLMnetSignature <- function (
 				if (!is.na(GLM[2])) {
 					Ypred <- Ypred + pred * GLM[2];
 				}
-				perf$RSS = sum((10 * MG[Sample1] - 10 * Ypred) ** 2, na.rm = T);
+				perf$RSS = sum((10 * MG[Sample1] - 10 * Ypred) ** 2, na.rm = TRUE);
 				perf$AIC <- 2 * k + n * log(perf$RSS);
 				perf$BIC <- log(n) * k + log(perf$RSS/n) * n;
 				#perf_frame <- rbind(perf_frame, data.frame(Measure = "RSS(training)", Value = round(perf$RSS,3)));
@@ -497,6 +496,8 @@ for (i in 1:length(x_datatypes)) {
 		}
 		colnames(temp) <- temp_names;
 	}
+	# some data should be corrected, function with rules defined in plot_common_functions.r
+	temp[,1] <- correctData(temp[,1], x_platforms[i]);
 	# METH data should be transformed into M-values, function defined in plot_common_functions.r
 	if (x_datatypes[i] == "METH") {
 		temp[,1] <- transformVars(temp[,1], "mvalue");
@@ -531,6 +532,7 @@ print(query);
 resp_matr <- sqlQuery(rch, query);
 resp_matr[,1] <- as.character(resp_matr[,1]);
 rownames(resp_matr) <- resp_matr[,1];
+resp_matr[,2] <- correctData(resp_matr[,2], rplatform);
 
 for (ty in names(Platform)) {
 	#print(ty);
@@ -550,13 +552,8 @@ for (ty in names(Platform)) {
 		#print("X.add temp:");
 		#print(temp);
 		X.add <- t(temp);
-		#temp_names <- names(X.add);
-		#X.add <- matrix(as.factor(X.add), 1, length(X.add));
-		#X.add <- as.factor(X.add);
-		#colnames(X.add) <- temp_names;
-		#rownames(X.add) <- X.variables[[ty]];
 		TypeDelimiter = "___";
-		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed=FALSE)
+		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE)
 		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 		#print("Factor X.add:");
 		#print(X.add);

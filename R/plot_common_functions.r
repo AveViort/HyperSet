@@ -21,16 +21,16 @@ transformVars <- function(x, axis_scale) {
 
 # support functions for transformVars
 arcsine2beta <- function(x) {
-	if (min(x, na.rm=TRUE) < 0) {return("Error: negative value(s) detected...");}
-	if (max(x, na.rm=TRUE) > 1) {return("Error: values > 1 are not allowed...");}
+	if (min(x, na.rm = TRUE) < 0) {return("Error: negative value(s) detected...");}
+	if (max(x, na.rm = TRUE) > 1) {return("Error: values > 1 are not allowed...");}
 	return(sin((x * pi) / 2) **2);
 }
 
 beta2Mvalue <- function (x) {
-	if (min(x, na.rm=TRUE) < 0) {return("Error: negative value(s) detected...");}
-	if (max(x, na.rm=TRUE) > 1) {return("Error: values > 1 are not allowed...");}
-	Min <- min(x[which(x > 0)], na.rm=TRUE);
-	Max <- max(x[which(x < 1)], na.rm=TRUE);
+	if (min(x, na.rm = TRUE) < 0) {return("Error: negative value(s) detected...");}
+	if (max(x, na.rm = TRUE) > 1) {return("Error: values > 1 are not allowed...");}
+	Min <- min(x[which(x > 0)], na.rm = TRUE);
+	Max <- max(x[which(x < 1)], na.rm = TRUE);
 	x[which(x == 1)] <- 1 - (1- Max) / 10;
 	x[which(x == 0)] <- Min / 10;
 	return(log(x / (1 - x))); 
@@ -200,7 +200,7 @@ generate_plot_metadata <- function(plot_type, source_name, cohort, code, n, data
 	if (!is.na(plot_filename)) {
 		metadata[["plot_filename"]] <- plot_filename;
 	}
-	metadata[["timestamp"]] <- format(Sys.time(), tz="GMT");
+	metadata[["timestamp"]] <- format(Sys.time(), tz = "GMT");
 	return(metadata);
 }
 

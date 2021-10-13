@@ -3,8 +3,8 @@ apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;
 console_output = stdout();
-sink(file(paste(usedDir, "plotData.", usedSink, ".output.Rout", sep=""), open = "wt"), append = F, type = "output")
-sink(file(paste(usedDir, "plotData.", usedSink, ".message.Rout", sep=""), open = "wt"), append = F, type = "message")
+sink(file(paste(usedDir, "plotData.", usedSink, ".output.Rout", sep = ""), open = "wt"), append = FALSE, type = "output")
+sink(file(paste(usedDir, "plotData.", usedSink, ".message.Rout", sep = ""), open = "wt"), append = FALSE, type = "message")
 options(warn = 1); # options(warn = 0);
 message("TEST0");
 
@@ -15,12 +15,12 @@ library(plotly);
 library(htmlwidgets);
 Debug = 1;
 
-Args <- commandArgs(trailingOnly = T);
-if (Debug>0) {print(paste(Args, collapse=" "));}
+Args <- commandArgs(trailingOnly = TRUE);
+if (Debug>0) {print(paste(Args, collapse = " "));}
 Par <- NULL;
 for (a in Args) {
 	if (grepl('=', a)) {
-		p1 <- strsplit(a, split = '=', fixed = T)[[1]];
+		p1 <- strsplit(a, split = '=', fixed = TRUE)[[1]];
 		if (length(p1) > 1) {
 			if (p1[1] == "ids") {
 				Par[p1[1]] = p1[2];
@@ -28,7 +28,7 @@ for (a in Args) {
 				Par[p1[1]] = tolower(p1[2]);
 			}
 		} 
-		if (Debug>0) {print(paste(p1[1], p1[2], collapse=" "));}
+		if (Debug>0) {print(paste(p1[1], p1[2], collapse = " "));}
 	}
 }
 
@@ -37,7 +37,7 @@ setwd(r.plots);
 File <- paste0(r.plots, "/", Par["out"])
 print(File)
 print(names(Par));
-png(file=File, width =  plotSize, height = plotSize, type = "cairo");
+png(file = File, width =  plotSize, height = plotSize, type = "cairo");
 datatypes <- unlist(strsplit(Par["datatypes"], split = ","));
 print(datatypes);
 platforms <- unlist(strsplit(Par["platforms"], split = ","));

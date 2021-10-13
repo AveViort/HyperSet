@@ -2,8 +2,8 @@ usedDir = '/var/www/html/research/users_tmp/';
 apacheSink = 'apache';
 localSink = 'log'; # usedSink = apacheSink;
 usedSink = localSink;
-sink(file(paste(usedDir, "modelData.", usedSink, ".output.Rout", sep=""), open = "wt"), append = F, type = "output")
-sink(file(paste(usedDir, "modelData.", usedSink, ".message.Rout", sep=""), open = "wt"), append = F, type = "message")
+sink(file(paste(usedDir, "modelData.", usedSink, ".output.Rout", sep=""), open = "wt"), append = FALSE, type = "output")
+sink(file(paste(usedDir, "modelData.", usedSink, ".message.Rout", sep=""), open = "wt"), append = FALSE, type = "message")
 options(warn = 1); # options(warn = 0);
 message("TEST0");
 
@@ -15,19 +15,19 @@ library(reshape2);
 library(survival);
 Debug = 1;
 
-commonIdx <- function(m1, m2, Dir="vec") {
-	if (is.null(Dir) | !grepl("col|vec|row", Dir, ignore.case = T, perl=T)) {
+commonIdx <- function(m1, m2, Dir = "vec") {
+	if (is.null(Dir) | !grepl("col|vec|row", Dir, ignore.case = TRUE, perl = TRUE)) {
 		stop("The 3rd argument should be one of: vector (vec), column (col), rows (row)...");
 	}
-	if (grepl("row", Dir, ignore.case = T, perl=T)) {
+	if (grepl("row", Dir, ignore.case = TRUE, perl = TRUE)) {
 		vec1 <- rownames(m1);
 		vec2 <- rownames(m2);
 	} 
-	if (grepl("col", Dir, ignore.case = T, perl=T)) {
+	if (grepl("col", Dir, ignore.case = TRUE, perl = TRUE)) {
 		vec1 <- colnames(m1);
 		vec2 <- colnames(m2);
 	} 
-	if (grepl("vec", Dir, ignore.case = T, perl=T)) {
+	if (grepl("vec", Dir, ignore.case = TRUE, perl = TRUE)) {
 		vec1 <- as.vector(m1);
 		vec2 <- as.vector(m2);
 	}
@@ -39,15 +39,15 @@ commonIdx <- function(m1, m2, Dir="vec") {
 	return(common);
 }	
 
-makeCu <- function (clin, s.type, Xmax=NA, usedNames) {
+makeCu <- function (clin, s.type, Xmax = NA, usedNames) {
 	survSamples <- commonIdx(clin[,"sample"], usedNames, 'vec');
-	Time = clin[which(clin[,"sample"] %in% survSamples), c("sample", paste(s.type, "time", sep="_"))];
+	Time = clin[which(clin[,"sample"] %in% survSamples), c("sample", paste(s.type, "time", sep = "_"))];
 	Time <- Time[order(Time$sample),];
 	Stat = clin[which(clin[,"sample"] %in% survSamples), c("sample", s.type)];
 	Stat <- Stat[order(Stat$sample),]
 	Stat[,2] <- as.numeric(Stat[,2])
-	if (is.na(Xmax)) {Xmax = max(Time[,2], na.rm=T);}
-	cu <- cutFollowupID  (Stat[,2], Time[,2], Xmax + 0.1, survSamples); # 
+	if (is.na(Xmax)) {Xmax = max(Time[,2], na.rm = TRUE);}
+	cu <- cutFollowupID  (Stat[,2], Time[,2], Xmax + 0.1, survSamples);
 	return(cu);
 }
 
@@ -58,18 +58,19 @@ cutFollowupID  <- function(St, Ti, Point, IDs) { #limit follow-up time for survi
 	return(as.data.frame(Cu));
 }
 
-plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax=NA, Cls, Title=NA, markTime = T, feature1=NA, feature2=NA) {
+plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax = NA, Cls, Title = NA, markTime = TRUE, feature1 = NA, feature2 = NA) {
 	survSamples <- rownames(cu);
 	fit =survfit(Surv(cu[survSamples, "Time"], cu[survSamples, "Stat"]) ~ as.factor(Grouping[survSamples]), conf.type = "log-log");
 	if (is.na(Xmax)) {
-		Xmax = max(cu[survSamples, "Time"], na.rm=T)
+		Xmax = max(cu[survSamples, "Time"], na.rm = TRUE)
 	}
-	plot(fit, mark.time=markTime, col=Cls, xlab='Follow-up, days', ylab=s.type, main=Title, bty="n", cex.main=0.65, lty=1:4, lwd=1.5, xmax=Xmax); #max(Time[,2], na.rm=T)
+	plot(fit, mark.time = markTime, col = Cls, xlab = 'Follow-up, days', ylab = s.type, main = Title, bty = "n", 
+		cex.main = 0.65, lty = 1:4, lwd = 1.5, xmax = Xmax); 
 	t1 <- table(Grouping[survSamples])
-	Leg = paste(names(Cls), "; N=", t1[names(Cls)], sep="");
+	Leg = paste(names(Cls), "; N=", t1[names(Cls)], sep = "");
 	# print (t1);
 	if (!is.na(feature1)) {
-		Leg = gsub("^", paste0(ifelse(is.na(feature1), "Feature1", feature1), ": "), Leg)
+		Leg = gsub("^", paste0(ifelse(is.na(feature1), "Feature1", feature1), ": "), Leg);
 		Leg = gsub("-", paste0(", ", ifelse(is.na(feature2), "Feature2", feature2), ": "), Leg);
 	}
 	legend(ifelse(table(cu$Time[which(cu$Stat == 1)] > 0.75 * max(cu$Time, na.rm=TRUE))["TRUE"] > nrow(cu) / 10, "bottomleft", "topright"), legend=Leg, col=Cls, cex=1.00 , bty="n", lty=1:4, pch=16);
@@ -117,19 +118,22 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 	TypeDelimiter = "___";
 	Terms <- NULL;
 	co <- NULL;
+	coeffs <- NULL;
 	if (is.list(Betas)) {
 		for (resp in names(Betas)) {
 			c1 <- Betas[[resp]][,Lc];
 			co <- c1[which(c1 != 0)];
-			co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+			co <- signif(co[order(abs(co), decreasing = TRUE)], digits = 2);
+			coeffs <- c(coeffs, co);
 			for (cc in names(co)) {
-				Terms <- c(Terms, toupper(ifelse(grepl(TypeDelimiter, cc), paste0(resp, " ",sub(TypeDelimiter, "(", cc), ")"), cc)));
+				Terms <- c(Terms, toupper(ifelse(grepl(TypeDelimiter, cc), paste0(resp, ": ", sub(TypeDelimiter, "(", cc), ")"), cc)));
 			}
 		}
 	} else {
 		c1 <- Betas[,Lc];
 		co <- c1[which(c1 != 0)];
-		co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+		co <- signif(co[order(abs(co), decreasing = TRUE)], digits = 2);
+		coeffs <- co;
 		for (cc in names(co)) {
 			Terms <- c(Terms, toupper(ifelse(grepl(TypeDelimiter, cc), paste0(sub(TypeDelimiter, "(", cc), ")"), cc)));
 		}
@@ -139,11 +143,15 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 	#print("Betas:");
 	#print(Betas);
 	#print(co);
-	for (i in 1:length(co)) {
+	for (i in 1:length(Terms)) {
 		print(paste0("Terms[", i, "]: ", Terms[i]));
-		temp <- unlist(strsplit(substr(Terms[i], 1, nchar(Terms[i])-1), split="\\("));
+		temp <- unlist(strsplit(substr(Terms[i], 1, nchar(Terms[i])-1), split = "\\("));
 		# rewritten in case of variables such as ARGININE_DEGRADATION_VI_(ARGINASE_2_PATHWAY)(Z_RNASEQ_TOP100)
 		temp_id <- paste(temp[1:(length(temp)-1)]);
+		# special case - classification models, since they have coefficients in format resp:var
+		if (family == "multinomial") {
+			temp_id <- unlist(strsplit(temp_id, split = ": "))[2];
+		}
 		#print(temp_id);
 		temp_platform <- tolower(temp[length(temp)]);
 		#print(temp_platform);
@@ -161,23 +169,8 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 			"multinomial" = "box",
 			"gaussian" = "scatter"
 		);
-		#if (rdatatype == "clin") {
-		#	plot_type <- "KM";
-		#} else {
-			#temp <- paste0(temp_platform, "-", rplatform);
-			#if (temp %in% names(plot_types)) {
-			#	plot_type <- plot_types[temp]; 
-			#} else {
-			#	query <- paste0("SELECT available_plot_types('", temp_platform, ",", rplatform,"');");
-			#	print(query);
-			#	plot_type <- as.character(sqlQuery(rch, query)[1,1]);
-			#	temp_names <- c(names(plot_types), temp);
-			#	plot_types <- c(plot_types, plot_type);
-			#	names(plot_types) <- temp_names;	
-		#	}
-		#}
 		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'linear\', \'linear\'], [\'', multiopt[1], '\'])\\">Plot</button>');
-		values[i] <- paste0("{\"Term\":\"", Terms[i], "\", \"Coef\":\"", co[i], "\", \"Plot\":\"", button_code, "\"}");
+		values[i] <- paste0("{\"Term\":\"", Terms[i], "\", \"Coef\":\"", coeffs[i], "\", \"Plot\":\"", button_code, "\"}");
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "]}");
@@ -196,15 +189,17 @@ savePerformanceJSON <- function(perf_frame, filename) {
 	close(fileConn);
 }
 
-# create sample_mask from TCGA codes - pay attention, it is not the same as createPostgreSQLregex from  coomon_functions.r
+# process result of try
+processTryResult <- function(x) {
 
+}
 
-Args <- commandArgs(trailingOnly = T);
+Args <- commandArgs(trailingOnly = TRUE);
 if (Debug>0) {print(paste(Args, collapse=" "));}
 Par <- NULL;
 for (a in Args) {
 	if (grepl('=', a)) {
-		p1 <- strsplit(a, split = '=', fixed = T)[[1]];
+		p1 <- strsplit(a, split = '=', fixed = TRUE)[[1]];
 		if (length(p1) > 1) {
 			if ((p1[1] == "xids") | (p1[1] == "rid")) {
 				Par[p1[1]] = p1[2];
@@ -212,7 +207,7 @@ for (a in Args) {
 				Par[p1[1]] = tolower(p1[2]);
 			}
 		} 
-		if (Debug>0) {print(paste(p1[1], p1[2], collapse=" "));}
+		if (Debug>0) {print(paste(p1[1], p1[2], collapse = " "));}
 	}
 }
 
@@ -246,9 +241,9 @@ for (i in 1:length(x_ids)) {
 			if (grepl('nea', x_datatypes[i])) {
 				temp <- tolower(temp);
 			}
-			query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse=","), "}'::text[]);"); 
+			query <- paste0("SELECT internal_id FROM synonyms WHERE external_id=ANY('{", paste(temp, collapse = ","), "}'::text[]);"); 
 			print(query);
-			internal_ids <- sqlQuery(rch, query);
+			internal_ids <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 			print(internal_ids);
 			x_ids[[i]] <- internal_ids[,"internal_id"];
 		}
@@ -261,7 +256,7 @@ print(x_ids);
 multiopt <- unlist(strsplit(Par["multiopt"], split = ","));
 print(multiopt);
 query <- paste0("SELECT shortname,fullname FROM platform_descriptions WHERE shortname=ANY(ARRAY[", paste0("'", paste(x_platforms, collapse = "','"), "'"),"]);");
-readable_platforms <- sqlQuery(rch, query);
+readable_platforms <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 rownames(readable_platforms) <- readable_platforms[,1];
 rdatatype <- Par["rdatatype"];
 print(rdatatype);
@@ -271,6 +266,6 @@ rid <- Par["rid"];
 if (!empty_value(rid)) {
 	query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", rid, "';"); 
 	print(query);
-	rid <- sqlQuery(rch, query)[1,1];
+	rid <- sqlQuery(rch, query, stringsAsFactors = FALSE)[1,1];
 }
 print(rid);
