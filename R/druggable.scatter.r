@@ -43,7 +43,7 @@ if ((Par["source"] == "ccle") & (length(datatypes) == 2) & (tcga_codes %in% c("a
 	datatypes <- c(datatypes, "tissue");
 	platforms <- c(platforms, "tissue");
 	temp_names <- rownames(readable_platforms);
-	readable_platforms <- rbind(readable_platforms, data.frame(shortname = "tissue", fullname = "Tissues"));
+	readable_platforms <- rbind(readable_platforms, data.frame(shortname = "tissue", fullname = "Tissues", axis_prefix = NA));
 	rownames(readable_platforms) <- c(temp_names, "tissue");
 	print(readable_platforms);
 }

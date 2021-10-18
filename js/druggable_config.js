@@ -34,7 +34,7 @@ var html_glm_regressors = "<div>Predictors, type ###:</div><table id ='table-reg
 // correlation tables settings
 // headers
 var cor_headers = new Map();
-cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'>Cohorts</th><th>Verification</th></tr>");
+cor_headers.set("CCLE", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("CCLE") + "\'>Data type</th><th title=\'" + get_platforms_tip("CCLE") + "\'>Platform</th><th title=\'One of the alternative drug screens\'>Screen</th><th title=\'P-value from univariate analysis: \n\tDrug response ~ gene(pathway feature)\'>P(1-way)</th><th title=\'P-value for tissue of origin from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(cov)</th><th title=\'P-value for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>P(feature)</th><th title=\'False discovery rate (q-value) for gene (or pathway feature) from covariate analysis: \n\tDrug response ~ tissue + gene/pathway feature\'>FDR(feature)</th><th title=\'\'>Plots</th><th>Validation</th></tr>");
 cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th><th></th><th title=\'Drug short name\'>Drug</th><th title=\'" + get_datatypes_tip("TCGA") + "\'>Data type</th><th title=\'" + get_cohorts_tip("TCGA") + "\'>TCGA cohort</th><th title=\'" + get_platforms_tip("TCGA") + "\'>Platform</th><th>Subset</th><th title=\'Type of patient response\n\tOverall survival (OS),\n\t Relapse-free survival (RFS),\n\t Progression-free survival (PFS),\n\t Disease-free interval (DFI)\'>Endpoint</th><th title=\'P-value for interaction term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Interaction</th><th title=\'P-value for drug term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Drug</th><th title=\'P-value for feature term in 2-way model: \n\tSurvival ~ drug * gene/pathway feature\'>Feature</th><th title=\'No. of patients treated with available data\'>N(total)</th><th title=\'No. of patients treated with the drug and available data\'>N(treated)</th><th title=\'\'>Followup, days</th><th title=\'\'>Cohorts</th><th>Verification</th></tr>");
 // these columns are visible in the 2nd tab
 var cor_sql_data_columns = new Map();
@@ -74,7 +74,10 @@ cor_visible_columns.set("CCLE", [
 					return (typeof(data) !== 'undefined') ? ((data.length < 5) ? parseFloat(data) : parseFloat(data).toExponential(2)) : data;}
 			},
 			{ "data": "cohort-selector" },
-			{ "data": "verification" }
+			{ "data": "verification",
+			  "render": function(data) {
+					return (data == 'yes' ? "<span class='adj-icon ui-icon ui-icon-circle-b-check'></span>" : "")}
+			}
         ]
 );
 cor_visible_columns.set("TCGA", [
@@ -102,7 +105,10 @@ cor_visible_columns.set("TCGA", [
 			{ "data": "n_treated" },
 			{ "data": "followup" },
 			{ "data": "cohort-selector" },
-			{ "data": "verification" }
+			{ "data": "verification",
+			  "render": function(data) {
+					return (data == 'yes' ? "<span class='adj-icon ui-icon ui-icon-circle-b-check'></span>" : "")}
+			}
         ]
 );
 

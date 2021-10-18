@@ -322,7 +322,7 @@ table.simple_table td a{
 				<td>Demo - using expression data for several genes and M0 macrophage count to predict overall survival time in cutaneous and malignant skin melanoma (SKCM) TCGA cohort.</td>
 			</tr>
 			<tr style="text-align:center">
-				<td><button onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')">Demo 1</button></td>
+				<td><button onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'original', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'original', 'scatter')">Demo 1</button></td>
 				<td><button onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)">Demo 2</button></td>
 				<td><button onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC1', 'tamoxifen', 0.05, 1)">Demo 3</button></td>
 				<td><button onclick="dr_demo4 ('glmnet', 'TCGA', 'SKCM', '06', 'CLIN', 'os', '', ['GE', 'IMMUNO'], ['illuminahiseq_rnaseqv2','macrophages_m0'], ['TP53, MYC, MYCN, BRAF', ''], 'cox', 'deviance', false, 1, 10, 0.01, true, 3, 50)">Demo 4</button></td>
@@ -405,7 +405,7 @@ table.simple_table td a{
 			</div>
 			
 			<div id="help-tab-demo">
-				<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'linear', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'linear', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
+				<span class=" clickable demo_button sbm-controls" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'original', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'original', 'scatter')" title="A quick demo for 2d plot from protein expression vs. enrichment scores.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "2D"</span>
 				<br>
 				<span class=" clickable demo_button sbm-controls" onclick="dr_demo3('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)" title="Correlation between cell line response to alisertib and a gene expression.<br>Note that this is a real-time execution. Hence for robustness it is recommended to let it running without extra interference.">Demo "gene X drug"</span>
 				<br>
@@ -559,7 +559,7 @@ table.simple_table td a{
 						<i>platforms</i>: mandatory, list of platforms separated by commas;<br>
 						<i>ids</i>: mandatory, list of genes/antibodies/pathways/drugs names, must match length of datatypes/platforms, if platform has no id - id should be skipped (e.g. 'tp53,,mdm2');<br>
 						<i>codes</i>: mandatory, TCGA codes (01, 06...) or metacodes (all, healthy...) for TCGA, 'all' or tissue name for CCLE;<br>
-						<i>scales</i>: mandatory for the most types of plots, axis scales (linear...).<br>
+						<i>scales</i>: mandatory for the most types of plots, axis scales (original...).<br>
 					<b>Example:</b> https://www.evicor.org/cgi/rplot.cgi?type=bar&source=TCGA&cohort=BRCA&datatypes=CLIN&platforms=vital_status&ids=%2C&codes=&scales=<br>
 					<b>Usage tips:</b>This script returns plot filename and plot metadata. Plot can either be an html page (plotly plots, for the majority of plot types) or png image (for Venn diagrams). If only the plot name was returned - this is a sign of mistake. REST API does not provide mistake explanations.<br>
 				</p>
@@ -1329,7 +1329,7 @@ function plot_dialog(param_string) {
 			var pars = par.split('#');
 			console.log(par);
 			console.log(pars);
-			dialog_window = dialog_window + "<a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a><br>";
+			dialog_window = dialog_window + "<a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['original', 'original', 'original'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a><br>";
 		}
 	}
 	dialog_window = dialog_window + '</div>';
@@ -1359,7 +1359,7 @@ function plot_menu (param_string, caller) {
 			console.log(par);
 			console.log(pars);
 			var drop_menu = "<select name=\"KMs\" id=\"" + caller + "-menu\" ><option>AA</option></select>";
-			// <a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['linear', 'linear', 'linear'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a>
+			// <a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['original', 'original', 'original'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a>
 	console.log(caller);	
 	// console.log(drop_menu);	
 	// $(drop_menu).selectmenu().parent().appendTo(caller);
@@ -1595,7 +1595,7 @@ function build_and_show_model() {
 				show_slidedown_alert("Unable to make analysis with chosen parameters", 3000);
 			}
 			else {
-				var scales = ['linear', 'linear'];
+				var scales = ['original', 'original'];
 				if (plot_types[0] == 'box') {
 					var axis_types = get_axis_types(cohort, x_datatypes[0], x_platforms[0]);
 					if (axis_types.length == 0) {
@@ -1729,10 +1729,11 @@ function build_and_show_model() {
 					</div> \
 				</div> \
 				<br> \
-				<table id="' + model_name + '_coef" class="display" style="width:100%; display: table-cell;"> \
+				<table id="' + model_name + '_coef" class="display" style="width:100%"> \
 					<thead> \
 						<tr> \
 							<th>Coefficient</th> \
+							<th>Platform</th> \
 							<th>Weight</th> \
 							<th></th>\
 						</tr> \
@@ -1743,6 +1744,7 @@ function build_and_show_model() {
 				$("#" + model_name + "_window").dialog({
 					title: "Model: " + (r_id != "" ? r_id : platform_names.get(r_platform)) + ("~") + platform_names.get(x_platforms[0]) + (n>1 ? ("+" + platform_names.get(x_platforms[1])) : "") + (n>2 ? ("+" + platform_names.get(x_platforms[2])) : ""),
 					height: 'auto',
+					'max-height': "720px",
 					width: 'auto',
 					modal: false,
 					buttons: [
@@ -1768,10 +1770,14 @@ function build_and_show_model() {
 				"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
 				"columns": [
 					{ "data" : "Term"},
+					{ "data" : "Platform"},
 					{ "data" : "Coef"},
 					{ "data" : "Plot"}
 				],
-				"order": [[ 1, "desc" ]],
+				"order": [[ 2, "desc" ]],
+				"scrollY": "600px",
+				"scrollCollapse": true,
+				"paging": false
 			});
 			$('#' + model_name + '_perf').DataTable( {
 				"ajax": {
@@ -1842,6 +1848,9 @@ function build_and_show_model() {
 					{ "data": "Value.Validation"}
 				],
 				"order": [[ 0, "desc" ]],
+				"scrollY": "600px",
+				"scrollCollapse": true,
+				"paging": false
 			});
 			$('[aria-describedby="' + model_name + "_window" + '"]').
 				find( 'div.ui-dialog-titlebar').
@@ -1890,19 +1899,19 @@ function retrieve_correlations() {
 				$('#cor_result_table').DataTable().destroy();
 				var ErrorStack = check_error_stack(new Error().stack);
 				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", 
-				"error", "correlations_not_retrieved: " + error.status, 
-				"&source=" + source + 
-				"&datatype=" + datatype + 
-				"&cohort=" + cohort + 
-				"&platform=" + platform + 
-				"&screen=" + screen + 
-				"&id=" + id +
-				"&fdr=" + fdr +
-				"&mindrug=" + min_pat_drug_number + 
-				"&data_columns=" + cor_sql_data_columns.get(source) + 
-				"&filter_columns=" + cor_sql_filter_columns.get(source) + 
-				"&concat_operator=" + cor_concatenation_operators.get(source),
-				ErrorStack);
+					"error", "correlations_not_retrieved: " + error.status, 
+					"&source=" + source + 
+					"&datatype=" + datatype + 
+					"&cohort=" + cohort + 
+					"&platform=" + platform + 
+					"&screen=" + screen + 
+					"&id=" + id +
+					"&fdr=" + fdr +
+					"&mindrug=" + min_pat_drug_number + 
+					"&data_columns=" + cor_sql_data_columns.get(source) + 
+					"&filter_columns=" + cor_sql_filter_columns.get(source) + 
+					"&concat_operator=" + cor_concatenation_operators.get(source),
+					ErrorStack);
 				show_slidedown_alert("An error has occured. Please reload the page and try to do the following:<br>1) Make a narrower (more specific) query;<br>2) Lower FDR", 3000);
 			}
 		},
@@ -1930,16 +1939,46 @@ function retrieve_correlations() {
 		//console.log($('#cor_result_table tr').length);
 		if($('#cor_result_table tr').length > 1) {
 			$("select[id*=TCGAcohortSelector]").selectmenu({select: function( event, ui ) {
-					console.log($(this).val());
+					//console.log($(this).val());
 					var selected_values = $(this).val().split('#');	
 					//console.log(selected_values);
 					if (selected_values[1] == "TCGA") {
-						plot(selected_values[0], selected_values[1], selected_values[2], ['drug', 'clin', selected_values[3]], ['drug', selected_values[5].toLowerCase().replace('.', ''), selected_values[4]], [selected_values[6], '', selected_values[7]], ['linear', 'linear', selected_values[3].toUpperCase() == 'METH' ? 'beta' : 'linear'], 'all');
+						plot(selected_values[0], selected_values[1], selected_values[2], ['drug', 'clin', selected_values[3]], ['drug', selected_values[5].toLowerCase().replace('.', ''), selected_values[4]], [selected_values[6], '', selected_values[7]], ['original', 'original', selected_values[3].toUpperCase() == 'METH' ? 'beta' : 'original'], 'all');
 					}
 					else {
-						plot(selected_values[0], selected_values[1], selected_values[2], [selected_values[3], 'sens'], [selected_values[4].toLowerCase().replace('.', ''), selected_values[5].replace('.', '')], [selected_values[7], selected_values[6]], [selected_values[3].toUpperCase() == 'METH' ? 'beta' : 'linear', 'linear'], 'all');
+						plot(selected_values[0], selected_values[1], selected_values[2], [selected_values[3], 'sens'], [selected_values[4].toLowerCase().replace('.', ''), selected_values[5].replace('.', '')], [selected_values[7], selected_values[6]], [selected_values[3].toUpperCase() == 'METH' ? 'beta' : 'original', 'original'], 'all');
 					}
-				}});
+				}
+			});
+			$("select[id*=TCGAcohortSelector]").each(function() {
+				// get parent selector row - needed in TCGA case 
+				var selector_parent = $(this).parents('tr');
+				//console.log($(this).attr("id"));
+				var options = $("#" + $(this).attr("id") + " option");
+				var updated_options = [];
+				options.each(function() {
+					var option_values = $(this).val().split('#');
+					var option_title;
+					var option_qtip;
+					if (source == "CCLE") {
+						option_title = (option_values[1] == source ? "Same cohort..." : ("Cohort: " + option_values[2] + "..."));
+						option_qtip = "Datatype: " + option_values[3] + " Platform: " + option_values[4] + " Screen: " + option_values[5] + " Drug: " + option_values[6] + " ID: " + option_values[7];
+					}
+					else {
+						// get cohort for the selected row - need to do this because cohort selector can be set to "All cohorts"
+						var row_cohort = selector_parent[0].cells[4].innerText;
+						option_title = (option_values[2] == row_cohort ? "Same cohort..." : ("Cohort: " + option_values[2] + "..."));
+						option_qtip = (option_values[2] == row_cohort ? ("Cohort: " + option_values[2] + " ") : "") + "Datatype: " + option_values[3] + " Platform: " + option_values[4] + (option_values[1] == "TCGA" ? " Survival measure: " : " Screen: ") + option_values[5] + " Drug: " + option_values[6] + " ID: " + option_values[7];
+					}
+					updated_options.push("<option value='" + $(this).val() + "' title='" + option_qtip + "'>" + option_title + "</option>");
+				});
+				//console.log(updated_options);
+				// remove old options
+				$(this).empty();
+				// re-create options
+				$(this).append(updated_options.join(""));
+				$(this).selectmenu("refresh");
+			});
 		}
 	} );
 	
@@ -1948,7 +1987,7 @@ function retrieve_correlations() {
 
 function tcga_km_from_cor(i, drug) {
 	var cohort = $("#TCGAcohortSelector" + i + " option:selected").val();
-	plot("KM", "tcga", cohort, ["drug", "clin"], ["drug", "os"], [drug, ""], ["linear", "linear"], ["all", "all"]);
+	plot("KM", "tcga", cohort, ["drug", "clin"], ["drug", "os"], [drug, ""], ["original", "original"], ["all", "all"]);
 }
 
 function add_plot_options_row(i) {
@@ -2389,7 +2428,7 @@ function init_axis_type_selector(selector_id) {
 	// does not work properly
 	$("#" + selector_id + "-button").qtip({ 
 		content: {
-			text: "Choose scale for this axis: linear, log or square root"
+			text: "Choose scale for this axis: original, log or square root"
 		}
 	});
 	$("#" + selector_id).off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {

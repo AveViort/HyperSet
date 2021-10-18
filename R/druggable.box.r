@@ -139,6 +139,8 @@ if (status != 'ok') {
 		"Plot succesfully generated, but it is empty");
 } else {
 	x_data <- correctData(temp[[1]][common_samples,2], platforms[1]);
+	print("str(x_data):");
+	print(str(x_data));
 	if (is.numeric(x_data)) {
 		x_data <- transformVars(x_data, temp_scales[1]);
 	}

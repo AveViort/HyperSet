@@ -170,7 +170,7 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 			"gaussian" = "scatter"
 		);
 		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'linear\', \'linear\'], [\'', multiopt[1], '\'])\\">Plot</button>');
-		values[i] <- paste0("{\"Term\":\"", Terms[i], "\", \"Coef\":\"", coeffs[i], "\", \"Plot\":\"", button_code, "\"}");
+		values[i] <- paste0("{\"Term\":\"", temp_id, "\", \"Platform\":\"", temp_platform, "\", \"Coef\":\"", coeffs[i], "\", \"Plot\":\"", button_code, "\"}");
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "]}");
