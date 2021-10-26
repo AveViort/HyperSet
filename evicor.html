@@ -1672,6 +1672,8 @@ function build_and_show_model() {
 					"&crossval_percent=" + crossvalidation_percent + 
 					"&standardize=" + standardize,
 					ErrorStack);
+				// show error - error class defines behavior
+				process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
 			}
 			else {
 				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "model_created", 
@@ -3188,7 +3190,6 @@ function update_platform(n) {
 		}
 		$('#tcga_selector').find('option').remove().end();
 		$('#tcga_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-		// not a good solution
 		init_tcga_code_selector(n);
 		$('#tcga_selector').selectmenu( "refresh" );
 		// do not move this operation - otherwise will cause bug
@@ -3726,6 +3727,25 @@ function close_dock(dock_id) {
 	}
 	else {
 		document.getElementById(dock_id).style.height = "0px";
+	}
+}
+
+// process error stack from R, object stored in JSON format
+function process_error(filename) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("HEAD", filename, false);
+	xmlhttp.send();
+	if (xmlhttp.status == 404) {
+		show_slidedown_alert("Unknown error occurred", 0);
+	}
+	else {
+		error_object <- JSON.parse(xmlhttp.responseText);
+		// "error" is the most basic error class, it can be used by default 
+		switch (error.class) {
+			case "error":
+				show_slidedown_alert(error_object.explanation, 0);
+				break;
+		}
 	}
 }
 
@@ -4375,6 +4395,9 @@ function report_model_tab() {
 	switch (family) {
 		case "gaussian":
 			measure = "mse";
+			break;
+		case "binomial":
+			measure = "class";
 			break;
 	}
 	var crossvalidation = $("#crossval:checked").val();

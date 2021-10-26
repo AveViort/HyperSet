@@ -17,13 +17,32 @@ report_event <- function(e_source, e_level, e_description, e_options, e_message)
 	GET(report_string);
 }
 
-# this functions prepares try-error object to be usead as a message in report_event()
+# this function prepares try-error object to be usead as a message in report_event()
 prepare_error_stack <- function(error_stack) {
 	e_message = error_stack[1];
 	e_message <- gsub("\n", "<br>", e_message);
 	e_message <- gsub("\"", "\\\"", e_message);
 	e_message <- gsub(";", "%3b", e_message);
 	return(e_message);
+}
+
+# error handler for using with tryCatch, returns custom object
+handleError <- function(e) {
+	error_object <- list();
+	# common code - needed to avoid problems
+	# all object should contain only mandatory field - "explanation"
+	# basic class is "error", redefine it below if required, new class name should contain "error" substring
+	error_object[["error_message"]] <- e;
+	error_object[["explanation"]] <- "";
+	class(error_object <- "error");
+	# process error string here - if required, redefine class of the object, override it, don't add
+	if (e == "Only one variable left") {
+		error_object[["explanation"]] <- "Only one variable left, need at least two to make a predictive model";
+	}
+	if (grepl("NA/NaN/Inf in foreign function call ", e) {
+		error_object[["explanation"]] <- "Modelling error: chosen set contains NA/NaN/Inf values";
+	}
+	return(error_object);
 }
 
 getDbCredentials <- function(key_file = "HS_SQL.conf") {
@@ -77,6 +96,25 @@ frameToJSON <- function(data_frame) {
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "]}");
 	return(json_string);
+}
+
+# S3 objects to JSON string
+list_to_JSON <- function(list_object) {
+	# unlike data.frame, we don't use data here, since all names in list are unique 
+	json_string <- "{";
+	values <- c(paste0("{\"class\":\"", class(list_object), "\"}"));
+	for (slot_name in names(list_object)) {
+		values[i] <- paste0("\{", slot_name, "\":\"", list_object[[slot_name]], "\"}");
+	}
+	json_string <- paste0(json_string, paste(values, collapse = ","))
+	json_string <- paste0(json_string, "}");
+	return(json_string);
+}
+
+saveJSON <- function(json_string, filename) {
+	fileConn <- file(filename);
+	writeLines(json_string, fileConn);
+	close(fileConn);
 }
 
 credentials <- getDbCredentials();

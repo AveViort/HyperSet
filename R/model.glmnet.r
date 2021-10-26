@@ -95,7 +95,7 @@ createGLMnetSignature <- function (
 			print(PW[Sample1,]);
 			print("MG[Sample1]:");
 			print(MG[Sample1]);
-			t1 <- try(model <- cv.glmnet(PW[Sample1,], MG[Sample1], grouped = TRUE, 
+			model <- tryCatch(cv.glmnet(PW[Sample1,], MG[Sample1], grouped = TRUE, 
 						family = Family, 
 						alpha = Alpha, 
 						type.measure = type.measure,
@@ -103,15 +103,16 @@ createGLMnetSignature <- function (
 						nfolds = Nfolds,  
 						lambda.min.ratio = minLambda,
 						standardize = STD,
-						parallel = TRUE));
-			if (grepl("Error|fitter|levels", t1[1])) {
+						parallel = TRUE),
+						error = function(e) {handleError(e)});
+			if (class(model) == "error") {
 				print("Error occured");
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
 					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
 					"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", Family, "&alpha=", Alpha, "&measure=", type.measure,
 					"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
 				plot(0,type = 'n', axes = FALSE, ann = FALSE);
-				text(x = 1, y = 0.5, labels = t1[1], cex = 1);
+				text(x = 1, y = 0.5, labels = "Error", cex = 1);
 				return(NA);
             }
 			#save(model, file=paste0(File, ".RData"));
@@ -124,14 +125,15 @@ createGLMnetSignature <- function (
 			}
 		} else {
 			print(paste0("No cross-validation"))
-			t1 <- try(model <- glmnet(PW[Sample1,], MG[Sample1],  
+			model <- tryCatch(glmnet(PW[Sample1,], MG[Sample1],  
 						family = Family, 
 						alpha = Alpha, 
 						nlambda = Nlambda, 
 						lambda.min.ratio = minLambda,
-						standardize = STD));
+						standardize = STD),
+						error = function(e) {handleError(e)});
 			#save(model, file=paste0(File, ".RData"));
-			if (grepl("Error|fitter|levels", t1[1])) {
+			if (class(model) == "error") {
 				print("Error occured");
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
 					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
@@ -200,8 +202,8 @@ createGLMnetSignature <- function (
 					stop("Survival data absent...");
 				}
 				Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ ", paste(names(co), collapse= " + "))); 
-				t1 <- try(coxph(Formula, data=as.data.frame(PW[Sample1,]), control=coxph.control(iter.max = 5)), silent=FALSE);
-				if (!grepl("Error|fitter|levels", t1[1]) & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
+				t1 <- tryCatch(coxph(Formula, data=as.data.frame(PW[Sample1,]), control=coxph.control(iter.max = 5)), error = function(e) {handleError(e)});
+				if ((class(t1) != "error") & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
 					# https://stackoverflow.com/questions/19679183/compute-aic-in-survival-analysis-survfit-coxph/26212428#26212428?newreg=e521f49ac41446748ac71b6b2033428f
 					# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6874104/
 					perf$AIC <- AIC(t1);
@@ -212,7 +214,7 @@ createGLMnetSignature <- function (
 					#perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
 					lt1 <- summary(t1)$logtest["pvalue"];
 				} else {
-					stop(t1[1]);
+					stop(t1);
 				}
 			}
 			perf_frame <- rbind(perf_frame, data.frame(Measure = "k", Value = k));
@@ -259,19 +261,31 @@ createGLMnetSignature <- function (
 			}
 			print("smp:");
 			print(smp);
-			if (Family != "multinomial") {
-				pred <- as.vector(Intercept + PW[smp,] %*% c1);
-				names(pred) <- rownames(PW[smp,]);
-			} else {
-				pred <- predict(model, newx = PW[smp,], type = "response");
-				# multinomial regression gives 3D matrix of size n*m*1, but we need 2D 
-				pred <- pred[,,1];
-			}
+			switch(Family,
+				"multinomial" = {
+					# "response" returns pribabilities, while "class" returns class labels
+					pred <- predict(model, newx = PW[smp,], type = "response");
+					# multinomial regression gives 3D matrix of size n*m*1, but we need 2D 
+					pred <- pred[,,1];
+					},
+				"binomial" = {
+					pred <- predict(model, newx = PW[smp,], type = "response");
+					if (!independentValidation) {
+						pred <- pred[,Lc];
+					}
+					print("Binomial pred:");
+					print(pred);
+					},
+				{
+					pred <- as.vector(Intercept + PW[smp,] %*% c1);
+					names(pred) <- rownames(PW[smp,]);
+				}
+			);
 			print("Prediction complete");
 			
 			if (Family != "cox") {  
 				Obs <- MG[smp];
-				if (Family != "multinomial") {
+				if (!Family %in% c("multinomial", "binomial")) {
 					if (is.factor(Obs)) {
 						Obs <- as.numeric(Obs);
 					}
@@ -280,20 +294,26 @@ createGLMnetSignature <- function (
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Spearman R(", Round, ")"), Value = round(perf[[paste0("Spearman R(", Round, ")")]],3)));
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Kendall tau(", Round, ")"), Value = round(perf[[paste0("Kendall tau(", Round, ")")]],3)));
 				} else {
-					predicted_classes <- apply(pred, 1, function(x) {return(names(x)[which.max(x)])});
+					predicted_classes <- NULL;
+					if (Family == "multinomial") {
+						predicted_classes <- apply(pred, 1, function(x) {return(names(x)[which.max(x)])});
+					} else {
+						# binomial
+						predicted_classes <- as.character(unlist(lapply(pred, round)));
+					}
 					#print(File);
 					#save(pred, file=paste0(File, "_pred.RData"));
 					#save(predicted_classes, file=paste0(File, "_predicted_classes.RData"));
 					#save(Obs, file=paste0(File, "_Obs.RData"));
 					confusion_matrix <- table(predicted_classes, as.character(Obs));
-					#print(confusion_matrix);
+					print(confusion_matrix);
 					perf[[paste0("Accuracy (", Round, ")")]] = sum(diag(confusion_matrix))/sum(confusion_matrix);
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Accuracy (", Round, ")"), Value = round(perf[[paste0("Accuracy (", Round, ")")]])));
 				}
 			} else {
 				cu <- cu0[smp,]
-				t1 <- try(coxph(Formula, data = as.data.frame(PW[smp,]), control = coxph.control(iter.max = 5)), silent=FALSE);
-				if (!grepl("Error|fitter|levels", t1[1]) & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
+				t1 <- tryCatch(coxph(Formula, data = as.data.frame(PW[smp,]), control = coxph.control(iter.max = 5)), error = function(e) {handleError(e)});
+				if ((class(t1) != "error") & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
 					perf[[paste0("P(logtest, ", Round, ")")]] <- summary(t1)$logtest["pvalue"];
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("P(logtest, ", Round, ")"), Value = round(perf[[paste0("P(logtest, ", Round, ")")]],3)));
 				} else {
@@ -302,7 +322,7 @@ createGLMnetSignature <- function (
 			}
 			title.main=Round;
 
-			if (!Family %in% c("cox", "multinomial")) {
+			if (!Family %in% c("cox", "multinomial", "binomial")) {
 				MSE <- mean((MG[smp] - pred)^2);
 				MRE <- mean(abs(MG[smp] - pred)/abs(MG[smp]));
 				R2 <- 1 - (sum((MG[smp] - pred)^2)/sum((MG[smp] - mean(MG[smp]))^2));
@@ -337,8 +357,14 @@ createGLMnetSignature <- function (
 					names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
 					plotSurv2(cu=cu0[names(pred),], Grouping=ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
 				} else {
-					# placeholder!
-					plot(rnorm(100));
+					# for classification - use boxplot
+					classes <- c();
+					if (Family == "binomial") {
+						classes <- unlist(lapply(Obs, function(x) ifelse(x == 1, "pos", "neg")));
+						classes_with_probabilities <- data.frame("Class" = classes, "Probability" = pred, stringsAsFactors = TRUE);
+						print(classes_with_probabilities);
+					}
+					boxplot(classes_with_probabilities$Probability~classes_with_probabilities$Class);
 				}
 			}
 			ppe <-  paste0("n(",  Round, " set)=", length(smp),"\n"); 
@@ -510,7 +536,7 @@ query <- paste0("SELECT table_name FROM guide_table WHERE source='", toupper(Par
 print(query);
 table_name <- sqlQuery(rch, query)[1,1];
 query <- paste0("SELECT sample,", ifelse(!empty_value(rid), "id,", ""),
-	rplatform, ifelse(rplatform %in% survival_platforms, paste0(",", rplatform, "_time"), ""), 
+	ifelse(rdatatype != "mut", rplatform, "1"), ifelse(rplatform %in% survival_platforms, paste0(",", rplatform, "_time"), ""), 
 	" FROM ", table_name);
 condition <- paste0(" WHERE ", rplatform, " IS NOT NULL");
 if (rdatatype == "clin") {
@@ -518,7 +544,7 @@ if (rdatatype == "clin") {
 		condition <- paste0(condition, " AND ", rplatform,"_time<>0");
 	}
 } else {
-	print(paste0("rid: ", rid, " empty_value(rid): ", empty_value(rid)));
+	#print(paste0("rid: ", rid, " empty_value(rid): ", empty_value(rid)));
 	if (Par["source"] == "tcga") {
 		tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
 		condition <- paste0(condition, " AND sample~", tcga_array);
@@ -529,10 +555,12 @@ if (rdatatype == "clin") {
 }
 query <- paste0(query, condition, ";");
 print(query);
-resp_matr <- sqlQuery(rch, query);
-resp_matr[,1] <- as.character(resp_matr[,1]);
+resp_matr <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 rownames(resp_matr) <- resp_matr[,1];
-resp_matr[,2] <- correctData(resp_matr[,2], rplatform);
+if(rdatatype == "mut") {
+	colnames(resp_matr) <- c("sample", "id", rplatform);
+}
+resp_matr[,rplatform] <- correctData(resp_matr[,rplatform], rplatform);
 
 for (ty in names(Platform)) {
 	#print(ty);
@@ -585,7 +613,7 @@ for (ty in names(Platform)) {
 	if (ty == names(Platform)[1]) {
 		X.matrix <- X.add;
 	} else {
-		X.matrix <- t(merge(t(X.matrix), t(X.add), by="row.names", all = TRUE));
+		X.matrix <- t(merge(t(X.matrix), t(X.add), by = "row.names", all = TRUE));
 		colnames(X.matrix) <- X.matrix[1,];
 		temp_rownames <- rownames(X.matrix);
 		temp_colnames <- colnames(X.matrix);
@@ -613,7 +641,7 @@ if (!stop_flag) {
 	#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 	temp_rownames <- rownames(X.matrix);
 	temp_colnames <- colnames(X.matrix);
-	X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
+	X.matrix <- matrix(as.numeric(unlist(X.matrix)), nrow = nrow(X.matrix), byrow = FALSE, dimnames = list(rownames(X.matrix), colnames(X.matrix)));
 	#print(str(X.matrix));
 	if (is.null(nrow(X.matrix))) {
 		X.matrix <- matrix(X.matrix, 1, length(X.matrix));
@@ -637,7 +665,7 @@ if (!stop_flag) {
 	cu <- NULL;
 	if (rplatform %in% survival_platforms) {
 		#print(resp_matr);
-		cu <- makeCu(clin=resp_matr, s.type=rplatform, Xmax=NA, usedNames=usedSamples);
+		cu <- makeCu(clin = resp_matr, s.type = rplatform, Xmax = NA, usedNames = usedSamples);
 		cu <- cu[which(!is.na(cu[,"Time"]) & !is.na(cu[,"Stat"])),];
 		temp_rownames <- rownames(X.matrix);
 		#print(rownames(cu));
@@ -667,7 +695,7 @@ if (!stop_flag) {
 		censored_length <- length(which(grepl("\\+", as.character(resp))))
 		print(censored_length);
 		print("Not censored values:");
-		print(length(resp)-length(which(grepl("\\+", as.character(resp)))));
+		print(length(resp) - length(which(grepl("\\+", as.character(resp)))));
 	} else {
 		resp <- resp_matr[,rplatform];
 		names(resp) <- resp_matr[,"sample"];
@@ -682,6 +710,15 @@ if (!stop_flag) {
 		resp <- resp[!is.na(resp)];
 		if ((Par["source"] == "tcga") & (any(x_datatypes %in% druggable.patient.datatypes) & (!rdatatype %in% druggable.patient.datatypes))) {
 			names(resp) <- gsub(sample_mask, "", names(resp), fixed=FALSE);
+		}
+		# if response is MUT - add NEG cases using usedSamples
+		if(rdatatype == "mut") {
+			print("Response is MUT: adding observations");
+			samples_to_add <- setdiff(usedSamples, names(resp));
+			vector_to_add <- rep(0, times = length(samples_to_add));
+			names(vector_to_add) <- samples_to_add;
+			resp <- c(resp, vector_to_add);
+			print(paste0("Added ", length(samples_to_add), " samples, new resp is ", length(resp), " elements long"));
 		}
 		# for multinomial - exclude all categories which are less than 3% of cohort or 10 samples
 		if (fam == "multinomial") {
@@ -707,7 +744,7 @@ if (!stop_flag) {
 				names(resp) <- temp_names;
 			}
 		}
-		#print(resp);
+		print(resp);
 		#print(str(resp));
 	}
 	
@@ -772,7 +809,7 @@ if (!stop_flag) {
 			# bad style, but otherwise we have to return several objects
 			# print(paste0("crossval_flag: ", crossval_flag));
 			# pay attention! We use Par["rid"] instead of rid, because rid is already an internal id, and plot function expects to see external id
-			saveJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, Par["rid"], multiopt, fam);
+			saveModelJSON(model, paste0("coeff.", Par["out"], ".json"), crossval_flag, Par["source"], Par["cohort"], x_datatypes, x_platforms, unlist(x_ids), rdatatype, rplatform, Par["rid"], multiopt, fam);
 			savePerformanceJSON(perf_frame, paste0("perf.", Par["out"], ".json"));
 			
 			if (!empty_value(statf)) {

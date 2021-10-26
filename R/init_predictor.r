@@ -78,7 +78,7 @@ plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax = NA, Cls, Title = 
 
 # function to save model coefficients in JSON format
 # new format: we need information about response, multiopt etc. to offer plots 
-saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x_platforms, available_ids, rdatatype, rplatform, rid, multiopt, family) {
+saveModelJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x_platforms, available_ids, rdatatype, rplatform, rid, multiopt, family) {
 	if (empty_value(rid)) {
 		rid <- "";
 	} else {
@@ -167,16 +167,15 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 		plot_type <- switch(family,
 			"cox" = "KM",
 			"multinomial" = "box",
+			"binomial" = "box",
 			"gaussian" = "scatter"
 		);
-		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'linear\', \'linear\'], [\'', multiopt[1], '\'])\\">Plot</button>');
+		button_code = paste0('<button class=\\"ui-button ui-widget ui-corner-all\\" onclick=\\"plot(\'', plot_type,'\', \'', source_n, '\', \'', cohort, '\', [\'', temp_datatype, '\', \'', rdatatype,'\'], [\'', temp_platform,'\', \'', rplatform,'\'], [\'', temp_id, '\', \'', rid, '\'], [\'original\', \'original\'], [\'', multiopt[1], '\'])\\">Plot</button>');
 		values[i] <- paste0("{\"Term\":\"", temp_id, "\", \"Platform\":\"", temp_platform, "\", \"Coef\":\"", coeffs[i], "\", \"Plot\":\"", button_code, "\"}");
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "]}");
-	fileConn <- file(filename);
-	writeLines(json_string, fileConn);
-	close(fileConn);
+	saveJSON(json_string, filename);
 }
 
 # this function relies on frameToJSON function from common_functions.r
@@ -184,14 +183,7 @@ saveJSON <- function(model, filename, crossval, source_n, cohort, x_datatypes, x
 # the first column is always called "Measure", the second is always "Value"
 savePerformanceJSON <- function(perf_frame, filename) {
 	json_string <- frameToJSON(perf_frame);
-	fileConn <- file(filename);
-	writeLines(json_string, fileConn);
-	close(fileConn);
-}
-
-# process result of try
-processTryResult <- function(x) {
-
+	saveJSON(json_string, filename);
 }
 
 Args <- commandArgs(trailingOnly = TRUE);
