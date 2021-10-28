@@ -39,7 +39,7 @@ handleError <- function(e) {
 	if (e == "Only one variable left") {
 		error_object[["explanation"]] <- "Only one variable left, need at least two to make a predictive model";
 	}
-	if (grepl("NA/NaN/Inf in foreign function call ", e) {
+	if (grepl("NA/NaN/Inf in foreign function call ", e)) {
 		error_object[["explanation"]] <- "Modelling error: chosen set contains NA/NaN/Inf values";
 	}
 	return(error_object);
@@ -104,17 +104,31 @@ list_to_JSON <- function(list_object) {
 	json_string <- "{";
 	values <- c(paste0("{\"class\":\"", class(list_object), "\"}"));
 	for (slot_name in names(list_object)) {
-		values[i] <- paste0("\{", slot_name, "\":\"", list_object[[slot_name]], "\"}");
+		values[i] <- paste0("{\"", slot_name, "\":\"", list_object[[slot_name]], "\"}");
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "}");
 	return(json_string);
 }
 
+# basic function for saving JSON objects
 saveJSON <- function(json_string, filename) {
 	fileConn <- file(filename);
 	writeLines(json_string, fileConn);
 	close(fileConn);
+}
+
+# convert S3 object returned by handleError into JSON
+saveErrorJSON <- function(error_object, filename) {
+	json_string <- list_to_JSON(error_object);
+	saveJSON(json_string, filename);
+}
+
+# use this function as possible default in switch when handling error - can be used to catch errors with not proper classes
+reportErrorClassHandlerMissing <- function(error_object, e_source, e_options) {
+	e_description <- "error_handling_failed";
+	e_message <- paste0("Error class: ", class(error_object), " Explanation: ", error_object[["explanation"]], " Original message: ", error_object[["error_message"]]);
+	report_event(e_source, "warning", e_description, e_options, e_message);
 }
 
 credentials <- getDbCredentials();

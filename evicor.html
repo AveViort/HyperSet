@@ -1676,6 +1676,8 @@ function build_and_show_model() {
 				process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
 			}
 			else {
+				// check if we have error object generated
+				
 				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "model_created", 
 					"method=" + method + 
 					"&source=" + source + 
@@ -3730,13 +3732,32 @@ function close_dock(dock_id) {
 	}
 }
 
-// process error stack from R, object stored in JSON format
-function process_error(filename) {
+
+// function to check if error has been thrown and saved by R
+function check_error_thrown(filename) {
+	var status = false;
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("HEAD", filename, false);
 	xmlhttp.send();
-	if (xmlhttp.status == 404) {
-		show_slidedown_alert("Unknown error occurred", 0);
+	if (xmlhttp.status == 200) {
+		status = true;
+	}
+	return status;
+}
+
+// process error stack from R, object stored in JSON format
+// error_thrown is a boolean flag, when set to true - we assume JSON error file exists
+// otherwise - check for existence
+function process_error(filename, error_thrown = false) {
+	var status;
+	if (error_thrown) {
+		status = true;
+	}
+	else {
+		status = check_error_thrown(filename);
+	}
+	if (!error_thrown) {
+		show_slidedown_alert("Unknown error occurred, error object not found", 0);
 	}
 	else {
 		error_object <- JSON.parse(xmlhttp.responseText);
@@ -3745,6 +3766,8 @@ function process_error(filename) {
 			case "error":
 				show_slidedown_alert(error_object.explanation, 0);
 				break;
+			default:
+				show_slidedown_alert("Unknown error occurred", 0);
 		}
 	}
 }

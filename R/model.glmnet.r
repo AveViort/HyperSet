@@ -40,7 +40,7 @@ createGLMnetSignature <- function (
 	responseVector, 
 	predictorSpace,
 	Family = c("gaussian","binomial","poisson","multinomial","cox","mgaussian")[1],
-	type.measure=c("deviance", "mse", "mae", "class", "auc")[5], 
+	type.measure = c("deviance", "mse", "mae", "class", "auc")[5], 
 	independentValidation = TRUE, 
 	validationFraction = 0.50,
 	Nfolds = 3,
@@ -113,6 +113,7 @@ createGLMnetSignature <- function (
 					"&nlambda=", Nlambda, "&nfolds=", Nfolds, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
 				plot(0,type = 'n', axes = FALSE, ann = FALSE);
 				text(x = 1, y = 0.5, labels = "Error", cex = 1);
+				saveErrorJSON(model, file = paste0(baseName, "_error.json"));
 				return(NA);
             }
 			#save(model, file=paste0(File, ".RData"));
@@ -141,6 +142,7 @@ createGLMnetSignature <- function (
 					"&nlambda=", Nlambda, "&lambda.min.ratio=", minLambda, "&standardize=", STD), prepare_error_stack(t1));
 				plot(0,type = 'n', axes = FALSE, ann = FALSE);
 				text(x = 1, y = 0.5, labels = t1[1], cex = 1);
+				saveErrorJSON(model, file = paste0(baseName, "_error.json"));
 				return(NA);
             }
 			Betas <- model$beta;
@@ -164,7 +166,7 @@ createGLMnetSignature <- function (
 				Intercept <- ifelse(is.null(A0), 0,  A0[,Lc]);
 				c1 <- Betas[[1]][,Lc];
 				co <- c1[which(c1 != 0)];
-				co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+				co <- signif(co[order(abs(co), decreasing = TRUE)], digits = 2);
 				#print(co);
 				n <- length(MG[Sample1]);
 				pred <- as.vector(Intercept + PW[Sample1,] %*% c1);
@@ -173,7 +175,7 @@ createGLMnetSignature <- function (
 				Intercept <- ifelse(is.null(A0), 0,  A0[Lc]);
 				c1 <- Betas[,Lc];
 				co <- c1[which(c1 != 0)];
-				co <- signif(co[order(abs(co), decreasing = TRUE)], digits=2);
+				co <- signif(co[order(abs(co), decreasing = TRUE)], digits = 2);
 				print(co);
 				n <- length(MG[Sample1]);
 				pred <- as.vector(Intercept + PW[Sample1,] %*% c1);
@@ -201,8 +203,8 @@ createGLMnetSignature <- function (
 				if (is.null(cu)) {
 					stop("Survival data absent...");
 				}
-				Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ ", paste(names(co), collapse= " + "))); 
-				t1 <- tryCatch(coxph(Formula, data=as.data.frame(PW[Sample1,]), control=coxph.control(iter.max = 5)), error = function(e) {handleError(e)});
+				Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ ", paste(names(co), collapse = " + "))); 
+				t1 <- tryCatch(coxph(Formula, data=as.data.frame(PW[Sample1,]), control = coxph.control(iter.max = 5)), error = function(e) {handleError(e)});
 				if ((class(t1) != "error") & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
 					# https://stackoverflow.com/questions/19679183/compute-aic-in-survival-analysis-survfit-coxph/26212428#26212428?newreg=e521f49ac41446748ac71b6b2033428f
 					# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6874104/
@@ -236,8 +238,8 @@ createGLMnetSignature <- function (
 		plot(model);
 		Cex.main  = 0.85; Cex.lbl = 0.35; Cex.leg = 0.5;
 		ppe <- NULL; 
-		for (pe in names(perf)[which(!grepl(paste(rnds, collapse="|"), names(perf), fixed=FALSE))]) {
-			va = round(perf[[pe]], digits=3); 
+		for (pe in names(perf)[which(!grepl(paste(rnds, collapse = "|"), names(perf), fixed = FALSE))]) {
+			va = round(perf[[pe]], digits = 3); 
 			ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
 			perf_frame <- rbind(perf_frame, data.frame(Measure = paste0(pe, "(training)"), Value = va));
 		}
@@ -304,7 +306,7 @@ createGLMnetSignature <- function (
 					#print(File);
 					#save(pred, file=paste0(File, "_pred.RData"));
 					#save(predicted_classes, file=paste0(File, "_predicted_classes.RData"));
-					#save(Obs, file=paste0(File, "_Obs.RData"));
+					#save(Obs, file = paste0(File, "_Obs.RData"));
 					confusion_matrix <- table(predicted_classes, as.character(Obs));
 					print(confusion_matrix);
 					perf[[paste0("Accuracy (", Round, ")")]] = sum(diag(confusion_matrix))/sum(confusion_matrix);
@@ -320,7 +322,7 @@ createGLMnetSignature <- function (
 					stop(t1[1]);
 				}
 			}
-			title.main=Round;
+			title.main = Round;
 
 			if (!Family %in% c("cox", "multinomial", "binomial")) {
 				MSE <- mean((MG[smp] - pred)^2);
@@ -346,7 +348,7 @@ createGLMnetSignature <- function (
 				}
 				States = sort(unique(MG[smp]))
 				axis(1, at = States, labels = States);
-				#text(MG[smp], pred, labels=toupper(names(MG[smp])), cex=Cex.lbl, srt=45);
+				#text(MG[smp], pred, labels = toupper(names(MG[smp])), cex = Cex.lbl, srt = 45);
 				points(MG[smp], pred);
 				if (Family != "multinomial") {
 					abline(coef(lm(pred ~ MG[smp])), col = "green", lty = 2);
@@ -355,7 +357,7 @@ createGLMnetSignature <- function (
 				if(Family == "cox") {
 					Cls = c("red2", "green2");
 					names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
-					plotSurv2(cu=cu0[names(pred),], Grouping=ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
+					plotSurv2(cu=cu0[names(pred),], Grouping = ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
 				} else {
 					# for classification - use boxplot
 					classes <- c();
@@ -379,7 +381,7 @@ createGLMnetSignature <- function (
 			dev.off();
 		}
 	} else {
-		png(file=paste0(baseName, "_model.png"), width = plotSize/2, height = plotSize/2, type = "cairo");
+		png(file = paste0(baseName, "_model.png"), width = plotSize/2, height = plotSize/2, type = "cairo");
 		plot(model, xvar = c("norm", "lambda", "dev")[1], label = TRUE);
 		legend("top", "No non-zero terms identified...");
 		print("No non-zero terms identified...");
@@ -760,14 +762,15 @@ if (!stop_flag) {
 	print(dim(X.matrix));
 	if ((is.null(nrow(X.matrix))) || (length(resp) == 0)) {
 		for (type in c("model", "training", "validation")) {
-			png(file=paste0(File, "_", type,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
+			png(file = paste0(File, "_", type,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 			print("Error occured: only one variable left");
 			report_event("model.glmnet.r", "error", "glmnet_data_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
 				"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
 				"&x_platforms=", Par["xplatforms"], "&x_ids=", Par["xids"], "&multiopt=", Par["multiopt"], "&family=", fam, "&alpha=", alpha, "&measure=", mea,
 				"&nlambda=", nlambda, "&nfolds=", nfolds, "&lambda.min.ratio=", minlambda, "&standardize=", standardize), "Only one variable left");
-			plot(0,type='n', axes=FALSE, ann=FALSE);
-			text(x=1, y=0.5, labels = "Cannot perform multidimensional analysis: not enough variables", cex = 1);
+			plot(0,type = 'n', axes = FALSE, ann = FALSE);
+			text(x = 1, y = 0.5, labels = "Cannot perform multidimensional analysis: not enough variables", cex = 1);
+			saveErrorJSON(model, file = paste0(baseName, "_error.json"));
 			dev.off();
 		}
 	} else {
