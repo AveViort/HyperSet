@@ -437,7 +437,8 @@ for (i in 1:length(x_datatypes)) {
 		}
 		if (!x_datatypes[i] %in% druggable.patient.datatypes) {
 			condition <- ifelse(condition == "", " WHERE ", paste0(condition, " AND "));
-			if ("[all]" %in% x_ids[[i]]) {
+			print(paste0("x_ids[[", i, "]]: ", x_ids[[i]]));
+			if (("[all]" %in% x_ids[[i]]) || ("[ALL]" %in% x_ids[[i]])) {
 				if (x_platforms[i] == rplatform) {
 					# we want to exclude dependent variable from independent ones
 					condition <- paste0(condition, "id NOT LIKE '", rid, "'");
@@ -472,7 +473,7 @@ for (i in 1:length(x_datatypes)) {
 			}
 			if (!x_datatypes[i] %in% druggable.patient.datatypes) {
 				condition <- ifelse(condition == "", " WHERE ", paste0(condition, " AND "));
-				if ("[all]" %in% x_ids[[i]]) {
+				if (("[all]" %in% x_ids[[i]]) || ("[ALL]" %in% x_ids[[i]])) {
 					if (x_platforms[i] == rplatform) {
 						# we want to exclude dependent variable from independent ones
 						condition <- paste0(condition, "id NOT LIKE '", rid, "'");

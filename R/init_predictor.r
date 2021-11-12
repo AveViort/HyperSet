@@ -227,8 +227,8 @@ for (i in 1:length(x_ids)) {
 	temp <- gsub("\\[|\\]", "", x_ids[[i]]);
 	temp <- unlist(strsplit(temp, split = "\\|"));
 	if (length(temp) > 0) {
-		if (any(temp == 'all')) {
-			x_ids[[i]] == c("all");
+		if (any(temp %in% c('all', 'ALL', '[all]', '[ALL]'))) {
+			x_ids[[i]] <- c("[all]");
 		} else {
 			if (grepl('nea', x_datatypes[i])) {
 				temp <- tolower(temp);

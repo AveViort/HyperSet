@@ -45,6 +45,21 @@ handleError <- function(e) {
 	return(error_object);
 }
 
+# create error object artificially, without tryCatch
+# custom is a named list of additional fields, names of the list match the names of the fields of error_object
+# do not use "description" name in custom!
+raiseError <- function(error_class, error_description, custom = NULL) {
+	error_object <- list();
+	class(error_object) <- error_class;
+	error_object[["error_description"]] <- error_description;
+	if (!is.null(custom)) {
+		for (field_name in names(custom)) {
+			error_object[[field_name]] <- custom[[field_name]];
+		}
+	}
+	return(error_object);
+}
+
 getDbCredentials <- function(key_file = "HS_SQL.conf") {
 	options(warn=-1);
 	temp <- read.delim(file = key_file, header = FALSE, sep = " ", row.names = 1)
@@ -102,9 +117,12 @@ frameToJSON <- function(data_frame) {
 list_to_JSON <- function(list_object) {
 	# unlike data.frame, we don't use data here, since all names in list are unique 
 	json_string <- "{";
-	values <- c(paste0("{\"class\":\"", class(list_object), "\"}"));
+	values <- rep("", length(list_object) + 1);
+	values[1] <- paste0("{\"class\":\"", class(list_object), "\"}");
+	i <- 2;
 	for (slot_name in names(list_object)) {
 		values[i] <- paste0("{\"", slot_name, "\":\"", list_object[[slot_name]], "\"}");
+		i <- i+1;
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "}");

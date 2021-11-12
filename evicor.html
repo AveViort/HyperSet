@@ -427,40 +427,43 @@ table.simple_table td a{
 					<tr>
 						<td>Bar</td>
 						<td>1D</td>
-						<td></td>
+						<td>Basic bar plot for categorial data</td>
 					</tr>
 					<tr>
 						<td>Pie</td>
 						<td>1D</td>
-						<td></td>
+						<td>Alternative representation for categorial data</td>
 					</tr>
 					<tr>
 						<td>Histogram</td>
 						<td>1D/2D</td>
-						<td></td>
+						<td>1D: basic histogram, 2D: stacked histogram (by categories)</td>
 					</tr>
 					<tr>
 						<td>Venn</td>
 						<td>2D</td>
-						<td></td>
+						<td>Venn diagrams for categorial data, shows intersection of 2 categories</td>
 					</tr>
 					<tr>
 						<td>Box</td>
 						<td>2D</td>
-						<td></td>
+						<td>Interactive box plots with whiskers and outliers</td>
 					</tr>
 					<tr>
 						<td>Kaplan-Meier plot</td>
 						<td>2D/3D</td>
-						<td></td>
+						<td>Kaplan-Meier survival plots, numeric and categorial data can be used to define groups</td>
 					</tr>
 					<tr>
 						<td>Scatter</td>
 						<td>2D/3D</td>
-						<td></td>
+						<td>2D plot for numerical data. In case of 3D plot, 3rd dimension is represented via data points color and/or shape, data for the 3rd dimension can be either numeric or categorial.</td>
 					</tr>
 				</table>
 				<br>
+				
+				<h3>Meta-codes</h3>
+				Data for plotting can be selected either by codes (for TCGA) or tissue of origin (CCLE) or meta-codes. Meta-codes are synonyms for a collection of codes, e.g. "metastatic" metacode corresponds to all TCGA codes meant to represent samples from metastases.
 				
 				<h3>Available data transformations</h3>
 				EviCor allows user to scale data when working with numerical data types. The following transformations are available:
@@ -471,31 +474,30 @@ table.simple_table td a{
 						<th>Description</th>
 					</tr>
 					<tr>
-						<td>Linear</td>
-						<td></td>
+						<td>Original</td>
+						<td>Keep numbers as they are stored in EviCor DB</td>
 					</tr>
 					<tr>
 						<td>Square root (sqrt)</td>
-						<td></td>
+						<td>Apply square root tranformation to data</td>
 					</tr>
 					<tr>
 						<td>Logarithmic (log)</td>
-						<td></td>
+						<td>Apply log transformation to data</td>
 					</tr>
 					<tr>
 						<td>Beta</td>
-						<td></td>
+						<td>Convert values into beta-scale (methylation data only)</td>
 					</tr>
 					<tr>
 						<td>M (M-value)</td>
-						<td></td>
+						<td>Convert values into M-values (methylation data only)</td>
 					</tr>
 				</table>
 				<br>
 				
 				<h3>Plot legends</h3>
-				
-				<br>
+				In many cases plot legends contain additional information. Some of this information is descriptive and pre-defined by user (chosen data source etc), some is calculated by R scripts, such as different types of correlaions. Correlations, when available, are calculated for data on X and Y axis.
 				
 				<h3>REST API</h3>
 				EviCor web platform allows user to create plots using REST API. Refer to the respective tab for more details.
@@ -507,7 +509,58 @@ table.simple_table td a{
 				EviCor web platform can create predictive models from pre-loaded data. 
 				
 				<h3>Available models</h3>
-				At the moment EviCor supports only <i>glmnet</i> models. GLMnet is an implementation of elastic net algorithm. You can find more information on GLmnet, including original publications, on the <a href="https://cran.r-project.org/web/packages/glmnet/index.html">official CRAN page</a> of the respective package.
+				At the moment EviCor supports only <i>glmnet</i> models for regression and binomial classification. GLMnet is an implementation of elastic net algorithm. You can find more information on GLmnet, including original publications, on the <a href="https://cran.r-project.org/web/packages/glmnet/index.html">official CRAN page</a> of the respective package.
+				
+				<h3>Predictive variables</h3>
+				EviCor allows user to combine variables from different data types for better perofrmance. For example, you can try to predict gene expression of TP53 based on gene expression of certain set of genes and copy number of another set of genes (these sets can intersect). Additionally, you can have predictive variables of the same data type (e.g. gene expression) for the same genes, but measured using different platforms (e.g. Agilent and Illumina HiSeq v.2).
+				
+				<h3>Transfering significant correlates</h3>
+				Once you have retrieved significant correaltions via "Correlates of drug response" tab, you may use some (or all of them) as predictive variables. EviCor allows you to transfer them to the "Multivariate models" tab using built-in buffer. You can either add IDs one by one by pressing "Add to clipboard" (icon with two documents one above another) button or add all unique IDs by pressing "Copy all IDs for transfering" in the table header. This buffer stores only unique records. Next, you can pick the predictive variables input on the "Mutivariate models" tab, then either pick required ids in the clipboard window and pick option to ransfer chosen ids or copy all ids.
+				
+				<h3>Meta-variables</h3>
+				Just like meta-codes EviCor allows usage of meta-variables. Meta-variable is a mnemonic code which "hides" a lot of ids behind. As for version 1.3.1, only one metacode is supported - <code>all</code>. Use this variable if you want, for example, to test all genes from a certain platform as predictive variables.
+				
+				<h3>Validation parameters</h3>
+				EviCor offers user to withhold some part of data to use for model validation. To use this option, set tick in "Model validation" checkbox, then you can adjust number of folds in k-fold validation and portion of samples withheld for validation.
+				
+				<h3>Exploring model creatiuon results</h3>
+				After model successfully created, user will see a multi-tab dialog. This dialog shows training procedure (refer to glmnet documentation for explanation), correlation of predicted vs actual values on training and testing (if validation was selected) data sets.
+				
+				<h3>Performance metrics</h3>
+				EviCor offers a number of performance metrics, which are calculated on training and testing (if validation option is selected) data sets. EviCor offers the following performance metrics:
+				<br>
+				<table>
+					<thead>
+						<tr>
+							<th>Metric</th>
+							<th>Explanation</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>AIC</td>
+							<td><a href="https://en.wikipedia.org/wiki/Akaike_information_criterion">Akaike information criterion</a></td>
+						</tr>
+						<tr>
+							<td>BIC</td>
+							<td><a href="https://en.wikipedia.org/wiki/Bayesian_information_criterion">Bayesian information criterion</a> 	</td>
+						</tr>
+						<tr>
+							<td>RSS</td>
+							<td><a href="https://en.wikipedia.org/wiki/Residual_sum_of_squares">Residual sum of squares</a></td>
+						</tr>
+						<tr>
+							<td>Accuracy</td>
+							<td>Proportion of correctly classified entities at 0.5 threshold</td>
+						</tr>
+						<tr>
+							<td>p</td>
+							<td>Statistical significance (for survival prediction only)</td>
+					</tbody>
+				</table>
+				
+				<h3>Using generated models in your pipeline</h3>
+				The generated model can be downloaded by pressing the respective button and loaded into user's R environment (model name: <code>model</code>). Refer to glmnet documentation for model usage tips.
 			</div> 
 		
 			<div id="help-tab-comp">
@@ -633,6 +686,7 @@ table.simple_table td a{
 						</tbody>
 					</table>
 					<br>
+					If the error for this model was thrown - it is stored in file model578045416464_error.json.
 				</p>
 				<br>
 				<b>Batch models creation</b>
@@ -714,6 +768,8 @@ table.simple_table td a{
 				1.2.0 (21st of June, 2021) - experimental version: improved functionality, more responsive design.
 				<br>
 				1.3.0 (10th of September, 2021) - stable version: improved REST API, improved performance, new data, style changes, new tools for working with plots and models.
+				<br>
+				1.3.1 (9th of November, 2021) - stable version: improved error handling, visual adjustments, updated documentation, bugfixes.
 			</div>
 		</div>
 	</div>
@@ -977,7 +1033,7 @@ table.simple_table td a{
 </div>     
 
 <div class="footer ui-widget-header ui-corner-all" id="druggable_footer">
-	<P style="width:33%;text-align:right;">Ver. 1.3.0. Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
+	<P style="width:33%;text-align:right;">Ver. 1.3.1. Found problems? <A href="mailto:andrej.alekseenko@scilifelab.se">Send us email</A></P>
 </div>
 
 <script>
@@ -1100,7 +1156,9 @@ $(document).ready(function(){
 	$("#help_table_toggle").button({icon: "ui-icon-file-table", text: false});
 	$("#demos-button").button({icon: "ui-icon-play", text: false});
 	$("#show_clipboard-button").button({icon: "ui-icon-clipboard", text: false});
-	$("#show_clipboard-button").button("disable");
+	if (sessionStorage.getItem("transfer") == null) {
+		$("#show_clipboard-button").button("disable");
+	}
 	$("#history_dock-button").button({icon: "ui-icon-archive", text: false});
 	$("#history_table").DataTable();
 	restore_history_dock();
@@ -1112,7 +1170,7 @@ $(document).ready(function(){
 	if (sessionStorage.getItem("models") == null) {
 		$("#show_comparison_preview_button").button("disable");
 	}
-	$("#reload-button").button({icon: "ui-icon-closethick", text: false});
+	$("#reload-button").button({icon: "ui-icon-switch", text: false});
 	$( "#reload-button" ).tooltip({
 		content: "Press this button to delete all cookies and clear session storage. The site will return to the original state like you have never used it before.<br>EviCor stores some user data in cookies and session storage for better user experience. We don't store your personal data. To read more about our privacy policy, refer to the Help page",
 		position: { my: "left center", at: "right top", collision: "flipfit" }
@@ -1296,11 +1354,11 @@ function setElementWidths() {
 function reload_analysis_options() {
 	var n = parseInt(document.getElementById("add_row1").getAttribute("max"));
 	for (var i=2; i<=n; i++) {
-		console.log("Checking row " + i);
+		//console.log("Checking row " + i);
 		if (getCookie("type" + i + "_selector") != "") {
-			console.log("Row was set before");
+			//console.log("Row was set before");
 			add_plot_options_row(i-1);
-			console.log("Row " + i + " reloaded");
+			//console.log("Row " + i + " reloaded");
 		}
 	} 
 }
@@ -1313,60 +1371,6 @@ function reload_model_options() {
 			add_model_options_row();
 		}
 	} 
-}
-
-// show dialog window for 2nd tab with KM options
-function plot_dialog(param_string) {
-	console.log(param_string);
-	var dialog_window = '<div>';
-	var params = param_string.split(',');
-	console.log(params);
-	var drug = params.shift();
-	var id = params.shift();
-	for (var i in params) {
-		var par = params[i];
-		if (par != '') {
-			var pars = par.split('#');
-			console.log(par);
-			console.log(pars);
-			dialog_window = dialog_window + "<a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['original', 'original', 'original'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a><br>";
-		}
-	}
-	dialog_window = dialog_window + '</div>';
-	console.log(dialog_window);
-	$(dialog_window).dialog({
-				title: "Available KM plots",
-				height: 'auto',
-				width: 'auto',
-				modal: true,
-				beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-			}).parent().appendTo("#tab-signif");
-	$(dialog_window).position({
-		my: "center",
-		at: "center",
-		of: window
-	});
-}
-
-function plot_menu (param_string, caller) {
-	console.log(param_string);
-	var params = param_string.split(',');
-	console.log(params);
-	var drug = params.shift();
-	var id = params.shift();
-	var par = params[0];
-			var pars = par.split('#');
-			console.log(par);
-			console.log(pars);
-			var drop_menu = "<select name=\"KMs\" id=\"" + caller + "-menu\" ><option>AA</option></select>";
-			// <a onclick=\"plot('cor-KM', 'tcga', '" + pars[0] + "', ['drug', 'clin', '" + pars[1] + "'], ['drug', '" + pars[3] + "', '" + pars[2] + "'], ['" + drug + "', '', '" + id + "'], ['original', 'original', 'original'], ['all', 'all', 'all'])\">KM plot: " + pars[0] + " " + pars[1] + " " + pars[2] + " " + pars[3] + "(" + drug + "," + id + ")</a>
-	console.log(caller);	
-	// console.log(drop_menu);	
-	// $(drop_menu).selectmenu().parent().appendTo(caller);
-	// var DDD = '<div>CCC</div>'; 
-	$(drop_menu).appendTo($("#" + caller).parent());
-	$("#" + caller + "-menu").selectmenu();
-	// $("#" + caller + "-menu").css({"display": "block", "width": "25em", "height": "3em"});
 }
 
 function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
@@ -1407,7 +1411,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 		xmlhttp.send();
 		if (xmlhttp.status == 404) {
 			console.log("Something went wrong, plot was not created, reporting error...");
-			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "error", "plot_not_created", "type=" + type +
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "error", "plot_not_created", "type=" + type +
 				"&source=" + source + 
 				"&cohort=" + cohort + 
 				"&datatypes=" + datatypes.join() + 
@@ -1417,9 +1421,10 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 				"&scales=" + scales.join(),
 				ErrorStack);
 				plot_data["title"] = "Error";
+				process_error("https://" + window.location.hostname + "/pics/plots/" + plot_filename.substring(0, plot_filename.length-5) + "_error.json" , false)
 		}
 		else {
-			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "plot_created", "type=" + type +
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "plot_created", "type=" + type +
 				"&source=" + source + 
 				"&cohort=" + cohort + 
 				"&datatypes=" + datatypes.join() + 
@@ -1577,7 +1582,7 @@ function build_and_show_model() {
 			}
 			else {
 				// do this to avoid 1D analysis for one 'all' 
-				if (temp == "all") {
+				if ((temp == "ALL") | (temp == "all")) {
 					variable_count = variable_count + 10;
 				}
 				else {
@@ -1654,8 +1659,8 @@ function build_and_show_model() {
 			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
 			xmlhttp.send();
 			if (xmlhttp.status == 404) {
-				console.log("Something went wrong, model was not created, reporting error...");
-				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "error", "model_not_created",
+				//console.log("Something went wrong, model was not created, reporting error...");
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "error", "model_not_created",
 					"method=" + method + 
 					"&source=" + source + 
 					"&cohort=" + cohort + 
@@ -1673,12 +1678,10 @@ function build_and_show_model() {
 					"&standardize=" + standardize,
 					ErrorStack);
 				// show error - error class defines behavior
-				process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
+				process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json", false);
 			}
 			else {
-				// check if we have error object generated
-				
-				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "model_created", 
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "model_created", 
 					"method=" + method + 
 					"&source=" + source + 
 					"&cohort=" + cohort + 
@@ -1701,167 +1704,172 @@ function build_and_show_model() {
 					) : ("")) +
 					"<a href=https://" + window.location.hostname + "/model_json.html#coeff." + model_name + ".json target=_blank>View coefficients</a> " +
 					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData target=_blank>Download</a> ");
-			}
-			var model_window = '<div id="' + model_name + '_window" style="display: table;">' +
-				'<div id="' + model_name + '_tabs" style="display: table-cell;"> \
-					<ul> \
-						<li><a href="#' + model_name + '_model">Model overview</a></li> \
-						<li><a href="#' + model_name + '_training">Training</a></li>'
-						+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : (''))
-						+ '<li><a href="#' + model_name + '_performance">Performance</a></li>' +
-					'</ul> \
-					<div id="' + model_name + '_model"> \
-						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="640px" height="640px"></iframe> \
+				// situation when model was created, but error object was still generated
+				var error_thrown = check_error_thrown("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
+				if (error_thrown) {
+					process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
+				}
+				var model_window = '<div id="' + model_name + '_window" style="display: table;">' +
+					'<div id="' + model_name + '_tabs" style="display: table-cell;"> \
+						<ul> \
+							<li><a href="#' + model_name + '_model">Model overview</a></li> \
+							<li><a href="#' + model_name + '_training">Training</a></li>'
+							+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : (''))
+							+ '<li><a href="#' + model_name + '_performance">Performance</a></li>' +
+						'</ul> \
+						<div id="' + model_name + '_model"> \
+							<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="640px" height="640px"></iframe> \
+						</div> \
+						<div id="' + model_name + '_training"> \
+							<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="640px" height="640px"></iframe> \
+						</div>'
+						+ ((crossvalidation) ? (
+						'<div id="' + model_name + '_validation"> \
+							<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="640px" height="640px"></iframe> \
+						</div>') : ('')) +
+						'<div id = "' + model_name + '_performance"> \
+							<table id="' + model_name + '_perf" class="display" style="width:100%"> \
+								<thead> \
+									<tr> \
+										<th>Measure</th> \
+										<th>Training</th> \
+										<th>Validation</th> \
+									</tr> \
+								</thead> \
+							</table>\
+						</div> \
 					</div> \
-					<div id="' + model_name + '_training"> \
-						<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="640px" height="640px"></iframe> \
-					</div>'
-					+ ((crossvalidation) ? (
-					'<div id="' + model_name + '_validation"> \
-						<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="640px" height="640px"></iframe> \
-					</div>') : ('')) +
-					'<div id = "' + model_name + '_performance"> \
-						<table id="' + model_name + '_perf" class="display" style="width:100%"> \
-							<thead> \
-								<tr> \
-									<th>Measure</th> \
-									<th>Training</th> \
-									<th>Validation</th> \
-								</tr> \
-							</thead> \
-						</table>\
-					</div> \
-				</div> \
-				<br> \
-				<table id="' + model_name + '_coef" class="display" style="width:100%"> \
-					<thead> \
-						<tr> \
-							<th>Coefficient</th> \
-							<th>Platform</th> \
-							<th>Weight</th> \
-							<th></th>\
-						</tr> \
-					</thead> \
-				</table>\
-				</div>';
-				$("#tab-predict").append(model_window);
-				$("#" + model_name + "_window").dialog({
-					title: "Model: " + (r_id != "" ? r_id : platform_names.get(r_platform)) + ("~") + platform_names.get(x_platforms[0]) + (n>1 ? ("+" + platform_names.get(x_platforms[1])) : "") + (n>2 ? ("+" + platform_names.get(x_platforms[2])) : ""),
-					height: 'auto',
-					'max-height': "720px",
-					width: 'auto',
-					modal: false,
-					buttons: [
-						{
-							text: "Download model",
-							icon: "ui-icon-download",
-							click: function() {window.location.href = "https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData";},
-						},
-						{
-							text: "Add model to comparison",
-							click: function() {add_model_to_comparison(model_name);},
-						}
+					<br> \
+					<table id="' + model_name + '_coef" class="display" style="width:100%"> \
+						<thead> \
+							<tr> \
+								<th>Coefficient</th> \
+								<th>Platform</th> \
+								<th>Weight</th> \
+								<th></th>\
+							</tr> \
+						</thead> \
+					</table>\
+					</div>';
+					$("#tab-predict").append(model_window);
+					$("#" + model_name + "_window").dialog({
+						title: "Model: " + (r_id != "" ? r_id : platform_names.get(r_platform)) + ("~") + platform_names.get(x_platforms[0]) + (n>1 ? ("+" + platform_names.get(x_platforms[1])) : "") + (n>2 ? ("+" + platform_names.get(x_platforms[2])) : ""),
+						height: 'auto',
+						'max-height': "720px",
+						width: 'auto',
+						modal: false,
+						buttons: [
+							{
+								text: "Download model",
+								icon: "ui-icon-download",
+								click: function() {window.location.href = "https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData";},
+							},
+							{
+								text: "Add model to comparison",
+								click: function() {add_model_to_comparison(model_name);},
+							}
+						],
+						resize: function( event, ui ) {
+								($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+								($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+							},
+						beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+					}).parent().appendTo("#tab-predict");
+				$("#" + model_name + "_tabs").tabs();
+				urlfixtabs("#" + model_name + "_tabs");
+				$('#' + model_name + '_coef').DataTable( {
+					"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
+					"columns": [
+						{ "data" : "Term"},
+						{ "data" : "Platform"},
+						{ "data" : "Coef"},
+						{ "data" : "Plot"}
 					],
-					resize: function( event, ui ) {
-							($(this).children('iframe'))[0].setAttribute("height", $(this).height());
-							($(this).children('iframe'))[0].setAttribute("width", $(this).width());
-						},
-					beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-				}).parent().appendTo("#tab-predict");
-			$("#" + model_name + "_tabs").tabs();
-			urlfixtabs("#" + model_name + "_tabs");
-			$('#' + model_name + '_coef').DataTable( {
-				"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
-				"columns": [
-					{ "data" : "Term"},
-					{ "data" : "Platform"},
-					{ "data" : "Coef"},
-					{ "data" : "Plot"}
-				],
-				"order": [[ 2, "desc" ]],
-				"scrollY": "600px",
-				"scrollCollapse": true,
-				"paging": false
-			});
-			$('#' + model_name + '_perf').DataTable( {
-				"ajax": {
-					"url" : "https://" + window.location.hostname + "/pics/plots/perf." + model_name + ".json",
-					"dataSrc" : function(json) {
-						//console.log(json.data);
-						var pretty_print_data = new Array();
-						// collect available measures - remember about ()
-						var measures = new Array();
-						// use this to easily find indexes
-						var temp_index = new Array();
-						for (var i = 0; i < json.data.length; i++) {
-							var mark_start = json.data[i].Measure.lastIndexOf("(");
-							if (mark_start == -1) {
-								mark_start = json.data[i].Measure.length;
+					"order": [[ 2, "desc" ]],
+					"scrollY": "600px",
+					"scrollCollapse": true,
+					"paging": false
+				});
+				$('#' + model_name + '_perf').DataTable( {
+					"ajax": {
+						"url" : "https://" + window.location.hostname + "/pics/plots/perf." + model_name + ".json",
+						"dataSrc" : function(json) {
+							//console.log(json.data);
+							var pretty_print_data = new Array();
+							// collect available measures - remember about ()
+							var measures = new Array();
+							// use this to easily find indexes
+							var temp_index = new Array();
+							for (var i = 0; i < json.data.length; i++) {
+								var mark_start = json.data[i].Measure.lastIndexOf("(");
+								if (mark_start == -1) {
+									mark_start = json.data[i].Measure.length;
+								}
+								var measure = json.data[i].Measure.slice(0, mark_start);
+								//console.log(measure);
+								if (measures.indexOf(measure) == -1) {
+									measures.push(measure);
+								}
+								temp_index.push(json.data[i].Measure);
 							}
-							var measure = json.data[i].Measure.slice(0, mark_start);
-							//console.log(measure);
-							if (measures.indexOf(measure) == -1) {
-								measures.push(measure);
-							}
-							temp_index.push(json.data[i].Measure);
-						}
-						//console.log(measures);
-						//console.log(temp_index);
-						for (var i = 0; i < measures.length; i++) {
-							//console.log(measures[i]);
-							// JS cannot find all occurences using indexOf - do it manually
-							var occurences = new Array();
-							for (var j = 0; j < temp_index.length; j++) {
-								//console.log(temp_index[j]);
-								// use == 0 instead of != -1, otherwise for measure "p" string "Spearman R(training)" will match
-								if (temp_index[j].indexOf(measures[i]) == 0) {
-									occurences.push(j);
+							//console.log(measures);
+							//console.log(temp_index);
+							for (var i = 0; i < measures.length; i++) {
+								//console.log(measures[i]);
+								// JS cannot find all occurences using indexOf - do it manually
+								var occurences = new Array();
+								for (var j = 0; j < temp_index.length; j++) {
+									//console.log(temp_index[j]);
+									// use == 0 instead of != -1, otherwise for measure "p" string "Spearman R(training)" will match
+									if (temp_index[j].indexOf(measures[i]) == 0) {
+										occurences.push(j);
+									}
+								}
+								//console.log(occurences);
+								// if we have more than 1 occurence - it means training/validation
+								if (occurences.length == 2) {
+									var training_ind = (temp_index[occurences[0]].indexOf("(training)") != -1 ? occurences[0] : occurences[1]);
+									var validation_ind = (temp_index[occurences[0]].indexOf("(validation)") != -1 ? occurences[0] : occurences[1]);
+									pretty_print_data.push({
+										// measureQtip defined in druggable_config.js
+										'Measure' : measures[i] + '<a title=\"' + measureQtip[i] + '\"></a>',
+										'Value' : {
+											'Training' : json.data[training_ind].Value,
+											'Validation' : json.data[validation_ind].Value
+										}
+									});
+								}
+								else {
+									pretty_print_data.push({
+										'Measure' : measures[i]  + '<a title=\"' + measureQtip[i] + '\"></a>',
+										'Value' : {
+											'Training' : json.data[occurences[0]].Value,
+											'Validation' : ''
+										}
+									});
 								}
 							}
-							//console.log(occurences);
-							// if we have more than 1 occurence - it means training/validation
-							if (occurences.length == 2) {
-								var training_ind = (temp_index[occurences[0]].indexOf("(training)") != -1 ? occurences[0] : occurences[1]);
-								var validation_ind = (temp_index[occurences[0]].indexOf("(validation)") != -1 ? occurences[0] : occurences[1]);
-								pretty_print_data.push({
-									// measureQtip defined in druggable_config.js
-									'Measure' : measures[i] + '<a title=\"' + measureQtip[i] + '\"></a>',
-									'Value' : {
-										'Training' : json.data[training_ind].Value,
-										'Validation' : json.data[validation_ind].Value
-									}
-								});
-							}
-							else {
-								pretty_print_data.push({
-									'Measure' : measures[i]  + '<a title=\"' + measureQtip[i] + '\"></a>',
-									'Value' : {
-										'Training' : json.data[occurences[0]].Value,
-										'Validation' : ''
-									}
-								});
-							}
+							//console.log(pretty_print_data);
+							return pretty_print_data;
 						}
-						//console.log(pretty_print_data);
-						return pretty_print_data;
-					}
-				},
-				"columns": [
-					{ "data": "Measure"},
-					{ "data": "Value.Training"},
-					{ "data": "Value.Validation"}
-				],
-				"order": [[ 0, "desc" ]],
-				"scrollY": "600px",
-				"scrollCollapse": true,
-				"paging": false
-			});
-			$('[aria-describedby="' + model_name + "_window" + '"]').
-				find( 'div.ui-dialog-titlebar').
-				append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-60px\">" +
-						"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Show help\" onclick=\"openDialog('help-dialog-dr'); $('#help-tabs-dr').tabs('option', 'active', 4);\"><span class=\"ui-button-icon ui-icon ui-icon-help\"></span><span class=\"ui-button-icon-space\"></span>Help</button>" +
-						"</div>"
-				);
+					},
+					"columns": [
+						{ "data": "Measure"},
+						{ "data": "Value.Training"},
+						{ "data": "Value.Validation"}
+					],
+					"order": [[ 0, "desc" ]],
+					"scrollY": "600px",
+					"scrollCollapse": true,
+					"paging": false
+				});
+				$('[aria-describedby="' + model_name + "_window" + '"]').
+					find( 'div.ui-dialog-titlebar').
+					append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-60px\">" +
+							"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Show help\" onclick=\"openDialog('help-dialog-dr'); $('#help-tabs-dr').tabs('option', 'active', 4);\"><span class=\"ui-button-icon ui-icon ui-icon-help\"></span><span class=\"ui-button-icon-space\"></span>Help</button>" +
+							"</div>"
+					);
+			}
 		}
 	}
 	else {
@@ -1902,7 +1910,7 @@ function retrieve_correlations() {
 				$('#cor_result_table').DataTable().clear();
 				$('#cor_result_table').DataTable().destroy();
 				var ErrorStack = check_error_stack(new Error().stack);
-				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", 
+				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", 
 					"error", "correlations_not_retrieved: " + error.status, 
 					"&source=" + source + 
 					"&datatype=" + datatype + 
@@ -1916,6 +1924,7 @@ function retrieve_correlations() {
 					"&filter_columns=" + cor_sql_filter_columns.get(source) + 
 					"&concat_operator=" + cor_concatenation_operators.get(source),
 					ErrorStack);
+				window.postMessage("hide_progressbar");
 				show_slidedown_alert("An error has occured. Please reload the page and try to do the following:<br>1) Make a narrower (more specific) query;<br>2) Lower FDR", 3000);
 			}
 		},
@@ -1932,7 +1941,13 @@ function retrieve_correlations() {
 		"columns": cor_visible_columns.get(source),
 		"dom": "lfBrtip",
 		"buttons": [
-            'excel', 'copy', 'csv'
+            'excel', 'copy', 'csv',
+			{
+                text: 'Copy all IDs for transfering',
+                action: function ( e, dt, node, config ) {
+                    transfer_all_ids();
+				}
+			}
         ],
 		columnDefs: [
 			{ className: "dt-center", targets: "_all" }
@@ -2364,7 +2379,7 @@ function init_platformselector(selector_id) {
 				minLength: 2,
 				response: function( event, ui ) {
 					if (ui.content.length > max_autocomplete) {
-						console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+						//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 					} else {
 						if (ui.content.length == 0) {
@@ -2376,13 +2391,13 @@ function init_platformselector(selector_id) {
 				},
 				search: function( event, ui ) {
 					var value = $("#" + event.target.getAttribute("id")).val();
-					console.log("Search triggered, value: " + value);
+					//console.log("Search triggered, value: " + value);
 					if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
 						// check if we have > 2 symbols
 						if (value.length > 2) {
 							// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
 							if (value[2] == "S") {
-								console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+								//console.log("Looks like ENSEMBL and it is too short. Preventing search.");
 								event.preventDefault();
 							}
 						}
@@ -2511,7 +2526,7 @@ function init_plot_type_selector() {
 	var plot_types = get_plot_types(platforms);
 	if (plot_types[0] == '') {
 		show_slidedown_alert("An error has occured: Impossible combination, please choose another combination of platforms", 3000);
-		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "warning", "plot_types_missing", "platforms=" + platforms.join(), ErrorStack);	
+		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "warning", "plot_types_missing", "platforms=" + platforms.join(), ErrorStack);	
 	}
 	for (i in plot_types) {
 		options.push("<option value='"+ plot_types[i] + "'>" + plot_types[i] + "</option>");
@@ -2609,7 +2624,6 @@ function init_cor_cohort_selector() {
 
 function init_cor_platform_selector() {
 	var options = [];
-	//options.push("<option value='undef' disabled selected>Choose platform</option>");
 	var cor_datatype = $("#corDatatype_selector option:selected").val();
 	var cor_cohort = $("#corCohort_selector option:selected").val();
 	if (cor_cohort != "undef") {
@@ -2685,7 +2699,7 @@ function init_cor_genefeature_input() {
 			response: function( event, ui ) {
 				// max_autocomplete defined in druggable_config.js
 				if (ui.content.length > max_autocomplete) {
-					console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+					//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 				} else {
 					if (ui.content.length == 0) {
@@ -2697,13 +2711,13 @@ function init_cor_genefeature_input() {
 			},
 			search: function( event, ui ) {
 				var value = $("#" + event.target.getAttribute("id")).val();
-				console.log("Search triggered, value: " + value);
+				//console.log("Search triggered, value: " + value);
 				if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
 					// check if we have > 2 symbols
 					if (value.length > 2) {
 						// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
 						if (value[2] == "S") {
-							console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+							//console.log("Looks like ENSEMBL and it is too short. Preventing search.");
 							event.preventDefault();
 						}
 					}
@@ -2831,7 +2845,7 @@ function init_model_genearea(n) {
 				}
 			})
 			.on("focus", function( event ) {
-				console.log("gene_area" + n + " got focus");
+				//console.log("gene_area" + n + " got focus");
 				if (document.getElementById("transfer_window") != null) {
 					$("#transfer_copy_ids").text("Copy chosen IDs to predictor " + n);
 					$("#transfer_copy_ids").unbind();
@@ -2847,7 +2861,7 @@ function init_model_genearea(n) {
 				minLength: 2,
 				response: function( event, ui ) {
 					if (ui.content.length > max_autocomplete) {
-						console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+						//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 					}
 				},
@@ -2940,7 +2954,7 @@ function init_response_variable_selector() {
 			minLength: 2,
 			response: function( event, ui ) {
 				if (ui.content.length > max_autocomplete) {
-					console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+					//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 				} else {
 					if (ui.content.length == 0) {
@@ -2952,13 +2966,13 @@ function init_response_variable_selector() {
 			},
 			search: function( event, ui ) {
 				var value = $("#" + event.target.getAttribute("id")).val();
-				console.log("Search triggered, value: " + value);
+				//console.log("Search triggered, value: " + value);
 				if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
 					// check if we have > 2 symbols
 					if (value.length > 2) {
 						// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
 						if (value[2] == "S") {
-							console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+							//console.log("Looks like ENSEMBL and it is too short. Preventing search.");
 							event.preventDefault();
 						}
 					}
@@ -3113,9 +3127,7 @@ function update_platform(n) {
 		var selector_value = $("#platform" + n + "_selector option:selected").val();
 		var previous_value = (getCookie("platform" + n + "_selector").split("|"))[0];
 		if (selector_value != previous_value) {
-			// this works in FF, but not in Chrome - it decides to "cut the corner" when not in debug mode
-			//$( "#platform" + n + "_selector" ).selectmenu( "option", "icons", { button: "ui-icon ui-icon-loading-status-balls rotate" } );
-			// instead, we have to use this awkward solution
+			// we have to use this awkward solution - works in all browsers
 			var x = $("#platform" + n + "_selector-button").children()[0];
 			x.className = "ui-icon ui-icon-loading-status-balls rotate";
 			usetCookie("platform" + n + "_selector", selector_value, druggable_cookie_time);
@@ -3131,7 +3143,7 @@ function update_platform(n) {
 					minLength: 2,
 					response: function( event, ui ) {
 						if (ui.content.length > max_autocomplete) {
-							console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
+							//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 							$("#" + event.target.getAttribute("id")).autocomplete( "close" );
 						} else {
 							if (ui.content.length == 0) {
@@ -3143,13 +3155,13 @@ function update_platform(n) {
 					},
 					search: function( event, ui ) {
 						var value = $("#" + event.target.getAttribute("id")).val();
-						console.log("Search triggered, value: " + value);
+						//console.log("Search triggered, value: " + value);
 						if ((value.substr(0,2) == "EN") && (value.length <= 10)) {
 							// check if we have > 2 symbols
 							if (value.length > 2) {
 								// if the THIRD symbol is S - it is probably ENSEMBL, otherwise - gene ifd (like EN1)
 								if (value[2] == "S") {
-									console.log("Looks like ENSEMBL and it is too short. Preventing search.");
+									//console.log("Looks like ENSEMBL and it is too short. Preventing search.");
 									event.preventDefault();
 								}
 							}
@@ -3185,8 +3197,6 @@ function update_platform(n) {
 					$("#id" + (n+1) + "_input").val("");
 				}
 			}
-			// this works in FF, but not in Chrome - it decides to "cut the corner" when not in debug mode
-			//$( "#platform" + n + "_selector" ).selectmenu( "option", "icons", { button: "ui-icon ui-icon-triangle-1-s" } );
 			x.className = "ui-icon ui-icon-triangle-1-s";
 			plot_type_changed();
 		}
@@ -3206,7 +3216,7 @@ function update_platform(n) {
 }
 
 function update_plot_type_selector() {
-	console.log('update_plot_type_selector() invoked');
+	//console.log('update_plot_type_selector() invoked');
 	var platforms = [];
 	var n = $('#plot_options tr').length-1;
 	for (i=1; i<=n; i++) {
@@ -3417,10 +3427,10 @@ function update_plot_types() {
 function update(initiator) {
 	// if update in process - do nothing
 	if (sessionStorage.getItem("updates_triggered") != null) {
-		console.log("Update invoked, but rejected. Initiator: " + initiator + ". Reason: update already in progress.");
+		//console.log("Update invoked, but rejected. Initiator: " + initiator + ". Reason: update already in progress.");
 	}
 	else {
-		console.log("Update succesfully invoked by initiator: " + initiator);
+		//console.log("Update succesfully invoked by initiator: " + initiator);
 		sessionStorage.setItem("updates_triggered", 1);
 		var previous_value = (getCookie(initiator).split("|"))[0];
 		usetCookie(initiator, selector_value, druggable_cookie_time);
@@ -3443,7 +3453,7 @@ function update(initiator) {
 				if (selector_value != previous_value) {
 					toggle_selectors("disable");
 					var status = update_type(n);
-					console.log(status);
+					//console.log(status);
 					if (status != 'deleted') {
 						// use this to avoid double-update
 						sessionStorage.setItem("update_autocomplete", "false");
@@ -3591,7 +3601,7 @@ function history() {
 	var keys = Object.keys(sessionStorage);
 	for (key in keys) {
 		if (keys[i].includes("tmp")) {
-			console.log(keys[key] + " : " + sessionStorage.getItem(keys[key]));
+			//console.log(keys[key] + " : " + sessionStorage.getItem(keys[key]));
 		}
 	}
 }
@@ -3756,7 +3766,7 @@ function process_error(filename, error_thrown = false) {
 	else {
 		status = check_error_thrown(filename);
 	}
-	if (!error_thrown) {
+	if (!status) {
 		show_slidedown_alert("Unknown error occurred, error object not found", 0);
 	}
 	else {
@@ -3824,7 +3834,7 @@ function open_info_page(id) {
 	var external_id = $("#id" + id + "_input").val();
 	var url = get_url(external_id);
 	if (url == "") {
-		console.log("Failed to retrieve url for external_id " + external_id + ". Using default value.");
+		//console.log("Failed to retrieve url for external_id " + external_id + ". Using default value.");
 		url = "https://www.google.com/search?q=" + external_id;
 	}
 	window.open(url, "_blank");
@@ -3834,6 +3844,7 @@ function open_info_page(id) {
 function transfer_id (source, cohort, datatype, platform, id) {
 	show_transfer_buffer_window("#tab-signif");
 	var current_ids = sessionStorage.getItem("transfer");
+	var res = 0;
 	var t = $('#transfer_buffer_table').DataTable();
 	if (current_ids == null) {
 		sessionStorage.setItem("transfer", [id, platform, datatype, cohort, source]);
@@ -3863,9 +3874,30 @@ function transfer_id (source, cohort, datatype, platform, id) {
 			current_ids.push([id,platform,datatype,cohort,source]);
 			sessionStorage.setItem("transfer", current_ids);
 			t.row.add(["",id, platform, datatype, cohort, source]).draw(false);
+			res = 1;
 		}
 	}
 	$("#show_clipboard-button").button("enable");
+	return res;
+}
+
+// uses previous function to read all the ids and transfer them
+function transfer_all_ids() {
+	var t = $("#cor_result_table").DataTable();
+	//var i = 0;
+	//var source = $("#corSource_selector option:selected").val();
+	window.postMessage("show_progressbar");
+	t.rows().every( function (index, element) {
+		var row = $(this.node());
+		//var cohort = (source == "CCLE"? "CCLE" : row.children()[4].children[0].innerHTML);
+		//var datatype = row.children()[3].children[0].innerHTML;
+		//var platform = (source == "CCLE"? row.children()[4].children[0].innerHTML : row.children()[5].children[0].innerHTML);
+		//var id = row.children()[5].children[0].innerHTML;
+		//i += transfer_id(source, cohort, datatype, platform, id);
+		// just simulate click
+		row.children()[1].children[0].click();
+	});
+	window.postMessage("hide_progressbar");
 }
 
 // function to open window with IDs to transfer
@@ -3906,7 +3938,7 @@ function show_transfer_buffer_window(parent_tab) {
 					id: "transfer_switch_tab",
 					click: function() {
 						$("#tabs").tabs("option", "active", (parent_tab == "#tab-signif") ? 2 : 0);
-						$("#transfer_window").dialog({position: { my: "bottom right", at: "right bottom", of: window }});
+						$("#transfer_window").dialog({position: { my: "right bottom", at: "bottom", of: window }});
 					},
 				},
 				{
@@ -3929,7 +3961,7 @@ function show_transfer_buffer_window(parent_tab) {
 						"targets": 0
 					}
 				],
-				"pageLength": 15
+				"pageLength": 10
 			});
 		var current_ids = sessionStorage.getItem("transfer");
 		if (current_ids != null) {
@@ -3954,7 +3986,7 @@ function copy_ids_to_predictor(position) {
 			ids.push($(row.children()[1]).text());
 		}
 	});
-	console.log("IDs to transfer: " + ids);
+	//console.log("IDs to transfer: " + ids);
 	if ($("#genes_area" + position).val().length == 0) {
 		$("#genes_area" + position).val(ids);
 	}
@@ -3972,7 +4004,7 @@ function copy_all_ids_to_predictor(position) {
 			ids.push($(row.children()[1]).text());
 		}
 	});
-	console.log("IDs to transfer: " + ids);
+	//console.log("IDs to transfer: " + ids);
 	if ($("#genes_area" + position).val().length == 0) {
 		$("#genes_area" + position).val(ids);
 	}
@@ -4085,7 +4117,7 @@ function compare_models() {
 						columns_request.open("GET", "https://" + window.location.hostname + "/pics/plots/" + token + ".table", false);
 						columns_request.send();
 						columns = columns_request.responseText;
-						console.log(columns);
+						//console.log(columns);
 						document.getElementById('model_comparison_table').innerHTML = columns;
 						$('#model_comparison_table').DataTable( {
 							"ajax": "https://" + window.location.hostname + "/pics/plots/" + token + "_short.json"
@@ -4118,9 +4150,9 @@ function id_keyup(k) {
 			}
 			temp_flag = available_ids.includes(valueSoFar);
 			if ((temp_flag) && (valueSoFar != "")) {
-				console.log("Value so far: " + valueSoFar);
+				//console.log("Value so far: " + valueSoFar);
 				var confirmed = synonyms.get($("#id" + k + "_input").val())[0];
-				console.log("Confirmed: " + confirmed);
+				//console.log("Confirmed: " + confirmed);
 				var url = synonyms.get($("#id" + k + "_input").val())[1];
 				var resource_name = get_resource_name(url);
 				$("#id" + k + "_confirmed").val(capitalized_datatypes.includes($("#type" + k + "_selector option:selected").val()) ? confirmed.toUpperCase() : confirmed);
@@ -4251,6 +4283,10 @@ function safe_clear() {
 	sessionStorage.removeItem("demo");
 }
 
+function get_current_tab_id() {
+	return $("#tabs").tabs().children()[$("#tabs").tabs("option", "active") + 1].id;
+}
+
 // function provided by https://stackoverflow.com/questions/469357/html-text-input-allow-only-numeric-input
 function setInputFilter(textbox, inputFilter) {
   ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
@@ -4268,8 +4304,7 @@ function setInputFilter(textbox, inputFilter) {
 }
 
 // functions for textarea autocomplete
-function split( val ) {
-	//return val.split( /,\s*/ );
+function split(val) {
 	return val.split(ids_delim);
 }
 
@@ -4351,7 +4386,7 @@ function report_plot_tab() {
 		scales.push($("#axis" + i + "_selector option:selected").val());
 	}
 	var ErrorStack = check_error_stack(new Error().stack);
-	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "reported_state_plot_tab", 
+	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "reported_state_plot_tab", 
 		"source=" + source + 
 		"&cohort=" + cohort + 
 		"&datatypes=" + datatypes.join() + 
@@ -4374,7 +4409,7 @@ function report_cor_tab() {
 	var id = $("#corGeneFeature_input").val();
 	var fdr = $("#FDR_input").val();
 	var ErrorStack = check_error_stack(new Error().stack);
-	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "reported_state_cor_tab", 
+	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "reported_state_cor_tab", 
 		"source=" + source + 
 		"&datatype=" + datatype + 
 		"&cohort=" + cohort + 
@@ -4428,7 +4463,7 @@ function report_model_tab() {
 	var crossvalidation_percent = $("#crossval_perc").val();
 	
 	var ErrorStack = check_error_stack(new Error().stack);
-	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "druggable.html", "info", "reported_state_model_tab", 
+	var stat = report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "reported_state_model_tab", 
 		"source=" + source + 
 		"&cohort=" + cohort + 
 		"&x_datatypes=" + x_datatypes.join() + 
