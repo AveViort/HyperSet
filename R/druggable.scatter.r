@@ -63,8 +63,7 @@ for (i in 1:length(datatypes)) {
 			condition <- paste0(condition, "id='", internal_ids[i], "'");
 		}
 	}
-	if ((datatypes[i] == 'ge_nea') | (datatypes[i] == 'mut_nea')) {
-		datatypes[i] <- paste0(strsplit(datatypes[i], "_")[[1]][2], "_", strsplit(datatypes[i], "_")[[1]][1]);
+	if ((datatypes[i] == 'nea_ge') | (datatypes[i] == 'nea_mut')) {
 		rownames(readable_platforms)[which(rownames(readable_platforms) == platforms[i])] <- paste0("z_", platforms[i]);
 		platforms[i] <- paste0("z_", platforms[i]);
 		if ((Par["source"] == "ccle") & (datatypes[i] == 'nea_ge')) {

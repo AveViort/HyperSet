@@ -39,10 +39,30 @@ print(File)
 print(names(Par));
 png(file = File, width =  plotSize, height = plotSize, type = "cairo");
 datatypes <- unlist(strsplit(Par["datatypes"], split = ","));
+datatypes <- unlist(lapply(datatypes, function(datatype) 
+	{
+		if ((tolower(datatype) == 'ge_nea') | (tolower(datatype) == 'mut_nea')) {
+			datatype <- paste0(strsplit(datatype, "_")[[1]][2], "_", strsplit(datatype, "_")[[1]][1]);
+		}
+		return(datatype);
+	})
+);
 print(datatypes);
 platforms <- unlist(strsplit(Par["platforms"], split = ","));
+for (i in 1:length(platforms)) {
+	if(grepl("nea", tolower(datatypes[i]))) {
+		if(!grepl("z", tolower(platforms[i]))) {
+			platforms[i] <- paste0("z_", platforms[i]);
+		}
+	}
+}
 print(platforms);
 ids <- unlist(strsplit(Par["ids"], split = ","));
+for (i in 1:length(datatypes)) {
+	if(grepl("nea", tolower(datatypes[i]))) {
+		ids[i] <- tolower(ids[i]);
+	}
+}
 # rare bug - if we have N empty ids, length of ids will be n-1, so ids[n] will return error
 if (all(empty_value(ids))) {
 	ids <- c(ids, "");
