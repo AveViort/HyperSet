@@ -18,7 +18,8 @@ BEGIN {
 our($src);
 our $Rplots;
 ########################################################################################
-# 18:35 b4:/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/pics >>>> ln -s /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/plots/ .
+# cd /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/pics
+# ln -s /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/plots/ .
 # users_tmp/plots/ is a physical location. 
 # Therefore the soft link /HyperSet/pics/plots/ must be synchronized with it via  r.plots in HS.R.config.r:
 $Rplots->{dir} = "pics/plots/";
@@ -26,28 +27,24 @@ $Rplots->{imgSize} = 580;
 ########################################################################################
 
 our $tableDir = '/var/www/html/research/HyperSet/db/input_files/';
-# use this variable to set, which sensitivity measure should be used for correlations
-our %sensitivity_m = (
+
+our %sensitivity_m = (# use this variable to set, which sensitivity measure should be used for correlations
 "CCLE"	=>	'AUC_INVNORM_ROW',
 "TCGA"	=>	'os,rfs,pfi'
 );
 
-# use this variable to set bt which column should correlations be filtered (one of p-value columns) and limited
-our %limit_column = (
-"CCLE"	=>	'ancova_q_1x',
+our %limit_column = (# use this variable to set bt which column should correlations be filtered (one of p-value columns) and limited
+"CCLE"	=>	'ancova_p_2x_feature',
 "TCGA"	=>	'interaction'
 );
-# this variable is an addition to limit_column - how many records (max) should be taken?
-our $limit_num = 10000;
-# this variable is used for batch model creation
-our $batch_limit_num = 650;
-# max number of tasks in queue, including the running one
-our $queue_size = 10;
-# number of seconds to wait before checking if job can be run
-our $job_wait = 60;
 
-# do we need this?
-our $cols;
+our $limit_num = 1000;# this variable is an addition to limit_column - how many records (max) should be taken?
+our $batch_limit_num = 650;# this variable is used for batch model creation
+our $queue_size = 10;# max number of tasks in queue, including the running one
+our $job_wait = 60; # number of seconds to wait before checking if job can be run
+
+
+our $cols;# do we need this?
 @{$cols} = ("dataset", "datatype", "platform", "screen", "drug", "feature", "correlation", "pvalue", "fdr", "validn", "plot");
 our %colTitles = (
 "plot" 		=> ' ', 

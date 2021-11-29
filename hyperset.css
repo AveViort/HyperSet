@@ -36,7 +36,10 @@ font-weight: normal;
 /*CHANGE BEGIN*/
 div,p,.text-content {
 color: #2e6e9e;
+font-weight, 300;
 }
+
+
 
 input {
 	border-width: 1px;/* to fix Chrome's ugly borders */

@@ -607,7 +607,7 @@ query := '';
 IF EXISTS(SELECT * FROM data_transform_exclusions WHERE variable_name=datatype OR variable_name=platform)
 THEN
 -- pay attention: datatypes and platforms are mixed in this table
-query := E'SELECT transform_type FROM data_transform_exclusions WHERE variable_name=\'' || datatype || E'\' OR variable_name=\'' || platform || E'\';';
+query := E'SELECT transform_type FROM data_transform_exclusions WHERE variable_name=\'' || datatype || E'\' OR variable_name=\'' || platform || E'\' ORDER BY CASE WHEN (transform_type=\'original\') OR (transform_type=\'mvalue\') THEN 1 END;';
 ELSE
 EXECUTE E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort || E'\' AND type=\'' || datatype || E'\';' INTO table_name;
 EXECUTE E'SELECT data_type FROM information_schema.columns WHERE table_name=\'' || table_name || E'\' AND column_name=\'' || platform || E'\';' INTO column_type;
@@ -903,12 +903,12 @@ query := 'CREATE TABLE ' || temp_table || '2 AS SELECT * FROM ' || temp_table ||
 EXECUTE query;
 query := 'DROP TABLE ' || temp_table || ';';
 EXECUTE query;
-query := E'SELECT ARRAY(SELECT gene \|\| \'\|\' \|\| drug_synonym(feature) \|\| \'\|\' \|\| datatype \|\| \'\|\' \|\| cohort \|\| \'\|\' \|\| platform \|\| \'\|\' \|\| screen \|\| \'\|\' \|\| sensitivity';
+query := E'SELECT ARRAY(SELECT concat_ws(\'|\', gene,drug_synonym(feature),datatype,cohort,platform,screen,sensitivity';
 FOR i IN 3..array_length(columns_array, 1)
 LOOP
-query := query || E'\|\| \'\|\' \|\|' || columns_array[i]; 
+query := query || E',concat_ws(\'|\',' || columns_array[i] || ')'; 
 END LOOP;
-query := query || E'\|\| \'\|\' \|\| url1 \|\| \'\|\' \|\| get_url(drug_synonym(feature)) \|\| \'\|\' \|\| retrieve_cohorts_for_drug_extended(LOWER(gene),LOWER(feature),\'' || source_n || E'\',cohort,datatype,platform,screen,sensitivity,' || fdr || ') FROM ' || temp_table || '2);';
+query := query || E',url1,get_url(drug_synonym(feature)),retrieve_cohorts_for_drug_extended(LOWER(gene),LOWER(feature),\'' || source_n || E'\',cohort,datatype,platform,screen,sensitivity,' || fdr || ')) FROM ' || temp_table || '2);';
 --RAISE notice 'query: %', query;
 EXECUTE query INTO res;
 query := 'DROP TABLE ' || temp_table || '2;';
@@ -1064,7 +1064,7 @@ END IF;
 END IF;
 -- significant TCGA correlations
 query := E'SELECT DISTINCT cohort,platform,measure FROM significant_interactions WHERE feature=\'' || drug_name || E'\' AND id=\'' || target_id || E'\' AND datatype=\'' || data_type || E'\' AND (';
-filter_cond := 'min_expr_drug_interaction<' || coff;
+filter_cond := 'min_expr_interaction<' || coff;
 query := query || filter_cond || E') AND NOT (cohort=\'' || target_cohort || E'\');'; 
 --RAISE notice '%', query;
 FOR cohort_n, platform_n, measure_n IN EXECUTE query
@@ -1124,6 +1124,76 @@ END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
+-- same, but looks in cor_guide_table
+CREATE OR REPLACE FUNCTION missing_measurment_types_cor() RETURNS setof text AS $$
+DECLARE
+cohort_n text;
+measure_n text;
+table_n text;
+flag numeric;
+query text;
+res text;
+BEGIN
+FOR cohort_n, measure_n IN SELECT DISTINCT cohort, sensitivity_measure FROM cor_guide_table WHERE source='TCGA'
+LOOP
+table_n := LOWER(cohort_n) || '_clin';
+query := E'SELECT COUNT (druggable.INFORMATION_SCHEMA.COLUMNS.column_name) FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true) AND (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=\'' || LOWER(measure_n) || E'\');';
+EXECUTE query INTO flag;
+IF (flag = 0) THEN
+res := 'Missing measure ' || measure_n || ' for cohort ' || cohort_n;
+RETURN NEXT res;
+END IF;
+END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+-- check for empty correlation columns (p/q) in all tables from cor_guide_table
+CREATE OR REPLACE FUNCTION missing_cor_columns() RETURNS boolean AS $$
+DECLARE
+source_n text;
+table_n text;
+n_all numeric;
+n_null numeric;
+query text;
+columns_array text array;
+current_column text;
+i numeric;
+flag boolean;
+BEGIN
+FOR source_n, table_n IN SELECT source, table_name FROM cor_guide_table
+LOOP
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ';' INTO n_all;
+IF (source_n = 'TCGA')
+THEN
+columns_array := string_to_array('drug,expr,interaction,q_drug,q_expr,q_interaction', ',');
+ELSE
+columns_array := string_to_array('ancova_p_1x,ancova_q_1x,ancova_p_2x_cov1,ancova_q_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature', ',');
+END IF;
+FOR i in 1..array_length(columns_array, 1)
+LOOP
+current_column := columns_array[i];
+EXECUTE E'SELECT EXISTS (SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' AND column_name=\'' || current_column || E'\');' INTO flag;
+IF (flag = true)
+THEN
+EXECUTE 'SELECT COUNT (*) FROM ' || table_n || ' WHERE ' || current_column || ' IS NULL;' INTO n_null;
+IF (n_null = n_all)
+THEN
+RAISE NOTICE '%: column % is completely null', table_n, current_column;
+ELSE
+IF (n_null > 0)
+THEN
+RAISE NOTICE '%: % out of % for column %', table_n, n_null, n_all, current_column;
+END IF;
+END IF;
+ELSE
+RAISE NOTICE '%: column % does not even exist', table_n, current_column;
+END IF;
+END LOOP;
+END LOOP;
+RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
 -- check which platforms from significant interactions are not present in tables from guide_table
 CREATE OR REPLACE FUNCTION check_missing_platforms() RETURNS numeric AS $$
 DECLARE
@@ -1161,6 +1231,45 @@ i := i + 1;
 END IF;
 END LOOP;
 END LOOP;
+END LOOP;
+RAISE NOTICE 'Total number of missing platforms: %', i;
+RETURN i;
+END;
+$$ LANGUAGE plpgsql;
+
+-- same, but for cor_guide_table
+CREATE OR REPLACE FUNCTION check_missing_platforms_cor() RETURNS numeric AS $$
+DECLARE
+i numeric;
+cohort_n text;
+datatype_n text;
+platform_n text;
+table_n text;
+cor_table_n text;
+query text;
+flag boolean;
+BEGIN
+i := 0;
+FOR cor_table_n,cohort_n,datatype_n,platform_n IN SELECT DISTINCT table_name,cohort,datatype,platform FROM cor_guide_table 
+LOOP
+IF (datatype_n = 'MUT_NEA') THEN
+datatype_n := 'NEA_MUT';
+platform_n := 'z_' || platform_n;
+ELSE
+IF (datatype_n = 'GE_NEA') THEN
+datatype_n := 'NEA_GE';
+platform_n := 'z_' || platform_n;
+END IF;
+END IF;
+query := E'SELECT table_name FROM guide_table WHERE cohort=\'' || cohort_n || E'\' AND type=\'' || datatype_n || E'\';';
+--RAISE NOTICE '%', query;
+EXECUTE query INTO table_n;
+EXECUTE E'SELECT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name=\'' || table_n || E'\' AND column_name=\'' || LOWER(platform_n) || E'\');' INTO flag;
+IF (NOT flag)
+THEN
+RAISE NOTICE 'Missing platform % in %', LOWER(platform_n), table_n;
+i := i + 1;
+END IF;
 END LOOP;
 RAISE NOTICE 'Total number of missing platforms: %', i;
 RETURN i;
@@ -2523,7 +2632,7 @@ CREATE OR REPLACE FUNCTION insert_or_update(table_name text, column_name text, s
 DECLARE
 res boolean;
 BEGIN
-EXECUTE 'SELECT EXISTS (SELECT * FROM ' || table_name || E' WHERE (sample=\'' || sample_name || E'\') AND (id=\'' || gene_name || E'\') AND (' || column_name || ' IS NULL));' INTO res;
+EXECUTE 'SELECT EXISTS (SELECT * FROM ' || table_name || E' WHERE (sample=\'' || sample_name || E'\') AND (id=\'' || gene_name || E'\'));' INTO res;
 IF (res = FALSE) THEN 
 EXECUTE 'INSERT INTO ' || table_name || '(sample,id,' || column_name || E') VALUES(\'' || sample_name || E'\',\'' || gene_name || E'\',' || val || ');';
 ELSE

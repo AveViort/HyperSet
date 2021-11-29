@@ -64,11 +64,6 @@ for (i in 1:length(datatypes)) {
 		}
 	}
 	if ((datatypes[i] == 'nea_ge') | (datatypes[i] == 'nea_mut')) {
-		rownames(readable_platforms)[which(rownames(readable_platforms) == platforms[i])] <- paste0("z_", platforms[i]);
-		platforms[i] <- paste0("z_", platforms[i]);
-		if ((Par["source"] == "ccle") & (datatypes[i] == 'nea_ge')) {
-			platforms[i] <- paste0(platforms[i], "_top100");
-		}
 		query <- paste0("SELECT fullname FROM platform_descriptions WHERE shortname='", platforms[i], "';");
 		print(query);
 		print("readable_platforms before:");
@@ -202,7 +197,7 @@ if (status != 'ok') {
 		#print(paste0("Common samples: ", length(common_samples)));
 		regression_model <- lm(y_data~x_data);
 		p <- plot_ly(x = x_data, y = y_data, type = 'scatter', 
-			text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples, tissue_types[common_samples,2], " (click to open information)")) %>%
+			text = ~paste(ifelse(Par["source"] == "ccle", "Cell line", ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample")), common_samples, tissue_types[common_samples,2], " (click to open information)")) %>%
 		onRender(paste0("
 			function(el) { 
 				el.on('plotly_hover', function(d) {
@@ -272,10 +267,14 @@ if (status != 'ok') {
 			x_data <- transformVars(x_data, scales[1]);
 			print("str(x_data):");
 			print(str(x_data));
+			print("summary(x_data):");
+			print(summary(x_data));
 			y_data <- correctData(temp[[2]][common_samples,2], platforms[2]);
 			y_data <- transformVars(y_data, scales[2]);
 			print("str(y_data):");
 			print(str(y_data));
+			print("summary(y_data):");
+			print(summary(y_data));
 			z_data <- correctData(temp[[3]][common_samples,2], platforms[3]);
 			z_data <- transformVars(z_data, scales[3]);
 			print("str(z_data):");
@@ -319,7 +318,7 @@ if (status != 'ok') {
 			z_axis <- "Z";
 			regression_model <- lm(y_data~x_data);
 			p <- plot_ly(x = x_data, y = y_data, type = 'scatter', name = ' ',
-				text = ~paste(ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample"), common_samples), color = z_data) %>% 
+				text = ~paste(ifelse(Par["source"] == "ccle", "Cell line", ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample")), common_samples), color = z_data) %>% 
 			colorbar(title = plot_legend, yanchor = 'top', len = 1) %>%
 			onRender(paste0("
 				function(el) { 
@@ -385,10 +384,14 @@ if (status != 'ok') {
 			x_data <- transformVars(x_data, scales[axis_index[1]]);
 			print("str(x_data):");
 			print(str(x_data));
+			print("summary(x_data):");
+			print(summary(x_data));
 			y_data <- correctData(temp[[axis_index[2]]][common_samples,2], platforms[axis_index[2]]);
 			y_data <- transformVars(y_data, scales[axis_index[2]]);
 			print("str(y_data):");
 			print(str(y_data));	
+			print("summary(y_data):");
+			print(summary(y_data));
 			cp = cor(x_data, y_data, use = "pairwise.complete.obs", method = "spearman");
 			cp = ifelse(is.na(cp), 0, cp);
 			cs = cor(x_data, y_data, use = "pairwise.complete.obs", method = "pearson");
@@ -461,16 +464,9 @@ if (status != 'ok') {
 				chosen_samples <- unlist(lapply(chosen_samples, function(ele) return(paste0("'", ele, "'"))));
 				x_val <- paste(chosen_samples, x_data[which(z_data == i)], sep = "=", collapse = ",");
 				y_val <- paste(chosen_samples, y_data[which(z_data == i)], sep = "=", collapse = ",");
-				scripte_line <- '';
-				if (platforms[k] == "tissue") {
-					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-											name='", types[i], "', text = ~paste('Patient:', c(", paste(chosen_samples, collapse = ","), ")),
-											marker = list(color = '", marker_colours[i], "', symbol = '", marker_shapes[1], "')) %>%");
-				} else {
-					script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
-											name='", types[i], "', text = ~paste('Patient:', c(", paste(chosen_samples, collapse = ","), ")),
-											marker = list(color = '", marker_colours[i],"', symbol = '", marker_shapes[i], "')) %>%");
-				}
+				script_line <- paste0("add_markers(x = c(", x_val, "), y = c(", y_val, "),
+										name='", types[i], "', text = ~paste('Sample:', c(", paste(chosen_samples, collapse = ","), ")),
+										marker = list(color = '", marker_colours[i], "', symbol = '", marker_shapes[1], "')) %>%");
 				write(script_line, file = script_file, append = TRUE);
 			}
 			script_line <- paste0("layout(shapes = list(type='line', line = list(color = 'red', dash = 'dash'), 

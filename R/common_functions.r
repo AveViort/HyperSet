@@ -100,13 +100,13 @@ createTissuesList <- function(multiopt) {
 
 # transform data frame with two columns into JSON string
 # data frame must have column names!
-frameToJSON <- function(data_frame) {
+frameToJSON <- function(data_frame, na.rm = TRUE) {
 	json_string <- "{\"data\":[";
 	values <- c();
 	firstColumn <- colnames(data_frame)[1];
 	secondColumn <- colnames(data_frame)[2];
 	for (i in 1:nrow(data_frame)) {
-		values[i] <- paste0("{\"", firstColumn, "\":\"", data_frame[i,1], "\", \"", secondColumn, "\":\"", data_frame[i,2], "\"}");
+		values[i] <- paste0("{\"", firstColumn, "\":\"", data_frame[i,1], "\", \"", secondColumn, "\":\"", ifelse((na.rm) & (is.na(data_frame[i,2])), "", data_frame[i,2]), "\"}");
 	}
 	json_string <- paste0(json_string, paste(values, collapse = ","))
 	json_string <- paste0(json_string, "]}");

@@ -323,9 +323,9 @@ import_sensitivity <- function(data_table, rch, table_name) {
     screen_name <- tolower(gsub("\\.", "", screen));
     sensitivity_measure <- '';
     sensitivity_measure <- switch(screen_name,
-      "ctrpv20" = "AUC_INVNORM_LOW",
-      "gdsc1" = "LN_IC50_INVNORM_ROW",
-      "gdsc2" = "LN_IC50_INVNORM_ROW",
+      "ctrpv20" = "AUC_INVNORM_ROW",
+      "gdsc1" = "AUC_INVNORM_ROW",
+      "gdsc2" = "AUC_INVNORM_ROW",
       names(d1$CLIN$DRUGSCREEN[[screen]])[1]
     );
     #print(paste0(screen_name, " ", sensitivity_measure));
@@ -335,7 +335,7 @@ import_sensitivity <- function(data_table, rch, table_name) {
         value <- data_table$CLIN$DRUGSCREEN[[screen]][[sensitivity_measure]][id,sample_name];
         if (!is.na(value)) {
           query <- paste0("SELECT insert_or_update('", table_name, "','", screen_name, "','", sample_name, "','", id, "',", value, ");");
-          sqlQuery(rch, query);
+		  sqlQuery(rch, query);
         }
       }
     }

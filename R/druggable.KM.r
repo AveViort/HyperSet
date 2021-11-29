@@ -211,7 +211,7 @@ if (length(platforms) == 1) {
 		}
 		query <- paste0(query, ";");
 		print(query);
-		third_set <- sqlQuery(rch, query);
+		third_set <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 		print(str(third_set));
 		
 		# 3D case can become 2D case
@@ -282,7 +282,8 @@ if (length(platforms) == 1) {
 			#real 3D case
 			metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes, 
 											length(intersect(rownames(first_set), intersect(rownames(second_set), rownames(third_set)))),
-											c(first_set_datatype, second_set_datatype), c(first_set_platform, second_set_platform),
+											c(first_set_datatype, second_set_datatype, third_set_datatype), 
+											c(first_set_platform, second_set_platform, third_set_platform),
 											c('', second_set_id, third_set_id), c("-", "-", "-"), 
 											c(nrow(first_set), nrow(second_set), nrow(third_set)), Par["out"]);
 			metadata <- save_metadata(metadata);
@@ -290,9 +291,21 @@ if (length(platforms) == 1) {
 			fe.drug <- c();
 			fe.other <- c();
 			if (any(datatypes %in% c("mut", "drug"))) {
-				if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
-					fe.drug <- as.character(second_set[,2]);
-					names(fe.drug) <- as.character(second_set[,1]);
+				if ((second_set_datatype %in% c("mut", "drug")) & (third_set_datatype %in% c("mut", "drug")))
+				{
+					# don't use ifelse here!!!
+					if (second_set_datatype == "drug") {
+						fe.drug <- as.character(second_set[,2]);
+						names(fe.drug) <- as.character(second_set[,1]);
+						fe.other <- as.character(third_set[,2]);
+						names(fe.other) <- as.character(third_set[,1]);
+					}
+					else {
+						fe.drug <- as.character(third_set[,2]);
+						names(fe.drug) <- as.character(third_set[,1]);;
+						fe.other <- as.character(second_set[,2]);
+						names(fe.other) <- as.character(second_set[,1]);
+					}
 					# we also have numeric data
 					x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
 					if ((length(x) != 0) & (x == TRUE)) {
@@ -305,36 +318,63 @@ if (length(platforms) == 1) {
 					names(temp) <- missing_patients;
 					fe.drug <- c(fe.drug, temp);
 					fe.drug[missing_patients] <- "no drug";
-					fe.other <- third_set[,2];
-					names(fe.other) <- as.character(third_set[,1]);
-					fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
-					fe.other <- fe.other[which(!is.na(fe.other))];
 					names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
+					fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
 					names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
-					print("str(fe.other)-1");
+					missing_patients <- setdiff(rownames(first_set), names(fe.other));
+					print(paste0("Adding ", length(missing_patients), " missing patients to fe.other"));
+					temp <- rep(NA, length(missing_patients));
+					names(temp) <- missing_patients;
+					fe.other <- c(fe.other, temp);
+					print("str(fe.other)");
 					print(str(fe.other));
-				}
-				if ((third_set_datatype == "mut") | (third_set_datatype == "drug")) {
-					fe.drug <- as.character(third_set[,2]);
-					names(fe.drug) <- as.character(third_set[,1]);
-					# we also have numeric data
-					x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
-					if ((length(x) != 0) & (x == TRUE)) {
-						fe.drug <- as.numeric(fe.drug);
+				} else {
+					if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
+						fe.drug <- as.character(second_set[,2]);
+						names(fe.drug) <- as.character(second_set[,1]);
+						# we also have numeric data
+						x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
+						if ((length(x) != 0) & (x == TRUE)) {
+							fe.drug <- as.numeric(fe.drug);
+						}
+						# add mising patients
+						missing_patients <- setdiff(rownames(first_set), names(fe.drug));
+						print(paste0("Adding ", length(missing_patients), " missing patients to fe.drug"));
+						temp <- rep(NA, length(missing_patients));
+						names(temp) <- missing_patients;
+						fe.drug <- c(fe.drug, temp);
+						fe.drug[missing_patients] <- "no drug";
+						fe.other <- third_set[,2];
+						names(fe.other) <- as.character(third_set[,1]);
+						fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
+						fe.other <- fe.other[which(!is.na(fe.other))];
+						names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
+						names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
+						print("str(fe.other)");
+						print(str(fe.other));
 					}
-					# add mising patients
-					missing_patients <- setdiff(rownames(first_set), names(fe.drug));
-					print(paste0("Adding ", length(missing_patients), " missing patients to fe.drug"));
-					temp <- rep(NA, length(missing_patients));
-					names(temp) <- missing_patients;
-					fe.drug <- c(fe.drug, temp);
-					fe.drug[missing_patients] <- "no drug";
-					fe.other <- second_set[,2];
-					names(fe.other) <- as.character(second_set[,1]);
-					fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
-					fe.other <- fe.other[which(!is.na(fe.other))];
-					names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
-					names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
+					if ((third_set_datatype == "mut") | (third_set_datatype == "drug")) {
+						fe.drug <- as.character(third_set[,2]);
+						names(fe.drug) <- as.character(third_set[,1]);
+						# we also have numeric data
+						x <- suppressWarnings(all(!is.na(as.numeric(fe.drug[which(!is.na(fe.drug))])))); 
+						if ((length(x) != 0) & (x == TRUE)) {
+							fe.drug <- as.numeric(fe.drug);
+						}
+						# add mising patients
+						missing_patients <- setdiff(rownames(first_set), names(fe.drug));
+						print(paste0("Adding ", length(missing_patients), " missing patients to fe.drug"));
+						temp <- rep(NA, length(missing_patients));
+						names(temp) <- missing_patients;
+						fe.drug <- c(fe.drug, temp);
+						fe.drug[missing_patients] <- "no drug";
+						fe.other <- second_set[,2];
+						names(fe.other) <- as.character(second_set[,1]);
+						fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
+						fe.other <- fe.other[which(!is.na(fe.other))];
+						names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
+						names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
+					}
 				}
 			}
 			clin <- first_set;
@@ -357,7 +397,12 @@ if (length(platforms) == 1) {
 				if (!empty_value(second_set_id)) {
 					plot_title <- paste0(plot_title, "(", toupper(ifelse(grepl(":", second_set_id), strsplit(second_set_id, ":")[[1]][1], second_set_id)), ")");
 				}
-
+				#print("clin:");
+				#print(rownames(clin));
+				#print("drug:");
+				#print(names(fe.drug));
+				#print("other:");
+				#print(names(fe.other));
 				usedSamples <- intersect(names(fe.drug), rownames(clin));
 				print("Round 1:");
 				print(usedSamples);
@@ -375,9 +420,9 @@ if (length(platforms) == 1) {
 					print("str(fe.other:)");
 					print(str(fe.other));
 					clin <- clin[usedSamples,];
-					Pat.vector <- rep(NA, times=length(usedSamples));
+					Pat.vector <- rep(NA, times = length(usedSamples));
 					names(Pat.vector) <- usedSamples;
-					Pat.vector2 <- rep(NA, times=length(usedSamples));
+					Pat.vector2 <- rep(NA, times = length(usedSamples));
 					names(Pat.vector2) <- usedSamples;
 					cu <- cutFollowup.full(clin, usedSamples, first_set_platform, po = NA);
 					if (mode(fe.other) == "numeric") {
@@ -428,7 +473,7 @@ if (length(platforms) == 1) {
 							Pat.vector2[which(fe.drug == 0)] <- label3;
 						}
 						else {
-							Zs <- do_sliding(fe_other, cu);
+							Zs <- do_sliding(fe.other, cu);
 							if (empty_value(second_set_id)) {
 								label1 <- paste0("[", min(fe.drug, na.rm = TRUE), "...", Zs, ")");
 								label2 <- paste0("[", Zs, "...", max(fe.drug, na.rm = TRUE), "]");

@@ -217,7 +217,7 @@ extended_output <- FALSE;
 if ("extended_output" %in% names(Par)) {
 	extended_output <- as.logical(Par["extended_output"]);
 }
-x_datatypes <- unlist(strsplit(Par["xdatatypes"], split = ","));
+x_datatypes <- tolower(unlist(strsplit(Par["xdatatypes"], split = ",")));
 print(x_datatypes);
 x_platforms <- unlist(strsplit(Par["xplatforms"], split = ","));
 print(x_platforms);

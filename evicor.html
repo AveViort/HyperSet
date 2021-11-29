@@ -256,17 +256,22 @@ table.simple_table td a{
 .slide-down-alert {
 	position: relative; 
 	width: 100%; 
-	padding-top: 0px; 
-	opacity: 0.85;
+	margin-top: 0px; 
+	margin-bottom: 0px; 
+	padding: 0px;
+	height: 0px; 
+	top: 3px;
+	right: 0;	
+	background-color: #ffcccc;
+	opacity: 0.90;
+	font-weight: 600;
 	display: block;
 	word-break: break-word;	
-	height: 0; 
-	top: 0;
-	right: 0;
+
 	z-index: 5; 
 	overflow-x: auto; 
 	transition: 0.5s;
-}
+}	
 
 .hyperparameter {
 
@@ -276,18 +281,12 @@ table.simple_table td a{
 
 <BODY class="ui-state-default ui-corner-all">
 
-<div id="pop_alert" class="slide-down-alert" style="padding-right: 60px;">
-	<div id="pop_alert_text" style="padding-right: 67px;">
-		Slide down alert
-	</div>
-	<a href="javascript:void(0)" style = "position: absolute; top: 0; color: #111; right: 70px; font-size: 36px;" onclick="close_slidedown_alert()">&times;</a>
-</div>
 
 <div class="xmlhttp_header"></div>
 <div>
 	<h1 class="main_header ui-widget-header ui-corner-all" style="position: relative">
 		<div style="position: absolute; left: 0; top: 0%">
-			<button id="general_help-button" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');" class="compact-button">Help</span>
+			<button id="general_help-button" title="Help, FAQ, publications" onclick="openDialog('help-dialog-dr');" class="compact-button">Help</button>
 			<button id="help_table_toggle" title="Show available data sources, types and platforms" onclick="load_help_table();open_dock('help_sources_dock', 'help_data_sources_wrapper')" class="compact-button">Show available data</button>
 			<button id="demos-button" title="Interactive demos" class="compact-button" onclick="open_dock('demos_dock', 'demos_wrapper')">Demos</button>
 		</div>
@@ -300,7 +299,14 @@ table.simple_table td a{
 	</h1>
 </div>
 <p class="main_header" style="background-color: #eeeeee; font-size: large;">Molecular data &mdash; global interaction network &mdash; drug response</p>
-<div id="progressbar" style="display: inline-block; width: 40%;"></div>
+
+<div id="pop_alert" class="slide-down-alert ui-corner-all" style="">
+	<div id="pop_alert_text" style="padding: 6px;">
+			</div>
+	<a href="javascript:void(0)" style = "position: absolute; top: 6px; right: 12px; color: #453821; background-color: #ffcccc; font-size: 16px;" onclick="close_slidedown_alert()">&times;</a>
+</div>
+
+<div id="progressbar" style="display: inline-block; width: 100%;"></div>
 
 <div id="cookiewarning">
 	<div role="alert" class="ui-widget-header ui-corner-all" style=" margin: 5px; padding: 5px;">
@@ -334,6 +340,7 @@ table.simple_table td a{
 <div id="sidebar_history_dock" class="sidebar sidebar_right ui-widget ui-widget-content">
 	<div>
 		<a href="javascript:void(0)" class="closebtn" onclick="close_dock('sidebar_history_dock')">&times;</a>
+		<h3>Previous plots</h3>
 		<table id="history_table"  class="cell-border compact stripe" style="font-size: x-small; width: 100%;">
 			<thead>
 				<th>Type</th>
@@ -396,7 +403,7 @@ table.simple_table td a{
 				</p>
 			</div>
 			
-			<div id="help-tab-faq">
+			<div id="help-tab-faq" class="fine-content">
 				<p>
 					Refer to this page to get answers to your questions and instructions for some typical tasks.
 				</p>
@@ -413,7 +420,7 @@ table.simple_table td a{
 			</div>
 			
 			<div id="help-tab-plots">
-				EviCor website offers a variety of interactive plots. User can use plots for explorative data analysis. Plots can be shared vi automatically generated urls.
+				<p>EviCor website offers a variety of interactive plots. User can use plots for explorative data analysis. Plots can be shared vi automatically generated urls.</p>
 				<br>
 				<h3>Available plot types</h3>
 				Plot type is always decided on the data types of chosen variables. The following table describes available plot types and their dimensionality.
@@ -763,7 +770,7 @@ table.simple_table td a{
 				<br>
 				1.0.0 (25th of March, 2020) - stable release: exploring correlations, creating and sharing plots, creating and downloading predictive models.
 				<br>
-				1.1.0 (8th of April, 2021) - stable release: improved functionality, model comparisson, REST API.
+				1.1.0 (8th of April, 2021) - stable release: improved functionality, model comparison, REST API.
 				<br>
 				1.2.0 (21st of June, 2021) - experimental version: improved functionality, more responsive design.
 				<br>
@@ -788,7 +795,7 @@ table.simple_table td a{
 						<input name="corGeneFeature_input" id="corGeneFeature_input" placeholder="Gene or drug name"  style="width: 20ch;">
 					</td>
 					<td>
-						<input type="number" name="FDR_input" id="FDR_input"  min="0.00001" max="1" value="0.05" step="0.001"  style="width: 10ch;">
+						<input type="number" name="FDR_input" id="FDR_input"  min="0" max="1" value="0.05" step="0.001"  style="width: 10ch;">
 					<td>
 						<button type="submit" id="retrieve-cor-button" name="retrieve-cor-button" onclick = retrieve_correlations() style="width: 150; visibility: visible;">Retrieve correlations</button>
 					</td>
@@ -1233,7 +1240,7 @@ $(document).ready(function(){
 	// we assign qtip to wrapper because qtip is not shown for disabled objects - and we have to show qtip only when plot-button is disabled
 	$("#plot-button-wrapper").qtip({ 
 		content: {
-			text: "Please fill all IDs"
+			text: "Fill all IDs"
 		}
 	});
 	// need to call it manually because some types of plots need no additional parameters 
@@ -1597,7 +1604,7 @@ function build_and_show_model() {
 		if (variable_count == 1) {
 			var plot_types = get_plot_types([x_platforms[0], r_platform]);
 			if (plot_types[0] == '') {
-				show_slidedown_alert("Unable to make analysis with chosen parameters", 3000);
+				show_slidedown_alert("Unable to execute analysis with current parameters", 3000);
 			}
 			else {
 				var scales = ['original', 'original'];
@@ -1656,224 +1663,253 @@ function build_and_show_model() {
 			var model_name = build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt,
 				family, measure, standardize, params, crossvalidation, nfold, crossvalidation_percent, "auto", false, true);
 			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
-			xmlhttp.send();
-			if (xmlhttp.status == 404) {
-				//console.log("Something went wrong, model was not created, reporting error...");
+			// catch Error 414 - model name is "undefined" in this case
+			if (typeof(model_name) == "undefined") {
+				//console.log("URI too long");
 				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "error", "model_not_created",
-					"method=" + method + 
-					"&source=" + source + 
-					"&cohort=" + cohort + 
-					"&r_datatype=" + r_datatype + 
-					"&r_platform=" + r_platform + 
-					"&r_id=" + r_id +
-					"&x_datatypes=" + x_datatypes.join() + 
-					"&x_platforms=" + x_platforms.join() + 
-					"&x_ids=" + x_ids.join() +
-					"&multiopt=" + multiopt.join() + 
-					"&family=" + family + 
-					"&crossvalidation=" + crossvalidation + 
-					"&nfold=" + nfold +
-					"&crossval_percent=" + crossvalidation_percent + 
-					"&standardize=" + standardize,
+					"Too long URI",
 					ErrorStack);
-				// show error - error class defines behavior
-				process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json", false);
+				// reserve 500+ characters
+				var allowed_characters = 1500;
+				var current_ids = x_ids.flat();
+				// length of the string: length of each id + number of ids-1 (separator)
+				var add_reducer = (previousValue, currentValue) => previousValue + currentValue;
+				var current_length = current_ids.map(x => x.length).reduce(add_reducer) + current_ids.length - 1;
+				var average_id_length = current_length/current_ids.length;
+				var ids_to_remove = Math.ceil((current_length - allowed_characters)/average_id_length);
+				show_slidedown_alert("Too many IDs chosen, unable to pass your query to the server. <br>Try to remove approximately " + ids_to_remove + " items. <br>Alternatively, use option 'all')", 0);
 			}
 			else {
-				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "model_created", 
-					"method=" + method + 
-					"&source=" + source + 
-					"&cohort=" + cohort + 
-					"&r_datatype=" + r_datatype + 
-					"&r_platform=" + r_platform + 
-					"&r_id=" + r_id +
-					"&x_datatypes=" + x_datatypes.join() + 
-					"&x_platforms=" + x_platforms.join() + 
-					"&x_ids=" + x_ids.join() +
-					"&multiopt=" + multiopt.join() + 
-					"&family=" + family + 
-					"&crossvalidation=" + crossvalidation + 
-					"&nfold=" + nfold +
-					"&crossval_percent=" + crossvalidation_percent + 
-					"&standardize=" + standardize,
-					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png target=_blank>Model summary</a> " +
-					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_training.png target=_blank>Model training</a> " +
-					((crossvalidation) ? (
-						"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_validation.png target=_blank>Model validation</a> "
-					) : ("")) +
-					"<a href=https://" + window.location.hostname + "/model_json.html#coeff." + model_name + ".json target=_blank>View coefficients</a> " +
-					"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData target=_blank>Download</a> ");
-				// situation when model was created, but error object was still generated
-				var error_thrown = check_error_thrown("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
-				if (error_thrown) {
-					process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
-				}
-				var model_window = '<div id="' + model_name + '_window" style="display: table;">' +
-					'<div id="' + model_name + '_tabs" style="display: table-cell;"> \
-						<ul> \
-							<li><a href="#' + model_name + '_model">Model overview</a></li> \
-							<li><a href="#' + model_name + '_training">Training</a></li>'
-							+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : (''))
-							+ '<li><a href="#' + model_name + '_performance">Performance</a></li>' +
-						'</ul> \
-						<div id="' + model_name + '_model"> \
-							<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="640px" height="640px"></iframe> \
-						</div> \
-						<div id="' + model_name + '_training"> \
-							<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="640px" height="640px"></iframe> \
-						</div>'
-						+ ((crossvalidation) ? (
-						'<div id="' + model_name + '_validation"> \
-							<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="640px" height="640px"></iframe> \
-						</div>') : ('')) +
-						'<div id = "' + model_name + '_performance"> \
-							<table id="' + model_name + '_perf" class="display" style="width:100%"> \
+				xmlhttp.open("HEAD", "https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png", false);
+				xmlhttp.send();
+				//console.log(xmlhttp.status);
+				switch (xmlhttp.status) {
+					case 404:
+						//console.log("Something went wrong, model was not created, reporting error...");
+						report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "error", "model_not_created",
+							"method=" + method + 
+							"&source=" + source + 
+							"&cohort=" + cohort + 
+							"&r_datatype=" + r_datatype + 
+							"&r_platform=" + r_platform + 
+							"&r_id=" + r_id +
+							"&x_datatypes=" + x_datatypes.join() + 
+							"&x_platforms=" + x_platforms.join() + 
+							"&x_ids=" + x_ids.join() +
+							"&multiopt=" + multiopt.join() + 
+							"&family=" + family + 
+							"&crossvalidation=" + crossvalidation + 
+							"&nfold=" + nfold +
+							"&crossval_percent=" + crossvalidation_percent + 
+							"&standardize=" + standardize,
+							ErrorStack);
+						// when Perl script returned empty string - special case
+						if (model_name == "") {
+							report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "error", "model_not_created",
+								"Model name was not returned",
+								ErrorStack);
+							show_slidedown_alert("Too many IDs chosen, model creation failed, if you have chosen 'all' - try to specify a subset of IDs instead", 0);
+						}
+						else {
+							// show error - error class defines behavior
+							process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json", false);
+						}
+						break;
+					default:
+						report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "model_created", 
+							"method=" + method + 
+							"&source=" + source + 
+							"&cohort=" + cohort + 
+							"&r_datatype=" + r_datatype + 
+							"&r_platform=" + r_platform + 
+							"&r_id=" + r_id +
+							"&x_datatypes=" + x_datatypes.join() + 
+							"&x_platforms=" + x_platforms.join() + 
+							"&x_ids=" + x_ids.join() +
+							"&multiopt=" + multiopt.join() + 
+							"&family=" + family + 
+							"&crossvalidation=" + crossvalidation + 
+							"&nfold=" + nfold +
+							"&crossval_percent=" + crossvalidation_percent + 
+							"&standardize=" + standardize,
+							"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png target=_blank>Model summary</a> " +
+							"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_training.png target=_blank>Model training</a> " +
+							((crossvalidation) ? (
+								"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_validation.png target=_blank>Model validation</a> "
+							) : ("")) +
+							"<a href=https://" + window.location.hostname + "/model_json.html#coeff." + model_name + ".json target=_blank>View coefficients</a> " +
+							"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData target=_blank>Download</a> ");
+						// situation when model was created, but error object was still generated
+						var error_thrown = check_error_thrown("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
+						if (error_thrown) {
+							process_error("https://" + window.location.hostname + "/pics/plots/" + model_name + "_error.json");
+						}
+						var model_window = '<div id="' + model_name + '_window" style="display: table;">' +
+							'<div id="' + model_name + '_tabs" style="display: table-cell;"> \
+								<ul> \
+									<li><a href="#' + model_name + '_model">Model overview</a></li> \
+									<li><a href="#' + model_name + '_training">Training</a></li>'
+									+ ((crossvalidation) ? ('<li><a href="#' + model_name + '_validation">Validation</a></li>') : (''))
+									+ '<li><a href="#' + model_name + '_performance">Performance</a></li>' +
+								'</ul> \
+								<div id="' + model_name + '_model"> \
+									<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="640px" height="640px"></iframe> \
+								</div> \
+								<div id="' + model_name + '_training"> \
+									<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="640px" height="640px"></iframe> \
+								</div>'
+								+ ((crossvalidation) ? (
+								'<div id="' + model_name + '_validation"> \
+									<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="640px" height="640px"></iframe> \
+								</div>') : ('')) +
+								'<div id = "' + model_name + '_performance"> \
+									<table id="' + model_name + '_perf" class="display" style="width:100%"> \
+										<thead> \
+											<tr> \
+												<th>Measure</th> \
+												<th>Training</th> \
+												<th>Validation</th> \
+											</tr> \
+										</thead> \
+									</table>\
+								</div> \
+							</div> \
+							<br> \
+							<table id="' + model_name + '_coef" class="display" style="width:100%"> \
 								<thead> \
 									<tr> \
-										<th>Measure</th> \
-										<th>Training</th> \
-										<th>Validation</th> \
+										<th>Coefficient</th> \
+										<th>Platform</th> \
+										<th>Weight</th> \
+										<th></th>\
 									</tr> \
 								</thead> \
 							</table>\
-						</div> \
-					</div> \
-					<br> \
-					<table id="' + model_name + '_coef" class="display" style="width:100%"> \
-						<thead> \
-							<tr> \
-								<th>Coefficient</th> \
-								<th>Platform</th> \
-								<th>Weight</th> \
-								<th></th>\
-							</tr> \
-						</thead> \
-					</table>\
-					</div>';
-					$("#tab-predict").append(model_window);
-					$("#" + model_name + "_window").dialog({
-						title: "Model: " + (r_id != "" ? r_id : platform_names.get(r_platform)) + ("~") + platform_names.get(x_platforms[0]) + (n>1 ? ("+" + platform_names.get(x_platforms[1])) : "") + (n>2 ? ("+" + platform_names.get(x_platforms[2])) : ""),
-						height: 'auto',
-						'max-height': "720px",
-						width: 'auto',
-						modal: false,
-						buttons: [
-							{
-								text: "Download model",
-								icon: "ui-icon-download",
-								click: function() {window.location.href = "https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData";},
-							},
-							{
-								text: "Add model to comparison",
-								click: function() {add_model_to_comparison(model_name);},
-							}
-						],
-						resize: function( event, ui ) {
-								($(this).children('iframe'))[0].setAttribute("height", $(this).height());
-								($(this).children('iframe'))[0].setAttribute("width", $(this).width());
-							},
-						beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
-					}).parent().appendTo("#tab-predict");
-				$("#" + model_name + "_tabs").tabs();
-				urlfixtabs("#" + model_name + "_tabs");
-				$('#' + model_name + '_coef').DataTable( {
-					"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
-					"columns": [
-						{ "data" : "Term"},
-						{ "data" : "Platform"},
-						{ "data" : "Coef"},
-						{ "data" : "Plot"}
-					],
-					"order": [[ 2, "desc" ]],
-					"scrollY": "600px",
-					"scrollCollapse": true,
-					"paging": false
-				});
-				$('#' + model_name + '_perf').DataTable( {
-					"ajax": {
-						"url" : "https://" + window.location.hostname + "/pics/plots/perf." + model_name + ".json",
-						"dataSrc" : function(json) {
-							//console.log(json.data);
-							var pretty_print_data = new Array();
-							// collect available measures - remember about ()
-							var measures = new Array();
-							// use this to easily find indexes
-							var temp_index = new Array();
-							for (var i = 0; i < json.data.length; i++) {
-								var mark_start = json.data[i].Measure.lastIndexOf("(");
-								if (mark_start == -1) {
-									mark_start = json.data[i].Measure.length;
-								}
-								var measure = json.data[i].Measure.slice(0, mark_start);
-								//console.log(measure);
-								if (measures.indexOf(measure) == -1) {
-									measures.push(measure);
-								}
-								temp_index.push(json.data[i].Measure);
-							}
-							//console.log(measures);
-							//console.log(temp_index);
-							for (var i = 0; i < measures.length; i++) {
-								//console.log(measures[i]);
-								// JS cannot find all occurences using indexOf - do it manually
-								var occurences = new Array();
-								for (var j = 0; j < temp_index.length; j++) {
-									//console.log(temp_index[j]);
-									// use == 0 instead of != -1, otherwise for measure "p" string "Spearman R(training)" will match
-									if (temp_index[j].indexOf(measures[i]) == 0) {
-										occurences.push(j);
+							</div>';
+							$("#tab-predict").append(model_window);
+							$("#" + model_name + "_window").dialog({
+								title: "Model: " + (r_id != "" ? r_id : platform_names.get(r_platform)) + ("~") + platform_names.get(x_platforms[0]) + (n>1 ? ("+" + platform_names.get(x_platforms[1])) : "") + (n>2 ? ("+" + platform_names.get(x_platforms[2])) : ""),
+								height: 'auto',
+								'max-height': "720px",
+								width: 'auto',
+								modal: false,
+								buttons: [
+									{
+										text: "Download model",
+										icon: "ui-icon-download",
+										click: function() {window.location.href = "https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData";},
+									},
+									{
+										text: "Add model to comparison",
+										click: function() {add_model_to_comparison(model_name);},
 									}
-								}
-								//console.log(occurences);
-								// if we have more than 1 occurence - it means training/validation
-								if (occurences.length == 2) {
-									var training_ind = (temp_index[occurences[0]].indexOf("(training)") != -1 ? occurences[0] : occurences[1]);
-									var validation_ind = (temp_index[occurences[0]].indexOf("(validation)") != -1 ? occurences[0] : occurences[1]);
-									pretty_print_data.push({
-										// measureQtip defined in druggable_config.js
-										'Measure' : measures[i] + '<a title=\"' + measureQtip[i] + '\"></a>',
-										'Value' : {
-											'Training' : json.data[training_ind].Value,
-											'Validation' : json.data[validation_ind].Value
+								],
+								resize: function( event, ui ) {
+										($(this).children('iframe'))[0].setAttribute("height", $(this).height());
+										($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+									},
+								beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
+							}).parent().appendTo("#tab-predict");
+						$("#" + model_name + "_tabs").tabs();
+						urlfixtabs("#" + model_name + "_tabs");
+						$('#' + model_name + '_coef').DataTable( {
+							"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
+							"columns": [
+								{ "data" : "Term"},
+								{ "data" : "Platform"},
+								{ "data" : "Coef"},
+								{ "data" : "Plot"}
+							],
+							"order": [[ 2, "desc" ]],
+							"scrollY": "600px",
+							"scrollCollapse": true,
+							"paging": false
+						});
+						$('#' + model_name + '_perf').DataTable( {
+							"ajax": {
+								"url" : "https://" + window.location.hostname + "/pics/plots/perf." + model_name + ".json",
+								"dataSrc" : function(json) {
+									//console.log(json.data);
+									var pretty_print_data = new Array();
+									// collect available measures - remember about ()
+									var measures = new Array();
+									// use this to easily find indexes
+									var temp_index = new Array();
+									for (var i = 0; i < json.data.length; i++) {
+										var mark_start = json.data[i].Measure.lastIndexOf("(");
+										if (mark_start == -1) {
+											mark_start = json.data[i].Measure.length;
 										}
-									});
-								}
-								else {
-									pretty_print_data.push({
-										'Measure' : measures[i]  + '<a title=\"' + measureQtip[i] + '\"></a>',
-										'Value' : {
-											'Training' : json.data[occurences[0]].Value,
-											'Validation' : ''
+										var measure = json.data[i].Measure.slice(0, mark_start);
+										//console.log(measure);
+										if (measures.indexOf(measure) == -1) {
+											measures.push(measure);
 										}
-									});
+										temp_index.push(json.data[i].Measure);
+									}
+									//console.log(measures);
+									//console.log(temp_index);
+									for (var i = 0; i < measures.length; i++) {
+										//console.log(measures[i]);
+										// JS cannot find all occurences using indexOf - do it manually
+										var occurences = new Array();
+										for (var j = 0; j < temp_index.length; j++) {
+											//console.log(temp_index[j]);
+											// use == 0 instead of != -1, otherwise for measure "p" string "Spearman R(training)" will match
+											if (temp_index[j].indexOf(measures[i]) == 0) {
+												occurences.push(j);
+											}
+										}
+										//console.log(occurences);
+										// if we have more than 1 occurence - it means training/validation
+										if (occurences.length == 2) {
+											var training_ind = (temp_index[occurences[0]].indexOf("(training)") != -1 ? occurences[0] : occurences[1]);
+											var validation_ind = (temp_index[occurences[0]].indexOf("(validation)") != -1 ? occurences[0] : occurences[1]);
+											pretty_print_data.push({
+												// measureQtip defined in druggable_config.js
+												'Measure' : '<a title=\"' + measureQtip[measures[i]] + '\">' + measures[i] + '</a>',
+												'Value' : {
+													'Training' : json.data[training_ind].Value,
+													'Validation' : json.data[validation_ind].Value
+												}
+											});
+										}
+										else {
+											pretty_print_data.push({
+												'Measure' : '<a title=\"' + measureQtip[measures[i]] + '\">' + measures[i] + '</a>',
+												'Value' : {
+													'Training' : json.data[occurences[0]].Value,
+													'Validation' : ''
+												}
+											});
+										}
+									}
+									//console.log(pretty_print_data);
+									return pretty_print_data;
 								}
-							}
-							//console.log(pretty_print_data);
-							return pretty_print_data;
-						}
-					},
-					"columns": [
-						{ "data": "Measure"},
-						{ "data": "Value.Training"},
-						{ "data": "Value.Validation"}
-					],
-					"order": [[ 0, "desc" ]],
-					"scrollY": "600px",
-					"scrollCollapse": true,
-					"paging": false
-				});
-				$('[aria-describedby="' + model_name + "_window" + '"]').
-					find( 'div.ui-dialog-titlebar').
-					append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-60px\">" +
-							"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Show help\" onclick=\"openDialog('help-dialog-dr'); $('#help-tabs-dr').tabs('option', 'active', 4);\"><span class=\"ui-button-icon ui-icon ui-icon-help\"></span><span class=\"ui-button-icon-space\"></span>Help</button>" +
-							"</div>"
-					);
+							},
+							"columns": [
+								{ "data": "Measure"},
+								{ "data": "Value.Training"},
+								{ "data": "Value.Validation"}
+							],
+							"order": [[ 0, "desc" ]],
+							"scrollY": "600px",
+							"scrollCollapse": true,
+							"paging": false
+						});
+						$('[aria-describedby="' + model_name + "_window" + '"]').
+							find( 'div.ui-dialog-titlebar').
+							append("<div style=\"display:flex; flex-direction: row; justify-content: left; align-items: left; position: relative; left:-60px\">" +
+									"<button type=\"button\" class=\"ui-button ui-corner-all ui-widget ui-button-icon-only\" title=\"Show help\" onclick=\"openDialog('help-dialog-dr'); $('#help-tabs-dr').tabs('option', 'active', 4);\"><span class=\"ui-button-icon ui-icon ui-icon-help\"></span><span class=\"ui-button-icon-space\"></span>Help</button>" +
+									"</div>"
+							);
+					}
 			}
 		}
 	}
 	else {
-		show_slidedown_alert("Please fix the following problems to build the model:" + status, 3000);
+		show_slidedown_alert("Fix the following problems to start building the model:" + status, 0);
 	}
 }
 
@@ -1899,11 +1935,11 @@ function retrieve_correlations() {
 	// clear result table each time
 	document.getElementById("cor_result_table").innerHTML = '<table><thead>' + cor_headers.get(source) + '</thead></table>';
 	// variable min_pat_drug_number defined in druggable_config.js
-	console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&data_columns=" + cor_sql_data_columns.get(source) + "&filter_columns=" + cor_sql_filter_columns.get(source) + "&concat_operator=" + cor_concatenation_operators.get(source));
+	console.log("cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&data_columns=" + cor_sql_data_columns.get(source) + "&filter_columns=" + cor_sql_filter_columns.get(source) + "&concat_operator=" + cor_concatenation_operators.get(source) + "&limit_by=" + cor_sql_limit_by.get(source));
 	var data_table = $('#cor_result_table').DataTable({
 		"ordering": true,
 		"ajax": {
-			"url": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&data_columns=" + cor_sql_data_columns.get(source) + "&filter_columns=" + cor_sql_filter_columns.get(source) + "&concat_operator=" + cor_concatenation_operators.get(source),
+			"url": "cgi/cor_datatables_json.cgi?source=" + source + "&datatype=" + datatype + "&cohort=" + cohort + "&platform=" + platform + "&screen=" + screen + "&id=" + id + "&fdr=" + fdr + "&mindrug=" + min_pat_drug_number + "&data_columns=" + cor_sql_data_columns.get(source) + "&filter_columns=" + cor_sql_filter_columns.get(source) + "&concat_operator=" + cor_concatenation_operators.get(source) + "&limit_by=" + cor_sql_limit_by.get(source),
 			"error": function(error) {
 				console.log(error);
 				window.postMessage("hide_progressbar");
@@ -1912,7 +1948,7 @@ function retrieve_correlations() {
 				var ErrorStack = check_error_stack(new Error().stack);
 				report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", 
 					"error", "correlations_not_retrieved: " + error.status, 
-					"&source=" + source + 
+					"source=" + source + 
 					"&datatype=" + datatype + 
 					"&cohort=" + cohort + 
 					"&platform=" + platform + 
@@ -1922,10 +1958,11 @@ function retrieve_correlations() {
 					"&mindrug=" + min_pat_drug_number + 
 					"&data_columns=" + cor_sql_data_columns.get(source) + 
 					"&filter_columns=" + cor_sql_filter_columns.get(source) + 
-					"&concat_operator=" + cor_concatenation_operators.get(source),
+					"&concat_operator=" + cor_concatenation_operators.get(source) +
+					"&limit_by=" + cor_sql_limit_by.get(source),
 					ErrorStack);
 				window.postMessage("hide_progressbar");
-				show_slidedown_alert("An error has occured. Please reload the page and try to do the following:<br>1) Make a narrower (more specific) query;<br>2) Lower FDR", 3000);
+				show_slidedown_alert("Likely too many items were found. Try to reduce the query size. <br>Reload the page and either define a more specific query<br> or raise the significance threshold;", 10000);
 			}
 		},
         "initComplete": function(settings, json) {
@@ -1937,6 +1974,9 @@ function retrieve_correlations() {
 			});
 			document.getElementById("cor_result_table").dispatchEvent(event);
 			window.postMessage("hide_progressbar");
+			if($("#cor_result_table").children()[1].children[0].children[0].classList.contains('dataTables_empty')) {
+				show_slidedown_alert("No significant correlations found under these criteria", 0);
+			}
 		},
 		"columns": cor_visible_columns.get(source),
 		"dom": "lfBrtip",
@@ -1956,16 +1996,16 @@ function retrieve_correlations() {
 		
 	$('#cor_result_table').off('draw.dt').on('draw.dt', function () {
 		//console.log($('#cor_result_table tr').length);
-		if($('#cor_result_table tr').length > 1) {
+		if(data_table.rows().count() > 0) {
 			$("select[id*=TCGAcohortSelector]").selectmenu({select: function( event, ui ) {
 					//console.log($(this).val());
 					var selected_values = $(this).val().split('#');	
 					//console.log(selected_values);
 					if (selected_values[1] == "TCGA") {
-						plot(selected_values[0], selected_values[1], selected_values[2], ['drug', 'clin', selected_values[3]], ['drug', selected_values[5].toLowerCase().replace('.', ''), selected_values[4]], [selected_values[6], '', selected_values[7]], ['original', 'original', selected_values[3].toUpperCase() == 'METH' ? 'beta' : 'original'], 'all');
+						plot(selected_values[0], selected_values[1], selected_values[2], ['drug', 'clin', selected_values[3]], ['drug', selected_values[5].toLowerCase().replace('.', ''), selected_values[4]], [selected_values[6], '', selected_values[7]], ['original', 'original', selected_values[3].toUpperCase() == 'METH' ? 'mvalue' : 'original'], 'all');
 					}
 					else {
-						plot(selected_values[0], selected_values[1], selected_values[2], [selected_values[3], 'sens'], [selected_values[4].toLowerCase().replace('.', ''), selected_values[5].replace('.', '')], [selected_values[7], selected_values[6]], [selected_values[3].toUpperCase() == 'METH' ? 'beta' : 'original', 'original'], 'all');
+						plot(selected_values[0], selected_values[1], selected_values[2], [selected_values[3], 'sens'], [selected_values[4].toLowerCase().replace('.', ''), selected_values[5].replace('.', '')], [selected_values[7], selected_values[6]], [selected_values[3].toUpperCase() == 'METH' ? 'mvalue' : 'original', 'original'], 'all');
 					}
 				}
 			});
@@ -2525,7 +2565,7 @@ function init_plot_type_selector() {
 	options = [];
 	var plot_types = get_plot_types(platforms);
 	if (plot_types[0] == '') {
-		show_slidedown_alert("An error has occured: Impossible combination, please choose another combination of platforms", 3000);
+		show_slidedown_alert("An error has occured: Impossible combination of platforms, please choose another one ", 5000);
 		report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "warning", "plot_types_missing", "platforms=" + platforms.join(), ErrorStack);	
 	}
 	for (i in plot_types) {
@@ -3183,7 +3223,7 @@ function update_platform(n) {
 				$('#platform' + (n+1) + '_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
 				var flag = init_platformselector('platform' + (n+1) + '_selector');
 				if (flag) {
-					show_slidedown_alert("No more available platforms", 3000);
+					show_slidedown_alert("No more available platforms", 5000);
 					sessionStorage.setItem("cascade_delete", 1);
 					for (i=total; i>n; i--) {
 						delete_plot_options_row(i);
@@ -3715,14 +3755,16 @@ function remove_plot_from_history(docked_id, plot_filename) {
 
 function copy_plot_link(plot_filename) {
 	navigator.clipboard.writeText("https://www.evicor.org/pics/plots/" + plot_filename);
-	show_slidedown_alert("The direct link for the plot has been coppied to the clipboard. You can copy it manually: https://www.evicor.org/pics/plots/" + plot_filename, 3000);
+	show_slidedown_alert("Direct plot link is in the clipboard. Or copy it manually: https://www.evicor.org/pics/plots/" + plot_filename, 5000);
 	mark_plot(plot_filename);
 }
 
 // pay attention! We need both wrapper id here and dock id
 function open_dock(dock_id, wrapper_id) {
+
 	// check if we have vertical or horizontal dock
 	if((document.getElementById(dock_id).classList.contains('sidebar_right')) | (document.getElementById(dock_id).classList.contains('sidebar_left'))) {
+	console.log("open_dock");
 		// can't use "auto" - transition animation does not work in this case
 		var wrapper_width = document.getElementById(wrapper_id).offsetWidth;
 		document.getElementById(dock_id).style.width = wrapper_width + 20 + "px";
@@ -3767,7 +3809,7 @@ function process_error(filename, error_thrown = false) {
 		status = check_error_thrown(filename);
 	}
 	if (!status) {
-		show_slidedown_alert("Unknown error occurred, error object not found", 0);
+		show_slidedown_alert("Unknown error occurred, error object not found", 5000);
 	}
 	else {
 		error_object <- JSON.parse(xmlhttp.responseText);
@@ -4213,7 +4255,7 @@ function cor_id_keyup() {
 	var available_ids = $( "#corGeneFeature_input" ).autocomplete("option", "source");
 	flag = flag*(available_ids.includes(valueSoFar))*(valueSoFar!='');
 	var fdr = $("#FDR_input").val();
-	flag = flag * (fdr >= 0.001) * (fdr<1);
+	flag = flag * (fdr >= 1e-12) * (fdr<1);
 	if (flag) {
 		$("#retrieve-cor-button").button("enable");
 	}

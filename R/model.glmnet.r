@@ -39,7 +39,7 @@ crossval_flag <- TRUE;
 createGLMnetSignature <- function (
 	responseVector, 
 	predictorSpace,
-	Family = c("gaussian","binomial","poisson","multinomial","cox","mgaussian")[1],
+	Family = c("gaussian", "binomial", "poisson", "multinomial", "cox", "mgaussian")[1],
 	type.measure = c("deviance", "mse", "mae", "class", "auc")[5], 
 	independentValidation = TRUE, 
 	validationFraction = 0.50,
@@ -528,7 +528,7 @@ for (i in 1:length(x_datatypes)) {
 	# some data should be corrected, function with rules defined in plot_common_functions.r
 	temp[,1] <- correctData(temp[,1], x_platforms[i]);
 	# METH data should be transformed into M-values, function defined in plot_common_functions.r
-	if (x_datatypes[i] == "METH") {
+	if (x_datatypes[i] == "meth") {
 		temp[,1] <- transformVars(temp[,1], "mvalue");
 	}
 	Platform[[x_platforms[i]]] <- temp;

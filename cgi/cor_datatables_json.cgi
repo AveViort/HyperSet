@@ -7,6 +7,7 @@ use CGI::Carp qw ( fatalsToBrowser );
 use HS_SQL;
 use Aconfig;
 use Switch;
+use Scalar::Util qw(looks_like_number);
 
 $ENV{'PATH'} = '/bin:/usr/bin:';
 our ($dbh, $stat);
@@ -24,6 +25,7 @@ my $mindrug 		= $query->param("mindrug");
 my $data_columns 	= $query->param("data_columns");
 my $filter_columns	= $query->param("filter_columns");
 my $concat_operator	= $query->param("concat_operator");
+my $limit_by		= $query->param("limit_by");
 
 $datatype	= "%" if $datatype	eq "all";
 $cohort		= "%" if $cohort	eq "all";
@@ -32,7 +34,7 @@ $screen 	= "%" if $screen	eq "all";
 $id 		= "%" if $id 		eq "";
 
 $dbh = HS_SQL::dbh('druggable');
-$stat = qq/SELECT retrieve_correlations(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\, \'$id'\, $fdr, $mindrug, \'$data_columns'\, \'$filter_columns'\, \'$concat_operator'\, \'$Aconfig::limit_column{$source}'\, $Aconfig::limit_num);/;
+$stat = qq/SELECT retrieve_correlations(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\, \'$id'\, $fdr, $mindrug, \'$data_columns'\, \'$filter_columns'\, \'$concat_operator'\, \'$limit_by'\, $Aconfig::limit_num);/;
 
 print $query->header("application/json");
 #print $stat;
@@ -117,7 +119,8 @@ while (@row = $sth->fetchrow_array()) {
 					if($field_names[$i] eq 'followup') {
 						# do nothing - ignore this column, we use it for qtips only
 					} else {
-						print '"'.$field_names[$i].'":"'.$field_values[$i].'",';
+						my $field_value = looks_like_number($field_values[$i]) ? ($field_values[$i] < 10e-05 ? sprintf('%.2e', $field_values[$i]) : $field_values[$i]) : $field_values[$i];
+						print '"'.$field_names[$i].'":"'.$field_value.'",';
 					}
 				}
 			}

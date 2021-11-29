@@ -3,8 +3,8 @@
 # some platforms have to be corrected before re-scaling
 correctData <- function (x, platform_name) {
 	return(switch(platform_name,
-		"gdsc1" = -exp(x) + 1,
-		"gdsc2" = -exp(x) + 1,
+		"gdsc1" = -x,
+		"gdsc2" = -x,
 		x
 	));
 }
@@ -206,7 +206,7 @@ generate_plot_metadata <- function(plot_type, source_name, cohort, code, n, data
 
 # write plot metadata to json file
 # metadata is a named list, can have up to 2 levels
-save_metadata <- function(metadata, filename = NA) {
+save_metadata <- function(metadata, filename = NA, na.rm = TRUE) {
 	json_params <- c();
 	for (i in 1:length(metadata)) {
 		temp <- paste0('"', names(metadata)[i], '":');
@@ -214,7 +214,7 @@ save_metadata <- function(metadata, filename = NA) {
 			temp <- paste0(temp, '{');
 			temp2 <- c();
 			for (j in 1:length(metadata[[i]])) {
-				temp2 <- c(temp2, paste0('"', names(metadata[[i]])[j], '":"', metadata[[i]][[j]], '"'));
+				temp2 <- c(temp2, paste0('"', names(metadata[[i]])[j], '":"', ifelse((na.rm) & (is.na(metadata[[i]][[j]])), "", metadata[[i]][[j]]), '"'));
 			}
 			temp <- paste0(temp, paste(temp2, collapse = ','),'}');
 		} else {

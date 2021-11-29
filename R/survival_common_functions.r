@@ -92,7 +92,7 @@ plotSurvival_DR  <- function (
 	vec = as.factor(Pat.vector);
 	#print(vec);
 	
-	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm=T);}
+	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm=TRUE);}
 	if (estimateIntervals) {POs <- round(c(fu.length/4, fu.length/2, fu.length/1));} else {POs <- c(fu.length);}
 	pval <- NULL;
 	#print("POs:");
@@ -122,7 +122,7 @@ cutFollowup.full <- function(clin, usedSamples, s.type, po=NA) {
 	St[,2] <- as.numeric(St[,2]);
 	#print("St (inside of cutFollowup.full):")
 	#print(str(St));
-	if (is.na(po)) {po = max(Ti[,2], na.rm=T) + 1;}
+	if (is.na(po)) {po = max(Ti[,2], na.rm=TRUE) + 1;}
 	#print(po);
 	Cu <- data.frame(Stat=ifelse((Ti[,2] > po), 0, St[,2]), Time=ifelse((Ti[,2] > po), po, Ti[,2]), row.names = St$sample);
 	#print("Cu (inside of cutFollowup.full):")
@@ -142,7 +142,7 @@ sus <- function (cu, fe, return.p=c("anova", "coefficient", "logtest", "sctest",
 	print(str(st));
 	print(str(fe));
 	Formula <- as.formula(paste("Surv(as.numeric(ti), st) ~ ", "fe"))
-	t1 <- try(coxph(Formula, control=coxph.control(iter.max = 10)), silent=T);
+	t1 <- try(coxph(Formula, control=coxph.control(iter.max = 10)), silent=TRUE);
 	if (!grepl("fitter|levels", t1[1])) {
 		if (return.p == "coefficient") {
 			return (signif(summary(t1)$coefficients[,"Pr(>|z|)"], digits=3));
@@ -158,19 +158,19 @@ sus <- function (cu, fe, return.p=c("anova", "coefficient", "logtest", "sctest",
 
 # these are modified functions from plotly website
 # original: https://plot.ly/ipython-notebooks/survival-analysis-r-vs-python/
-ggsurv <- function(s, CI = FALSE, plot.cens = T, surv.col = 'gg.def',
+ggsurv <- function(s, CI = FALSE, plot.cens = TRUE, surv.col = 'gg.def',
                    cens.col = 'red', lty.est = 1, lty.ci = 2,
-                   cens.shape = 3, back.white = F, xlab = 'Time',
+                   cens.shape = 3, back.white = FALSE, xlab = 'Time',
                    ylab = 'Survival', main = ''){
   
   library(ggplot2)
-  strata <- ifelse(is.null(s$strata) ==T, 1, length(s$strata))
+  strata <- ifelse(is.null(s$strata) == TRUE, 1, length(s$strata))
   stopifnot(length(surv.col) == 1 | length(surv.col) == strata)
   stopifnot(length(lty.est) == 1 | length(lty.est) == strata)
   
-  ggsurv.s <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
+  ggsurv.s <- function(s, CI = 'def', plot.cens = TRUE, surv.col = 'gg.def',
                        cens.col = 'red', lty.est = 1, lty.ci = 2,
-                       cens.shape = 3, back.white = F, xlab = 'Time',
+                       cens.shape = 3, back.white = FALSE, xlab = 'Time',
                        ylab = 'Survival', main = ''){
     
     dat <- data.frame(time = c(0, s$time),
@@ -186,26 +186,26 @@ ggsurv <- function(s, CI = FALSE, plot.cens = T, surv.col = 'gg.def',
       xlab(xlab) + ylab(ylab) + ggtitle(main) +
       geom_step(col = col, lty = lty.est)
     
-    pl <- if(CI == T | CI == 'def') {
+    pl <- if(CI == TRUE | CI == 'def') {
       pl + geom_step(aes(y = up), color = col, lty = lty.ci) +
         geom_step(aes(y = low), color = col, lty = lty.ci)
     } else (pl)
     
-    pl <- if(plot.cens == T & length(dat.cens) > 0){
+    pl <- if(plot.cens == TRUE & length(dat.cens) > 0){
       pl + geom_point(data = dat.cens, aes(y = surv), shape = cens.shape,
                       col = cens.col)
-    } else if (plot.cens == T & length(dat.cens) == 0){
+    } else if (plot.cens == TRUE & length(dat.cens) == 0){
       stop ('There are no censored observations')
     } else(pl)
     
-    pl <- if(back.white == T) {pl + theme_bw()
+    pl <- if(back.white == TRUE) {pl + theme_bw()
     } else (pl)
     pl
   }
   
-  ggsurv.m <- function(s, CI = 'def', plot.cens = T, surv.col = 'gg.def',
+  ggsurv.m <- function(s, CI = 'def', plot.cens = TRUE, surv.col = 'gg.def',
                        cens.col = 'red', lty.est = 1, lty.ci = 2,
-                       cens.shape = 3, back.white = F, xlab = 'Time',
+                       cens.shape = 3, back.white = FALSE, xlab = 'Time',
                        ylab = 'Survival', main = '') {
     n <- s$strata
     
@@ -249,7 +249,7 @@ ggsurv <- function(s, CI = FALSE, plot.cens = T, surv.col = 'gg.def',
     
     pl <- pl + line
     
-    pl <- if(CI == T) {
+    pl <- if(CI == TRUE) {
       if(length(surv.col) > 1 && length(lty.est) > 1){
         stop('Either surv.col or lty.est should be of length 1 in order
              to plot 95% CI with multiple strata')
@@ -261,14 +261,14 @@ ggsurv <- function(s, CI = FALSE, plot.cens = T, surv.col = 'gg.def',
     } else {pl}
     
     
-    pl <- if(plot.cens == T & length(dat.cens) > 0){
+    pl <- if(plot.cens == TRUE & length(dat.cens) > 0){
       pl + geom_point(data = dat.cens, aes(y = surv), shape = cens.shape,
                       col = cens.col)
-    } else if (plot.cens == T & length(dat.cens) == 0){
+    } else if (plot.cens == TRUE & length(dat.cens) == 0){
       stop ('There are no censored observations')
     } else(pl)
     
-    pl <- if(back.white == T) {pl + theme_bw()
+    pl <- if(back.white == TRUE) {pl + theme_bw()
     } else (pl)
     pl
   }
@@ -288,11 +288,11 @@ fitSurvival2  <- function (
 	clin, # modified! 3 columns: sample, xx, xx.time
 	datatype, # COPY, GE, PE etc.
 	id, # gene name etc. Can be empty string, but cannot be NA
-	s.type="os", # survival type : OS, RFS, DFI, DSS, RFI
-	fu.length=NA, # length of follow-up time at which to cut, in respective time units
-	estimateIntervals=TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
-	usedSamples=NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))
-	return.p=c("coefficient", "logtest", "sctest", "waldtest")[1] #which type p-value from coxph
+	s.type = "os", # survival type : OS, RFS, DFI, DSS, RFI
+	fu.length = NA, # length of follow-up time at which to cut, in respective time units
+	estimateIntervals = TRUE, # break the follow-up at 3 cut-points, estimate significance, and print the p-values
+	usedSamples = NA,  # element names; if NA, then calculated internally as intersect(names(fe), rownames(clin))
+	return.p = c("coefficient", "logtest", "sctest", "waldtest")[1] #which type p-value from coxph
 ) {
 
 	print(table(Grouping[usedSamples]));

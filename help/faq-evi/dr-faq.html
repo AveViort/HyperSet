@@ -144,16 +144,24 @@ Added value of NEA</li>
 					<br>
 
 					<h3>Drug screens:</h3>
-					<table>
-						<tr><th>Screen</th><th>No. of drugs</th><th>No. of cell lines</th><th>Source</th></tr> 	
-						<tr><td>GDSC1</td><td>304</td><td>988</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
-						<tr><td>GDSC2</td><td>169</td><td>810</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
-						<tr><td>CTRPv2.0</td><td>545</td><td>887</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CTRPv2.0</a></td></tr> 	
+<table>
+<tr><th>Screen</th><th>No. of drugs</th><th>No. of cell lines</th><th>Source</th></tr>
+<tr><td>GDSC1</td><td>304</td><td>988</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr>
+<tr><td>GDSC2</td><td>169</td><td>810</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr>
+<tr><td>CTRPv2.0</td><td>545</td><td>887</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CTRPv2.0</a></td></tr>	
 						<!--tr><td>ACT</td><td>25</td><td>30</td><td><a class="clickable" target="_blank"  href="https://depmap.org/portal/ccle/">CCLE</a></td></tr> 	
 						<tr><td>Basu2013</td><td>203</td><td>242</td><td><a class="clickable" target="_blank"  href="http://dx.doi.org/10.1016/j.cell.2013.08.003">CTD2</a></td></tr> 	
 						<tr><td>Garnett2012</td><td>138</td><td>714</td><td><a class="clickable" target="_blank"  href="https://www.cancerrxgene.org/">GDSC</a></td></tr> 	
 						<tr><td>Barretina2012</td><td>24</td><td>504</td><td><a class="clickable" target="_blank"  href="https://doi.org/10.1038/nature11003">CCLE</a></td></tr--> 	 
-					</table>
+</table>
+				</div> <!-- cd-faq-content -->
+			</li>
+			<li>
+				<a class="cd-faq-trigger" href="#5">Which IDs can be used for querying?</a>
+				<div class="cd-faq-content">
+					<p> 
+						The tables of molecular variables usually store gene symbols, a.k.a. HUGO gene symbols, which mostly coincide with protein HUPO gene symbols. Alternatively, you can query by SwissProt ID and AC, or ENSEMBL gene (ENSG*), protein (ENSP*), and transcript (ENST*) IDs. Proteomics RPPA arrays can be queried by both original antibody IDs and respective HUGO symbols. Drug names are standard ids presented by screen data providers and TCGA (should be avaialable with and without brackets and dashes in the middle). Autocomplete should quickly prompt if the ID exists, usually after typing in 3-4 first characters. In tab "Correlates of drug response", an ID would be shown only if its respective correlations were save as significant in the database. 
+					</p>
 				</div> <!-- cd-faq-content -->
 			</li>
 		</ul> <!-- cd-faq-group -->
