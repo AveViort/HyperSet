@@ -276,12 +276,29 @@ table.simple_table td a{
 .hyperparameter {
 
 }
+
+.dimmed {
+  position: relative;
+}
+
+.dimmed:after {
+/*https://stackoverflow.com/questions/17859993/basic-css-how-to-overlay-a-div-with-semi-transparent-div-on-top/17860066*/
+  content: " ";
+  z-index: 10;
+  display: block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(20, 20, 0, 0.4);
+}
 </style>
 </HEAD>
 
-<BODY class="ui-state-default ui-corner-all">
+<BODY class="ui-state-default ui-corner-all" style="">
 
-
+<div id="dim" class="dimmed">
 <div class="xmlhttp_header"></div>
 <div>
 	<h1 class="main_header ui-widget-header ui-corner-all" style="position: relative">
@@ -366,8 +383,9 @@ table.simple_table td a{
 		</table>
 	</div>
 </div>
+</div>
 	
-<div id="tabs" "width: 99%;">
+<div id="tabs" style="width: 99%; display: none;">
 	<ul>
 		<li><a href="#tab-signif">Correlates of drug response</a></li>
 		<li><a href="#tab-lookup">Data exploration</a></li>
@@ -929,7 +947,7 @@ table.simple_table td a{
 								<input type="checkbox" id="standardize" class="alternative_input venn_box_control ui-corner-all"> 
 							</td>
 						</span></tr>
-						<tr id="alpha_section" class="parameter_section hyperparameter" title="Relative influence of lasso (few variables, strong coefficients) vs. ridge (many variables, close-to-zero coefficients allowed) approaches\nAlpha=0: pure ridge\nAlpha=1: pure lasso">
+						<tr id="alpha_section" class="parameter_section hyperparameter" title="Relative influence of lasso (few variables, strong coefficients) vs. ridge (many variables, close-to-zero coefficients allowed) approaches&#10;Alpha=0: pure ridge&#10;Alpha=1: pure lasso">
 							<td>Alpha
 							</td>
 							<td>
@@ -1158,7 +1176,8 @@ $(document).ready(function(){
 					"and evaluation of candidate molecules in the <a target='_blank' class='clickable' href='https://doi.org/10.1093/nar/gky485'>network context</a>." + 
 				"</p>", 0);
 	}
-	
+	$("#tabs").css("display", "block");
+	$("#dim").removeClass("dimmed");
 	$("#general_help-button").button({icon: "ui-icon-circle-help", text: false});
 	$("#help_table_toggle").button({icon: "ui-icon-file-table", text: false});
 	$("#demos-button").button({icon: "ui-icon-play", text: false});
@@ -1247,11 +1266,16 @@ $(document).ready(function(){
 	id_keyup(1);
 	// reload from cookies if we had more than 1 row
 	if (getCookie("type2_selector") != "") {
-		console.log("Reloading options for the third tab");
 		reload_analysis_options();
 	}
 	
 	init_model_source_selector();
+	var previous_selection = (getCookie("source").split("|"))[0];
+	if (sources.includes(previous_selection)) {
+		$("#source_selector").val(previous_selection);
+		$('#source_selector').selectmenu( "refresh" );
+	}
+	usetCookie("source", $("#source_selector option:selected").val(), druggable_cookie_time);
 	init_model_cohort_selector();
 	add_model_options_row();
 	$("#add_variable").button({icon: "ui-icon-circle-plus",
@@ -1259,9 +1283,6 @@ $(document).ready(function(){
 	$("#delete_variable").button({icon: "ui-icon-circle-minus",
         showLabel: false});
 	$("#delete_variable").button("disable");
-	if (getCookie("modelDatatype2_selector") != "") {
-		reload_model_options();
-	}
 	// IMPORTANT! THE FOLLOWING CODE MUST BE PLACED INTO A SPECIAL FUNCTION LATER
 	// it's decided which parameters to show on each change of method (glmnet, svm...) selector (and on init)
 	var method = "glmnet";
@@ -1282,6 +1303,7 @@ $(document).ready(function(){
 	document.getElementById('nfold').setAttribute("min", nfolds_min);
 	document.getElementById('nfold').setAttribute("max", nfolds_max);
 	document.getElementById('crossval_perc').setAttribute("max", validation_fraction_max);
+	reload_model_options();
 	//var tabList = $( "#tabs" )[0].childNodes[1].children;	for (tt = 0; tt < tabList.length; tt++) {$('#' + $(tabList[tt]).attr("aria-controls") + '-loading')[0].remove();			}		
 });
 
@@ -1372,12 +1394,26 @@ function reload_analysis_options() {
 
 // same for the fourth tab
 function reload_model_options() {
-	var n = max_model_rows;
-	for (var i=2; i<=n; i++) {
-		if (getCookie("modelDatatype" + i + "_selector") != "") {
-			add_model_options_row();
+	// reload independent datatypes and platforms
+	if (getCookie("modelDatatype2_selector") != "") {
+		var n = max_model_rows;
+		for (var i=2; i<=n; i++) {
+			if (getCookie("modelDatatype" + i + "_selector") != "") {
+				add_model_options_row();
+			}
 		}
-	} 
+	}
+	// reload model validation
+	if ((getCookie("modelCrossvalidation").split("|"))[0] == "on") {
+		// just "click" does not work properly in FF - so set "off" first
+		if (!navigator.userAgent.includes("Firefox")) {
+			$("#crossval").click();
+		}
+		else {
+			toggle_validation_section();
+		}
+		
+	}
 }
 
 function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
@@ -2790,7 +2826,6 @@ function init_model_source_selector() {
 		$("#modelSource_selector").val(previous_selection);
 		$("#modelSource_selector").selectmenu( "refresh" );
 	}
-	usetCookie("modelSource_selector", $("#modelSource_selector option:selected").val(), druggable_cookie_time);
 	setElementWidths();
 }
 
@@ -2812,7 +2847,6 @@ function init_model_cohort_selector() {
 		$("#modelCohort_selector").val(previous_selection);
 		$("#modelCohort_selector").selectmenu( "refresh" );
 	}
-	usetCookie("modelCohort_selector", $("#modelCohort_selector option:selected").val(), druggable_cookie_time);
 	setElementWidths();
 }
 
@@ -2837,7 +2871,6 @@ function init_model_datatype_selector(n) {
 		$("#modelDatatype" + n + "_selector").val(previous_selection);
 		$("#modelDatatype" + n + "_selector").selectmenu( "refresh" );
 	}
-	usetCookie("modelDatatype" + n + "_selector", $("#modelDatatype" + n + "_selector option:selected").val(), druggable_cookie_time);
 	setElementWidths();
 }
 
@@ -2862,7 +2895,6 @@ function init_model_platform_selector(n) {
 		$("#modelPlatform" + n + "_selector").val(previous_selection);
 		$("#modelPlatform" + n + "_selector").selectmenu( "refresh" );
 	}
-	usetCookie("modelPlatform" + n + "_selector", $("#modelPlatform" + n + "_selector option:selected").val(), druggable_cookie_time);
 	setElementWidths();
 }
 
@@ -2922,7 +2954,7 @@ function init_model_genearea(n) {
 				// add placeholder to get the comma-and-space at the end
 				terms.push( "" );
 				this.value = terms.join( ", " );
-				usetCookie("modelGenearea" + n, $("#genes_area" + n).val(), druggable_cookie_time);
+				//usetCookie("modelGenearea" + n, $("#genes_area" + n).val(), druggable_cookie_time);
 				return false;
 			}
 		});
@@ -3870,6 +3902,7 @@ function toggle_validation_section() {
 	var crossvalidation = $("#crossval:checked").val();
 	var visibility = crossvalidation == "on" ? "visible" : "hidden";
 	document.getElementById("crossval_table").style.visibility = visibility;
+	usetCookie("modelCrossvalidation", crossvalidation, druggable_cookie_time);
 }
 
 function open_info_page(id) {
