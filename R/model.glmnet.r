@@ -343,6 +343,13 @@ createGLMnetSignature <- function (
 				}
 				
 				plot(MG[smp], pred, type = "n", xlab = "Observed", ylab = "Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
+				#p <- plot_ly(x = MG[smp], y = pred, type = 'scatter') %>%
+				#	layout( showlegend = TRUE,
+				#			xaxis = "Observed",
+				#			yaxis = "Predicted",
+				#			margin = druggable.margins) %>%
+				#	config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
+				#htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".png"), selfcontained = FALSE, libdir = "plotly_dependencies");;
 				if (!is.na(title.sub)) {
 					title(sub = title.sub, line = 1, cex.sub = Cex.leg * 1.5);
 				}
@@ -367,6 +374,14 @@ createGLMnetSignature <- function (
 						print(classes_with_probabilities);
 					}
 					boxplot(classes_with_probabilities$Probability~classes_with_probabilities$Class);
+					#p <- plot_ly(y = classes_with_probabilities$Probability, x = classes_with_probabilities$Class, type = "box") %>% 
+					#	layout( legend = druggable.plotly.legend.style(plot_legend),
+					#			showlegend = TRUE,
+					#			margin = druggable.margins,
+					#			xaxis = x_axis,
+					#			yaxis = y_axis) %>%
+					#	config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
+					#htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".png"), selfcontained = FALSE, libdir = "plotly_dependencies");
 				}
 			}
 			ppe <-  paste0("n(",  Round, " set)=", length(smp),"\n"); 
@@ -377,7 +392,7 @@ createGLMnetSignature <- function (
 				); 
 				ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
 			}
-			legend("topleft", legend=paste(ppe,   sep = "\n"), bty = "n", cex = Cex.leg * 1.7); 
+			legend("topleft", legend = paste(ppe,   sep = "\n"), bty = "n", cex = Cex.leg * 1.7); 
 			dev.off();
 		}
 	} else {

@@ -187,8 +187,8 @@ if (status != 'ok') {
 		tickangle = 0,
 		tickfont = font2);
 	p <- plot_ly(y = x_data, x = y_data, type = "box", name = readable_platforms[temp_platforms[2], 2]) %>% 
-	layout(legend = druggable.plotly.legend.style(plot_legend),
-			showlegend = TRUE,
+	layout( showlegend = TRUE,
+			legend = druggable.plotly.legend.style(plot_legend),
 			margin = druggable.margins,
 			xaxis = x_axis,
 			yaxis = y_axis) %>%

@@ -26,6 +26,9 @@ for (i in 1:length(ids)) {
 		query <- paste0("SELECT internal_id FROM synonyms WHERE external_id='", ids[i], "';"); 
 		print(query);
 		internal_ids[i] <- sqlQuery(rch, query, stringsAsFactors = FALSE)[1,1];
+		#if (is.na(internal_ids[i])) {
+		#	internal_ids[i] <- ids[i];
+		#}
 	}
 }
 print("Internal ids:");
@@ -179,6 +182,7 @@ if (status != 'ok') {
 			paste0("Spearman rank R=", round(cs, digits = druggable.precision.cor.legend)) 
 			# paste0("Kendall tau=", round(ck, digits = druggable.precision.cor.legend))
 		));
+		print("Legend:");
 		print(plot_legend);
 		x_axis <- list(
 			title = "X",
@@ -196,7 +200,7 @@ if (status != 'ok') {
 		#print(paste0("y_data: ", length(y_data)));
 		#print(paste0("Common samples: ", length(common_samples)));
 		regression_model <- lm(y_data~x_data);
-		p <- plot_ly(x = x_data, y = y_data, type = 'scatter', 
+		p <- plot_ly(x = x_data, y = y_data, type = 'scatter', name = plot_legend,
 			text = ~paste(ifelse(Par["source"] == "ccle", "Cell line", ifelse(any(datatypes %in% druggable.patient.datatypes), "Patient: ", "Sample")), common_samples, tissue_types[common_samples,2], " (click to open information)")) %>%
 		onRender(paste0("
 			function(el) { 

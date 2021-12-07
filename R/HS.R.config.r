@@ -123,6 +123,7 @@ druggable.plotly.brca_colours <- c(
 					"Lum HER" = "#EEEF46",
 					"TNB" = "#47DC57"
 				);
+druggable.plotly.KM_colours <- c("red", "blue", "green", "orange");
 
 # datatypes which use patients, not samples
 druggable.patient.datatypes <- c("clin", "immuno", "drug");

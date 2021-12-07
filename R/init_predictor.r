@@ -146,8 +146,9 @@ saveModelJSON <- function(model, filename, crossval, source_n, cohort, x_datatyp
 	for (i in 1:length(Terms)) {
 		print(paste0("Terms[", i, "]: ", Terms[i]));
 		temp <- unlist(strsplit(substr(Terms[i], 1, nchar(Terms[i])-1), split = "\\("));
+		pos <- gregexpr("\\(", Terms[i])[[1]];
 		# rewritten in case of variables such as ARGININE_DEGRADATION_VI_(ARGINASE_2_PATHWAY)(Z_RNASEQ_TOP100)
-		temp_id <- paste(temp[1:(length(temp)-1)]);
+		temp_id <- substr(Terms[i], 1, pos[length(pos)]-1);
 		# special case - classification models, since they have coefficients in format resp:var
 		if (family == "multinomial") {
 			temp_id <- unlist(strsplit(temp_id, split = ": "))[2];
