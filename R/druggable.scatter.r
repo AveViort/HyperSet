@@ -185,13 +185,23 @@ if (status != 'ok') {
 		print("Legend:");
 		print(plot_legend);
 		x_axis <- list(
-			title = "X",
+			title = generate_axis_title(readable_platforms[platforms[1],2],
+														ids[1],
+														NA,
+														NA,
+														readable_platforms[platforms[1],3],
+														druggable.short.string.threshold),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
 			tickfont = font2);
 		y_axis <- list(
-			title = "Y",
+			title = generate_axis_title(readable_platforms[platforms[2],2],
+														ids[2],
+														NA,
+														NA,
+														readable_platforms[platforms[2],3],
+														druggable.short.string.threshold),
 			titlefont = font1,
 			showticklabels = TRUE,
 			tickangle = 0,
@@ -288,13 +298,23 @@ if (status != 'ok') {
 			cs = cor(x_data, y_data, use = "pairwise.complete.obs", method = "pearson");
 			cs = ifelse(is.na(cs), 0, cs);
 			x_axis <- list(
-				title = "X",
+				title = generate_axis_title(readable_platforms[platforms[1],2],
+														ids[1],
+														NA,
+														NA,
+														readable_platforms[platforms[1],3],
+														druggable.short.string.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = "Y",
+				title = generate_axis_title(readable_platforms[platforms[1],2],
+														ids[1],
+														NA,
+														NA,
+														readable_platforms[platforms[1],3],
+														druggable.short.string.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
@@ -427,13 +447,23 @@ if (status != 'ok') {
 			print("str(z_data):");
 			print(str(z_data));
 			x_axis <- list(
-				title = "X",
+				title = generate_axis_title(readable_platforms[platforms[axis_index[1]],2],
+														ids[axis_index[1]],
+														NA,
+														NA,
+														readable_platforms[platforms[axis_index[1]],3],
+														druggable.short.string.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,
 				tickfont = font2);
 			y_axis <- list(
-				title = "Y",
+				title = generate_axis_title(readable_platforms[platforms[axis_index[2]],2],
+														ids[axis_index[2]],
+														NA,
+														NA,
+														readable_platforms[platforms[axis_index[2]],3],
+														druggable.short.string.threshold),
 				titlefont = font1,
 				showticklabels = TRUE,
 				tickangle = 0,

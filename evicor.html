@@ -1828,6 +1828,7 @@ function build_and_show_model() {
 								height: 'auto',
 								'max-height': "720px",
 								width: 'auto',
+								minWidth : 1200,
 								modal: false,
 								buttons: [
 									{
@@ -1851,8 +1852,15 @@ function build_and_show_model() {
 						$('#' + model_name + '_coef').DataTable( {
 							"ajax": "https://" + window.location.hostname + "/pics/plots/coeff." + model_name + ".json",
 							"columns": [
-								{ "data" : "Term"},
-								{ "data" : "Platform"},
+								{ "data" : "Term",
+								  "render":  function (data) {
+									return (data.length > 24) ? ("<a title='" + data + "'>" + data.substring(0,24) + "...</a>") : ("<a>" + data + "</a>");}
+								},
+								{ "data" : "Platform",
+								  "render" : function (data) {
+									var display_name = platform_names.get(data);
+									return (display_name.length > 20) ? ("<a title='" + display_name + "'>" + display_name.substring(0,20) + "...</a>") : ("<a>" + display_name + "</a>");}
+								},
 								{ "data" : "Coef"},
 								{ "data" : "Plot"}
 							],

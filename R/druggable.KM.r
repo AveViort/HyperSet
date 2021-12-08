@@ -127,7 +127,7 @@ if (length(platforms) == 1) {
 			#print("surv.data:");
 			#print(str(surv.data));
 
-			a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = plot_title);
+			a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title);
 			#print("a:");
 			#print(str(a));
 			p <- ggplotly(a);
@@ -272,7 +272,7 @@ if (length(platforms) == 1) {
 				#print("surv.data:");
 				#print(str(surv.data));
 
-				a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = plot_title);
+				a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title);
 				#print("a:");
 				#print(str(a));
 				p <- ggplotly(a);
@@ -509,7 +509,7 @@ if (length(platforms) == 1) {
 					#print("surv.fit:");
 					#print(str(surv.fit));
 
-					a <- ggsurv(surv.fit, ylab = toupper(first_set_platform), main = plot_title);
+					a <- ggsurv(surv.fit, ylab = readable_platforms[first_set_platform], main = plot_title);
 					#print("a:");
 					#print(str(a));
 					p <- ggplotly(a);

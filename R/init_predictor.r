@@ -115,7 +115,7 @@ saveModelJSON <- function(model, filename, crossval, source_n, cohort, x_datatyp
 			Lc = colnames(Betas)[which(model$lambda == model$lambda.min)];
 		}
 	}
-	TypeDelimiter = "___";
+	TypeDelimiter = "____";
 	Terms <- NULL;
 	co <- NULL;
 	coeffs <- NULL;
@@ -155,9 +155,11 @@ saveModelJSON <- function(model, filename, crossval, source_n, cohort, x_datatyp
 		}
 		#print(temp_id);
 		temp_platform <- tolower(temp[length(temp)]);
-		#print(temp_platform);
+		# just in case - delete _ in the beginning (occurs when id ends with it)
+		temp_platform <- gsub('^\\_', '', temp_platform);
+		print(temp_platform);
 		temp_datatype <- x_datatypes[which(x_platforms == temp_platform)];
-		#print(temp_datatype);
+		print(temp_datatype);
 		if (tolower(temp_id) %in% x_platforms) {
 			temp_id <- "";
 		} else {

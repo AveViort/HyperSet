@@ -54,7 +54,7 @@ createGLMnetSignature <- function (
 	ve = "v1", 
 	plotModel = TRUE,
 	baseName = 'model_debug',
-	TypeDelimiter = "___",
+	TypeDelimiter = "____",
 	cu0 = NULL,
 	saveCoordinates = FALSE
 	) {
@@ -598,7 +598,7 @@ for (ty in names(Platform)) {
 		#print("X.add temp:");
 		#print(temp);
 		X.add <- t(temp);
-		TypeDelimiter = "___";
+		TypeDelimiter = "____";
 		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE)
 		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 		#print("Factor X.add:");
@@ -624,7 +624,7 @@ for (ty in names(Platform)) {
 			}
 			X.add[is.na(X.add[,1])] <- mean(X.add[,1], na.rm = TRUE);
 		}
-		TypeDelimiter = "___";
+		TypeDelimiter = "____";
 		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@", "_", rownames(X.add), fixed=FALSE)
 		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 	}
