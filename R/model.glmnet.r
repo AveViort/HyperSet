@@ -85,7 +85,7 @@ createGLMnetSignature <- function (
 			Sample1 <- Sample2 <- colnames(predictorSpace);
 			print("Validation subset is not created...");
 			crossval_flag <<- FALSE;
-			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.png ", baseName, "_validation.png"));
+			system(paste0("ln -s /var/www/html/research/users_tmp/plots/error.html ", baseName, "_validation.html"));
 		}
 		MG <- responseVector;
 		PW = t(predictorSpace);
@@ -255,7 +255,7 @@ createGLMnetSignature <- function (
 		
 		for (Round in rnds) {
 			print(Round);
-			png(file = paste0(baseName, "_", Round,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
+			#png(file = paste0(baseName, "_", Round,".png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
 			if (Round == "training") {
 				smp = Sample1;
 			} else {
@@ -342,29 +342,48 @@ createGLMnetSignature <- function (
 					rownames(coordinates) <- smp;
 				}
 				
-				plot(MG[smp], pred, type = "n", xlab = "Observed", ylab = "Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
-				#p <- plot_ly(x = MG[smp], y = pred, type = 'scatter') %>%
-				#	layout( showlegend = TRUE,
-				#			xaxis = "Observed",
-				#			yaxis = "Predicted",
-				#			margin = druggable.margins) %>%
-				#	config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
-				#htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".png"), selfcontained = FALSE, libdir = "plotly_dependencies");;
+				#plot(MG[smp], pred, type = "n", xlab = "Observed", ylab = "Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
+				observed <- MG[smp];
+				regression_model <- lm(observed ~ pred);
+				p <- plot_ly(x = pred, y = observed, type = 'scatter', name = '') %>% 
+					layout(legend = Round,
+					showlegend = TRUE,
+					shapes = list(type = 'line', line = list(color = 'red', dash = 'dash'), 
+							x0 = min(pred), 
+							x1 = max(pred), 
+							y0 = predict(regression_model, data.frame(pred = min(pred))),
+							y1 = predict(regression_model, data.frame(pred = max(pred)))),
+					# editable = TRUE,
+					xaxis = list(title = "Predicted"),
+					yaxis = list(title = "Observed"),
+					margin = druggable.margins) %>%
+				config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); ; 
+				htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".html"), selfcontained = FALSE, libdir = "plotly_dependencies");;
 				if (!is.na(title.sub)) {
 					title(sub = title.sub, line = 1, cex.sub = Cex.leg * 1.5);
 				}
 				States = sort(unique(MG[smp]))
-				axis(1, at = States, labels = States);
+				#axis(1, at = States, labels = States);
 				#text(MG[smp], pred, labels = toupper(names(MG[smp])), cex = Cex.lbl, srt = 45);
-				points(MG[smp], pred);
-				if (Family != "multinomial") {
-					abline(coef(lm(pred ~ MG[smp])), col = "green", lty = 2);
-				}
+				#points(MG[smp], pred);
+				#if (Family != "multinomial") {
+				#	abline(coef(lm(pred ~ MG[smp])), col = "green", lty = 2);
+				#}
 			} else {
 				if(Family == "cox") {
-					Cls = c("red2", "green2");
-					names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
-					plotSurv2(cu=cu0[names(pred),], Grouping = ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
+					#Cls = c("red2", "green2");
+					#names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
+					#plotSurv2(cu=cu0[names(pred),], Grouping = ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
+					
+					surv.data <- plotSurvival_DR(pred, MG[smp], datatype = second_set_datatype, platform = second_set_platform, id = second_set_id, s.type = first_set_platform);
+					#print("surv.data:");
+					#print(str(surv.data));
+
+					a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title);
+					#print("a:");
+					#print(str(a));
+					p <- ggplotly(a);
+					htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".html"), selfcontained = FALSE, libdir = "plotly_dependencies");
 				} else {
 					# for classification - use boxplot
 					classes <- c();
@@ -373,15 +392,15 @@ createGLMnetSignature <- function (
 						classes_with_probabilities <- data.frame("Class" = classes, "Probability" = pred, stringsAsFactors = TRUE);
 						print(classes_with_probabilities);
 					}
-					boxplot(classes_with_probabilities$Probability~classes_with_probabilities$Class);
-					#p <- plot_ly(y = classes_with_probabilities$Probability, x = classes_with_probabilities$Class, type = "box") %>% 
-					#	layout( legend = druggable.plotly.legend.style(plot_legend),
-					#			showlegend = TRUE,
-					#			margin = druggable.margins,
-					#			xaxis = x_axis,
-					#			yaxis = y_axis) %>%
-					#	config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
-					#htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".png"), selfcontained = FALSE, libdir = "plotly_dependencies");
+					#boxplot(classes_with_probabilities$Probability~classes_with_probabilities$Class);
+					p <- plot_ly(y = classes_with_probabilities$Probability, x = classes_with_probabilities$Class, type = "box") %>% 
+						layout( legend = druggable.plotly.legend.style(plot_legend),
+								showlegend = TRUE,
+								margin = druggable.margins,
+								xaxis = list(),
+								yaxis = list()) %>%
+						config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
+					htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".png"), selfcontained = FALSE, libdir = "plotly_dependencies");
 				}
 			}
 			ppe <-  paste0("n(",  Round, " set)=", length(smp),"\n"); 
@@ -392,8 +411,8 @@ createGLMnetSignature <- function (
 				); 
 				ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
 			}
-			legend("topleft", legend = paste(ppe,   sep = "\n"), bty = "n", cex = Cex.leg * 1.7); 
-			dev.off();
+			#legend("topleft", legend = paste(ppe,   sep = "\n"), bty = "n", cex = Cex.leg * 1.7); 
+			#dev.off();
 		}
 	} else {
 		png(file = paste0(baseName, "_model.png"), width = plotSize/2, height = plotSize/2, type = "cairo");

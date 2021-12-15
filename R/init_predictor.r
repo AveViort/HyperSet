@@ -9,6 +9,7 @@ message("TEST0");
 
 source("../R/common_functions.r");
 source("../R/plot_common_functions.r");
+source("../R/survival_common_functions.r");
 library(plotly);
 library(htmlwidgets);
 library(reshape2);
@@ -39,6 +40,7 @@ commonIdx <- function(m1, m2, Dir = "vec") {
 	return(common);
 }	
 
+### DEPRICATED FUNCTIONS - DELETE ON THE NEXT COMMIT
 makeCu <- function (clin, s.type, Xmax = NA, usedNames) {
 	survSamples <- commonIdx(clin[,"sample"], usedNames, 'vec');
 	Time = clin[which(clin[,"sample"] %in% survSamples), c("sample", paste(s.type, "time", sep = "_"))];
@@ -75,6 +77,7 @@ plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax = NA, Cls, Title = 
 	}
 	legend(ifelse(table(cu$Time[which(cu$Stat == 1)] > 0.75 * max(cu$Time, na.rm=TRUE))["TRUE"] > nrow(cu) / 10, "bottomleft", "topright"), legend=Leg, col=Cls, cex=1.00 , bty="n", lty=1:4, pch=16);
 }
+###
 
 # function to save model coefficients in JSON format
 # new format: we need information about response, multiopt etc. to offer plots 

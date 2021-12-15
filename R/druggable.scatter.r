@@ -250,7 +250,7 @@ if (status != 'ok') {
 		")) %>%
 		layout(legend = druggable.plotly.legend.style(plot_legend), # https://github.com/plotly/plotly.js/blob/master/src/plot_api/plot_config.js#L51-L110
 			showlegend = TRUE,
-			shapes = list(type='line', line = list(color = 'red', dash = 'dash'), 
+			shapes = list(type = 'line', line = list(color = 'red', dash = 'dash'), 
 						x0 = min(x_data), 
 						x1 = max(x_data), 
 						y0 = predict(regression_model, data.frame(x_data = min(x_data))),

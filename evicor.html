@@ -1769,9 +1769,9 @@ function build_and_show_model() {
 							"&crossval_percent=" + crossvalidation_percent + 
 							"&standardize=" + standardize,
 							"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_model.png target=_blank>Model summary</a> " +
-							"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_training.png target=_blank>Model training</a> " +
+							"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_training.html target=_blank>Model training</a> " +
 							((crossvalidation) ? (
-								"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_validation.png target=_blank>Model validation</a> "
+								"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + "_validation.html target=_blank>Model validation</a> "
 							) : ("")) +
 							"<a href=https://" + window.location.hostname + "/model_json.html#coeff." + model_name + ".json target=_blank>View coefficients</a> " +
 							"<a href=https://" + window.location.hostname + "/pics/plots/" + model_name + ".RData target=_blank>Download</a> ");
@@ -1792,11 +1792,11 @@ function build_and_show_model() {
 									<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="640px" height="640px"></iframe> \
 								</div> \
 								<div id="' + model_name + '_training"> \
-									<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.png" width="640px" height="640px"></iframe> \
+									<iframe src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.html" width="640px" height="640px"></iframe> \
 								</div>'
 								+ ((crossvalidation) ? (
 								'<div id="' + model_name + '_validation"> \
-									<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.png" width="640px" height="640px"></iframe> \
+									<iframe src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_validation.html" width="640px" height="640px"></iframe> \
 								</div>') : ('')) +
 								'<div id = "' + model_name + '_performance"> \
 									<table id="' + model_name + '_perf" class="display" style="width:100%"> \
