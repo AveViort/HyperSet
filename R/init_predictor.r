@@ -40,7 +40,6 @@ commonIdx <- function(m1, m2, Dir = "vec") {
 	return(common);
 }	
 
-### DEPRICATED FUNCTIONS - DELETE ON THE NEXT COMMIT
 makeCu <- function (clin, s.type, Xmax = NA, usedNames) {
 	survSamples <- commonIdx(clin[,"sample"], usedNames, 'vec');
 	Time = clin[which(clin[,"sample"] %in% survSamples), c("sample", paste(s.type, "time", sep = "_"))];
@@ -60,24 +59,29 @@ cutFollowupID  <- function(St, Ti, Point, IDs) { #limit follow-up time for survi
 	return(as.data.frame(Cu));
 }
 
-plotSurv2 <- function (cu, Grouping, s.type="Survival", Xmax = NA, Cls, Title = NA, markTime = TRUE, feature1 = NA, feature2 = NA) {
+plotSurv2 <- function (cu, Grouping, s.type = "Survival", Xmax = NA, Cls, Title = NA, markTime = TRUE, feature1 = NA, feature2 = NA) {
 	survSamples <- rownames(cu);
-	fit =survfit(Surv(cu[survSamples, "Time"], cu[survSamples, "Stat"]) ~ as.factor(Grouping[survSamples]), conf.type = "log-log");
+	#cu[,"sample"] <- survSamples;
+	Score <- Grouping[survSamples];
+	fit = survfit(Surv(cu[survSamples, "Time"], cu[survSamples, "Stat"]) ~ Score, conf.type = "log-log");
+	#fit <- plotSurvival_DR(Score, cu, datatype = "Prediction score", platform = "", id = "", s.type = "os");
+	print(fit);
 	if (is.na(Xmax)) {
 		Xmax = max(cu[survSamples, "Time"], na.rm = TRUE)
 	}
-	plot(fit, mark.time = markTime, col = Cls, xlab = 'Follow-up, days', ylab = s.type, main = Title, bty = "n", 
-		cex.main = 0.65, lty = 1:4, lwd = 1.5, xmax = Xmax); 
-	t1 <- table(Grouping[survSamples])
-	Leg = paste(names(Cls), "; N=", t1[names(Cls)], sep = "");
+	a <- ggsurv(fit, ylab = "", main = "", CI = "def");
+	#plot(fit, mark.time = markTime, col = Cls, xlab = 'Follow-up, days', ylab = s.type, main = Title, bty = "n", 
+	#	cex.main = 0.65, lty = 1:4, lwd = 1.5, xmax = Xmax); 
+	#t1 <- table(Grouping[survSamples])
+	#Leg = paste(names(Cls), "; N=", t1[names(Cls)], sep = "");
 	# print (t1);
-	if (!is.na(feature1)) {
-		Leg = gsub("^", paste0(ifelse(is.na(feature1), "Feature1", feature1), ": "), Leg);
-		Leg = gsub("-", paste0(", ", ifelse(is.na(feature2), "Feature2", feature2), ": "), Leg);
-	}
-	legend(ifelse(table(cu$Time[which(cu$Stat == 1)] > 0.75 * max(cu$Time, na.rm=TRUE))["TRUE"] > nrow(cu) / 10, "bottomleft", "topright"), legend=Leg, col=Cls, cex=1.00 , bty="n", lty=1:4, pch=16);
+	#if (!is.na(feature1)) {
+	#	Leg = gsub("^", paste0(ifelse(is.na(feature1), "Feature1", feature1), ": "), Leg);
+	#	Leg = gsub("-", paste0(", ", ifelse(is.na(feature2), "Feature2", feature2), ": "), Leg);
+	#}
+	#legend(ifelse(table(cu$Time[which(cu$Stat == 1)] > 0.75 * max(cu$Time, na.rm=TRUE))["TRUE"] > nrow(cu) / 10, "bottomleft", "topright"), legend=Leg, col=Cls, cex=1.00 , bty="n", lty=1:4, pch=16);
+	return(a);
 }
-###
 
 # function to save model coefficients in JSON format
 # new format: we need information about response, multiopt etc. to offer plots 

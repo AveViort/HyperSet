@@ -363,23 +363,17 @@ createGLMnetSignature <- function (
 					title(sub = title.sub, line = 1, cex.sub = Cex.leg * 1.5);
 				}
 				States = sort(unique(MG[smp]))
-				#axis(1, at = States, labels = States);
-				#text(MG[smp], pred, labels = toupper(names(MG[smp])), cex = Cex.lbl, srt = 45);
-				#points(MG[smp], pred);
-				#if (Family != "multinomial") {
-				#	abline(coef(lm(pred ~ MG[smp])), col = "green", lty = 2);
-				#}
 			} else {
 				if(Family == "cox") {
-					#Cls = c("red2", "green2");
-					#names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
-					#plotSurv2(cu=cu0[names(pred),], Grouping = ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
+					Cls = c("red2", "green2");
+					names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
+					a <- plotSurv2(cu=cu0[names(pred),], Grouping = ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
 					
-					surv.data <- plotSurvival_DR(pred, MG[smp], datatype = second_set_datatype, platform = second_set_platform, id = second_set_id, s.type = first_set_platform);
+					#surv.data <- plotSurvival_DR(cu0[names(pred),], MG[smp], datatype = "", platform = "", id = "", s.type = "os");
 					#print("surv.data:");
 					#print(str(surv.data));
 
-					a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title);
+					#a <- ggsurv(surv.data, ylab = "", main = "");
 					#print("a:");
 					#print(str(a));
 					p <- ggplotly(a);

@@ -1842,8 +1842,8 @@ function build_and_show_model() {
 									}
 								],
 								resize: function( event, ui ) {
-										($(this).children('iframe'))[0].setAttribute("height", $(this).height());
-										($(this).children('iframe'))[0].setAttribute("width", $(this).width());
+										($(this).children('iframe'))[0].setAttribute("height", $(this).height()*0.8);
+										($(this).children('iframe'))[0].setAttribute("width", $(this).width()*0.5);
 									},
 								beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 							}).parent().appendTo("#tab-predict");

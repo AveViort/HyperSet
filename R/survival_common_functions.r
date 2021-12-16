@@ -108,7 +108,7 @@ plotSurvival_DR  <- function (
 	return(fit)
 }
 
-cutFollowup.full <- function(clin, usedSamples, s.type, po=NA) {
+cutFollowup.full <- function(clin, usedSamples, s.type, po = NA) {
 	#print("clin (inside of cutFollowup.full):")
 	#print(str(clin));
 	#print(rownames(clin));
@@ -131,7 +131,7 @@ cutFollowup.full <- function(clin, usedSamples, s.type, po=NA) {
 	return(Cu[usedSamples,]);
 }
 
-sus <- function (cu, fe, return.p=c("anova", "coefficient", "logtest", "sctest", "waldtest")
+sus <- function (cu, fe, return.p = c("anova", "coefficient", "logtest", "sctest", "waldtest")
                  # https://en.wikipedia.org/wiki/Logrank_test
 ) { #simple survival analysis
 	# print(return.p);
@@ -253,7 +253,7 @@ ggsurv <- function(s, CI = FALSE, plot.cens = TRUE, surv.col = 'gg.def',
       if(length(surv.col) > 1 && length(lty.est) > 1){
         stop('Either surv.col or lty.est should be of length 1 in order
              to plot 95% CI with multiple strata')
-      }else if((length(surv.col) > 1 | surv.col == 'gg.def')[1]){
+      } else if((length(surv.col) > 1 | surv.col == 'gg.def')[1]){
         pl + geom_step(aes(y = up, color = group), lty = lty.ci) +
           geom_step(aes(y = low, color = group), lty = lty.ci)
       } else{pl +  geom_step(aes(y = up, lty = group), col = surv.col) +
@@ -269,9 +269,10 @@ ggsurv <- function(s, CI = FALSE, plot.cens = TRUE, surv.col = 'gg.def',
     } else(pl)
     
     pl <- if(back.white == TRUE) {pl + theme_bw()
-    } else (pl)
+    } else (pl + theme(legend.position = "bottom", legend.key.width = unit(20, "cm")))
     pl
   }
+  
   pl <- if(strata == 1) {ggsurv.s(s, CI , plot.cens, surv.col ,
                                   cens.col, lty.est, lty.ci,
                                   cens.shape, back.white, xlab,

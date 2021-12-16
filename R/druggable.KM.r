@@ -76,7 +76,7 @@ if (length(platforms) == 1) {
 				query <- paste0(query, " WHERE id='", internal_id, "'");
 			}
 		}
-		if ((Par["source"]=="tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))) {
+		if ((Par["source"] == "tcga") & (!(datatypes[m] %in% druggable.patient.datatypes))) {
 			query <- paste0(query, " AND sample ~ '", createPostgreSQLregex(tcga_codes),"'");
 		}
 		query <- paste0(query, ";");
@@ -127,7 +127,7 @@ if (length(platforms) == 1) {
 			#print("surv.data:");
 			#print(str(surv.data));
 
-			a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title);
+			a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform,2], main = plot_title);
 			#print("a:");
 			#print(str(a));
 			p <- ggplotly(a);
