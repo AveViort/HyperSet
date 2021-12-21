@@ -586,7 +586,7 @@ DECLARE
 res text;
 description_n text;
 BEGIN
-FOR res IN SELECT DISTINCT cohort FROM model_guide_table WHERE source=source_n AND table_type='response' 
+FOR res IN SELECT DISTINCT cohort FROM model_guide_table WHERE source=source_n AND table_type='response' ORDER BY cohort ASC
 LOOP
 SELECT fullname INTO description_n FROM cohort_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
@@ -1688,7 +1688,7 @@ $$ LANGUAGE plpgsql;
 -- function to get TCGA sample codes 
 -- if datatype uses patients (not samples) - return emplty string
 -- it also takes previous datatypes into account: if one of the chose datatypes
--- uses patients - do not allow meta-codes ("all", "cancer", "healthy")
+-- uses patients - do not allow meta-codes ("all", "cancer", "normal")
 CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, platform_n text, previous_datatypes text, previous_platforms text) RETURNS text AS $$
 DECLARE
 res text;
@@ -2005,11 +2005,11 @@ RAISE NOTICE 'platform: %', platform_n;
 EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || ' WHERE ' || platform_n || ' IS NOT NULL;' INTO code_count;
 platform_codes := 'all';
 code_counts := '' || code_count;
--- second - healthy
+-- second - normal
 EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || E' WHERE (sample LIKE \'%-1_\') AND (' || platform_n || ' IS NOT NULL);' INTO code_count;
 IF (code_count <> 0)
 THEN
-platform_codes := platform_codes || ',healthy';
+platform_codes := platform_codes || ',normal';
 code_counts := code_counts || ',' || code_count;
 END IF;
 -- third - cancer samples
@@ -2030,7 +2030,7 @@ END IF;
 EXECUTE 'SELECT COUNT(DISTINCT sample) FROM ' || table_n || E' WHERE (sample ~ \'-(0[0-5,8,9]{1})$\') AND (' || platform_n || ' IS NOT NULL);' INTO code_count;
 IF (code_count <> 0)
 THEN
-platform_codes := platform_codes || ',non_metastatic';
+platform_codes := platform_codes || ',primary_tumor';
 code_counts := code_counts || ',' || code_count;
 END IF;
 RAISE NOTICE 'table_codes: %', platform_codes;

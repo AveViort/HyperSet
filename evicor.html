@@ -421,7 +421,7 @@ table.simple_table td a{
 				</p>
 			</div>
 			
-			<div id="help-tab-faq" class="fine-content">
+			<div id="help-tab-faq">
 				<p>
 					Refer to this page to get answers to your questions and instructions for some typical tasks.
 				</p>
@@ -1063,7 +1063,7 @@ table.simple_table td a{
 
 <script>
 $(function() {
-	$("#help-tabs-dr").tabs({heightStyle: "fill"});
+	$("#help-tabs-dr").tabs({});
 });
 
 $(function() {
@@ -1842,8 +1842,8 @@ function build_and_show_model() {
 									}
 								],
 								resize: function( event, ui ) {
-										($(this).children('iframe'))[0].setAttribute("height", $(this).height()*0.8);
-										($(this).children('iframe'))[0].setAttribute("width", $(this).width()*0.5);
+										($(this).children('iframe'))[0].setAttribute("height", ($(this).height())*0.8);
+										($(this).children('iframe'))[0].setAttribute("width", ($(this).width())*0.25);
 									},
 								beforeClose: function( event, ui ) {$(this).dialog('destroy').remove()}
 							}).parent().appendTo("#tab-predict");
@@ -1937,7 +1937,7 @@ function build_and_show_model() {
 								{ "data": "Value.Training"},
 								{ "data": "Value.Validation"}
 							],
-							"order": [[ 0, "desc" ]],
+							//"order": [[ 0, "desc" ]],
 							"scrollY": "600px",
 							"scrollCollapse": true,
 							"paging": false
@@ -2521,7 +2521,7 @@ function init_axis_type_selector(selector_id) {
 	var axis_types = get_axis_types($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val());
 	options = [];
 	for (i in axis_types) {
-		options.push("<option value='"+ axis_types[i] + "'>" + axis_types[i] + "</option>");
+		options.push("<option value='"+ axis_types[i] + "'>" + scale_names.get(axis_types[i]) + "</option>");
 	}
 	var flag = (axis_types.length == 0);
 	$("#" + selector_id).append(options.join("")).selectmenu({

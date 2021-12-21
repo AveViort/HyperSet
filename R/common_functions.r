@@ -73,10 +73,10 @@ createPostgreSQLregex <- function(tcga_code) {
 	regex <- '';
 	switch (tcga_code,
 		"all" = {regex <- '[a-z0-9-]*';},
-		"healthy" = {regex <- "-1[0-9]$";},
+		"normal" = {regex <- "-1[0-9]$";},
 		"cancer" = {regex <- "-(0[0-9])|(20)$";},
 		"metastatic" = {regex <- "-0(6|7)$"},
-		"non_metastatic" = {regex <- "-(0[0-5,8,9])$"},
+		"primary_tumor" = {regex <- "-(0[0-5,8,9])$"},
 		{regex <- paste0("-", tcga_code, "$");}
 		
 	);
@@ -90,7 +90,7 @@ createTissuesList <- function(multiopt) {
 	for (tissue in multiopt) {
 		tissues <- c(tissues, switch(tissue,
 									"CANCER" = {"CENTRAL_NERVOUS_SYSTEM,STOMACH,VULVA,URINARY_TRACT,BREAST,ADRENAL_CORTEX,CERVIX,PROSTATE,ENDOMETRIUM,LARGE_INTESTINE,SKIN,THYROID,TESTIS,LUNG,OESOPHAGUS,HAEMATOPOIETIC_AND_LYMPHOID,LIVER,PLEURA,PANCREAS,AUTONOMIC_GANGLIA,OVARY,UPPER_AERODIGESTIVE_TRACT,UVEA,BILIARY_TRACT,SALIVARY_GLAND,PLACENTA,BONE,KIDNEY,SMALL_INTESTINE,SOFT_TISSUE,PRIMARY"},
-									"HEALTHY" = {"FIBROBLAST,MATCHED_NORMAL_TISSUE"},
+									"NORMAL" = {"FIBROBLAST,MATCHED_NORMAL_TISSUE"},
 									{tissue}
 									)
 					);

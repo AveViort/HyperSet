@@ -316,8 +316,8 @@ createGLMnetSignature <- function (
 				cu <- cu0[smp,]
 				t1 <- tryCatch(coxph(Formula, data = as.data.frame(PW[smp,]), control = coxph.control(iter.max = 5)), error = function(e) {handleError(e)});
 				if ((class(t1) != "error") & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
-					perf[[paste0("P(logtest, ", Round, ")")]] <- summary(t1)$logtest["pvalue"];
-					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("P(logtest, ", Round, ")"), Value = round(perf[[paste0("P(logtest, ", Round, ")")]],3)));
+					perf[[paste0("P-value(logtest, ", Round, ")")]] <- summary(t1)$logtest["pvalue"];
+					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("P-value(logtest, ", Round, ")"), Value = round(perf[[paste0("P-value(logtest, ", Round, ")")]],3)));
 				} else {
 					stop(t1[1]);
 				}
@@ -345,7 +345,7 @@ createGLMnetSignature <- function (
 				#plot(MG[smp], pred, type = "n", xlab = "Observed", ylab = "Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
 				observed <- MG[smp];
 				regression_model <- lm(observed ~ pred);
-				p <- plot_ly(x = pred, y = observed, type = 'scatter', name = '') %>% 
+				p <- plot_ly(x = pred, y = observed, type = 'scatter', name = paste(c(Round, paste0("n=", length(smp)), ppe), sep = "\n", collapse = "\n")) %>% 
 					layout(legend = Round,
 					showlegend = TRUE,
 					shapes = list(type = 'line', line = list(color = 'red', dash = 'dash'), 
@@ -359,23 +359,18 @@ createGLMnetSignature <- function (
 					margin = druggable.margins) %>%
 				config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); ; 
 				htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".html"), selfcontained = FALSE, libdir = "plotly_dependencies");;
-				if (!is.na(title.sub)) {
-					title(sub = title.sub, line = 1, cex.sub = Cex.leg * 1.5);
-				}
+				#if (!is.na(title.sub)) {
+				#	title(sub = title.sub, line = 1, cex.sub = Cex.leg * 1.5);
+				#}
 				States = sort(unique(MG[smp]))
 			} else {
 				if(Family == "cox") {
 					Cls = c("red2", "green2");
 					names(Cls) <- c("High", "Low"); # double-check the colors: High/low or Low/high?
-					a <- plotSurv2(cu=cu0[names(pred),], Grouping = ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), s.type = NA, Xmax = NA, Cls, Title = title.main, markTime = TRUE);
+					a <- plotSurv2(cu = cu0[names(pred),], Grouping = ifelse(pred > median(pred,na.rm = TRUE), "High", "Low"), 
+						s.type = NA, Xmax = NA, Cls, Title = '', markTime = TRUE);
 					
-					#surv.data <- plotSurvival_DR(cu0[names(pred),], MG[smp], datatype = "", platform = "", id = "", s.type = "os");
-					#print("surv.data:");
-					#print(str(surv.data));
-
-					#a <- ggsurv(surv.data, ylab = "", main = "");
-					#print("a:");
-					#print(str(a));
+					a <- a + labs(title = paste0(title.main, " n=", length(smp), " p=", round(perf[[paste0("P-value(logtest, ", Round, ")")]],3)));
 					p <- ggplotly(a);
 					htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".html"), selfcontained = FALSE, libdir = "plotly_dependencies");
 				} else {

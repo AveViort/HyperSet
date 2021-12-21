@@ -157,21 +157,22 @@ sus <- function (cu, fe, return.p = c("anova", "coefficient", "logtest", "sctest
 }
 
 # these are modified functions from plotly website
+# time.limit - time in days, NA = full period
 # original: https://plot.ly/ipython-notebooks/survival-analysis-r-vs-python/
-ggsurv <- function(s, CI = FALSE, plot.cens = TRUE, surv.col = 'gg.def',
+ggsurv <- function(s, CI = FALSE, plot.cens = FALSE, surv.col = 'gg.def',
                    cens.col = 'red', lty.est = 1, lty.ci = 2,
                    cens.shape = 3, back.white = FALSE, xlab = 'Time',
-                   ylab = 'Survival', main = ''){
+                   ylab = 'Survival', main = '', time.limit = NA) {
   
   library(ggplot2)
   strata <- ifelse(is.null(s$strata) == TRUE, 1, length(s$strata))
   stopifnot(length(surv.col) == 1 | length(surv.col) == strata)
   stopifnot(length(lty.est) == 1 | length(lty.est) == strata)
   
-  ggsurv.s <- function(s, CI = 'def', plot.cens = TRUE, surv.col = 'gg.def',
+  ggsurv.s <- function(s, CI = 'def', plot.cens = FALSE, surv.col = 'gg.def',
                        cens.col = 'red', lty.est = 1, lty.ci = 2,
                        cens.shape = 3, back.white = FALSE, xlab = 'Time',
-                       ylab = 'Survival', main = ''){
+                       ylab = 'Survival', main = '', time.limit = NA){
     
     dat <- data.frame(time = c(0, s$time),
                       surv = c(1, s$surv),
@@ -196,17 +197,21 @@ ggsurv <- function(s, CI = FALSE, plot.cens = TRUE, surv.col = 'gg.def',
                       col = cens.col)
     } else if (plot.cens == TRUE & length(dat.cens) == 0){
       stop ('There are no censored observations')
-    } else(pl)
+    } else (pl)
     
     pl <- if(back.white == TRUE) {pl + theme_bw()
     } else (pl)
+	
+	pl <- if(!is.na(time.limit)) { pl + coord_cartesian(xlim = c(0, time.limit))
+	} else (pl)
+	
     pl
   }
   
-  ggsurv.m <- function(s, CI = 'def', plot.cens = TRUE, surv.col = 'gg.def',
+  ggsurv.m <- function(s, CI = 'def', plot.cens = FALSE, surv.col = 'gg.def',
                        cens.col = 'red', lty.est = 1, lty.ci = 2,
                        cens.shape = 3, back.white = FALSE, xlab = 'Time',
-                       ylab = 'Survival', main = '') {
+                       ylab = 'Survival', main = '', time.limit = NA) {
     n <- s$strata
     
 	groups <- factor(unlist(lapply(names(s$strata), function(x) sub("vec=", '', x))));
@@ -270,17 +275,21 @@ ggsurv <- function(s, CI = FALSE, plot.cens = TRUE, surv.col = 'gg.def',
     
     pl <- if(back.white == TRUE) {pl + theme_bw()
     } else (pl + theme(legend.position = "bottom", legend.key.width = unit(20, "cm")))
+	
+	pl <- if(!is.na(time.limit)) { pl + coord_cartesian(xlim = c(0, time.limit))
+	} else (pl)
+	
     pl
   }
   
   pl <- if(strata == 1) {ggsurv.s(s, CI , plot.cens, surv.col ,
                                   cens.col, lty.est, lty.ci,
                                   cens.shape, back.white, xlab,
-                                  ylab, main)
+                                  ylab, main, time.limit)
   } else {ggsurv.m(s, CI, plot.cens, surv.col ,
                    cens.col, lty.est, lty.ci,
                    cens.shape, back.white, xlab,
-                   ylab, main)}
+                   ylab, main, time.limit)}
   pl
 }
 

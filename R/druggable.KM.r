@@ -7,6 +7,13 @@ print("druggable.km.r");
 # markers
 Cov = c("os", "os_time", "pfs", "pfs_time", "rfs", "rfs_time", "dss", "dss_time", "dfi", "dfi_time", "pfi", "pfi_time");
 
+# unlike other types of plots, KM has some specific parameters
+surv_period <- Par["period"];
+# 1 = full survival period
+if (empty_value(surv_period)) {
+	surv_period <- 1;
+}
+
 first_set_datatype <- '';
 first_set_platform <- '';
 second_set_table <- '';
@@ -29,7 +36,7 @@ if (length(platforms) == 1) {
 	metadata <- save_metadata(metadata);
 	surv.data = survfit(Surv(first_set[,paste0(first_set_platform, "_time")], first_set[,first_set_platform]) ~ 1);
 	print(surv.data);
-	a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = "", CI = "def");
+	a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = "", CI = "def", time.limit = max(surv.data$time)*surv_period);
 	#print("a:");
 	#print(str(a));
 	p <- ggplotly(a);
@@ -126,8 +133,7 @@ if (length(platforms) == 1) {
 			surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, platform = second_set_platform, id = second_set_id, s.type = first_set_platform);
 			#print("surv.data:");
 			#print(str(surv.data));
-
-			a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform,2], main = plot_title);
+			a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform,2], main = plot_title, time.limit = max(surv.data$time)*surv_period);
 			#print("a:");
 			#print(str(a));
 			p <- ggplotly(a);
@@ -272,7 +278,7 @@ if (length(platforms) == 1) {
 				#print("surv.data:");
 				#print(str(surv.data));
 
-				a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title);
+				a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title, time.limit = max(surv.data$time)*surv_period);
 				#print("a:");
 				#print(str(a));
 				p <- ggplotly(a);
@@ -509,7 +515,7 @@ if (length(platforms) == 1) {
 					#print("surv.fit:");
 					#print(str(surv.fit));
 
-					a <- ggsurv(surv.fit, ylab = readable_platforms[first_set_platform], main = plot_title);
+					a <- ggsurv(surv.fit, ylab = readable_platforms[first_set_platform], main = plot_title, time.limit = max(surv.data$time)*surv_period);
 					#print("a:");
 					#print(str(a));
 					p <- ggplotly(a);

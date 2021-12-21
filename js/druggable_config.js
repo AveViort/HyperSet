@@ -170,7 +170,7 @@ scale_names.set('original', 'standard');
 scale_names.set('log', 'log');
 scale_names.set('sqrt', 'square root');
 scale_names.set('mvalue', 'M-value');
-scale_names.set('beta', 'beta');
+scale_names.set('beta', 'Beta');
 scale_names.set('logit', 'logit');
 
 // for platforms
@@ -212,6 +212,7 @@ measureQtip["Spearman R"] = "Spearman rank correlation value";
 measureQtip["Kendall tau"] = "Kendall tau rank correlation value";
 measureQtip["RSS"] = "Residual sum of squares";
 measureQtip["p"] = "The initial number of variables";
+measureQtip["P-value"] = "p-value";
 measureQtip["R^2"] = "Squared correlation:\nfraction of total variance explained by the model";
 measureQtip["MSE"] = "Mean squared error";
 measureQtip["MRE"] = "Magnitude of Relative Error";
