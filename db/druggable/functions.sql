@@ -340,7 +340,7 @@ END IF;
 SELECT table_name INTO table_n FROM guide_table WHERE (cohort=cohort_n) AND (type=data_type);
 -- if table exists
 IF (table_n IS NOT NULL) THEN
-EXECUTE E'INSERT INTO platforms SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
+EXECUTE E'INSERT INTO platforms SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true) ORDER BY druggable.INFORMATION_SCHEMA.COLUMNS.column_name DESC;';
 FOR platform_n, description IN SELECT * FROM platforms 
 LOOP
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
@@ -379,7 +379,7 @@ sensitivity_array text array;
 BEGIN
 sensitivity_array := string_to_array(sensitivity_m, ',');
 -- NOTE that we have to use LIKE, not =, because user can ask for platforms for all datatypes 
-FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND sensitivity_measure=ANY(sensitivity_array)
+FOR res IN SELECT DISTINCT platform FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND sensitivity_measure=ANY(sensitivity_array) ORDER BY platform DESC
 LOOP
 SELECT fullname INTO description_n FROM platform_descriptions WHERE shortname=lower(res);
 RETURN NEXT res || '|' || description_n;
@@ -412,7 +412,7 @@ END IF;
 SELECT table_name INTO table_n FROM model_guide_table WHERE (cohort=cohort_n) AND (datatype=data_type) AND (table_type='predictor');
 -- if table exists
 IF (table_n IS NOT NULL) THEN
-EXECUTE E'INSERT INTO model_platforms SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
+EXECUTE E'INSERT INTO model_platforms SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true)  ORDER BY druggable.INFORMATION_SCHEMA.COLUMNS.column_name DESC;';
 FOR platform_n, description IN SELECT * FROM model_platforms 
 LOOP
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
@@ -447,7 +447,7 @@ BEGIN
 flag := TRUE;
 data_types := ARRAY['all', data_type];
 cohorts := ARRAY['all', cohort_n];
-FOR platform_n IN SELECT DISTINCT platform FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND datatype=data_type AND table_type='response' 
+FOR platform_n IN SELECT DISTINCT platform FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND datatype=data_type AND table_type='response' ORDER BY platform DESC 
 LOOP
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
 SELECT visibility FROM platform_descriptions WHERE shortname=platform_n INTO visible;
@@ -474,7 +474,7 @@ datatable text;
 description_n text;
 flag boolean;
 BEGIN
-FOR datatable,res IN SELECT table_name, type FROM guide_table WHERE cohort=cohort_n
+FOR datatable,res IN SELECT table_name, type FROM (SELECT guide_table.table_name, guide_table.type, datatypes_order.sort_order FROM guide_table JOIN datatypes_order ON guide_table.type=datatypes_order.datatype WHERE guide_table.cohort=cohort_n ORDER BY datatypes_order.sort_order ASC) x
 LOOP
 SELECT table_has_visible_platforms(datatable) INTO flag;
 IF (flag=true)
@@ -509,7 +509,7 @@ description_n text;
 sensitivity_array text array;
 BEGIN
 sensitivity_array := string_to_array(sensitivity_m, ',');
-FOR res IN SELECT DISTINCT datatype FROM cor_guide_table WHERE source=source_n AND sensitivity_measure=ANY(sensitivity_array) 
+FOR res IN SELECT datatype FROM (SELECT DISTINCT cor_guide_table.datatype, datatypes_order.sort_order FROM cor_guide_table JOIN datatypes_order ON cor_guide_table.datatype=datatypes_order.datatype WHERE cor_guide_table.source=source_n AND cor_guide_table.sensitivity_measure=ANY(sensitivity_array) ORDER BY datatypes_order.sort_order ASC) x
 LOOP
 SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
@@ -524,7 +524,7 @@ DECLARE
 res text;
 description_n text;
 BEGIN
-FOR res IN SELECT DISTINCT datatype FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND table_type='predictor' 
+FOR res IN SELECT datatype FROM (SELECT DISTINCT model_guide_table.datatype, datatypes_order.sort_order FROM model_guide_table JOIN datatypes_order ON model_guide_table.datatype=datatypes_order.datatype WHERE model_guide_table.source=source_n AND model_guide_table.cohort=cohort_n AND model_guide_table.table_type='predictor' ORDER BY datatypes_order.sort_order ASC) x
 LOOP
 SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
@@ -539,7 +539,7 @@ DECLARE
 res text;
 description_n text;
 BEGIN
-FOR res IN SELECT DISTINCT datatype FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND table_type='response' 
+FOR res IN SELECT datatype FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND table_type='response' ORDER BY CASE WHEN datatype='SENS' THEN 1 WHEN datatype='CLIN' THEN 2 ELSE 3 END
 LOOP
 SELECT fullname INTO description_n FROM datatype_descriptions WHERE shortname=res;
 RETURN NEXT res || '|' || description_n;
@@ -2067,7 +2067,7 @@ INSERT INTO tissue_counts(tissue,counts) VALUES ('all',n);
 SELECT COUNT (*) INTO n FROM ctd_tissue WHERE tissue=ANY('{CENTRAL_NERVOUS_SYSTEM,STOMACH,VULVA,URINARY_TRACT,BREAST,ADRENAL_CORTEX,CERVIX,PROSTATE,ENDOMETRIUM,LARGE_INTESTINE,SKIN,THYROID,TESTIS,LUNG,OESOPHAGUS,HAEMATOPOIETIC_AND_LYMPHOID,LIVER,PLEURA,PANCREAS,AUTONOMIC_GANGLIA,OVARY,UPPER_AERODIGESTIVE_TRACT,UVEA,BILIARY_TRACT,SALIVARY_GLAND,PLACENTA,BONE,KIDNEY,SMALL_INTESTINE,SOFT_TISSUE,PRIMARY}'::text[]);
 INSERT INTO tissue_counts(tissue,counts) VALUES ('cancer',n);
 SELECT COUNT (*) INTO n FROM ctd_tissue WHERE tissue=ANY('{FIBROBLAST,MATCHED_NORMAL_TISSUE}'::text[]);
-INSERT INTO tissue_counts(tissue,counts) VALUES ('healthy',n);
+INSERT INTO tissue_counts(tissue,counts) VALUES ('normal',n);
 RETURN true;
 END;
 $$ LANGUAGE plpgsql;

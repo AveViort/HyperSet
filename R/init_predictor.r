@@ -234,10 +234,10 @@ print(x_platforms);
 x_ids <- as.list(strsplit(Par["xids"], split = ",")[[1]]);
 # unlike plots, where we have one id per variable, here we have lists of them
 for (i in 1:length(x_ids)) {
-	temp <- gsub("\\[|\\]", "", x_ids[[i]]);
+	temp <- gsub("^\\[|\\]$", "", x_ids[[i]]);
 	temp <- unlist(strsplit(temp, split = "\\|"));
 	if (length(temp) > 0) {
-		if (any(temp %in% c('all', 'ALL', '[all]', '[ALL]'))) {
+		if (any(temp %in% c('[all]', '[ALL]'))) {
 			x_ids[[i]] <- c("[all]");
 		} else {
 			if (grepl('nea', x_datatypes[i])) {
