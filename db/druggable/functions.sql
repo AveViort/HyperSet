@@ -271,7 +271,7 @@ query := E'SELECT table_name FROM model_guide_table WHERE source=\'' || source_n
 EXECUTE query INTO table_n;
 -- if table exists
 IF (table_n IS NOT NULL) THEN
-EXECUTE 'INSERT INTO response_variables SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname,variable_samples.' || cohort_n || E' FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) JOIN variable_samples ON druggable.INFORMATION_SCHEMA.COLUMNS.column_name=variable_samples.variable_name WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true);';
+EXECUTE 'INSERT INTO response_variables SELECT druggable.INFORMATION_SCHEMA.COLUMNS.column_name,platform_descriptions.fullname,variable_samples.' || cohort_n || E' FROM druggable.INFORMATION_SCHEMA.COLUMNS JOIN platform_descriptions ON (druggable.INFORMATION_SCHEMA.COLUMNS.column_name=platform_descriptions.shortname) JOIN variable_samples ON druggable.INFORMATION_SCHEMA.COLUMNS.column_name=variable_samples.variable_name WHERE (druggable.INFORMATION_SCHEMA.COLUMNS.TABLE_NAME=\'' || table_n || E'\') AND (platform_descriptions.visibility = true) ORDER BY druggable.INFORMATION_SCHEMA.COLUMNS.column_name DESC;';
 FOR variable_nm, description, n_samp IN SELECT * FROM response_variables 
 LOOP
 SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=variable_nm) INTO exclude;

@@ -291,8 +291,8 @@ createGLMnetSignature <- function (
 					if (is.factor(Obs)) {
 						Obs <- as.numeric(Obs);
 					}
-					perf[[paste0("Spearman R(", Round, ")")]] = cor(Obs, pred[smp], use="pairwise.complete.obs", method="spearman");
-					perf[[paste0("Kendall tau(", Round, ")")]] = cor(Obs, pred[smp], use="pairwise.complete.obs", method="kendall");
+					perf[[paste0("Spearman R(", Round, ")")]] = cor(Obs, pred[smp], use = "pairwise.complete.obs", method="spearman");
+					perf[[paste0("Kendall tau(", Round, ")")]] = cor(Obs, pred[smp], use = "pairwise.complete.obs", method="kendall");
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Spearman R(", Round, ")"), Value = round(perf[[paste0("Spearman R(", Round, ")")]],3)));
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Kendall tau(", Round, ")"), Value = round(perf[[paste0("Kendall tau(", Round, ")")]],3)));
 				} else {
@@ -342,10 +342,20 @@ createGLMnetSignature <- function (
 					rownames(coordinates) <- smp;
 				}
 				
+				ppe <-  paste0("n(",  Round, " set)=", length(smp),"\n");
+				for (pe in c("AIC", "BIC", "RSS", names(perf)[grep(Round, names(perf), fixed = TRUE)])) {
+					va = ifelse(pe == "logtest", 
+						signif(perf[[pe]], digits = 2), 
+						round(perf[[pe]], digits = 3)
+					); 
+					ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
+					print(ppe);
+				}
+				
 				#plot(MG[smp], pred, type = "n", xlab = "Observed", ylab = "Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
 				observed <- MG[smp];
 				regression_model <- lm(observed ~ pred);
-				p <- plot_ly(x = pred, y = observed, type = 'scatter', name = paste(c(Round, paste0("n=", length(smp)), ppe), sep = "\n", collapse = "\n")) %>% 
+				p <- plot_ly(x = pred, y = observed, type = 'scatter', name = ppe) %>% 
 					layout(legend = Round,
 					showlegend = TRUE,
 					shapes = list(type = 'line', line = list(color = 'red', dash = 'dash'), 
@@ -353,15 +363,11 @@ createGLMnetSignature <- function (
 							x1 = max(pred), 
 							y0 = predict(regression_model, data.frame(pred = min(pred))),
 							y1 = predict(regression_model, data.frame(pred = max(pred)))),
-					# editable = TRUE,
 					xaxis = list(title = "Predicted"),
 					yaxis = list(title = "Observed"),
 					margin = druggable.margins) %>%
-				config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); ; 
+				config(editable = TRUE, edits = list(shapePosition = FALSE), modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
 				htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".html"), selfcontained = FALSE, libdir = "plotly_dependencies");;
-				#if (!is.na(title.sub)) {
-				#	title(sub = title.sub, line = 1, cex.sub = Cex.leg * 1.5);
-				#}
 				States = sort(unique(MG[smp]))
 			} else {
 				if(Family == "cox") {
@@ -383,7 +389,7 @@ createGLMnetSignature <- function (
 					}
 					#boxplot(classes_with_probabilities$Probability~classes_with_probabilities$Class);
 					p <- plot_ly(y = classes_with_probabilities$Probability, x = classes_with_probabilities$Class, type = "box") %>% 
-						layout( legend = druggable.plotly.legend.style(plot_legend),
+						layout(legend = druggable.plotly.legend.style(plot_legend),
 								showlegend = TRUE,
 								margin = druggable.margins,
 								xaxis = list(),
@@ -392,16 +398,6 @@ createGLMnetSignature <- function (
 					htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".png"), selfcontained = FALSE, libdir = "plotly_dependencies");
 				}
 			}
-			ppe <-  paste0("n(",  Round, " set)=", length(smp),"\n"); 
-			for (pe in names(perf)[grep(Round, names(perf), fixed = TRUE)]) {
-				va = ifelse(pe == "logtest", 
-					signif(perf[[pe]], digits = 2), 
-					round(perf[[pe]], digits = 3)
-				); 
-				ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
-			}
-			#legend("topleft", legend = paste(ppe,   sep = "\n"), bty = "n", cex = Cex.leg * 1.7); 
-			#dev.off();
 		}
 	} else {
 		png(file = paste0(baseName, "_model.png"), width = plotSize/2, height = plotSize/2, type = "cairo");
@@ -473,7 +469,7 @@ for (i in 1:length(x_datatypes)) {
 				condition <- paste0(condition, "id=ANY('{", paste(x_ids[[i]], collapse = ","), "}'::text[])");
 			}
 			if (Par["source"] == "tcga") {
-				tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
+				tcga_array <- paste0("'", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "'");
 				condition <- paste0(condition, " AND sample ~ ", tcga_array);
 			}
 		}
@@ -572,7 +568,7 @@ if (rdatatype == "clin") {
 } else {
 	#print(paste0("rid: ", rid, " empty_value(rid): ", empty_value(rid)));
 	if (Par["source"] == "tcga") {
-		tcga_array <- paste0("ANY('{", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "}'::text[])");
+		tcga_array <- paste0("'", paste(unlist(lapply(multiopt, createPostgreSQLregex)), collapse = ","), "'");
 		condition <- paste0(condition, " AND sample~", tcga_array);
 	}
 	if (!(empty_value(rid))) {

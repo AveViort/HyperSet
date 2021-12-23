@@ -259,7 +259,7 @@ if (status != 'ok') {
 			xaxis = x_axis,
 			yaxis = y_axis,
 			margin = druggable.margins) %>%
-		config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
+		config(editable = TRUE, edits = list(shapePosition = FALSE), modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 	} else {
 		plot_title <- generate_plot_title(Par["source"], Par["cohort"], print_platforms, tcga_codes, length(common_samples));
@@ -389,7 +389,7 @@ if (status != 'ok') {
 				xaxis = x_axis,
 				yaxis = y_axis,
 				margin = druggable.margins) %>%
-			config(editable = TRUE, modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
+			config(editable = TRUE, edits = list(shapePosition = FALSE), modeBarButtonsToAdd = list(druggable.evinet.modebar)); 
 			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		} else {
 			print("One of the columns contains characters");
@@ -515,7 +515,7 @@ if (status != 'ok') {
 					yaxis = y_axis,
 					margin = druggable.margins");
 			}		
-			script_line <- paste0(script_line, ") %>% config(editable = TRUE) %>%");
+			script_line <- paste0(script_line, ") %>% config(editable = TRUE, edits = list(shapePosition = FALSE)) %>%");
 			if (!is.na(nea_platform)) {
 				render_line <- paste0("function(el) {
 						el.on('plotly_click', function(d) { 

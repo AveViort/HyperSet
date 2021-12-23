@@ -131,10 +131,10 @@ druggable.patient.datatypes <- c("clin", "immuno", "drug");
 # this variable is used to set margins - so annotations will not overlap with axis labels
 druggable.margins <- list(
 	l = 20,
-	r = 10,
+	r = 20,
 	b = 50,
 	t = 10,
-	pad = 4);
+	pad = 10);
 	
 # max number of characters in axis labels
 druggable.axis.label.threshold <- 90;
