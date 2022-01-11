@@ -1201,7 +1201,10 @@ function authenticate() {
 			alert("Failed to log in: please check your username and password, make sure that your account has been activated");}
 		}
 	else {
-		alert("Please accept cookies to log in");}
+		if(confirm("Please accept cookies to log in")) {
+			acceptCookies();
+		}
+	}
 }
 
 function signup()

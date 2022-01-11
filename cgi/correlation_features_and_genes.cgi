@@ -27,6 +27,7 @@ $dbh = HS_SQL::dbh('druggable');
 print "Content-type: text/html\n\n";
 # sensitivity_m is defined in Aconfig.pm
 $stat = qq/SELECT feature_gene_list(\'$source'\, \'$datatype'\, \'$cohort'\, \'$platform'\, \'$screen'\, \'$Aconfig::sensitivity_m{$source}'\);/;
+#print $stat;
 my $sth = $dbh->prepare($stat) or die $dbh->errstr;
 $sth->execute( ) or die $sth->errstr;
 $ids = $sth->fetchrow_array();

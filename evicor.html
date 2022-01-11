@@ -1418,7 +1418,7 @@ function reload_model_options() {
 	}
 }
 
-function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
+function plot(type, source, cohort, datatypes, platforms, ids, scales, code, surv_period = 1) {
 	var parent_tab = "#" + $("#tabs").tabs()[0].children[$("#tabs").tabs("option", "active")+1].id
 	// variables are initialised when this function is called from correlations table, otherwise - initialise them
 	if (type == undefined) {
@@ -1447,7 +1447,7 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code) {
 	// new plot
 	if (plot_filename == "no") {
 		var ErrorStack = check_error_stack(new Error().stack);
-		raw_metadata = rplot(type, source, cohort, datatypes, platforms, ids, code, scales);
+		raw_metadata = rplot(type, source, cohort, datatypes, platforms, ids, code, scales, surv_period);
 		metadata = JSON.parse(raw_metadata);
 		plot_filename = metadata["plot_filename"];
 		// check if plot successfully created
@@ -2048,12 +2048,23 @@ function retrieve_correlations() {
 			$("select[id*=TCGAcohortSelector]").selectmenu({select: function( event, ui ) {
 					//console.log($(this).val());
 					var selected_values = $(this).val().split('#');	
-					//console.log(selected_values);
+					console.log(selected_values);
 					if (selected_values[1] == "TCGA") {
-						plot(selected_values[0], selected_values[1], selected_values[2], ['drug', 'clin', selected_values[3]], ['drug', selected_values[5].toLowerCase().replace('.', ''), selected_values[4]], [selected_values[6], '', selected_values[7]], ['original', 'original', selected_values[3].toUpperCase() == 'METH' ? 'mvalue' : 'original'], 'all');
+						var surv_period = 1;
+						console.log($(this.id + " option:selected").text());
+						if ($(this).text().includes('Same')) {
+							surv_period = selected_values[8];
+						}
+						plot(selected_values[0], selected_values[1], selected_values[2], 
+							['drug', 'clin', selected_values[3]], ['drug', selected_values[5].toLowerCase().replace('.', ''), selected_values[4]], 
+							[selected_values[6], '', selected_values[7]], 
+							['original', 'original', selected_values[3].toUpperCase() == 'METH' ? 'mvalue' : 'original'], 'all', surv_period);
 					}
 					else {
-						plot(selected_values[0], selected_values[1], selected_values[2], [selected_values[3], 'sens'], [selected_values[4].toLowerCase().replace('.', ''), selected_values[5].replace('.', '')], [selected_values[7], selected_values[6]], [selected_values[3].toUpperCase() == 'METH' ? 'mvalue' : 'original', 'original'], 'all');
+						plot(selected_values[0], selected_values[1], selected_values[2], [selected_values[3], 'sens'], 
+							[selected_values[4].toLowerCase().replace('.', ''), selected_values[5].replace('.', '')], 
+							[selected_values[7], selected_values[6]], 
+							[selected_values[3].toUpperCase() == 'METH' ? 'mvalue' : 'original', 'original'], 'all');
 					}
 				}
 			});
@@ -2090,11 +2101,6 @@ function retrieve_correlations() {
 	} );
 	
 	data_table.buttons().container().prependTo( $("#cor_result_table_wrapper"));
-}
-
-function tcga_km_from_cor(i, drug) {
-	var cohort = $("#TCGAcohortSelector" + i + " option:selected").val();
-	plot("KM", "tcga", cohort, ["drug", "clin"], ["drug", "os"], [drug, ""], ["original", "original"], ["all", "all"]);
 }
 
 function add_plot_options_row(i) {

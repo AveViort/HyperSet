@@ -408,7 +408,7 @@ function feature_list() {
 	return feature_array;
 }
 
-function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales) {
+function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales, surv_period) {
 	var file; 
 	//var target = '#tab-lookup';
 	// $("#displayind").html('<span class="' + loadingClasses + '"></span>');
@@ -426,7 +426,8 @@ function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales) {
 		encodeURIComponent(platforms.join()) + "&ids=" + 
 		encodeURIComponent(ids.join()) + "&codes=" + 
 		encodeURIComponent(codes) + "&scales=" +
-		encodeURIComponent(scales.join()));
+		encodeURIComponent(scales.join()) + "&surv_period="+
+		encodeURIComponent(surv_period));
 	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
 		encodeURIComponent(type) + "&source=" +
 		encodeURIComponent(source) + "&cohort=" + 
@@ -435,7 +436,8 @@ function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales) {
 		encodeURIComponent(platforms.join()) + "&ids=" + 
 		encodeURIComponent(ids.join()) + "&codes=" + 
 		encodeURIComponent(codes) + "&scales=" +
-		encodeURIComponent(scales.join()), false);
+		encodeURIComponent(scales.join()) + "&surv_period="+
+		encodeURIComponent(surv_period), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				file = this.responseText;

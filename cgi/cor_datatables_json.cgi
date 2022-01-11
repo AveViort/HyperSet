@@ -47,6 +47,8 @@ my $row_id = 1;
 my $rows = $sth->rows;
 my @column_names = split /,/, $data_columns;
 my $colnumber;
+# column which contains survival interval (1, 0.5...), -1 means we have no such column
+my $followup_column = -1;
 my @field_names = ("gene", "feature", "datatype", "cohort", "platform", "screen", "sensitivity");
 while (@row = $sth->fetchrow_array()) {
 	if ($row[0] ne '') {
@@ -59,6 +61,12 @@ while (@row = $sth->fetchrow_array()) {
 			foreach $i(2..$colnumber-1) {
 				push(@field_names, $column_names[$i]);
 			}
+			foreach $i(0..$colnumber-4) {
+				if ($field_names[$i] eq 'followup') {
+					# we assume that followup_part always comes right after followup
+					$followup_column = $i+1;
+				}
+			}
 		}
 		#print '"id":"',$row_id,'",';
 		#my $plot = '<span id=\"cor-plot'.$row_id.'\" class=\"adj-icon ui-icon ui-icon-chart-bars\" onclick=\"plot(\''.(($field_values[2] eq "MUT") ? "box" : "scatter").'\', \'ccle\', \'ctd\', [\''.$field_values[2].'\', \'sens\'], [\''.$field_values[4].'\', \''.$field_values[5].'\'.split(\'.\').join(\'\')], [\''.$field_values[0].'\', \''.$field_values[1].'\'], [\'linear\', \'linear\'], \'all\')\" title=\"Plot\"></span>';
@@ -67,7 +75,6 @@ while (@row = $sth->fetchrow_array()) {
 		@temp = split /\//, $url2;
 		my $cohort_selector = "";
 		my $verification = "";
-		#my $km_button = "";
 		my $cohorts = $field_values[$colnumber-1];
 		if ($cohorts ne " ,") {
 			my @cohort_list = split /,/, $cohorts;
@@ -79,7 +86,11 @@ while (@row = $sth->fetchrow_array()) {
 				if ($source_name eq 'CCLE') {
 					$plot_type = $datatype_name eq 'MUT' ? 'box' : 'scatter';
 				}
-				$cohort_selector .= '<option value=\"'.$plot_type.'#'.$cohort_list[$j].'#'.@field_values[1].'#'.@field_values[0].'\">'.$source_name.': '.$cohort_name.': '.$platform_name.': '.$measure.'</option>';
+				my $surv_period = 1;
+				if ($followup_column > -1) {
+					$surv_period = $field_values[$followup_column];
+				}	
+				$cohort_selector .= '<option value=\"'.$plot_type.'#'.$cohort_list[$j].'#'.$field_values[1].'#'.$field_values[0].($plot_type eq 'KM' ? '#'.$surv_period : '').'\">'.$source_name.': '.$cohort_name.': '.$platform_name.': '.$measure.'</option>';
 			}
 			$cohort_selector .= '</select>';
 			$verification = $cohort_list[scalar(@cohort_list)-1];
@@ -88,7 +99,7 @@ while (@row = $sth->fetchrow_array()) {
 		}
 		$platform = $field_values[4];
 		if ($source eq "CCLE") {
-			$cohort = "CTD";
+			$cohort = "CCLE";
 		} else {
 			if ($cohort eq "%") {
 				$cohort = $field_values[3];

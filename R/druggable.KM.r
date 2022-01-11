@@ -8,11 +8,12 @@ print("druggable.km.r");
 Cov = c("os", "os_time", "pfs", "pfs_time", "rfs", "rfs_time", "dss", "dss_time", "dfi", "dfi_time", "pfi", "pfi_time");
 
 # unlike other types of plots, KM has some specific parameters
-surv_period <- Par["period"];
+surv_period <- as.numeric(Par["period"]);
 # 1 = full survival period
 if (empty_value(surv_period)) {
 	surv_period <- 1;
 }
+print(paste0("Survival period: ", surv_period));
 
 first_set_datatype <- '';
 first_set_platform <- '';
@@ -515,7 +516,7 @@ if (length(platforms) == 1) {
 					#print("surv.fit:");
 					#print(str(surv.fit));
 
-					a <- ggsurv(surv.fit, ylab = readable_platforms[first_set_platform], main = plot_title, time.limit = max(surv.data$time)*surv_period);
+					a <- ggsurv(surv.fit, ylab = readable_platforms[first_set_platform,2], main = plot_title, time.limit = max(surv.fit$time)*surv_period);
 					#print("a:");
 					#print(str(a));
 					p <- ggplotly(a);

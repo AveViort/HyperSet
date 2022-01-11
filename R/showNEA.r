@@ -45,6 +45,11 @@ Out = paste(Param$htmlmask, tbl, 'html', sep=".");
 print(dim(mtr));
 print(Out);
 #the directory set in parameter 'libdir' below should be present in  /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/datatable_dependencies_new . Since it is under cgi, the same command should be first run locally, and then all the subdirs' content  should be placed to   /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/cgi/datatable_dependencies_new/ and then chmod a+rx should be run on each subdir in cgi/datatable_dependencies_new/*/*/* etc.
+ # cd /var/www/html/research/HyperSet/dev/HyperSet/cgi
+ # cp -r /var/www/html/research/users_tmp/mb/datatable_dependencies_new/* datatable_dependencies_new/
+ # cd /var/www/html/research/HyperSet/cgi.
+ # cp -r /var/www/html/research/users_tmp/mb/datatable_dependencies_new/* datatable_dependencies_new/
+
 DT::saveWidget(datatable(mtr, options=list( buttons=c("copy", "csv"), responsive=T, orderable=T, paging=F)), Out, selfcontained = F, libdir = "datatable_dependencies_new"); 
 }
 

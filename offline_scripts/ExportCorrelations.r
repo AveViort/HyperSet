@@ -1,5 +1,6 @@
 # export re to SQL - global variable!
-export_ccle_cor <- function(rch) {
+# set export_missing = TRUE to export only missing tables
+export_ccle_cor <- function(rch, export_missing = FALSE) {
   print(paste0("Job started: ", Sys.time()))
   data_types <- c("MUT");
   for (data_type in data_types) {
@@ -37,6 +38,13 @@ export_ccle_cor <- function(rch) {
               }
             }
             query <- paste0(query, ");");
+			if (export_missing) {
+				exists_flag <- sqlQuery(rch, paste0("SELECT EXISTS (SELECT * FROM cor_guide_table WHERE table_name='", table_name, "');"))[1,1];
+				if (exists_flag) {
+					print(paste0("Table ", table_name, " exists, skipping"));
+					flag <- FALSE;
+				}
+			}
             if (flag) {
               print(query);
               sqlQuery(rch, query);
@@ -59,11 +67,11 @@ export_ccle_cor <- function(rch) {
                       inner_p.type <- paste0(inner_method, "_", gsub("\\.", "_", p.type));
                       inner_q.type <- paste0(inner_method, "_", gsub("\\.", "_", gsub("p", "q", p.type)));
                       temp1 <- NULL;
-                      if ((p.type == "p.2x.cov1") | (p.type == "p.1x")) {
-                        temp1 <- temp_p[[p.type]][feature,gene];
-                      } else {
+                      #if ((p.type == "p.2x.cov1") | (p.type == "p.1x")) {
+                      #  temp1 <- temp_p[[p.type]][feature,gene];
+                      #} else {
                         temp1 <- temp_p[[p.type]][gene,feature];
-                      }
+                      #}
                       if (p.type != "p.2x.feature") {
                         if (!is.na(temp1)) {
                           columns_to_use <- c(columns_to_use, inner_p.type);

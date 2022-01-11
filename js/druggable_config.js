@@ -40,7 +40,6 @@ cor_headers.set("TCGA", "<tr><th title=\'Gene symbol or pathway feature\'>ID</th
 var cor_sql_data_columns = new Map();
 cor_sql_data_columns.set("CCLE", "gene,feature,ancova_q_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature");
 cor_sql_data_columns.set("TCGA", "gene,feature,followup,followup_part,q_drug,q_expr,q_interaction,n_patients,n_treated");
-// cor_sql_data_columns.set("TCGA", "gene,feature,followup,followup_part,q_drug,q_interaction,q_expr,n_patients,n_treated");
 
 // these columns are used for filtering (2nd tab)
 var cor_sql_filter_columns = new Map();
