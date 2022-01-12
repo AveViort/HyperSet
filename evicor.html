@@ -177,6 +177,11 @@ table.simple_table td a{
 	word-wrap: break-word;
 }
 
+table.table_with_borders, table.table_with_borders th, table.table_with_borders td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
 .sidebar {
 	position: fixed; 
 	z-index: 1; 
@@ -443,7 +448,7 @@ table.simple_table td a{
 				<h3>Available plot types</h3>
 				Plot type is always decided on the data types of chosen variables. The following table describes available plot types and their dimensionality.
 				<br>
-				<table>
+				<table class="table_with_borders">
 					<tr>
 						<th>Plot type</th>
 						<th>Dimensionality</th>
@@ -493,14 +498,14 @@ table.simple_table td a{
 				<h3>Available data transformations</h3>
 				EviCor allows user to scale data when working with numerical data types. The following transformations are available:
 				<br>
-				<table>
+				<table class="table_with_borders">
 					<tr>
 						<th>Scale</th>
 						<th>Description</th>
 					</tr>
 					<tr>
 						<td>Original</td>
-						<td>Keep numbers as they are stored in EviCor DB</td>
+						<td>Keep values as they are stored in EviCor DB</td>
 					</tr>
 					<tr>
 						<td>Square root (sqrt)</td>
@@ -537,13 +542,13 @@ table.simple_table td a{
 				At the moment EviCor supports only <i>glmnet</i> models for regression and binomial classification. GLMnet is an implementation of elastic net algorithm. You can find more information on GLmnet, including original publications, on the <a href="https://cran.r-project.org/web/packages/glmnet/index.html">official CRAN page</a> of the respective package.
 				
 				<h3>Predictive variables</h3>
-				EviCor allows user to combine variables from different data types for better perofrmance. For example, you can try to predict gene expression of TP53 based on gene expression of certain set of genes and copy number of another set of genes (these sets can intersect). Additionally, you can have predictive variables of the same data type (e.g. gene expression) for the same genes, but measured using different platforms (e.g. Agilent and Illumina HiSeq v.2).
+				EviCor allows user to combine variables from different data types for better perofrmance. For example, you can try to predict gene expression of TP53 based on gene expression of certain set of genes and copy number of another set of genes (these sets can intersect). Additionally, you can have predictive variables of the same data type (e.g. gene expression) for the same genes, but measured using different platforms (e.g. Agilent and Illumina HiSeq v.2). You can use all ids as predictive variables for a chosen platform, for this type <code>[all]</code> in the respective IDs input.
 				
 				<h3>Transfering significant correlates</h3>
 				Once you have retrieved significant correaltions via "Correlates of drug response" tab, you may use some (or all of them) as predictive variables. EviCor allows you to transfer them to the "Multivariate models" tab using built-in buffer. You can either add IDs one by one by pressing "Add to clipboard" (icon with two documents one above another) button or add all unique IDs by pressing "Copy all IDs for transfering" in the table header. This buffer stores only unique records. Next, you can pick the predictive variables input on the "Mutivariate models" tab, then either pick required ids in the clipboard window and pick option to ransfer chosen ids or copy all ids.
 				
 				<h3>Meta-variables</h3>
-				Just like meta-codes EviCor allows usage of meta-variables. Meta-variable is a mnemonic code which "hides" a lot of ids behind. As for version 1.3.1, only one metacode is supported - <code>all</code>. Use this variable if you want, for example, to test all genes from a certain platform as predictive variables.
+				Just like meta-codes EviCor allows usage of meta-variables. Meta-variable is a mnemonic code which "hides" a lot of ids behind. As for version 1.3.1, only one metacode is supported - <code>[all]</code>. Use this variable if you want, for example, to test all genes from a certain platform as predictive variables.
 				
 				<h3>Validation parameters</h3>
 				EviCor offers user to withhold some part of data to use for model validation. To use this option, set tick in "Model validation" checkbox, then you can adjust number of folds in k-fold validation and portion of samples withheld for validation.
@@ -554,7 +559,7 @@ table.simple_table td a{
 				<h3>Performance metrics</h3>
 				EviCor offers a number of performance metrics, which are calculated on training and testing (if validation option is selected) data sets. EviCor offers the following performance metrics:
 				<br>
-				<table>
+				<table class="table_with_borders">
 					<thead>
 						<tr>
 							<th>Metric</th>
@@ -589,90 +594,91 @@ table.simple_table td a{
 			</div> 
 		
 			<div id="help-tab-comp">
-				Known compatibility issues:
-				<br>
+				<h3>Known compatibility issues<h3>
 				This site best works with Google Chrome <span style="color: #00aa00;">(v. 71 or later)</span> and Mozilla Firefox <span style="color: #00aa00;">(v. 60 or later)</span>. It is also compatible with Edge.
 				<br>Some functions <span style="color: #ee3333;">do not work with IE 11</span>.
 				<br>The site also works with Apple Safari (v. 12.1, macOS Mojave v10.14.6), other versions of Safari browser can have compatibility issues.
 			</div>
 			
-			<div id="help-tab-rest">
+			<div id="help-tab-rest" style="font-weight: 175">
 				<p>
 					EviCor offers REST API for all functional tabs. Some functions, such as batch jobs, are available only via REST API. All scripts are accessible through https://www.evicor.org/cgi/<i>script_name</i>.
 				</p>
 				<br>
-				<b>Retrieving correlations</b>
-				<br>
-				<p>
-					<b>Script name:</b> cor_datatables_json.cgi<br>
+				<h3>Retrieving correlations</h3>
+					<b>Script name:</b> <code>cor_datatables_json.cgi</code><br>
 					<b>Returns:</b> correlations in JSON format<br>
-					<b>Parameters:</b><br>
-						<i>source</i>: mandatory, correlation source (TCGA/CCLE);<br>
-						<i>datatype</i>: mandatory, data type (e.g. GE, COPY...). Can be set to 'all';<br>
-						<i>cohort</i>: mandatory, data cohort, can be set to 'all' for TCGA, must be set to 'all' for CCLE;<br>
-						<i>platform</i>: mandatory, correlaion platform (e.g. Agilent), can be set to 'all';<br>
-						<i>screen</i>: mandatory, correlation screen (e.g. GDSC1), can be set to 'all' for CCLE, must be set to 'all' for TCGA;</br>
-						<i>id</i>: mandatory, gene/protein/pathway/drug name;<br>
-						<i>fdr</i>: mandatory, FDR, use dot as delimeter;<br>
-						<i>mindrug</i>: mandatory, minimal number of samples treated with drug;<br>
-						<i>data_columns</i>: mandatory, comma-separated list of columns to retrieve from SQL:<br>
-							<i>	for CCLE</i>: gene,feature,ancova_p_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature,ancova_q_2x_feature<br>
-							<i>	for TCGA</i>: gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q<br>
-						<i>filter_columns</i>: mandatory, columns to use for filtering (e.g. column with FDR values);<br>
-						<i>concat_operator</i>: mandatory if more than one value specified in <i>filter_columns</i>, comma-separated list of logical operators to use for filtering conditions generation. For <i>n</i> columns in <i>filter_columns</i> this list should either contain <i>n-1</i> operators (applied in order) or one operator (applied to all).<br>
-					<b>Example:</b> <br>
-					<b>Usage tips:</b> Option <i>concat_operator</i> may be confusing. The following short example is designed to clarify it. Let's say columns col1, col2 and col3 are chosen for filtering, FDR threshold is 0.05. If <i>concat_operator</i> is set to OR,AND the resulting condition will be: (col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05). Setting this parameter to AND will result in the following filtering condition: (col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05).<br>
-				</p>
-				<br>
-				<b>Creating plots</b>
-				<br>
-				<p>
-					<b>Script name:</b> rplot.cgi<br>
-					<b>Returns:</b> plot file name<br>
-					<b>Parameters:</b><br>
-						<i>type</i>: mandatory, plot type (e.g. scatter);<br>
-						<i>source</i>: mandatory, data source (TCGA or CCLE);<br>
-						<i>cohort</i>: mandatory, used cohort;<br>
-						<i>datatypes</i>: mandatory, list of datatypes spearated by commas;<br>
-						<i>platforms</i>: mandatory, list of platforms separated by commas;<br>
-						<i>ids</i>: mandatory, list of genes/antibodies/pathways/drugs names, must match length of datatypes/platforms, if platform has no id - id should be skipped (e.g. 'tp53,,mdm2');<br>
-						<i>codes</i>: mandatory, TCGA codes (01, 06...) or metacodes (all, healthy...) for TCGA, 'all' or tissue name for CCLE;<br>
-						<i>scales</i>: mandatory for the most types of plots, axis scales (original...).<br>
-					<b>Example:</b> https://www.evicor.org/cgi/rplot.cgi?type=bar&source=TCGA&cohort=BRCA&datatypes=CLIN&platforms=vital_status&ids=%2C&codes=&scales=<br>
-					<b>Usage tips:</b>This script returns plot filename and plot metadata. Plot can either be an html page (plotly plots, for the majority of plot types) or png image (for Venn diagrams). If only the plot name was returned - this is a sign of mistake. REST API does not provide mistake explanations.<br>
-				</p>
-				<br>
-				<b>Creating models</b>
-				<br>
-				<p>
-					<b>Script name:</b> model_predict.cgi<br>
+					<b>Parameters:</b>
+						<ul>
+						<li><i>source</i>: mandatory, correlation source (TCGA/CCLE);</li>
+						<li><i>datatype</i>: mandatory, data type (e.g. GE, COPY...). Can be set to <code>all</code>;</li>
+						<li><i>cohort</i>: mandatory, data cohort, can be set to 'all' for TCGA, must be set to <code>all</code> for CCLE;</li>
+						<li><i>platform</i>: mandatory, correlaion platform (e.g. <code>Agilent</code>), can be set to <code>all</code>;</li>
+						<li><i>screen</i>: mandatory, correlation screen (e.g. <code>GDSC1</code>), can be set to <code>all</code> for CCLE, <strong>must be</strong> set to <code>all</code> for TCGA;</li>
+						<li><i>id</i>: mandatory, gene/protein/pathway/drug name;</li>
+						<li><i>fdr</i>: mandatory, FDR, use dot as delimeter;</li>
+						<li><i>mindrug</i>: mandatory, minimal number of samples treated with drug;</li>
+						<li><i>data_columns</i>: mandatory, comma-separated list of columns to retrieve from SQL:</li>
+							<ul>
+							<li><i>for CCLE</i>: <code>gene,feature,ancova_q_1x,ancova_p_2x_cov1,ancova_p_2x_feature,ancova_q_2x_feature</code></li>
+							<li><i>for TCGA</i>: <code>gene,feature,followup,followup_part,q_drug,q_expr,q_interaction,n_patients,n_treated</code></li>
+							</ul>
+						<li><i>filter_columns</i>: mandatory, columns to use for filtering (e.g. column with FDR values);</li>
+						<li><i>concat_operator</i>: mandatory if more than one value specified in <i>filter_columns</i>, comma-separated list of logical operators to use for filtering conditions generation. For <i>n</i> columns in <i>filter_columns</i> this list should either contain <i>n-1</i> operators (applied in order) or one operator (applied to all);</li>
+						<li><i>limit_by</i>: mandatory, name of the column by which results are sorted (in ascending order), number of returned results is limited to 1000.</li>
+						</ul>
+					<b>Example:</b> <a style="word-break: break-all">https://www.evicor.org/cgi/cor_datatables_json.cgi?source=TCGA&datatype=GE&cohort=BRCA&platform=IlluminaHiSeq_RNASeqV2&screen=all&id=tamoxifen&fdr=0.005&mindrug=10&data_columns=gene,feature,followup,followup_part,q_drug,q_expr,q_interaction,n_patients,n_treated&filter_columns=q_expr,q_interaction&concat_operator=OR&limit_by=q_interaction</a><br>
+					<b>Usage tips:</b> Option <i>concat_operator</i> may be confusing. The following short example is designed to clarify it. Let's say columns <code>col1</code>, <code>col2</code> and <code>col3</code> are chosen for filtering, FDR threshold is 0.05. If <i>concat_operator</i> is set to <code>OR,AND</code> the resulting condition will be: <code>(col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05)</code>. Setting this parameter to <code>AND</code> will result in the following filtering condition: <code>(col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05)</code>.<br>
+					
+				<h3>Creating plots</h3>
+					<b>Script name:</b> <code>rplot.cgi</code><br>
+					<b>Returns:</b> plot file name and meta-info in JSON format<br>
+					<b>Parameters:</b>
+						<ul>
+						<li><i>type</i>: mandatory, plot type (e.g. <code>scatter</code>);</li>
+						<li><i>source</i>: mandatory, data source (TCGA or CCLE);</li>
+						<li><i>cohort</i>: mandatory, used cohort;</li>
+						<li><i>datatypes</i>: mandatory, list of datatypes spearated by commas;</li>
+						<li><i>platforms</i>: mandatory, list of platforms separated by commas;</li>
+						<li><i>ids</i>: mandatory, list of genes/antibodies/pathways/drugs names, must match length of <i>datatypes</i>/<i>platforms</i>, if platform has no ids - id should be skipped (e.g. <code>tp53,,mdm2</code>);</li>
+						<li><i>codes</i>: mandatory, TCGA codes (<code>01</code>, <code>06</code>...) or metacodes (<code>all</code>, <code>normal</code>...) for TCGA, <code>all</code> or tissue name for CCLE;</li>
+						<li><i>scales</i>: mandatory for the most types of plots, axis scales (<code>original</code>...).</li>
+						<li><i>surv_period</i>: optional, used for KM plots only; part of followup interval which should be used, 1 = 100% = full interval, 0.25 = 25% etc.; default is 1;</i>
+						</ul>
+					<b>Example:</b> <a style="word-break: break-all">https://www.evicor.org/cgi/rplot.cgi?type=bar&source=TCGA&cohort=BRCA&datatypes=CLIN&platforms=vital_status&ids=%2C&codes=&scales=</a><br>
+					<b>Usage tips:</b>This script returns plot filename and plot metadata. Plot can either be an html page (plotly plots, for the majority of plot types) or png image (for Venn diagrams). If only the plot name was returned - this is a sign of an error. REST API does not provide error explanations.<br>
+				
+				<h3>Creating models</h3>
+					<b>Script name:</b> <code>model_predict.cgi</code><br>
 					<b>Returns:</b> model name (without any file extenstions)<br>
-					<b>Parameters:</b><br>
-						<i>method</i>: mandatory, method for creating models, at the moment only 'glmnet' is supported;<br>
-						<i>source</i>: mandatory, data source for model creation (TCGA/CCLE);<br>
-						<i>cohort</i>: mandatory, cohort for model creation;<br>
-						<i>multiopt</i>: mandatory, TCGA codes or metacodes (for TCGA) or CCLE tissues;<br>
-						<i>xdatatypes</i>: mandatory, comma-separated list of data types for independent variables;<br>
-						<i>xplatforms</i>: mandatory, comma-separated list of platforms for independent variables;<br>
-						<i>xids</i>: mandatory, lists of ids (if applicable) for independent variables, empty space if ids do not exist for the chosen platforms (refer to the examples for format);<br>
-						<i>rdatatype</i>: mandatory, datatype for independent (response) variable;<br>
-						<i>rplatform</i>: mandatory, platform for independent (response) variable;<br>
-						<i>rid</i>: mandatory, response variable id (if applicable, otherwise empty);<br>
-						<i>family</i>: mandatory for glmnet, glmnet family (gaussian/cox...), refer to glmnet documentation for further explanation;<br>
-						<i>measure</i>: mandatory for glmnet with cross-validation, which loss should be used to pick the best model, refer to glmnet documentation;<br>
-						<i>alpha</i>: mandatory for glmnet, mixing parameter describing balance between lasso and ridge regression (1 - lasso, 0 - ridge);<br>
-						<i>nlambda</i>: mandatory for glmnet, number of lambda values, refer to glmnet documentation;<br>
-						<i>minlambda</i>: mandatory for glmnet, min lambda value, refer to glmnet documentation;<br>
-						<i>validation</i>: mandatory, if cross-validation should be used (binary flag);<br>
-						<i>validation_fraction</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, numeric, defines share of records to be used for independent validation, use dot as decimal separator;<br>
-						<i>nfolds</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, number of folds for N-folds cross-validation (see <i>cv.glmnet</i> in glmnet documentation);<br>
-						<i>standardize</i>: mandatory for glmnet, if variables should be standardized (binary flag);<br>
-						<i>stat_file</i>: mandatory, filename to which performance metrics should be saved (use <i>auto</i> to automatically assign the name - see the table below);<br>
-						<i>extended_output</i>: mandatory, if model creation parameters should be saved to the specified <i>stat_file</i>;<br>
-						<i>header</i>: mandatory, if specified <i>stat_file</i> should have header; recommended to be set to true. You can collect information on many models in one file, in this case specify this parameter as true only for the first query and make sure that all models belong to the same family and <i>validation</i> option is always the same - so columns are the same (also, <i>extended_output</i> should be set the same for all the models).<br>
-					<b>Example:</b> https://www.evicor.org/cgi/model_predict.cgi?method=glmnet&source=TCGA&cohort=BRCA&rdatatype=GE&rplatform=illuminahiseq_rnaseq&rid=TP53&xdatatypes=GE&xplatforms=illuminahiseq_rnaseq&xids=%5BA1CF%7CA2BP1%7CA4GALT%7CA4GNT%7CAAA1%7CAADAC%7CAADACL2%7CAADACL3%7CAADACL4%7CAADAT%7CAAK1%7CAANAT%7CAARS2%7CAASS%7CABCA4%7CABI2%7CABP1%7CABR%7CACAA1%7CACAN%7CACTA1%7CACTN1%7CADA%7CADAM7%7CADAP1%7CADAT2%7CADAT3%7CAFM%7CAGBL4%7CAHDC1%7CFOXA2%7CFOXB2%7CBCL2%7CTGFBI%7CTGFBRAP1%7CPTGFR%7CARID1A%7CARID1B%7CARID2%7CARID3B%7CARID4A%7CARID4B%7CCACNA1B%7CCACNA1C%7CCACNA2D1%7CCACNA2D2%7CCACNG2%7CCACNA2D4%7CCACNG3%7CCACNG4%7CCACNG7%7CCACNG8%7CVEGFC%7CHRAS%7CKRAS%7CNRAS%7CPDGFA%7CPDGFC%7CPDGFD%7CMDM1%7CMDM2%7CRBL1%7CRBL2%7CRBP1%7CCTRB1%7CPRB1%5D&multiopt=cancer&family=gaussian&measure=deviance&standardize=false&alpha=0.5&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=auto&extended_output=false&header=true<br>
+					<b>Parameters:</b>
+						<ul>
+						<li><i>method</i>: mandatory, method for creating models, at the moment only <code>glmnet</code> is supported;</li>
+						<li><i>source</i>: mandatory, data source for model creation (TCGA/CCLE);</li>
+						<li><i>cohort</i>: mandatory, cohort for model creation;</li>
+						<li><i>multiopt</i>: mandatory, TCGA codes or metacodes (for TCGA) or CCLE tissues;</li>
+						<li><i>xdatatypes</i>: mandatory, comma-separated list of data types for independent variables;</li>
+						<li><i>xplatforms</i>: mandatory, comma-separated list of platforms for independent variables;</li>
+						<li><i>xids</i>: mandatory, lists of ids (if applicable) for independent variables, empty space if ids do not exist for the chosen platforms (refer to the examples for format); can be set to <code>[all]</code>;</li>
+						<li><i>rdatatype</i>: mandatory, datatype for independent (response) variable;</li>
+						<li><i>rplatform</i>: mandatory, platform for independent (response) variable;</li>
+						<li><i>rid</i>: mandatory, response variable id (if applicable, otherwise empty);</li>
+						<li><i>family</i>: mandatory for glmnet, glmnet family (<code>gaussian</code>/<code>cox</code>...), refer to glmnet documentation for further explanation;</li>
+						<li><i>measure</i>: mandatory for glmnet with cross-validation, which loss should be used to pick the best model, refer to glmnet documentation;</li>
+						<li><i>alpha</i>: mandatory for glmnet, mixing parameter describing balance between lasso and ridge regression (1 - lasso, 0 - ridge);</li>
+						<li><i>nlambda</i>: mandatory for glmnet, number of lambda values, refer to glmnet documentation;</li>
+						<li><i>minlambda</i>: mandatory for glmnet, min lambda value, refer to glmnet documentation;</li>
+						<li><i>validation</i>: mandatory, if cross-validation should be used (binary flag);</li>
+						<li><i>validation_fraction</i>: mandatory for glmnet with <i>validation</i> flag set to <code>TRUE</code>, numeric, defines share of records to be used for independent validation, use dot as a decimal separator;</li>
+						<li><i>nfolds</i>: mandatory for glmnet with <i>validation</i> flag set to <code>TRUE</code>, number of folds for N-folds cross-validation (see <i>cv.glmnet</i> in glmnet documentation);</li>
+						<li><i>standardize</i>: mandatory for glmnet, if variables should be standardized (binary flag);</li>
+						<li><i>stat_file</i>: mandatory, filename to which performance metrics should be saved (use <code>auto</code> to automatically assign the name - see the table below);</li>
+						<li><i>extended_output</i>: mandatory, if model creation parameters should be saved to the specified <i>stat_file</i>;</li>
+						<li><i>header</i>: mandatory, if specified <i>stat_file</i> should have header; recommended to be set to <code>TRUE</code>. You can collect information on many models in one file, in this case specify this parameter as <code>TRUE</code> only for the first query and make sure that all models belong to the same family and <i>validation</i> option is always the same - so columns are the same (also, <i>extended_output</i> should be set the same for all the models).</li>
+						</ul>
+					<b>Example:</b> <a style="word-break: break-all">https://www.evicor.org/cgi/model_predict.cgi?method=glmnet&source=TCGA&cohort=BRCA&rdatatype=GE&rplatform=illuminahiseq_rnaseq&rid=TP53&xdatatypes=GE&xplatforms=illuminahiseq_rnaseq&xids=%5BA1CF%7CA2BP1%7CA4GALT%7CA4GNT%7CAAA1%7CAADAC%7CAADACL2%7CAADACL3%7CAADACL4%7CAADAT%7CAAK1%7CAANAT%7CAARS2%7CAASS%7CABCA4%7CABI2%7CABP1%7CABR%7CACAA1%7CACAN%7CACTA1%7CACTN1%7CADA%7CADAM7%7CADAP1%7CADAT2%7CADAT3%7CAFM%7CAGBL4%7CAHDC1%7CFOXA2%7CFOXB2%7CBCL2%7CTGFBI%7CTGFBRAP1%7CPTGFR%7CARID1A%7CARID1B%7CARID2%7CARID3B%7CARID4A%7CARID4B%7CCACNA1B%7CCACNA1C%7CCACNA2D1%7CCACNA2D2%7CCACNG2%7CCACNA2D4%7CCACNG3%7CCACNG4%7CCACNG7%7CCACNG8%7CVEGFC%7CHRAS%7CKRAS%7CNRAS%7CPDGFA%7CPDGFC%7CPDGFD%7CMDM1%7CMDM2%7CRBL1%7CRBL2%7CRBP1%7CCTRB1%7CPRB1%5D&multiopt=cancer&family=gaussian&measure=deviance&standardize=false&alpha=0.5&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=auto&extended_output=false&header=true</a><br>
 					<b>Usage tips:</b> Using just model name, you can access graphical interpretation of the created model, RData model file, coefficients (in JSON format) and performance metrics (in JSON and csv format). If you have received value 'model578045416464' from the script, you can access the following files in https://www.evicor.org/pics/plots/ :<br>
-					<table>
+					<table class="table_with_borders">
 						<thead>
 							<tr>
 								<th>File name</th>
@@ -712,55 +718,52 @@ table.simple_table td a{
 					</table>
 					<br>
 					If the error for this model was thrown - it is stored in file model578045416464_error.json.
-				</p>
-				<br>
-				<b>Batch models creation</b>
+				
+				<h3>Batch models creation</h3>
+					<b>Script name:</b> <code>models_from_correlations_batch.cgi</code><br>
+					<b>Returns:</b> error or nothing (<code>done</code> returned only after all models are created, so don't use synchronous calls with it, link with the results will be sent to the specified email)<br>
+					<b>Parameters:</b>
+						<ul>
+						<li><i>source</i>: mandatory, data source (TCGA/CCLE) for both correlation retrieval and model creation;</li>
+						<li><i>datatype</i>: mandatory, same as <i>datatype</i> for <code>cor_datatables_json.cgi</code>; however, several comma-separated values are allowed, number should be the same as number of predictor types;</li>
+						<li><i>cohort</i>: mandatory, same as <i>cohort</i> for <code>cor_datatables_json.cgi</code>; may be a comma-separated list, length matches with <i>datatype</i> parameter list;</li>
+						<li><i>screen</i>: mandatory, same as <i>screen</i> for <code>cor_datatables_json.cgi</code>; similar to <i>datatype</i> and <i>cohort</i> may be a list;</li>
+						<li><i>id</i>: mandatory, same as <i>id</i> for <code>cor_datatables_json.cgi</code>; similar to previous parameters;</li>
+						<li><i>fdr</i>: mandatory, same as <i>fdr</i> for <code>cor_datatables_json.cgi</code>; similar to previous parameters;</li>
+						<li><i>mindrug</i>: mandatory, same as <i>mindrug</i> for <code>cor_datatables_json.cgi</code>; unlike previous parameters, this one is always a single value;</li>
+						<li><i>columns</i>: mandatory, same as <i>columns</i> for <code>cor_datatables_json.cgi</code>;</li>
+						<li><i>method</i>: mandatory, same as <i>method</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>model_cohort</i>: mandatory, same as <i>cohort</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>multiopt</i>: mandatory, same as <i>multiopt</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>xdatatypes</i>: mandatory, same as <i>xdatatypes</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>xplatforms</i>: mandatory, same as <i>xplatforms</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>additional_xids</i>: optional, specifies which ids should be passed to glmnet even if they do not suffice filters; recommended, if no additional xids - leave blank;</li>
+						<li><i>rdatatype</i>: mandatory, same as <i>rdatatype</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>rplatform</i>: mandatory, same as <i>rplatform</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>rid</i>: mandatory, same as <i>rid</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>family</i>: mandatory for glmnet, same as <i>family</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>measure</i>: mandatory for glmnet, same as <i>measure</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>alpha</i>: mandatory for glmnet, same as <i>alpha</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>nlambda</i>: mandatory for glmnet, same as <i>nlambda</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>minlambda</i>: mandatory for glmnet, same as <i>minlambda</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>validation</i>: mandatory, same as <i>validation</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>validation_fraction</i>: mandatory for glmnet with <i>validation</i> flag set to <code>TRUE</code>, same as <i>validation_fraction</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>nfolds</i>: mandatory for glmnet with <i>validation</i> flag set to <code>TRUE</code>, same as <i>nfolds</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>standardize</i>: mandatory, same as <i>standardize</i> for <code>model_predict.cgi</code>;</li>
+						<li><i>iter</i>: mandatory, desired number of models;</li>
+						<li><i>stat_file</i>: mandatory, name of the file without extenstion to save your data in (try to give a unique name to your <i>stat_file</i>);</li>
+						<li><i>extended_output</i>: mandatory, binary flag, if set to <code>TRUE</code> - some additional info will be written into <i>stat_file</i> (such as <i>source</i>, <i>rdatatype</i> etc.);</li>
+						<li><i>mail</i>: mandatory, provide the correct email, links with the results will be sent to it when your batch job is done;</li>
+						</ul>
+					<b>Example:</b> <a style="word-break: break-all">https://www.evicor.org/cgi/models_from_correlations_batch.cgi?source=TCGA&datatype=GE&cohort=LUAD&platform=all&screen=all&id=gemcitabine&fdr=0.05&mindrug=10&columns=gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q&iter=3&model_cohort=LUAD;method=glmnet&rdatatype=CLIN&rplatform=os&xdatatypes=GE&xplatforms=illuminahiseq_rnaseqv2&additional_xids=&multiopt=01&family=cox&measure=deviance&standardize=false&alpha=1&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=/your_file/&mail=/your_email/</a><br>
+					<b>Usage tips:</b> Always try to specify a unique name for your output file! Files are created in the append mode, so if you (or someone) has used the specified file name before - you will get "mixed" results! When the job is done, the reults will be available in file <a>https://www.evicor.org/pics/plots/your_file.csv</a>.<br>
+				
+				<h3>Using JS API</h3>
 				<p>
-					<b>Script name:</b> models_from_correlations_batch.cgi<br>
-					<b>Returns:</b> error or nothing ('done' returned only after all models are created, so don't use synchronous calls with it, link with the results will be sent to the specified email)<br>
-					<b>Parameters:</b><br>
-						<i>source</i>: mandatory, data source (TCGA/CCLE) for both correlation retrieval and model creation;<br>
-						<i>datatype</i>: mandatory, same as <i>datatype</i> for <i>cor_datatables_json.cgi</i>; however, several comma-separated values are allowed, number should be the same as number of predictor types;<br>
-						<i>cohort</i>: mandatory, same as <i>cohort</i> for <i>cor_datatables_json.cgi</i>; may be a comma-separated list, length matches with <i>datatype</i> parameter list;<br>
-						<i>screen</i>: mandatory, same as <i>screen</i> for <i>cor_datatables_json.cgi</i>; similar to <i>datatype</i> and <i>cohort</i> may be a list;<br>
-						<i>id</i>: mandatory, same as <i>id</i> for <i>cor_datatables_json.cgi</i>; similar to previous parameters;<br>
-						<i>fdr</i>: mandatory, same as <i>fdr</i> for <i>cor_datatables_json.cgi</i>; similar to previous parameters;<br>
-						<i>mindrug</i>: mandatory, same as <i>mindrug</i> for <i>cor_datatables_json.cgi</i>; unlike previous parameters, this one is always a single value;<br>
-						<i>columns</i>: mandatory, same as <i>columns</i> for <i>cor_datatables_json.cgi</i>;<br>
-						<i>method</i>: mandatory, same as <i>method</i> for <i>model_predict.cgi</i>;<br>
-						<i>model_cohort</i>: mandatory, same as <i>cohort</i> for <i>model_predict.cgi</i>;<br>
-						<i>multiopt</i>: mandatory, same as <i>multiopt</i> for <i>model_predict.cgi</i>;<br>
-						<i>xdatatypes</i>: mandatory, same as <i>xdatatypes</i> for <i>model_predict.cgi</i>;<br>
-						<i>xplatforms</i>: mandatory, same as <i>xplatforms</i> for <i>model_predict.cgi</i>;<br>
-						<i>additional_xids</i>: optional, specifies which ids should be passed to glmnet even if they do not suffice filters; recommended, if no additional xids - leave blank;<br>
-						<i>rdatatype</i>: mandatory, same as <i>rdatatype</i> for <i>model_predict.cgi</i>;<br>
-						<i>rplatform</i>: mandatory, same as <i>rplatform</i> for <i>model_predict.cgi</i>;<br>
-						<i>rid</i>: mandatory, same as <i>rid</i> for <i>model_predict.cgi</i>;<br>
-						<i>family</i>: mandatory for glmnet, same as <i>family</i> for <i>model_predict.cgi</i>;<br>
-						<i>measure</i>: mandatory for glmnet, same as <i>measure</i> for <i>model_predict.cgi</i>;<br>
-						<i>alpha</i>: mandatory for glmnet, same as <i>alpha</i> for <i>model_predict.cgi</i>;<br>
-						<i>nlambda</i>: mandatory for glmnet, same as <i>nlambda</i> for <i>model_predict.cgi</i>;<br>
-						<i>minlambda</i>: mandatory for glmnet, same as <i>minlambda</i> for <i>model_predict.cgi</i>;<br>
-						<i>validation</i>: mandatory, same as <i>validation</i> for <i>model_predict.cgi</i>;<br>
-						<i>validation_fraction</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, same as <i>validation_fraction</i> for <i>model_predict.cgi</i>;<br>
-						<i>nfolds</i>: mandatory for glmnet with <i>validation</i> flag set to <i>TRUE</i>, same as <i>nfolds</i> for <i>model_predict.cgi</i>;<br>
-						<i>standardize</i>: mandatory, same as <i>standardize</i> for <i>model_predict.cgi</i>;<br>
-						<i>iter</i>: mandatory, desired number of models;<br>
-						<i>stat_file</i>: mandatory, name of the file without extenstion to save your data in (try to give a unique name to your stat_file);<br>
-						<i>extended_output</i>: mandatory, binary flag, if set to <i>TRUE</i> - some additional info will be written into <i>stat_file</i> (such as <i>source</i>, <i>rdatatype</i> etc.);<br>
-						<i>mail</i>: mandatory, provide the correct email, links with the results will be sent to it when your batch job is done;<br>
-					<b>Example:</b> https://www.evicor.org/cgi/models_from_correlations_batch.cgi?source=TCGA&datatype=GE&cohort=LUAD&platform=all&screen=all&id=gemcitabine&fdr=0.05&mindrug=10&columns=gene,feature,followup_part,interaction,drug,expr,n_patients,n_treated,followup,q&iter=3&model_cohort=LUAD;method=glmnet&rdatatype=CLIN&rplatform=os&xdatatypes=GE&xplatforms=illuminahiseq_rnaseqv2&additional_xids=&multiopt=01&family=cox&measure=deviance&standardize=false&alpha=1&nlambda=10&minlambda=0.01&validation=true&nfolds=10&validation_fraction=0.1&stat_file=/your_file/&mail=/your_email/<br>
-					<b>Usage tips:</b> Always try to specify a unique name for your output file! Files are created in the append mode, so if you (or someone) has used the specified file name before - you will get "mixed" results! When the job is done, the reults will be available in file https://www.evicor.org/pics/plots/your_file.csv<br>
+					All the aforementioned functions are available through API specified in <code>drugs.js</code> module. Some parameters (like <i>columns</i>) are specified in <code>druggable_config.js</code>.
 				</p>
-				<br>
-				<b>Using JS API</b>
-				<br>
-				<p>
-					All the aforementioned functions are available through API specified in <i>drugs.js</i> module. Some parameters (like <i>columns</i>) are specified in <i>druggable_config.js</i>.
-				</p>
-				<br>
-				<b>Datatypes, platforms and screens</b>
-				<br>
+				
+				<h3>Datatypes, platforms and screens</h3>
 				<p>
 				Below you can find valid names of datatypes, platforms, variables to use with REST API.<br> 
 				</p>

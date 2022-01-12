@@ -14,10 +14,10 @@
 }
   
 body { 
-color: #2e6e9e;
-background-color: white; 
-font-size: small; 
-font-weight: normal;
+	color: #2e6e9e;
+	background-color: white; 
+	font-size: small; 
+	font-weight: normal;
 }
 
 
@@ -32,14 +32,14 @@ font-weight: normal;
 	}
 }*/
 
-
-/*CHANGE BEGIN*/
 div,p,.text-content {
-color: #2e6e9e;
-font-weight, 300;
+	color: #2e6e9e;
+	font-weight, 300;
 }
 
-
+code {
+	font-family: 'Courier New', monospace;
+}
 
 input {
 	border-width: 1px;/* to fix Chrome's ugly borders */
