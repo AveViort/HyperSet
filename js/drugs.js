@@ -50,7 +50,7 @@ function get_correlation_cohorts(source,datatype) {
 function get_correlation_platforms(source, datatype, cohort) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort));
+	//console.log("cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort));
 	xmlhttp.open("GET", "cgi/correlation_platforms.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -81,7 +81,7 @@ function get_correlation_screens(source, datatype, cohort, platform) {
 
 function get_correlation_features_and_genes(source, datatype, cohort, platform, screen) {
 	var features_and_genes;
-	console.log("cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen));
+	//console.log("cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen));
 	var xmlhttp = new XMLHttpRequest();
 	// Pay attention! This function is called by web worker in JS folder, that's why we have .. in relative path 
 	xmlhttp.open("GET", "../cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen), false);
@@ -162,7 +162,7 @@ function get_model_platforms(source, cohort, datatype) {
 
 function get_model_features_and_genes(source, cohort, datatype, platform) {
 	var features_and_genes;
-	console.log("cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen));
+	//console.log("cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen));
 	var xmlhttp = new XMLHttpRequest();
 	// Pay attention! This function is called by web worker in JS folder, that's why we have .. in relative path 
 	xmlhttp.open("GET", "../cgi/correlation_features_and_genes.cgi?source=" + encodeURIComponent(source) + "&datatype=" + encodeURIComponent(datatype) + "&cohort=" + encodeURIComponent(cohort) + "&platform=" + encodeURIComponent(platform) + "&screen=" + encodeURIComponent(screen), false);
@@ -415,19 +415,19 @@ function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales, s
 	//$("#progressbar").css({"visibility": "visible"});
 	// $("#displayindicator").html('<span class="' + loadingClasses + '"></span>');
 	$("#displayind2").addClass("being_removed"); 
-	console.log("Before: " + $("#displayind2").css("visibility"));
+	//console.log("Before: " + $("#displayind2").css("visibility"));
 	
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/rplot.cgi?type=" + 
-		encodeURIComponent(type) + "&source=" +
-		encodeURIComponent(source) + "&cohort=" + 
-		encodeURIComponent(cohort) + "&datatypes=" + 
-		encodeURIComponent(datatypes.join()) + "&platforms=" + 
-		encodeURIComponent(platforms.join()) + "&ids=" + 
-		encodeURIComponent(ids.join()) + "&codes=" + 
-		encodeURIComponent(codes) + "&scales=" +
-		encodeURIComponent(scales.join()) + "&surv_period="+
-		encodeURIComponent(surv_period));
+	//console.log("cgi/rplot.cgi?type=" + 
+	//	encodeURIComponent(type) + "&source=" +
+	//	encodeURIComponent(source) + "&cohort=" + 
+	//	encodeURIComponent(cohort) + "&datatypes=" + 
+	//	encodeURIComponent(datatypes.join()) + "&platforms=" + 
+	//	encodeURIComponent(platforms.join()) + "&ids=" + 
+	//	encodeURIComponent(ids.join()) + "&codes=" + 
+	//	encodeURIComponent(codes) + "&scales=" +
+	//	encodeURIComponent(scales.join()) + "&surv_period="+
+	//	encodeURIComponent(surv_period));
 	xmlhttp.open("GET", "cgi/rplot.cgi?type=" + 
 		encodeURIComponent(type) + "&source=" +
 		encodeURIComponent(source) + "&cohort=" + 
@@ -532,7 +532,7 @@ function get_platforms(cohort, datatype) {
 function get_plot_types(platforms) {
 	var plot_types;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/types_of_plots.cgi?platforms=" + platforms.join());
+	//console.log("cgi/types_of_plots.cgi?platforms=" + platforms.join());
 	xmlhttp.open("GET", "cgi/types_of_plots.cgi?platforms=" + encodeURIComponent(platforms.join()), false);
 	xmlhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -567,7 +567,7 @@ function get_autocomplete_ids(cohort, datatype, platform) {
 	}
 	else {
 		var xmlhttp = new XMLHttpRequest();
-		console.log("cgi/autocomplete_ids.cgi?cohort=" + cohort + "&platform=" + platform);
+		//console.log("cgi/autocomplete_ids.cgi?cohort=" + cohort + "&platform=" + platform);
 		xmlhttp.open("GET", "cgi/autocomplete_ids.cgi?cohort=" + 
 			encodeURIComponent(cohort) + "&platform=" + 
 			encodeURIComponent(platform), false);
@@ -605,12 +605,12 @@ function get_axis_types(cohort, datatype, platform) {
 function get_tcga_codes(cohort, datatype, platform, previous_datatypes, previous_platforms) {
 	var codes;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/tcga_codes.cgi?cohort=" + 
-		encodeURIComponent(cohort) + "&datatype=" + 
-		encodeURIComponent(datatype) + "&platform=" + 
-		encodeURIComponent(platform) + "&previous_datatypes=" + 
-		encodeURIComponent(previous_datatypes) + "&previous_platforms=" +
-		encodeURIComponent(previous_platforms));
+	//console.log("cgi/tcga_codes.cgi?cohort=" + 
+	//	encodeURIComponent(cohort) + "&datatype=" + 
+	//	encodeURIComponent(datatype) + "&platform=" + 
+	//	encodeURIComponent(platform) + "&previous_datatypes=" + 
+	//	encodeURIComponent(previous_datatypes) + "&previous_platforms=" +
+	//	encodeURIComponent(previous_platforms));
 	xmlhttp.open("GET", "cgi/tcga_codes.cgi?cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 
 		encodeURIComponent(datatype) + "&platform=" + 
@@ -630,11 +630,11 @@ function get_tcga_codes(cohort, datatype, platform, previous_datatypes, previous
 function get_codes(source, cohort, datatype, platform, previous_datatypes, previous_platforms) {
 	var codes;
 	var xmlhttp = new XMLHttpRequest();
-	console.log("cgi/plot_multiselector.cgi?source=" + 
-		encodeURIComponent(source) + "&cohort=" + 
-		encodeURIComponent(cohort) + "&datatype=" + 
-		encodeURIComponent(datatype) + "&platform=" + 
-		encodeURIComponent(platform));
+	//console.log("cgi/plot_multiselector.cgi?source=" + 
+	//	encodeURIComponent(source) + "&cohort=" + 
+	//	encodeURIComponent(cohort) + "&datatype=" + 
+	//	encodeURIComponent(datatype) + "&platform=" + 
+	//	encodeURIComponent(platform));
 	xmlhttp.open("GET", "cgi/plot_multiselector.cgi?source=" + 
 		encodeURIComponent(source) + "&cohort=" + 
 		encodeURIComponent(cohort) + "&datatype=" + 

@@ -2478,11 +2478,13 @@ function init_platformselector(selector_id) {
 					if (ui.content.length > max_autocomplete) {
 						//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 						$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+						$("#id" + n + "_input").tooltip("disable");
 					} else {
 						if (ui.content.length == 0) {
+							$("#id" + n + "_input").tooltip("enable");
 							$("#id" + n + "_input").attr("title", "No results found. Try typing something else");
 						} else {
-							$("#id" + n + "_input").attr("title", "");
+							$("#id" + n + "_input").tooltip("disable");
 						}
 					}
 				},
@@ -2781,6 +2783,7 @@ function init_cor_screen_selector() {
 
 function init_cor_genefeature_input() {
 	document.getElementById("corGeneFeature_input").disabled = true;
+	$("#corGeneFeature_input").attr("title", "");
 	worker = new Worker("js/drug_id_grubber.js");
 	console.log("Starting worker " + Date.now());
 	worker.postMessage([$("#corSource_selector option:selected").val(), $("#corDatatype_selector option:selected").val(), $("#corCohort_selector option:selected").val(), $("#corPlatform_selector option:selected").val(), $("#corScreen_selector option:selected").val()]);
@@ -2798,11 +2801,14 @@ function init_cor_genefeature_input() {
 				if (ui.content.length > max_autocomplete) {
 					//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+					$("#corGeneFeature_input").tooltip( "disable" );
 				} else {
 					if (ui.content.length == 0) {
+						$("#corGeneFeature_input").tooltip( "enable" );
 						$("#corGeneFeature_input").attr("title", "No results found. Try typing something else");
 					} else {
-						$("#corGeneFeature_input").attr("title", "");
+						//$("#corGeneFeature_input").attr("title", "");
+						$("#corGeneFeature_input").tooltip( "disable" );
 					}
 				}
 			},
@@ -2940,11 +2946,11 @@ function init_model_genearea(n) {
 			.on("focus", function( event ) {
 				//console.log("gene_area" + n + " got focus");
 				if (document.getElementById("transfer_window") != null) {
-					$("#transfer_copy_ids").text("Copy chosen IDs to predictor " + n);
+					$("#transfer_copy_ids").button("option", "label", "Copy chosen IDs to predictor " + n);
 					$("#transfer_copy_ids").unbind();
 					$("#transfer_copy_ids").on("click", function() {copy_ids_to_predictor(n);});
 					$("#transfer_copy_ids").button("enable");
-					$("#transfer_copy_all_ids").text("Copy all IDs to predictor " + n);
+					$("#transfer_copy_all_ids").button("option", "label", "Copy all IDs to predictor " + n);
 					$("#transfer_copy_all_ids").unbind();
 					$("#transfer_copy_all_ids").on("click", function() {copy_all_ids_to_predictor(n);});
 					$("#transfer_copy_all_ids").button("enable");
@@ -3049,11 +3055,13 @@ function init_response_variable_selector() {
 				if (ui.content.length > max_autocomplete) {
 					//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 					$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+					$("#responseID_input").tooltip("disable");
 				} else {
 					if (ui.content.length == 0) {
+						$("#responseID_input").tooltip("enable");
 						$("#responseID_input").attr("title", "No results found. Try typing something else");
 					} else {
-						$("#responseID_input").attr("title", "");
+						$("#responseID_input").tooltip("disable");
 					}
 				}
 			},
@@ -3238,11 +3246,13 @@ function update_platform(n) {
 						if (ui.content.length > max_autocomplete) {
 							//console.log("We have " + ui.content.length + " elements, but cannot show more than " + max_autocomplete + ": closing autocomplete")
 							$("#" + event.target.getAttribute("id")).autocomplete( "close" );
+							$("#id" + n + "_input").tooltip("disable");
 						} else {
 							if (ui.content.length == 0) {
+								$("#id" + n + "_input").tooltip("enable");
 								$("#id" + n + "_input").attr("title", "No results found. Try typing something else");
 							} else {
-								$("#id" + n + "_input").attr("title", "");
+								$("#id" + n + "_input").tooltip("disable");
 							}
 						}
 					},
@@ -3999,7 +4009,7 @@ function transfer_all_ids() {
 // function to open window with IDs to transfer
 function show_transfer_buffer_window(parent_tab) {
 	if (document.getElementById("transfer_window") == null) {
-		var transfer_window = '<div id="transfer_window"> \
+		var transfer_window = '<div id="transfer_window" style="font-size: small"> \
 			<table id="transfer_buffer_table" style="text-align:center"> \
 				<thead> \
 					<th></th>\
