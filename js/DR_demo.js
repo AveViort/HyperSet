@@ -438,7 +438,7 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 	}
 }
 
-// demo for the 4th tab - create models for prediction
+// demo for the 3rd tab - create models for prediction
 // for 2D cases only
 function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, x_datatypes, x_platforms, x_ids,
 	family, measure, standardize, alpha, nlambda, minlambda, crossvalidation, nfold, crossvalidation_percent) 
@@ -469,7 +469,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 		sessionStorage.setItem("demo", 1);
 		$(".ui-dialog-content").dialog("close");
 		close_dock("demos_dock");
-		$("#tabs").tabs("option", "active", 3);
+		$("#tabs").tabs("option", "active", 2);
 		
 		// prepare tab for demo
 		var n = $('[id*="modelPlatform"][id$="selector"]').length;

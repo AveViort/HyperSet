@@ -35,9 +35,9 @@ if (length(platforms) == 1) {
 	metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], "all", nrow(first_set),
 										datatypes, platforms, c(""), "-", c(nrow(first_set)), Par["out"]);
 	metadata <- save_metadata(metadata);
-	surv.data = survfit(Surv(first_set[,paste0(first_set_platform, "_time")], first_set[,first_set_platform]) ~ 1);
-	print(surv.data);
-	a <- ggsurv(surv.data, ylab = toupper(first_set_platform), main = "", CI = "def", time.limit = max(surv.data$time)*surv_period);
+	surv.data <- survfit(Surv(first_set[,paste0(first_set_platform, "_time")], first_set[,first_set_platform]) ~ 1);
+	#print(surv.data);
+	a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform,2], main = "", CI = "def", time.limit = max(surv.data$time)*surv_period);
 	#print("a:");
 	#print(str(a));
 	p <- ggplotly(a);
@@ -134,9 +134,11 @@ if (length(platforms) == 1) {
 			surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, platform = second_set_platform, id = second_set_id, s.type = first_set_platform);
 			#print("surv.data:");
 			#print(str(surv.data));
+			plot_title <- paste0(plot_title, " n=", length(intersect(names(fe), rownames(first_set))), " p(logtest)=", surv.data$pval);
 			a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform,2], main = plot_title, time.limit = max(surv.data$time)*surv_period);
 			#print("a:");
 			#print(str(a));
+			#a <- a + labs(title = paste0("KM n=", length(intersect(rownames(fe), rownames(first_set))), " p(logtest)=", surv.data$pval));
 			p <- ggplotly(a);
 			htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 		}
@@ -278,10 +280,12 @@ if (length(platforms) == 1) {
 				surv.data <- plotSurvival_DR(fe, first_set, datatype = second_set_datatype, platform = second_set_platform, id = second_set_id, s.type = first_set_platform);
 				#print("surv.data:");
 				#print(str(surv.data));
+				plot_title <- paste0(plot_title, " n=", length(intersect(names(fe), rownames(first_set))), " p(logtest)=", surv.data$pval);
 
 				a <- ggsurv(surv.data, ylab = readable_platforms[first_set_platform], main = plot_title, time.limit = max(surv.data$time)*surv_period);
 				#print("a:");
 				#print(str(a));
+				#a <- a + labs(title = paste0("KM n=", length(intersect(rownames(fe), rownames(first_set))), " p(logtest)=", surv.fit$pval));
 				p <- ggplotly(a);
 				htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 			}			
@@ -512,13 +516,16 @@ if (length(platforms) == 1) {
 					print("");
 					print(Grouping);
 					
-					surv.fit <- fitSurvival2(Grouping, clin, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform, usedSamples=usedSamples);
-					#print("surv.fit:");
-					#print(str(surv.fit));
+					surv.fit <- fitSurvival2(Grouping, clin, datatype = second_set_datatype, id = second_set_id, s.type = first_set_platform, usedSamples = usedSamples);
+					print("surv.fit:");
+					print(str(surv.fit));
+					print(surv.fit);
+					plot_title <- paste0(plot_title, " n=", length(usedSamples), " p(logtest)=", surv.fit$pval);
 
 					a <- ggsurv(surv.fit, ylab = readable_platforms[first_set_platform,2], main = plot_title, time.limit = max(surv.fit$time)*surv_period);
 					#print("a:");
 					#print(str(a));
+					#a <- a + labs(title = paste0("KM n=", length(usedSamples), " p(logtest)=", surv.fit$pval));
 					p <- ggplotly(a);
 					htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");
 				}

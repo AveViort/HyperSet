@@ -50,7 +50,7 @@ print(Out);
  # cd /var/www/html/research/HyperSet/cgi.
  # cp -r /var/www/html/research/users_tmp/mb/datatable_dependencies_new/* datatable_dependencies_new/
 
-DT::saveWidget(datatable(mtr, options=list( buttons=c("copy", "csv"), responsive=T, orderable=T, paging=F)), Out, selfcontained = F, libdir = "datatable_dependencies_new"); 
+DT::saveWidget(datatable(mtr, options=list( buttons=c("copy", "csv"), responsive=TRUE, orderable=TRUE, paging=TRUE)), Out, selfcontained = FALSE, libdir = "datatable_dependencies_new"); 
 }
 
 

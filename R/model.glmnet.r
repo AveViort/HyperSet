@@ -204,7 +204,7 @@ createGLMnetSignature <- function (
 					stop("Survival data absent...");
 				}
 				Formula <- as.formula(paste("Surv(as.numeric(cu$Time), cu$Stat) ~ ", paste(names(co), collapse = " + "))); 
-				t1 <- tryCatch(coxph(Formula, data=as.data.frame(PW[Sample1,]), control = coxph.control(iter.max = 5)), error = function(e) {handleError(e)});
+				t1 <- tryCatch(coxph(Formula, data = as.data.frame(PW[Sample1,]), control = coxph.control(iter.max = 5)), error = function(e) {handleError(e)});
 				if ((class(t1) != "error") & (("nevent" %in% names(t1)) && t1$nevent > 0)) {
 					# https://stackoverflow.com/questions/19679183/compute-aic-in-survival-analysis-survfit-coxph/26212428#26212428?newreg=e521f49ac41446748ac71b6b2033428f
 					# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6874104/

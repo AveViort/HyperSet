@@ -91,20 +91,23 @@ plotSurvival_DR  <- function (
 	#print(Pat.vector);
 	vec = as.factor(Pat.vector);
 	#print(vec);
+	cu <- cutFollowup.full(clin, usedSamples, s.type, po = NA);
 	
 	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm=TRUE);}
 	if (estimateIntervals) {POs <- round(c(fu.length/4, fu.length/2, fu.length/1));} else {POs <- c(fu.length);}
 	pval <- NULL;
 	#print("POs:");
 	#print(POs);
-	for (po in POs) {
+	#for (po in POs) {
 		#print("po:");
 		#print(po);
-		cu <- cutFollowup.full(clin, usedSamples, s.type, po);
+		#cu <- cutFollowup.full(clin, usedSamples, s.type, po);
 		#pval[as.character(po)] = sus(cu, vec, return.p);
 		# print(pval[as.character(po)]);
-	}
+	#}
+	pval <- sus(cu, vec, "logtest");
 	fit = survfit(Surv(cu$Time, cu$Stat) ~ vec);
+	fit$pval <- pval;
 	return(fit)
 }
 
@@ -307,16 +310,17 @@ fitSurvival2  <- function (
 
 	print(table(Grouping[usedSamples]));
 	vec = as.factor(Grouping[usedSamples]);
-	cu <- cutFollowup.full(clin, usedSamples, s.type, po=NA);
-	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm=T);}
+	cu <- cutFollowup.full(clin, usedSamples, s.type, po = NA);
+	if (is.na(fu.length)) {fu.length = max(cu$Time, na.rm = TRUE);}
 	if (estimateIntervals) {POs <- round(c(fu.length/4, fu.length/2, fu.length/1));} else {POs <- c(fu.length);}
 	pval <- NULL;
-	for (po in POs) {
+	#for (po in POs) {
 		# cu <- cutFollowup.full(clin, usedSamples, s.type, po);
 		# pval[as.character(po)] = sus(cu, vec, return.p);
-	}
-			
+	#}
+	pval <- sus(cu, vec, "logtest");
 	fit = survfit(Surv(cu$Time, cu$Stat) ~ vec);
+	fit$pval <- pval;
 	return(fit)
 }
 
