@@ -101,6 +101,7 @@ if (length(platforms) == 1) {
 		} else {
 			names(fe) <- as.character(second_set[,1]);
 		}
+		rownames(second_set) <- names(fe);
 
 		if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
 			# add mising patients
@@ -221,6 +222,7 @@ if (length(platforms) == 1) {
 		query <- paste0(query, ";");
 		print(query);
 		third_set <- sqlQuery(rch, query, stringsAsFactors = FALSE);
+		rownames(third_set) <- as.character(third_set[,1]);
 		print(str(third_set));
 		
 		# 3D case can become 2D case
@@ -245,6 +247,7 @@ if (length(platforms) == 1) {
 			} else {
 				names(fe) <- as.character(second_set[,1]);
 			}
+			rownames(second_set) <- names(fe);
 
 			if ((second_set_datatype == "mut") | (second_set_datatype == "drug")) {
 				# add mising patients
@@ -291,14 +294,6 @@ if (length(platforms) == 1) {
 			}			
 		} else {
 			#real 3D case
-			metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes, 
-											length(intersect(rownames(first_set), intersect(rownames(second_set), rownames(third_set)))),
-											c(first_set_datatype, second_set_datatype, third_set_datatype), 
-											c(first_set_platform, second_set_platform, third_set_platform),
-											c('', second_set_id, third_set_id), c("-", "-", "-"), 
-											c(nrow(first_set), nrow(second_set), nrow(third_set)), Par["out"]);
-			metadata <- save_metadata(metadata);
-			
 			fe.drug <- c();
 			fe.other <- c();
 			if (any(datatypes %in% c("mut", "drug"))) {
@@ -329,9 +324,9 @@ if (length(platforms) == 1) {
 					names(temp) <- missing_patients;
 					fe.drug <- c(fe.drug, temp);
 					fe.drug[missing_patients] <- "no drug";
-					names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed=FALSE);
-					fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed=FALSE)];
-					names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
+					names(fe.drug) <- gsub("-[0-9]{2}$", "", names(fe.drug), fixed = FALSE);
+					fe.other <- fe.other[grep("-01|-06$", names(fe.other), fixed = FALSE)];
+					names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed = FALSE);
 					missing_patients <- setdiff(rownames(first_set), names(fe.other));
 					print(paste0("Adding ", length(missing_patients), " missing patients to fe.other"));
 					temp <- rep(NA, length(missing_patients));
@@ -399,6 +394,14 @@ if (length(platforms) == 1) {
 				names(fe.other) <- as.character(third_set[,1]);
 				names(fe.other) <- gsub("-[0-9]{2}$", "", names(fe.other), fixed=FALSE);
 			}
+			
+			metadata <- generate_plot_metadata("KM", Par["source"], Par["cohort"], tcga_codes, 
+											length(intersect(rownames(first_set), intersect(names(fe.other), names(fe.drug)))),
+											c(first_set_datatype, second_set_datatype, third_set_datatype), 
+											c(first_set_platform, second_set_platform, third_set_platform),
+											c('', second_set_id, third_set_id), c("-", "-", "-"), 
+											c(nrow(first_set), nrow(second_set), nrow(third_set)), Par["out"]);
+			metadata <- save_metadata(metadata);
 			
 			if (all(is.na(fe.drug))) {
 				print("All NAs, shutting down");
