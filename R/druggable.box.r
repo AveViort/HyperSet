@@ -186,7 +186,37 @@ if (status != 'ok') {
 		showticklabels = TRUE,
 		tickangle = 0,
 		tickfont = font2);
-	p <- plot_ly(y = x_data, x = y_data, type = "box", name = readable_platforms[temp_platforms[2], 2]) %>% 
+	p <- NULL;
+	if (length(temp_datatypes) == 3) {
+		z_data <- NULL;
+		if ((temp_datatypes[3] != "mut") & (temp_datatypes[3] != "drug")) {
+			z_data <- temp[[3]][common_samples,2];
+		} else {
+			z_data <- rep(NA, length(common_samples));
+			for (i in 1:length(common_samples)) {
+				if (temp_datatypes[3] == "mut") {
+					z_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[3]]), paste0("MUT(", ifelse(grepl(":", temp_ids[3]), strsplit(temp_ids[3], ":")[[1]][1], temp_ids[3]), ")=pos"), paste0("MUT(", temp_ids[3], ")=neg"));
+				} else {
+					if (!empty_value(temp_ids[3])) {
+						z_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[3]]), paste0("Drug(", ifelse(grepl(":", temp_ids[3]), strsplit(temp_ids[3], ":")[[1]][1], temp_ids[3]), ")=pos"), paste0("Drug(", temp_ids[3], ")=neg"));
+					} else {
+						z_data[i] <- ifelse(common_samples[i] %in% rownames(temp[[3]]),"Drugs=pos", "Drugs=neg");
+					}
+				}
+			}
+		}
+		z_data <- as.factor(z_data);
+		names(z_data) <- common_samples;
+		print("str(z_data):");
+		print(str(z_data));
+		#temp_frame <- data.frame(x = y_data, y = x_data, z = z_data);
+		#print(temp_frame);
+		p <- plot_ly(x = y_data, y = x_data, color = z_data, type = "box", name = z_data) %>% 
+		layout(boxmode = "group");
+	} else {
+		p <- plot_ly(y = x_data, x = y_data, type = "box", name = readable_platforms[temp_platforms[2], 2]);
+	}
+	p <- p %>% 
 	layout( showlegend = TRUE,
 			legend = druggable.plotly.legend.style(plot_legend),
 			margin = druggable.margins,

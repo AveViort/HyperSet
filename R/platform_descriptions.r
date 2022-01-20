@@ -30,8 +30,8 @@ update_cohort_descriptions_from_table <- function(table_name, key_file = "HS_SQL
 # In R:
 # setwd("/var/www/html/research/HyperSet/dev/HyperSet/R")
 # source("platform_descriptions.r")
-# update_platform_descriptions_from_table("platform_descriptions.csv", "../cgi/HS_SQL.conf")
-# update_datatype_descriptions_from_table("datatype_descriptions.csv", "../cgi/HS_SQL.conf")
+# update_platform_descriptions_from_table("platform_descriptions.tsv", "../cgi/HS_SQL.conf")
+# update_datatype_descriptions_from_table("datatype_descriptions.tsv", "../cgi/HS_SQL.conf")
 
 update_datatype_descriptions_from_table <- function(table_name, key_file = "HS_SQL.conf") {
 	table_data <- read.table(table_name, header = FALSE, sep = "\t");
@@ -89,16 +89,17 @@ update_plot_types  <- function(table_name, key_file = "HS_SQL.conf") {
 		query <- "INSERT INTO plot_types(";
 		for (j in 1:3) {
 			if (!empty_value(table_data[i,j])) {
-				query <- paste0(query, "platform", j, ",");
+				query <- paste0(query, "datatype", j, ",");
 			}
 		}
 		query <- paste0(query, "plot) VALUES(");
 		for (j in 1:3) {
 			if (!empty_value(table_data[i,j])) {
-				query <- paste0(query, table_data[i,j], ",");
+				query <- paste0(query, "'", table_data[i,j], "',");
 			}
 		}
-		query <- paste0(query, table_data[i,4],");");
+		query <- paste0(query, "'", table_data[i,4],"');");
+		#print(query);
 		sqlQuery(rch, query);
 	}
 	print(paste0("Created/updated ", i, " records"));
