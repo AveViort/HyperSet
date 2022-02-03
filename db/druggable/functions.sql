@@ -2834,6 +2834,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- gene-features indexes for tables from cor_guide_table
+CREATE OR REPLACE FUNCTION autocreate_gene_feature_indices_cor() RETURNS boolean AS $$
+DECLARE
+	table_n text;
+	flag boolean;
+BEGIN
+	FOR table_n in SELECT table_name FROM cor_guide_table
+	LOOP
+		RAISE NOTICE 'Creating ids for table % platforms gene, feature', table_n;
+		EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || E'_gene_feature_ind\');' INTO flag;
+		IF (flag=false)
+		THEN
+			EXECUTE E'CREATE INDEX ' || table_n || '_gene_feature_ind ON ' || table_n || '(gene,feature);';
+		ELSE
+			RAISE NOTICE 'Index already exists';
+		END IF;
+	END LOOP;
+	RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
 -- gene-platform indexes for tables from cor_guide_table
 CREATE OR REPLACE FUNCTION autocreate_double_indices_cor() RETURNS boolean AS $$
 DECLARE
@@ -2902,6 +2923,40 @@ BEGIN
 	RAISE notice 'Creating triple indexes for tables in cor_guide_table, time: %', clock_timestamp();
 	SELECT autocreate_triple_indices_cor() INTO flag;
 	RAISE notice 'Finished, status: %, time: %', flag, clock_timestamp();
+	RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- create index on the given column for all tables in cor_guide table
+CREATE OR REPLACE FUNCTION autocreate_selected_indices_cor(col_n text) RETURNS boolean AS $$
+DECLARE
+	table_n text;
+	flag boolean;
+BEGIN
+	FOR table_n in SELECT table_name FROM cor_guide_table
+	LOOP
+		EXECUTE E'SELECT EXISTS(SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\' AND column_name=\'' || col_n || E'\');' INTO flag;
+		IF (flag)
+		THEN
+			RAISE NOTICE 'Creating ids for table % platforms gene, % and feature, %', table_n, col_n, col_n;
+			EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_gene_' || col_n || E'_ind\');' INTO flag;
+			IF (flag=false)
+			THEN
+				EXECUTE E'CREATE INDEX ' || table_n || '_gene_' || col_n || '_ind ON ' || table_n || '(gene,' || col_n || ');';
+			ELSE
+				RAISE NOTICE 'Gene_%: Index already exists', col_n;
+			END IF;
+			EXECUTE E'SELECT EXISTS (SELECT * FROM  pg_catalog.pg_indexes WHERE indexname=\'' || table_n || '_feature_' || col_n || E'_ind\');' INTO flag;
+			IF (flag=false)
+			THEN
+				EXECUTE E'CREATE INDEX ' || table_n || '_feature_' || col_n || '_ind ON ' || table_n || '(gene,' || col_n || ');';
+			ELSE
+				RAISE NOTICE 'Feature_%: Index already exists', col_n;
+			END IF;
+		ELSE
+			RAISE NOTICE 'Table % has no column called %', table_n, col_n;
+		END IF;
+	END LOOP;
 	RETURN true;
 END;
 $$ LANGUAGE plpgsql;
@@ -3059,6 +3114,69 @@ BEGIN
 		END IF;
 	END IF;
 	RETURN flag;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to check number of unique genes in cor tables
+CREATE OR REPLACE FUNCTION check_cor_tables_ids() RETURNS numeric AS $$
+DECLARE
+	table_n text;
+	i numeric;
+	j numeric;
+	k numeric;
+	n numeric;
+	total numeric;
+BEGIN
+	n := 0;
+	k := 0;
+	SELECT COUNT(*) FROM cor_guide_table INTO total;
+	FOR table_n IN SELECT table_name FROM cor_guide_table
+	LOOP
+		EXECUTE 'SELECT COUNT(DISTINCT gene) FROM ' || table_n || ';' INTO i;
+		IF (i<10) THEN
+			RAISE NOTICE '%: % unique genes', table_n, i;
+			n := n + 1;
+		END IF;
+		EXECUTE 'SELECT COUNT(DISTINCT feature) FROM ' || table_n || ';' INTO j;
+		IF (j<10) THEN
+			RAISE NOTICE '%: % unique features', table_n, j;
+			k := k + 1;
+		END IF;
+	END LOOP;
+	RAISE NOTICE '% cor tables has less than 10 genes (out of %)', n, total;
+	RAISE NOTICE '% cor tables has less than 10 features (out of %)', k, total;
+	RETURN n;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to check missing synonyms in guide_table
+CREATE OR REPLACE FUNCTION check_missing_synonyms() RETURNS boolean AS $$
+DECLARE
+	table_n text;
+	datatype_n text;
+	flag boolean;
+	existing numeric;
+	missing numeric;
+	total numeric;
+BEGIN
+	RAISE NOTICE 'Checking missing synonyms for tables in guide_table';
+	FOR table_n, datatype_n IN SELECT table_name, type FROM guide_table
+	LOOP
+		SELECT has_ids INTO flag FROM type_ids WHERE data_type=datatype_n;
+		IF (flag)
+		THEN
+			RAISE NOTICE '---------------------------------';
+			RAISE NOTICE '%', table_n;
+			EXECUTE 'SELECT COUNT (DISTINCT id) FROM ' || table_n || ';' INTO total;
+			EXECUTE 'SELECT COUNT (DISTINCT ' || table_n || '.id) FROM ' || table_n || ' INNER JOIN synonyms ON ' || table_n || '.id=synonyms.internal_id;' INTO existing;
+			IF (existing<total)
+			THEN
+				missing := total - existing;
+				RAISE NOTICE '% ids are missing (out of %)', missing, total;
+			END IF;
+		END IF;
+	END LOOP;
+	RETURN true;
 END;
 $$ LANGUAGE plpgsql;
 

@@ -153,7 +153,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 															sessionStorage.removeItem("demo");
 															setTimeout(function () {
 																if ((datatype1 == "NEA_GE") | (datatype1 == "NEA_MUT") | (datatype2 == "NEA_GE") | (datatype2 == "NEA_MUT")) {
-																	alert("Click on any point on the graph to see the network behind")
+																	delayed_comment("Click on any point on the graph to see the network behind", 0)
 																}
 															}, 2*to);
 														}, {once: true});

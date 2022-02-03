@@ -579,14 +579,17 @@ query <- paste0(query, condition, ";");
 print(query);
 resp_matr <- sqlQuery(rch, query, stringsAsFactors = FALSE);
 rownames(resp_matr) <- resp_matr[,1];
+print("Names assigned correctly");
 if(rdatatype == "mut") {
 	colnames(resp_matr) <- c("sample", "id", rplatform);
 }
 resp_matr[,rplatform] <- correctData(resp_matr[,rplatform], rplatform);
+print("Data corrected");
 
 for (ty in names(Platform)) {
-	#print(ty);
+	print(ty);
 	X.variables[[ty]] <- X.variables[[ty]][which(X.variables[[ty]] %in% rownames(Platform[[ty]]))];
+	print("X.variables reformed");
 	X.add <- Platform[[ty]][X.variables[[ty]],];
 	#print("X.add:");
 	#print(X.add);
@@ -595,6 +598,7 @@ for (ty in names(Platform)) {
 		#print(dummy_names);
 		temp <- matrix(0, length(X.add), length(dummy_names));
 		rownames(temp) <- names(X.add);
+		print("Temp rownames assigned");
 		colnames(temp) <- dummy_names;
 		for (dummy_variable in dummy_names) {
 			temp[which(X.add == dummy_variable),dummy_variable] <- 1;
@@ -603,7 +607,8 @@ for (ty in names(Platform)) {
 		#print(temp);
 		X.add <- t(temp);
 		TypeDelimiter = "____";
-		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE)
+		print(duplicated(gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE)));
+		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE);
 		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 		#print("Factor X.add:");
 		#print(X.add);
@@ -629,7 +634,7 @@ for (ty in names(Platform)) {
 			X.add[is.na(X.add[,1])] <- mean(X.add[,1], na.rm = TRUE);
 		}
 		TypeDelimiter = "____";
-		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@", "_", rownames(X.add), fixed=FALSE)
+		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@", "_", rownames(X.add), fixed = FALSE);
 		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 	}
 	if (ty == names(Platform)[1]) {

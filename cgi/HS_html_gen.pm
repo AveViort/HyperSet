@@ -608,7 +608,7 @@ $con .= '
 </td>
 
 <!-- start comment>< -->
-<td title="Heatmap">
+<!--td title="Heatmap">
 <div id="run-exploratory-heatmap" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/heatmap.png" class="showme"> 
 </div>
@@ -628,7 +628,7 @@ $con .= '
 <td title="PCA (principal component analysis)">
 <div id="run-exploratory-pca" class="showme icon-ok demo_button sbm-controls"> 
 <img src="pics/eres.png" class="showme" ></div>
-</td>
+</td-->
 
 <!-- end comment ><-->
 <td>

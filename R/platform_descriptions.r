@@ -301,6 +301,92 @@ add_synonyms <- function(table_name, key_file = "HS_SQL.conf") {
 	print(paste0("Created/updated ", k, " records"));
 }
 
+# missing synonyms in guide_table
+check_missing_synonyms <- function(key_file = "HS_SQL.conf") {
+	print("Checking for internal ids without synonyms in tables from guide_table");
+	# total number of unique ids - sum of unique ids for all tables
+	total <- 0;
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	# get list of internal ids for which we have external ids
+	query <- "SELECT DISTINCT internal_id FROM synonyms;";
+	synonyms <- sqlQuery(rch, query, stringsAsFactors = FALSE)[,1];
+	# data frame with results - missing ids per tables
+	missing_ids_frame <- data.frame(table_name = character(), id = character(), stringsAsFactors = FALSE);
+	query <- "SELECT table_name FROM guide_table;";
+	table_names <- sqlQuery(rch, query, stringsAsFactors = FALSE)[,1];
+	for (table_name in table_names) {
+		query <- paste0("SELECT * FROM ", table_name, ";");
+		sql_table <- sqlQuery(rch, query, stringsAsFactors = FALSE);
+		if (any(c("id", "drug") %in% colnames(sql_table))) {
+			print("-------------------------------------");
+			print(table_name);
+			table_ids <- unique(sql_table[,c("id", "drug")[which(c("id", "drug") %in% colnames(sql_table))]]);
+			total <- total + length(table_ids);
+			missing_ids <- setdiff(table_ids, synonyms);
+			if(length(missing_ids) > 0) {
+				print(paste0("IDs in table: ", length(table_ids), " Missing: ", length(missing_ids), " (", round(length(missing_ids)/length(table_ids)*100, 2), "%)"));
+				for (missing_id in missing_ids) {
+					missing_ids_frame <- rbind(missing_ids_frame, data.frame(table_name = table_name, id = missing_id, stringsAsFactors = FALSE));
+				}
+			}
+		}
+	}
+	odbcClose(rch);
+	print(paste0(nrow(missing_ids_frame) ," out of ", total, " total ids are missing (", round(nrow(missing_ids_frame)/total*100, 2), "%)"));
+	return(missing_ids_frame);
+}
+
+# missing synonyms in cor_guide_table
+check_cor_missing_synonyms <- function(key_file = "HS_SQL.conf") {
+	print("Checking for internal ids without synonyms in tables from guide_table");
+	# total number of unique ids - sum of unique ids for all tables
+	total <- 0;
+	credentials <- getDbCredentials(key_file);
+	rch <- odbcConnect("dg_pg", uid = credentials[1], pwd = credentials[2]);
+	# get list of internal ids for which we have external ids
+	query <- "SELECT DISTINCT internal_id FROM synonyms;";
+	synonyms <- sqlQuery(rch, query, stringsAsFactors = FALSE)[,1];
+	# data frame with results - missing ids per tables
+	missing_ids_frame <- data.frame(table_name = character(), id = character(), stringsAsFactors = FALSE);
+	query <- "SELECT table_name FROM cor_guide_table;";
+	table_names <- sqlQuery(rch, query, stringsAsFactors = FALSE)[,1];
+	for (table_name in table_names) {
+		print("-------------------------------------");
+		print(table_name);
+		flag = FALSE;
+		# we always have gene and feature columns
+		query <- paste0("SELECT DISTINCT gene FROM ", table_name, ";");
+		table_genes <- sqlQuery(rch, query, stringsAsFactors = FALSE)[,1];
+		total <- total + length(table_genes);
+		missing_genes <- setdiff(table_genes, synonyms);
+		if(length(missing_genes) > 0) {
+			flag = TRUE;
+			for (missing_id in missing_genes) {
+				missing_ids_frame <- rbind(missing_ids_frame, data.frame(table_name = table_name, id = missing_id, stringsAsFactors = FALSE));
+			}
+		}
+		query <- paste0("SELECT DISTINCT feature FROM ", table_name, ";");
+		table_features <- sqlQuery(rch, query, stringsAsFactors = FALSE)[,1];
+		total <- total + length(table_features);
+		missing_features <- setdiff(table_features, synonyms);
+		if(length(missing_features) > 0) {
+			flag = TRUE;
+			for (missing_id in missing_features) {
+				missing_ids_frame <- rbind(missing_ids_frame, data.frame(table_name = table_name, id = missing_id, stringsAsFactors = FALSE));
+			}
+		}
+		if (flag) {
+			print(paste0("Missing ", length(missing_genes) + length(missing_features), " out of ", length(table_genes) + length(table_features), " ids (", round((length(missing_genes) + length(missing_features))/(length(table_genes) + length(table_features))*100,2), "%)"));
+			print(paste0("   Missing ", length(missing_genes), " genes out of ", length(table_genes), " (", round(length(missing_genes)/length(table_genes)*100, 2), "%)"));
+			print(paste0("   Missing ", length(missing_features), " features out of ", length(table_features), " (", round(length(missing_features)/length(table_features)*100, 2), "%)"));
+		}
+	}
+	odbcClose(rch);
+	print(paste0(nrow(missing_ids_frame) ," out of ", total, " total ids are missing (", round(nrow(missing_ids_frame)/total*100, 2), "%)"));
+	return(missing_ids_frame);
+}
+
 # FUNCTIONS TO COPY BEHAVIOUR
 
 # function to copy platform behaviour as a variable
