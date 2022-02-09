@@ -24,7 +24,7 @@ print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
 my $codes = '';
 if ($source eq "TCGA") {
-	$stat = qq/SELECT get_tcga_codes(\'$cohort'\, \'$datatype'\, \'$platform'\, \'$previous_datatypes'\, \'$previous_platforms'\)/;
+	$stat = qq/SELECT get_tcga_codes(\'$cohort'\, \'$datatype'\, \'$platform'\, \'$previous_datatypes'\, \'$previous_platforms'\, \'all'\)/;
 	$sth = $dbh->prepare($stat) or die $dbh->errstr;
 	$sth->execute( ) or die $sth->errstr;
 	$codes = $sth->fetchrow_array;

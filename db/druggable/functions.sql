@@ -1667,7 +1667,11 @@ $$ LANGUAGE plpgsql;
 -- if datatype uses patients (not samples) - return emplty string
 -- it also takes previous datatypes into account: if one of the chose datatypes
 -- uses patients - do not allow meta-codes ("all", "cancer", "normal")
-CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, platform_n text, previous_datatypes text, previous_platforms text) RETURNS text AS $$
+-- code_types can have three possible values:
+-- 	all - return both metacodes and standard tcga codes
+-- 	meta - return only metacodes
+--	standard - return only standard codes
+CREATE OR REPLACE FUNCTION get_tcga_codes(cohort_n text, datatype_n text, platform_n text, previous_datatypes text, previous_platforms text, code_types text) RETURNS text AS $$
 DECLARE
 	res text;
 	meta_res text;
@@ -1684,16 +1688,19 @@ DECLARE
 	flag boolean;
 BEGIN
 	res := '';
+	flag := TRUE;
 	SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
 	IF (source_n = 'TCGA') THEN
 		SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
+		SELECT EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platform_n) INTO flag;
 		-- we assume that tcga_codes and tcga_meta_codes are synchronized
-		IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platform_n)) THEN
-			SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n || '_' || platform_n;
-			SELECT codes INTO meta_res FROM tcga_metacodes WHERE table_name = table_n || '_' || platform_n;
-			flag := TRUE;
-		ELSE 
-			flag := FALSE;
+		IF (flag) THEN
+			IF ((code_types = 'all') OR (code_types = 'standard')) THEN
+				SELECT codes INTO res FROM tcga_codes WHERE table_name = table_n || '_' || platform_n;
+			END IF;
+			IF ((code_types = 'all') OR (code_types = 'meta')) THEN
+				SELECT codes INTO meta_res FROM tcga_metacodes WHERE table_name = table_n || '_' || platform_n;
+			END IF;
 		END IF;
 		IF (previous_datatypes <> '') THEN
 			datatypes_array := string_to_array(previous_datatypes, ',');
@@ -1703,7 +1710,7 @@ BEGIN
 			FOR i IN 1 .. array_length(datatypes_array, 1)
 			LOOP
 				SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
-				IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platforms_array[i])) THEN
+				IF ((EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platforms_array[i])) AND ((code_types = 'all') OR (code_types = 'standard'))) THEN
 					SELECT codes INTO temp FROM tcga_codes WHERE table_name = table_n || '_' || platforms_array[i];
 					temp_array := string_to_array(temp, ',');
 					IF (array_length(res_array, 1) > 0) THEN
@@ -1719,12 +1726,12 @@ BEGIN
 			res := array_to_string(res_array, ',');
 		END IF;
 	END IF;
-	IF (flag = TRUE) THEN
+	IF (flag) THEN
 		IF (previous_datatypes <> '') THEN
 			FOR i IN 1 .. array_length(datatypes_array, 1)
 			LOOP
 				SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatypes_array[i]);
-				IF (EXISTS (SELECT * FROM tcga_metacodes WHERE table_name = table_n || '_' || platforms_array[i])) THEN
+				IF ((EXISTS (SELECT * FROM tcga_metacodes WHERE table_name = table_n || '_' || platforms_array[i]))  AND ((code_types = 'all') OR (code_types = 'meta'))) THEN
 					SELECT codes INTO temp FROM tcga_metacodes WHERE table_name = table_n || '_' || platforms_array[i];
 					temp_array := string_to_array(temp, ',');
 					meta_res_array := array_intersect(meta_res_array, temp_array);
@@ -1741,11 +1748,11 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- simplified fucntion, but also returns numbers per code
--- USE ONLY FOR MULTISELECTOR!
-CREATE OR REPLACE FUNCTION get_tcga_codes_n(cohort_n text, datatype_n text, platform_n text) RETURNS text AS $$
+-- USE ONLY FOR MULTISELECTORS!
+CREATE OR REPLACE FUNCTION get_tcga_codes_n(cohort_n text, datatype_n text, platform_n text, code_types text) RETURNS text AS $$
 DECLARE
 	res text;
-	-- we have a special result variable for meta-codes, sp they will be in order all-healthy-cancer and before the actual codes
+	-- we have a special result variable for meta-codes, so they will be in order all-healthy-cancer and before the actual codes
 	meta_res text;
 	temp_codes text;
 	temp_n text;
@@ -1758,10 +1765,12 @@ DECLARE
 BEGIN
 	res := '';
 	meta_res := '';
+	flag := TRUE;
 	SELECT source INTO source_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
 	IF (source_n = 'TCGA') THEN
 		SELECT table_name INTO table_n FROM guide_table WHERE (cohort = cohort_n) AND (type = datatype_n);
-		IF (EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platform_n)) THEN
+		SELECT EXISTS (SELECT * FROM tcga_codes WHERE table_name = table_n || '_' || platform_n) INTO flag;
+		IF (flag AND ((code_types = 'all') OR (code_types = 'standard'))) THEN
 			SELECT codes INTO temp_codes FROM tcga_codes WHERE table_name = table_n || '_' || platform_n;
 			SELECT counts INTO temp_n FROM tcga_codes WHERE table_name = table_n || '_' || platform_n;
 			codes_array := string_to_array(temp_codes, ',');
@@ -1771,11 +1780,8 @@ BEGIN
 			LOOP
 				res := res || ',' || codes_array[i] || ',' || n_array[i];
 			END LOOP;
-			flag := TRUE;
-		ELSE 
-			flag := FALSE;
 		END IF;
-		IF (flag = TRUE) THEN
+		IF ((flag) AND ((code_types = 'all') OR (code_types = 'meta'))) THEN
 			SELECT codes INTO temp_codes FROM tcga_metacodes WHERE table_name = table_n || '_' || platform_n;
 			SELECT counts INTO temp_n FROM tcga_metacodes WHERE table_name = table_n || '_' || platform_n;
 			codes_array := string_to_array(temp_codes, ',');

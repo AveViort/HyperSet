@@ -533,14 +533,17 @@ for (i in 1:length(x_datatypes)) {
 		rownames(temp) <- x_platforms[i];
 		print(x_platforms[i]);
 		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
-			temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE)
+			#temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE);
+			# we now allow TCGA metacodes
+			temp_names <- gsub(".{3}$", "", temp_names);
 		}
 		colnames(temp) <- temp_names;
 	} else {
 		rownames(temp) <- temp_names;
 		temp_names <- colnames(temp);
 		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
-			temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE)
+			#temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE);
+			temp_names <- gsub(".{3}$", "", temp_names);
 		}
 		colnames(temp) <- temp_names;
 	}
@@ -589,7 +592,7 @@ print("Data corrected");
 for (ty in names(Platform)) {
 	print(ty);
 	X.variables[[ty]] <- X.variables[[ty]][which(X.variables[[ty]] %in% rownames(Platform[[ty]]))];
-	print("X.variables reformed");
+	#print("X.variables reformed");
 	X.add <- Platform[[ty]][X.variables[[ty]],];
 	#print("X.add:");
 	#print(X.add);
@@ -598,7 +601,7 @@ for (ty in names(Platform)) {
 		#print(dummy_names);
 		temp <- matrix(0, length(X.add), length(dummy_names));
 		rownames(temp) <- names(X.add);
-		print("Temp rownames assigned");
+		#print("Temp rownames assigned");
 		colnames(temp) <- dummy_names;
 		for (dummy_variable in dummy_names) {
 			temp[which(X.add == dummy_variable),dummy_variable] <- 1;
@@ -607,7 +610,7 @@ for (ty in names(Platform)) {
 		#print(temp);
 		X.add <- t(temp);
 		TypeDelimiter = "____";
-		print(duplicated(gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE)));
+		#print(duplicated(gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE)));
 		rownames(X.add) <- gsub("\\-|\\.|\\'|\\%|\\$|\\@| ", "_", rownames(X.add), fixed = FALSE);
 		rownames(X.add) <- paste0(rownames(X.add), TypeDelimiter, ty, "");
 		#print("Factor X.add:");
@@ -736,7 +739,7 @@ if (!stop_flag) {
 		}
 		resp <- resp[!is.na(resp)];
 		if ((Par["source"] == "tcga") & (any(x_datatypes %in% druggable.patient.datatypes) & (!rdatatype %in% druggable.patient.datatypes))) {
-			names(resp) <- gsub(sample_mask, "", names(resp), fixed=FALSE);
+			names(resp) <- gsub(sample_mask, "", names(resp), fixed = FALSE);
 		}
 		# if response is MUT - add NEG cases using usedSamples
 		if(rdatatype == "mut") {

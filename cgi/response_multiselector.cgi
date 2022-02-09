@@ -26,7 +26,7 @@ if ($source eq "CCLE") {
 }
 else {
 	if ($source eq "TCGA") {
-		$stat = qq/SELECT get_tcga_codes_n(\'$cohort'\, \'$datatype'\, \'$variable'\)/;
+		$stat = qq/SELECT get_tcga_codes_n(\'$cohort'\, \'$datatype'\, \'$variable'\, \'meta'\)/;
 	}
 }
 # case when multiselector should not be initialized

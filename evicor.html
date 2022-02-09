@@ -1916,8 +1916,8 @@ function build_and_show_model() {
 										//console.log(occurences);
 										// if we have more than 1 occurence - it means training/validation
 										if (occurences.length == 2) {
-											var training_ind = (temp_index[occurences[0]].indexOf("(training)") != -1 ? occurences[0] : occurences[1]);
-											var validation_ind = (temp_index[occurences[0]].indexOf("(validation)") != -1 ? occurences[0] : occurences[1]);
+											var training_ind = (temp_index[occurences[0]].indexOf("training") != -1 ? occurences[0] : occurences[1]);
+											var validation_ind = (temp_index[occurences[0]].indexOf("validation") != -1 ? occurences[0] : occurences[1]);
 											pretty_print_data.push({
 												// measureQtip defined in druggable_config.js
 												'Measure' : '<a title=\"' + measureQtip[measures[i]] + '\">' + measures[i] + '</a>',
@@ -2583,7 +2583,7 @@ function init_tcga_code_selector(n) {
 	// this can be modified - we don't need second variable anymore
 	var codes = get_codes($("#source_selector option:selected").val(), $("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val(), $("#platform" + n + "_selector option:selected").val(), previous_datatypes, previous_platforms);
 	if (codes[0] != "") {
-		var sortOrder = ['all', 'cancer', 'metastatic', 'non_metastatic', 'healthy'];
+		var sortOrder = ['all', 'cancer', 'metastatic', 'primary_tumor', 'normal'];
 		codes.sort(function(a, b) {
 			if (sortOrder.indexOf(b) == -1) {
 					sorted_ind = -1;
@@ -3100,13 +3100,13 @@ function init_response_multiselector() {
 	}
 	var values = [];
 	if ((model_source == "TCGA") & (response_datatype == "CLIN")) {
-		values = [{val: "01", n: "all"} , {val: "06", n: "all"}];
+		values = [{val: "metastatic", n: "all"} , {val: "primary_tumor", n: "all"}];
 	}
 	else {
 		values = get_response_multiselector_values(model_source, model_cohort, response_datatype, response_variable);
 	}
 	//console.log(values);
-	var sortOrder = ['all', 'cancer', 'metastatic', 'non_metastatic', 'healthy'];
+	var sortOrder = ['all', 'cancer', 'metastatic', 'primary_tumor', 'normal'];
 	values.sort(function(a, b) {
 		var sorted_ind = 0;
 		if (sortOrder.indexOf(a.val) == -1 & sortOrder.indexOf(b.val) == -1) {
