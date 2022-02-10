@@ -223,3 +223,6 @@ measureQtip["BIC"] = "Bayesian information criterium";
 // PAY ATTENTION! Values are names of the elements which must be set visible!
 var model_hyperparameters = new Map();
 model_hyperparameters.set("glmnet", ["alpha_section", "nlambda_section", "minlambda_section", "family_section"]);
+
+// special flag - set to true to make evicor report duplicated display names in corPlatform_selector
+report_duplicated_cor_platform_names = true;

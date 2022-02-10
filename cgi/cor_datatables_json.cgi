@@ -29,7 +29,8 @@ my $limit_by		= $query->param("limit_by");
 
 $datatype	= "%" if $datatype	eq "all";
 $cohort		= "%" if $cohort	eq "all";
-$platform	= "%" if $platform	eq "all";
+# platform uses ~ operator instead of LIKE
+$platform	= "[:alnum:]*" if $platform	eq "all";
 $screen 	= "%" if $screen	eq "all";
 $id 		= "%" if $id 		eq "";
 

@@ -1470,8 +1470,8 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code, sur
 				"&codes=" + code +
 				"&scales=" + scales.join(),
 				ErrorStack);
-				plot_data["title"] = "Error";
-				process_error("https://" + window.location.hostname + "/pics/plots/" + plot_filename.substring(0, plot_filename.length-5) + "_error.json" , false)
+			plot_data["title"] = "Error";
+			process_error("https://" + window.location.hostname + "/pics/plots/" + plot_filename.substring(0, plot_filename.length-5) + "_error.json" , false)
 		}
 		else {
 			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "plot_created", "type=" + type +
@@ -1483,10 +1483,10 @@ function plot(type, source, cohort, datatypes, platforms, ids, scales, code, sur
 				"&codes=" + code +
 				"&scales=" + scales.join(),
 				"<a href=https://" + window.location.hostname + "/pics/plots/" + plot_filename + " target=_blank>View</a>");
-				plot_id = plot_filename.substring(0, plot_filename.length-5);
-				plot_data = generate_plot_data(metadata);
-				sessionStorage.setItem(plot_filename, plot_description);
-				sessionStorage.setItem('meta_' + plot_filename, raw_metadata);
+			plot_id = plot_filename.substring(0, plot_filename.length-5);
+			plot_data = generate_plot_data(metadata);
+			sessionStorage.setItem(plot_filename, plot_description);
+			sessionStorage.setItem('meta_' + plot_filename, raw_metadata);
 		}
 		var graph_window = '<div id="plot_window_' + plot_id +'"><iframe src="https://www.evicor.org/pics/plots/' + plot_filename + '" width="960" height="600"></div>';
 		$(parent_tab).append(graph_window);
@@ -2731,6 +2731,9 @@ function init_cor_platform_selector() {
 	if (cor_cohort != "undef") {
 		usetCookie("corCohort_selector", cor_cohort, druggable_cookie_time);
 		var platforms = get_correlation_platforms($("#corSource_selector option:selected").val(), cor_datatype, cor_cohort);
+		platforms = regularize_duplicates(platforms, 
+			report_duplicates = report_duplicated_cor_platform_names, 
+			parameter_string = $("#corSource_selector option:selected").val() + " " + cor_datatype + " " + cor_cohort);
 		options.push("<option value='all'>All platforms</option>");
 		for (i in platforms) {
 			options.push("<option value='" + platforms[i].platform + "'>" + platforms[i].name +"</option>");
@@ -4329,6 +4332,48 @@ function cor_id_keyup() {
 	else {
 		$("#retrieve-cor-button").button("disable");
 	}
+}
+
+// find duplicates in platforms returned for corPlatform_selector
+// if there are no doubles - returns original list
+// otherwise - returns list, there duplicates are substituted with regular expressions
+// if report_duplicates flag is set to true, then, if there are duplicated names, they will be reported
+// parameter_string is the string with parameters which were used to retrieve platforms list - define only when report_duplicates is set to true
+function regularize_duplicates(list, report_duplicates = false, parameter_string = "") {
+	var res = [];
+	// find duplicates in displayed names
+	var displayed_names = list.map(item => item.name);
+	var duplicates = displayed_names.filter((item, index) => displayed_names.indexOf(item) !== index);
+	duplicates = [...new Set(duplicates)];
+	if (duplicates.length == 0) {
+		res = list;
+	}
+	else {
+		if (report_duplicates) {
+			var ErrorStack = check_error_stack(new Error().stack);
+			report_event(((window.location.host.split(".")[0] == "dev") ? ("dev/") : "") + "evicor.html", "info", "duplicates_found", parameter_string,
+				"The following display names are used by several platforms: " + duplicates.join(","));
+			
+		}
+		// creating an empty array with regexps - meant to be concatenated with "normal" array to form result
+		regexp_array = Array.from(duplicates, item => ({platform: [], name:item}));
+		normal_array = [];
+		for (var i in list) {
+			var item = list[i];
+			var ind = duplicates.indexOf(item.name);
+			//console.log(duplicates);
+			//console.log("Item: " + item.name + " Index in duplicates: " + ind);
+			if (ind != -1) {
+				regexp_array[ind].platform.push('(' + item.platform + ')');
+			}
+			else {
+				normal_array.push(item);
+			}
+		}
+		regexp_array = regexp_array.map(regexp_item => ({platform: regexp_item.platform.join('|'), name: regexp_item.name}));
+		res = normal_array.concat(regexp_array);
+	}
+	return res;
 }
 
 // enables/disables type and platform selectors during update

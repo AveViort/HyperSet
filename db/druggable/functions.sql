@@ -18,7 +18,7 @@ BEGIN
 		END LOOP;
 	ELSE
 		sensitivity_array := string_to_array(sensitivity_m, ',');
-		FOR table_n IN SELECT table_name FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_name AND sensitivity_measure=ANY(sensitivity_array)
+		FOR table_n IN SELECT table_name FROM cor_guide_table WHERE source=source_n AND datatype LIKE data_type AND cohort LIKE cohort_n AND platform~ platform_n AND screen LIKE screen_name AND sensitivity_measure=ANY(sensitivity_array)
 		LOOP
 			--RAISE NOTICE '%', table_n;
 			SELECT genes_features INTO res_temp FROM cor_genes_features WHERE table_name=table_n;
@@ -213,7 +213,7 @@ BEGIN
 	query := query || E' AND table_type=\'response\';';
 	FOR res IN EXECUTE query
 	LOOP
-		SELECT fullname INTO description FROM platform_descriptions WHERE shortname=res;
+		SELECT fullname INTO description FROM platform_descriptions WHERE shortname=lower(res);
 		RETURN NEXT res || '|' || description;
 	END LOOP;
 END;
@@ -239,7 +239,7 @@ BEGIN
 	query := query || E' AND table_type=\'response\';';
 	FOR res IN EXECUTE query
 	LOOP
-		SELECT fullname INTO description FROM platform_descriptions WHERE shortname=res;
+		SELECT fullname INTO description FROM platform_descriptions WHERE shortname=lower(res);
 		RETURN NEXT res || '|' || description;
 	END LOOP;
 END;
@@ -451,10 +451,10 @@ BEGIN
 	FOR platform_n IN SELECT DISTINCT platform FROM model_guide_table WHERE source=source_n AND cohort=cohort_n AND datatype=data_type AND table_type='response' ORDER BY platform DESC 
 	LOOP
 		SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=platform_n) INTO exclude;
-		SELECT visibility FROM platform_descriptions WHERE shortname=platform_n INTO visible;
+		SELECT visibility FROM platform_descriptions WHERE shortname=lower(platform_n) INTO visible;
 		IF ((NOT exclude) AND visible)
 		THEN 
-			SELECT fullname INTO description FROM platform_descriptions WHERE shortname=platform_n;
+			SELECT fullname INTO description FROM platform_descriptions WHERE shortname=lower(platform_n);
 			RETURN NEXT platform_n || '|' || description;
 			flag := FALSE;
 		END IF;
@@ -643,7 +643,7 @@ BEGIN
 	datatypes_array := ARRAY[]::text[];
 	FOR i IN 1..n
 	LOOP
-		FOR temp IN SELECT datatype FROM platform_descriptions WHERE shortname=temp_array[i]
+		FOR temp IN SELECT datatype FROM platform_descriptions WHERE shortname=lower(temp_array[i])
 		LOOP
 			datatypes_array[i] := temp;
 		END LOOP;
@@ -857,7 +857,8 @@ BEGIN
 	query := query ||',url1 text);';
 	--RAISE notice 'query: %', query;
 	EXECUTE query;
-	FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity_type IN SELECT table_name,datatype,cohort,platform,screen,sensitivity_measure FROM cor_guide_table WHERE datatype LIKE data_type AND cohort LIKE cohort_n AND platform LIKE platform_n AND screen LIKE screen_n AND sensitivity_measure=ANY(sensitivity_array) 
+	-- pay attention: we use ~ instead of LIKE in one statement: refer to regularize_duplicates in evicor.html for explanations
+	FOR table_n, datatype_name, cohort_name, platform_name, screen_name, sensitivity_type IN SELECT table_name,datatype,cohort,platform,screen,sensitivity_measure FROM cor_guide_table WHERE datatype LIKE data_type AND cohort LIKE cohort_n AND platform~platform_n AND screen LIKE screen_n AND sensitivity_measure=ANY(sensitivity_array) 
 	LOOP
 		--RAISE notice 'table name: %', table_n;
 		query := 'INSERT INTO ' || temp_table || ' SELECT upper(' || columns_array[1] || ') AS gene,' || columns_array[2] || E' AS feature,\'' || datatype_name || E'\' AS datatype,\'' || cohort_name || E'\' AS cohort,\'' || platform_name || E'\' AS platform, \'' || screen_name || E'\' AS screen' || E',\'' || sensitivity_type || E'\' AS sensitivity';
@@ -1406,7 +1407,7 @@ BEGIN
 			IF (flag=true) THEN
 				FOR platform_n IN SELECT column_name FROM information_schema.columns WHERE table_name=datatable OFFSET 2
 				LOOP
-					SELECT visibility INTO visible FROM platform_descriptions WHERE shortname=platform_n;
+					SELECT visibility INTO visible FROM platform_descriptions WHERE shortname=lower(platform_n);
 					IF (visible=true)
 					THEN
 						EXECUTE 'SELECT EXISTS (SELECT * FROM druggable_ids WHERE ((' || platform_n || ' IS NULL) OR (' || platform_n || E'=\'\')) AND (cohort=\'' || cohort_n || E'\'));' INTO flag;
@@ -1599,7 +1600,7 @@ CREATE OR REPLACE FUNCTION update_platform_description (platform_n text, fullnam
 DECLARE
 	flag boolean;
 BEGIN
-	EXECUTE E'SELECT EXISTS (SELECT * FROM platform_descriptions WHERE shortname=\'' || platform_n || E'\');' INTO flag;
+	EXECUTE E'SELECT EXISTS (SELECT * FROM platform_descriptions WHERE shortname=lower(\'' || platform_n || E'\'));' INTO flag;
 	IF (flag = true)
 	THEN
 		EXECUTE E'UPDATE platform_descriptions SET fullname=\'' || fullname || E'\',visibility='|| display || E',datatype=\'' || datatype || E'\',description=\'' || description || E'\',stats=\'' || stats || E'\',axis_prefix=\'' || axis_prefix || E'\' WHERE shortname=\'' || platform_n || E'\';';
@@ -2226,7 +2227,7 @@ BEGIN
 	query := E'SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=\'' || table_n || E'\';';
 	FOR variable_n IN EXECUTE QUERY query
 	LOOP
-		SELECT visibility FROM platform_descriptions WHERE shortname=variable_n INTO visible;
+		SELECT visibility FROM platform_descriptions WHERE shortname=lower(variable_n) INTO visible;
 		SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE cohort=ANY(cohorts) AND datatype=ANY(data_types) AND platform=variable_n) INTO exclude;
 		EXECUTE E'SELECT EXISTS(SELECT * FROM forbidden_variables WHERE variable_name=\'' || variable_n || E'\' AND ' || t_type || '=TRUE);' INTO forbidden;
 		IF ((NOT exclude) AND visible AND (NOT forbidden)) THEN
@@ -2398,7 +2399,7 @@ BEGIN
 		FOR platform_n IN SELECT column_name FROM druggable.INFORMATION_SCHEMA.COLUMNS WHERE table_name=table_n
 		LOOP
 			-- make sure that platform is not hidden
-			SELECT visibility FROM platform_descriptions WHERE shortname=platform_n INTO visibility_flag;
+			SELECT visibility FROM platform_descriptions WHERE shortname=lower(platform_n) INTO visibility_flag;
 			SELECT EXISTS (SELECT * FROM no_show_exclusions WHERE (cohort=ANY(ARRAY['all', cohort_n])) AND (datatype=ANY(ARRAY['all', datatype_n])) AND (platform=platform_n)) INTO exclusion_flag;
 			visibility_flag := visibility_flag AND NOT exclusion_flag;
 			IF (visibility_flag = TRUE)
@@ -3180,6 +3181,23 @@ BEGIN
 				missing := total - existing;
 				RAISE NOTICE '% ids are missing (out of %)', missing, total;
 			END IF;
+		END IF;
+	END LOOP;
+	RETURN true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- function to find platforms with missing descriptions (cor_guide_table)
+CREATE OR REPLACE FUNCTION check_cor_platform_missing_descriptions() RETURNS boolean AS $$
+DECLARE
+	table_n text;
+	platform_n text;
+BEGIN
+	FOR platform_n IN SELECT DISTINCT platform FROM cor_guide_table
+	LOOP
+		IF (NOT EXISTS(SELECT * FROM platform_descriptions WHERE shortname=LOWER(platform_n)))
+		THEN
+			RAISE NOTICE 'Platform % has no entry in platform_descriptions', platform_n;
 		END IF;
 	END LOOP;
 	RETURN true;
