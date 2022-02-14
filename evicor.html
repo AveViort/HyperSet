@@ -350,10 +350,10 @@ table.table_with_borders, table.table_with_borders th, table.table_with_borders 
 				<td>Demo - using expression data for several genes and M0 macrophage count to predict overall survival time in cutaneous and malignant skin melanoma (SKCM) TCGA cohort.</td>
 			</tr>
 			<tr style="text-align:center">
-				<td><button onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'original', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'original', 'scatter')">Demo 1</button></td>
-				<td><button onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)">Demo 2</button></td>
-				<td><button onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC1', 'tamoxifen', 0.05, 1)">Demo 3</button></td>
-				<td><button onclick="dr_demo4 ('glmnet', 'TCGA', 'SKCM', '06', 'CLIN', 'os', '', ['GE', 'IMMUNO'], ['illuminahiseq_rnaseqv2','macrophages_m0'], ['TP53, MYC, MYCN, BRAF', ''], 'cox', 'deviance', false, 1, 10, 0.01, true, 3, 50)">Demo 4</button></td>
+				<td><button id="demo1_button" onclick="dr_demo1('TCGA', 'BRCA', 'all', 'PE', 'rppa', 'TP53_gene', 'original', 'NEA_MUT', 'z_maf', 'vantveer_breast_cancer_poor_prognosis',  'original', 'scatter')">Demo 1</button></td>
+				<td><button id="demo2_button" onclick="dr_demo3 ('CCLE', 'GE', 'all', 'all', 'TP53BP2', 0.015, 1)">Demo 2</button></td>
+				<td><button id="demo3_button" onclick="dr_demo2 ('CCLE', 'GE', 'RNAseq', 'GDSC1', 'tamoxifen', 0.05, 1)">Demo 3</button></td>
+				<td><button id="demo4_button" onclick="dr_demo4 ('glmnet', 'TCGA', 'SKCM', 'metastatic', 'CLIN', 'os', '', ['GE', 'IMMUNO'], ['illuminahiseq_rnaseqv2','macrophages_m0'], ['TP53, MYC, MYCN, BRAF', ''], 'cox', 'deviance', false, 1, 10, 0.01, true, 3, 50)">Demo 4</button></td>
 			</tr>
 		</table>
 	</div>
@@ -1188,6 +1188,10 @@ $(document).ready(function(){
 	$("#general_help-button").button({icon: "ui-icon-circle-help", text: false});
 	$("#help_table_toggle").button({icon: "ui-icon-file-table", text: false});
 	$("#demos-button").button({icon: "ui-icon-play", text: false});
+	$("#demo1_button").button({icon: "ui-icon-play"});
+	$("#demo2_button").button({icon: "ui-icon-play"});
+	$("#demo3_button").button({icon: "ui-icon-play"});
+	$("#demo4_button").button({icon: "ui-icon-play"});
 	$("#show_clipboard-button").button({icon: "ui-icon-clipboard", text: false});
 	if (sessionStorage.getItem("transfer") == null) {
 		$("#show_clipboard-button").button("disable");
@@ -1799,7 +1803,7 @@ function build_and_show_model() {
 									<iframe class="model_iframe" src="https://' + window.location.hostname + '/pics/plots/' + model_name + '_model.png" width="720px" height="640px"></iframe> \
 								</div> \
 								<div id="' + model_name + '_training"> \
-									<iframe class="model_iframe" src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.html" width="720px" height="640px" style="margin-right: 5px;"></iframe> \
+									<iframe class="model_iframe" src="https://'+ window.location.hostname + '/pics/plots/' + model_name + '_training.html" width="700px" height="640px" style="margin-right: 5px;"></iframe> \
 								</div>'
 								+ ((crossvalidation) ? (
 								'<div id="' + model_name + '_validation"> \

@@ -25,7 +25,7 @@ function waitForElement (ww) {
 			setTimeout(waitForElement, ww.interval, ww);
 		}
 		else {
-			console.log(ww.ele, " has come!!!" );
+			//console.log(ww.ele, " has come!!!" );
 			ww.func();
 			return(null);
 		}
@@ -45,7 +45,7 @@ async function waitForEvent(ele, ev, fun, val, to) {
 	// temp! Works only for dropdown
 	if ($("#" + ele + " option:selected").val() != val) {
 		setListener(ele, ev);
-		console.log("Back to waitForEvent");
+		//console.log("Back to waitForEvent");
 		fun("#" + ele, val, to);
 		await waitForCompletion();
 	}
@@ -57,9 +57,9 @@ async function waitForEvent(ele, ev, fun, val, to) {
 
 function setListener(ele, ev) {
 	completed = false;
-	console.log("Listener for " + ev + " registered");
+	//console.log("Listener for " + ev + " registered");
 	document.getElementById(ele).addEventListener(ev, function(e) {
-		console.log(e + ": completed");
+		//console.log(e + ": completed");
 		completed = true;
 	}, {once: true});
 }
@@ -67,7 +67,7 @@ function setListener(ele, ev) {
 async function waitForCompletion() {
 	return new Promise((resolve, reject) => {
 		while (!completed) {
-			console.log("Waiting...");
+			//console.log("Waiting...");
 		}
 		resolve(completed);
 	});
@@ -79,7 +79,7 @@ async function waitForCompletion() {
 // ev is event name
 function ignoreEvent(ele, ev) {
 	document.getElementById(ele).addEventListener(ev, function(e) {
-		console.log("Event " + ev + " ignored");
+		//console.log("Event " + ev + " ignored");
 	}, {once: true});
 }
 
@@ -97,7 +97,7 @@ function comment(comment_text) {
 		delayed_comment(comment_text,0);
 }
 
-// demo for the third tab - 2D plot
+// demo for the second tab - 2D plot
 function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, datatype2, platform2, id2, scale2, plottype) {
 	if (sessionStorage.getItem("demo") == null) {
 		$(".ui-dialog-content").dialog("close");
@@ -108,8 +108,8 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 		var n = $('#plot_options tr').length-1;
 		if (n > 1) {
 			for (var i = n; i>=2; i--) {
-				console.log(i);
-				delete_plot_options_row(2);
+				//console.log(i);
+				delete_plot_options_row(i);
 			}
 		}
 		var to = 1000;
@@ -162,7 +162,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 															interval: 50, 
 															val: plottype, 
 															func: function () {
-																console.log("Part plot-type");
+																//console.log("Part plot-type");
 																demoClick("#" + this.ele, 100);
 															}	   
 														}
@@ -174,7 +174,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 													interval: 50, 
 													val: scale2, 
 													func: function () {
-														console.log("Part axis2_selector");
+														//console.log("Part axis2_selector");
 														demoClick("#" + this.ele, 100);
 													}	   
 												}
@@ -188,7 +188,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 												interval: 50, 
 												val: platform2, 
 												func: function () {
-													console.log("Part platform2_selector");
+													//console.log("Part platform2_selector");
 													demoClick("#" + this.ele, 100);
 												}	   
 											}
@@ -200,14 +200,14 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 											interval: 50, 
 											val: datatype2, 
 											func: function () {
-												console.log("Part type2_selector");
+												//console.log("Part type2_selector");
 												demoClick("#" + this.ele, 100);
 											}	   
 										}
 										waitForElement(part_e); 
 										changeDropVal("#type2_selector", datatype2, to);
 									}, {once: true});
-									console.log("Part add_row1");
+									//console.log("Part add_row1");
 									demoClick("#add_row1", 100);
 								}, {once: true});
 								var part_d = {
@@ -215,7 +215,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 									interval: 50, 
 									val: scale1, 
 									func: function () {
-										console.log("Part axis1_selector");
+										//console.log("Part axis1_selector");
 										demoClick("#" + this.ele, 100);
 									}	   
 								}
@@ -229,7 +229,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 							interval: 50, 
 							val: platform1, 
 							func: function () {
-								console.log("Part platform1_selector");
+								//console.log("Part platform1_selector");
 								demoClick("#" + this.ele, 100);
 							}	   
 						}
@@ -241,7 +241,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 						interval: 50, 
 						val: datatype1, 
 						func: function () {
-							console.log("Part type1_selector");
+							//console.log("Part type1_selector");
 							demoClick("#" + this.ele, 100);
 						}	   
 					}
@@ -253,7 +253,7 @@ function dr_demo1 (source, cohort, code, datatype1, platform1, id1, scale1, data
 					interval: 50, 
 					val: cohort, 
 					func: function () {
-						console.log("Part cohort_selector");
+						//console.log("Part cohort_selector");
 						demoClick("#" + this.ele, 100);
 					}	   
 				}
@@ -314,7 +314,7 @@ async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 						interval: 50, 
 						val: screen, 
 						func: function () {
-							console.log("Part corScreen_selector");
+							//console.log("Part corScreen_selector");
 							demoClick("#" + this.ele, 100);
 						}	   
 					}
@@ -327,7 +327,7 @@ async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 					interval: 50, 
 					val: platform, 
 					func: function () {
-						console.log("Part corPlatform_selector");
+						//console.log("Part corPlatform_selector");
 						demoClick("#" + this.ele, 100);
 					}	   
 				}
@@ -340,7 +340,7 @@ async function dr_demo2 (source, datatype, platform, screen, id, fdr, plotid) {
 				interval: 50, 
 				val: datatype, 
 				func: function () {
-					console.log("Part corDatatype_selector");
+					//console.log("Part corDatatype_selector");
 					demoClick("#" + this.ele, 100);
 				}	   
 			}
@@ -400,7 +400,7 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 						interval: 50, 
 						val: screen, 
 						func: function () {
-							console.log("Part corScreen_selector");
+							//console.log("Part corScreen_selector");
 							demoClick("#" + this.ele, 100);
 						}	   
 					}
@@ -413,7 +413,7 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 					interval: 50, 
 					val: platform, 
 					func: function () {
-						console.log("Part corPlatform_selector");
+						//console.log("Part corPlatform_selector");
 						demoClick("#" + this.ele, 100);
 					}	   
 				}
@@ -426,7 +426,7 @@ function dr_demo3 (source, datatype, platform, screen, id, fdr, plotid) {
 				interval: 50, 
 				val: datatype, 
 				func: function () {
-					console.log("Part corDatatype_selector");
+					//console.log("Part corDatatype_selector");
 					demoClick("#" + this.ele, 100);
 				}	   
 			}
@@ -489,7 +489,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: cohort, 
 			func: function () {
-				console.log("Part modelCohort_selector");
+				//console.log("Part modelCohort_selector");
 				demoClick("#" + this.ele, 100);
 			}	   
 		}
@@ -503,7 +503,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: rdatatype, 
 			func: function () {
-				console.log("Part responseDatatype_selector");
+				//console.log("Part responseDatatype_selector");
 				demoClick("#" + this.ele, 100);
 			}	   
 		}
@@ -517,7 +517,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: rplatform, 
 			func: function () {
-				console.log("Part responseVariable_selector");
+				//console.log("Part responseVariable_selector");
 				demoClick("#" + this.ele, 100);
 			}	   
 		}
@@ -542,7 +542,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: x_datatypes[0], 
 			func: function () {
-				console.log("Part modelDatatype1_selector");
+				//console.log("Part modelDatatype1_selector");
 				demoClick("#" + this.ele, 100);
 			}	   
 		}
@@ -556,7 +556,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: x_platforms[0], 
 			func: function () {
-				console.log("Part modelPlatform1_selector");
+				//console.log("Part modelPlatform1_selector");
 				demoClick("#" + this.ele, 100);
 			}	   
 		}
@@ -572,7 +572,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 		to += 2500;
 		
 		setTimeout(function () {
-			console.log("Part add_variable");
+			//console.log("Part add_variable");
 			comment("Add second independent variable");
 			demoClick("#add_variable", 100);
 		}, to);
@@ -583,7 +583,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: x_datatypes[1], 
 			func: function () {
-				console.log("Part modelDatatype2_selector");
+				//console.log("Part modelDatatype2_selector");
 				demoClick("#" + this.ele, 100);
 			}	   
 		}
@@ -596,7 +596,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: x_platforms[1], 
 			func: function () {
-				console.log("Part modelPlatform2_selector");
+				//console.log("Part modelPlatform2_selector");
 				demoClick("#" + this.ele, 100);
 			}		   
 		}
@@ -628,7 +628,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 			interval: 50, 
 			val: family, 
 			func: function () {
-				console.log("Part family");
+				//console.log("Part family");
 				demoClick("#" + this.ele, 100);
 			}	   
 		}
@@ -650,6 +650,7 @@ function dr_demo4 (method, source, cohort, multiopt, rdatatype, rplatform, rid, 
 		to += 4400;
 			
 		setTimeout(function () {
+			
 			demoClick("#build_model_button", 100);
 			closeCommentForm();		
 			sessionStorage.removeItem("demo");

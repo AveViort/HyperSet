@@ -356,7 +356,7 @@ createGLMnetSignature <- function (
 				observed <- MG[smp];
 				regression_model <- lm(observed ~ pred);
 				p <- plot_ly(x = pred, y = observed, type = 'scatter', name = ppe) %>% 
-					layout(legend = Round,
+					layout(legend = list(x = 100, y = 0.5),
 					showlegend = TRUE,
 					shapes = list(type = 'line', line = list(color = 'red', dash = 'dash'), 
 							x0 = min(pred), 
@@ -378,6 +378,7 @@ createGLMnetSignature <- function (
 					
 					a <- a + labs(title = paste0(title.main, " n=", length(smp), " p=", round(perf[[paste0("P-value(logtest, ", Round, ")")]],3)));
 					p <- ggplotly(a);
+					p <- p %>% layout(legend = list(x = 100, y = 0.5)) %>% config(editable = TRUE, edits = list(shapePosition = FALSE), modeBarButtonsToAdd = list(druggable.evinet.modebar));
 					htmlwidgets::saveWidget(p, paste0(baseName, "_", Round,".html"), selfcontained = FALSE, libdir = "plotly_dependencies");
 				} else {
 					# for classification - use boxplot
