@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <HTML lang="en-US">
 <HEAD>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZKB6468LPL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZKB6468LPL');
+</script>
 
 <TITLE>Drug screen data analysis</TITLE>
 <LINK href="pics/drugg/favicon.ico" rel="shortcut icon">
@@ -628,7 +637,7 @@ table.table_with_borders, table.table_with_borders th, table.table_with_borders 
 						<li><i>limit_by</i>: mandatory, name of the column by which results are sorted (in ascending order), number of returned results is limited to 1000.</li>
 						</ul>
 					<b>Example:</b> <a href="https://www.evicor.org/cgi/cor_datatables_json.cgi?source=TCGA&datatype=GE&cohort=BRCA&platform=IlluminaHiSeq_RNASeqV2&screen=all&id=tamoxifen&fdr=0.005&mindrug=10&data_columns=gene,feature,followup,followup_part,q_drug,q_expr,q_interaction,n_patients,n_treated&filter_columns=q_expr,q_interaction&concat_operator=OR&limit_by=q_interaction" style="word-break: break-all">https://www.evicor.org/cgi/cor_datatables_json.cgi?source=TCGA&datatype=GE&cohort=BRCA&platform=IlluminaHiSeq_RNASeqV2&screen=all&id=tamoxifen&fdr=0.005&mindrug=10&data_columns=gene,feature,followup,followup_part,q_drug,q_expr,q_interaction,n_patients,n_treated&filter_columns=q_expr,q_interaction&concat_operator=OR&limit_by=q_interaction</a><br>
-					<b>Usage tips:</b> Option <i>concat_operator</i> may be confusing. The following short example is designed to clarify it. Let's say columns <code>col1</code>, <code>col2</code> and <code>col3</code> are chosen for filtering, FDR threshold is 0.05. If <i>concat_operator</i> is set to <code>OR,AND</code> the resulting condition will be: <code>(col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05)</code>. Setting this parameter to <code>AND</code> will result in the following filtering condition: <code>(col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05)</code>.<br>
+					<b>Usage tips:</b> Option <i>concat_operator</i> may be confusing. The following short example is designed to clarify it. Let's say columns <code>col1</code>, <code>col2</code> and <code>col3</code> are chosen for filtering, FDR threshold is 0.05. If <i>concat_operator</i> is set to <code>OR,AND</code> the resulting condition will be: <code>(col1&lt;0.05) OR (col2&lt;0.05) AND (col3&lt;0.05)</code>. Setting this parameter to <code>AND</code> will result in the following filtering condition: <code>(col1&lt;0.05) AND (col2&lt;0.05) AND (col3&lt;0.05)</code>.<br>
 					
 				<h3>Creating plots</h3>
 					<b>Script name:</b> <code>rplot.cgi</code><br>
