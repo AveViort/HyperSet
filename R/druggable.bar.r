@@ -55,9 +55,13 @@ if (status != 'ok') {
 	if (datatypes[1] == "mut") {
 		query <- paste0("SELECT DISTINCT sample,'wild_type'", " FROM ", table_name, " WHERE id<>'", internal_id, "' AND sample ~ '", createPostgreSQLregex(tcga_codes), "';");
 		print(query);
+		print("Before:");
+		print(table(x_data[,2]));
 		temp <-  sqlQuery(rch, query);
 		colnames(temp) <- colnames(x_data);
 		x_data <- rbind(x_data,temp);
+		print("After:");
+		print(table(x_data[,2]));
 	}
 	# 1D
 	if (length(datatypes) == 1) {
@@ -90,15 +94,19 @@ if (status != 'ok') {
 		}
 		p <- plot_ly(x = names(temp),
 			y = temp,
-			text = paste0(temp/nrow(x_data)*100, "%"),
-			hoverinfo = 'y+text',
+			#text = paste0(signif(temp/sum(temp)*100, 2), "%"),
+			#hoverinfo = 'y+text',
+			text = temp,
+			hoverinfo = 'text',
+			hovertext = paste0("n=", temp,
+				sapply(names(temp), function(x) ifelse(x == "wild_type", " samples", " mutations"))),
 			name = plot_legend,
 			type = 'bar') %>% 
 		layout(legend = druggable.plotly.legend.style(plot_legend),
 			showlegend = TRUE,
 			editable = TRUE,
-			xaxis = x_axis,
-			yaxis = y_axis,
+			#xaxis = x_axis,
+			#yaxis = y_axis,
 			margin = druggable.margins) %>%
 		config(modeBarButtonsToAdd = list(druggable.evinet.modebar));
 		htmlwidgets::saveWidget(p, File, selfcontained = FALSE, libdir = "plotly_dependencies");

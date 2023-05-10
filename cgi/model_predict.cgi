@@ -30,6 +30,8 @@ my $measure 	= $query->param('measure');
 my $alpha 		= $query->param('alpha');
 my $nlambda 	= $query->param('nlambda');
 my $minlambda 	= $query->param('minlambda');
+
+# common model options for validation/data transformation
 my $validation 	= $query->param('validation');
 my $validation_fraction = $query->param('validation_fraction');
 my $nfolds 		= $query->param('nfolds');

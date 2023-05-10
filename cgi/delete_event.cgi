@@ -13,7 +13,6 @@ my $timestamp = $query->param("timestamp");
 my $source = $query->param("source");
 my $level = $query->param("level"); 
 my $description = $query->param("description"); 
-my $platform = $query->param("platform"); 
 my $options = $query->param("options"); 
 my $user_agent = $query->param("user_agent");
 

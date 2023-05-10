@@ -2401,7 +2401,7 @@ function init_cohortselector() {
 function init_dataselector(selector_id) {
 	var total = $('#plot_options tr').length-1;
 	var n = parseInt(selector_id.substr(4, selector_id.indexOf("_")-4));
-	var datatypes = get_cohort_datatypes($("#cohort_selector option:selected").val());
+	var datatypes = get_plot_datatypes($("#cohort_selector option:selected").val());
 	var empty = (datatypes.length == 0);
 	if (!empty) {
 		options = [];
@@ -2440,7 +2440,7 @@ function init_dataselector(selector_id) {
 function init_platformselector(selector_id) {
 	var total = $('#plot_options tr').length-1;
 	var n = parseInt(selector_id.substr(8, selector_id.indexOf("_")-8));
-	var platforms = get_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val());
+	var platforms = get_plot_platforms($("#cohort_selector option:selected").val(), $("#type" + n + "_selector option:selected").val());
 	//console.log(platforms);
 	var empty = (platforms[1].length == 0);
 	//console.log(empty);
@@ -2561,7 +2561,7 @@ function init_axis_type_selector(selector_id) {
 	// does not work properly
 	$("#" + selector_id + "-button").qtip({ 
 		content: {
-			text: "Choose scale for this axis: original, log or square root"
+			text: "Choose scale for this axis"
 		}
 	});
 	$("#" + selector_id).off("selectmenuchange").on( "selectmenuchange", function( event, ui ) {
@@ -3452,7 +3452,7 @@ function update_model_cohort_selector() {
 	$('#responseDatatype_selector').selectmenu( "refresh" );
 	$('#responseDatatype_selector').find('option').remove().end();
 	$('#responseDatatype_selector').selectmenu('destroy').selectmenu({ style: 'dropdown' });
-	init_response_datatype_selector(1);
+	init_response_datatype_selector();
 	$('#responseDatatype_selector').selectmenu( "refresh" );
 	var event = new CustomEvent("modelcohortselector_update_complete", {
 		detail: {
@@ -3723,7 +3723,7 @@ function history() {
 	var keys = Object.keys(sessionStorage);
 	for (key in keys) {
 		if (keys[i].includes("tmp")) {
-			//console.log(keys[key] + " : " + sessionStorage.getItem(keys[key]));
+			console.log(keys[key] + " : " + sessionStorage.getItem(keys[key]));
 		}
 	}
 }
@@ -3846,7 +3846,7 @@ function open_dock(dock_id, wrapper_id) {
 
 	// check if we have vertical or horizontal dock
 	if((document.getElementById(dock_id).classList.contains('sidebar_right')) | (document.getElementById(dock_id).classList.contains('sidebar_left'))) {
-	console.log("open_dock");
+		//console.log("open_dock");
 		// can't use "auto" - transition animation does not work in this case
 		var wrapper_width = document.getElementById(wrapper_id).offsetWidth;
 		document.getElementById(dock_id).style.width = wrapper_width + 20 + "px";
@@ -3965,7 +3965,7 @@ function open_info_page(id) {
 	window.open(url, "_blank");
 }
 
-// this function is used to transfer IDs from the second tab (correlates) to independent variables of the fourth tab 
+// this function is used to transfer IDs from correlates tab to independent variables of the model tab 
 function transfer_id (source, cohort, datatype, platform, id) {
 	show_transfer_buffer_window("#tab-signif");
 	var current_ids = sessionStorage.getItem("transfer");
@@ -4491,6 +4491,7 @@ function check_model_unique_variable(n) {
 	if (flag) {
 		//alert("Model does not allow choosing same datatype as two different variables. Please chose another datatype");
 	}
+	return(flag);
 }
 
 // this functions check if all model parameters are specified, returns either 'ok' or error message 

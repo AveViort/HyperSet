@@ -11,7 +11,6 @@ my $query = new CGI;
 my $pass = $query->param("pass");
 my $timestamp = $query->param("timestamp");
 my $level = $query->param("level"); 
-my $user_agent = $query->param("user_agent");
 my $status = $query->param("status");
 
 print "Content-type: text/html\n\n";

@@ -11,7 +11,6 @@ my ($dbh, $stat, $sth, @datatype);
 
 my $query = new CGI;
 my $cohort = $query->param('cohort');
-my $previous_datatypes = $query->param('previous_datatypes');
 print "Content-type: text/html\n\n";
 $dbh = HS_SQL::dbh('druggable') or die $DBI::errstr;
 $stat = qq/SELECT datatype_list(\'$cohort'\)/;

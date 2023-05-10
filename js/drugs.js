@@ -252,7 +252,7 @@ function get_glmnet_family(variable, datatype) {
 }
 
 function build_model(method, source, cohort, r_datatype, r_platform, r_id, x_datatypes, x_platforms, x_ids, multiopt, 
-	family, measure, standardize, params, crossvalidation, nfold, crossvalidation_percent, stat_file, extended_output, header)
+	family, measure, standardize, params, crossvalidation, nfold, crossvalidation_percent, stat_file = "auto", extended_output = false, header = true)
 {
 	var file; 
 	var xids = [];
@@ -408,7 +408,7 @@ function feature_list() {
 	return feature_array;
 }
 
-function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales, surv_period) {
+function rplot(type, source, cohort, datatypes, platforms, ids, codes, scales, surv_period=1) {
 	var file; 
 	//var target = '#tab-lookup';
 	// $("#displayind").html('<span class="' + loadingClasses + '"></span>');
@@ -488,7 +488,7 @@ function get_plot_cohorts(source) {
 	return cohorts_array;
 }
 
-function get_cohort_datatypes(cohort) {
+function get_plot_datatypes(cohort) {
 	var datatypes;
 	// console.log('previous datatypes: ' + previous_datatypes);
 	var xmlhttp = new XMLHttpRequest();
@@ -507,7 +507,7 @@ function get_cohort_datatypes(cohort) {
 	return datatypes_array;
 }
 
-function get_platforms(cohort, datatype) {
+function get_plot_platforms(cohort, datatype) {
 	var platforms;
 	var xmlhttp = new XMLHttpRequest();
 	//console.log("cgi/plot_platforms.cgi?cohort=" + encodeURIComponent(cohort) + 
@@ -651,7 +651,7 @@ function get_codes(source, cohort, datatype, platform, previous_datatypes, previ
 	return codes;
 }
 
-// these function are used for table headers tips on the second tab
+// these function are used for table headers tips on the correlations tab
 function get_datatypes_tip(source) {
 	var datatypes = get_correlation_datatypes(source);
 	var tip = "";

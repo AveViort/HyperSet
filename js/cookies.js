@@ -176,11 +176,11 @@ function getSignature()
 	var ctimestamp = (cookie.split("|"))[2];
 	var cvaltime = (cookie.split("|"))[3];
 	var verified = verify_cookie("username", cvalue, csign, ctimestamp, cvaltime);
-		if (verified) {
-			return csign;}
-		else {
-			erase_all_cookies();
-			return false;}
+	if (verified) {
+		return csign;}
+	else {
+		erase_all_cookies();
+		return false;}
 }
 
 // this function exists only for lowering number of external connections

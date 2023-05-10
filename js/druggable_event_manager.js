@@ -1,4 +1,4 @@
-// this file contains event manager for druggable.html
+// this file contains event manager for evicor.html
 // unlike most other JS files, it cannot be used with other projects
 // however, the architecture is universal (mimicing Erlang server), so it can be copied into other projects
 
