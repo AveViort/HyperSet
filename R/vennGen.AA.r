@@ -1,7 +1,7 @@
 source("../R/HS.R.config.r");
 #.libPaths('/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/shiny/library/')
 # .libPaths('/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/R/lib')
-library(devtools);
+# library(devtools);
 library(Vennerable);
 
 sink(file = NULL, type = "output")

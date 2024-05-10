@@ -6,7 +6,7 @@ sink(file(paste(usedDir, "modelData.", usedSink, ".output.Rout", sep=""), open =
 sink(file(paste(usedDir, "modelData.", usedSink, ".message.Rout", sep=""), open = "wt"), append = FALSE, type = "message")
 options(warn = 1); # options(warn = 0);
 message("TEST0");
-
+message(getwd());
 source("../R/common_functions.r");
 source("../R/plot_common_functions.r");
 source("../R/survival_common_functions.r");
@@ -65,7 +65,7 @@ plotSurv2 <- function (cu, Grouping, s.type = "Survival", Xmax = NA, Cls, Title 
 	Score <- Grouping[survSamples];
 	fit = survfit(Surv(cu[survSamples, "Time"], cu[survSamples, "Stat"]) ~ Score, conf.type = "log-log");
 	#fit <- plotSurvival_DR(Score, cu, datatype = "Prediction score", platform = "", id = "", s.type = "os");
-	print(fit);
+	# print(fit);
 	if (is.na(Xmax)) {
 		Xmax = max(cu[survSamples, "Time"], na.rm = TRUE)
 	}

@@ -1,7 +1,7 @@
 package HS_SQL;
 
 use DBI;
-#use DBD::Pg qw(:pg_types);
+#use DBD::Pg qw(:pg_types); 
 # use CGI qw(:standard);
 # use CGI::Carp qw(fatalsToBrowser);
 #use List::Util qw[min max];
@@ -81,36 +81,33 @@ return(%optfgs);
 }
 
 sub gene_synonyms { # for submitted ARBITRARY gene/protein/enzime IDs, finds reference IDs (normally  gene symbols)
-	my ( $genes, $spec, $type ) = @_;
+	my ( $genes, $spec, $type, $source) = @_;
 	my ( $rows, $gene_arr, $gg, $sth, $fcgenes);
-  # print 'REC AGS GENES: '.join(" ",@{$genes} ).'<br>'."\n"  ;
-
-	$gene_arr = "\'" . uc( join( "\', \'", @{$genes} ) ) . "\'";
-	my $sm = "SELECT optname, hsname FROM  $HSconfig::optnames WHERE org_id = \'$spec\' and upper(optname) IN ($gene_arr)";
-		$sth =
-	  $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT statement 1";
-	  # print STDERR $sm; # if $main::debug;
-	$sth->execute();
+if ($source eq 'sql') {
+$gene_arr = "\'" . uc( join( "\', \'", @{$genes} ) ) . "\'";
+my $sm = "SELECT optname, hsname FROM  $HSconfig::optnames WHERE org_id = \'$spec\' and upper(optname) IN ($gene_arr)";
+# print STDERR $sm."\n";	
+$sth = $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT statement 1";
+$sth->execute();
 	while ( $rows = $sth->fetchrow_hashref ) {
-		$fcgenes->{ $rows->{'hsname'} } = $type
-		  if !defined( $fcgenes->{ $rows->{'hsname'} } )
-		  or ( $fcgenes->{ $rows->{'hsname'} } ne 'query' );
-		   # print 'hs_gene '.$rows->{'hsname'}.'<br>'."\n"  ;
-		$HS_bring_subnet::found_genes->{$spec}->{ $rows->{'hsname'} }++;
-# push @{ $HS_bring_subnet::submitted_genes->{$spec}->{uc($rows->{'optname'})}->{'hsnames'} }, uc($rows->{'hsname'})  if $rows->{'hsname'};
+$fcgenes->{ $rows->{'hsname'} } = $type if !defined($fcgenes->{$rows->{'hsname'}}) or ($fcgenes->{$rows->{'hsname'}} ne 'query');
+$HS_bring_subnet::found_genes->{$spec}->{ $rows->{'hsname'} }++;
 $translated_genes->{$spec}->{uc($rows->{'optname'})}->{$rows->{'hsname'}} = $type;
 	}
 $sth->finish;
-	for $gg ( @{$genes} ) {
-		# if (!defined( $HS_bring_subnet::submitted_genes->{$spec}->{ uc($gg) } )) {
-		if (!defined( $HS_bring_subnet::found_genes->{$spec}->{ $gg })) {
-		# $HS_bring_subnet::submitted_genes->{$spec}->{ uc($gg) }->{'status'} = 'ID not found';
-		 $translated_genes->{$spec}->{uc($rows->{'optname'})}->{$gg} = 
-			$fcgenes->{ $gg} = 
-				$type; 
-		 $HS_bring_subnet::found_genes->{$spec}->{ $gg }++;
-		  }
-	}
+} else {
+for $gg(@{$genes}) {
+$fcgenes->{$gg} = $type if !defined($fcgenes->{$gg}) or ($fcgenes->{$gg} ne 'query');
+$HS_bring_subnet::found_genes->{$spec}->{$gg}++;
+$translated_genes->{$spec}->{uc($gg)}->{$gg} = $type;}	
+}
+for $gg (@{$genes}) {
+	if (!defined( $HS_bring_subnet::found_genes->{$spec}->{ $gg })) {
+		# $translated_genes->{$spec}->{uc($rows->{'optname'})}->{$gg} = 
+		$fcgenes->{$gg} = $type; 
+		$HS_bring_subnet::found_genes->{$spec}->{$gg}++;
+  }
+}
 	return ($fcgenes);
 }
 

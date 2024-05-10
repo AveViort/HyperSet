@@ -5,8 +5,8 @@ usedSink = localSink;
 sink(file(paste(usedDir, "runExploratory.", usedSink, ".output.Rout", sep=""), open = "wt"), append = F, type = "output")
 sink(file(paste(usedDir, "runExploratory.", usedSink, ".message.Rout", sep=""), open = "wt"), append = F, type = "message")
 options(warn = 1); # options(warn = 0);
-message("MESSAGE1");
-print("PRINT1");
+# message("MESSAGE1");
+# print("PRINT1");
 
 Debug = 1;
 
@@ -97,7 +97,7 @@ tmpdir = '';
 filename = Param$table;
 
 tbl=readin(file=paste0(tmpdir, filename), format="TAB");
-# print(Param$rownames);
+print(Param$rownames);
 rnms <- intersect(
 toupper(strsplit(Param$rownames, split="***", fixed=T)[[1]]), 
 rownames(tbl));
@@ -126,11 +126,8 @@ if (transpose) {tbl = t(tbl);}
 st <- system.time(res <- hmap(tbl, na.action="zero", out=Param$out));
 }
 
-
 if (Debug>0) {print(st);}
-# z <- seq(-2, 5, 0.01)
-# x <- runif(length(z)); #cos(0.5*z)
-# y <- sin(z) 
+
 
 
 

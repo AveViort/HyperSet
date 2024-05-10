@@ -95,6 +95,7 @@ $dbh,	$data,        $order,            $node,
 	                    %criteria,          %link_table, $submitted_coff, $base, $keep_query, $pw, 
 	%profile_table);
 our $debug = 1;
+# our $maxConfidence = "10.000000000000";
 our $output = 'webgraph';
 our $graf_path        = 'pics/'; 
 #system("/usr/sbin/tmpwatch -m 24 $tmp_loc_path");
@@ -159,78 +160,41 @@ my ($URL) = @_;
 my($ss);
 $time = time();
 $q = new CGI; #new instance of the CGI object passed from the query page index.html
-
 my $fld;
-# print 'AAA';
 my @flds = split($HS_html_gen::fieldURLdelimiter, $URL);
-
 for $fld(@flds) {
-$q->{$1} = $2 if $fld =~ m/([A-Za-z0-9\:\_\-\.]+)$HS_html_gen::keyvalueURLdelimiter([A-Za-z0-9\:\_\-\.\%]+)/i;
+$q->{$1} = $2 if $fld =~ m/([A-Za-z0-9\:\_\-\.\/]+)$HS_html_gen::keyvalueURLdelimiter([A-Za-z0-9\:\_\-\.\%\/]+)/i;
 }
-	$gsAttr = HStextProcessor::parseGenesWithAttributes($q->{genes}, $HS_html_gen::arrayURLdelimiter);
-	$cgsAttr = HStextProcessor::parseGenesWithAttributes($q->{context_genes}, $HS_html_gen::arrayURLdelimiter);
-	# my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-3.txt";
-	# open(my $fh, '>', $debug_filename);
-	# print $fh $q."\n";
-	# my @list = $q->param();
-    # foreach my $parameter (@list) {
-		# print $fh $parameter.' = '.$q->param($parameter)."\n";
-   # }
-   # print $fh "Genes: ".$q->{genes}."\n";
-   # print $fh "Genes (parsed): ".$gsAttr."\n";
-   # print $fh "Context genes: ".$q->{context_genes}."\n";
-   # print $fh "Context genes (parsed): ".$cgsAttr."\n";
-# print $fh join(" ", keys(%{$gsAttr->{id}}))."\n";
-# print $fh join(" ", values(%{$gsAttr->{id}}))."\n";
-# print $fh join(" ", keys(%{$cgsAttr->{id}}))."\n";
-# print $fh join(" ", values(%{$cgsAttr->{id}}))."\n";
-# print $fh join(" ", keys(%{$gsAttr->{score}}))."\n";
-# print $fh join(" ", values(%{$gsAttr->{score}}))."\n";
-# print $fh join(" ", keys(%{$gsAttr->{subset}}))."\n";
-# print $fh join(" ", values(%{$gsAttr->{subset}}))."\n";
-# close $fh;
-	$genes = [keys(%{$gsAttr->{id}})]; #->{attr};
-	$context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
-# my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet-2.txt";
-# open(my $fh, '>', $debug_filename);
-# print $fh join("", keys(%{$gsAttr->{id}}))."\n";
-# print $fh join("", values(%{$gsAttr->{id}}))."\n";
-# print $fh join("", keys(%{$gsAttr->{score}}))."\n";
-# print $fh join("", values(%{$gsAttr->{score}}))."\n";
-# print $fh join("", keys(%{$gsAttr->{subset}}))."\n";
-# print $fh join("", values(%{$gsAttr->{subset}}))."\n";
-# close $fh;
+# for my $key(keys(%{$q})) {print STDERR $key.': '.$q->{$key}."\n";}
+	$gsAttr = $q->{genes} ? HStextProcessor::parseGenesWithAttributes($q->{genes}, $HS_html_gen::arrayURLdelimiter) : undef;
+	$cgsAttr = $q->{context_genes} ? HStextProcessor::parseGenesWithAttributes($q->{context_genes}, $HS_html_gen::arrayURLdelimiter) : undef;
 
+	$genes = defined($gsAttr) ? [keys(%{$gsAttr->{id}})] : undef; #->{attr};
+	$context_genes = defined($cgsAttr) ? [keys(%{$cgsAttr->{id}})] : undef; #->{attr};
 	@{$networks} = split($HS_html_gen::arrayURLdelimiter, $q->{'networks'});
 	$submitted_species = $q -> {species}; 
-# }
+$reduce = $q->{reduce};
+$reduction = $q->{reduce_by};
+$order = $q->{order};
 
 die $URL."Species not defined...\n " if !$submitted_species;
-die $genestring." - genes not defined...\n" if !defined($genes) or !$genes or $#{$genes} < 0;
+# die $genestring." - genes not defined...\n" if !defined($genes) or !$genes or $#{$genes} < 0;
 	$pw                = ''; # $q->{'pw'};
 	$show_context = 'yes' if defined($context_genes); 
 	if ($q->{'ags_fgs'} ) {
 	$show_context = 0; 
-$ags_genes = [@{$genes}];
-$fgs_genes = [@{$context_genes}];
-	@{$genes} = (@{$genes}, @{$context_genes});
+$ags_genes = [@{$genes}] if defined($genes);
+$fgs_genes = [@{$context_genes}] if defined($context_genes);
+	push @{$genes}, @{$context_genes} if defined($context_genes);
 	}
-	print STDERR "SBMURL: ". $URL."\n";
-print STDERR "Genes: ". join(" ", @{$genes})."\n";
-
-#END OF READING CGI PARAMETERS
-#PARAMETERS TO REPLACE CGI IN DEBUG MODE:
-# $reduce_by           = 'noislets'  if !$reduce_by;
-# $show_names          = 'Names'     if !$show_names;
-# $desired_links_total = 10          if !$desired_links_total;
+	# print STDERR "SBMURL: ". $URL."\n";
+# print STDERR "Genes: ". join(" ", @{$genes})."\n";
+# print STDERR "networks: ". $networks."\n";
 our $desired_nodes       = 3;
 our $antiCrashLimit      = 800;
-#Displaying the number of links for each node on the global network is only possible with pre-calculated values from a special table, and only at 3 discrete cut-offs; so it is prepared here:
-# if    ( $submitted_coff < 0.375 ) { $coff_class = 0.25; }
-# elsif ( $submitted_coff > 0.675 ) { $coff_class = 0.75; }
-# else  { $coff_class = 0.50; }
 print $submitted_species if ($main::debug);
 if ( !$submitted_species || !defined $genes->[0] || $#{$genes} < 0 ) {
+	print STDERR "Genes: ". join(" ", @{$genes})."\n";
 	print_noquery_dialog();
 }
 $dbh = HS_SQL::dbh('hyperset') || die "Failed to connect via HS_SQL.../n";
@@ -245,6 +209,9 @@ $submitted_species = $species{$submitted_species};
 	}
 
 data( $genes, $submitted_coff, $order, $networks );
+
+	# print STDERR "node: ". join(' ', keys( %{ $node} ))."\n";	
+
 return ($data, $node);
 }
 
@@ -252,25 +219,20 @@ sub data { #brings most of the data to display the sub-network
 	my ( $genes, $coff, $order, $networks ) = @_;
 	my ( $source, $gene_arr, $start_species, $current_species, $temp_gene_set,
 		$initial_gene_set, @links, $MAtable );
-
+		
+	# print STDERR (undef( $genes) ? "undef" : "none")."\n";	
 	$start_species = $species{$submitted_species};
-
-
-my $fcgenes = HS_SQL::gene_synonyms( $genes, $start_species, 'query' );
-
-
-	if ( scalar( keys( %{ $found_genes->{$start_species} } ) ) < 1 ) {
+my $fcgenes = HS_SQL::gene_synonyms( $genes, $start_species, 'query', @{$networks}[0] !~ m/\// ? 'sql' : 'text');
+	if (( scalar( keys( %{ $found_genes->{$start_species} } ) ) < 1 ) and @{$networks}[0] !~ m/\//) {
 		print_no_id_dialog();
 		return;
 	}
-
+	 
 	if ($qvotering) {
 		$desired_links_per_query = $desired_links_total /
 		  scalar( keys( %{ $found_genes->{$submitted_species} } ) );
 		$desired_links_per_query = 5 if $desired_links_per_query < 5;
-	}
-
-
+	} else {$desired_links_per_query = 10000;}
 	if ( $output eq 'webgraph' ) {
 		print $q->header();
 		print $q->start_html(
@@ -284,31 +246,24 @@ my $fcgenes = HS_SQL::gene_synonyms( $genes, $start_species, 'query' );
 		  . $css_sheet . '" />' . "\n";
 		print $styleDeclaration. "\n";
 	}
-
 	@{$initial_gene_set} = keys( %{ $found_genes->{$start_species} } );
 	for my $ge(@{$initial_gene_set}) {	$ge = uc($ge);	}
-
 	fc_links($initial_gene_set, $start_species, $fcgenes, $networks);
-	pubmed() if defined($allPubMed);
-	descriptions($fcgenes);
-
-# open OUT2, ' > /var/www/html/research/users_tmp/_tmp.OUT2.dev';
-	# for my $nn(@{$genes}) {	print OUT2 $nn."\tgenes"."\n";}
-	# for my $nn(keys( %{$node } )) {	print OUT2 $nn."\tnode"."\n";}
-	# for my $nn(keys( %{ $found_genes->{'mmu'} } )) {	print OUT2 $nn."\tfound_genes"."\n";}
-# for my $nn(@{$initial_gene_set}) {	print OUT2 $nn."\tinitial_gene_set"."\n";}
-# for my $nn(@{$fnd_genes}) {	print OUT2 $nn."\tfnd_genes"."\n";}
-# for my $nn(@{$ags_genes}) {	print OUT2 $nn."\tags_genes"."\n";}
-# for my $nn(@{$fgs_genes}) {	print OUT2 $nn."\tfgs_genes"."\n";}
-# close OUT2;	
 
 	my $fnd_genes = [keys( %{ $found_genes->{$submitted_species} } )];
-group_labels($fnd_genes); #FunCoup mode
-	# group_labels([@{$genes}, @{$context_genes}]); 
-	group_labels($ags_genes,	$fgs_genes);
+	group_labels($fnd_genes) if defined($fnd_genes); #FunCoup mode
+	group_labels($ags_genes,	$fgs_genes) if defined($ags_genes) or defined($fgs_genes);	
+
+
+	if (@{$networks}[0] !~ m/\//) {
+	pubmed() if defined($allPubMed);
+	descriptions($fcgenes);
 	hubbiness2($initial_gene_set, $start_species, $networks);
 	hubbiness2($fnd_genes, $start_species, $networks); #FunCoup mode
 	extra_data() if $show_extra_data;
+} else {
+	hubbiness2($found_genes->{$submitted_species}, $start_species, $networks); #FunCoup mode	
+}
 	return undef;
 }
 
@@ -316,35 +271,39 @@ group_labels($fnd_genes); #FunCoup mode
 sub group_labels {
 my($group1, $group2) = @_;
 my($ge, $intensity);
-
+# print STDERR "group1: ". $group1."\n";
 	# $genes = [keys(%{$gsAttr->{id}})]; #->{attr};
 	# $context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
 if (!defined($group2)) { #FunCoup mode
-# if ($node->{ $ge }->{'groupColor'}) { #FunCoup mode
-	# $node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_query'};
-	# } else {
-	# $node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_other'};	
-	# }
+for $ge(@{$group1}) {
+if ($node->{ $ge }->{'groupColor'}) { #FunCoup mode
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_query'};
+	} else {
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_other'};	
+	}}
 } else { #NEA mode
 
 for $ge(@{$group1}) {
-	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($gsAttr->{score}->{ $ge }, "byExpression") if (defined($gsAttr->{score}->{ $ge }));
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen_v3::node_shade($gsAttr->{score}->{ $ge }, "byExpression") if (defined($gsAttr->{score}->{ $ge }));
 	$node->{ $ge }->{'subSet'} =  lc($gsAttr->{subset}->{ $ge }) if (defined($gsAttr->{subset}->{ $ge }));
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'}; # if !$node->{ $ge }->{'groupColor'};
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_ags'}; # if !$node->{ $ge }->{'groupColor'};
 }
 for $ge(@{$group2}) {
-	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($cgsAttr->{score}->{ $ge }, "byExpression") if (defined($cgsAttr->{score}->{ $ge }));
+	# print STDERR $ge. ": ". $node->{ $ge }->{'groupColor'}."\n";
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen_v3::node_shade($cgsAttr->{score}->{ $ge }, "byExpression") if (defined($cgsAttr->{score}->{ $ge }));
 	$node->{ $ge }->{'subSet'} =  lc($cgsAttr->{subset}->{ $ge }) if (defined($cgsAttr->{subset}->{ $ge }));
 
-if ($node->{ $ge }->{'groupColor'}) {
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_both'} if ($group1 == $group2);
+if ($node->{ $ge }->{'groupColor'} eq $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_ags'}) {
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_both'};# if ($group1 == $group2);
 } else {
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'};
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_fgs'};
 }
+	# print STDERR $ge. ": ". $node->{ $ge }->{'groupColor'}."\n";
 }
 for $ge(keys % {$node}) {
+	# print STDERR  $ge."\n" if (!defined($node->{ $ge }->{'groupColor'}));
 	$node->{ $ge }->{'name'} = $node->{ $ge }->{'id'} if (!$node->{ $ge }->{'name'});
-	$node->{ $ge }->{'groupColor'} = '#88aa88' if (!defined($node->{ $ge }->{'groupColor'}));
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_other'} if (!defined($node->{ $ge }->{'groupColor'}));
 }
 }
 return undef;
@@ -357,18 +316,18 @@ my($ge, $intensity);
 	# $genes = [keys(%{$gsAttr->{id}})]; #->{attr};
 	# $context_genes = [keys(%{$cgsAttr->{id}})]; #->{attr};
 for $ge(@{$group1}) {
-	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($gsAttr->{score}->{ $ge }, "byExpression") if (defined($gsAttr->{score}->{ $ge }));
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen_v3::node_shade($gsAttr->{score}->{ $ge }, "byExpression") if (defined($gsAttr->{score}->{ $ge }));
 	$node->{ $ge }->{'subSet'} =  lc($gsAttr->{subset}->{ $ge }) if (defined($gsAttr->{subset}->{ $ge }));
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'};
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_ags'};
 }
 for $ge(@{$group2}) {
-	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen::node_shade($cgsAttr->{score}->{ $ge }, "byExpression") if (defined($cgsAttr->{score}->{ $ge }));
+	$node->{ $ge }->{'nodeShade'} =  HS_cytoscapeJS_gen_v3::node_shade($cgsAttr->{score}->{ $ge }, "byExpression") if (defined($cgsAttr->{score}->{ $ge }));
 	$node->{ $ge }->{'subSet'} =  lc($cgsAttr->{subset}->{ $ge }) if (defined($cgsAttr->{subset}->{ $ge }));
 
 if ($node->{ $ge }->{'groupColor'}) {
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_both'};
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_both'};
 } else {
-	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'};
+	$node->{ $ge }->{'groupColor'} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_fgs'};
 }
 }
 for $ge(keys % {$node}) {
@@ -389,7 +348,7 @@ sub reduce_subnet { #implements a number of alternative algorithms to reduce too
 
 	if ( lc($mode) eq 'score' ) {
 		@dpairs =
-		  sort { $data->{$a}->{'confidence'} <=> $data->{$b}->{'confidence'} }
+		  sort {$data->{$a}->{'confidence'} <=> $data->{$b}->{'confidence'} }
 		  keys( %{$data} );
 		while ( scalar( keys( %{$data} ) ) > $desired_links_total ) {
 			$p = shift @dpairs;
@@ -416,16 +375,18 @@ sub reduce_subnet { #implements a number of alternative algorithms to reduce too
 					  if (  !$found_pairs->{$spec}->{$k}->{$j}
 						and !$found_pairs->{$spec}->{$j}->{$k} );
 					@weakest = ( $i, $j ) if ( !extraSupport( $i, $j, $spec ) );
+					# print STDERR  $i."\n";
+					# print STDERR  $j."\n";
+					# print STDERR  $scorecol."\n";
+					
+					# print STDERR $scored_pairs->{$spec}->{ $i }->{ $j }->{$scorecol};
+					# break();
 					@weakest = ( $i, $k )
-					  if ( !extraSupport( $i, $k, $spec ) )
-					  and ( $scored_pairs->{$spec}->{$i}->{$k}->{$scorecol} <
-						$scored_pairs->{$spec}->{ $weakest[0] }->{ $weakest[1] }
-						->{$scorecol} );
+					  if ( !extraSupport( $i, $k, $spec ) ) and ( $scored_pairs->{$spec}->{$i}->{$k}->{'confidence'} <
+						 $scored_pairs->{$spec}->{ $weakest[0] }->{ $weakest[1] }->{'confidence'} );
 					@weakest = ( $j, $k )
-					  if ( !extraSupport( $j, $k, $spec ) )
-					  and ( $scored_pairs->{$spec}->{$j}->{$k}->{$scorecol} <
-						$scored_pairs->{$spec}->{ $weakest[0] }->{ $weakest[1] }
-						->{$scorecol} );
+					  if ( !extraSupport( $j, $k, $spec ) ) and ( $scored_pairs->{$spec}->{$j}->{$k}->{'confidence'} <
+						 $scored_pairs->{$spec}->{ $weakest[0] }->{ $weakest[1] }->{'confidence'} );
 					next
 					  if (
 						$found_pairs->{$spec}->{ $weakest[0] }->{ $weakest[1] }
@@ -522,7 +483,7 @@ sub reduce_subnet { #implements a number of alternative algorithms to reduce too
 						(
 							(
 								defined( $fcgenes->{ $dd->{'prot1'} } )
-								and $fcgenes->{ $dd->{'prot1'} } =~ m/query/i
+								&& $fcgenes->{ $dd->{'prot1'} } =~ m/query/i
 							)
 							and ( $found_genes->{$spec}->{ $dd->{'prot1'} } <
 								$desired_links_per_query )
@@ -564,9 +525,9 @@ sub remove_existing ($$$) { #removes entries, and their respective counts, after
 	$found_pairs->{$spec}->{$prot1}->{$prot2}--;
 	$found_pairs->{$spec}->{$prot2}->{$prot1}--;
 	delete $found_pairs->{$spec}->{$prot1}->{$prot2}
-	  if $found_pairs->{$spec}->{$prot1}->{$prot2} < 1;
+	  if !$found_pairs->{$spec}->{$prot1}->{$prot2};
 	delete $found_pairs->{$spec}->{$prot2}->{$prot1}
-	  if $found_pairs->{$spec}->{$prot2}->{$prot1} < 1;
+	  if !$found_pairs->{$spec}->{$prot2}->{$prot1};
 	$found_genes->{$spec}->{$prot1}--;
 	$found_genes->{$spec}->{$prot2}--;
 	delete $found_genes->{$spec}->{$prot1}
@@ -584,7 +545,7 @@ sub extraSupport ($$$) { #works if PPI-based links are NOT subject to reduction
 	$required_algo = 'ARACNE_ppi';
 	$required_data = 'ppi';
 	$cutoff        = 3;
-	return undef if $reduce_by !~ m/$required_algo/i;
+	return undef if $reduction !~ m/$required_algo/i;
 	return undef;
 }
 
@@ -593,83 +554,90 @@ sub pubMedIDs {
 	my ( $A, $B, $sp ) = @_;
 }
 
-sub fc_links { #the main procedure of sub-network retrieval. Note that it iterates until the required network order is explored (although $order = 1 is the most common mode)
-	my ($gene_list, $spec, $fcgenes, $networks) = @_;
-	my ($rows,      $oo,   $ee,       $sum, %filter,      $dd,
-		$j,         $p,    @fld_list, $sm,  $gene_arr,    $union,
-		$name_cond, $pnum, $s,          $scorecol_as, $prot1,
-		$prot2,     $pair, $fc_cl, %ids, $k);  
 
-	$fc_cl = $HSconfig::network->{$spec};
-	if ($fc_cl =~ 'net_all_') {
-	$scorecol         = 'data_fc_lim';
-	} else {
-	$scorecol         = 'fbs';	
-	}
-	for $ee ( @spoe, @tyoe ) { $filter{$ee} = 1 if $ee; }
-	undef @fld_list;
-	# push @fld_list, ( $scorecol . ' as confidence ', 'prot1', 'prot2' );
-	# push @fld_list, @{$networks};
-	push @fld_list, ( $scorecol . ' as confidence , * '); 
+###########################################################
+sub fc_links { #the main procedure of sub-network retrieval. Note that it iterates until the required network order is explored (although $order = 1 is the most common mode)
+my ($gene_list, $spec, $fcgenes, $networks) = @_;
+	my ($line, $rows, $oo, $p, @fld_list, $gg, $pass, $sm,  $gene_arr,  $name_cond, $fc_cl, $i);  
+my $debug = 0;
 # $order = 1;
+	print STDERR "@{$networks}[0]: ".@{$networks}[0]."\n";
 	for $oo ( 1 .. ( $order + 1 ) ) {
+	if (@{$networks}[0] =~ m/\//) {
+my $net = @{$networks}[0]; 			
+my($group, $gene1, $gene2);
+if ( $show_context and ( $oo == $order + 1 ) ) {my $fcgenes = $context_genes  if $show_context;}
+		if ( $oo == 1 ) {for $gg( @{$gene_list}) {$gene_arr->{$gg} = 1;	}}
+		else {$gene_arr = $found_genes->{$spec};}
+		
+open IN, $net or die "Could not re-open network file $net...\n"; #otherwise, 
+while ($line = <IN>) {
+chomp($line);
+($gene1, $gene2, $group) = HStextProcessor::processEdge($line, $main::textFileFields->{net});
+$pass = 0;
+if ( $oo == $order + 1 ) {
+	$pass = 1 if ($gene_arr->{$gene1} and $gene_arr->{$gene2});
+} else {
+	$pass = 1 if ($gene_arr->{$gene1} or $gene_arr->{$gene2});
+}
+if ($pass) {
+$i = pair_sign( $gene1, $gene2 );
+$data->{$i}->{'prot1'} = $gene1;
+$data->{$i}->{'prot2'} = $gene2;
+$data->{$i}->{'confidence'} = 0;
+			$scored_pairs->{$spec}->{ $gene1 }->{ $gene2 } ->{$group}
+			= $scored_pairs->{$spec}->{ $gene2 }->{ $gene1 } ->{$group} =
+				$group;
+			$found_genes->{$spec}->{ $gene1 }++;
+			$found_genes->{$spec}->{ $gene2 }++;
+			$found_pairs->{$spec}->{ $gene1 }->{ $gene2 }++;
+			$found_pairs->{$spec}->{ $gene2 }->{ $gene1 }++;
+				print STDERR "$gene1 ### $gene2\n";
+	}
+}
+close IN; print STDERR "Close $net..." if $debug;
+} else { ###
+
+			$fc_cl = $HSconfig::network->{$spec};
+	if ($fc_cl =~ 'net_all_') {	$scorecol         = 'data_fc_lim';	} 
+	else {	$scorecol         = 'fbs';		}
+	push @fld_list, ( $scorecol . ' as confidence , * '); 
 		if ( $show_context and ( $oo == $order + 1 ) ) {
-			my $fcgenes = HS_SQL::gene_synonyms( $context_genes, $species{$submitted_species}, 'context' )
+			my $fcgenes = HS_SQL::gene_synonyms( $context_genes, $species{$submitted_species}, 'context', 'sql')
 			  if $show_context;
 		}
-		if ( $oo == 1 ) {
-			$gene_arr = "\'" . join( "\', \'", @{$gene_list} ) . "\'";
-		}
-		else {
-			$gene_arr = "\'"
-			  . join( "\', \'", keys( %{ $found_genes->{$spec} } ) ) . "\'";
-		}
-
-		if ( $oo == $order + 1 ) {
-			$name_cond =
-			  " \( upper(prot1) IN \( $gene_arr \) AND  upper(prot2) IN \( $gene_arr \)\)";
-		}
-		else { 
-			$name_cond =
-			  " \( upper(prot1) IN \( $gene_arr \) OR  upper(prot2) IN \( $gene_arr \)\)";
-		}
+		if ( $oo == 1 ) {			$gene_arr = "\'".join( "\', \'", @{$gene_list} ) . "\'";		}
+		else {			$gene_arr = "\'".join( "\', \'", keys( %{ $found_genes->{$spec} } ) ) . "\'";		}
+		if ( $oo == $order + 1 ) {$name_cond = " \( upper(prot1) IN \( $gene_arr \) AND  upper(prot2) IN \( $gene_arr \)\)";}
+		else {$name_cond =" \( upper(prot1) IN \( $gene_arr \) OR  upper(prot2) IN \( $gene_arr \)\)";}
 		my	$presence_cond = ($fc_cl =~ 'net_all_') ? ' AND (('.join(' IS NOT NULL) OR (', (@{$networks})).' IS NOT NULL)) ' : " AND $scorecol > $submitted_coff ";
-		$sm = "SELECT "
-		  # . ' * '
-		  . ( join( ', ', (@fld_list) ) )
-		  . " FROM $fc_cl WHERE  $name_cond ".
-		  $presence_cond
-		  # ." order by $scorecol desc"
-		  ;
-		 $sm =~ s/data_pwc8/data_pwc9/g;
-		 print OUT $sm;
+$sm = "SELECT ". ( join( ', ', (@fld_list) ) ). " FROM $fc_cl WHERE  $name_cond ".$presence_cond ;
+$sm =~ s/data_pwc8/data_pwc9/g;
+print STDERR $sm;
 		my $sth = $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT statement FC\n";
-		$sth->execute();
-		$j = 0;
+		$sth->execute();		# $j = 0;
 		while ($rows = $sth->fetchrow_hashref) {
-
 processLink($rows, $spec, $fc_cl);			
-			$j++;
-			$scored_pairs->{$spec}->{ $rows->{prot1} }->{ $rows->{prot2} }
-			  ->{$scorecol} =
-			  $scored_pairs->{$spec}->{ $rows->{prot2} }->{ $rows->{prot1} }
-			  ->{$scorecol} = $rows->{$scorecol};
-			# $scored_pairs->{$spec}->{ $rows->{prot1} }->{ $rows->{prot2} }->{'ppi'} =
-			# $scored_pairs->{$spec}->{ $rows->{prot2} }->{ $rows->{prot1} }->{'ppi'} = 
-			# $rows->{'ppi'};
+			# $j++;
+			$scored_pairs->{$spec}->{ $rows->{prot1} }->{ $rows->{prot2} }->{'confidence'} =
+			$scored_pairs->{$spec}->{ $rows->{prot2} }->{ $rows->{prot1} }->{'confidence'} = 
+			  defined($rows->{$scorecol}) ? $rows->{'confidence'} : $HSconfig::fbsValue->{noFunCoup};
+			  # print STDERR $scored_pairs->{$spec}->{ $rows->{prot2} }->{ $rows->{prot1} }->{'confidence'}."\n";
 			$found_genes->{$spec}->{ $rows->{prot1} }++;
 			$found_genes->{$spec}->{ $rows->{prot2} }++;
 			$found_pairs->{$spec}->{ $rows->{prot1} }->{ $rows->{prot2} }++;
 			$found_pairs->{$spec}->{ $rows->{prot2} }->{ $rows->{prot1} }++;
 		}
 		$sth->finish;
+					}
 		next if scalar( keys( %{$data} ) ) < 0;
-		$found_number += $j;
+		# $found_number += $j;
 		$cnts->{$spec}->{$oo}->{before} = scalar( keys( %{$data} ) );
 		$cnts->{$spec}->{$oo}->{co}     = $submitted_coff;
-$reduction = '';
+# $reduction = '';
 		if ($reduce) {
-			$reduction = lc($reduce_by);
+			print STDERR "reduce: $reduction\n";
+			# $reduction = lc($reduce_by);
 			reduce_subnet( $reduction, $spec, $fcgenes )
 			  if ( ( $reduction eq 'maxcoverage' )
 				or ( $reduction eq 'noislets' )
@@ -684,15 +652,28 @@ $reduction = '';
 				  ->{ $data->{$p}->{'prot2'} } =
 				  $previouslySelected->{ $data->{$p}->{'prot2'} }
 				  ->{ $data->{$p}->{'prot1'} } = 1;
-			}
-		}
-	}
+		}}
+}###
 	return undef;
 }
 
 sub hubbiness2 {
 	my ($gene_list, $spec, $networks) = @_;
-	my ($rows, $presence_cond, $pc, $sm, $name_cond, $prot1, $fc_cl);  
+	my ($rows, $presence_cond, $pc, $sm, $name_cond, $prot1, $fc_cl); 
+
+if (@{$networks}[0] =~ m/\//) {
+my $net = @{$networks}[0]; 			
+my($group, $gene1, $gene2, $line);	
+open IN, $net or die "Could not re-open network file $net...\n"; #otherwise, 
+while ($line = <IN>) {
+chomp($line);
+($gene1, $gene2, $group) = HStextProcessor::processEdge($line, $main::textFileFields->{net});
+for $pc(($gene1, $gene2)) {
+if (defined($gene_list->{$pc}))	{
+	$node->{$pc}->{'degree'}++;
+}}}
+close IN; print STDERR "Close $net..." if $debug;
+} else { ###
 	$fc_cl = $HSconfig::network->{$spec};
 	$scorecol = $fc_cl =~ 'net_all_' ? 'data_fc_lim' : 'fbs';	
 	for $pc(('prot1', 'prot2')) {
@@ -704,15 +685,15 @@ $presence_cond = ($fc_cl =~ 'net_all_') ? ' AND (('.join(' IS NOT NULL) OR (', (
 		$sth->execute();
 while ($rows = $sth->fetchrow_hashref) {
 	# $node->{uc($rows->{$pc})}->{'degree'} += $rows->{'count'};
-	$node->{$rows->{$pc}}->{'degree'} += $rows->{'count'};
-}}
-
+	$node->{$rows->{$pc}}->{'degree'} = $rows->{'count'};
+}}}
 	return undef;
 }
 
 
 sub nea_links { #sub-network retrieval of a link behind NEA. 
 	my ($gene_list1, $gene_list2, $spec) = @_;
+		print STDERR "NEA_links: \n";	
 	my ($rows,      $ee,       $sum, %filter,      $dd,
 		$j,         $p,    @fld_list, $sm,  $gene_arr,    $union,
 		$name_cond, $pnum, $s,  $i, $scorecol_as, $prot1,
@@ -746,39 +727,6 @@ $sth->finish();
 return ($data);
 }
 
-sub nea_links1 { #sub-network retrieval of a link behind NEA. 
-	my ($gene_list1, $spec) = @_;
-	my ($rows,      $ee,       $sum, %filter,      $dd,
-		$j,         $p,    @fld_list, $sm,  $gene_arr,    $union,
-		$name_cond, $pnum, $s,  $i, $scorecol_as, $prot1,
-		$prot2,     $pair, $fc_cl);
-#SQL connection:
-$dbh = HS_SQL::dbh('hyperset') || die "Failed to connect via HS_SQL.../n";
-
-undef $data;
-my(%ids, $k, @pm);  
-	$fc_cl = $HSconfig::network->{$spec} ; #'pwc8';
-	$i     = 0;
-	for $ee ( @spoe, @tyoe ) { $filter{$ee} = 1 if $ee; }
-	undef @fld_list;
-	# push @fld_list, ( $scorecol . ' as confidence ' );
-	push @fld_list, '*';
-$name_cond = " \(
-\(prot1 IN \( \'" . join( "\', \'", keys(%{$gene_list1} )) . "\' \) OR prot2 IN \( \'" . join( "\', \'", keys(%{$gene_list1})) . "\' \)\)
-\)";
-$sm = "SELECT " . ( join( ', ', (@fld_list) ) )
-		  . " FROM $fc_cl WHERE $name_cond"; # AND $scorecol > $submitted_coff ";
-# print STDERR $sm;
-		my $sth = $dbh->prepare_cached($sm) || die "Failed to prepare SELECT statement FC_NEA\n";
-		$sth->execute();
-		$j = 0;
-while ( $rows = $sth->fetchrow_hashref ) {
-processLink($rows, $spec, $fc_cl);
-}
-$sth->finish();
-return ($data);
-}
-
 sub processLink {
 my($rows, $spec, $fc_cl) = @_;
 my($i, $ee, $k, $va, $cnt, $fnm, $int, $src, $pbm, $phsite);
@@ -794,7 +742,8 @@ if (($ee eq 'prot1') or ($ee eq 'prot2')) {
 $data->{$i}->{$ee} = $rows->{$ee};
 }
 elsif ($ee eq 'confidence') {
-$data->{$i}->{$ee} = defined($data->{$i}->{$ee}) ? ($data->{$i}->{$ee} + $rows->{$ee}) : $rows->{$ee};
+# $data->{$i}->{$ee} = defined($data->{$i}->{$ee}) ? ($data->{$i}->{$ee} + $rows->{$ee}) : $rows->{$ee};
+$data->{$i}->{$ee} = defined($data->{$i}->{$ee}) ? ($data->{$i}->{$ee} + $rows->{$ee}) : $HSconfig::fbsValue->{noFunCoup};
 # print join(' -> ', ($i, $data->{$i}->{$ee})).'<br>';
 } 
 else {
@@ -889,7 +838,7 @@ my($fcgenes) = @_;
 		@gene_list = keys( %{ $found_genes->{$spec} } );
 
 		my $gene_arr = uc( "\'" . join( "\', \'", @gene_list ) . "\'" );
-		$sm = "SELECT hsname, $showname, description FROM shownames1 WHERE upper(hsname) IN ($gene_arr) and org_id = \'$species{$spec}\'";
+		$sm = "SELECT hsname, $showname, description FROM $HSconfig::shownames WHERE upper(hsname) IN ($gene_arr) and org_id = \'$species{$spec}\'";
 		my $sth = $dbh->prepare_cached($sm)  || die "Failed to prepare SELECT show-names statement";
 		$sth->execute();
 		while ( $rows = $sth->fetchrow_hashref ) {
@@ -898,8 +847,8 @@ my($fcgenes) = @_;
 			  if (  defined( $rows->{showname} )
 				and defined( $node->{ $rows->{hsname} }->{'name'} )
 				and $node->{ $rows->{hsname} }->{'name'} =~ m/$rows->{showname}/ );
-			if ( $show_names eq 'Names' ) {	
-			$node->{ $rows->{hsname} }->{'name'} = !$rows->{showname} ? $rows->{hsname} : $rows->{showname};}
+			# if ( $show_names eq 'Names' ) {	
+			# $node->{ $rows->{hsname} }->{'name'} = !$rows->{showname} ? $rows->{hsname} : $rows->{showname};}
 			$node->{ $rows->{hsname} }->{'description'} = $rows->{description};
 			$node->{ $rows->{hsname} }->{'hsname'}      = $rows->{hsname};
 		}
@@ -2826,7 +2775,7 @@ if ($text) {
 		%initSettings = (
 			"distributeOnInit" => 'true',
 			"showMedusaStyle"  => 'false',
-			"showNodeLabels"   => 'true',
+			"showNodeLabels"   => 'false',
 			"showEdgeLabels"   => 'false',
 			"showNodeSize"     => 'true',
 			"showUniformNodes" => 'false',

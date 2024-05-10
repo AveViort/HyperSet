@@ -1,5 +1,16 @@
-source("../R/init_predictor.r");
+usedDir = '/var/www/html/research/users_tmp/';
+apacheSink = 'apache';
+localSink = 'log'; # usedSink = apacheSink;
+# usedSink = localSink;
+# sink(file(paste(usedDir, "model.GLMnet.", usedSink, ".output.Rout", sep=""), open = "wt"), append = FALSE, type = "output")
+# sink(file(paste(usedDir, "model.GLMnet.", usedSink, ".message.Rout", sep=""), open = "wt"), append = FALSE, type = "message")
+# options(warn = 1); # options(warn = 0);
 
+
+source("../R/init_predictor.r");
+# source("../R/common_functions.r");
+# source("../R/plot_common_functions.r");
+message(getwd());
 library(glmnet);
 # for parallel glmnet
 library(doParallel);
@@ -91,10 +102,10 @@ createGLMnetSignature <- function (
 		PW = t(predictorSpace);
 		if (crossval_flag) {
 			print(paste0(Nfolds, "-fold cross-validation"));
-			print("PW[Sample1,]:");
-			print(PW[Sample1,]);
-			print("MG[Sample1]:");
-			print(MG[Sample1]);
+			# print("PW[Sample1,]:");
+			# print(PW[Sample1,]);
+			# print("MG[Sample1]:");
+			# print(MG[Sample1]);
 			model <- tryCatch(cv.glmnet(PW[Sample1,], MG[Sample1], grouped = TRUE, 
 						family = Family, 
 						alpha = Alpha, 
@@ -105,7 +116,8 @@ createGLMnetSignature <- function (
 						standardize = STD,
 						parallel = TRUE),
 						error = function(e) {handleError(e)});
-			if (class(model) == "error") {
+			if (1 == 2) {
+			# if (class(model) == "error") {
 				print("Error occured");
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
 					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
@@ -134,7 +146,8 @@ createGLMnetSignature <- function (
 						standardize = STD),
 						error = function(e) {handleError(e)});
 			#save(model, file=paste0(File, ".RData"));
-			if (class(model) == "error") {
+			if (1 == 2) {			
+			# if (class(model) == "error") {
 				print("Error occured");
 				report_event("model.glmnet.r", "error", "glmnet_error", paste0("source=", Par["source"], "&cohort=", Par["cohort"], 
 					"&rdatatype=", Par["rdatatype"],"&rplatform=", Par["rplatform"], "&rid=", Par["rid"], "&x_datatypes=", Par["xdatatypes"],
@@ -176,7 +189,7 @@ createGLMnetSignature <- function (
 				c1 <- Betas[,Lc];
 				co <- c1[which(c1 != 0)];
 				co <- signif(co[order(abs(co), decreasing = TRUE)], digits = 2);
-				print(co);
+				# print(co);
 				n <- length(MG[Sample1]);
 				pred <- as.vector(Intercept + PW[Sample1,] %*% c1);
 				names(pred) <- rownames(PW[Sample1,]);
@@ -233,9 +246,9 @@ createGLMnetSignature <- function (
 	
 	if (length(co) > 0) {
 		print("co:");
-		print(co);
+		# print(co);
 		png(file=paste0(baseName, "_model.png"), width =  plotSize/2, height = plotSize/2, type = "cairo");
-		plot(model);
+		plot(model, xvar = c("norm", "lambda", "dev")[3], label = TRUE);
 		Cex.main  = 0.85; Cex.lbl = 0.35; Cex.leg = 0.5;
 		ppe <- NULL; 
 		for (pe in names(perf)[which(!grepl(paste(rnds, collapse = "|"), names(perf), fixed = FALSE))]) {
@@ -262,7 +275,7 @@ createGLMnetSignature <- function (
 				smp = Sample2;
 			}
 			print("smp:");
-			print(smp);
+			# print(smp);
 			switch(Family,
 				"multinomial" = {
 					# "response" returns pribabilities, while "class" returns class labels
@@ -276,7 +289,7 @@ createGLMnetSignature <- function (
 						pred <- pred[,Lc];
 					}
 					print("Binomial pred:");
-					print(pred);
+					# print(pred);
 					},
 				{
 					pred <- as.vector(Intercept + PW[smp,] %*% c1);
@@ -308,7 +321,7 @@ createGLMnetSignature <- function (
 					#save(predicted_classes, file=paste0(File, "_predicted_classes.RData"));
 					#save(Obs, file = paste0(File, "_Obs.RData"));
 					confusion_matrix <- table(predicted_classes, as.character(Obs));
-					print(confusion_matrix);
+					# print(confusion_matrix);
 					perf[[paste0("Accuracy (", Round, ")")]] = sum(diag(confusion_matrix))/sum(confusion_matrix);
 					perf_frame <- rbind(perf_frame, data.frame(Measure = paste0("Accuracy (", Round, ")"), Value = round(perf[[paste0("Accuracy (", Round, ")")]])));
 				}
@@ -349,7 +362,7 @@ createGLMnetSignature <- function (
 						round(perf[[pe]], digits = 3)
 					); 
 					ppe <- paste(ppe, paste0(pe, "=", va), sep = "\n");
-					print(ppe);
+					# print(ppe);
 				}
 				
 				#plot(MG[smp], pred, type = "n", xlab = "Observed", ylab = "Predicted", main = title.main, cex.main = Cex.main, ylim = c(min(pred), max(pred)), xaxt="n");
@@ -386,7 +399,7 @@ createGLMnetSignature <- function (
 					if (Family == "binomial") {
 						classes <- unlist(lapply(Obs, function(x) ifelse(x == 1, "pos", "neg")));
 						classes_with_probabilities <- data.frame("Class" = classes, "Probability" = pred, stringsAsFactors = TRUE);
-						print(classes_with_probabilities);
+						# print(classes_with_probabilities);
 					}
 					#boxplot(classes_with_probabilities$Probability~classes_with_probabilities$Class);
 					p <- plot_ly(y = classes_with_probabilities$Probability, x = classes_with_probabilities$Class, type = "box") %>% 
@@ -402,7 +415,7 @@ createGLMnetSignature <- function (
 		}
 	} else {
 		png(file = paste0(baseName, "_model.png"), width = plotSize/2, height = plotSize/2, type = "cairo");
-		plot(model, xvar = c("norm", "lambda", "dev")[1], label = TRUE);
+		plot(model, xvar = c("norm", "lambda", "dev")[3], label = TRUE);
 		legend("top", "No non-zero terms identified...");
 		print("No non-zero terms identified...");
 		dev.off();
@@ -434,7 +447,7 @@ if (Par["source"] == "ccle") {
 	print(query);
 	tissue_samples <- sqlQuery(rch,query)[,1];
 	print("Tissue samples:");
-	print(tissue_samples)
+	# print(tissue_samples)
 }
 
 query <- "";
@@ -457,7 +470,7 @@ for (i in 1:length(x_datatypes)) {
 		}
 		if (!x_datatypes[i] %in% druggable.patient.datatypes) {
 			condition <- ifelse(condition == "", " WHERE ", paste0(condition, " AND "));
-			print(paste0("x_ids[[", i, "]]: ", x_ids[[i]]));
+			# print(paste0("x_ids[[", i, "]]: ", x_ids[[i]]));
 			if (("[all]" %in% x_ids[[i]]) || ("[ALL]" %in% x_ids[[i]])) {
 				if (x_platforms[i] == rplatform) {
 					# we want to exclude dependent variable from independent ones
@@ -521,7 +534,7 @@ for (i in 1:length(x_datatypes)) {
 	print("Temp formation: done");
 	if (!x_datatypes[i] %in% druggable.patient.datatypes) {
 		X.variables[[x_platforms[i]]] <- unique(as.character(temp[,"id"]));
-		print(temp);
+		# print(temp);
 		temp <- dcast(temp, id ~ sample, value.var = x_platforms[i]);
 	} else {
 		X.variables[[x_platforms[i]]] <- c(x_platforms[i]);
@@ -532,7 +545,7 @@ for (i in 1:length(x_datatypes)) {
 	if (is.null(nrow(temp))) {
 		temp <- matrix(temp, 1, length(temp));
 		rownames(temp) <- x_platforms[i];
-		print(x_platforms[i]);
+		# print(x_platforms[i]);
 		if (any(c(x_datatypes, rdatatype) %in% druggable.patient.datatypes)) {
 			#temp_names <- gsub(sample_mask, "", temp_names, fixed = FALSE);
 			# we now allow TCGA metacodes
@@ -666,9 +679,9 @@ stop_flag = FALSE;
 if (Par["source"] == "ccle") {
 	X.matrix <- X.matrix[,which(colnames(X.matrix) %in% tissue_samples)];
 }
-
+# EGFR, TP53, KRAS, NRAS, AKT1, AKT2, AKT3, BRAF, ALK
 if (!stop_flag) {
-	print(str(X.matrix));
+	# print(str(X.matrix));
 	#X.matrix <- matrix(as.numeric(X.matrix), nrow=nrow(X.matrix), byrow=FALSE, dimnames=list(rownames(X.matrix), colnames(X.matrix)));
 	temp_rownames <- rownames(X.matrix);
 	temp_colnames <- colnames(X.matrix);
@@ -682,7 +695,7 @@ if (!stop_flag) {
 	#print(str(X.matrix));
 	usedSamples <- colnames(X.matrix);
 	print("Used samples:");
-	print(usedSamples);
+	# print(usedSamples);
 	fam <- Par["family"];
 	mea <- Par["measure"];
 	validation <- as.logical(Par["validation"]);
@@ -767,7 +780,7 @@ if (!stop_flag) {
 				# we have to do it like that - otherwise we lose names
 				temp_names <- names(resp[which(!resp %in% exclude_categories)]);
 				print("Samples to keep:");
-				print(temp_names);
+				# print(temp_names);
 				resp <- resp[temp_names];
 				#print("After cleaning:");
 				#print(table(resp));
@@ -775,7 +788,7 @@ if (!stop_flag) {
 				names(resp) <- temp_names;
 			}
 		}
-		print(resp);
+		# print(resp);
 		#print(str(resp));
 	}
 	
@@ -835,7 +848,7 @@ if (!stop_flag) {
 		model[["metainfo"]][["rid"]] <- rid;
 		model[["metainfo"]][["multiopt"]] <- multiopt;
 		perf_frame <- model_data[["perf"]];
-		if (!is.na(model)) {
+		### if (!is.na(model)) {
 			save(model, file=paste0(File, ".RData"));
 			# use crossval_flag variable which is a global variable set in createGLMnetSignature
 			# bad style, but otherwise we have to return several objects
@@ -879,7 +892,7 @@ if (!stop_flag) {
 				}
 			}
 			
-		}
+		### }
 	}
 }
 print(Sys.time());

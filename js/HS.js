@@ -12,7 +12,9 @@ var fileType = { //tabindex should match values of %fileType in HS_config.pm
 	net 	: {tabindex: 2, icon: "ui-icon-vcs-pull-request", 	caption: "Network file. Click to use or redefine."} 
 , 	mtr 	: {tabindex: 3, icon: "ui-icon-grid", 				caption: "Matrix file. Click to use or redefine."}
 };    
+// cat /var/www/html/research/users_upload/offline/junit.net | gawk 'BEGIN {la = ""; FS=" "; OFS = "\t"} {if ($0 !~ /*|#/) print $1, $2}' > junit.net
 
+// cat ../users_upload/online/PhosphoSite_CORUM_and_KEGG |gawk 'BEGIN {la = ""; FS="\t"; OFS = "\t"} {print $1;EGIN {la = ""; FS="\t"; OFS = "\t"; ORS=" "} {print $1;}'
 
 
 // for the user file table rows:
@@ -123,7 +125,7 @@ cola: {
 }, 
 concentric: {
     name: 'concentric',
-    concentric: function(){ return this.data('weight'); },
+    concentric: function(ele) { return ele.data('weight'); },
     levelWidth: function( nodes ){ return 10; },
     padding: 10
 }, 
@@ -218,7 +220,7 @@ ags: {
 	order: 0, 
 	altTitle: '', 
 		subtabs: {
-			list: {title:'Genes', id:'id-ags-list-h3', altTitleHead: 'Gene', altTitleTail: 'in text area', order: 0, input: '[name="sgs_list"]'},
+			list: {title:'Nodes', id:'id-ags-list-h3', altTitleHead: 'Node', altTitleTail: 'in text area', order: 0, input: '[name="sgs_list"]'},
 			file: {title:'File', id:'id-ags-file-h3', altTitleHead: 'List', altTitleTail: "from user's file", order: 1, input: '[name="AGSselector"]'},
 			venn: {title:'Venn diagram', id:'id-ags-venn-h3', altTitleHead: 'List', altTitleTail: 'from Venn diagram', order: 2, input: '[name="from-venn"]', disable: '[id="from-venn"]'}
 		 }, 
@@ -232,7 +234,7 @@ fgs: {
 		subtabs: {
 			coll: {title: 'Collection', id: 'id-fgs-coll-h3', altTitleHead: 'Public collection', altTitleTail: "", order: 0, input: '[name="FGScollection"]'},
 			file: {title: 'File', id: 'id-fgs-file-h3', altTitleHead: 'Custom collection', altTitleTail: "from user's file", order: 1, input: '[name="FGSselector"]'},
-			list: {title: 'Genes', id: 'id-fgs-list-h3', altTitleHead: 'Gene', altTitleTail: 'in text area', order: 2, input: '[name="cpw_list"]'}
+			list: {title: 'Nodes', id: 'id-fgs-list-h3', altTitleHead: 'Node', altTitleTail: 'in text area', order: 2, input: '[name="cpw_list"]'}
 		}, 
 	controlBox: 'sbm-selected-fgs'
 },
@@ -242,9 +244,9 @@ net: {
 	order: 2, 
 	altTitle: "",
 	subtabs: {
-			coll: {title: 'Network', id:'id-net-coll-h3', altTitleHead: 'Network version', altTitleTail: "from our collection", order: 0, input: '[name="NETselector"]'}, 			
-			file: {title:'File', id:'id-net-file-h3', altTitleHead: 'Custom network', altTitleTail: "from user's file", order: 1, input: '[name="net_table"]'},
-			list: {title:'Genes', id:'id-net-list-h3', altTitleHead: 'Edge list', altTitleTail: 'in text area', order: 2, input: '[name="net_list"]'}
+			coll: {title: 'Network', id:'id-net-coll-h3', altTitleHead: 'Network version', altTitleTail: "from our collection", order: 0, input: '[name="NETcollection"]'}, 			
+			file: {title:'File', id:'id-net-file-h3', altTitleHead: 'Custom network', altTitleTail: "from user's file", order: 1, input: '[name="NETselector"]'},
+			list: {title:'Edge list', id:'id-net-list-h3', altTitleHead: 'Edge', altTitleTail: 'in text area', order: 2, input: '[name="net_list"]'}
 	}, 
 	controlBox: 'sbm-selected-net'
 	} 
@@ -362,16 +364,37 @@ function listMembers (it)  {
 				List = List.replace(/\\/g, '\n');
 				$(it).val(List);
 				var Matches = List.match(/\s+/g);
+				// var Matches = List.split(/\s+/g);
 				
-				N = (Matches == null) ? ((List.length == 0) ? 0 : 1) : (Matches.length + 1);
+				N = (Matches == null) ? ((List.length == 0) ? 0 : 1) : new Set(List.split(/\s+/g)).size;
+				// (Matches.length + 1);
 				title = List;
 			}
 		break;
+		case '[name="net_list"]':
+			var List = $(it).val();
+			if (List != undefined) {
+				List = List.replace(/\s+$/, '');
+				List = List.replace(/^\s+/, ' ');
+				List = List.replace(/;/g, ' ');
+				List = List.replace(/,/g, ' ');
+				List = List.replace(/#/g, ' ');
+				$(it).val(List);
+				var Matches = List.match(/\S+\s+\S+\n+/g);
+				// var Matches = List.split(/\n+/g);
+				
+				N = (Matches == null) ? ((List.length == 0) ? 0 : 1) : new Set(List.split(/\n+/g)).size;
+				// (Matches.length + 1);
+				title = List;
+			}
+		break;
+		
 		case '[name="FGScollection"]': 
 		case '[name="AGSselector"]': 
 		case '[name="FGSselector"]': 
 		case '[name="NETselector"]': 
-			if (it != '[name="NETselector"]') {Union = '; ';} 
+		case '[name="NETcollection"]': 
+			if (it != '[name="NETcollection"]') {Union = '; ';} 
 			else {Union = ' &#8746; ';} 
 			$(it).each(
 				function () {
@@ -384,7 +407,7 @@ function listMembers (it)  {
 				}
 			);
 			// if (N == 0) {			}
-			//console.log("fc_lim checked: " + $('[name="NETselector"][value="fc_lim"]').prop("checked"))
+			//console.log("fc_lim checked: " + $('[name="NETcollection"][value="fc_lim"]').prop("checked"))
 			title = title.replace(/\&\#8746\;\s$/, '');
 			title = title.replace(/\;\s$/, '');
 		break;	
@@ -1057,6 +1080,9 @@ function setFormValue (id, value, type) {
 		break;
 		case 'gene2col':
 			formid = 'gene2columnid-table-ele';
+		break;		
+		case 'edgecolu':
+			formid = 'edgecolumnid-table-ele';
 		break;
 		case 'genecolu':
 			formid = 'genecolumnid-table-ele-' + type;
@@ -1159,13 +1185,13 @@ $(div).dialog({
 			$("#" + tabID).tabs({ 
 			heightStyle: "auto",
 			active: tabValue, 
-//			disabled: ((type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"],,fileType["mtr"]["tabindex"]]), 
-			disabled: ((type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"],,]), 
-			// disabled: ((type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"]]), 
+			disabled: ((type == "net") ? [fileType["gs"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : (type == "fgs") ? [fileType["net"]["tabindex"],fileType["venn"]["tabindex"],fileType["mtr"]["tabindex"]] : [fileType["net"]["tabindex"],,]), 
 			activate: function(event, ui) {
 			tabIndex = ui.newTab.index();
 			var ariaType = ui.newTab[0].attributes["aria-controls"].value;
+			console.log(ariaType);
 			typeID = ariaType.substr(0, ariaType.indexOf('-'));
+			console.log(typeID);
 			set_filetype(tabID, typeID, tabIndex, iconID);
 		} 
 	});
@@ -1678,6 +1704,7 @@ function () {
 $("[id*='display-filetable']").off().on("click", 
 function () {
 	var Type = $(this).attr("id").substr(18,3);
+	console.log(Type);
 	displayProjectTable('display-filetable-' + Type);	
 	$("#display-filetable-" + Type).css("display", "none");
 	}
@@ -1696,7 +1723,7 @@ $(document).delegate("[id*='button-table-']", "click",
 //agssubmitbutton-table-ags- AND agsuploadbutton-table-ags-
  function () {
 	 if ($(this).attr("id").indexOf("submitbutton-table")>0) {
-		 var cgiJobType = {ags: "ags", fgs: "fgf"};
+		 var cgiJobType = {ags: "ags", fgs: "fgf", net: "nef"};
 		$("#whichFileTypeToRead").val( cgiJobType[$(this).attr("id").substr(0,3)] );
 	 }
  $("#action").val(this.id);
@@ -1866,6 +1893,7 @@ close: function() {}
 		 
 function showRequest(formData, jqForm, options) { // http://malsup.com/jquery/form/ :
     var formID = jqForm.attr('id');
+//console.log(pressedButton); 
 	var analysisID = formID[formID.length-2]+formID[formID.length-1]; 
 	
 	var Pbox = $('#project_id_ne');
@@ -1895,7 +1923,9 @@ function showRequest(formData, jqForm, options) { // http://malsup.com/jquery/fo
 		$('#venn-controls').addClass("nea_loading");  	
 		$( "#venn-progressbar" ).css({"visibility": "visible"})
 	}
+
 	if (pressedButton.indexOf("subnet-") == 0) {
+		
 		options.target='#net_up';
 			$("[id*='qtip-cy-qtip-target-'][aria-hidden='false']" ).remove(); 
 		$( "#ne-up-progressbar" ).css({"visibility": "visible", "display": "block"});

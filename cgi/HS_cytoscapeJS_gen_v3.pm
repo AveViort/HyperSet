@@ -1,4 +1,4 @@
-package HS_cytoscapeJS_gen;
+package HS_cytoscapeJS_gen_v3;
  
 #use DBI; 
 #use XML::LibXML;
@@ -9,7 +9,7 @@ use CGI::Carp qw(fatalsToBrowser);
 #use IPC::Open2; 
 #use Switch;
 #use config;
-use strict;
+use strict; 
 
 # BEGIN {
 	# require Exporter;
@@ -33,10 +33,28 @@ our $nodeColoringScheme = '"background-color": "data(nodeShade)"';
 our $nodeShapingScheme = '"shape": "data(subSet)"';
 our $arrowHeadScheme = '"triangle"';
 our $edgeColoringScheme = '"data(confidence2opacity)"';
-our $nodeSizeScheme = '"mapData(weight, 0, 9, '. 1 * $nodeScaleFactor .', '. 40 * $nodeScaleFactor .')"';
+# our $nodeSizeScheme = '"mapData(weight, 0, 9, '. 1 * $nodeScaleFactor .', '. 40 * $nodeScaleFactor .')"';
+our $nodeSizeScheme = '"data(weight)"';
 our $edgeWeightScheme = '"width": "data(integerWeight)"';
 our $edgeOpacityScheme = '"opacity" : 1.0';
-our %nodeType; $nodeType{'cy_ags'} = 'diamond'; $nodeType{'cy_fgs'} = 'roundrectangle';
+our %nodeShape; 
+$nodeShape{'cy_ags'} = 'diamond'; 
+$nodeShape{'cy_fgs'} = 'roundrectangle';
+$nodeShape{'default'} = 'ellipse';
+our $colorInfo = '#aa4455';
+our @allowedShapes = ("ellipse", 
+"triangle", "round-triangle", 
+"rectangle", "round-rectangle", #"bottom-round-rectangle", 
+"cut-rectangle", "barrel", 
+"rhomboid", "right-rhomboid", 
+"diamond", "round-diamond", 
+"pentagon", #"round-pentagon", 
+"hexagon", #"round-hexagon", "concave-hexagon", 
+"heptagon", #"round-heptagon", 
+"octagon", #"round-octagon", 
+"star", "tag", #"round-tag", 
+"vee"#, "polygon"
+);
 our %nodeGroupColor; 
 $nodeGroupColor{'cy_ags'} = '#ffc000'; 
 $nodeGroupColor{'cy_fgs'} = '#ff3399'; 
@@ -59,6 +77,7 @@ our @NEAusedFields = (
 'GSEA_overlap'
 );
 our $cs_selected_layout = 'spread'; #'arbor';
+# our $cs_selected_layout = 'arbor';
 our %cs_js_layout;
 
 #$cs_js_layout{'cola'} =   '
@@ -161,8 +180,8 @@ $cs_js_layout{'concentric'} =   '
     minNodeSpacing: 10, // min spacing between outside of nodes (used for radius adjustment)
     height: undefined, // height of layout area (overrides container height)
     width: undefined, // width of layout area (overrides container width)
-    concentric: function(){ // returns numeric value for each node, placing higher nodes in levels towards the centre
-    return this.degree();
+    concentric: function(ele){ // returns numeric value for each node, placing higher nodes in levels towards the centre
+    return ele.weight();
     },
     levelWidth: function(nodes){ // the variation of concentric values in each level
       return nodes.maxDegree() / 4;
@@ -195,47 +214,47 @@ $cs_js_layout{'arbor'} =   '
       var e = energy; 
       return (e.max <= 0.75) || (e.mean <= 0.5); //return (e.max <= 0.5) || (e.mean <= 0.3);
     }';
-$cs_js_layout{'cose'} =   '
-    name: \'cose\',
-    // Called on `layoutready`
-    ready               : function() {},
-    // Called on `layoutstop`
-    stop                : function() {},
-    // Number of iterations between consecutive screen positions update (0 -> only updated on the end)
-    refresh             : 0,
-    // Whether to fit the network view after when done
-    fit                 : true, 
-    // Padding on fit
-    padding             : 30, 
-    // Whether to randomize node positions on the beginning
-    randomize           : true,
-    // Whether to use the JS console to print debug messages
-    debug               : false,
-    // Node repulsion (non overlapping) multiplier
-    nodeRepulsion       : 10000,
-    // Node repulsion (overlapping) multiplier
-    nodeOverlap         : 10,
-    // Ideal edge (non nested) length
-    idealEdgeLength     : 10,
-    // Divisor to compute edge forces
-    edgeElasticity      : 100,
-    // Nesting factor (multiplier) to compute ideal edge length for nested edges
-    nestingFactor       : 5, 
-    // Gravity force (constant)
-    gravity             : 250, 
-    // Maximum number of iterations to perform
-    numIter             : 33, //100
-    // Initial temperature (maximum node displacement)
-    initialTemp         : 200,
-    // Cooling factor (how the temperature is reduced between consecutive iterations
-    coolingFactor       : 0.95, 
-    // Lower temperature threshold (below this point the layout will end)
-    minTemp             : 1';
-$cs_js_layout{'concentric'} =   '
-    name: \'concentric\',
-    concentric: function(){ return this.data(\'weight\'); },
-    levelWidth: function( nodes ){ return 10; },
-    padding: 10';
+# $cs_js_layout{'cose'} =   '
+    # name: \'cose\',
+    # // Called on `layoutready`
+    # ready               : function() {},
+    # // Called on `layoutstop`
+    # stop                : function() {},
+    # // Number of iterations between consecutive screen positions update (0 -> only updated on the end)
+    # refresh             : 0,
+    # // Whether to fit the network view after when done
+    # fit                 : true, 
+    # // Padding on fit
+    # padding             : 30, 
+    # // Whether to randomize node positions on the beginning
+    # randomize           : true,
+    # // Whether to use the JS console to print debug messages
+    # debug               : false,
+    # // Node repulsion (non overlapping) multiplier
+    # nodeRepulsion       : 10000,
+    # // Node repulsion (overlapping) multiplier
+    # nodeOverlap         : 10,
+    # // Ideal edge (non nested) length
+    # idealEdgeLength     : 10,
+    # // Divisor to compute edge forces
+    # edgeElasticity      : 100,
+    # // Nesting factor (multiplier) to compute ideal edge length for nested edges
+    # nestingFactor       : 5, 
+    # // Gravity force (constant)
+    # gravity             : 250, 
+    # // Maximum number of iterations to perform
+    # numIter             : 33, //100
+    # // Initial temperature (maximum node displacement)
+    # initialTemp         : 200,
+    # // Cooling factor (how the temperature is reduced between consecutive iterations
+    # coolingFactor       : 0.95, 
+    # // Lower temperature threshold (below this point the layout will end)
+    # minTemp             : 1';
+# $cs_js_layout{'concentric'} =   '
+    # name: \'concentric\',
+    # concentric: function(){ return this.data(\'weight\'); },
+    # levelWidth: function( nodes ){ return 10; },
+    # padding: 10';
 
 # $cs_js_layout{'preset'} =   ' 
  # name: "preset",
@@ -257,7 +276,13 @@ name: "spread",
 minDist: 40
   ';
 
-  $cs_js_layout{'cose-bilkent'} =  ''; #name: "cose-bilkent"
+  # $cs_js_layout{'cose-bilkent'} =  '
+# name: "cose-bilkent",
+# animate: "end",
+# animationEasing: "ease-out",
+# animationDuration: 1000,
+# randomize: true'; 
+
   $cs_js_layout{'dagre'} =  ''; #name: "dagre"
   # $cs_js_layout{'arbor'} =  'name: "arbor"'; #
 
@@ -285,9 +310,9 @@ $layout_options .= '</select></label><br>'."\n";
 $cs_menu_layout .= ($netType eq 'nea') ? '$("#changeLayout'.$instanceID.'").selectmenu({
 select: function() {
 if (LayoutOptions[$(this).val()]) {
-cy'.$instanceID.'.layout(LayoutOptions[$(this).val()]);   
+cy'.$instanceID.'.layout(LayoutOptions[$(this).val()]).run();   
 } else {
-cy'.$instanceID.'.layout({name: $(this).val()});  //{name: "cose-bilkent"} 
+cy'.$instanceID.'.layout({name: $(this).val()}).run();  //{name: "cose-bilkent"} 
 }
            }
 });
@@ -306,13 +331,18 @@ $("#cycolor'.$instanceID.'").colorpicker({
 .on("change.color", function(evt, color) {
  switch (applyTo.substring(0,4)) {
 	case "edge": 
-cy'.$instanceID.'.elements(applyTo).css({"line-color": color});
-cy'.$instanceID.'.elements(applyTo).css({"source-arrow-color": color});
-cy'.$instanceID.'.elements(applyTo).css({"target-arrow-color": color});
+cy'.$instanceID.'.edges(applyTo).css({"line-color": color});
+cy'.$instanceID.'.edges(applyTo).css({"source-arrow-color": color});
+cy'.$instanceID.'.edges(applyTo).css({"target-arrow-color": color});
 $("#cycolorWrapper'.$instanceID.'").css({"display": "none"});
 break;
 	case "node": 
-cy'.$instanceID.'.elements(applyTo).css({"background-color": color});
+cy'.$instanceID.'.nodes(applyTo).css({"background-color": color});
+cy'.$instanceID.'.nodes(applyTo).css({"border-color": color});
+$("#cycolorWrapper'.$instanceID.'").css({"display": "none"});
+break;	
+	case "bord": 
+cy'.$instanceID.'.nodes(applyTo.replace("border-", "")).css({"border-color": color});
 $("#cycolorWrapper'.$instanceID.'").css({"display": "none"});
 break;
 } 
@@ -322,14 +352,58 @@ if(color){$("#cycolor'.$instanceID.'").css("background-color",color);}
 } );
 ';
 $define{BigChanger} = '
- $( "#changeSelected'.$instanceID.'" ).menu({ 
+ var nodeScaleFactor = '.$nodeScaleFactor.'; 
+   //console.log(nodeScaleFactor);
+   
+ $( "[id*=\'changeShape'.$instanceID.'\'" ).menu({ 
+ select: function( event, ui ) {
+ var Value = ui.item.attr("id").replace("'.$instanceID.'", "");
+ var code = Value.replace(/[a-z\-]+code-/, "");
+ Value = Value.replace(/-code-[a-z\-]+/, "");
+//console.log("Value: " + Value);
+//console.log("code: " + code);
+ if (Value.substring(0,6) == "alter-" ) {
+  switch ( Value) {
+    case "alter-nodes-shape-all":
+	 cy'.$instanceID.'.nodes().each((ele, i) => {ele.style({"shape": code}); });
+break;
+    case "alter-nodes-shape-selected":
+	 cy'.$instanceID.'.nodes(\':selected\').each((ele, i) => {ele.style({"shape": code}); });
+break;    
+	case "alter-nodes-shape-system":
+	 cy'.$instanceID.'.nodes().each((ele, i) => {ele.style({"shape": ele.data("subSet")}); });
+break;
+}
+
+}	} } ); 
+
+
+$( "#changeSelected'.$instanceID.'" ).menu({ 
  select: function( event, ui ) {
  var Value = ui.item.attr("id");
  Value = Value.replace("'.$instanceID.'", "");
-// console.log(Value);
+//console.log(Value);
  if (Value.substring(0,6) == "alter-" ) {
   switch ( Value) {
-    case "alter-nodes-color-all":
+    case "alter-nodes-border-all":
+applyTo = \'border-node\';
+$("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
+break;
+    case "alter-nodes-border-selected":
+applyTo = \'border-node:selected\';
+$("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
+break;
+    case "alter-nodes-border-system":
+ cy'.$instanceID.'.nodes().each(
+  (ele, i) => {
+  ele.style({"border-color": ele.data("groupColor")});
+  }
+);
+break;    
+
+
+
+case "alter-nodes-color-all":
 applyTo = \'node\';
 $("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
 break;
@@ -338,27 +412,47 @@ applyTo = \'node:selected\';
 $("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
 break;
     case "alter-nodes-color-system":
- cy'.$instanceID.'.elements(\'node[type = "cy_ags"]\').css({"background-color": "'.$nodeGroupColor{"cy_ags"}.'"});
- cy'.$instanceID.'.elements(\'node[type = "cy_fgs"]\').css({"background-color": "'.$nodeGroupColor{"cy_fgs"}.'"});
- cy'.$instanceID.'.elements(\'node[type = "cy_ags"]\').css({"shape": "'.$nodeType{'cy_ags'}.'"});
- cy'.$instanceID.'.elements(\'node[type = "cy_fgs"]\').css({"shape": "'.$nodeType{'cy_fgs'}.'"});
+/* cy'.$instanceID.'.nodes(\'[type = "cy_ags"]\').css({"background-color": "'.$nodeGroupColor{"cy_ags"}.'"});
+ cy'.$instanceID.'.nodes(\'[type = "cy_fgs"]\').css({"background-color": "'.$nodeGroupColor{"cy_fgs"}.'"});
+ cy'.$instanceID.'.nodes(\'[type = "cy_ags"]\').css({"shape": "'.$nodeShape{'cy_ags'}.'"});
+ cy'.$instanceID.'.nodes(\'[type = "cy_fgs"]\').css({"shape": "'.$nodeShape{'cy_fgs'}.'"});*/
  
- cy'.$instanceID.'.elements("node").each(
-  function () {
-  this.style({"background-color": this.data("groupColor")});
+ cy'.$instanceID.'.nodes().each(
+  (ele, i) => {
+  ele.style({"background-color": ele.data("groupColor")});
+  ele.style({"border-color": ele.data("groupColor")});
   }
 );
 break;
     case "alter-nodes-color-activity":
-	 cy'.$instanceID.'.elements("node").each(
-  function () {
-	this.style({"background-color": this.data("nodeShade")});
-	this.style({"shape": this.data("subSet")});
-	this.style({'.$borderColoringScheme.'});
-	//this.style({"border-color": "'.$nodeGroupColor{"cy_ags"}.'"});
+	 cy'.$instanceID.'.nodes().each(
+  (ele, i) => {
+	ele.style({"background-color": ele.data("nodeShade")});
+	ele.style({"shape": ele.data("subSet")});
+	ele.style({'.$borderColoringScheme.'});
+	//ele.style({"border-color": "'.$nodeGroupColor{"cy_ags"}.'"});
   }
 );
 break;
+
+    case "alter-nodes-size-degree":
+	//console.log(cy'.$instanceID.');
+		 cy'.$instanceID.'.nodes().each(  (ele, i) => {  
+        ele.style({"height": ele.data("weight")}),
+        ele.style({"width": ele.data("weight")})
+		//console.log(ele.data("weight"));
+      });
+break;
+
+    case "alter-nodes-size-default":
+	//console.log(cy'.$instanceID.');
+		 cy'.$instanceID.'.nodes().each(  (ele, i) => {  
+        ele.css({"height": 10}),
+        ele.css({"width": 10})
+		//console.log(ele.data("height"));
+      });
+break;
+
 	case "alter-edges-color-all":
 applyTo = \'edge\';
 $("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
@@ -368,28 +462,27 @@ applyTo = \'edge:selected\';
 $("#cycolorWrapper'.$instanceID.'").css({"display": "block"});
 break;
     case "alter-edges-opacity-confidence":
-	 cy'.$instanceID.'.elements("edge").each(
-  function () {
-  this.style({"source-arrow-color": this.data("confidence2opacity")});
-  this.style({"target-arrow-color": this.data("confidence2opacity")});
-  this.style({"line-color": this.data("confidence2opacity")});
+	 cy'.$instanceID.'.edges().each(
+  (ele, i) => {
+  ele.style({"source-arrow-color": ele.data("confidence2opacity")});
+  ele.style({"target-arrow-color": ele.data("confidence2opacity")});
+  ele.style({"line-color": ele.data("confidence2opacity")});
   }
 );
 break;
     case "alter-edges-opacity-default":
-//cy'.$instanceID.'.elements(\'edge\').css({"opacity": 0.99});
-cy'.$instanceID.'.elements(\'edge\').css({"target-arrow-color": "blue"});
-cy'.$instanceID.'.elements(\'edge\').css({"source-arrow-color": "blue"});
-cy'.$instanceID.'.elements(\'edge\').css({"line-color": "blue"});
+//cy'.$instanceID.'.edges().css({"opacity": 0.99});
+cy'.$instanceID.'.edges().css({"target-arrow-color": "blue"});
+cy'.$instanceID.'.edges().css({"source-arrow-color": "blue"});
+cy'.$instanceID.'.edges().css({"line-color": "blue"});
 break;
     case "alter-edges-width-nlinks":
-		 cy'.$instanceID.'.elements("edge").each(
-  function () {  this.style({"width": this.data("integerWeight")});  }
+		 cy'.$instanceID.'.edges().each(
+  (ele, i) => {  ele.style({"width": ele.data("integerWeight")});  }
 );
-// cy'.$instanceID.'.elements(\'edge\').css({'.$edgeWeightScheme.'});  
 break;
     case "alter-edges-width-default":
- cy'.$instanceID.'.elements(\'edge\').css({"width": 10});
+ cy'.$instanceID.'.edges().css({"width": 10});
 break;
 		}
 //if (applyTo) {} else {return undefined;}
@@ -404,18 +497,38 @@ max: 50,
 min: 5, 
 value: 20,
 slide:  function(){
-if (cy'.$instanceID.'.elements(\'node:selected\').length  > 0) {
-	cy'.$instanceID.'.elements(\'node:selected\').css({"width": $( this ).slider( "value" )});
-	cy'.$instanceID.'.elements(\'node:selected\').css({"height": $( this ).slider( "value" )});
+if (cy'.$instanceID.'.nodes(\':selected\').length  > 0) {
+	cy'.$instanceID.'.nodes(\':selected\').css({"width": $( this ).slider( "value" )});
+	cy'.$instanceID.'.nodes(\':selected\').css({"height": $( this ).slider( "value" )});
 } else {
-	cy'.$instanceID.'.elements(\'node\').css({"width": $( this ).slider( "value" )});
-	cy'.$instanceID.'.elements(\'node\').css({"height": $( this ).slider( "value" )});
+	cy'.$instanceID.'.nodes().css({"width": $( this ).slider( "value" )});
+	cy'.$instanceID.'.nodes().css({"height": $( this ).slider( "value" )});
 }
 }
 });
 });
-
-';	$define{NodeSlider} = '
+';	
+$define{EdgeWidthSlider} = '
+$(function() {
+$( "#EdgeWidthCySlider'.$instanceID.'" ).slider({
+orientation: "horizontal",
+range: "min",
+max: 10,
+min: 0.5, 
+value: 1,
+step: 0.1, 
+slide:  function(){
+	wi = $( this ).slider( "value" );
+if (cy'.$instanceID.'.edges(\'edge:selected\').length  > 0) {
+	cy'.$instanceID.'.edges(\'edge:selected\').css({"width": wi});
+} else {
+	cy'.$instanceID.'.edges().css({"width": wi});
+}
+}
+});
+});
+';	
+$define{NodeSlider} = '
 $(function() {
 $( "#fontNodeCySlider'.$instanceID.'" ).slider({
 orientation: "horizontal",
@@ -424,70 +537,94 @@ max: 28,
 min: 4, 
 value: 12,
 slide:  function(){
-if (cy'.$instanceID.'.elements(\'node:selected\').length  > 0) {
-	cy'.$instanceID.'.elements(\'node:selected\').css({"font-size": $( this ).slider( "value" )});
+if (cy'.$instanceID.'.nodes(\':selected\').length  > 0) {
+	cy'.$instanceID.'.nodes(\':selected\').css({"font-size": $( this ).slider( "value" )});
 } else {
-	cy'.$instanceID.'.elements(\'node\').css({"font-size": $( this ).slider( "value" )});
+	cy'.$instanceID.'.nodes().css({"font-size": $( this ).slider( "value" )});
 }}
 });
 
 });
 ';	
+
+
 # http://www.w3schools.com/js/js_regexp.asp
-$define{NodeRestorer} = '
+
+$define{NodeOperator} = '';
+
+$define{NodeRemover} = '
 $(function() {
-//$( "#NodeRestorer'.$instanceID.'" ).change(
-$( "#NodeRestorerButton'.$instanceID.'" ).click(
+$( "#NodeRemoverButton'.$instanceID.'" ).click(
 function(){
-var th = "#NodeRestorer'.$instanceID.'";
-cy'.$instanceID.'.elements(\'node\').hide();
-//cy'.$instanceID.'.elements(\'node[name*="\' + $( th ).val() + \'"]\').show();
+var th = "#NodeOperator'.$instanceID.'";
+
+cy'.$instanceID.'.nodes().show();
+if ($( th ).val() != "") {
+	/*var cs = $( "#NodeOperatorCheckbox'.$instanceID.'" ).prop("checked") ? "" : "i";
+    var patt = new RegExp($( th ).val(), cs);*/
     var patt = new RegExp($( th ).val());
-cy'.$instanceID.'.elements(\'node\').each(
-  function (i, ele) {
+//console.log(patt);
+cy'.$instanceID.'.nodes().each(
+  (ele, i) =>{
     var ID = ele.id();
     if (patt.test(ID)) {
-      cy'.$instanceID.'.elements(\'node[id="\' +ID + \'"]\').show(); 
+      cy'.$instanceID.'.nodes(\'[id="\' +ID + \'"]\').hide(); 
+    }
+         });
+} 
+});
+});
+';
+# /*$(this).toggleClass("ui-icon-'.$HSconfig::buttonMarks->{NodeRemover}->{icon}->{on}.'");
+# $(this).toggleClass("ui-icon-'.$HSconfig::buttonMarks->{NodeRemover}->{icon}->{off}.'");
+# $(\'label[for="NodeRemoverButton'.$instanceID.'"]\').attr("title", $(this).hasClass("ui-icon-circle-close") ? "'.$HSconfig::buttonMarks->{NodeRemover}->{title}->{on}.'" : "'.$HSconfig::buttonMarks->{NodeRemover}->{title}->{off}.'");	*/
+$define{NodeFilter} = '
+$(function() {
+$( "#NodeFilterButton'.$instanceID.'" ).click(
+function(){
+var th = "#NodeOperator'.$instanceID.'";
+//console.log(th);
+cy'.$instanceID.'.nodes().hide();
+    var patt = new RegExp($( th ).val());
+cy'.$instanceID.'.nodes().each( 
+  (ele, i) => {
+    var ID = ele.id();
+    if (patt.test(ID)) {
+      cy'.$instanceID.'.nodes(\'[id="\' +ID + \'"]\').show(); 
     }
          });
 }
 )});';
 
 
-$define{NodeRemover} = '
+$define{NodeRestorer} = '
 $(function() {
-$( "#NodeRemoverButton'.$instanceID.'" ).click(
+$( "#NodeRestorerButton'.$instanceID.'" ).click(
 function(){
-var th = "#NodeRemover'.$instanceID.'";
-cy'.$instanceID.'.elements(\'node\').show();
-if ($( th ).val() != "") {
-    var patt = new RegExp($( th ).val());
-cy'.$instanceID.'.elements(\'node\').each(
-  function (i, ele) {
+/*	console.log("aa");
+cy'.$instanceID.'.nodes().each( 
+  (ele, i) => {
     var ID = ele.id();
-    if (patt.test(ID)) {
-      cy'.$instanceID.'.elements(\'node[id="\' +ID + \'"]\').hide(); 
-    }
-         });
+      cy'.$instanceID.'.nodes(\'[id="\' +ID + \'"]\').show(); 
+         });*/
+cy'.$instanceID.'.nodes().show(); 
 }
-});
-});
-';
+)});';
+
+
 $define{NodeFinder} = '
 $(function() {
-//$( "#NodeFinder'.$instanceID.'" ).change(
 $( "#NodeFinderButton'.$instanceID.'" ).click(
 function(){
-var th = "#NodeFinder'.$instanceID.'";
-cy'.$instanceID.'.elements(\'node\').unselect();
-//cy'.$instanceID.'.elements(\'node[name*="\' + $( th ).val() + \'"]\').select();
+var th = "#NodeOperator'.$instanceID.'";
+cy'.$instanceID.'.nodes().unselect();
 if ($( th ).val() != "") {
     var patt = new RegExp($( th ).val());
-cy'.$instanceID.'.elements(\'node\').each(
-  function (i, ele) {
+cy'.$instanceID.'.nodes().each(
+  (ele, i) => {
     var ID = ele.id();
     if (patt.test(ID)) {
-      cy'.$instanceID.'.elements(\'node[id="\' +ID + \'"]\').select(); 
+      cy'.$instanceID.'.nodes(\'[id="\' +ID + \'"]\').select(); 
     }
          });
 }
@@ -503,12 +640,11 @@ var tgt = "#NodeTarget'.$instanceID.'";
 
 if ($( src ).val() != "") {
     var patt = new RegExp($( src ).val());
-cy'.$instanceID.'.elements(\'node\').each(
-  function (i, ele) {
+cy'.$instanceID.'.nodes().each(
+  (ele, i) => {
     var ID = ele.id();
     var nm = ele.data("name");
-    var patt = new RegExp("KEGG_[0-9]+:");
-	    var patt = new RegExp($( src ).val());
+    var patt = new RegExp($( src ).val());
     nnm = nm.replace(patt, $( tgt ).val());
     ele.data("name", nnm);
          });
@@ -523,16 +659,16 @@ range: "min",
 max: 8,
 value: 0,
 slide:  function(){
-cy'.$instanceID.'.elements(\'edge[confidence <  \' + $( this ).slider( "value" ) + \']\').hide();
-cy'.$instanceID.'.elements(\'edge[confidence >=  \' + $( this ).slider( "value" ) + \']\').show();
+cy'.$instanceID.'.edges(\'[confidence <  \' + $( this ).slider( "value" ) + \']\').hide();
+cy'.$instanceID.'.edges(\'[confidence >=  \' + $( this ).slider( "value" ) + \']\').show();
 }, 
 change:  function(){
-cy'.$instanceID.'.elements(\'edge[confidence <  \' + $( this ).slider( "value" ) + \']\').hide();
-cy'.$instanceID.'.elements(\'edge[confidence >=  \' + $( this ).slider( "value" ) + \']\').show();
-}, 
-});
+cy'.$instanceID.'.edges(\'[confidence <  \' + $( this ).slider( "value" ) + \']\').hide();
+cy'.$instanceID.'.edges(\'[confidence >=  \' + $( this ).slider( "value" ) + \']\').show();
+}, });
 });
 ';
+
 $define{EdgeFontSlider} = '
 $(function() {
 $( "#fontEdgeCySlider'.$instanceID.'" ).slider({
@@ -542,13 +678,29 @@ max: 28,
 min: 4, 
 value: 12,
 slide:  function(){
-if (cy'.$instanceID.'.elements(\'edge:selected\').length  > 0) {
-cy'.$instanceID.'.elements(\'edge:selected\').css({"font-size": $( this ).slider( "value" )});
+if (cy'.$instanceID.'.edges(\':selected\').length  > 0) {
+cy'.$instanceID.'.edges(\':selected\').css({"font-size": $( this ).slider( "value" )});
 } else {
-cy'.$instanceID.'.elements(\'edge\').css({"font-size": $( this ).slider( "value" )});
-}
-} }); });
+cy'.$instanceID.'.edges().css({"font-size": $( this ).slider( "value" )});
+}} }); 
+});
 ';
+
+$define{NodeLabelSwitch}	= '
+	$(function() {
+$( "#nodeLabel'.$instanceID.'" ).click( 
+function() {
+var Action = ($(this).prop( "checked" )) ? "enable":"disable";
+var State  = ($(this).prop( "checked" )) ? 1 : 0;
+
+if (cy'.$instanceID.'.nodes(\':selected\').length  > 0) {
+cy'.$instanceID.'.nodes(\':selected\').css({"text-opacity": State});
+} else {
+cy'.$instanceID.'.nodes().css({"text-opacity": State});
+}});
+});
+';
+
 $define{EdgeLabelSwitch}	= '
 	$(function() {
 $( "#edgeLabel'.$instanceID.'" ).click( 
@@ -556,25 +708,25 @@ function() {
 var Action = ($(this).prop( "checked" )) ? "enable":"disable";
 var State  = ($(this).prop( "checked" )) ? 1:0;
 
-if (cy'.$instanceID.'.elements(\'edge:selected\').length  > 0) {
-cy'.$instanceID.'.elements(\'edge:selected\').css({"text-opacity": State});
+if (cy'.$instanceID.'.edges(\':selected\').length  > 0) {
+cy'.$instanceID.'.edges(\':selected\').css({"text-opacity": State});
+$("#fontEdgeCySlider'.$instanceID.'").slider("enable");
 } else {
-cy'.$instanceID.'.elements(\'edge\').css({"text-opacity": State});
+cy'.$instanceID.'.edges().css({"text-opacity": State});
 $("#fontEdgeCySlider'.$instanceID.'").slider(Action);
-}
-
-}
-);
+}});
 });
 ';
+
 $define{nodeLabelCase} = '$("#caseNodeLabels'.$instanceID.'").selectmenu({
 select: function() {
-cy'.$instanceID.'.elements("node").css({"text-transform": 
-						$(this).val()});   
-           }
-});
+cy'.$instanceID.'.nodes().css({
+	"text-transform": $(this).val()
+	});              }});
 ';
-
+  # (ele, i) => {
+	  # "text-transform": ele.val()});   
+	  
 $define{cytoscapeViewSaver} = '
 $("#saveCytoscapeView'.$instanceID.'").selectmenu({
 select: function() {
@@ -646,11 +798,30 @@ $cs_menu_def .= ($netType eq 'nea') ? '$(".cy-selectmenu").selectmenu( "option",
 $cs_menu_def .= '$(\'[id*="changeSelected"]\').css({ "width": '.$HSconfig::cyPara->{size}->{$netType.'_menu'}->{width}.'});
 
 
+$( "#caseNodeLabels'.$instanceID.'-button").css("vertical-align", "top");
+$( "#nodeLabel'.$instanceID.'" ).prop( "checked", true );
 $( "#edgeLabel'.$instanceID.'" ).prop( "checked", true );
-/*$(".qtip-transient").qtip({
-     show: "mouseover",
-     hide: "mouseout"
-});*/
+$( ".ui-widget").css( "font-size", "0.9em" );
+$(".link-qtip").qtip({
+    show: "mouseover", 
+     hide: "unfocus", 
+        content: {
+        text: function(event, api) {
+            return $(this).attr("title");
+        }
+        }, 
+        position: {
+                my: "bottom left",
+                at: "top center",
+                adjust: {
+                screen: true,
+                method: "shift flip"
+                }
+                },
+        style: {
+                classes: "qtip-bootstrap"
+				}
+});
 '.
 '$(function() {
 if (document.getElementById("cy_main") != null) {
@@ -660,14 +831,29 @@ if (document.getElementById("cy_main") != null) {
 }
 });';
 
-our $cs_menu_buttons = '<div id="toolbar'.$instanceID.'" style="display: block;">';
-$cs_menu_buttons .= $layout_options if $HSconfig::display->{$netType}->{menuLayout};
+our $cs_menu_buttons = '<div id="toolbar'.$instanceID.'" style="display: block;">
+<table>';
+$cs_menu_buttons .= '<tr><td class="control_area">'.$layout_options.'</td></tr>' if $HSconfig::display->{$netType}->{menuLayout};
+
+my $shapeItemsSelected = '<li id="alter-nodes-shape-selected-code-'.$allowedShapes[0].$instanceID;
+my $s;
+for ($s=0; $s<=$#allowedShapes - 1; $s++) {
+	$shapeItemsSelected .= '">'.$allowedShapes[$s].'</li>
+				<li id="alter-nodes-shape-selected-code-'.$allowedShapes[$s+1].$instanceID;
+}
+$shapeItemsSelected .= '">'.$allowedShapes[$#allowedShapes].'</li>';
+my $shapeItemsAll = $shapeItemsSelected;
+# print STDERR  $shapeItemsAll."\n";
+$shapeItemsAll =~ s/selected/all/g;
+# print STDERR  "#################################\n";
+# print STDERR  $shapeItemsAll."\n";
+
 $cs_menu_buttons .= ($HSconfig::display->{$netType}->{BigChanger} ? 
 '
-<div id="renameNodeWrap'.$instanceID.'" class="hiddenFileNameBox">
+<tr><td class="control_area"><div id="renameNodeWrap'.$instanceID.'" class="hiddenFileNameBox">
 <input id="renameNode'.$instanceID.'" type="text" style="color: #006699;" oninput="this.style.color=\'#000000\'" onblur="this.style.color=\'#006699\'"/>
 </div>
-<label for="changeSelected'.$instanceID.'">Change color:</label>
+<label for="changeSelected'.$instanceID.'">Change:</label>
 <ul name="changeSelected" id="changeSelected'.$instanceID.'" class="ui-helper-hidden cy-menu">
 <li>Nodes
 	<ul>
@@ -676,7 +862,35 @@ $cs_menu_buttons .= ($HSconfig::display->{$netType}->{BigChanger} ?
 		<li id="alter-nodes-color-all'.$instanceID.'">All</li>
 		<li id="alter-nodes-color-selected'.$instanceID.'">Selected</li>
 		<li id="alter-nodes-color-system'.$instanceID.'">By category</li>
-		<li id="alter-nodes-color-activity'.$instanceID.'">By overall pathway activity (default)</li> 
+		<li id="alter-nodes-color-activity'.$instanceID.'">Default (gene set activity)</li> 
+		</ul>
+	</li>		
+	<li>Border
+		<ul>
+		<li id="alter-nodes-border-all'.$instanceID.'">All</li>
+		<li id="alter-nodes-border-selected'.$instanceID.'">Selected</li>
+		<li id="alter-nodes-border-system'.$instanceID.'">Default</li>
+		</ul>
+	</li>	
+	<li>Shape
+		<ul>
+		<li>All
+			<ul id="changeShape'.$instanceID.'-all" class="ui-helper-hidden cy-menu">
+				'.$shapeItemsAll.'
+			</ul>
+		</li>		
+		<li>Selected
+			<ul id="changeShape'.$instanceID.'-selected" class="ui-helper-hidden cy-menu">
+				'.$shapeItemsSelected.'
+			</ul>
+		</li>
+		<li id="alter-nodes-shape-system'.$instanceID.'">By category</li>
+		</ul>
+	</li>	
+	<li>Size
+		<ul>
+		<li id="alter-nodes-size-degree'.$instanceID.'">Default / node degree</li>
+		<li id="alter-nodes-size-default'.$instanceID.'">Equal</li>
 		</ul>
 	</li>
 	</ul>
@@ -691,13 +905,13 @@ $cs_menu_buttons .= ($HSconfig::display->{$netType}->{BigChanger} ?
 	</li>	
 	<li>Opacity
 		<ul>
-		<li id="alter-edges-opacity-confidence'.$instanceID.'">By confidence (default)</li>
+		<li id="alter-edges-opacity-confidence'.$instanceID.'">Default (by confidence)</li>
 		<li id="alter-edges-opacity-default'.$instanceID.'">Off</li>
 		</ul>
 	</li>
 	<li>Width
 		<ul>
-		<li id="alter-edges-width-nlinks'.$instanceID.'">By no. of links (default)</li>
+		<li id="alter-edges-width-nlinks'.$instanceID.'">Default (by no. of network edges)</li>
 		<li  id="alter-edges-width-default'.$instanceID.'">Equal</li>
 		</ul>
 	</li>
@@ -706,10 +920,10 @@ $cs_menu_buttons .= ($HSconfig::display->{$netType}->{BigChanger} ?
 <br>
 <div id="cycolorWrapper'.$instanceID.'" style="width:128px; display: none;">
    <input style="width:100px;" id="cycolor'.$instanceID.'" class="colorPicker evo-cp0" />
-</div>' : '')
+</div></td></tr>' : '')
 
 .($HSconfig::display->{$netType}->{cytoscapeViewSaver} ?  '
-<!--input type="hidden" id="content-save-cy-json3'.$instanceID.'" name="json3_content" value="">
+<tr><td class="control_area"><!--input type="hidden" id="content-save-cy-json3'.$instanceID.'" name="json3_content" value="">
 <input type="hidden" id="script-save-cy-json3'.$instanceID.'" name="json3_script" value="">
 <button type="submit" id="submit-save-cy-json3'.$instanceID.'" width="0" height="0" value="" style="visibility: hidden;"/-->
 
@@ -723,87 +937,111 @@ $cs_menu_buttons .= ($HSconfig::display->{$netType}->{BigChanger} ?
 <div id="saveCyViewFileName'.$instanceID.'"  class="hiddenFileNameBox">
 <INPUT type="text" name="input-save-cy-view" value="CytoScapeView1" style="color: #006699;" oninput="this.style.color=\'#000000\'" 
 onblur="this.style.color=\'#006699\'" /><span id="fileExtension'.$instanceID.'"></span>
-</div>' : '')
+</div></td></tr>' : '')
 
 # ui-icon-search
 # ui-icon-heart
 # ui-icon-cancel
 # id=""  onclick=\'setVennBox("'.'");\' 
-.($HSconfig::display->{$netType}->{NodeRemover} ?  '<label for="nodeSelector'.$instanceID.'">Find/remove nodes:<div id="nodeSelector'.$instanceID.'">'.'
-<label for="NodeRemoverDiv'.$instanceID.'" class="qtip-transient" title="Hide any nodes that contain a substring">
-<div id="NodeRemoverDiv'.$instanceID.'">
-<span class="ui-icon ui-icon-cancel venn_box_control" id="NodeRemoverButton'.$instanceID.'"></span>
-<input type="text" id="NodeRemover'.$instanceID.'" size="40" placeholder="[ -- mask -- ]" class="cyText"> 
-</div>
+
+# <TD title="'.$HSconfig::netDescription->{$sp}->{title}->{$net}.' '.'<a href=\''.$HSconfig::netDescription->{$sp}->{link}->{$net}.'\' class=\'clickable\'>URL</a>" id="help-'.$main::ajax_help_id++.'" class="js_ui_help gs_collection"> ? </TD>
+
+# <a href=\"http://www.w3schools.com/js/js_regexp.asp\" class=\"clickable\"></a>
+
+.($HSconfig::display->{$netType}->{NodeOperator} ?  '<tr><td class="control_area"><label class="link-qtip" title="
+For searching node names, you can use both <br>plain text (sub)strings and <a href=\'http://www.w3schools.com/js/js_regexp.asp\' style=\'text-decoration: underline;\' class=\'clickable\'>regular expressions</a>
+">Find/select/remove nodes:</label>
+<div id="nodeSelector'.$instanceID.'">
+<input type="text" id="NodeOperator'.$instanceID.'" size="40" placeholder="[ -- mask -- ]" class="cyText case-sensitive">
+<div>
+<label for="NodeRemoverButton'.$instanceID.'" class="qtip-transient" title="Hide any nodes that contain the substring">
+<span class="ui-icon ui-icon-circle-close node_box_control" id="NodeRemoverButton'.$instanceID.'"></span>
 </label>
-' : '') 
-.($HSconfig::display->{$netType}->{NodeRestorer} ?  '
-<label for="NodeRestorerDiv'.$instanceID.'" class="qtip-transient" title="Show only nodes that contain a substring">
-<div id="NodeRestorerDiv'.$instanceID.'">
-<span class="ui-icon ui-icon-heart venn_box_control" id="NodeRestorerButton'.$instanceID.'"></span>
-<input type="text" id="NodeRestorer'.$instanceID.'" size="40" placeholder="[ -- mask -- ]" class="cyText">
+<label for="NodeFilterButton'.$instanceID.'" class="qtip-transient" title="Show only nodes that contain the substring">
+<span class="ui-icon ui-icon-heart node_box_control" id="NodeFilterButton'.$instanceID.'"></span>
+</label>
+<label for="NodeFinderButton'.$instanceID.'" class="qtip-transient" title="Highlight nodes that contain the substring">
+<span class="ui-icon ui-icon-eye node_box_control" id="NodeFinderButton'.$instanceID.'"></span>
+</label>
+<label for="NodeRestorerButton'.$instanceID.'" class="qtip-transient" title="Restore all nodes">
+<span class="ui-icon ui-icon-arrowreturnthick-1-w node_box_control" id="NodeRestorerButton'.$instanceID.'"></span>
+</label>
 </div>
-</label> ' : '') 
-.($HSconfig::display->{$netType}->{NodeFinder} ?  '
-<label for="NodeFinderDiv'.$instanceID.'" class="qtip-transient" title="Highlight nodes that contain a substring">
-<div id="NodeFinderDiv'.$instanceID.'">
-<span class="ui-icon ui-icon-search venn_box_control" id="NodeFinderButton'.$instanceID.'"></span>
-<input type="text" id="NodeFinder'.$instanceID.'" size="40" placeholder="[ -- mask -- ]" class="cyText"></div>
-</label>' : '') 
+<!--label for="NodeOperatorCheckbox'.$instanceID.'">Case sensitive
+<input type="checkbox" id="NodeOperatorCheckbox'.$instanceID.'" class="cyButtons">
+</label-->
+</div></td></tr>' : '')
+
 .($HSconfig::display->{$netType}->{NodeRenamer} ?  '
+<tr><td class="control_area"><div id="NodeRenamerDiv'.$instanceID.'">
+<label for="nodeSelector'.$instanceID.'">Rename nodes:</label> 
+<div id="nodeRenamer'.$instanceID.'">
 <label for="NodeRenamerDiv'.$instanceID.'" class="qtip-transient" title="Rename nodes by replacing the left substring (RegExp) with the right one, e.g. type in KEGG_[0-9_]*_ in the left box and press the arrow icon">
-<div id="NodeRenamerDiv'.$instanceID.'">
-<span class="ui-icon ui-icon-scissors venn_box_control" id="NodeRenamerSource'.$instanceID.'"></span>
+
+<span class="ui-icon ui-icon-edit node_box_control" id="NodeRenamerSource'.$instanceID.'"></span>
 <input type="text" id="NodeSource'.$instanceID.'" size="20" placeholder="[ -- from -- ]" class="cyTextHalf">
-<span class="ui-icon ui-icon-arrowthick-1-e venn_box_control" id="NodeRenamerButton'.$instanceID.'"></span>
+<span class="ui-icon ui-icon-arrowthick-1-e node_box_control" id="NodeRenamerButton'.$instanceID.'"></span>
 <input type="text" id="NodeTarget'.$instanceID.'" size="20" placeholder="[ -- to -- ]" class="cyTextHalf"></div>
-</label>' : '')
-.'</div>'
-.($HSconfig::display->{$netType}->{EdgeSlider} ?  '<label for="edgeCySlider'.$instanceID.'" class="qtip-transient" title="Do not allow links of lower confidence">Filter by confidence: 
-<div id="edgeCySlider'.$instanceID.'" style="margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.';"></div></label>' : '')
-.($HSconfig::display->{$netType}->{NodeSizeSlider} ?  ' 
-<label for="fontNodeSizeCySlider'.$instanceID.'">Node size:
-<div id="fontNodeSizeCySlider'.$instanceID.'" style="margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.';" ></div></label>' : '') 
-.($HSconfig::display->{$netType}->{NodeSlider} ?  ' 
+</label></div></td></tr>' : '')
+ .($HSconfig::display->{$netType}->{EdgeSlider} ?  '<label for="edgeCySlider'.$instanceID.'" class="qtip-transient" title="Do not allow links of lower confidence">Filter edges by confidence: 
+<div id="edgeCySlider'.$instanceID.'" style="margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.'; height: '.$HSconfig::cyPara->{size}->{sliderHeight}.'"></div></label>' : '')
+.'<div>'
+.(($HSconfig::display->{$netType}->{NodeSlider} and $HSconfig::display->{$netType}->{NodeSizeSlider}) ? '
+<div style="display: inline-table;">
 <label for="fontNodeCySlider'.$instanceID.'">Node font size:
-<div id="fontNodeCySlider'.$instanceID.'" style="margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.';" ></div></label>' : '') 
-.($HSconfig::display->{$netType}->{NodeLabelSwitch} ?  '  
-<div style="display: inline-block; float: left;">
-<label for="edgeLabel'.$instanceID.'" class="qtip-transient" title="Display node labels">Node label<br>  
-<input type="checkbox" name="nodeLabel" id="nodeLabel'.$instanceID.'" value="showNodeLabel" class="cyButtons" >
-</label></div>' : '')
-.($HSconfig::display->{$netType}->{nodeLabelCase} ?  '<label for="caseNodeLabels'.$instanceID.'" class="qtip-transient" title="Change case of node labels" id="lableCaseNodeLabels'.$instanceID.'">Convert case:
-<select name="caseNodeLabels" id="caseNodeLabels'.$instanceID.'" class="cy-selectmenu">
+<div id="fontNodeCySlider'.$instanceID.'" style="width: 100%;  margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.'; height: '.$HSconfig::cyPara->{size}->{sliderHeight}.'" ></div></label></div>
+<div style="display: inline-table; margin-left: 10px;">
+<label for="fontNodeSizeCySlider'.$instanceID.'">Node size:
+<div id="fontNodeSizeCySlider'.$instanceID.'" style="width: 100%; margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.'; height: '.$HSconfig::cyPara->{size}->{sliderHeight}.';" ></div></label></div>' : '')
+.($HSconfig::display->{$netType}->{nodeLabelCase} ? '<div style="display: inline-table; margin-left: 10px;"><label for="caseNodeLabels'.$instanceID.'" class="qtip-transient" title="Change case of node labels" id="lableCaseNodeLabels'.$instanceID.'">Node title:
+<select name="caseNodeLabels" id="caseNodeLabels'.$instanceID.'" class="cy-selectmenu" style="width: 100%; margin-left: 10px; height: 15px;">
 <option value="uppercase">Uppercase</option>
 <option value="lowercase">Lowercase</option>
 <option value="none">Original</option>
-</select></label><br>' : '')
+</select></label></div>' : '').
+'</div>'
+.($HSconfig::display->{$netType}->{NodeLabelSwitch} ?  '  
+<div style="display: inline-table;">
+<label for="nodeLabel'.$instanceID.'" class="qtip-transient" title="Display node labels">Node label:<input type="checkbox" name="nodeLabel" id="nodeLabel'.$instanceID.'" value="showNodeLabel" class="cyButtons">
+</label></div>' : '')
 .($HSconfig::display->{$netType}->{EdgeLabelSwitch} ?  '  
-<div style="display: inline-block; float: left;">
-<label for="edgeLabel'.$instanceID.'" class="qtip-transient" title="Display no. of links as edge labels">Edge label<br>  
-<input type="checkbox" name="edgeLabel" id="edgeLabel'.$instanceID.'" value="showEdgeLabel" class="cyButtons" >
-</label></div>' : '').
-($HSconfig::display->{$netType}->{EdgeFontSlider} ?  '<br> 
+<div style="display: inline-table;">
+<label for="edgeLabel'.$instanceID.'" class="qtip-transient" title="Display no. of links as edge labels"> Edge label:<input type="checkbox" name="edgeLabel" id="edgeLabel'.$instanceID.'" value="showEdgeLabel" class="cyButtons" >
+</label></div>' : '')
+
+.($HSconfig::display->{$netType}->{EdgeWidthSlider} and $HSconfig::display->{$netType}->{EdgeFontSlider} ?  ' 
+<div>
+<div style="display: inline-table;">
+<label for="EdgeWidthCySlider'.$instanceID.'">Edge width:
+<div id="EdgeWidthCySlider'.$instanceID.'" style="width: 100%;  display: inline-table; margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.'; height: '.$HSconfig::cyPara->{size}->{sliderHeight}.'" ></div></label></div>
+<div style="display: inline-table;">
 <label for="fontEdgeCySlider'.$instanceID.'">Edge font size:
-<div id="fontEdgeCySlider'.$instanceID.'"  style="width: 120px;  display: inline; float: right; margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.';"></div></label>
-<br></div>
-' : '') .
+<div id="fontEdgeCySlider'.$instanceID.'"  style="width: 100%;  display: inline-table; margin: '.$HSconfig::cyPara->{size}->{sliderMargin}.'; height: '.$HSconfig::cyPara->{size}->{sliderHeight}.';"></div></label>
+</div>
+</div>
+' : '') . '</table></div>' . 
+# width: '.$HSconfig::cyPara->{size}->{net_menu}->{width}.'px;
 ($HSconfig::display->{$netType}->{nodeMenu} ? '
 <div class="qtip-transient" title="Node legend">
-<table id="nodeLegend" style="font-size: 0.75em; width: '.$HSconfig::cyPara->{size}->{net_menu}->{width}.'px;"> 
-<tr><td><img src="pics/yellowCircle.gif" alt="Yellow"  height="'.$HSconfig::cyPara->{size}->{node_menu}->{height}.'" width="'.$HSconfig::cyPara->{size}->{node_menu}->{width}.'"></td><td>AGS gene</td></tr>
-<tr><td><img src="pics/magentaCircle.gif" alt="Magenta"  height="'.$HSconfig::cyPara->{size}->{node_menu}->{height}.'" width="'.$HSconfig::cyPara->{size}->{node_menu}->{width}.'"></td><td>FGS gene</td></tr>
+<table id="nodeLegend" style="font-size: 0.775em; font-weight: 500; line-height: 85%;    padding-top: 25px;  margin-left: 225px;  z-index: 100;   position: absolute;   box-shadow: 3px 3px 6px 4px; "> 
+
+<tr><td><img src="pics/yellowCircle.gif" alt="Yellow"  height="'.$HSconfig::cyPara->{size}->{node_menu}->{height}.'" width="'.$HSconfig::cyPara->{size}->{node_menu}->{width}.'"></td><td>AGS node</td></tr>
+<tr><td><img src="pics/magentaCircle.gif" alt="Magenta"  height="'.$HSconfig::cyPara->{size}->{node_menu}->{height}.'" width="'.$HSconfig::cyPara->{size}->{node_menu}->{width}.'"></td><td>FGS node</td></tr>
 <tr><td><img src="pics/orangeCircle.gif" alt="Orange"  height="'.$HSconfig::cyPara->{size}->{node_menu}->{height}.'" width="'.$HSconfig::cyPara->{size}->{node_menu}->{width}.'"></td><td>both AGS and FGS</td></tr>
+<tr><td><img src="pics/greenCircle.gif" alt="Green"  height="'.$HSconfig::cyPara->{size}->{node_menu}->{height}.'" width="'.$HSconfig::cyPara->{size}->{node_menu}->{width}.'"></td><td>query</td></tr>
 <tr><td><img src="pics/greyCircle.gif" alt="Grey"  height="'.$HSconfig::cyPara->{size}->{node_menu}->{height}.'" width="'.$HSconfig::cyPara->{size}->{node_menu}->{width}.'"></td><td>other</td></tr>
 <!--tr><td>Edge label</td><td>Confidence score</td></tr-->
 </table>
+</div>
+<div id="topo'.$instanceID.'" style="overflow-y:  auto;" class="control_area" title="Topological parameters of node in focus">
+
 </div>
 ' : '');
 return($cs_menu_def);
 }
 
 sub printNet_JSON { # generates the gene-gene sub-network
-my($data, $node_features, $callerNo, $FGS, $AGS) = @_; 
+my($data, $node_features, $callerNo, $AGS, $FGS ) = @_; 
 
 my(@ar, $aa, $nn, $i, $ff, $signature, %copied_edge, $conn, $JSONcode);
 	my ($pp, $dd);
@@ -823,18 +1061,9 @@ $borderColoringScheme = '"border-color": "data(groupColor)"';
 $arrowHeadScheme = '"none"';
 # $edgeColoringScheme = '"data(confidence2opacity)"';
 $edgeColoringScheme = '"#b8cce4"';
-$nodeSizeScheme = '"mapData(weight, 0, 9, '. 10 * $nodeScaleFactor .', '. 40 * $nodeScaleFactor .')"';
+# $nodeSizeScheme = '"mapData(weight, 0, 9, '. 10 * $nodeScaleFactor .', '. 40 * $nodeScaleFactor .')"';
 $edgeWeightScheme = '"width": "data(integerWeight)"';#, 0, 6, '. 0.5 * $edgeScaleFactor .', '. 4 * $edgeScaleFactor .' 
 $edgeOpacityScheme = '"opacity" : 1.0';
-# open OUT2, ' > /var/www/html/research/users_tmp/_tmp.OUT2.dev';
-	# for my $nn(@{$genes}) {	print OUT2 $nn."\tgenes"."\n";}
-	# for my $nn(keys( %{$node_features } )) {	print OUT2 $nn."\tnode_features"."\n";}
-	# for my $nn(keys( %{ $found_genes->{'mmu'} } )) {	print OUT2 $nn."\tfound_genes"."\n";}
-# for my $nn(@{$initial_gene_set}) {	print OUT2 $nn."\tinitial_gene_set"."\n";}
-# for my $nn(@{$fnd_genes}) {	print OUT2 $nn."\tfnd_genes"."\n";}
-# for my $nn(@{$ags_genes}) {	print OUT2 $nn."\tags_genes"."\n";}
-# for my $nn(@{$fgs_genes}) {	print OUT2 $nn."\tfgs_genes"."\n";}
-# close OUT2;
 
 my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
 for $nn(sort {$a cmp $b} keys(%{$node_features})) {
@@ -844,20 +1073,20 @@ $node_features->{$nn}->{description} =
 			($nf->{ $nn }->{name} ? 
 				$nf->{ $nn }->{name} : 
 				$nn);
-$node_features->{$nn}->{description} .= '; deg='. $node_features->{$nn}->{degree} ;		
-# $node_features->{$nn}->{weight} = log($node_features->{ $nn }->{degree} + 1) / log(3);
-$node_features->{$nn}->{weight} = 0.1 * log($node_features->{ $nn }->{degree} + 1) ** 2;
+$node_features->{$nn}->{description} .= '; deg='. $node_features->{$nn}->{degree} if defined($node_features->{ $nn }->{degree});		
+# $node_features->{$nn}->{weight} = 0.1 * log($node_features->{ $nn }->{degree} + 1) ** 2;
+$node_features->{$nn}->{weight} = defined($node_features->{ $nn }->{degree}) ? log($node_features->{ $nn }->{degree} + 1) ** 2 : 1;
 }
 my($cs_menu_def) = define_menu('net', $instanceID);
 my $tbl = HS_html_gen::GeneGeneTable($network_links, $data, $node_features);
 my $id = '<table id="genegenetable_'.$instanceID.'" ';
 $tbl =~ s/\<table/$id/; #join(", ", keys(%{$node_features})).
-my $dialogTitle = defined($FGS) ? 'Links between '.$AGS.' and '.$FGS : 'Sub-network for AGS genes';
+my $dialogTitle = defined($FGS) ? 'Links between '.$AGS.' and '.$FGS : 'Requested (sub-)network';
 # 'action: '.$main::action.
 # '<p>Layout: '.($main::action  eq  "subnet-ags") ? $cs_selected_layout : 'arbor'.'</p>'.
 
 return(
-'<div id="cy_up">
+'<div id="cy_up" class="dialoghighlight">
 	<div id="geneNETtabs_'.$instanceID.'">
 		<ul>
 			<li id="id-net-tab"><a href="#net-tab">Sub-network</a></li>
@@ -885,19 +1114,20 @@ $("#cy_up").dialog({
         modal: false,
 		title: "'.$dialogTitle.'",
         width:  "'.($HSconfig::cyPara->{size}->{net}->{width} + 120).'",
-        height: "'.($HSconfig::cyPara->{size}->{net}->{height} + 100).'",
+        height: "'.($HSconfig::cyPara->{size}->{net}->{height} + 80).'",
+        maxHeight: "'.($HSconfig::cyPara->{size}->{net}->{height} + 400).'",
 		//position: { 		my: "right top", at: "right top" , of: "#net_up"		}, //, 		of: "#form_total"
 		autoOpen: true
 		, close: function( event, ui ) {$(\'[id*="'.$instanceID.'"]\').remove();}
 		//, buttons: {             "Close": function () {$(this).dialog("close");            }        }
 		});
-
+$("#cy_up").dialog("widget").css({"font-size": "0.9em"}); 
 		$("#changeLayout'.$instanceID.'").selectmenu({
 select: function() {
 if (LayoutOptions[$(this).val()]) {
-cy'.$instanceID.'.layout(LayoutOptions[$(this).val()]);   
+cy'.$instanceID.'.layout(LayoutOptions[$(this).val()]).run();   
 } else {
-cy'.$instanceID.'.layout({name: $(this).val()});  //{name: "cose-bilkent"} 
+cy'.$instanceID.'.layout({name: $(this).val()}).run();  //{name: "cose-bilkent"} 
 }
            }
 });'.
@@ -1020,11 +1250,11 @@ $node_features->{$AGS}->{name} = $AGS;
 $node_features->{$FGS}->{name} = $FGS;
 $node_features->{$AGS}->{type} = 'cy_ags';
 $node_features->{$FGS}->{type} = 'cy_fgs' if !$node_features->{$FGS}->{ags};
-$node_features->{$AGS}->{groupColor} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'};
-$node_features->{$FGS}->{groupColor} = $HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'} if !$node_features->{$FGS}->{ags};
+$node_features->{$AGS}->{groupColor} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_ags'};
+$node_features->{$FGS}->{groupColor} = $HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_fgs'} if !$node_features->{$FGS}->{ags};
 
-$node_features->{$AGS}->{weight} = sprintf("%.1f", log($ar[$pl->{n_genes_ags}]) + 1);
-$node_features->{$FGS}->{weight} = sprintf("%.1f", log($ar[$pl->{n_genes_fgs}]) + 1);
+$node_features->{$AGS}->{weight} = 10*sprintf("%.1f", log($ar[$pl->{n_genes_ags}]) + 1);
+$node_features->{$FGS}->{weight} = 10*sprintf("%.1f", log($ar[$pl->{n_genes_fgs}]) + 1);
 $node_features->{$AGS}->{AGS_genes2}  = $ar[$pl->{lc('AGS_genes2')}];
 $node_features->{$FGS}->{FGS_genes2}  = $ar[$pl->{lc('FGS_genes2')}];
 if ($HSconfig::printMemberGenes ) {
@@ -1036,17 +1266,19 @@ $gs_edges->{$AGS}->{$FGS} = processLinks(
 				if $network_links -> {$AGS} -> {$FGS} -> {NlinksReal_AGS_to_FGS};
 				}
 }
+
+
  my $nf = HS_SQL::gene_descriptions($node_features, $main::species);
 
 for $nn(sort {$a cmp $b} keys(%{$node_features})) { 
 my $type = uc($node_features->{$nn}->{type}) if defined($node_features->{$nn}->{type});
 $type =~ s/^CY_// if defined($type);
 $node_features->{$nn}->{nodeShade} = '#'.sprintf("%.2x", 255 * ( sqrt( sqrt($node_features->{$nn}->{N_links} / $maxConnectivity) ))).'0000' if defined($node_features->{$nn}->{N_links});
-$node_features->{$nn}->{subSet} = $nodeType{$node_features->{$nn}->{type}} if defined($node_features->{$nn}->{type});
+$node_features->{$nn}->{subSet} = $nodeShape{$node_features->{$nn}->{type}} if defined($node_features->{$nn}->{type});
 # if ($main::jobParameters -> {'genewise'.$type }) {
 my($id, $score, $subset) = split(':', $node_features->{$nn}->{uc($type).'_genes2'}) if defined($type);
 if (defined($id) and (uc($id) eq uc($nn))) {
-$node_features->{$nn}->{nodeShade} =  HS_cytoscapeJS_gen::node_shade($score, "byExpression") if $score;
+$node_features->{$nn}->{nodeShade} =  HS_cytoscapeJS_gen_v3::node_shade($score, "byExpression") if $score;
 $node_features->{$nn}->{subSet} =  lc($subset) if $subset;
 }
 # }
@@ -1054,12 +1286,13 @@ $node_features->{$nn}->{subSet} =  lc($subset) if $subset;
 if (!defined($node_features->{$nn}->{parent})) { 
 $node_features->{$nn}->{description} = $nf->{ $nn }->{description} ? $nf->{ $nn }->{description} : ($nf->{ $nn }->{name} ? $nf->{ $nn }->{name} : $nn);
 }}
+
 if ($HSconfig::printMemberGenes ) {
 $nf = HS_SQL::gene_descriptions($node_members, $main::species);
 for $mm(sort {$a cmp $b} keys(%{$node_features})) {
 $node_features->{$mm}->{description} = $nf->{ $mm }->{description} ? $nf->{ $mm }->{description} : ($nf->{ $mm }->{name} ? $nf->{ $mm }->{name} : $mm);
 $node_features->{$mm}->{name} = $nf->{ $mm }->{name};
-$node_features->{$mm}->{weight} = 1;
+$node_features->{$mm}->{weight} = 10;
 }
 }
 
@@ -1072,6 +1305,8 @@ $content .=
 '<script type="text/javascript">
  $(function () { '.$cs_menu_def.'});
  </script>';
+# print STDERR  $content."\n";
+
 return($content);
 } 
 
@@ -1080,16 +1315,18 @@ sub processLinks {
 my($Data) = @_; 
 
 my($network_links, $dd, $pp);
-	# print '<br>DATA: '.scalar(keys(%{$Data})).'<br>';
+	# print STDERR 'DATA: '.scalar(keys(%{$Data})).'<br>';
 for $pp(keys (%{$Data})) {
 		$dd  = $Data->{$pp}; 
- print STDERR join(' *** ', (($pp, $dd->{'prot1'}, $dd->{'prot2'}, keys (%{$dd})))).'<br>';
 $network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}} =	$Data->{$pp};
 $network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{weight} =	0.35;
 
 if ($HSconfig::display->{net}->{labels} ) {
-$network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{label} = 	($network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{confidence} ?  
-		$network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{confidence} : '');
+
+$network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{label} = 	
+	($network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{confidence} and  
+		($network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{confidence} ne $HSconfig::fbsValue->{noFunCoup})) ?  
+		$network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{confidence} : '';
 		}
 $network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{integerWeight} = ($network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{confidence} ?  
 		$network_links->{$dd->{'prot1'}}->{$dd->{'prot2'}}->{confidence}/3 : 3);
@@ -1126,9 +1363,7 @@ $footer
 ;
 $header =~ s/\'/###/;
 $footer =~ s/\'/###/;
-# $content 	= $content.
-# '<input type="hidden" id="header-save-cy-json3"   name="json3_header" value="'.$header.'">'.
-# '<input type="hidden" id="footer-save-cy-json3"   name="json3_footer" value="'.$footer.'">';
+
 return($content);
 }
 
@@ -1142,6 +1377,7 @@ my $property_list;
 
 $content = 'nodes: [';
 for $nn(keys(%{$node_features})) {
+	if ($nn ne "") {
 if ($HSconfig::printMemberGenes and $node_features->{$nn}->{memberGenes}) { #
 #    data: { weight: 75 },     position: { x: 300, y: 200 }
 for $mm(keys(%{$node_features->{$nn}->{memberGenes}})) {
@@ -1158,7 +1394,8 @@ $node_features->{$nn},
 '}, '
 ).'' if (!defined($node_features->{$nn}->{parent}) or (defined($node_features->{$nn}->{type}) and $node_features->{$nn}->{type} =~ m/ags|fgs/i)); #$network_links -> {$AGS} 
 #
-}
+}}
+
 $content =~ s/\,+\s*$//s;
 $content .= ']';
 $content =~ s/\,+\s*\]/\]/s;
@@ -1197,14 +1434,23 @@ my($network_links, $netType, $ID, $subnet_url, $gs_edges) = @_;
 my($content, $node1, $node2, $nodelist);
 my $sn = 0;
 $content = 'edges: [';
+
+# for my $gs1(keys(%{$network_links})) {
+# for my $gs2(keys(%{$network_links->{$gs1}})) {
+	# print STDERR 'CyEdges: '.$gs1.'<br>'.$gs2."\n" if $gs1 eq $gs2;
+# }} 
+
+
 for $node1(keys(%{$network_links})) { 
 $nodelist->{$node1} = 1;
 for $node2(keys(%{$network_links -> {$node1}})) {
-		if (($node1 ne $node2) and !$HSconfig::showGeneSelfLoops) {
+		if (($node1 ne $node2) || $HSconfig::showGeneSelfLoops) {
+			# print STDERR 'CyEdges: '.$node1.'<br>'.$node2."\n" if $node1 eq $node2;
 $nodelist->{$node2} = 1;
 $content .= '{'.CyEdge($network_links, $node1, $node2, $node1, $node2, $netType, $subnet_url, $sn, $gs_edges).'}, 
 '; 
-}}}
+}
+}}
 if ($HSconfig::printMemberGenes) {
 for $node1(sort {$a cmp $b} keys(%{$nodelist})) {
 $toAdd .= CyGeneEdges($gs_edges, $node1, $node1, $netType, $subnet_url, $sn); 
@@ -1219,7 +1465,7 @@ sub CyEdge {
 my ($links, $node1, $node2, $id1, $id2, $netType, $subnet_url, $sn, $gs_edges) = @_;
 my($content, $weight, $label, $confidence, $coef, $id, $evi);
 # print join(' - ', (keys(%{$node1}, values(%{$node2})))).'<br>';
-# print join(' ; ', ($node1, $node2)).'<br>';
+# print STDERR  join(' ; ', ($node1, $node2)).'<br>';
 # print join(' ; ', ( @{$links -> {$node1} -> {$node2} -> {all} -> {interaction_types}})).'<br>';
 # print join(' ; ', ( @{$links -> {$node1} -> {$node2} -> {all} -> {databases}})).'<br>';
 # print join(' ; ', ( @{$links -> {$node1} -> {$node2} -> {all} -> {pubmed_ids}})).'<br>';
@@ -1287,7 +1533,6 @@ return($content);
 
 sub CyNMheader {
 my($netType, $ID) = @_;
- 
 # ellipse + 
 # triangle + 
 # rectangle + 
@@ -1302,37 +1547,26 @@ my($netType, $ID) = @_;
 # vee + 
 # polygon +
 
-# round-triangle - 
-# roundtriangle - 
-# round-rectangle - 
-# round-pentagon - 
-# round-diamond - 
-# bottom-round-rectangle - 
-# cut-rectangle - 
-# barrel - 
-# tag - 
-# round-tag - 
-# round-octagon - 
-# round-heptagon - 
-# round-hexagon - 
-# concave-hexagon - 
-# 
  my $content =   '
 <div id="' . $ID . '" class="cy_main ui-widget-content ui-corner-all ui-helper-clearfix"></div>
 <script type="text/javascript">
- $(function(){ 
-$("#' . $ID . '").cytoscape({
-container: document.getElementById("' . $ID . '"),
+//document.addEventListener("DOMContentLoaded", 
+$(function(){ 
+// console.log("' . $ID . '");
+//$("#' . $ID . '").cytoscape({
+var '.$ID.' = cytoscape({
+// container: document.getElementById("' . $ID . '"),
+container: $("#' . $ID . '"),
 panningEnabled: 	true, 
 userPanningEnabled: true,
 boxSelectionEnabled: true,
 selectionType: "additive",  
-wheelSensitivity: 0.35,
-layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'arbor').	'"}, 
-//layout: {name: "grid", columns: 3}, 
+wheelSensitivity: 0.333,
+//layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'arbor').	'"}, 
+layout: {'.$cs_js_layout{$cs_selected_layout} .'}, 
 	style: cytoscape.stylesheet()
     .selector("node").css({ 
-        "content": "data(name)", //
+        "content": "data(name)", 
 		"font-family": "arial",
         "text-valign": "bottom",
 		"font-size": '. 12 * $nodeScaleFactor .', 
@@ -1340,8 +1574,7 @@ layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'a
 		"border-style" : '	.$borderStyleScheme.',
         "text-outline-width": 0,
 		"color" : "black", 
-		//"shape" : "ellipse",
-		"shape" : "diamond",
+		"shape" : "'.$nodeShape{'default'}.'",
         "text-outline-color": "black",
         '.$nodeColoringScheme.' ,
         "height": '	.$nodeSizeScheme.', 
@@ -1363,7 +1596,7 @@ layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'a
       })
     .selector(":selected")
       .css({
-        "border-color": "#cccc77", 
+        "border-color": "#ff8888", 
 		"background-blacken": -0.5, 
         "line-color": "#eeee99", 
         "source-arrow-color": "#eeee99", 
@@ -1373,11 +1606,11 @@ layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'a
 	  .selector("[groupColor]").css({'.$borderColoringScheme.'})	  
   .selector("node[type = \'cy_fgs\']")
   .css({
-    "shape": "'.$nodeType{'cy_fgs'}.'",
+    "shape": "'.$nodeShape{cy_fgs}.'",
 	"text-valign": "top", 
     "font-size": '. 10 * $nodeScaleFactor .',
-	"background-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'}.'",
-	"border-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_fgs'}.'"
+	"background-color": "'.$HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_fgs'}.'",
+	"border-color": "'.$HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_fgs'}.'"
 	/*, 
     "height": 200, 
     "width": 400 */
@@ -1386,9 +1619,9 @@ layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'a
   .css({
 	"text-valign": "top", 
 	"font-size": '. 10 * $nodeScaleFactor .', 
-	"background-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'}.'",
-	"border-color": "'.$HS_cytoscapeJS_gen::nodeGroupColor{'cy_ags'}.'", 
-    "shape": "'.$nodeType{'cy_ags'}.'"
+	"background-color": "'.$HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_ags'}.'",
+	"border-color": "'.$HS_cytoscapeJS_gen_v3::nodeGroupColor{'cy_ags'}.'", 
+    "shape": "'.$nodeShape{cy_ags}.'"
 	/*,
   	"border-width": 5,
 	"border-color": "green"
@@ -1414,6 +1647,9 @@ layout: {name: "'	.(($main::action  ne  "subnet-ags") ? $cs_selected_layout : 'a
   
 ,
    "elements": {'."\n";
+   
+   
+   
 return($content); 
 }
 
@@ -1423,59 +1659,65 @@ my($netType, $instanceID) = @_;
 my $content = '  },
   ready: function(){
     window.cy'.$instanceID.' = this;
-	//var cy_gene_collection;
 	var oldEdgeFontSize;
 	var oldNodeFontSize;
-	var SizeMagnification = 1.33;
+	var SizeMagnification = 1.125;
 	var MaxNodeFontSize = 30;
-    //cy'.$instanceID.'.elements().unselectify();
-    /*cy'.$instanceID.'.on(\'cxttapstart\', function(e) {
-	//cycy_main.remove(cy_gene_collection);	 
-	} );*/
-    cy'.$instanceID.'.on(\'tap\', \'edge\', function(e) {
-//cycy_main.elements("node").style({"height": "auto", "width": "auto"});
-//	cycy_main.add('.$toAdd.');  
-//cycy_main.elements().layout({name: "grid",  condense: true,  cols: 3});
-//cy_gene_collection = cycy_main.collection( "node:child" );
+/*cy'.$instanceID.'.on(\'cxttapstart\', function(e) {	} );*/
+    //cy'.$instanceID.'.on(\'tap\', \'edge\', function(e) {});  
+var dcn = cy'.$instanceID.'.$().degreeCentralityNormalised();
+var ccn = cy'.$instanceID.'.$().closenessCentralityNormalised();
+var bc 	= cy'.$instanceID.'.$().betweennessCentrality();
+var pr 	= cy'.$instanceID.'.elements().pageRank({ dampingFactor: 0.8, precision: 0.000001, iterations: 200});
+//console.log(dcn.degree("#USERS_LIST_AGS"));
 
-  });
-  
 cy'.$instanceID.'.on(\'zoom\', function(){
       cy'.$instanceID.'.resize();
     });
-cy'.$instanceID.'.on(\'tap\', function(){
-      cy'.$instanceID.'.resize();
-    });
-    /*cy'.$instanceID.'.on(\'tap\', \'node\', function(e){
-      var node = e.cyTarget; 
-      var neighborhood = node.neighborhood().add(node);
-      cy'.$instanceID.'.elements().addClass(\'faded\');
-      neighborhood.removeClass(\'faded\');
-    });*/
-  /*  cy'.$instanceID.'.on("tap", function(e){
-      if( e.cyTarget === cy ){
-        cy'.$instanceID.'.elements().removeClass(\'faded\');
-      }    });*/
+//cy'.$instanceID.'.on(\'tap\', function(){    cy'.$instanceID.'.resize();    });
+'.(($netType eq 'net') ? '
 	cy'.$instanceID.'.on("tapdragover", "node", 
           function(e){
-      var node = e.cyTarget; 
+      var node = e.target; 
 	  oldNodeFontSize = node.css("font-size");
-	  //console.log(oldNodeFontSize);
 	  var Size = Number(oldNodeFontSize.replace("px", ""))
 	  var Si = (Size * SizeMagnification > MaxNodeFontSize) ? MaxNodeFontSize : Size * SizeMagnification;
 	  var NewSize = Si.toString() + "px";
-	  //console.log(NewSize);
-node.css({"content": node.attr("description")});
-node.css({"font-size":  NewSize});
-node.css({"color":  "#E87009"});
-});
-	cy'.$instanceID.'.on("tapdragout", "node", 
+node.css({ 
+	content: 
+	node.attr("description").replace(/; deg=.+$/, "") 
+	, "color":  "'.$colorInfo.'", 
+	"font-size":  NewSize, 
+	"font-weight": 400, 
+	"text-justification": "left",
+	"text-wrap": "wrap",
+	"text-valign": "top"
+	} );
+document.getElementById("topo'.$instanceID.'").innerHTML = 
+	"<table style=\"font-size: 0.825em; color: gray; line-height: 85%;\">" + 
+	"<tr style=\"font-weight: 700; color: #444444;\"><td>Node " + node.attr("description").replace(/; deg=.+$/, "") + ":</td><td>" + node.attr("id") + "</td></tr>" + 
+	"<tr><td>Global node degree:</td><td>" + node.attr("description").replace(/.+; deg=/, "") + "</td></tr>" + 
+	"<tr><td>Degree centrality:</td><td>" + cy'.$instanceID.'.$().dc({ root: node }).degree + "</td></tr>" +
+	"<tr><td>Normalised degree centrality:</td><td>" + dcn.degree(node).toFixed(3) + "</td></tr>" + 
+	"<tr><td>Closeness centrality:</td><td>" + cy'.$instanceID.'.$().cc({ root: node }).toFixed(3) + "</td></tr>" + 
+	"<tr><td>Normalised closeness centrality:</td><td>" + ccn.closeness(node).toFixed(3) + "</td></tr>" + 
+	"<tr><td>Betweenness centrality:</td><td>" + bc.betweenness(node).toFixed(2) + "</td></tr>" + 
+	"<tr><td>Normalised betweenness centrality:</td><td>" + bc.betweennessNormalized(node).toFixed(6) + "</td></tr>" + 	"<tr><td>PageRank score:</td><td>" + pr.rank(node).toFixed(3) + "</td></tr>" +
+"</table>";
+
+node.css({});
+node.css({});
+}); 
+' : '').
+	'cy'.$instanceID.'.on("tapdragout", "node", 
           function(e){
-      var node = e.cyTarget; 
+      var node = e.target; 
 node.css({\'content\': node.attr("name")});
 node.css({"font-size": oldNodeFontSize});
 node.css({"color":  "#000000"});
-});';
+});
+';
+
   # // https://github.com/iVis-at-Bilkent/cytoscape.js-context-menus 
   $content .= '
                                 // https://github.com/iVis-at-Bilkent/cytoscape.js-context-menus 
@@ -1495,8 +1737,7 @@ node.css({"color":  "#000000"});
                                             title: "remove",
                                             selector: "node, edge",
                                             onClickFunction: function (event) {
-				//		console.log("Target", event.cyTarget);
-                                              event.cyTarget.remove();
+                                            event.target.remove();
                                             },
                                             hasTrailingDivider: true
                                           },
@@ -1505,7 +1746,7 @@ node.css({"color":  "#000000"});
                                             title: "hide",
                                             selector: "*",
                                             onClickFunction: function (event) {
-                                              event.cyTarget.hide();
+                                              event.target.hide();
                                             },
                                             disabled: false
                                           },
@@ -1541,7 +1782,7 @@ node.css({"color":  "#000000"});
                                             title: "select all nodes",
                                             selector: "node",
                                             onClickFunction: function (event) {
-                                              selectAllOfTheSameType(event.cyTarget);
+                                              selectAllOfTheSameType(event.target);
                                             }
                                           },
                                           {
@@ -1549,7 +1790,7 @@ node.css({"color":  "#000000"});
                                             title: "select all edges",
                                             selector: "edge",
                                             onClickFunction: function (event) {
-                                              selectAllOfTheSameType(event.cyTarget);
+                                            selectAllOfTheSameType(event.target);
                                             }
                                           }
                                         ]
@@ -1571,17 +1812,19 @@ node.css({"color":  "#000000"});
                                       });
 	  '  if 1 == 1 and $HSconfig::display->{$netType}->{showcontextMenus};
 
-   
 $content .= 		'
 cy'.$instanceID.'.on("mouseover", "edge", function(event) {
-    var edge = event.cyTarget;
+    var edge = event.target;
+	  //console.log( edge.id() );
     edge.qtip({
 			prerender: false,
-            content: function() {return edge.data("qtipOpts");}, //\'Hello\', //
+            content: function() {return edge.data("qtipOpts");	}, 
+
 			position: {
 				my: "top center",
 				//of: event,
-				at: "bottom center"
+				target: \'event\',
+				at: "top center"
 			},
 			show: {
 				event: \'click\', //event.type,
@@ -1594,7 +1837,7 @@ cy'.$instanceID.'.on("mouseover", "edge", function(event) {
 
 $content .= 		'
 cy'.$instanceID.'.on("mouseover", "node", function(event) {
-    var edge = event.cyTarget;
+    var edge = event.target;
     edge.qtip({
 			prerender: false,
             content: \'Hello\', //function() {return edge.data("qtipOpts");}, //
@@ -1631,7 +1874,8 @@ cy'.$instanceID.'.on("mouseover", "node", function(event) {
 									width: 16,
 									height: 8
                                 }}});' if $HSconfig::display->{$netType}->{showQtipCore};
-
+								
+								
 $content .= 'var defaultsSH = {
   preview: true, // whether to show added edges preview before releasing selection
   handleSize: 10, // the size of the edge handle put on nodes
@@ -1650,9 +1894,9 @@ $content .= 'var defaultsSH = {
   },
   loopAllowed: function( node ){
     // for the specified node, return whether edges from itself to itself are allowed
-    return false;
+    return true;
   },
-  nodeLoopOffset: -50, // offset for edgeType: \'node\' loops
+  nodeLoopOffset: -250, // offset for edgeType: \'node\' loops
   nodeParams: function( sourceNode, targetNode ){
     // for edges between the specified source and target
     // return element object to be passed to cy'.$instanceID.'.add() for intermediary node
@@ -1677,39 +1921,18 @@ $content .= 'var defaultsSH = {
 
 cy'.$instanceID.'.edgehandles( defaultsSH );' if $HSconfig::display->{$netType}->{showedgehandles}; 
 
-$content .= '//var defaultsPZ = ();
-cy'.$instanceID.'.panzoom({
-    zoomFactor: 0.05, // zoom factor per zoom tick
-    zoomDelay: 45, // how many ms between zoom ticks
-    minZoom: 0.1, // min zoom level
-    maxZoom: 10, // max zoom level
-    fitPadding: 50, // padding when fitting
-    panSpeed: 10, // how many ms in between pan ticks
-    panDistance: 10, // max pan distance per tick
-    panDragAreaSize: 75, // the length of the pan drag box in which the vector for panning is calculated (bigger = finer control of pan speed and direction)
-    panMinPercentSpeed: 0.25, // the slowest speed we can pan by (as a percent of panSpeed)
-    panInactiveArea: 8, // radius of inactive area in pan drag box
-    panIndicatorMinOpacity: 0.5, // min opacity of pan indicator (the draggable nib); scales from this to 1.0
-    autodisableForMobile: true, // disable the panzoom completely for mobile (since we don\'t really need it with gestures like pinch to zoom)
-    // icon class names
-    sliderHandleIcon: \'fa fa-minus\',
-    zoomInIcon: \'fa fa-plus\',
-    zoomOutIcon: \'fa fa-minus\',
-    resetIcon: \'fa fa-expand\'
-});' if $HSconfig::display->{$netType}->{showpanzoom};
 #$content .= $cs_menu; #$( ".cyMenu" ).draggable();
 
 $content .=  '	
 //console.log("CY loaded");
-// cy'.$instanceID.'.layout({name: "grid", columns: 3, ready: function () {cy'.$instanceID.'.layout({name: arbor})}}); 
-//cy'.$instanceID.'.layout({name: "'	.$cs_selected_layout.	'"});
-//cy'.$instanceID.'.layout({name: "grid"}).layout({name: "'	.$cs_selected_layout.	'"});
+// cy'.$instanceID.'.layout({name: "grid", columns: 3, ready: function () {cy'.$instanceID.'.layout({name: arbor})}}).run(); 
+//cy'.$instanceID.'.layout({name: "grid"}).layout({name: "'	.$cs_selected_layout.	'"}).run();
+//cy'.$instanceID.'.layout({ name: "'.$cs_selected_layout.'" }).run();
+//layout.run();
 				 }});  
  				 }); 
 				 
-/*var collection = cycy_main.elements(":child").union(cycy_main.elements(":child").connectedEdges()); //
-removedData = cycy_main.remove(collection);
-removedData.restore();*/
+
 				 </script>';
 return($content); 
 }

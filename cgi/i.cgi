@@ -1,5 +1,6 @@
 #!/usr/bin/perl -w
-use warnings;
+#!/usr/bin/perl -w
+# use warnings;
 use strict;
 use Net::SMTP;
 use CGI; # qw(-no_xhtml);
@@ -11,7 +12,7 @@ use HS_SQL;
 
 use HS_html_gen;
 use HS_bring_subnet;
-use HS_cytoscapeJS_gen;
+use HS_cytoscapeJS_gen_v3;
 use Proc::Background;
 
 use lib "/var/www/html/research/HyperSet/cgi/NETwork_analysis";
@@ -20,7 +21,6 @@ use NET;
 use venn_click_points;
 use constant SPACE => ' ';
 no warnings;
-
 
 our $dbh = HS_SQL::dbh('hyperset');
 $CGI::POST_MAX=102400000;
@@ -43,7 +43,7 @@ our $NN = 0;
 my(@genes, 
 # $Genes, 
 $type, $step, $NEAfile, $mm, $quasyURL, $callerNo, $AGS, $FGS);
-our($AGSselected, $FGSselected, $FGScollected, $NETselected);
+our($netSource, $AGSselected, $FGSselected, $FGScollected, $NETcollected, $NETselected);
 my @names = $q->param;
 our $restoreSpecial = 0; # see sub tmpFileName()
 $fileUploadTag = "_table";
@@ -57,6 +57,34 @@ $fileUploadTag = "_table";
 # open(my $fh, '>', $debug_filename);
 # print $fh "Params: ".$pcont."\n";
 # close $fh;
+
+our($textFileFields, $type);
+ for $type("net", "nef") {
+	 %{$textFileFields->{$type}} = (
+ # 'id1'  => $q->param('gene1columnid')	 ? $q->param('gene1columnid') - 1	 : undef,
+ # 'id2'  => $q->param('gene2columnid')	 ? $q->param('gene2columnid') - 1	 : undef, 
+ # 'edge' => $q->param('edgecolumnid')	 ? $q->param('edgecolumnid') - 1	 : undef ); 
+ 'id1'  => $q->param('gene1columnid')	 ? $q->param('gene1columnid') - 1	 : 0,
+ 'id2'  => $q->param('gene2columnid')	 ? $q->param('gene2columnid') - 1	 : 1, 
+ 'edge' => defined($q->param('edgecolumnid'))	 ? $q->param('edgecolumnid') - 1	 : -1 );
+ }
+ 
+ for $type("sgs", "ags") {
+	 %{$textFileFields->{$type}}= (
+ 'group'  => $q->param('group_column_id_ags')	 ? $q->param('group_column_id_ags') - 1 : undef,
+ 'id'  => $q->param('gene_column_id_ags')		 ? $q->param('gene_column_id_ags') - 1 : undef,
+ 'score'  => $q->param('score_column_id_ags')	 ? $q->param('score_column_id_ags') - 1 : undef,
+ 'subset'  => $q->param('subset_column_id_ags')	 ? $q->param('subset_column_id_ags') - 1 : undef);
+ }
+  for $type("cpw", "fgf", "fgs") {
+	 %{$textFileFields->{$type}} = (
+ 'group'  => $q->param('group_column_id_fgs')	 ? $q->param('group_column_id_fgs') - 1 : undef,
+ 'id'  => $q->param('gene_column_id_fgs')		 ? $q->param('gene_column_id_fgs') - 1 : undef,
+ 'score'  => $q->param('score_column_id_fgs')	 ? $q->param('score_column_id_fgs') - 1 : undef,
+ 'subset'  => $q->param('subset_column_id_fgs')	 ? $q->param('subset_column_id_fgs') - 1 : undef);
+ }
+ 
+ 
 if ($q->param('action')  eq  "subnet-ags") {
 		$HS_bring_subnet::keep_query                         = 	$q->param('keep_query');
 		$HS_bring_subnet::submitted_coff                     = 	$q->param('coff'); 
@@ -129,9 +157,7 @@ system("mkdir $usersDir 1>/dev/null 2>/dev/null");
 system("mkdir $usersTMP 1>/dev/null 2>/dev/null");
 }
 $step = '';
-# $mode 		= $q->param("analysis_type");
 $type 		= $q->param("type"); # if this parameter is not defined, then $type will be set downstream.
-# $type 		= '' if !defined($type);
 if ($q->param("mode") eq 'begin') {
 $step = 'mainTab';
 }
@@ -139,26 +165,27 @@ if ($q->param("mode") eq 'fill_menu') {
 $step = 'fillMenu';
 }
 
-
-
 ##################################################
 @{$AGSselected} = $q->param("AGSselector") if $q->param("AGSselector");
 @{$FGSselected} = $q->param("FGSselector") if $q->param("FGSselector");
 @{$FGScollected} = ($q->param("FGScollection")) if $q->param("FGScollection");
 @{$NETselected} = $q->param('NETselector') if $q->param('NETselector');
-# print STDERR "NETselected: ". $NETselected ;
+@{$NETcollected} = $q->param('NETcollection') if $q->param('NETcollection');
+
 my($pg, $lst);
-for $lst('sgs_list', 'cpw_list') {
+for $lst('sgs_list', 'cpw_list', 'net_list') {
 if ($q->param($lst)) {
-$pg = HStextProcessor::parseGenes($q->param($lst), SPACE);
+$pg = HStextProcessor::parseGenes($q->param($lst), ($lst eq 'net_list' ? "\n" : SPACE));
 if (ref($pg) eq 'ARRAY') {
 push @{$AGSselected}, @{$pg} if ($lst eq "sgs_list"); #parse the IDs in the AGS text  box
 push @{$FGSselected}, @{$pg} if ($lst eq "cpw_list"); #parse the IDs in the FGS text  box
+push @{$NETselected}, @{$pg} if ($lst eq "net_list"); #parse the IDs in the FGS text  box
 } 
 else {
 print HS_html_gen::errorDialog('error', $HSconfig::listName{$lst}, $q->param($lst).": this was invalid input.<br>Gene/protein IDs shall only contain letters, digits, dash, underscore, and dot", $HSconfig::listName{$lst}); exit;
 }
 }}
+# print STDERR "NETselected: ". $NETselected."\n";
 ##################################################
 
 
@@ -179,15 +206,47 @@ $step = 'shownet';
 } 
 if ($q->param("action") eq  "subnet-ags") {
 $step = 'shownet';
+my $edgeList;
+@{$edgeList} = split(/\n+/, $q->param("net_list")) if $q->param('net_list');
+	# print STDERR "AGSselected1: ".$AGSselected."...\n";
+if (!defined($AGSselected)) {
+	my(%fullGeneList, $gene1, $gene2, $group);
+if ($q->param("net_list")) {
+for my $op(@{$edgeList}) { 
+	($gene1, $gene2, $group) = HStextProcessor::processEdge($op, $textFileFields->{net});
+	$fullGeneList{$gene1} = 1;
+	$fullGeneList{$gene2} = 1;
+}} else {
+# my $file = $q->param('selectradio-table-net-ele') ? $q->param('selectradio-table-net-ele') : $savedFiles -> {data} -> {"net_table"}; #
+# $table = $usersDir.$q->param('selectradio-table-net-ele'); #
+my $readin = HStextProcessor::read_network($usersDir.$q->param('selectradio-table-net-ele'), $textFileFields->{nef}, "\t", $q->param('display-file-header'));
+for $group(keys(%{$readin})) { 
+for $gene1(keys(%{$readin->{$group}->{nodes}})) { 
+	$fullGeneList{$gene1} = 1;
+}
+} 
+}
+@{$AGSselected} = keys(%fullGeneList);
+}
+	# print STDERR "FGSselected: ".ref($FGSselected).' '.($#{$FGSselected} + 1)."...\n";
+	print STDERR "AGSselected2: ".join($HS_html_gen::arrayURLdelimiter, @{$AGSselected})."...\n";
+	# print STDERR "NETselected: ".ref($NETselected).' '.($#{$NETselected} + 1)."...\n";
 ($quasyURL, $callerNo, $AGS, $FGS) = (
 	HStextProcessor::subnetURL(
 		$AGSselected, 
-		$AGSselected, 
+		undef, 
 		$species, 
-		$HSconfig::netfieldprefix.join($HS_html_gen::fieldURLdelimiter.$HSconfig::netfieldprefix, $q->param('NETselector')),
-		$q->param("nlinks") ? $q->param("nlinks") : 1000,
+$q->param('NETcollection') ? 
+	$HSconfig::netfieldprefix.join(
+		$HS_html_gen::fieldURLdelimiter.$HSconfig::netfieldprefix, $q->param('NETcollection')) :
+	HStextProcessor::compileNET(
+			$q->param("jid"), 
+			$q->param("net_list") ? "#net_list" : $usersDir.$q->param("selectradio-table-net-ele"), 
+			$q->param("net_list") ? $edgeList : $NETselected, 
+			$textFileFields->{net}),
+		$q->param("no_of_links") ? $q->param("no_of_links") : 100,
 		$q->param("order") ? $q->param("order") : 0, 
-		1), 
+		0), 
 undef, undef, undef);
 # my $debug_filename = "/var/www/html/research/users_tmp/myveryfirstproject/subnet.txt";
 # open(my $fh, '>', $debug_filename);
@@ -239,14 +298,15 @@ $delimiter = ',' if lc($delimiter) eq 'comma';
 $delimiter = ' ' if lc($delimiter) eq 'space';
 $pl->{$usersDir.$q->param('selectradio-table-ags-ele')} = $pl->{$currentAGS};
 			}
-			
+	
 print "Content-type: text/html\n\n"  if ($step ne 'shownet');
 			
 my $content = '';
 # print STDERR '<br>Submitted form values: <br>'.$q->query_string.'<br>'  if $debug; 
-print STDERR '###########STEP: '.$step  if $debug; 
+print STDERR '###STEP: '.$step."\n"  if $debug; 
+print STDERR '###TYPE: '.$type."\n"  if $debug; 
 if ($step eq 'mainTab') {
-$content .= '<br>Submitted tab_id: <br>'.$q->param("tab_id").'<br>' if $debug;
+# $content .= '<br>Submitted tab_id: <br>'.$q->param("tab_id").'<br>' if $debug;
 $content .= generateTabContent('analysis_type_ne');
 } 
 elsif ($step eq 'fillMenu') {
@@ -331,8 +391,6 @@ system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$users
 $content = '<a href="'.$HSconfig::Rplots->{dir}.$outfile.'" target="_blank" class="clickable">3D PCA plot</a>';
 } elsif ($mode eq 'hea') {
 $outfile = 'heatmap'.HStextProcessor::generateJID().'.html';
-my($pg, $lst);
-
 my($rnms);
 push @{$rnms}, @{HStextProcessor::parseGenes($q->param('sgs_list'), SPACE)};
 system("Rscript ../R/runExploratory.r --vanilla --args mode=$mode table=".$usersDir.$q->param('table')." colnames=".$q->param('colnames')." rownames=".$q->param('rownames')." out=$outfile delimiter=TAB  normalize=".$q->param('normalize')." hclust_method=".$q->param('hclust_method')); 
@@ -342,16 +400,8 @@ return $content;
 }
 
 sub executeNEA {
-my($ags, $agsSource, $fgs, $fgsSource, $netSource, $outFile, $filename, $jobParameters, $executeStatement, $email, $op);
-my $jid = $q -> param("jid"); #generateJID();
-# check if the job is already executing (see Evinet.todo to learn more about double-run bug)
-# my $stat = qq/SELECT started FROM projectarchives WHERE jid LIKE \'$jid'\ /;
-# my $sth = $dbh->prepare($stat) or die $dbh->errstr;
-# $sth->execute( ) or die $sth->errstr;
-# my $control = $sth->fetchrow_array;
-	##print("Control: ".$control." <br>");
-# $sth->finish;
-# if ($control eq "") {
+my($ags, $agsSource, $fgs, $fgsSource, $net, $outFile, $filename, $jobParameters, $executeStatement, $email, $op);
+my $jid = $q -> param("jid"); 
 	$outFile = tmpFileName('NEA', $jid);
 	$jobParameters -> {jid} = $jid;
 	$jobParameters -> {rm} = $ENV{REMOTE_ADDR};
@@ -359,7 +409,7 @@ my $jid = $q -> param("jid"); #generateJID();
 	$jobParameters -> {species} = $species;
 	$jobParameters -> {sbm_selected_ags} = $AGSselected;
 	$jobParameters -> {sbm_selected_fgs} = defined($FGScollected)? $FGScollected : $FGSselected;
-	$jobParameters -> {sbm_selected_net} = $NETselected;
+	$jobParameters -> {sbm_selected_net} = defined($NETcollected)? $NETcollected : $NETselected;
 	$jobParameters -> {genewiseAGS} = $q->param("genewiseAGS") ? 'TRUE' : 'FALSE';
 	$jobParameters -> {genewiseFGS} = $q->param("genewiseFGS") ? 'TRUE' : 'FALSE';
 	$jobParameters -> {min_size} = $q->param("min_size") ? $q->param("min_size") : 'NULL';
@@ -382,20 +432,12 @@ my $jid = $q -> param("jid"); #generateJID();
 	"Altered gene sets");
 	}
 	
-	my($textFileFields);
-%{$textFileFields} = (
-	 'group'  => $q->param('group_column_id_ags') - 1,
-	 'id'  => $q->param('gene_column_id_ags') - 1,
-	 'score'  => ($q->param('score_column_id_ags') ? $q->param('score_column_id_ags') - 1 : undef),
-	 'subset'  => ($q->param('score_column_id_ags') ? $q->param('subset_column_id_ags') - 1 : undef)
- );
- 
 	print STDERR 'sbm_selected_ags: '.join(' ', @{$jobParameters -> {sbm_selected_ags}})."\n" if $debug;	
 	$agsSource = HStextProcessor::compileGS2('ags', 
 	$jid, 
 	$ags, 
 	$jobParameters -> {sbm_selected_ags}, 
-	$textFileFields,
+	$textFileFields->{ags},
 	$jobParameters -> {genewiseAGS},
 	$species, 
 	0);
@@ -422,28 +464,28 @@ my $jid = $q -> param("jid"); #generateJID();
 	} 
 
 	if (defined($fgs))  {
-%{$textFileFields} = (
-	 'group'  => $q->param('group_column_id_fgs') - 1,
-	 'id'  => $q->param('gene_column_id_fgs') - 1,
-	 'score'  => ($q->param('score_column_id_fgs') ? $q->param('score_column_id_fgs') - 1 : undef),
-	 'subset'  => ($q->param('score_column_id_fgs') ? $q->param('subset_column_id_fgs') - 1 : undef)
- );	
  $fgsSource = HStextProcessor::compileGS2('fgs', 
 	$jid, 
 	$fgs, 
 	$jobParameters -> {sbm_selected_fgs}, 
-	$textFileFields,
+	$textFileFields->{fgs},
 	$jobParameters -> {genewiseFGS},
 	$species, 
 	0);
 	}
 	 
-	# print STDERR '---FGS: '.(defined($fgs) ? $fgs : '---')."\n" if $debug;
-	# print STDERR '---FGSselected: '.(defined($FGSselected) ? join(' ', @{$FGSselected}) : '---')."\n" if $debug;	
-	# print STDERR '---FGScollected: '.(defined($FGScollected)? join('; ', @{$FGScollected}) : '---')."\n"; #if $debug;	
-	# print STDERR '---FGSSource: '. $fgsSource." #FFFFFFF\n";
-if ($#{$NETselected} >= 0) {
-	$netSource = $HSconfig::netfieldprefix.join($HSconfig::RscriptParameterDelimiter.$HSconfig::netfieldprefix, @{$NETselected});
+	print STDERR '---FGS: '.(defined($fgs) ? $fgs : '---')."\n" if $debug;
+	print STDERR '---FGSselected: '.(defined($FGSselected) ? join(' ', @{$FGSselected}) : '---')."\n" if $debug;	
+	print STDERR '---FGScollected: '.(defined($FGScollected)? join('; ', @{$FGScollected}) : '---')."\n"; #if $debug;	
+	print STDERR '---FGSSource: '. $fgsSource." #FFFFFFF\n";
+	
+if ($q->param("net_list")) {# print selected edges directly to the NET source file:
+	$net = "#net_list";
+	} elsif ($q->param("NETselector")) {
+	$net = $usersDir.$q->param("selectradio-table-net-ele");
+	}
+	elsif ($q->param("NETcollection")) {
+	$netSource = $HSconfig::netfieldprefix.join($HSconfig::RscriptParameterDelimiter.$HSconfig::netfieldprefix, @{$NETcollected});
 	$netSource =~ s/^$HSconfig::RscriptParameterDelimiter//;
 	} else {
 	return HS_html_gen::errorDialog('error', "Input", 
@@ -451,7 +493,19 @@ if ($#{$NETselected} >= 0) {
 	"Network") ;
 	} 
 
-
+	if (defined($net))  {
+ $netSource = HStextProcessor::compileNET($jid, 
+	$net, 
+	$jobParameters -> {sbm_selected_net}, 
+	$textFileFields->{net});
+	}
+	
+	print STDERR '***NET: '.(defined($net) ? $net : '---')."\n"; # if $debug;
+	print STDERR '***NETselected: '.(defined($NETselected) ? join(' ', @{$NETselected}) : '---')."\n" ;
+	print STDERR '***NETcollected: '.(defined($NETcollected)? join('; ', @{$NETcollected}) : '---')."\n";
+	print STDERR '***NETSource: '. $netSource." #FFFFFFF\n";
+	
+	
 	my(%SQL, %LST, %IND, %COL);
 	$LST{ags} = 'F'; 
 	$SQL{ags} = 'F';
@@ -463,15 +517,19 @@ if ($#{$NETselected} >= 0) {
 
 	$LST{fgs} = 'F'; 
 	$SQL{fgs} = (defined($FGScollected)) ? 'T' : 'F'; 
+	$LST{net} = 'F'; 
+	$SQL{net} = (defined($NETcollected)) ? 'T' : 'F'; 
 	$IND{fgs} = ($jobParameters -> {genewiseFGS} eq 'TRUE') ? 'T' : 'F';
 	$COL{colgenefgs} = 2;
 	$COL{colsetfgs} = 3;
 	$COL{colscorefgs} = 4;
 	$COL{colsubsetfgs} = 5;
-	
+# Rscript /var/www/html/research/HyperSet/dev/HyperSet/R/runNEAonEvinet.r --vanilla --args ntb=net_all_hsa fgs=/var/www/html/research/users_tmp/offline/_tmpFGS.319347169197 net=data_pwc9 ags=/var/www/html/research/users_tmp/offline/_tmpAGS.319347169197 out=/var/www/html/research/users_tmp/offline/_tmpNEA.319347169197 org=hsa sqlags=F lstags=F indags=F sqlfgs=F lstfgs=F indfgs=F sqlnet=T lstnet=F colgeneags=2 colsetags=3 colscoreags=4 colsubsetags=5 colgenefgs=2 colsetfgs=3 colscorefgs=4 colsubsetfgs=5
+
 	$executeStatement = "Rscript $HSconfig::nea_software --vanilla --args ntb=".$HSconfig::network->{$species}." fgs=".$fgsSource." net=".$netSource." ags=".$agsSource." out=".$outFile." org=".$species
 	." sqlags=".$SQL{ags}." lstags=".$LST{ags}." indags=".$IND{ags}
 	." sqlfgs=".$SQL{fgs}." lstfgs=".$LST{fgs}." indfgs=".$IND{fgs}
+	." sqlnet=".$SQL{net}." lstnet=".$LST{net}
 	." colgeneags=".$COL{colgeneags}
 	." colsetags=".$COL{colsetags}
 	." colscoreags=".$COL{colscoreags}
@@ -481,15 +539,18 @@ if ($#{$NETselected} >= 0) {
 	." colscorefgs=".$COL{colscorefgs}
 	." colsubsetfgs=".$COL{colsubsetfgs};
 	# print($executeStatement."\n");
+	
 
 	$jobParameters -> {commandline} = HS_html_gen::showCommandLine($executeStatement);
 	# print STDERR '<br>'.$HSconfig::test.'<br>' if $debug;
-	print STDERR '<br>'.$executeStatement.'<br>'; # if $debug;
+	print STDERR 'Execute: '.$executeStatement.'<br>'; # if $debug;
+	# if ($netSource !~ m/\//) {
 	$email = $q->param('user-email') if ($q->param('user-email') =~ m/\@.+\./);
 	print STDERR 'saveJob';
 	saveJob($jid, $jobParameters);
-	
-sendNotification ($jobParameters -> {projectid}, $q->param('user-email'), $jid, undef, $jobParameters -> {url}, 'running')  if $email; # DISABLED IN HS_html_gen.pm: <INPUT type="text" name="user-email" id="user-email"...>
+	sendNotification ($jobParameters -> {projectid}, $q->param('user-email'), $jid, undef, $jobParameters -> {url}, 'running')  if $email; # DISABLED IN HS_html_gen.pm: <INPUT type="text" name="user-email" id="user-email"...>
+
+# }
 	# my $returnCode = ;
 	print '<br>Start runNEAonEvinet.r...<br>'."\n" if $debug;
 	#my $debug_filename = "/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/myveryfirstproject/debug.txt";
@@ -656,6 +717,7 @@ my($bsURLstring, $callerNo, $AGS, $FGS) = @_;
 my($data, $node);
 
 print $bsURLstring."\n" if $debug;
+
 ($data, $node) = HS_bring_subnet::bring_subnet($bsURLstring);
 my $parname;
 my $pcont = '';
@@ -665,7 +727,7 @@ foreach $parname ( @parnames ) {$pcont =  $pcont.$parname."=".$q->param($parname
 return(	
 	'<div id="net_graph" style="width: '.
 		$HSconfig::cy_size->{net}->{width}.'px; height: '.$HSconfig::cy_size->{net}->{height}.'px;">'.
-		HS_cytoscapeJS_gen::printNet_JSON($data, $node, $callerNo, $AGS, $FGS).
+		HS_cytoscapeJS_gen_v3::printNet_JSON($data, $node, $callerNo, $AGS, $FGS).
 	'</div><!--/div-->');
 }
 
@@ -700,9 +762,11 @@ return($neaData);
 sub jobFromArchive {
 my($proj, $job) = @_;
 my $content = '
+<div id="ne-up-progressbar" class="page_wide"></div>
+
 <div id="net_message" ></div>
 <div id="net_up" ></div>
-<div id="ne-up-progressbar"></div>
+<!--div id="ne-up-progressbar"></div-->
 <script   type="text/javascript"> 
 $(function() {
 $( "#ne-up-progressbar" ).progressbar({
@@ -761,14 +825,14 @@ $table = tmpFileName('NEA', $jid);
 $neaData = readNEA($table);
 return HS_html_gen::errorDialog('error', "Project archive", 
 $neaData eq 'deleted' ? 
-"Job $jid:<br> this result is no longer stored in the Archive.<br>Try to reproduce it." : 
+"Job $jid:<br>no significant results were obtained<br> or the job was not found in the Archive.<br>Try to re-submit the job." : 
 "Job $jid:<br> this output file does not contain lines indicating significant enrichment.<br>Try to re-run the analysis with different parameters.",
 "Check and submit") if (ref($neaData) ne 'ARRAY');
 my $subnet_url = prepareSubURL_and_Links($neaData, $pl, $table, $jid);
 
 # $content .= '<br><a href="'.$URL->{$jid}.'">Save URL to this analysis</a>';
 $content = '<!--br><div id="net_up" >
-<div id="ne-up-progressbar"></div>
+<!--div id="ne-up-progressbar"></div-->
 </div-->
 Job #'.$jid.':
 <div id="nea_tabs" >';
@@ -841,10 +905,13 @@ return($content);
 
 sub prepareSubURL_and_Links {
 my($neaData, $pl, $table, $jid) = @_;
-my $species = retrieveJobInfo($jid, 'species');
+my $spec = retrieveJobInfo($jid, 'species');
 my $networks = retrieveJobInfo($jid, 'sbm_selected_net');
+if (!defined($networks)) {$networks = $netSource;}
+if (retrieveJobInfo($jid, 'commandline') =~ m/_tmpNET/) {$networks = $HSconfig::usersTMP.retrieveJobInfo($jid, 'projectid').'/_tmpNET.'.$jid;}
+if (!defined($spec)) {$spec = $species;}
 
-my $su = HStextProcessor::subnet_urls($neaData, $pl, $table, $species, $networks);
+my $su = HStextProcessor::subnet_urls($neaData, $pl, $table, $spec, $networks);
 return($su);
 }
 
@@ -857,7 +924,7 @@ $table = tmpFileName('NEA', $jid);
 $neaData = readNEA($table);
 return HS_html_gen::errorDialog('error', "Project archive", 
 $neaData eq 'deleted' ? 
-"Job $jid:<br> this result is no longer stored in the Archive.<br>Try to reproduce it." : 
+"Job $jid:<br>no significant results were obtained<br> or the job was not found in the Archive.<br>Try to re-submit the job." : 
 "Job $jid:<br> this output file does not contain lines indicating significant enrichment.<br>Try to re-run the analysis with different parameters.",
 "Archive") if (ref($neaData) ne 'ARRAY');
 my $subnet_url = prepareSubURL_and_Links($neaData, $pl, $table, $jid);
@@ -875,7 +942,7 @@ return($content);
 sub printTabGraphics {
 my($neaData, $pl, $table, $subnet_url) = @_;
 
-return (HS_cytoscapeJS_gen::printNEA_JSON($neaData, $pl->{$table}, $subnet_url));
+return (HS_cytoscapeJS_gen_v3::printNEA_JSON($neaData, $pl->{$table}, $subnet_url));
 }
 
 sub printTabTable {
@@ -1041,6 +1108,7 @@ my($type, $species) = @_;
 
 my $content = '';
 my($field, $tbl, $cond1, $cond2, $ID, $table, $fl, $criteria, $cr, $cntr, $fld, $order);
+my %JSJobType = ("ags" => "ags", "fgf" => "fgs", "nef" => "net");
 #################
 #################
 if ($type =~ m/^csw|tbl$/) {
@@ -1094,7 +1162,7 @@ print "<p style=\"color: blue;\">$gene_listPath</p>" if $debug;
 my $parametersFile = join('.', $usersTMP.$HSconfig::parameters4vennGen, $tm, 'r');
 HStextProcessor::writeParameters4vennGen($parametersFile, $vennFile, $criteria, $new_venPath, $gene_listPath, $q->param('venn-hidden-genecolumn'));
 my $cmd = "Rscript $HSconfig::venn_software $parametersFile";
-# system($cmd);
+system($cmd);
 my $proc=Proc::Background->new($cmd);
 my $alive=$proc->alive;
 while ($alive == 1) {
@@ -1169,32 +1237,26 @@ $nea_div =~ s/\"layout\"\:\s*\{.+?\}\,//s;
 $content .= saveIntoProject($usersTMP, $q->param("input-save-cy-json3"), $HSconfig::users_file_extension{'JSON'}, $nea_div); 
 $content .= listFiles($usersTMP, $HSconfig::users_file_extension{'JSON'});
 }}
-elsif ($type =~ m/^sgs|ags|cpw|fgf$/ ) {
-our %GS; #
-my %JSJobType = ("ags" => "ags", "fgf" => "fgs");
-print  STDERR "Type: ".$type; # if $debug;
+elsif ($type =~ m/^sgs|ags|cpw|fgf|nef$/ ) {
+
 my $file = $q->param('selectradio-table-'.$JSJobType{$type}.'-ele') ? $q->param('selectradio-table-'.$JSJobType{$type}.'-ele') : $savedFiles -> {data} -> {$type."_table"}; #
 $table = $usersDir.$file; #
-my($textFileFields);
-%{$textFileFields} = (
- 'group'  => $q->param('group_column_id'.'_'.$JSJobType{$type}) - 1,
- 'id'  => $q->param('gene_column_id'.'_'.$JSJobType{$type}) - 1,
- 'score'  => $q->param('score_column_id'.'_'.$JSJobType{$type}) - 1,
- 'subset'  => $q->param('subset_column_id'.'_'.$JSJobType{$type}) - 1
- );
+my($readin);
+if ($type ne "nef") {
+$readin = HStextProcessor::read_group_list3($table, 0, $textFileFields->{$type}, "\t", '_AGS', $q->param('display-file-header'));
+} else {
+ # print STDERR join("; ", values(%{$textFileFields{$type}}))."\n";
+$readin = HStextProcessor::read_network($table, $textFileFields->{nef}, "\t", $q->param('display-file-header'));
+}
 
-$GS{readin} = HStextProcessor::read_group_list3($table, 0, $textFileFields, "\t", '_AGS', $q->param('display-file-header')); #
 $pre_NEAoptions -> {$type} -> {$species} -> {ne} =  HS_html_gen::listGS(
-	$GS{readin}, uc($JSJobType{$type}), 
+	$readin, 
+	uc($JSJobType{$type}), 
 	(($type =~ m/sgs|cpw/) ? 0 : 1), # <- $hasGroup
 	$file, 	$usersDir); 
-# $content .=  HS_html_gen::pre_selectJQ($JSJobType{$type}); #
-# $content .=  '<input type="hidden" name="analysis_type" value="'.$mode.'"> '; #
 $content .= '<br>'.$pre_NEAoptions -> {$type} -> {$species} -> {ne}.'<br>'.HS_html_gen::pre_selectJQ($JSJobType{$type});
 }
 elsif (($type eq 'display-file' )) {
-# print STDERR 'Filetype: '.$q->param('filetype')."\n";# if $debug; filetype
-# print STDERR 'SSSSSSSSSSSSSSSSSSSS: '.$q->param('selectradio-table-'.$q->param('filetype').'-ele')."\n";
 $content .= '<div>'.HS_html_gen::displayUserTable($q->param('selectradio-table-'.$q->param('filetype').'-ele'), $usersDir, $delimiter, $q->param('display-file-header')).'</div>';
 } 
  
@@ -1339,7 +1401,10 @@ $row .= '
 for $ty(sort {$HSconfig::fileType{$a} <=> $HSconfig::fileType{$b}} keys(%{$HSconfig::uploadedFile->[$i]})) {
 	if ($ty ne 'text') {
 		%data = %{$HSconfig::uploadedFile->[$i] -> {$ty}}; 
+
 		$assumedIcon = ' '.$data{icon} if ($name =~ m/$data{mask}/i and $name =~ m/$data{keyword}/i);
+				# print STDERR $data{icon}."\n";
+
 		$heads .= '<li><a href=\'#'.$ty.'-###typeplaceholder###-'.$cleanName.'\'>'.$data{caption}.'</a></li>';
 		$cons .= '<div id=\''.$ty.'-###typeplaceholder###-'.$cleanName.'\'>'.$data{title}.'</div>';
 $target = '###typeplaceholder###_select-'.$cleanName;
@@ -1347,17 +1412,20 @@ $target = '###typeplaceholder###_select-'.$cleanName;
 <button type=\'submit\' form=\'form_ne\' class=\'sbm-icon icon-ok\' id=\''.$data{button}.$cleanName.'\' optionstarget=\''.$target.'\' title="Open to use file content"><span class=\'ui-icon ui-icon-action\'></span>'; 
 $cons =~ s/\<###submitbuttonplaceholder###\>/$localButton/g; #\<button type\=\'submit\' /; 
 		}
+		
 }
+		print STDERR "$name\n";
+		print STDERR "ASSUMED: $assumedIcon\n";
 $row =~ s/$defaultIcon/$assumedIcon/ if $assumedIcon;
 $row = $row.'<ul>'.$heads.'</ul>'.$cons.'</div>
- <p><span style=\'padding: 8px;\'>Columns are delimited with <select id=\'delimiter-table-ele-###typeplaceholder###-###filenameplaceholder###\' class=\'qtip-select ctrl-###typeplaceholder###\'> 
+ <p><span style=\'padding: 8px;\'>Columns are delimited with <select id=\'delimiter-table-ele-###typeplaceholder###-###filenameplaceholder###\' class=\'qtip-select ctrl-###typeplaceholder###\' name=\'delimiter\'> 
       <option value=\'tab\'>TAB</option>
       <option disabled value=\'comma\'>comma</option> 
       <option disabled value=\'space\'>space</option>
     </select> 
 	</span>
 	 
-	 <span style=\'padding: 8px;\'>First line is a header <input type=\'checkbox\' name=\'display-file-header\' id=\'display-file-header-###typeplaceholder###-###filenameplaceholder###\' value=\'yes\' class=\'venn_box_control\'></span></p>
+	 <span style=\'padding: 8px;\'>First line is header <input type=\'checkbox\' name=\'display-file-header\' id=\'display-file-header-###typeplaceholder###-###filenameplaceholder###\' value=\'yes\' class=\'venn_box_control\'></span></p>
 <span style="font-weight: bold;">Data preview:</span>
 <div id=\'display-qtip-###typeplaceholder###-'.$cleanName.'\'></div>
 </td>
@@ -1387,9 +1455,7 @@ $row =~ s/###typeplaceholder###/$type/g;
 $row =~ s/###statinfoplaceholder###/$stat_info_qtip/g;
 $content .= $row.'</tr>'."\n";
 }}
-$content .= '</table>'.
-# $stcontent.
-'	
+$content .= '</table>'.($type eq 'net' ? $HS_html_gen::buttonSubmitAGS : '').'	
 <script   type="text/javascript">
 /*$(function() {
 //console.log("DIALOG");
@@ -1409,13 +1475,14 @@ $content .= '</table>'.
    $(".assumed-icon").each( 
 	   function () {
 		   var savedType = (getCookie($(this).attr("id").replace("icon-", "tabs-") + "_filetype").split("|"))[0];
-		   //console.log($(this).attr("id") + " savedType: " + savedType);
 		   var typeList = Object.keys(fileType);
 		   if (savedType == "") {
+			   		   console.log($(this).attr("id") + " savedType: " + savedType);
+
 		   		for (var i = 0; i < typeList.length; i++) {
 					if ($(this).hasClass(fileType[typeList[i]]["icon"]) == true) {
 						savedType = typeList[i];
-// console.log($(this).hasClass(fileType[typeList[i]]["icon"]) + $(this).attr("id") + \': \' + typeList[i] + \', \' + fileType[typeList[i]]["icon"])
+//console.log($(this).hasClass(fileType[typeList[i]]["icon"]) + $(this).attr("id") + \': \' + typeList[i] + \', \' + fileType[typeList[i]]["icon"])
 					}
 				}
 			}			
@@ -1423,10 +1490,10 @@ $content .= '</table>'.
 				for (var i = 0; i < typeList.length; i++) {
 					$(this).removeClass(fileType[typeList[i]]["icon"]);
 				}
-				//console.log(savedType);
+				console.log("ST: " + savedType);
 			   var newIcon = fileType[savedType]["icon"];
 			   $(this).addClass(newIcon);
-			   $(this).attr("title", fileType[savedType]["caption"])
+			   $(this).attr("title", fileType[savedType]["caption"]);
 	   }
    );
    

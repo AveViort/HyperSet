@@ -15,24 +15,37 @@ credentials <- getDbCredentials();
 rch <- odbcConnect("hs_pg", uid = credentials[1], pwd = credentials[2]); 
 
 #NET##NET##NET##NET##NET##NET##NET##NET##NET##NET#
-import.net.evinet <- function(tbl, select, Lowercase = 1, col.1 = 'prot1', col.2 = 'prot2', echo = 1) { # select="data_kinase_substrate"
-col.confidence = ifelse(grepl("net_all_", tbl, fixed=T), 'data_fc_lim', 'fbs');
+import.net.evinet <- function(
+Source="net_all_hsa", # the SQL table of FGSs (when parameter 'select' is of class 1); otherwise ignored
+select="fc_lim", # one of the 3 types: 1) a network stored in the SQL, 2) a (user's) text file, or 3) a '+'-delimited list of individual gene IDs.
+isSQL = FALSE, # if the 'select' should be retrieved from the SQL table 'Source'
+islist=FALSE, # if the parameter 'select' is a '+'-delimited list of edges (from the text box)
+Lowercase = TRUE, col.1 = 'prot1', col.2 = 'prot2', echo = 1) { # select="data_kinase_substrate"
 
+col.confidence = ifelse(grepl("net_all_", Source, fixed=T), 'data_fc_lim', 'fbs');
+
+if (isSQL) {
+if (any(grepl('/', select, fixed = TRUE))) {stop("A file name was submitted instead of a set ID. Check parameters islist and select...");}
+if (islist) {stop("Parameters islist and isSQL cannot be both set to TRUE...");}
 d1  <- sqlQuery(rch, "DROP TABLE IF EXISTS tmp_net;");
 net.merge <- paste(unlist(select), sep=" IS NOT NULL OR ");
-stat <- paste("SELECT prot1, prot2 FROM ", tbl, " WHERE (", paste(net.merge, collapse=" IS NOT NULL OR "), " IS NOT NULL);", sep= "");
+stat <- paste("SELECT prot1, prot2 FROM ", Source, " WHERE (", paste(net.merge, collapse=" IS NOT NULL OR "), " IS NOT NULL);", sep= "");
+if (Debug>0) {message(stat); message("\n"); print(length(select)); print(select);}
 net <- sqlQuery(rch, stat);
 
-if (Debug>0) {
-message(stat);
-message("\n");
-}
-
-
-# if (Debug>0) {print(length(net$prot1));}
-# tbl = "/home/proj/func/NW/merged6_and_wir1_HC2"; net <- read.table(tbl, row.names = NULL, header = FALSE, sep = "\t", quote = "", dec = ".", na.strings = "", skip = 0, colClasses=c("character", "character")); colnames(net) <- c("prot1", "prot2"); Lowercase = 1; col.1 = 'prot1'; col.2 = 'prot2'; echo = 1; 
-
-if (Lowercase > 0 ) { 
+# ids = strsplit(select, split=RscriptfieldRdelimiter, fixed=T)[[1]];
+# net <-  as.data.frame(cbind(as.vector(unique(ids)), paste("users_list_as_", gs.type, "GS", sep = "")));
+colnames(net) <- c(col.1, col.2);
+} else {
+if (!islist) {
+# select = "/home/proj/func/NW/merged6_and_wir1_HC2"; 
+net <- as.data.frame(read.table(select, row.names = NULL, header = FALSE, sep = "\t", quote = "", dec = ".", na.strings = "", skip = 0, colClasses=c("character", "character"))); 
+colnames(net) <- c(col.1, col.2);
+if (ncol(net) > 2) {colnames(net)[3] <- "group";} 
+}}
+# save(net, file=paste0(usedDir,"net1.RData"));
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+if (Lowercase) { 
 for (i in names(net))  {
 net[[i]] <- tolower(net[[i]]);
 }}
@@ -75,21 +88,14 @@ org="hsa", Lowercase = TRUE, gs.type = 'f',
 col.name.gene = "prot", col.name.set = "set", col.name.score = "score", col.name.subset = "subset", # columns in the SQL table, otherwise used only as internal names; in both cases the default values usually do not have to be changed
 col.number.gene = 2, col.number.set = 3, col.number.score = 4, col.number.subset = 5 # columns in the text file, otherwise not used
 ) {
-# collection="/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/myveryfirstproject/_tmpAGS.780633488753"; isSQL =FALSE; islist= TRUE; isindividual = FALSE; org="hsa"; Lowercase = TRUE; col.name.gene = "prot"; col.name.set = "set"; col.number.gene = 2; col.number.set = 3; gs.type = 'a';
 if (Debug>0) {
 print(length(collection));
 print(collection);
-# print(ids);
 }
 gsl <- as.list(NULL);
 gsl$list <- as.list(NULL);
 if (islist) {
-	if (isSQL) {
-		stop("Parameters islist and isSQL cannot be both set to TRUE...");
-	}
-	# collection = c("MTHFD2",  "MTHFD1",  "MTFMT",   "MTR",     "MTHFD1L", "MTHFS",   "ATIC",
-	# "ALDH1L1", "AMT",     "GART",    "FTCD",    "MTHFD2L", "TYMS",    "SHMT1",
-	# "MTHFR",   "SHMT2" ,  "DHFR" ,   "DHFRP1")
+	if (isSQL) {		stop("Parameters islist and isSQL cannot be both set to TRUE...");	}
 	if (gs.type != 'f') {
 		ids = strsplit(collection, split=RscriptfieldRdelimiter, fixed=T)[[1]];
 	} else {
@@ -98,11 +104,9 @@ if (islist) {
 	gs <-  as.data.frame(cbind(as.vector(unique(ids)), paste("users_list_as_", gs.type, "GS", sep = "")));
 	colnames(gs) <- c(col.name.gene, col.name.set);
 } else {
-	# if (grepl(RscriptfieldRdelimiter, collection, fixed = TRUE)) { 
-	# stop("A GS string was submitted instead of a file name or FGS collection. Check parameters 'islist' and 'collection'...");
-	# }
+
 	if (isSQL) {
-		if (grepl('/', collection, fixed = TRUE)) { 
+		if (any(grepl('/', collection, fixed = TRUE))) { 
 			stop("A file name was submitted instead of a set ID. Check parameters islist and collection...");
 		}
 		stat = paste("SELECT ", col.name.gene, ", ", col.name.set, " FROM ", Source, " WHERE org_id='", org, "' AND (source='", paste(collection, collapse="' OR Source='"), "')  AND prot IS NOT NULL AND set IS NOT NULL", sep="");
@@ -176,10 +180,12 @@ Args <- commandArgs(trailingOnly = T);
 # if (Debug>0) {print("FGS:"); print(Args[4]); print(Args);}
 # aa <- "fgs=KEGG.SIG.hsa net=merged6_and_wir1_HC2 ags=/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/myveryfirstproject/_tmpAGS.344196415441 out=/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/myveryfirstproject/_tmpNEA.344196415441 org=hsa sqlags=F lstags=F indags=F sqlfgs=T lstfgs=F indfgs=F colgeneags=2 colsetags=3 colgenefgs=2 colsetfgs=3"
 # Args <- strsplit(aa, split=' ')[[1]]
-paramNames <- c("net", "ags", "fgs", "org", "out", "sqlags", "lstags", "indags", "sqlfgs", "lstfgs", "indfgs", 
-"colgeneags", "colsetags", "colgenefgs", "colsetfgs");
+paramNames <- c("net", "sqlnet", "lstnet", "ags", "fgs", "org", "out", "sqlags", "lstags", "indags", "sqlfgs", "lstfgs", "indfgs", 
+"colgeneags", "colsetags", "colgenefgs", "colsetfgs", 
+"colgene1net", "colgene2net", "coledgetypenet");
 Param <- vector("list", length(paramNames));
 names(Param) <- paramNames;
+# print(Args);
  # Param[["net"]] <- NULL; Param[["ags"]] <- NULL; Param[["fgs"]] <- NULL; 
 for (aa in Args) {
 s1 <- strsplit(aa, split=RscriptKeyValueDelimiter);
@@ -190,13 +196,29 @@ s2 <- strsplit(s1[[1]][[2]], split=RscriptParameterDelimiter);
 for (ss in s2[[1]]) {
 if (ss != "") {
 Param[[s1[[1]][1]]] <- c(Param[[ s1[[1]][1] ]], ss);
-# print(ss);
+print(ss);
 }} 
 # if (Debug>0) {print(paste(s1[[1]][1], ' => ', paste(Param[[s1[[1]][1]]], collapse=', '), sep=""));}
 }}
+
+
+
 ags=import.gs.evinet(collection=Param[["ags"]], isSQL = ifelse(tolower(Param[["sqlags"]]) == 't', TRUE, FALSE), islist=ifelse(tolower(Param[["lstags"]]) == 't', TRUE, FALSE), isindividual = ifelse(tolower(Param[["indags"]]) == 't', TRUE, FALSE), org=Param[["org"]], Lowercase = TRUE, col.name.gene = "prot", col.name.set = "set", col.number.gene = as.numeric(Param[["colgeneags"]]), col.number.set = as.numeric(Param[["colsetags"]]), col.number.score = as.numeric(Param[["colscoreags"]]), col.number.subset = as.numeric(Param[["colsubsetags"]]), gs.type = 'a'); 
+
 fgs=import.gs.evinet(collection=Param[["fgs"]], isSQL = ifelse(tolower(Param[["sqlfgs"]]) == 't', TRUE, FALSE), islist=ifelse(tolower(Param[["lstfgs"]]) == 't', TRUE, FALSE), isindividual = ifelse(tolower(Param[["indfgs"]]) == 't', TRUE, FALSE), org=Param[["org"]], Lowercase = TRUE, col.name.gene = "prot", col.name.set = "set", col.number.gene = as.numeric(Param[["colgenefgs"]]), col.number.set = as.numeric(Param[["colsetfgs"]]), col.number.score = as.numeric(Param[["colscorefgs"]]), col.number.subset = as.numeric(Param[["colsubsetfgs"]]), gs.type = 'f'); 
-net=import.net.evinet(tbl=Param[["ntb"]], select=list(Param[["net"]])); #Param[["net"]]
+
+print(paste("######AGS: ", Param[["ags"]]));
+print(paste("######FGS: ", Param[["fgs"]]));
+print(paste("######NET: ", Param[["net"]]));
+print(paste("######NTB: ", Param[["ntb"]]));
+net=import.net.evinet(Source=Param[["ntb"]], 
+select=Param[["net"]],
+isSQL = ifelse(tolower(Param[["sqlnet"]]) == 't', TRUE, FALSE), 
+islist=ifelse(tolower(Param[["lstnet"]]) == 't', TRUE, FALSE), 
+Lowercase = TRUE, col.1 = 'prot1', col.2 = 'prot2', echo = 1
+); 
+# Rscript /var/www/html/research/HyperSet/dev/HyperSet/R/runNEAonEvinet.r --vanilla --args ntb=net_all_hsa fgs=MSigDB_50hallmarks###netpath net=data_pwc9###data_ptmapper###data_proteincomplex###data_kegg ags=/var/www/html/research/users_tmp/offline/_tmpAGS.454686781083 out=/var/www/html/research/users_tmp/offline/_tmpNEA.454686781083 org=hsa sqlags=F lstags=F indags=F sqlfgs=T lstfgs=F indfgs=F sqlnet=T lstnet=F colgeneags=2 colsetags=3 colscoreags=4 colsubsetags=5 colgenefgs=2 colsetfgs=3 colscorefgs=4 colsubsetfgs=5
+#Param[["net"]]
 # save(net, file=paste0(sub("_tmpNEA", paste("_tmpNET", gsub(RscriptParameterDelimiter, "-", Param[["net"]]), Param[["org"]], sep="."), Param['out']), ".RData"));
 if (Debug>0) {
 print("Running nea.render.");

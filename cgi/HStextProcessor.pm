@@ -34,6 +34,9 @@ $purgeTitle{'vs_'} = 1;
 
 sub JavascriptCompatibleID {
 my ($str) = @_; 
+# print STDERR "****UPLOADING: $str\n";
+# $str =~ s/\[[0-9]+\]//g;
+# $str =~ s/[\[\]]//g;
 $str =~ s/[\.\;\:\\\/\,]/\-/g;
 $str =~ s/[\"\'\*\@]//g;
 return($str);
@@ -130,9 +133,10 @@ my($genelist, $random, $pl, $delimiter, $ty, $skipHeader, $min_size, $max_size) 
 my($GR, @arr, $groupID, $thegene, $file,$line, $N, $i, $ge);
 open GS,  $genelist or die "Cannot open file $genelist\n";#http://perldoc.perl.org/perlport.html#Newlines
 $N = 0;
-$_ = <GS> if $skipHeader;
+$line = <GS> if $skipHeader;
+
 while ($line = <GS>) {
-chomp; 
+chomp($line); 
 $line = HStextProcessor::JavascriptCompatibleID($line);
 @arr = split($delimiter, $line); $N++;
 $thegene = lc($arr[$pl->{id}]);
@@ -142,11 +146,12 @@ $file->{GS}->[$N] = (($pl->{group} > -1) and $arr[$pl->{group}]) ? lc($arr[$pl->
 $file->{GS}->[$N] =~ s/\s//g;
 $file->{gene}->[$N] = $thegene;
 $file->{gene}->[$N] =~ s/\s//g;
-$file->{score}->[$N] = $arr[$pl->{score}];
-$file->{subset}->[$N] = $arr[$pl->{subset}];
-$file->{subset}->[$N] =~ s/\s/_/g;
-$file->{subset}->[$N] =~ s/\:/_/g;
-}
+$file->{score}->[$N] = $arr[$pl->{score}] if defined($pl->{score});
+if (defined($pl->{subset})) {
+	 $file->{subset}->[$N] = $arr[$pl->{subset}];
+	$file->{subset}->[$N] =~ s/\s/_/g;
+	$file->{subset}->[$N] =~ s/\:/_/g;
+}}
 close GS;
 
 for ($i = 1; $i <= $N; $i++) {
@@ -170,17 +175,45 @@ $permGR->{$groupID}->{$permge} = 1;
 }}
 $GR->{$groupID} = $permGR->{$groupID};
 }}
-close IN;
+# close IN;
 print STDERR scalar(keys(%{$GR})).' group IDs in '.$genelist."...\n\n" if $main::debug;
 return $GR;
+}
+
+sub read_network {
+	# cd /home/proj/func/Projects/dyninf/DATA/Adam2020
+	# gawk 'BEGIN {la = ""; FS=","; OFS = "\t"; ORS="\r\n";} {gsub("\r", "", $0); if (1 == 1) print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18;}' transmission_pairs.csv > transmission_pairs.tab
+
+my($genelist, $pl, $delimiter, $skipHeader) = @_;
+my($NET, @arr, $gene1, $gene2, $line, $N, $group);
+open NET,  $genelist or die "Cannot open file $genelist\n";#http://perldoc.perl.org/perlport.html#Newlines
+$N = 0;
+$_ = <NET> if ($skipHeader eq "yes");
+print  STDERR $skipHeader." - skipHeader\n"; # if $debug;
+while ($line = <NET>) {
+# chomp($line); 
+$line = HStextProcessor::JavascriptCompatibleID($line);
+@arr = split($delimiter, $line); $N++;
+$group = $pl->{edge} ? $arr[$pl->{edge}] : $HSconfig::defaultEdgeID; #.$N % 2;
+chomp($group);
+$gene1 = $arr[$pl->{id1}]; $gene2 = $arr[$pl->{id2}];
+# $gene1 = lc($arr[$pl->{id1}]); $gene2 = lc($arr[$pl->{id2}]);
+$gene1 =~ s/\s//g; $gene2 =~ s/\s//g; 
+$NET->{$group}->{nodes}->{$gene1} = 1; $NET->{$group}->{nodes}->{$gene2} = 1;
+$NET->{$group}->{edges}->{join("###", sort {$a cmp $b} ($gene1, $gene2))} = 1;
+}
+close NET;
+# print STDERR "GR $group\n";
+print STDERR scalar(keys(%{$NET->{$group}->{edges}})).' edges between '.scalar(keys(%{$NET->{$group}->{nodes}}))." nodes...\n";
+# print STDERR join("; ", keys(%{$NET->{$group}->{edges}}))."\n";
+return $NET;
 }
 
 sub compileGS2 { 
 my($type, $jid, $GSfile, $GSselected, $pl, $Genewise, $species, $debug) = @_;
  print STDERR 'PARAMETERS TO HStextProcessor::compileGS: '.join(', ', @_)."\n" if $debug;
 if ((uc($Genewise) ne 'FALSE') and (uc($Genewise) ne 'TRUE')) {die 'Wrong parameter order or value...';}
-my($op, @ar, $tmp, %selected, $line, $group, $gene, $genes, $groups, $gene_list, $hsgene, $fcgenes, $takeIt,
-$venn, @a1, @a2);
+my($op, @ar, $tmp, %selected, $line, $group, $gene, $genes, $groups, $gene_list, $hsgene, $fcgenes, $takeIt,@nodes, $venn, @a1, @a2);
 
 # return $GSfile; 
 
@@ -190,6 +223,7 @@ print STDERR "Open ".$tmp."\n" if $debug;
 my $i = 0; 
 print STDERR $GSfile."\n" if $debug;
 print STDERR join(' ', @{$GSselected})."\n" if $debug;	
+
 if ($GSfile eq '#venn_lists') {
 for $venn(@{$GSselected}) {
 @a1 = split(':', $venn);
@@ -203,15 +237,20 @@ $groups->{$group}->{$gene}->{id} = $gene;
 }
 }
 } else {
+# print STDERR "GSselected: ".ref($GSselected).' '.($#{$GSselected} + 1)."...\n";
 for $op(@{$GSselected}) {
+
 if  ($GSfile =~ m/\#cpw_list|\#sgs_list/) {
 $op =~ s/\s//g;
+	# print STDERR '##'.$group.'##'."\n";
 $group = (uc($Genewise) eq 'TRUE') ? $op : $HSconfig::users_single_group.'_'.uc($type);
 $genes->{$op} = $group; 
 $groups->{$group}->{$op}->{id} = $op; 
 } else {
 $selected{uc($op)} = 1;
-}}
+}
+# print STDERR $op." OOOOOOOOOOOOOOOO\n";
+}
 if ($GSfile !~ m/\#cpw_list|\#sgs_list/) {
 open IN, $GSfile or die "Could not re-open '.$type.' file $GSfile ...\n"; #otherwise, 
 print STDERR "Open ".$GSfile if $debug;
@@ -241,23 +280,33 @@ $group = HStextProcessor::JavascriptCompatibleID($group);
 next if !$takeIt;
 $genes->{$gene} = $group;
 $groups->{$group}->{$gene}->{id}  = $gene;
-$groups->{$group}->{$gene}->{score}  = $ar[$pl->{score}] if defined($pl->{score}) && $pl->{score} ne '';
-$groups->{$group}->{$gene}->{subset}  = $ar[$pl->{subset}] if defined($pl->{subset}) && $pl->{subset} ne '';
+# print STDERR '##'.$pl->{score}.'##';
+# print STDERR defined($ar[$pl->{score}]) ? "YES" : "NOT";
+$groups->{$group}->{$gene}->{score}  = $ar[$pl->{score}] if defined($pl->{score}) && defined($ar[$pl->{score}]) && $pl->{score} ne '';
+$groups->{$group}->{$gene}->{subset}  = $ar[$pl->{subset}] if defined($pl->{subset}) && defined($ar[$pl->{score}]) && $pl->{subset} ne '';
 }}
 close IN;
 }
 print STDERR "Close ".$GSfile if $debug;
 @{$gene_list} = keys(%{$genes});
-$fcgenes = HS_SQL::gene_synonyms($gene_list, $species, 'ags');
+$fcgenes = HS_SQL::gene_synonyms($gene_list, $species, 'ags', 'sql');
 $i = 0; 
 # return  keys(%{$groups}); #
 for $group(keys(%{$groups})) {
 for $gene(keys(%{$groups->{$group}})) {
-for $hsgene(keys(%{$HS_SQL::translated_genes->{$species}->{uc($gene)}})) {
+if (defined($HS_SQL::translated_genes->{$species}->{uc($gene)})) {
+@nodes = keys(%{$HS_SQL::translated_genes->{$species}->{uc($gene)}});
+} else {
+@nodes = ($gene);	
+}
+
+print STDERR join("@@", @nodes)."\n";
+
+for $hsgene(@nodes) {
 $i++; 
 print OUT join("\t", ($gene, $hsgene, $group, 
-, defined($pl->{score}) ? $groups->{$group}->{$gene}->{score} : ''
-, defined($pl->{subset}) ? $groups->{$group}->{$gene}->{subset} : ''
+, defined($groups->{$group}->{$gene}->{score}) ? $groups->{$group}->{$gene}->{score} : ''
+, defined($groups->{$group}->{$gene}->{subset}) ? $groups->{$group}->{$gene}->{subset} : ''
 ))."\n";
 }}}
 close OUT;
@@ -267,6 +316,99 @@ return('empty') if !$i;
 return($tmp);
 }
 
+sub compileNET { 
+my($jid, $NETfile, $NETselected, $pl) = @_;
+my($op, $tmp, %selected, $line, $group, $gene1, $gene2, $edges);
+
+my $debug = 0;
+my $i = 0; 
+for $op(@{$NETselected}) { 
+if  ($NETfile =~ m/\#net_list/) {#NETselected may be either a new-line delimited list of space-delimited edges... 
+($gene1, $gene2, $group) = processEdge($op, $pl);
+$edges->{$gene1}->{$gene2} = $group;
+$selected{$group} = 1;
+} else {# ...or a list of allowed link types in the text file
+$selected{qq/$op/} = 1; 
+}}
+if ($NETfile !~ m/\#net_list/) {
+open IN, $NETfile or die "Could not re-open network file $NETfile ...\n"; #otherwise, 
+$line = <IN> if $main::q->param("display-file-header");
+while ($line = <IN>) {
+($gene1, $gene2, $group) = processEdge($line, $pl);
+$edges->{$gene1}->{$gene2} = $group;
+$selected{$group} = 1;
+	# print STDERR join(" !net_list ", ($gene1, $gene2, $group))."...\n";
+}
+close IN; print STDERR "Close ".$NETfile if $debug;
+}
+
+$tmp = main::tmpFileName('NET', $jid);
+open OUT, '> '.$tmp or die "Could not create temporary network file ...\n";
+print STDERR "Open ".$tmp."\n" if $debug;
+for $gene1(keys(%{$edges})) {
+for $gene2(keys(%{$edges->{$gene1}})) {
+print OUT join("\t", ($gene1, $gene2, $edges->{$gene1}->{$gene2}))."\n" if $selected{$edges->{$gene1}->{$gene2}};
+}} 
+close OUT; print STDERR "Close ".$tmp if $debug;
+return($tmp);
+}
+
+sub processEdge {
+my ($line, $pl) = @_;
+my($group, $gene1, $gene2, @ar);
+	chomp($line);
+
+@ar = split(/\s+/, $line);
+# print STDERR "@".$pl->{edge}."#".$ar[$pl->{edge}]."%\n";
+
+# if (!defined($pl->{edge}) or $pl->{edge} < 0 or ($ar[$pl->{edge}] eq '')) {
+if (!defined($pl->{edge}) or $pl->{edge} < 0) {
+
+$group = $HSconfig::defaultEdgeID;
+} else {
+$group = $ar[$pl->{edge}];
+$group =~ s/\s//g;
+}
+# print STDERR "@".$pl->{edge}."#".$group."%\n";
+$group = HStextProcessor::JavascriptCompatibleID($group);
+$gene1 = HStextProcessor::JavascriptCompatibleID($ar[$pl->{id1}]);
+$gene2 = HStextProcessor::JavascriptCompatibleID($ar[$pl->{id2}]);
+$gene1 =~ s/\s//g;  $gene2 =~ s/\s//g;
+($gene1, $gene2) = sort {$a cmp $b} ($gene1, $gene2);    
+# print STDERR join("---", ($gene1, $gene2, $group))."...\n";
+return ($gene1, $gene2, $group);	
+}
+
+###########################################################
+sub parseGenes {
+my ( $genestring, $delimiter, $parseAttributes) = @_;
+my ( $gg, $genes);
+if ($delimiter eq "\n") {
+	$genestring =~ s/^\s+//        if $genestring;
+	$genestring =~ s/\s+$//        if $genestring;
+	$genestring =~ s/[\'\"\,\;\#]/ /g if $genestring;
+	$genestring =~ s/^\n+//        if $genestring;
+}
+else {
+	$genestring =~ s/^\s+//        if $genestring;
+	$genestring =~ s/[\'\"\,\;]/ /g if $genestring;
+	$genestring =~ s/\s+/ /g        if $genestring;
+	}
+	
+@{$genes} = split( $delimiter, uc($genestring));
+if ( $#{$genes} >= 0 ) {
+while ( !$genes->[0] ) { shift @{$genes}; }	
+while ( !$genes->[$#{$genes}] ) { pop @{$genes}; }	
+}
+# my $i = 0;
+for $gg (@{$genes}) {
+	$gg =~ s/\s//g;
+	if ($gg !~ m/^[A-Za-z0-9\:\_\-\.\+]+$/ ) {
+	# if ($gg !~ m/^[A-Za-z0-9\_\-\.]+$/ ) {
+	return 'invalid input'; 
+}}
+return($genes);
+}
 
 ###########################################################
 sub parseGenesWithAttributes {
@@ -293,47 +435,24 @@ for $gg (@{$genes}) {
 if ($ss[0] !~ m/^[A-Za-z0-9\:\_\-\.\+]+$/ ) {
 	return 'invalid input'; 
 }
+# print STDERR '###ss: '.$gg."\n"; 
 $genesAttr->{id}->{$ss[0]} = $ss[0];	
+if ($#ss > 1) {
 $genesAttr->{score}->{$ss[0]} = $ss[1] if ($ss[1] ne '') && (uc($ss[1]) ne 'NAN') && (uc($ss[1]) ne 'NA');	
 $genesAttr->{subset}->{$ss[0]} = $ss[2] if $ss[2] && (uc($ss[2]) ne 'NAN') && (uc($ss[2]) ne 'NA');	
-}
+}}
 return($genesAttr);
 }
 
 ###########################################################
-sub parseGenes {
-my ( $genestring, $delimiter, $parseAttributes) = @_;
-my ( $gg, $genes);
-if ($delimiter eq "\n") {
-	$genestring =~ s/^\n+//        if $genestring;
-}
-else {
-	$genestring =~ s/^\s+//        if $genestring;
-	$genestring =~ s/[\'\"\,\;]/ /g if $genestring;
-	$genestring =~ s/\s+/ /g        if $genestring;
-	}
-	
-@{$genes} = split( $delimiter, uc($genestring));
-if ( $#{$genes} >= 0 ) {
-while ( !$genes->[0] ) { shift @{$genes}; }	
-while ( !$genes->[$#{$genes}] ) { pop @{$genes}; }	
-}
-# my $i = 0;
-for $gg (@{$genes}) {
-	$gg =~ s/\s//g;
-	if ($gg !~ m/^[A-Za-z0-9\:\_\-\.\+]+$/ ) {
-	# if ($gg !~ m/^[A-Za-z0-9\_\-\.]+$/ ) {
-	return 'invalid input'; 
-}}
-return($genes);
-}
 
 sub subnetURL {
 my($genes, $context_genes, $species, $networks, $Nl, $or, $sn) = @_;
 
-my $ga = join($HS_html_gen::arrayURLdelimiter, @{$genes});
-my $gf = join($HS_html_gen::arrayURLdelimiter, @{$context_genes});
+my $ga = defined($genes) ? join($HS_html_gen::arrayURLdelimiter, @{$genes}) : '';
+my $gf = defined($context_genes) ? join($HS_html_gen::arrayURLdelimiter, @{$context_genes}) : '';
 $ga =~ s/\,//g;  $gf =~ s/\,//g; 
+# if (defined($networks)) {
 
 return($HS_html_gen::webLinkPage_AGS2FGS_HS_link. 
 'coff='.$HSconfig::fbsCutoff->{ags_fgs}.
@@ -345,6 +464,7 @@ return($HS_html_gen::webLinkPage_AGS2FGS_HS_link.
 ';networks='.join($HS_html_gen::arrayURLdelimiter, split($HS_html_gen::fieldURLdelimiter, $networks)).
 ';action=subnet-'.++$sn.
 ';no_of_links='.$Nl.';');
+# }
 }
 
 sub subnet_urls {
@@ -369,7 +489,7 @@ $Nl = $arr[$pl->{$table}->{n_genes_ags}] * 2;
 $Nl = 100 if ($Nl > 100) or ($Nl < 10);
 }
 else {
-$Nl =  1000;
+$Nl =  100;
 }
 $subnet_url->{$arr[$pl->{$table}->{ags}]}->{$arr[$pl->{$table}->{fgs}]} = HStextProcessor::subnetURL(
 		$genesAGS2, 
@@ -512,41 +632,6 @@ close OUT;
 return undef;
 }
 
-sub compileNet2 {
-my($jid, @options) = @_;
-my($op, $tmpNet, $pl, $line, @ar, $file);
-$tmpNet = main::tmpFileName('Net', $jid);
-my $netA = $HSconfig::netAlias;
-my $coff = 0; my $spe = $main::q->param("species");
-   
-open OUT, '> '.$tmpNet or die "Could not create temporary file ...\n";
-my $i = 0;
-for $op(@options) {
-$file = $HSconfig::netDir.$main::q->param("species").'/'.$netA->{$spe}->{$op};
-
-$pl->{$file}->{gene1} = 0;
-$pl->{$file}->{gene2} = 1;
-$pl->{$file}->{confidence} = 2;
-print '<br>NET file: '.$file.'<br>'  if $main::debug;
-open  IN, $file or die "Could not re-open $file ...\n";
-while ($_ = <IN>) {
-chomp;
-@ar = split("\t", $_);
-if (!$ar[$pl->{$file}->{confidence}] or ($ar[$pl->{$file}->{confidence}] >= $coff)) {
-$line = join("\t", (
-$ar[$pl->{$file}->{gene1}], 
-$ar[$pl->{$file}->{gene2}]
-));
-print OUT $line."\n"; $i++;
-}}
-close IN;
-}
-close OUT;
-die 'The NET file is empty...<br>'."\n" if !$i;
-return($tmpNet);
-}
-
-
 sub textTable2dataTables_JS {
 my($table, $dir, $name, $hasHeader, $DELIM, $maxLines) = @_;
 my( $tp, $i, $row, @ar, $oldLength, $wrong, $tb, $cn, $hf);
@@ -629,6 +714,7 @@ var table = $("#'.$id.'").DataTable({
  </script>';
 return $cn;
 }
+
 
 sub generateJID {return(sprintf("%u", rand(10**15)));}
 

@@ -72,13 +72,19 @@ font-weight: 700;
 
 .main_header {
 	background-color: #AED0EA; 
-	width: 98%; 
+	/*width: 98%; 
 	padding: 5px;
-    margin: 5px 50px 5px 10px;
+    margin: 5px 50px 5px 10px;*/
 	text-align: center; 
 	font-size: x-large; 
 	font-weight: bold; 
 	color: #1d5987;
+}
+
+.page_wide {
+	width: 98%; 
+	padding: 5px;
+    margin: 5px 50px 5px 10px;
 }
 
 .xmlhttp_header {
@@ -380,7 +386,6 @@ cursor: pointer;
     border-radius: 5px; 
 }
 
-
 .clickable {
 color: #2779AA;
 text-decoration: underline;
@@ -433,7 +438,7 @@ border-style: solid;
                  margin-bottom: 4px; }
    
 .cy_main {
-  height: 675px;
+  height: 550px;
   width: 70%;
   background-color: white;
   position: relative;
@@ -446,8 +451,9 @@ border-style: solid;
 .cyMenu  {
 	/*border: 1px solid #777733;*/ 
 	height: auto; 
+	font-size: 0.8em;
 	/*top: 100px; left: 10px;*/
-	width: 22%;
+	width: 20%;
 	z-index: -1;
 	padding: 0.5em; 
 	float: left;
@@ -587,6 +593,7 @@ p.parameter_options1 {
 	display: inline-block;
 	font-size: 90%;
 	padding-left: 30px;
+	margin: 20px;
 }
 
 p.parameter_options2 {
@@ -595,6 +602,12 @@ p.parameter_options2 {
 	font-size: 90%;
 }
 
+
+.control_area {
+	border: 1px solid #c6c6c6;
+	font-weight: 500;
+	/*color: #aaaaaa;*/
+}
 
 td.parameter_area_disabled {
 	border: 1px solid #a6c9e2;
@@ -643,6 +656,8 @@ box-shadow: 10px 10px 30px;
 }
 
 select:invalid  {    color: #777777;}
+
+.small_list {	font-size: x-small; }
 
 .check {
 background-color: #aaffaa;
@@ -817,8 +832,22 @@ color: red;
  display:none;
 }
 
+span.node_box_control {
+	display: inline-block;
+}
+
+.node_box_control:hover{
+   /*background:rgb(255,150,50);*/
+   box-shadow: 3px 3px 15px #0055ff; 
+}
+
 span.venn_box_control {
 	display: inline-block;
+}
+
+.venn_box_control:hover{
+   /*background:rgb(255,150,50);*/
+   box-shadow: 3px 3px 15px #0055ff; 
 }
 
 .cyTextHalf {
@@ -853,10 +882,6 @@ width: 40%;
 		height: 95%;
 	}
 
-.venn_box_control:hover{
-   /*background:rgb(255,150,50);*/
-   box-shadow: 3px 3px 15px #0055ff; 
-}
 
 /*.ags_box_title {}*/
 

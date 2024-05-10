@@ -33,10 +33,7 @@ our $actionFieldDelimiter2 = '___';
   our $webLinkPage_AGS2FGS_HS_link =  'reduce=;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;';    
   # our $webLinkPage_AGS2FGS_HS_link =  'reduce=yes;reduce_by=aracne;qvotering=quota;show_names=Names;keep_query=yes;';    
   # our $webLinkPage_nealink =  'reduce=nealink;show_names=Names;keep_query=yes;';  
-  our $webLinkPage_AGS2FGS_FClim_link = 'http://funcoup2.sbc.su.se/cgi-bin/bring_subnet.TEST01.cgi?fc_class=all;Run=Run;base=all;ortho_render=no;coff=0.25;reduce=yes;reduce_by=noislets;qvotering=quota;show_names=Names;keep_query=yes;java=1;jsquid_screen=yes;wwidth=1000;wheight=700;structured_table=yes;single_table=yes;';
- 
- our $webLinkPage_AGS2FGS_FC3_link = 'http://funcoup.sbc.su.se/search/network.action?query.confidenceThreshold=0.1&query.expansionAlgorithm=group&query.prioritizeNeighbors=true&__checkbox_query.prioritizeNeighbors=true&query.addKnownCouplings=true&__checkbox_query.addKnownCouplings=true&query.individualEvidenceOnly=true&__checkbox_query.individualEvidenceOnly=true&query.categoryID=-1&query.constrainEvidence=no&query.restriction=none&query.showAdvanced=true'; 
- 
+
 our $OLbox1 = "\<a onmouseover\=\"return overlib\(\'";
 our $OLbox2 = "\'\, CENTER\, STICKY\, TIMEOUT\, 3000\)\;\" onmouseout\=\"nd\(\)\;\"\>";
 our %pwURLhead = (
@@ -56,6 +53,7 @@ our %pwURLhead = (
 # for $cc(keys(%pwURLtail)) {
   # $pwURLtail{$cc} = '"></a>';
   # }
+our $buttonSubmitAGS = '<p><button type="submit" id="subnet-ags" class="ui-widget-header ui-corner-all" title="No enrichment analysis. Just show a sub-network (selected in "Network" tab) for genes selected in AGS tab">Show network</button>  </p>';
 our $kegg_url = "http://www.genome.jp/dbget-bin/www_bget?";
 our $tabComponents; 
 # https://www.tjvantoll.com/2013/02/17/using-jquery-ui-tabs-with-the-base-tag/
@@ -81,8 +79,8 @@ our $tabComponents;
 'netTabHead', 
 'VertTabListNET',  
 'submitCollNET', 
-# 'submitFileNET', 
-# 'submitListNET', 
+'submitFileNET', 
+'submitListNET', 
 'closeSubmitNET' 
 );
 # @{$tabComponents->{ne}->{fgs}} = ('whole_fgs');
@@ -229,7 +227,7 @@ duration: 400
 <script   type="text/javascript"> 
 urlfixtabs( "#vertNETtabs" ); ///////////////////////////////////////////////////////////////
 $(function() {$( "#vertNETtabs" ).tabs({
-disabled: [1,2]
+//disabled: [2,3]
 });}); 
 
   </script>',
@@ -238,7 +236,7 @@ disabled: [1,2]
 'submitCollNET'   =>       '
 <div id="net-coll-h3" >
 <div id="net-coll-div">
-<div id="area-table-net-ele" class="inputarea inputareahighlight ui-corner-all" onclick=\'var sel = document.getElementsByName("NETselector"); $(sel).prop("disabled", false);\'>
+<div id="area-table-net-ele" class="inputarea inputareahighlight ui-corner-all" onclick=\'var sel = document.getElementsByName("NETcollection"); $(sel).prop("disabled", false);\'>
 Multiple selected networks woulld be merged
                     <TABLE  id="list_net" class="compact ui-state-default ui-corner-all" style="font-size: '.$HSconfig::font->{list}->{size}.'px">
 <thead>
@@ -260,9 +258,11 @@ Multiple selected networks woulld be merged
 <div id="net-list-h3"  >
 <div id="net-list-div">
 <div id="area-list-net-ele" class="inputarea inputareahighlight ui-corner-all" onclick="$(\'#submit-list-net-ele\').prop(\'disabled\', false); ">
-<div id="help-'.$main::ajax_help_id++.'" class="js_ui_help showDialog"  dialog="acceptedIDs" extra="Accepted IDs" title="Here you can paste in network edges as pairs of gene/protein IDs delimited with TAB, comma, or space"><span class="ui-icon ui-icon-circle-help"></span></div>
+<div id="help-'.$main::ajax_help_id++.'" class="js_ui_help showDialog"  dialog="acceptedIDs" extra="Accepted IDs" title="Here you can paste in network edges as pairs of node IDs delimited with TAB, comma, or space"><span class="ui-icon ui-icon-circle-help"></span></div>
 Paste a list of edges:<br>
 <TEXTAREA rows="7" name="net_list" cols="30" id="submit-list-net-ele" class="alternative_input ui-corner-all" onclick="updatechecksbm(\'net\', \'list\')" onchange="updatechecksbm(\'net\', \'list\')" ></TEXTAREA>
+
+'.$buttonSubmitAGS.'
 							</div></div></div>',
 ##################################################
 
@@ -530,8 +530,11 @@ $elementContent{'whole_'.$ty} = $pre_NEAoptions -> {$ty} -> {$sp} -> {$mo};
 }
 $elementContent{'agsTabHead'} =~ s/###/$mo/i;
 $elementContent{'submitFileFGS'} = $elementContent{'submitFileNET'} = $elementContent{'submitFile'};
-$elementContent{'submitFileFGS'} =~ s/ags-/fgs-/g; $elementContent{'submitFileFGS'} =~ s/-ags/-fgs/g; $elementContent{'submitFileFGS'} =~ s/ags_/fgs_/g; 
-$elementContent{'submitFileFGS'} =~ s/AGS/FGS/g; $elementContent{'submitFileFGS'} =~ s/agsupload/fgsupload/g;
+$elementContent{'submitFileFGS'} =~ s/ags-/fgs-/g; 
+$elementContent{'submitFileFGS'} =~ s/-ags/-fgs/g; 
+$elementContent{'submitFileFGS'} =~ s/ags_/fgs_/g; 
+$elementContent{'submitFileFGS'} =~ s/AGS/FGS/g; 
+$elementContent{'submitFileFGS'} =~ s/agsupload/fgsupload/g;
 $elementContent{'submitFileNET'} =~ s/ags-/net-/g; $elementContent{'submitFileNET'} =~ s/-ags/-net/g; $elementContent{'submitFileNET'} =~ s/ags_/net_/g; 
 $elementContent{'submitFileNET'} =~ s/AGS/NET/g; $elementContent{'submitFileNET'} =~ s/agsupload/netupload/g;
 
@@ -571,11 +574,10 @@ for $net(sort {$b cmp $a} keys(%{$nw_list})) {
 	if (defined($HSconfig::netDescription->{$sp}->{title}->{$net})) {
 		$listTableNET .= '<TR><TD><INPUT type="checkbox" 
 '.($net eq $dft ? ' dft="yes" ' : '').' onclick="updatechecksbm(\'net\', \'coll\')" onchange="updatechecksbm(\'net\', \'coll\')"
-				name="NETselector" value="'.$net.'" class="alternative_input venn_box_control"></TD>
+				name="NETcollection" value="'.$net.'" class="alternative_input venn_box_control"></TD>
 			   <TD>'.$HSconfig::netNames{$net}.'</TD>
 				<TD class="integer">'.$nw_list->{$net}->{nnodes}.'</TD>
 				<TD class="integer">'.$nw_list->{$net}->{nedges}.'</TD>
-				<!--TD title="'.$HSconfig::netDescription->{$sp}->{title}->{$net}.'" id="help-'.$main::ajax_help_id++.'" class="js_ui_help gs_collection"> ? </TD-->
 				<TD title="'.$HSconfig::netDescription->{$sp}->{title}->{$net}.' '.'<a href=\''.$HSconfig::netDescription->{$sp}->{link}->{$net}.'\' class=\'clickable\'>URL</a>" id="help-'.$main::ajax_help_id++.'" class="js_ui_help gs_collection"> ? </TD>
                            </TR>';
 }} #$nw_list->{$net}->{$feature}
@@ -760,7 +762,7 @@ my $availableGenes;
 my $con = '	<script   type="text/javascript">'.
 (($main_type eq 'ne') ? 
 '
-console.log("New instance");
+//console.log("New instance");
 HSonReady();
 var availableTags = [];
 //var availableTagsFGS = [];
@@ -832,7 +834,7 @@ $( "#showROCs" ).dialog( "open" );
 .(($main_type ne 'ne') ? '
 HSonReady();
 var tbl = "list_' . $main_type . '";
-console.log("Loading tab #'.$main_type.': ' .$HSconfig::tabAlias{$main_type}. '");
+//console.log("Loading tab #'.$main_type.': ' .$HSconfig::tabAlias{$main_type}. '");
 
 $("#analysis_type_ne").tabs( "load", HSTabs.subtab.indices ["Network"]);
 $("#analysis_type_ne").tabs( "load", HSTabs.subtab.indices ["Functional gene sets"]);
@@ -841,7 +843,7 @@ $("#analysis_type_ne").tabs( "disable", HSTabs.subtab.indices["Results"] );
 $("#analysis_type_ne").tabs( "load", HSTabs.subtab.indices ["Check and submit"] );
 
 if (document.getElementById(tbl) != null) { 
-console.log("Initializing datatable " + tbl + "...")
+//console.log("Initializing datatable " + tbl + "...")
 $("#" + tbl).DataTable({
     paging: false,
 	searching: true
@@ -852,7 +854,7 @@ $("#" + tbl).DataTable({
  updatechecksbmAll();
 /*console.log("#############");
 $(\'[name="FGScollection"][dft="yes"]\').click();
-$(\'[name="NETselector"][dft="yes"]\').click();*/
+$(\'[name="NETcollection"][dft="yes"]\').click();*/
 
 //var Proto = $("#listupload-button"); 
 //$("#listbutton-icon").css({"margin": "10px 15px 12px", "width": Proto.css("width"), "height": Proto.css("height")})
@@ -913,7 +915,7 @@ sub createPermURL {
 my($pd) = @_;
 my($jobParameters) = @_;
 my $ele;#DEV#
-my $thisURL .= $HSconfig::BASE.'cgi/i.cgi?mode=standalone;action=sbmRestore;table=table;graphics=graphics;archive=archive;sbm-layout='.$HS_cytoscapeJS_gen::cs_selected_layout.';showself=showself';
+my $thisURL .= $HSconfig::BASE.'cgi/i.cgi?mode=standalone;action=sbmRestore;table=table;graphics=graphics;archive=archive;sbm-layout='.$HS_cytoscapeJS_gen_v3::cs_selected_layout.';showself=showself';
 $thisURL .= ';project_id'.'='.$pd -> {projectid};
 $thisURL .= ';species'.'='.$pd -> {species};
 $thisURL .= ';jid'.'='.$pd -> {jid};
@@ -953,7 +955,7 @@ $i = 0; $Nlimit = 3000;
 		
 			for $key(keys %{$rows}) {
 			$va = $rows->{$key};
-			$va = ($rows->{$key} eq "1") ? "yes" : "no" if $key =~ m/genewise.gs/;
+			$va = (defined($rows->{$key}) and $rows->{$key} eq "1") ? "yes" : "no" if $key =~ m/genewise.gs/;
 			$va = $1 if (($key eq 'started') and ($va =~ m/(.+)\./));
 $projectData -> [$i] -> { $key } = $va;
 			}
@@ -1065,7 +1067,7 @@ $( this ).parent().html( "" );
 });*/
 ';
 
-if ($id =~ m/^(ags|fgs|fgf)$/) {
+if ($id =~ m/^(ags|fgs|fgf|net)$/) {
 $cc .= '$( ".'.uc($1).'toggle" ).on("click", 
   function() {
   //var State = ($(this).hasClass("checked"), true, false);
@@ -1094,7 +1096,7 @@ $pre .=   '
 <div id="net_message" ></div>
 <div id="net_up" ></div>
 <div id="usable-url" ></div>
-<div id="ne-up-progressbar"></div>
+<!--div id="ne-up-progressbar"></div-->
 <div id="ne_out"></div>
 
 <script   type="text/javascript"> 
@@ -1114,36 +1116,36 @@ $pre .=   '<div id="arc-content">###listTableARC###</div> ';
 
 elsif ($ty eq 'sbm') {
 my($ll, $selected);
-$pre = '<p class="over">Parameter overview  before submission</p>
+$pre = '<p class="over">Parameter overview  before job submission</p>
 <table class="parameter_overview ui-corner-all">
 <tr><td colspan="2" class="parameter_area_enabled">
-<p class="parameter_options1"><span>Selected AGS:&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+<p class="parameter_options1"><span>Selected AGS:&nbsp;</span> 
 <INPUT type="text"  name="sbm-selected-ags" title ="undefined" value="" class="checkbeforesubmit ui-corner-all"  autocomplete="off"/>
 </p>
 <p class="parameter_options1"><span>Selected network:&nbsp</span>
 <INPUT type="text"  name="sbm-selected-net"  title ="undefined" value="" class="checkbeforesubmit ui-corner-all"  autocomplete="off"/>
 </p>
+<p class="parameter_options1"><span>Selected FGS:&nbsp;</span>
+<INPUT type="text"  name="sbm-selected-fgs"  title ="undefined" value="" class="checkbeforesubmit ui-corner-all"  autocomplete="off"/>
+</p>
+
 </td></tr>
 <tr><td id="execute_nea" class="parameter_area_enabled" onclick="$(\'#execute_nea\').removeClass(\'parameter_area_enabled\'); $(\'#execute_nea\').addClass(\'parameter_area_disabled\'); ">
 <p class="parameter_options2">
-<span>Selected FGS:&nbsp;&nbsp;&nbsp;&nbsp;</span>
-<INPUT type="text"  name="sbm-selected-fgs"  title ="undefined" value="" class="checkbeforesubmit ui-corner-all"  autocomplete="off"/>
-</p>
-<p class="parameter_options2">
-<label for="genewiseAGS" title="Each gene/protein will appear as if it is a separate \'single node\' AGS. Please consider that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the AGS genes/proteins individually
+<label for="genewiseAGS" title="Consider each gene/protein as a separate \'single node\' AGS. Note that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the AGS members individually
 <INPUT TYPE="checkbox" NAME="genewiseAGS" id="genewiseAGS" VALUE="genewise"></label>
 </p>
 <p class="parameter_options2">
-<label for="genewiseFGS" title="Each gene/protein will appear as if it is a separate \'single node\' FGS. Please consider that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the FGS genes/proteins individually
+<label for="genewiseFGS" title="Consider each gene/protein as a separate \'single node\' FGS. Note that having more than 50-100 single nodes in the analysis would significantly deteriorate the visualization.">Analyze the FGS members individually
 <INPUT TYPE="checkbox" NAME="genewiseFGS" id="genewiseFGS" VALUE="genewise"></label>
 </p>
-<p><button type="submit" id="sbmSubmit" class="ui-widget-header ui-corner-all">Calculate network enrichment</button>  </p>
+<p><button type="submit" id="sbmSubmit" class="ui-widget-header ui-corner-all" title="Show NEA result over the selected network for gene set(s) selected in AGS tab versus functional gene sets (FGS tab - e.g. pathways)">Calculate network enrichment</button>  </p>
 
 </td> 
 <td  id="display_subnet" class="parameter_area_disabled" onclick="$(\'#display_subnet\').removeClass(\'parameter_area_disabled\'); $(\'#display_subnet\').addClass(\'parameter_area_enabled\'); ">
-	<p class="parameter_options2">Sub-network expansion <select  class="show_subnet" name="order" id="order">
+	<!--p class="parameter_options2">Network radius expansion <select  class="show_subnet" name="order" id="order">
       <option selected="selected">0</option>
-      <option>1</option>
+      <option selected="selected">1</option>
     </select>	
 	</p>
 	<p class="parameter_options2">Algorithm for reducing too large sub-networks 
@@ -1153,20 +1155,19 @@ $pre = '<p class="over">Parameter overview  before submission</p>
       <option>aracne</option>
     </select>	
 	</p>
-	<p class="parameter_options2">Max. no of edges <select  class="show_subnet" name="no_of_links" id="no_of_links">
+<p class="parameter_options2">Max. no of edges <select  class="show_subnet" name="no_of_links" id="no_of_links">
       <option >1</option>
       <option selected="selected">3</option>
       <option>10</option>
-      <option>30</option>
+      <option selected="selected">30</option>
       <option>100</option>
       <option>300</option>
     </select>	
-	
 	</p>
-<p class="parameter_options2">Reduce if graph is too large <INPUT TYPE="checkbox" NAME="reduce" id="reduce" VALUE="yes" checked="checked"></p>
-	<p><button type="submit" id="subnet-ags" class="ui-widget-header ui-corner-all">Show sub-network for AGS genes</button>  </p>
+<p class="parameter_options2">Reduce if graph is too large <INPUT TYPE="checkbox" NAME="reduce" id="reduce" VALUE="yes" checked="checked"></p-->
+	'.$buttonSubmitAGS.'
 </td></tr>
-<tr><td>
+<tr><td> 
 <span style="float: right; font-size: 75%; color: #666666;" ><label for="jid" title="Assigned job ID">
 Job&nbsp;<input type="text" id="jid" name="jid" value="" class="checkbeforesubmit ui-corner-all sbm-controls" style="color: #aaaaaa; height: " readonly=""> </label></span>
 </td></tr>
@@ -1621,7 +1622,7 @@ $ii = $dd;
 $ii =~ s/^data_//g;
 $ii =~ s/^prot1$/Node 1/g;
 $ii =~ s/^prot2$/Node 2/g;
-$cc .= '<th title="'.$HSconfig::netNames{$ii}.'">'.$ii.'</th>';
+$cc .= '<th '.(defined($HSconfig::netNames{$ii}) ? 'title="'.$HSconfig::netNames{$ii}.'"' : '').'>'.$ii.'</th>';
 }
 $cc .= '</tr></thead><tbody>';
 
@@ -1710,37 +1711,51 @@ $cc = (length($cc) > $len) ? substr($cc, 0, $len).'...' : $cc;
 return $cc;
 }
 
+
 sub listGS {
 my($GS, $type, $hasGroup, $file, $usersDir) = @_;
-my($ff, $gs, $text, $groupN, $gs_js_friendly);
+my($ff, $gs, $text, $groupN, $nodesN, $edgesN, $gs_js_friendly, @flds);
 my $id = HStextProcessor::generateJID();
+my $trty = lc($type);
+$trty =~ s/^[af]//;
+my %data = %{$HSconfig::uploadedFile->[3] -> {$trty}};
 my $cc =  '
 <div class="select_draggable">
-<span class="select-close-'.lc($type).' venn_box_control ui-icon ui-icon-closethick ui-state-default ui-corner-all"   title="Closing this will cancel gene set selection" style="background-color: #E87009"></span><span class="ui-state-default ui-corner-all" style="cursor: move;">Input '.uc($type).' file<br><input id="selected-table-file-'.$id.'" name="pseudoradio-table-'.lc($type).'-ele-'.$id.'" value="'.$file.'" style="color: #cc8866; cursor: move;" size="'.(length($file) + 1).'em" readonly="" class="ui-corner-all" type="text"></span>
+<span class="select-close-'.lc($type).' venn_box_control ui-icon ui-icon-closethick ui-state-default ui-corner-all"   title="Closing this will cancel gene set selection" style="background-color: #E87009"></span><span class="ui-state-default ui-corner-all small_list" style="cursor: move;">Input '.lc($data{caption}).':<br><input id="selected-table-file-'.$id.'" name="pseudoradio-table-'.lc($type).'-ele-'.$id.'" value="'.$file.'" style="color: #cc8866; cursor: move;" size="'.(length($file) + 1).'em" readonly="" class="ui-corner-all" type="text"></span>
 <table id="listed'.uc($type).'table" class="inputareahighlight ui-state-default ui-corner-all" 
 onclick=\' $("#'.uc($type).'selector").prop("disabled", false);\'>
-<thead title="Selected '.uc($type).'(s) will appear in the \'Check and submit\' tab, while you can select options in the next tabs." >'; 
-for $ff(('Include', uc($type), 'No. of genes'  )) {
+<thead title="Selected '.uc($type).'(s) will appear in the \'Check and submit\' tab, while you can select options in the next tabs.">'; 
+if (lc($type) eq "net") {
+@flds = ('Include', "Network", 'No. of edges', 'No. of nodes');	
+} else {
+@flds = ('Include', "Gene set", 'No. of genes');
+}
+for $ff(@flds) {
 $text = $ff;
 if ($text eq 'Include') {
 $text = '<span class="'.uc($type).'toggle venn_box_control ui-icon ui-icon-check" title="Select all/none"></span>';
 # onclick=\'closePopup("'.$div_nm.'");\'
 }
-$cc .=  '<th class="ui-state-default ui-corner-all" '.(($ff ne 'Include') ? ' style="cursor: move; font-size: small;" ' : '').'>'.$text.'</th>' if 
+$cc .=  '<th class="ui-state-default ui-corner-all" '.(($ff ne 'Include') ? ' style="cursor: move; font-size: x-small;" ' : '').'>'.$text.'</th>' if 
 	(($ff ne 'No. of genes') or $hasGroup);
 }
 $cc .=  "</thead>"; 
-
+print STDERR '#'.join('#, #', keys(%{$GS}))."#\n";
 for $gs(sort {$a cmp $b} keys(%{$GS})) {
-$groupN = "<td style=\'font-size: x-small; width: 3em;\' class=\'gene_list\' title=\"".uc(join(', ', (sort {$a cmp $b} keys(%{$GS->{$gs}}))))."\">".scalar(keys(%{$GS->{$gs}}))."</td>" if ($hasGroup);
+	print STDERR "gs: ".$gs."\n";
+	if (lc($type) eq "net") {
+$edgesN = "<td class=\'small_list\'>".scalar(keys(%{$GS->{$gs}->{edges}}))."</td>";
+$nodesN = "<td class=\'small_list gene_list\' style=\'width: 3em;\' title=\"".join(', ', (sort {$a cmp $b} keys(%{$GS->{$gs}->{nodes}})))."\">".scalar(keys(%{$GS->{$gs}->{nodes}}))."</td>";
+		} else {
+$groupN = "<td class=\'small_list gene_list\' style=\'width: 3em;\' title=\"".uc(join(', ', (sort {$a cmp $b} keys(%{$GS->{$gs}}))))."\">".scalar(keys(%{$GS->{$gs}}))."</td>" if ($hasGroup);
+		}
 $gs_js_friendly = HStextProcessor::JavascriptCompatibleID($gs); #
 
 $cc .=  "<tr>
 <td class=\"smaller_font\">
 <INPUT TYPE=CHECKBOX ".
-'onchange="updatechecksbm(\''.lc($type).'\', \'file\')" onclick="updatechecksbm(\''.lc($type).'\', \'file\')" '." form=\"form_ne\" name=\"".uc($type)."selector\" id=\"select_".lc($type)."-table-".lc($type)."-ele$gs_js_friendly\" value=\"$gs\" title=\"Use set $gs as input in the analysis\" class=\"alternative_input venn_box_control\"></td>
-<td style=\'font-size: x-small;\' >$gs</td>".$groupN."
-</tr>\n";
+'onchange="updatechecksbm(\''.lc($type).'\', \'file\')" onclick="updatechecksbm(\''.lc($type).'\', \'file\')" '." form=\"form_ne\" name=\"".uc($type)."selector\" id=\"select_".lc($type)."-table-".lc($type)."-ele$gs_js_friendly\" value=\"$gs\" title=\"Use \'$gs\' set as input in the analysis\" class=\"alternative_input venn_box_control\"></td><td class=\'small_list\'>".$gs."</td>".
+(lc($type) eq "net" ?  $edgesN.$nodesN : $groupN)."</tr>\n"; #".($gs =~ s/\s//)."
 }
 $cc .=  '
 </table>'.
@@ -1792,9 +1807,7 @@ $cc .=  '
 		$(\'[name*="'.uc($type).'selector"]\').each(function () {$(this).prop("checked", false)})
 		updatechecksbm(\''.lc($type).'\', \'file\'); 
 		});		
-		</script>'
-		# .HS_html_gen::pre_selectJQ('input_file').'</div>'
-		;
+		</script>';
 return($cc);
 }
 

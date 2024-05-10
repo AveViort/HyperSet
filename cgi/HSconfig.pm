@@ -15,7 +15,7 @@ BEGIN {
 	#@EXPORT = 		qw();
 	%EXPORT_TAGS = 	();
 	@EXPORT_OK	 =	qw();
-}
+} 
 
 my $wd = getcwd; 
 our $BASE = index($wd, 'dev') != -1 ? 'https://dev.evinet.org/' : 'https://www.evinet.org/';
@@ -35,7 +35,7 @@ our $fieldRdelimiter = '+'; #%3B
 our $file_stat_ext = ".file_stat";
 our $maxLinesDisplay = 5000;
 our $Rplots;
-our $showGeneSelfLoops = 0;
+our $showGeneSelfLoops = 1;
 ########################################################################################
 # 18:35 b4:/opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/HyperSet/pics >>>> ln -s /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/plots/ .
 # users_tmp/plots/ is a physical location. 
@@ -52,6 +52,8 @@ our %fileType = ( #  should match 'tabindex' values of var fileType in HS.js
 	, 'mtr' => 3
 );
 
+
+ 
 our $uploadedFile; 
 my $i = 0;
 %{$uploadedFile -> [$i++]} = ( 'text' => 'File');
@@ -121,12 +123,12 @@ my $i = 0;
  'parentclass' => 'sbm-icon icon-ok',
  'mask' => '.+', 
  'keyword' => '.net$|network',
- 'title' => '<span style="color: red;">This type of files is currently unusable... </span>
+ 'title' => '<!--span style="color: red;">This type of files is currently unusable... </span-->
   <span style="color: grey;"><br>Use the uploaded network in the current analysis
   <###submitbuttonplaceholder###></button>
   <p>The network file represents a list of edges (links)
   between nodes (genes/proteins) so that 
- <br>node 1 is in column <input id=\'gene1columnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' class=\'qtip-spinner ctrl-###typeplaceholder###\' > and node 2 is in column <input id=\'gene2columnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' class=\'qtip-spinner ctrl-###typeplaceholder###\' ></p>
+ <br>node 1 is in column <input id=\'gene1columnid-table-ele-###typeplaceholder###-###filenameplaceholder###\'  title="Select column with 1st node IDs" class=\'qtip-spinner ctrl-###typeplaceholder###\' >, node 2 is in column <input id=\'gene2columnid-table-ele-###typeplaceholder###-###filenameplaceholder###\'  title="Select column with 2nd node IDs"  class=\'qtip-spinner ctrl-###typeplaceholder###\' > and edge type is in column <input id=\'edgecolumnid-table-ele-###typeplaceholder###-###filenameplaceholder###\' title="Select column with arbitrary set (group) IDs.<br>NOTE: setting 0 enables merging all gene/protein IDs into one set." class=\'qtip-spinner ctrl-###typeplaceholder###\' ></p>
 	 </span>'	,
  'empty' => 'In order to be treated as a network, the file content must be formatted in a certain way', 
  'button' => 'netsubmitbutton-table-net-');
@@ -226,9 +228,9 @@ our $safe_filename_characters = "a-zA-Z0-9_.-";
 		# $nonconventional   = 'nonconventional_links';
 		# our $extra_data        = 'extra_data';
 		# $ppi_refs          = 'ppi_refs';
-		our $optnames          = 'optnames1';
+		our $optnames          = 'optnames2024';
 		# our $fcgene2go         = 'fcgene2go';
-		our $shownames = 'shownames1';
+		our $shownames = 'shownames2024';
 our $RscriptParameterDelimiter = '###';		
 our %listName;
 $listName{'sgs_list'} = 'Altered gene sets';
@@ -248,14 +250,15 @@ $pivotal_nea_score = lc('NEA_Zscore');
 # $min_nea_fdr = 0.25; 
 # $min_nea_p = 0.05;
 # $min_pivotal_nea_score = 0;
-$min_nea_fdr = 1.99; 
-$min_nea_p = 1.99;
-$min_pivotal_nea_score = -12; #change this cutoff for showing more/less AGS-FGS edges in the archived (or new) NEA output
+$min_nea_fdr = 0.01; 
+$min_nea_p = 0.05;
+$min_pivotal_nea_score = 2; #change this cutoff for showing more/less AGS-FGS edges in the archived (or new) NEA output
 our $uppic =   'pics/sort_up16.png';
 our $dnpic =   'pics/sort_down16.png';
 our $showmepic =   'pics/showme.png';
 our $userGroupID = 'FunctionalAnalysis';
 our $users_single_group = 'users_list';
+our $defaultEdgeID = 'default';
 our($examples, $font, $projectdb);
 
 our $property_list;
@@ -278,10 +281,10 @@ our $property_list;
 'min_size' => 'min_size', 
 'max_size' => 'max_size', 
 #'ags_table' => 'ags_table', 
-'sbm_selected_ags' => 'AGSselected', 
+'sbm_selected_ags' => 'AGSselector', 
 #'fgs_table' => 'fgs_table', 
-'sbm_selected_fgs' => 'FGScollected', 
-'sbm_selected_net' => 'NETselector', 
+'sbm_selected_fgs' => 'FGScollection', 
+'sbm_selected_net' => 'NETcollection', 
 'genewiseags' => 'genewiseags', 
 'genewisefgs' => 'genewisefgs'
 );
@@ -357,7 +360,7 @@ our $property_list;
 $examples->{'1'}->{'proj'} 	= 'myveryfirstproject'	;
 #$examples->{'1'}->{'ags'} 	= uc('tp53 mdm2 mdm4 pten');
 $examples->{'1'}->{'ags'} 	= uc('Kxd1 Mkx Nkx1-1 Nkx1-2 Nkx2-1 Nkx2-2 Nkx2-2as  Nkx2-3 Nkx2-4 Nkx2-5 Prkx');
-$examples->{'1'}->{'net'} 	= 'fc_lim';
+$examples->{'1'}->{'net'} 	= 'fc3';
 $examples->{'1'}->{'species'} 	= 'mmu'	;
 $examples->{'1'}->{'fgs'} 	= 'KEGG'	;
 
@@ -365,7 +368,7 @@ $examples->{'2'}->{'proj'}     = 'venn'    ;
 $examples->{'2'}->{'species'}   = 'mmu'    ;
 $examples->{'2'}->{'file_div'}  = 'ags-file-h3';
 $examples->{'2'}->{'fgs'}       =  'KEGG';
-$examples->{'2'}->{'net'}       = 'fc_lim';
+$examples->{'2'}->{'net'}       = 'fc5';
 
 
 
@@ -373,7 +376,7 @@ $examples->{'3'}->{'proj'}     = 'myveryfirstproject'    ;
 $examples->{'3'}->{'species'}   = 'mmu'    ;
 $examples->{'3'}->{'file_div'}  = 'ags-file-h3';
 $examples->{'3'}->{'fgs'} 	= 'KEGG';
-$examples->{'3'}->{'net'}	= 'fc_lim';
+$examples->{'3'}->{'net'}	= 'fc5';
 
 $font->{list}->{size} = 11;
 $font->{nea_table}->{size} = 10;
@@ -458,25 +461,27 @@ $cyPara->{edgeConfidenceScheme}->{nea} = '"data(label)"';
 $cyPara->{edgeConfidenceScheme}->{net} = '"data(label)"';
 
 $cyPara->{curveDefinition}->{nea} = '"curve-style":"bezier"';
-$cyPara->{curveDefinition}->{net} = '
-"curve-style":"haystack", 
-"haystack-radius":"0"
-';
+$cyPara->{curveDefinition}->{net} = '"curve-style":"bezier"';
+# $cyPara->{curveDefinition}->{net} = '
+# "curve-style":"haystack", 
+# "haystack-radius":"0"
+# ';
 #"overlay-color": "red",  
 #"overlay-padding":"3px",
 
 $cyPara->{size}->{nea}->{width} = 1350;
 $cyPara->{size}->{nea_menu}->{height} = 
 $cyPara->{size}->{nea}->{height} = 800;
-$cyPara->{size}->{node_menu}->{height} = 12;
-$cyPara->{size}->{node_menu}->{width} = 13;
+$cyPara->{size}->{node_menu}->{height} = 10;
+$cyPara->{size}->{node_menu}->{width} = 10;
 $vennPara->{slider}->{width} = 110;
 
-$cyPara->{size}->{net_menu}->{width} = 180;
-$cyPara->{size}->{nea_menu}->{width} = 300;
+$cyPara->{size}->{net_menu}->{width} = 
+$cyPara->{size}->{nea_menu}->{width} = 100;
 $cyPara->{size}->{net}->{width} = 875;
-$cyPara->{size}->{net}->{height} = 680;
+$cyPara->{size}->{net}->{height} = 600;
 $cyPara->{size}->{sliderMargin} = '4px';
+$cyPara->{size}->{sliderHeight} = '.4em';
 $img_size->{roc}->{width} = 480;
 # $img_size->{showme}->{height} = 64;
 # $img_size->{showme}->{width} = 64;
@@ -624,17 +629,20 @@ our $defaultOptions;
 
 %netNames = (
  'genemania' => 'GeneMANIA', 
+ 'fc5' => 'FunCoup 5.0', 
  'fc4' => 'FunCoup 4.0', 
  'fc3' => 'FunCoup 3.0', 
  'fc_lim' => 'FunCoup LE', 
  'biogrid' => 'BioGrid 3.4', 
  'i2d' => 'I2D, Interologous Interaction Database', 
  'string105' => 'STRING 10.5', 
+ 'string120' => 'STRING 12.0', 
  'ptmapper' => 'Protein phosphorylation network PTMapper', 
  'innatedb' => 'Innate DB', 
  'kegg' => 'Union of KEGG pathways and protein complexes', 
  'pwc8' => 'PathwayCommons v.8',
  'pwc9' => 'PathwayCommons v.9',
+ 'pwc12' => 'PathwayCommons v.12',
  'proteincomplex' => 'Protein complexes (CORUM)', 
  'phosphosite' => 'Kinase-substrate links from PhosphoSite.org', 
 );
@@ -693,17 +701,20 @@ our $defaultOptions;
 );
 %{$netDescription -> {hsa}->{title}} = (
 'genemania' => 'GeneMANIA finds other genes that are related to a set of input genes, using a very large set of functional association data. Association data include protein and genetic interactions, pathways, co-expression, co-localization and protein domain similarity.', 
-'string105' => 'A database of known and predicted protein-protein interactions',
-'fc_lim' => "Human FunCoup network of data integration, \'limited edition\' (Merid et al., 2014)", 
+'string120' => 'A database of known and predicted protein-protein interactions',
+# 'string105' => 'A database of known and predicted protein-protein interactions',
+# 'fc_lim' => "Human FunCoup network of data integration, \'limited edition\' (Merid et al., 2014)", 
 'i2d' => 'Integrated known, experimental and predicted PPIs for five model organisms and human',
 'biogrid' => 'A public database that archives and disseminates genetic and protein interaction data from model organisms and human',
 'innatedb' => 'InnateDB is a publicly available database of the genes, proteins, experimentally-verified interactions and signaling pathways involved in the innate immune response to microbial infection', 
 'ptmapper' => 'PTMapper, a protein phosphorylation network from Post Translational Modification mapper (Narushima et al., 2016)', 
 'kegg' => 'A network produced by merging all KEGG pathways and protein complexes', 
-'pwc9' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
+# 'pwc9' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
+'pwc12' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
 'proteincomplex' => 'CORUM and KEGG protein complexes', 
 'fc3' => 'Human FunCoup network of data integration, v. 3.0, edge confidence FBS > 8.140',
-# 'fc4' => 'Human FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.214',
+'fc5' => 'Human FunCoup network of data integration, v. 5.0, edge confidence FBS > 7.398',
+'fc4' => 'Human FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.214',
 
 'pwc8' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
 'PathwayCommons v.7' => 'Comprehensive union of curated databases: BIND, KEGG, CORUM, PhosphoSite, IntAct, TRANSFAC etc.',
@@ -715,6 +726,7 @@ our $defaultOptions;
 'KINASE2SUBSTRATE' => 'Kinase-substrate pairs of PhosphoSite.org',
 'iREF.PPI' => 'irefindex.uio.no, a comprehensive collection of literature-mined protein-protein interactions',
 
+'FunCoup 5.0' => 'Human FunCoup network of data integration, v. 5.0, edge confidence BS > 9.214',
 'FunCoup 3.0' => 'Human FunCoup network of data integration, v. 3.0, edge confidence > 0.8',
 'FunCoup 2.0' => 'Human FunCoup network of data integration, v. 2.0',
 'FunCoup 1.0' => 'Human FunCoup network of data integration, v. 1.0',
@@ -736,13 +748,15 @@ our $defaultOptions;
 
 %{$netDescription -> {mmu}->{title}} = (
 'genemania' => 'GeneMANIA finds other genes that are related to a set of input genes, using a very large set of functional association data. Association data include protein and genetic interactions, pathways, co-expression, co-localization and protein domain similarity.', 
-'string105' => 'A database of known and predicted protein-protein interactions',
-'fc_lim' => "Mouse FunCoup network of data integration (Merid et al., 2014)", 
+# 'string105' => 'A database of known and predicted protein-protein interactions',
+'string120' => 'A database of known and predicted protein-protein interactions',
+# 'fc_lim' => "Mouse FunCoup network of data integration (Merid et al., 2014)", 
 'biogrid' => 'A public database that archives and disseminates genetic and protein interaction data from model organisms and human',
 'i2d' => 'Integrated known, experimental and predicted PPIs for five model organisms and human',
 'kegg' => 'A network produced by merging all KEGG pathways and protein complexes', 
 'fc3' => 'Mouse FunCoup network of data integration, v. 3.0, edge confidence FBS > 9.250',
-# 'fc4' => 'Mouse FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.110',
+'fc4' => 'Mouse FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.110',
+'fc5' => 'Mouse FunCoup network of data integration, v. 5.0, edge confidence FBS > 7.823',
 'phosphosite' => 'Kinase-substrate pairs of PhosphoSite.org', 
 'proteincomplex' => 'CORUM and KEGG protein complexes',
 'innatedb' => 'InnateDB is a publicly available database of the genes, proteins, experimentally-verified interactions and signaling pathways involved in the innate immune response to microbial infection', 
@@ -758,11 +772,13 @@ our $defaultOptions;
 %{$netDescription -> {rno}->{title}} = (
 'genemania' => 'GeneMANIA finds other genes that are related to a set of input genes, using a very large set of functional association data. Association data include protein and genetic interactions, pathways, co-expression, co-localization and protein domain similarity.', 
 'string105' => 'A database of known and predicted protein-protein interactions',
+'string120' => 'A database of known and predicted protein-protein interactions',
 'fc_lim' => "Rat FunCoup network of data integration (Merid et al., 2014)", 
 'biogrid' => 'A public database that archives and disseminates genetic and protein interaction data from model organisms and human',
 'i2d' => 'Integrated known, experimental and predicted PPIs for five model organisms and human',
 'kegg' => 'A network produced by merging all KEGG pathways and protein complexes', 
-# 'fc4' => 'Rat FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.641',
+'fc5' => 'Rat FunCoup network of data integration, v. 5.0, edge confidence FBS > 7.539',
+'fc4' => 'Rat FunCoup network of data integration, v. 4.0, edge confidence FBS > 9.641',
 'fc3' => 'Rat FunCoup network of data integration, v. 3.0, edge confidence FBS > 7.376',
 'phosphosite' => 'Kinase-substrate pairs of PhosphoSite.org', 
 'proteincomplex' => 'CORUM and KEGG protein complexes',
@@ -776,12 +792,14 @@ our $defaultOptions;
 );
 %{$netDescription -> {ath}->{title}} = (
 'genemania' => 'GeneMANIA finds other genes that are related to a set of input genes, using a very large set of functional association data. Association data include protein and genetic interactions, pathways, co-expression, co-localization and protein domain similarity.', 
-'string105' => 'A database of known and predicted protein-protein interactions',
+'string120' => 'A database of known and predicted protein-protein interactions',
 'fc_lim' => 'Arabidopsis FunCoup network of data integration, v. 2.0, partial FBS from Arabidopsis > 4.00', 
 'biogrid' => 'A public database that archives and disseminates genetic and protein interaction data from model organisms and human',
 'fc3' => 'Arabidopsis FunCoup network of data integration, v. 3.0, edge confidence FBS > 9.33',
 'fc4' => 'Arabidopsis FunCoup network of data integration, v. 4.0, edge confidence FBS > 4.71',
-'kegg' => 'A network produced by merging all KEGG pathways and protein complexes', 
+'fc5' => 'Arabidopsis FunCoup network of data integration, v. 5.0, edge confidence FBS > 9.15',
+'kegg' => 'A network produced by merging all KEGG pathways and protein complexes'
+, 'FunCoup 5.0' => 'Arabidopsis FunCoup network of data integration, v. 5.0, edge confidence FBS > 9.15',
 'FunCoup 3.0' => 'Arabidopsis FunCoup network of data integration, v. 3.0, edge confidence FBS > 9.33',
 'FunCoup 2.0, Arabidopsis-focused' => 'Arabidopsis FunCoup network of data integration, v. 2.0, partial FBS from Arabidopsis > 4.00',
 'FunCoup 2.0' => 'Arabidopsis FunCoup network of data integration, v. 2.0, edge confidence FBS > 4.71',
@@ -793,6 +811,7 @@ our $defaultOptions;
 %{$netDescription -> {hsa}->{link}} = (
 'genemania' => "http://genemania.org/",
 'string105' => "https://string-db.org/",
+'string120' => "https://string-db.org/",
 'fc_lim' => "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308",
 'i2d' => 'http://ophid.utoronto.ca/ophidv2.204/',
 'biogrid' => 'https://thebiogrid.org/',
@@ -800,6 +819,7 @@ our $defaultOptions;
 'ptmapper' => 'https://www.ncbi.nlm.nih.gov/pubmed/27153602',
 'kegg' => 'http://www.genome.jp/kegg/',
 'pwc9' => 'https://www.pathwaycommons.org/',
+'pwc12' => 'https://www.pathwaycommons.org/',
 'proteincomplex' => 'https://mips.helmholtz-muenchen.de/corum/',
 'fc3' => 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965084/',
 'fc4' => 'https://www.ncbi.nlm.nih.gov/pubmed/29165593'
@@ -808,6 +828,7 @@ our $defaultOptions;
 %{$netDescription -> {mmu}->{link}} = (
 'genemania' => "http://genemania.org/",
 'string105' => "https://string-db.org/",
+'string120' => "https://string-db.org/",
 'phosphosite' => 'https://www.phosphosite.org/homeAction.action',
 'fc_lim' => "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308",
 'i2d' => 'http://ophid.utoronto.ca/ophidv2.204/',
@@ -824,6 +845,7 @@ our $defaultOptions;
 %{$netDescription -> {rno}->{link}} = (
 'genemania' => "http://genemania.org/",
 'string105' => "https://string-db.org/",
+'string120' => "https://string-db.org/",
 'phosphosite' => 'https://www.phosphosite.org/homeAction.action',
 'fc_lim' => "https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-15-308",
 'i2d' => 'http://ophid.utoronto.ca/ophidv2.204/',
@@ -832,6 +854,7 @@ our $defaultOptions;
 'ptmapper' => 'https://www.ncbi.nlm.nih.gov/pubmed/27153602',
 'kegg' => 'http://www.genome.jp/kegg/',
 'pwc9' => 'https://www.pathwaycommons.org/',
+'pwc12' => 'https://www.pathwaycommons.org/',
 'proteincomplex' => 'https://mips.helmholtz-muenchen.de/corum/',
 'fc3' => 'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965084/',
 'fc4' => 'https://www.ncbi.nlm.nih.gov/pubmed/29165593'
@@ -840,6 +863,7 @@ our $defaultOptions;
 %{$netDescription -> {ath}->{link}} = (
 'genemania' => "http://genemania.org/",
 'string105' => "https://string-db.org/",
+'string120' => "https://string-db.org/",
 'fc_lim' => "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3245127/",
 'biogrid' => 'https://thebiogrid.org/',
 'kegg' => 'http://www.genome.jp/kegg/',
@@ -953,10 +977,12 @@ our $display;
 $display->{net}->{labels} = 1;
 $display->{net}->{BigChanger} = 1;
 $display->{net}->{NodeSlider} = 1;
+$display->{net}->{EdgeWidthSlider} = 1;
 $display->{net}->{NodeSizeSlider} = 1;
 $display->{net}->{cytoscapeViewSaver} = 1;
 $display->{net}->{EdgeSlider} = 1;
 $display->{net}->{EdgeFontSlider} = 1;
+$display->{net}->{NodeLabelSwitch} = 1;
 $display->{net}->{EdgeLabelSwitch} = 1;
 $display->{net}->{nodeLabelCase} = 1;
 $display->{net}->{nodeMenu} = 1;
@@ -966,7 +992,9 @@ $display->{net}->{showpanzoom} = 0;
 $display->{net}->{showQtip} = 1;
 $display->{net}->{showQtipCore} = 0;
 $display->{net}->{showQtipNode} = 0;
+$display->{net}->{NodeOperator} = 1;
 $display->{net}->{NodeRemover} = 1;
+$display->{net}->{NodeFilter} = 1;
 $display->{net}->{NodeRestorer} = 1;
 $display->{net}->{NodeFinder} = 1;
 $display->{net}->{NodeRenamer} = 1;
@@ -975,29 +1003,41 @@ $display->{net}->{showSelectmenu} = 1;
 $display->{net}->{showcontextMenus} = 0;
 #____________________________
 $display->{nea}->{showcontextMenus} = 0;
+$display->{nea}->{NodeOperator} = 1;
 $display->{nea}->{NodeRemover} = 1;
+$display->{nea}->{NodeFilter} = 1;
 $display->{nea}->{NodeRestorer} = 1;
 $display->{nea}->{NodeFinder} = 1;
 $display->{nea}->{NodeRenamer} = 1;
 $display->{nea}->{cytoscapeViewSaver} = 1;
 $display->{nea}->{BigChanger} = 1;
 $display->{nea}->{NodeSlider} = 1;
+$display->{nea}->{EdgeWidthSlider} = 1;
 $display->{nea}->{NodeSizeSlider} = 1;
 $display->{nea}->{EdgeSlider} = 1;
 $display->{nea}->{EdgeFontSlider} = 1;
+$display->{nea}->{NodeLabelSwitch} = 1;
 $display->{nea}->{EdgeLabelSwitch} = 1;
 $display->{nea}->{nodeLabelCase} = 1;
 $display->{nea}->{showedgehandles} = 0;
-$display->{nea}->{showpanzoom} = 1;
+$display->{nea}->{showpanzoom} = 0;
 #$display->{nea}->{showCyCxtMenu} = 0;
 
 $display->{nea}->{showQtip} = 1;
 $display->{nea}->{showQtipCore} = 0;
 $display->{nea}->{showQtipNode} = 0; #################
 $display->{nea}->{nodeMenu} = 0;
-$display->{nea}->{menuLayout} = 1;
+$display->{nea}->{menuLayout} = 1; 
 $display->{nea}->{showSelectmenu} = 1;
 
+# our $buttonMarks;
+# %{$buttonMarks->{NodeRemover}->{icon}} = (
+	# "on" => "circle-close",
+	# "off" => "arrowreturnthick-1-w");
+# %{$buttonMarks->{NodeRemover}->{title}} = (
+	# "on" => "Hide any nodes that contain a substring",
+	# "off" => "Restore nodes that contain the substring");
+	
 our %NEAheaderTooltip = (
 'AGS'			=> 'Altered gene set, the novel genes you want to characterize', 
 '#genes AGS' 	=> 'Number of AGS genes found in the current network', 
