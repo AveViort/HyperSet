@@ -21,7 +21,15 @@ use NET;
 use venn_click_points;
 use constant SPACE => ' ';
 no warnings;
+# Added new network version: STRING12, PWC12, FunCoup 4 and 5, removed FClim and PWC9.
+# Switched to CytoScape v. 3x, with a  lot of javascript function changes.
+# Added statistics for network centrality in the network browser, modified the menu.
+# Added functionality for uploading users' network and  showing them in the same way as enrichment networks. Same possible for AGS genes,
+ # also without enrichment.
 
+
+# Could not push otherwise.
+# git pull ESC :wq
 our $dbh = HS_SQL::dbh('hyperset');
 $CGI::POST_MAX=102400000;
 our $q = new CGI;
@@ -34,6 +42,8 @@ our $action = $q->param("action");
 # system('cp /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/_tmpNEA* /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/offline/');
 # system('cp /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/users_tmp/_tmpNEA* /opt/rh/httpd24/root/var/www/html/research/andrej_alexeyenko/offline_results/offline/');
 # exit;
+
+
 my $debug = 0;
 $ENV{'PATH'} = '/bin:/usr/bin:';
 # $ENV{'PATH'} = '/bin:/usr/bin:';
